@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AccrualPZ>
+	<PZHeader>
+		<Struktura>Noliktava</Struktura>
+		<Type>6</Type>
+		<WEB>201</WEB>
+		<Datums>30.03.2022</Datums>
+		<PVNSumma>72.89</PVNSumma>
+		<Valuta>EUR</Valuta>
+		<Piezimes>asd</Piezimes>
+		<SasPerson>Edgars Indriķis</SasPerson>
+	</PZHeader>
+	<Ieraksti>
+		<Ieraksts>
+			<Artikuls>16205/55MPRIMACY494HXL</Artikuls>
+			<Nosaukums>MICHELIN PRIMACY 4</Nosaukums>
+			<Mervieniba>gab</Mervieniba>
+			<Cena>86.78</Cena>
+			<Daudzums>4.000</Daudzums>
+			<Summa>105</Summa>
+			<Nodoklis>PVN 21%</Nodoklis>
+			<Likme>21.00</Likme>
+		</Ieraksts>
+	</Ieraksti>
+</AccrualPZ>

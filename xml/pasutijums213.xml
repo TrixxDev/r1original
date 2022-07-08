@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AccrualPZ>
+	<PZHeader>
+		<Struktura>Noliktava</Struktura>
+		<Type>6</Type>
+		<WEB>213</WEB>
+		<PVNSumma>121.31</PVNSumma>
+		<Valuta>EUR</Valuta>
+		<Piezimes>asdasdasd</Piezimes>
+		<SasPerson>Admin Admin</SasPerson>
+	</PZHeader>
+	<Ieraksti>
+		<Ieraksts>
+			<Artikuls>16205/55MPRIMACY491V</Artikuls>
+			<Nosaukums>MICHELIN PRIMACY 4</Nosaukums>
+			<Mervieniba>gab</Mervieniba>
+			<Cena>121.49</Cena>
+			<Daudzums>4.000</Daudzums>
+			<Summa>147</Summa>
+			<Nodoklis>PVN 21%</Nodoklis>
+			<Likme>21.00</Likme>
+		</Ieraksts>
+		<Ieraksts>
+			<Artikuls>04</Artikuls>
+			<Nosaukums>4 riepu nomaina vienam auto</Nosaukums>
+			<Mervieniba>kompl.</Mervieniba>
+			<Cena>91.74</Cena>
+			<Daudzums>1.000</Daudzums>
+			<Summa>111</Summa>
+			<Nodoklis>PVN 21%</Nodoklis>
+			<Likme>21.00</Likme>
+		</Ieraksts>
+	</Ieraksti>
+</AccrualPZ>

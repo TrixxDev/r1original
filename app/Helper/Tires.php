@@ -1,0 +1,235 @@
+<?php
+
+namespace App\Helper;
+
+use DB;
+use App\Models\Autotire;
+use App\Models\Autotread;
+use App\Models\Autobrand;
+use App\Models\Quadr;
+use App\Models\Quadrtread;
+use App\Models\Quadrbrand;
+use App\Models\Moto;
+use App\Models\Mototread;
+use App\Models\Motobrand;
+use App\Models\Bigtire;
+use App\Models\Bigtread;
+use App\Models\Bigbrand;
+
+class Tires
+{
+
+    public static function getAllAutoBrands($season = 1) {
+        return Autobrand::selectRaw('auto_brands.brand_id, auto_brands.title as brand_title')
+                          ->join('auto_treads', 'auto_brands.brand_id', '=', 'auto_treads.brand_id')
+                          ->whereRaw('auto_brands.title <> ""')
+                          ->where('auto_treads.season', $season)
+                          ->orderBy('brand_id')
+                          ->groupBy('auto_brands.title')
+                          ->get();
+    }
+
+//    public static function getAllAutoTreads() {
+//        return DB::table('auto_treads')->select('title')->whereRaw('')
+//    }
+
+    public static function getAllBigBrands() {
+      $tires = Bigtire::with('tread')->where('visible_users', 1)->where('visible_list', 1)->get();
+      $brands = [];
+      foreach ($tires as $tire) {
+        if (Bigbrand::where('brand_id', $tire->tread->brand_id)->exists()) {
+          $brand = Bigbrand::select('brand_id as id', 'title')->where('brand_id', $tire->tread->brand_id)->first();
+          array_push($brands, $brand);
+        } else {
+          continue;
+        }
+      }
+      sort($brands);
+      $brands = array_values(array_unique($brands));
+      return $brands;
+    }
+
+    public static function getAllQuadrBrands() {
+        return Quadrbrand::selectRaw('quadr_brands.brand_id as id, title')->whereRaw('title <> ""')->orderBy('brand_id')->groupBy('title')->get();
+    }
+
+    public static function getAllMotoBrands() {
+        return Motobrand::selectRaw('moto_brands.brand_id as id, title')->whereRaw('title <> ""')->orderBy('brand_id')->groupBy('title')->get();
+    }
+
+    public static function getAutoTiresD1($season = 1) {
+        return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+                         ->select('d1')
+                         ->whereRaw('d1 <> ""')
+                         ->where('auto_treads.season', $season)
+                         ->orderBy('d1')
+                         ->groupBy('d1')
+                         ->get();
+    }
+
+    public static function getAutoTiresD2($season = 1) {
+        return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+                         ->select('d2')
+                         ->whereRaw('d2 <> ""')
+                         ->where('auto_treads.season', $season)
+                         ->orderBy('d2')
+                         ->groupBy('d2')
+                         ->get();
+    }
+
+    public static function getAutoTiresD3($season = 1) {
+        return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+                         ->select('d3')
+                         ->whereRaw('d3 <> ""')
+                         ->where('auto_treads.season', $season)
+                         ->orderBy('d3')
+                         ->groupBy('d3')
+                         ->get();
+    }
+
+    public static function getQuadrTiresD1() {
+        return Quadr::select('d1')->whereRaw('d1 <> ""')->orderByRaw('cast(d1 as decimal(7,2)) ASC')->groupBy('d1')->get();
+    }
+
+    public static function getQuadrTiresD2() {
+        return Quadr::select('d2')->whereRaw('d2 <> ""')->orderByRaw('cast(d2 as decimal(7,2)) ASC')->groupBy('d2')->get();
+    }
+
+    public static function getQuadrTiresD3() {
+        return Quadr::select('d3')->whereRaw('d3 <> ""')->orderByRaw('cast(d3 as decimal(7,2)) ASC')->groupBy('d3')->get();
+    }
+
+    public static function getMotoTiresD1() {
+        return Moto::select('d1')->whereRaw('d1 <> ""')->orderByRaw('cast(d1 as decimal(7,2)) ASC')->groupBy('d1')->get();
+    }
+
+    public static function getMotoTiresD2() {
+        return Moto::select('d2')->whereRaw('d2 <> ""')->orderByRaw('cast(d2 as decimal(7,2)) ASC')->groupBy('d2')->get();
+    }
+
+    public static function getMotoTiresD3() {
+        return Moto::select('d3')->whereRaw('d3 <> ""')->orderByRaw('cast(d3 as decimal(7,2)) ASC')->groupBy('d3')->get();
+    }
+
+    public static function getBigTiresD1() {
+      $tires = Bigtire::select('d1')->where('visible_users', 1)->where('visible_list', 1)->get();
+      $sizes = [];
+      foreach ($tires as $tire) {
+        if ($tire->d1 !== null) {
+          array_push($sizes, $tire);
+        }
+      }
+      sort($sizes);
+      $sizes = array_values(array_unique($sizes));
+      return $sizes;
+    }
+
+    public static function getBigTiresD2() {
+      $tires = Bigtire::select('d2')->where('visible_users', 1)->where('visible_list', 1)->get();
+      $sizes = [];
+      foreach ($tires as $tire) {
+        if ($tire->d2 !== null) {
+          array_push($sizes, $tire);
+        }
+      }
+      sort($sizes);
+      $sizes = array_values(array_unique($sizes));
+      return $sizes;
+    }
+
+    public static function getBigTiresD3() {
+      $tires = Bigtire::select('d3')->where('visible_users', 1)->where('visible_list', 1)->get();
+      $sizes = [];
+      foreach ($tires as $tire) {
+        if ($tire->d3 !== null) {
+          array_push($sizes, $tire);
+        }
+      }
+      sort($sizes);
+      $sizes = array_values(array_unique($sizes));
+      return $sizes;
+    }
+
+    public static function getAutoTireTread($tread_id) {
+        return Autotread::select('*')->where('tread_id', $tread_id)->first();
+    }
+
+    public static function getAutoTireBrand($brand_id) {
+        return Autobrand::select('*')->where('brand_id', $brand_id)->first();
+    }
+
+    public static function getQuadrTireTread($tread_id) {
+        return Quadrtread::select('*')->where('tread_id', $tread_id)->first();
+    }
+
+    public static function getQuadrTireBrand($brand_id) {
+        return Quadrbrand::select('*')->where('brand_id', $brand_id)->first();
+    }
+
+    public static function getMotoTireTread($tread_id) {
+        return Mototread::select('*')->where('tread_id', $tread_id)->first();
+    }
+
+    public static function getMotoTireBrand($brand_id) {
+        return Motobrand::select('*')->where('brand_id', $brand_id)->first();
+    }
+
+    public static function getBigTireTread($tread_id) {
+        return Bigtread::select('*')->where('tread_id', $tread_id)->first();
+    }
+
+    public static function getBigTireBrand($brand_id) {
+        return Bigbrand::select('*')->where('brand_id', $brand_id)->first();
+    }
+
+    public static function addProduct($tire_id)
+    {
+        return $tire_id;
+    }
+
+    public function GCD($a, $b)
+    {
+        if ($a == 0) return $b;
+        return $this->GCD($b % $a, $a);
+    }
+
+    /**
+     * Atrod lielāko kopīgo dalītāju masīvam
+     * @param array $array	Masīvs, kam nepieciešams atrast lielāko kopīgo dalītāju
+     * @param integer $n	Elementu skaits
+     * @return mixed
+     */
+
+    public function arrayGCD($array, $n=0)
+    {
+        $array = array_map('strval', $array);
+        $result = $array[0];
+        if ($n==0) $n = count($array);
+        if ($n==0) return false;
+        for ($i = 1; $i < $n; $i++)
+            $result = $this->GCD($array[$i], $result);
+
+        return $result;
+    }
+
+    /**
+     *
+     * @param string $text Saīsināmais teksts
+     * @param type $limit Maksimālais simbolu skaits tekstā
+     * @param type $ellipsis Ar ko aizstāt maksimālo simbolu skaitu
+     * @param type $strip Par cik saīsināt tekstu, ja pārsniegts maksimālais simbolu skaits (noklusētais = 0)
+     * @return string
+     */
+    public static function truncateCharacters($text,$limit,$ellipsis='...',$strip=0){
+        if(strlen($text) > $limit) $text = trim(substr($text, 0, $limit-$strip)).$ellipsis;
+        return $text;
+    }
+
+    public static function zero_pad($i,$c){
+        while (strlen($i)<$c){
+            $i = '0'.$i;
+        }
+        return $i;
+    }
+
+}

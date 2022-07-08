@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AccrualPZ>
+	<PZHeader>
+		<Struktura>Noliktava</Struktura>
+		<Type>6</Type>
+		<WEB>276</WEB>
+		<Datums>24.05.2022</Datums>
+		<PVNSumma>113.85</PVNSumma>
+		<Valuta>EUR</Valuta>
+		<SasPerson>Admin Admin</SasPerson>
+	</PZHeader>
+	<Ieraksti>
+		<Ieraksts>
+			<Artikuls>16205/55MPRIMACY494HXL</Artikuls>
+			<Nosaukums>MICHELIN PRIMACY 4</Nosaukums>
+			<Mervieniba>gab</Mervieniba>
+			<Cena>135.54</Cena>
+			<Daudzums>4.000</Daudzums>
+			<Summa>164</Summa>
+			<Nodoklis>PVN 21%</Nodoklis>
+			<Likme>21.00</Likme>
+		</Ieraksts>
+	</Ieraksti>
+</AccrualPZ>

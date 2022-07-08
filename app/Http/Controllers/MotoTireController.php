@@ -1,0 +1,191 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Helper\Tires;
+use App\Models\Quadr;
+use Illuminate\Http\Request;
+use App\Models\Moto;
+use App\Models\Motobrand;
+use App\Models\Mototread;
+use Gloudemans\Shoppingcart\Cart;
+use View;
+use Auth;
+use DB;
+
+class MotoTireController extends Controller
+{
+
+    public $brands;
+    public $currBrand;
+    public $d1;
+    public $d2;
+    public $d3;
+    public $motoTiresD1;
+    public $motoTiresD2;
+    public $motoTiresD3;
+    public $model = 'Moto';
+    public $type;
+    public $itemsPerPage = 15;
+    public $availability;
+
+    public function __construct(Request $request)
+    {
+        $this->brands = Tires::getAllMotoBrands();
+
+        $this->motoTiresD1 = Tires::getMotoTiresD1();
+        $this->motoTiresD2 = Tires::getMotoTiresD2();
+        $this->motoTiresD3 = Tires::getMotoTiresD3();
+
+        ($request->brand == 'Visi') ? $this->currBrand = 'Visi' : $this->currBrand = $request->brand;
+        ($this->currBrand === NULL) ? $this->currBrand = 'Visi' : $this->currBrand = $request->brand;
+
+        ($request->d1 == 'Visi') ? $this->d1 = 'Visi' : $this->d1 = $request->d1;
+        ($request->d2 == 'Visi') ? $this->d2 = 'Visi' : $this->d2 = $request->d2;
+        ($request->d3 == NULL) ? $this->d3 = 17 : $this->d3 = $request->d3;
+
+        ($request->type) ? $this->type = $request->type : $this->type = [];
+
+        if ($request->d1 == NULL && $this->d1 == NULL) {
+          $this->d1 = 120;
+        }
+
+        if ($request->d2 == NULL && $this->d2 == NULL) {
+          $this->d2 = 70;
+        }
+
+        if ($request->d3 == NULL && $this->d3 == NULL) {
+          $this->d3 = 17;
+        }
+
+        View::share('brands', $this->brands);
+        View::share('motoTiresD1', $this->motoTiresD1);
+        View::share('motoTiresD2', $this->motoTiresD2);
+        View::share('motoTiresD3', $this->motoTiresD3);
+        View::share('currBrand', $this->currBrand);
+        View::share('d1', $this->d1);
+        View::share('d2', $this->d2);
+        View::share('d3', $this->d3);
+        View::share('type', $this->type);
+        View::share('types', (new Moto)->types());
+    }
+
+    public function index()
+    {
+//        $tires = Moto::leftJoin('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
+//            ->orderBy('price2', 'DESC')->get();
+
+        DB::enableQueryLog();
+
+        $tires = Moto::with('tread')->leftJoin('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
+                                            ->when($this->d1, function($query) {
+                                              $query->where('d1', $this->d1);
+                                            })->when($this->d2, function($query) {
+                                              $query->where('d2', $this->d2);
+                                            })->when($this->d3, function($query) {
+                                              $query->where('d3', $this->d3);
+                                            })->orderBy('d3', 'ASC')
+                                            ->orderBy('d1', 'ASC')
+                                            ->orderBy('d2', 'ASC')
+                                            ->orderBy('price2', 'DESC')->paginate($this->itemsPerPage);
+
+        return view('tires.moto.index',
+            compact('tires')
+        );
+    }
+
+    public function tires_tread($brand, $tread, $tire)
+    {
+        $brand = Motobrand::where('title', $brand)->first();
+
+        $tread = Mototread::where('slug', $tread)->first();
+
+
+        $tires = Moto::selectRaw('moto_tires.*, moto_treads.*, moto_brands.*,
+                                  moto_brands.title as brands_title, moto_treads.title as treads_title')
+                                  ->join('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
+                                  ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
+                                  ->where('moto_brands.title', $brand->title)
+                                  ->where('moto_treads.title', $tread->title)
+                                  ->get();
+
+        $currTire = Moto::selectRaw('moto_tires.*, moto_treads.*, moto_brands.*,
+                                 moto_brands.title as brands_title, moto_treads.title as treads_title')
+                                 ->join('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
+                                 ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
+                                 ->where('moto_brands.title', $brand->title)
+                                 ->where('moto_treads.title', $tread->title)
+                                 ->where('moto_tires.tire_id', $tire)
+                                 ->first();
+
+        $currTire->includeStock = true;
+
+        return view('tires.moto.mototread',
+            compact('tires', 'currTire')
+        );
+    }
+
+    public function tires_ajax(Request $request) {
+
+        $tire = Moto::query()->with('tread')->selectRaw('moto_tires.*, moto_tires.comment as tire_comment, moto_treads.*')
+            ->rightJoin('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
+            ->where('moto_tires.tire_id', $request->tire_id)
+            ->first();
+
+        if ($request->quantity) {
+          $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
+        } else {
+          $cart = CartController::addProduct($this->model, $tire->tire_id, 4);
+        }
+
+        $cartObj = new Cart();
+        $quantity = $cartObj->count();
+        $total_sum = str_replace([',', '.00'], '', $cartObj->total());
+        $bought = ($request->quantity) ? $request->quantity : 4;
+
+        echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
+    }
+
+  public function tires_search(Request $request) {
+
+      DB::enableQueryLog();
+
+      ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
+
+      $sql = Mototread::selectRaw('moto_treads.*, moto_treads.title as tread_title')
+                        ->selectRaw('moto_brands.*, moto_brands.title as brand_title')
+                        ->leftJoin('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
+                        ->where('moto_brands.title', $this->currBrand)
+                        ->get();
+      $makes = [];
+      foreach ($sql as $make) {
+        $makes[] = $make->tread_id;
+      }
+
+      $types = (new Moto)->types();
+
+      ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
+      ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
+
+      ($request->type) ? $this->type = $request->type : $this->type = '';
+
+      $tires = Moto::join('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')->when($makes, function($query) use ($makes) {
+        $query->whereIn('make_id', $makes);
+      })->when($this->d1, function($query) {
+        $query->where('d1', $this->d1);
+      })->when($this->d2, function($query) {
+        $query->where('d2', $this->d2);
+      })->where('d3', $this->d3)
+      ->orderBy('d3', 'ASC')
+        ->orderBy('d1', 'ASC')
+        ->orderBy('d2', 'ASC')
+        ->orderBy('price2', 'DESC')
+        ->paginate($this->itemsPerPage);
+//      dd(DB::getQueryLog());
+
+      return view('tires.moto.index',
+        compact('tires')
+      );
+  }
+
+}

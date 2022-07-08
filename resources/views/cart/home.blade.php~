@@ -1,0 +1,187 @@
+@extends('layouts.app')
+
+@section('content')
+
+    <div class="container">
+        <div class="row">
+            <div class="main-content clearfix col-md-12 col-xl-10">
+                <div id="content-wrapper" class="right-column col-lg-12">
+                    <section id="main">
+                        <div class="cart-grid row">
+                            <!-- Left Block: cart product informations & shpping -->
+                            <div class="cart-grid-body col-xs-12 col-lg-8">
+                                <!-- cart products detailed -->
+                                <div class="card cart-container">
+                                    <div class="card-block">
+                                        <h1 class="h1">Iepirkšanās grozs</h1>
+                                    </div>
+                                    <hr class="separator">
+                                    @if ($cart->count() > 0)
+                                        @foreach ($cart->content() as $item)
+                                        {{ dd($item->options->tread) }}
+                                        <div class="cart-overview js-cart">
+                                            <ul class="cart-items">
+                                                <li class="cart-item">
+
+                                                    <div class="product-line-grid">
+                                                        <!--  product left content: image-->
+                                                        <div class="product-line-grid-left col-md-3 col-xs-4">
+                                                            <span class="product-image media-middle">
+                                                                <img src="http://r1riepas.lv/img/p/lv-default-cart_default.jpg">
+                                                            </span>
+                                                        </div>
+
+                                                        <!--  product left body: description -->
+                                                        <div class="product-line-grid-body col-md-4 col-xs-8">
+                                                            <div class="product-line-info">
+                                                                <a class="label" href="{{ route('vasaras-riepa', [strtolower(\Tires::getAutoTireBrand($item->options->tread->brand_id)->title), $item->options->tread->slug, $item->id]) }}" data-id_customization="0">FALKEN ZE310 ECORUN</a>
+                                                            </div>
+                                                            <div class="product-line-info product-price h5 has-discount">
+                                                                <div class="product-discount">
+                                                                    <span class="regular-price">€ 75</span>
+                                                                    <span class="discount discount-amount">
+                                                                        -€ 17
+                                                                    </span>
+                                                                </div>
+                                                                <div class="current-price">
+                                                                    <span class="price">€ 58</span>
+                                                                </div>
+                                                            </div>
+
+                                                            <br>
+
+                                                            <div class="product-line-info">
+                                                                <span class="label">Platums:</span>
+                                                                <span class="value">195</span>
+                                                            </div>
+                                                            <div class="product-line-info">
+                                                                <span class="label">Augstums:</span>
+                                                                <span class="value">50</span>
+                                                            </div>
+                                                            <div class="product-line-info">
+                                                                <span class="label">Diametrs:</span>
+                                                                <span class="value">15</span>
+                                                            </div>
+                                                            <div class="product-line-info">
+                                                                <span class="label">Tips:</span>
+                                                                <span class="value">M+S</span>
+                                                            </div>
+                                                            <div class="product-line-info">
+                                                                <span class="label">LI:</span>
+                                                                <span class="value">82</span>
+                                                            </div>
+                                                            <div class="product-line-info">
+                                                                <span class="label">SI:</span>
+                                                                <span class="value">V</span>
+                                                            </div>
+                                                            <div class="product-line-info">
+                                                                <span class="label">Piezīmes:</span>
+                                                                <span class="value">JAUNUMS!!!!</span>
+                                                            </div>
+                                                            <div class="product-line-info">
+                                                                <span class="label">TOP40:</span>
+                                                                <span class="value">Top 40</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <!--  product left body: description -->
+                                                        <div class="product-line-grid-right product-line-actions col-md-5 col-xs-12">
+                                                            <div class="row">
+                                                                <div class="col-xs-4 hidden-md-up"></div>
+                                                                <div class="col-md-10 col-xs-6">
+                                                                    <div class="row">
+                                                                        <div class="col-md-6 col-xs-6 qty">
+                                                                            <div class="input-group bootstrap-touchspin">
+                                                                                <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
+                                                                                <input class="js-cart-line-product-quantity form-control" data-down-url="http://r1riepas.lv/index.php?controller=cart&amp;update=1&amp;id_product=603&amp;id_product_attribute=8274&amp;token=28c67323aab936ced6e9f5a8e54c2718&amp;op=down" data-up-url="http://r1riepas.lv/index.php?controller=cart&amp;update=1&amp;id_product=603&amp;id_product_attribute=8274&amp;token=28c67323aab936ced6e9f5a8e54c2718&amp;op=up" data-update-url="http://r1riepas.lv/index.php?controller=cart&amp;update=1&amp;id_product=603&amp;id_product_attribute=8274&amp;token=28c67323aab936ced6e9f5a8e54c2718" data-product-id="603" type="text" value="4" name="product-quantity-spin" min="1" style="display: block;">
+                                                                                <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
+                                                                                <span class="input-group-btn-vertical">
+                                                                                    <button class="btn btn-touchspin js-touchspin js-increase-product-quantity bootstrap-touchspin-up" type="button">
+                                                                                        <i class="material-icons touchspin-up"></i>
+                                                                                    </button>
+                                                                                    <button class="btn btn-touchspin js-touchspin js-decrease-product-quantity bootstrap-touchspin-down" type="button">
+                                                                                        <i class="material-icons touchspin-down"></i>
+                                                                                    </button>
+                                                                                </span>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-6 col-xs-2 price">
+                                                                            <span class="product-price">
+                                                                              <strong>€ 232</strong>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-2 col-xs-2 text-xs-right">
+                                                                    <div class="cart-line-product-actions">
+                                                                        <a class="remove-from-cart" rel="nofollow" href="http://r1riepas.lv/index.php?controller=cart&amp;delete=1&amp;id_product=603&amp;id_product_attribute=8274&amp;token=28c67323aab936ced6e9f5a8e54c2718" data-link-action="delete-from-cart" data-id-product="603" data-id-product-attribute="8274" data-id-customization="">
+                                                                            <i class="material-icons float-xs-left">delete</i>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="clearfix"></div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        @endforeach
+                                    @else
+                                        <div class="cart-overview js-cart" data-refresh-url="//r1riepas.lv/index.php?controller=cart&amp;ajax=1&amp;action=refresh">
+                                            <span class="no-items">Jūsu grozs ir tukšs</span>
+                                        </div>
+                                    @endif
+                                </div>
+                                <a class="label" href="http://r1riepas.lv/index.php">
+                                    <i class="material-icons">chevron_left</i>Turpināt iepirkties
+                                </a>
+                                <!-- shipping informations -->
+                            </div>
+                            <!-- Right Block: cart subtotal & cart total -->
+                            <div class="cart-grid-right col-xs-12 col-lg-4">
+                                <div class="card cart-summary">
+                                    <div class="cart-detailed-totals">
+                                        <div class="card-block">
+                                            <div class="cart-summary-line" id="cart-subtotal-products">
+                                                <span class="label js-subtotal">
+                                                    0 Preces
+                                                </span>
+                                                <span class="value">€ 0</span>
+                                            </div>
+                                            <div class="cart-summary-line" id="cart-subtotal-shipping">
+                                                <span class="label">
+                                                    Piegāde
+                                                </span>
+                                                <span class="value">Bezmaksas</span>
+                                                <div><small class="value"></small></div>
+                                            </div>
+                                        </div>
+                                        <hr class="separator">
+                                        <div class="card-block">
+                                            <div class="cart-summary-line cart-total">
+                                                <span class="label">Pavisam kopā: (ar PVN)</span>
+                                                <span class="value">€ 0</span>
+                                            </div>
+
+                                            <div class="cart-summary-line">
+                                                <small class="label"></small>
+                                                <small class="value"></small>
+                                            </div>
+                                        </div>
+                                        <hr class="separator">
+                                    </div>
+                                    <div class="checkout text-sm-center card-block">
+                                        <button type="button" class="btn btn-primary disabled" disabled="">Noformēt pasūtījumu</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        @include('components.right-sidebar')
+        </div>
+    </div>
+
+@endsection

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AccrualPZ>
+	<PZHeader>
+		<Struktura>Noliktava</Struktura>
+		<Type>6</Type>
+		<WEB>220</WEB>
+		<Datums>30.03.2022</Datums>
+		<PVNSumma>102.05</PVNSumma>
+		<Valuta>EUR</Valuta>
+		<Piezimes>asdasdasd</Piezimes>
+		<SasPerson>Katrīna Šarkova</SasPerson>
+	</PZHeader>
+	<Ieraksti>
+		<Ieraksts>
+			<Artikuls>16205/55MPRIMACY491V</Artikuls>
+			<Nosaukums>MICHELIN PRIMACY 4</Nosaukums>
+			<Mervieniba>gab</Mervieniba>
+			<Cena>121.49</Cena>
+			<Daudzums>4.000</Daudzums>
+			<Summa>147</Summa>
+			<Nodoklis>PVN 21%</Nodoklis>
+			<Likme>21.00</Likme>
+		</Ieraksts>
+	</Ieraksti>
+</AccrualPZ>
