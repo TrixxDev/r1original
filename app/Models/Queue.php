@@ -132,7 +132,7 @@ class Queue extends Model
 
     public static function intervalByTime($time){
         if (strpos($time, ':') !== false){
-            list($hours, $minutes, $seconds) = explode(':', $time);
+            @list($hours, $minutes, $seconds) = explode(':', $time);
 
             $minutes = $hours * 60 + $minutes;
             $slotNum = floor($minutes / 10);
@@ -193,9 +193,8 @@ class Queue extends Model
         return $start + $slotNumber * $this->_workingDays[$date]->slotSize;
     }
 
-    public static function getSlotTime($date, $slotNumber) {
-        $time = new Queue();
-        return $time->getSlotStartInterval($date, $slotNumber);
+    public function getSlotTime($date, $slotNumber) {
+        return $this->getSlotStartInterval($date, $slotNumber);
     }
 
     function getSlotStartTime($date,$slotNumber,$padding=true){
@@ -203,8 +202,24 @@ class Queue extends Model
       return self::timeByInterval($startTime,$padding);
     }
 
+    function getSecondarySlotStartInterval($date,$slotNumber){
+      $day=$this->_workingDays[$date];
+      $start = self::intervalByTime($day->opentime);
+      return $start+$slotNumber*$this->_workingDays[$date]->slotSize+($this->_workingDays[$date]->slotSize/2);
+    }
+
+    function getSlotStartTime2($date,$slotNumber,$padding=true){
+      $startTime = $this->getSecondarySlotStartInterval($date, $slotNumber);
+      return self::timeByInterval($startTime,$padding);
+    }
+
     function getSlotEndTime($date,$slotNumber,$padding=true){
       $startTime = $this->getSlotStartInterval($date, $slotNumber)+$this->_workingDays[$date]->slotSize;
+      return self::timeByInterval($startTime,$padding);
+    }
+
+    function getSlotEndTime2($date,$slotNumber,$padding=true){
+      $startTime = $this->getSlotStartInterval2($date, $slotNumber)+($this->_workingDays[$date]->slotSize/2);
       return self::timeByInterval($startTime,$padding);
     }
 
@@ -214,17 +229,100 @@ class Queue extends Model
     }
 
     function moveSlots($date,$delta=0){
-      //$query = new CQuery();
-//      $list = new CList('CQueueSlot');
-//      $list->orderFields = array('iorder ASC');
-//      $list->loadByCustomWhere("WHERE queue_id = '{$this->id}' AND date = '{$date}'");
 
       $list = Slot::where('queue_id', $this->queue_id)->where('date', $date)->orderBy('iorder', 'ASC')->get();
+      $list2 = Slot::where('queue_id', $this->queue_id)->where('date', $date)->orderBy('iorder', 'ASC')->take(15)->get();
+      $workingDay = Workingday::where('queue_id', $this->queue_id)->where('date', $date)->first();
 
-      foreach ($list as $object){
-        $object->iorder+=$delta;
-        $object->timestamps = false;
-        $object->save();
+      if ($delta == 1) {
+        if ($workingDay->secondaryAvailable == 0 && $workingDay->slotSize == 2) {
+          echo json_encode(['status' => 0, 'status_text' => 'Pilnā rinda jau ir ieslēgta!']);
+        }
+      } else {
+        if ($workingDay->secondaryAvailable == 1 && $workingDay->slotSize == 4) {
+          echo json_encode(['status' => 0, 'status_text' => 'Pusrinda jau ir ieslēgta!']);
+        }
+      }
+
+
+      if ($delta == 1) {
+        foreach ($list2 as $object) {
+          $arr = [
+            'status' => $object->status,
+            'status2' => $object->status2,
+            'takenby' => $object->takenby,
+            'takenby2' => $object->takenby2,
+            'comment' => $object->comment,
+            'createtime' => $object->createtime,
+            'createuser' => $object->createuser,
+            'edittime' => $object->edittime,
+            'edituser' => $object->edituser,
+          ];
+          $id = $object->iorder * 2;
+//          var_dump($id);
+//          var_dump($id);
+          $object->where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $id)->update($arr);
+          if ($object->iorder % 2 != 0) {
+            $arr = [
+              'status' => '',
+              'takenby' => '',
+              'createtime' => '',
+              'createuser' => '',
+              'edittime' => '',
+              'edituser' => '',
+            ];
+            Slot::where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $object->iorder)->update($arr);
+            $object->status2 = 0;
+            $object->takenby2 = '';
+            $object->save();
+          }
+        }
+        foreach ($list2 as $object) {
+          if ($object->iorder % 2 == 0) {
+            $slot1 = Slot::where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $object->iorder)->first();
+            $arr = [
+              'status' => $slot1->status2,
+              'takenby' => $slot1->takenby2,
+              'createtime' => $slot1->createtime,
+              'createuser' => $slot1->createuser,
+              'edittime' => $slot1->edittime,
+              'edituser' => $slot1->edituser,
+            ];
+//            dd($arr);
+            Slot::where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $object->iorder + 1)->update($arr);
+            $slot1->status2 = 0;
+            $slot1->takenby2 = '';
+            $slot1->save();
+          }
+        }
+      } else {
+        foreach ($list as $object) {
+          if ($object->iorder % 2 == 0) {
+            $slot1 = Slot::where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $object->iorder + 1)->first();
+            $object->takenby2 = $slot1->takenby;
+            if ($object->takenby2 != '') {
+              $object->status2 = 1;
+            }
+            $arr = [
+              'status' => $object->status,
+              'status2' => $object->status2,
+              'takenby' => $object->takenby,
+              'takenby2' => $object->takenby2,
+              'comment' => $object->comment,
+              'createtime' => $object->createtime,
+              'createuser' => $object->createuser,
+              'edittime' => $object->edittime,
+              'edituser' => $object->edituser,
+            ];
+            if ($object->iorder != 0) {
+              $id = $object->iorder / 2;
+            } else {
+              $id = 0;
+            }
+            $object->where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $id)->update($arr);
+            $slot1->save();
+          }
+        }
       }
     }
 

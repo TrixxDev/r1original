@@ -18,6 +18,17 @@
                                         <input class="form-control" type="text" name="service" placeholder="Pakalpojums">
                                     </div>
                                 </div>
+                                <br>
+                                <div class="row">
+                                  <div class="col-md-12">
+                                    <input class="form-control" type="text" name="pdf_service" placeholder="PDF Apraksts">
+                                  </div>
+                                </div>
+                                <br>
+                                <div class="row justify-content-between col-1 align-items-center">
+                                  <label class="center" for="f_save">Glabāšana</label>
+                                  <input type="checkbox" name="f_save" id="f_save">
+                                </div>
                             </div>
                             <div class="card-footer">
                                 <button class="btn btn-sm btn-primary service_add_button" type="submit"> Izveidot</button>

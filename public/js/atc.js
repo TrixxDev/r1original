@@ -80,40 +80,20 @@ $(document).ready(function () {
     );
   });
 
-  let xValues = [];
-  let yValues1 = [];
-  let yValues2 = [];
-
-  for (let i = 1; i < 26; i++) {
-    xValues.push(i);
-    yValues1.push(Math.floor((Math.random() * 30) + 15));
-    yValues2.push(Math.floor((Math.random() * 10) + 10));
-  }
-  // console.log(xValues, yValues);
-  new Chart("myChart", {
-    type: "line",
-    data: {
-      labels: xValues,
-      datasets: [{
-        fill: false,
-        lineTension: 0,
-        backgroundColor: "gray",
-        borderColor: "lightgray",
-        data: yValues1
-      },
-        {
-          fill: false,
-          lineTension: 0,
-          backgroundColor: "pink",
-          borderColor: "pink",
-          data: yValues2
-        }]
-    },
-    options: {
-      legend: {display: true},
-      scales: {
-        yAxes: [{ticks: {min: -20, max:100}}],
+  $('.rims-sorter').each(function() {
+    $(this).tablesorter({
+        headers: {
+          0: {sorter: false},
+          1: {sorter: false},
+          2: {sorter: false},
+          3: {sorter: true},
+          4: {sorter: true},
+          5: {sorter: false},
+          6: {sorter: false},
+          7: {sorter: false}
+        },
+        // sortList: [[7,1]]
       }
-    }
+    );
   });
 });

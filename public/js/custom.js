@@ -1736,12 +1736,21 @@ $(document).ready(function() {
         });
     });
 
+    $('#reservation #service input[name="serviceOption"]').on('input', function() {
+      if ($(this).data('save') == 1) {
+        $('<div class="form-group row temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:left;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+      } else {
+        $('#reservation .temp_save_nr').remove();
+      }
+    });
+
     $('#submit-reservation').on('click', function() {
 
         let car = $('#reservation #brand').val();
         let carModel = $('#reservation #model').val();
         let licPlate = $('#reservation #reg_nr').val();
         let purpose = $('input[name="serviceOption"]:checked').val();
+        let storageBin = $('#reservation .temp_save_nr #save_nr').val()
         let comment = $('#reservation #comment').val();
         let name = $('#reservation #name').val();
         let phone = $('#reservation #phone').val();
@@ -1756,6 +1765,7 @@ $(document).ready(function() {
                 'carModel': carModel,
                 'licPlate': licPlate,
                 'purpose': purpose,
+                'storageBin': storageBin,
                 'comment': comment,
                 'name': name,
                 'phone': phone,
@@ -1769,19 +1779,20 @@ $(document).ready(function() {
                     if (data.error.brand) $('#brand').attr('placeholder', data.error.brand);
                     if (data.error.model) $('#model').attr('placeholder', data.error.model);
                     if (data.error.purpose) {
-                        if ($('.purpose-error').length == 0) {
-                            $('<div class="alert alert-danger purpose-error">' + data.error.purpose + '</div>').insertAfter('#reservation .form-group:last')
-                        }
+                      if ($('.purpose-error').length == 0) {
+                        $('<div class="alert alert-danger purpose-error">' + data.error.purpose + '</div>').insertAfter('#reservation .form-group:last');
+                      }
                     } else {
-                        $('#reservation .purpose-error').remove();
+                      $('#reservation .purpose-error').remove();
                     }
                     if (data.error.phone) $('#phone').attr('placeholder', data.error.phone);
                     if (data.error.wrongPhone) {
-                        if ($('.phone-error').length == 0) {
-                            $('<div class="alert alert-danger phone-error">' + data.error.wrongPhone + '</div>').insertAfter('.mobile-body .form-group:last')
-                        }
+                      if ($('.phone-error').length == 0) {
+                        $('<div class="alert alert-danger phone-error">' + data.error.wrongPhone + '</div>').insertAfter('.mobile-body .form-group:last');
+                        $('<div class="alert alert-danger phone-error">' + data.error.wrongPhone + '</div>').insertAfter('#reservation .form-group:last');
+                      }
                     } else {
-                        $('.mobile-body .phone-error').remove();
+                      $('.mobile-body .phone-error').remove();
                     }
                     if (data.error.email) $('#email').attr('placeholder', data.error.email);
                     if (data.error.emptyEmail) {
@@ -1793,7 +1804,7 @@ $(document).ready(function() {
                     }
                 } else if (data.success) {
 
-                    let plate = phone.substring(5);
+                    let plate = phone.substr(-3);
                     plate = parseInt(plate);
                     plate = $.trim(plate);
 
@@ -1807,11 +1818,243 @@ $(document).ready(function() {
                     $('<div class="modal-body finish">' + data.success + '</div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
                     $('<td class="slot slot-taken">' + successText + '</td>').hide().fadeIn().insertAfter($('#' + slot).parent());
                     $('#' + slot).parent().fadeOut().remove();
+                    $('#brand, #model, #phone, #email').removeAttr('placeholder');
                     $('#reservation form').trigger('reset');
+                    $('#reservation .temp_save_nr').remove();
+                } else if (data.taken) {
+                    $('.reservation-modal-body').slideToggle();
+                    $('#modalTitle').first().slideToggle();
+                    $('<h5 class="modal-title title-finish" id="modalTitle">Pieraksts</h5>').insertAfter('#modalTitle');
+                    $('.reservation-modal-footer #submit-reservation').hide();
+                    $('.reservation-modal-footer #close-modal').text('Aizvērt');
+                    $('<div class="modal-body finish">' + data.taken + '</div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
+                    $('#brand, #model, #phone, #email').removeAttr('placeholder');
+                    $('#reservation form').trigger('reset');
+                  $('#reservation .temp_save_nr').remove();
                 }
             }
         });
     });
+
+    $('#reservation #close-modal').on('click', function() {
+      $('#reservation form').trigger('reset');
+      $('#reservation .alert').remove();
+      $('#reservation .temp_save_nr').remove();
+      $('#brand, #model, #phone, #email').removeAttr('placeholder');
+    });
+
+  $('.queueTable.records .subheader svg').on('click', function() {
+    $('.modal#queueModal input[name="queue_id"]').val($(this).data('queue-id'));
+    $('.modal#queueModal input[name="date"]').val($(this).data('date'));
+
+    $.ajax({
+      method: 'GET',
+      url: '/admin/pieraksts/queue_ajax/' + $(this).data('queue-id') + '/' + $(this).data('date'),
+      dataType: 'JSON',
+      success: function(data) {
+        $('.modal#queueModal .title').text(data.f_office);
+        $('.modal#queueModal input#title').val(data.f_title);
+        (data.f_visible == 1) ? $('.modal#queueModal .time #isActive').attr('checked', true) : $('.modal#queueModal .time #isActive').removeAttr('checked');
+        $('.modal#queueModal .time #openTime').val(data.f_opentime);
+        $('.modal#queueModal .time #closeTime').val(data.f_closetime);
+        $('.modal#queueModal .f_day').html(data.f_day);
+        if (data.f_rows === 1) {
+          $('#gridRadios6').removeAttr('checked', true);
+          $('#gridRadios5').attr('checked', true);
+        } else {
+          $('#gridRadios5').removeAttr('checked', true);
+          $('#gridRadios6').attr('checked', true);
+        }
+      }
+    })
+  });
+
+  $('.modal#queueModal .submit').on('click', function(e) {
+    e.preventDefault();
+    $.ajax({
+      method: 'POST',
+      url: '/admin/pieraksts/queue_ajax/' + $('.modal#queueModal input[name="queue_id"]').val() + '/' + $('.modal#queueModal input[name="date"]').val(),
+      data: {
+        'q': $('.modal#queueModal input[name="queue_id"]').val(),
+        'd': $('.modal#queueModal input[name="date"]').val(),
+        'title': $('.modal#queueModal #title').val(),
+        'isActive': $('.modal#queueModal #isActive').is(':checked'),
+        'opentime': $('.modal#queueModal #openTime').val(),
+        'closetime': $('.modal#queueModal #closeTime').val(),
+        'f_purpose': $('.modal#queueModal input[name=gridRadios]:checked').val(),
+        'f_rows': $('.modal#queueModal input[name=rows]:checked').val(),
+      },
+      dataType: 'JSON',
+      success: function (data) {
+        if (data.status === 0) {
+          this.error(data.status_text);
+        }
+        location.reload();
+      },
+      error: function(data) {
+        console.log(data.responseText);
+        $('<div class="alert alert-danger">' + data.status_text + '</div>').insertAfter($('.modal#queueModal input[type=hidden]').last());
+      }
+    });
+  });
+
+  $('.queueTable.records .buttonbar svg').on('click', function() {
+    $('.modal#slotModal input[name="queue_id"]').val($(this).data('queue-id'));
+    $('.modal#slotModal input[name="date"]').val($(this).data('date'));
+    $('.modal#slotModal input[name="slot"]').val($(this).data('slot-id'));
+
+    $.ajax({
+      method: 'GET',
+      url: '/admin/pieraksts/slot_ajax/' + $(this).data('queue-id') + '/' + $(this).data('date') + '/' + $(this).data('slot-id'),
+      dataType: 'JSON',
+      success: function(data) {
+        $('.modal#slotModal h6.title').text(data.f_office + ', ' + data.f_date + ' ' + data.f_time);
+        if (parseInt(data.f_status) === 2) {
+          $('select#f_status').append($('<option>', {value:2, text:'Akcija', selected: 'selected'}));
+        } else {
+          $('select#f_status option').each(function() {
+            $(this).removeAttr('selected');
+            if ($(this).val() === data.f_status) {
+              $(this).attr('selected', 'selected');
+            }
+          });
+        }
+      }
+    })
+  });
+
+  $('.modal#slotModal .submit').on('click', function(e) {
+    e.preventDefault();
+    $.ajax({
+      method: 'POST',
+      url: '/admin/pieraksts/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val(),
+      data: {
+        'queue_id': $('.modal#slotModal input[name="queue_id"]').val(),
+        'date': $('.modal#slotModal input[name="date"]').val(),
+        'slot_id': $('.modal#slotModal input[name="slot"]').val(),
+        'f_status': $('.modal#slotModal #f_status').val(),
+        'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+      },
+      dataType: 'JSON',
+      success: function (data) {
+        if (data.status === 0) {
+          this.error(data);
+        }
+        location.reload();
+      },
+      error: function(data) {
+        console.log(data);
+      }
+    });
+  });
+
+  $('.queueTable .discount').each(function() {
+    $(this).on('click', function() {
+
+      let checked;
+
+      if ($(this).is(':checked')) {
+        checked = 1;
+        $(this).parent().children('.slot-comment').html(' 30% Atlaide');
+      } else {
+        checked = 0;
+        $(this).parent().children('.slot-comment').html('');
+      }
+
+      $.ajax({
+        method: 'POST',
+        url: '/admin/pieraksts/discount',
+        data: {'slot_id': $(this).data('slot-id'), 'checked': checked},
+      });
+    });
+  });
+
+  $('.queueTable.reservation .buttonbar svg').on('click', function() {
+    $('.modal#slotModal input[name="queue_id"]').val($(this).data('queue-id'));
+    $('.modal#slotModal input[name="date"]').val($(this).data('date'));
+    $('.modal#slotModal input[name="slot"]').val($(this).data('slot-id'));
+    $('.modal#slotModal input[name="part"]').val($(this).data('slot-part'));
+
+    $.ajax({
+      method: 'GET',
+      url: '/admin/rezervacijas/slot_ajax/' + $(this).data('queue-id') + '/' + $(this).data('date') + '/' + $(this).data('slot-id') + '/' + $(this).data('slot-part'),
+      dataType: 'JSON',
+      success: function(data) {
+        $('.modal#slotModal #f_date').val(data.f_date);
+        $('.modal#slotModal #f_time').val(data.f_time);
+        $('.modal#slotModal select#f_office option[value="' + data.q + data.f_office + '"]').attr('selected','selected');
+        $('.modal#slotModal #f_car').val(data.f_car);
+        $('.modal#slotModal #f_model').val(data.f_model);
+        $('.modal#slotModal #f_plate').val(data.f_plate);
+        $('.modal#slotModal #f_office').append(data.options);
+        $('.modal#slotModal input[name="gridRadios"]').each(function() {
+          if ($(this).val() === 'service' + data.f_purpose || $(this).val() === data.f_purpose) {
+            $(this).attr('checked', true);
+          }
+        });
+        $('.modal#slotModal #f_comment').html(data.f_comment);
+        $('.modal#slotModal #f_name').val(data.f_name);
+        $('.modal#slotModal #f_phone').val(data.f_phone);
+        $('.modal#slotModal #f_email').val(data.f_email);
+        $('.modal#slotModal #f_status').val(data.f_status);
+        $('.modal#slotModal #f_slotcomment').html(data.f_slotcomment);
+      }
+    })
+  });
+
+  $('.modal#slotModal .submit').on('click', function(e) {
+    e.preventDefault();
+    $.ajax({
+      method: 'POST',
+      url: '/admin/rezervacijas/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val() + '/' + $('.modal#slotModal input[name="part"]').val(),
+      data: {
+        'f_office': $('.modal#slotModal #f_office').val(),
+        'f_date': $('.modal#slotModal #f_date').val(),
+        'f_time': $('.modal#slotModal #f_time').val(),
+        'f_status': $('.modal#slotModal #f_status').val(),
+        'f_car': $('.modal#slotModal #f_car').val(),
+        'f_model': $('.modal#slotModal #f_model').val(),
+        'f_plate': $('.modal#slotModal #f_plate').val(),
+        'f_purpose': $('.modal#slotModal input[name="gridRadios"]:checked').val(),
+        'f_storagebin': $('.modal#slotModal #f_storagebin').val(),
+        'f_comment': $('.modal#slotModal #f_comment').val(),
+        'f_name': $('.modal#slotModal #f_name').val(),
+        'f_phone': $('.modal#slotModal #f_phone').val(),
+        'f_email': $('.modal#slotModal #f_email').val(),
+        'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+      },
+      dataType: 'JSON',
+      success: function (data) {
+        if (data.status === 0) {
+          this.error(data);
+        }
+        location.reload();
+      },
+      error: function(data) {
+        console.log(data);
+      }
+    });
+  });
+
+  $('.modal#slotModal .decline, .modal#slotModal button.close').on('click', function() {
+    $('.modal#slotModal input[name="gridRadios"]').first().attr('checked', true).prop('checked', true);
+    $('.modal#slotModal input[name="rows"]').first().attr('checked', true).prop('checked', true);
+    $('.modal#slotModal #f_office').html('');
+  });
+
+  $('.modal#queueModal .decline, .modal#queueModal button.close').on('click', function() {
+    $('.modal#queueModal input[name="gridRadios"]').first().attr('checked', true).prop('checked', true);
+    $('.modal#queueModal input[name="rows"]').first().attr('checked', true).prop('checked', true);
+  });
+
+  $('.modal#slotModal .decline').on('click', function() {
+    $('.modal#slotModal input[name="gridRadios"]').each(function() {
+      $(this).attr('checked', false);
+    });
+    $('.modal#slotModal textarea').each(function() {
+      $(this).html('');
+    })
+  });
 });
 
 function unique(array){
@@ -2172,10 +2415,7 @@ $('#facet_availability li label').on('click', function() {
 
 });
 
-// $('.tire-image-cards').hide();
-
 $('.can-collapse span.show_list, .can-collapse span.show_grid').on('click', function(){
-  // console.log($('.can-collapse span.show_list').hasClass('active'));
   if($('.can-collapse span.show_list').hasClass('active')) {
     $('#js-product-list').show();
     $('.tire-image-container').hide();
@@ -2185,21 +2425,14 @@ $('.can-collapse span.show_list, .can-collapse span.show_grid').on('click', func
   }
 });
 
-$('.dropdown-options.riepas');
-
-// function showRiepas() {
-//
-//   if ($('.dropdown-options.riepas').hide()) {
-//     $('.dropdown-options.riepas').hide();
-//   } else {
-//     $('.dropdown-options.riepas').show();
-//   }
-// }
-
 let showTires = false;
 let showDisc = false;
 let showService = false;
 let showInfo = false;
+
+let showCode = false;
+let showFuel = false;
+let showWetSurface = false;
 
 function showRiepasDropdown(){
   showTires = !showTires;
@@ -2235,6 +2468,39 @@ function showServissDropdown(){
 }
 
 function showInfoDropdown(){
+  showInfo = !showInfo;
+  if (showInfo) {
+    $('.dropdown-options.info').slideDown();
+    $('span.info').text('keyboard_arrow_up');
+  } else {
+    $('.dropdown-options.info').slideUp();
+    $('span.info').text('keyboard_arrow_down');
+  }
+}
+
+function showCodeDropdown(){
+  showCode = !showCode;
+  if (showCode) {
+    $('#facet_wet').slideDown();
+    $('span.code').text('keyboard_arrow_up');
+  } else {
+    $('#facet_wet').slideUp();
+    $('span.code').text('keyboard_arrow_down');
+  }
+}
+
+function showFuelDropdown(){
+  showInfo = !showInfo;
+  if (showInfo) {
+    $('.dropdown-options.info').slideDown();
+    $('span.info').text('keyboard_arrow_up');
+  } else {
+    $('.dropdown-options.info').slideUp();
+    $('span.info').text('keyboard_arrow_down');
+  }
+}
+
+function showWetSurfaceDropdown(){
   showInfo = !showInfo;
   if (showInfo) {
     $('.dropdown-options.info').slideDown();

@@ -86,6 +86,8 @@ $(document).ready(function() {
     $(document).on('click', '.service_add_button', function(e) {
         e.preventDefault();
         let title = $('input[name="service"]').val();
+        let pdf_title = $('input[name="pdf_service"]').val();
+        let f_save = $('input[name="f_save"]:checked').val();
         if (title === '') {
           return false;
         }
@@ -93,7 +95,7 @@ $(document).ready(function() {
           $.ajax({
             url: '/admin/settings/services/add',
             method: 'POST',
-            data: { 'title': title },
+            data: { 'title': title, 'pdf_title': pdf_title, 'f_save': f_save },
             dataType: 'JSON',
             success: function(data) {
               if (data.success) {
@@ -107,6 +109,8 @@ $(document).ready(function() {
                   '</div>' +
                   '</li>');
                 $('input[name="service"]').val('');
+                $('input[name="pdf_service"]').val('');
+                $('input[name="f_save"]').removeAttr('checked').prop('checked', false);
                 if ($('.no-services').length === 1) {
                   $('.no-services').remove();
                 }
@@ -528,7 +532,7 @@ $(document).ready(function () {
     });
   });
 
-  $('.queueTable .subheader svg').on('click', function() {
+  $('.queueTable.records .subheader svg').on('click', function() {
     $('.modal#queueModal input[name="queue_id"]').val($(this).data('queue-id'));
     $('.modal#queueModal input[name="date"]').val($(this).data('date'));
 
@@ -537,6 +541,7 @@ $(document).ready(function () {
       url: '/admin/pieraksts/queue_ajax/' + $(this).data('queue-id') + '/' + $(this).data('date'),
       dataType: 'JSON',
       success: function(data) {
+        $('.modal#queueModal .title').text(data.f_office);
         $('.modal#queueModal input#title').val(data.f_title);
         (data.f_visible == 1) ? $('.modal#queueModal .time #isActive').attr('checked', true) : $('.modal#queueModal .time #isActive').removeAttr('checked');
         $('.modal#queueModal .time #openTime').val(data.f_opentime);
@@ -571,6 +576,57 @@ $(document).ready(function () {
       dataType: 'JSON',
       success: function (data) {
         if (data.status === 0) {
+          this.error(data.status_text);
+        }
+        location.reload();
+      },
+      error: function(data) {
+        console.log(data.responseText);
+        $('<div class="alert alert-danger">' + data.status_text + '</div>').insertAfter($('.modal#queueModal input[type=hidden]').last());
+      }
+    });
+  });
+
+  $('.queueTable.records .buttonbar svg').on('click', function() {
+    $('.modal#slotModal input[name="queue_id"]').val($(this).data('queue-id'));
+    $('.modal#slotModal input[name="date"]').val($(this).data('date'));
+    $('.modal#slotModal input[name="slot"]').val($(this).data('slot-id'));
+
+    $.ajax({
+      method: 'GET',
+      url: '/admin/pieraksts/slot_ajax/' + $(this).data('queue-id') + '/' + $(this).data('date') + '/' + $(this).data('slot-id'),
+      dataType: 'JSON',
+      success: function(data) {
+        $('.modal#slotModal h6.title').text(data.f_office + ', ' + data.f_date + ' ' + data.f_time);
+        if (parseInt(data.f_status) === 2) {
+          $('select#f_status').append($('<option>', {value:2, text:'Akcija', selected: 'selected'}));
+        } else {
+          $('select#f_status option').each(function() {
+            $(this).removeAttr('selected');
+            if ($(this).val() === data.f_status) {
+              $(this).attr('selected', 'selected');
+            }
+          });
+        }
+      }
+    })
+  });
+
+  $('.modal#slotModal .submit').on('click', function(e) {
+    e.preventDefault();
+    $.ajax({
+      method: 'POST',
+      url: '/admin/pieraksts/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val(),
+      data: {
+        'queue_id': $('.modal#slotModal input[name="queue_id"]').val(),
+        'date': $('.modal#slotModal input[name="date"]').val(),
+        'slot_id': $('.modal#slotModal input[name="slot"]').val(),
+        'f_status': $('.modal#slotModal #f_status').val(),
+        'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+      },
+      dataType: 'JSON',
+      success: function (data) {
+        if (data.status === 0) {
           this.error(data);
         }
         location.reload();
@@ -581,18 +637,105 @@ $(document).ready(function () {
     });
   });
 
-  $('.queueTable .buttonbar svg').on('click', function() {
+  $('.queueTable .discount').each(function() {
+    $(this).on('click', function() {
+
+      let checked;
+
+      if ($(this).is(':checked')) {
+        checked = 1;
+        $(this).parent().children('.slot-comment').html(' 30% Atlaide');
+      } else {
+        checked = 0;
+        $(this).parent().children('.slot-comment').html('');
+      }
+
+      $.ajax({
+        method: 'POST',
+        url: '/admin/pieraksts/discount',
+        data: {'slot_id': $(this).data('slot-id'), 'checked': checked},
+      });
+    });
+  });
+
+  $('.queueTable.reservation .buttonbar svg').on('click', function() {
     $('.modal#slotModal input[name="queue_id"]').val($(this).data('queue-id'));
     $('.modal#slotModal input[name="date"]').val($(this).data('date'));
     $('.modal#slotModal input[name="slot"]').val($(this).data('slot-id'));
+    $('.modal#slotModal input[name="part"]').val($(this).data('slot-part'));
 
     $.ajax({
       method: 'GET',
-      url: '/admin/pieraksts/slot_ajax/' + $(this).data('queue-id') + '/' + $(this).data('date') + '/' + $(this).data('slot-id'),
+      url: '/admin/rezervacijas/slot_ajax/' + $(this).data('queue-id') + '/' + $(this).data('date') + '/' + $(this).data('slot-id') + '/' + $(this).data('slot-part'),
       dataType: 'JSON',
       success: function(data) {
-        console.log(data);
+        $('.modal#slotModal #f_date').val(data.f_date);
+        $('.modal#slotModal #f_time').val(data.f_time);
+        $('.modal#slotModal select#f_office option[value="' + data.q + data.f_office + '"]').attr('selected','selected');
+        $('.modal#slotModal #f_car').val(data.f_car);
+        $('.modal#slotModal #f_model').val(data.f_model);
+        $('.modal#slotModal #f_plate').val(data.f_plate);
+        $('.modal#slotModal input[name="gridRadios"]').each(function() {
+          if ($(this).val() === data.f_purpose) {
+            $(this).attr('checked', true);
+          }
+        });
+        $('.modal#slotModal #f_comment').html(data.f_comment);
+        $('.modal#slotModal #f_name').val(data.f_name);
+        $('.modal#slotModal #f_phone').val(data.f_phone);
+        $('.modal#slotModal #f_email').val(data.f_email);
+        $('.modal#slotModal #f_status').val(data.f_status);
+        $('.modal#slotModal #f_slotcomment').html(data.f_slotcomment);
       }
     })
   });
+
+  $('.modal#slotModal .submit').on('click', function(e) {
+    e.preventDefault();
+    $.ajax({
+      method: 'POST',
+      url: '/admin/rezervacijas/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val() + '/' + $('.modal#slotModal input[name="part"]').val(),
+      data: {
+        'f_office': $('.modal#slotModal #f_office').val(),
+        'f_date': $('.modal#slotModal #f_date').val(),
+        'f_time': $('.modal#slotModal #f_time').val(),
+        'f_status': $('.modal#slotModal #f_status').val(),
+        'f_car': $('.modal#slotModal #f_car').val(),
+        'f_model': $('.modal#slotModal #f_model').val(),
+        'f_plate': $('.modal#slotModal #f_plate').val(),
+        'f_purpose': $('.modal#slotModal input[name="gridRadios"]:checked').val(),
+        'f_storagebin': $('.modal#slotModal #f_storagebin').val(),
+        'f_comment': $('.modal#slotModal #f_comment').val(),
+        'f_name': $('.modal#slotModal #f_name').val(),
+        'f_phone': $('.modal#slotModal #f_phone').val(),
+        'f_email': $('.modal#slotModal #f_email').val(),
+        'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+      },
+      dataType: 'JSON',
+      success: function (data) {
+        if (data.status === 0) {
+          this.error(data);
+        }
+        location.reload();
+      },
+      error: function(data) {
+        console.log(data);
+      }
+    });
+  });
+
+  $('.modal#queueModal .decline').on('click', function() {
+    $('.modal#queueModal input[name="gridRadios"]').first().attr('checked', true).prop('checked', true);
+    $('.modal#queueModal input[name="rows"]').first().attr('checked', true).prop('checked', true);
+  });
+
+  $('.modal#slotModal .decline').on('click', function() {
+    $('.modal#slotModal input[name="gridRadios"]').each(function() {
+      $(this).attr('checked', false);
+    });
+    $('.modal#slotModal textarea').each(function() {
+      $(this).html('');
+    })
+  });
+
 });

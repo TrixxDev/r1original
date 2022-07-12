@@ -727,10 +727,10 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <h4 class="modal-title h6 text-sm-center" id="myModalLabel"><i class="material-icons"></i>Produkts veiksmīgi pievienots iepirkumu grozam</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
-                <h4 class="modal-title h6 text-sm-center" id="myModalLabel"><i class="material-icons"></i>Produkts veiksmīgi pievienots iepirkumu grozam</h4>
             </div>
             <div class="modal-body">
                 <div class="row">

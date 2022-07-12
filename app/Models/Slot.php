@@ -9,4 +9,6 @@ class Slot extends Model
 
     protected $primaryKey = 'slot_id';
 
+    public $timestamps = false;
+
 }

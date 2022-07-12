@@ -17,7 +17,7 @@
           <div class="working-day">
             <div class="col-12">
               <div class="row">
-                <a href="{{ route('rezervacijas.date', $todayDate) }}">
+                <a href="{{ route('rezervacijas') }}">
                   <svg class="c-sidebar-nav-icon icons">
                     <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-home"></use>
                   </svg>
@@ -152,7 +152,7 @@
                                     @php $slotClass = 'slot-taken'; @endphp
                                   @endif
 
-                                  @php $slotText = ''.$takenBy->vehicleMake.' '.$takenBy->vehicleModel.' '.$takenBy->ownerPhone; @endphp
+                                  @php $slotText = '<div class="slot-body"><span>'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel.' '.$takenBy->ownerPhone . '</span></div>'; @endphp
 
                                   @if ($queue->_workingDays[$workingDay]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN)
                                     @php
@@ -232,8 +232,8 @@
                   @endforeach
                 </div>
               </div>
-          @endforeach
-          <!-- Modal -->
+            @endforeach
+            <!-- Modal -->
             <div class="modal fade" id="slotModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="slotModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -258,17 +258,7 @@
                         <label for="title" class="col-sm-3 col-form-label text-right">Filiāle/rinda:</label>
                         <div class="col-8">
                           <select class="form-control" id="f_office">
-                            @foreach ($offices as $office)
-                              @foreach ($office->_queues as $queue)
-                                @php $queue->loadWorkingDay($date); @endphp
-                                @if ($queue->_workingDays[$date]->secondaryAvailable)
-                                  <option value="{{ $queue->queue_id }}a">{{ $office->title }} | {{ $queue->title }} | A</option>
-                                  <option value="{{ $queue->queue_id }}b">{{ $office->title }} | {{ $queue->title }} | B</option>
-                                @else
-                                  <option value="{{ $queue->queue_id }}a">{{ $office->title }} | {{ $queue->title }}</option>
-                                @endif
-                              @endforeach
-                            @endforeach
+
                           </select>
                         </div> *
                       </div>

@@ -18,17 +18,17 @@
     <div class="col-12">
       <div class="row">
         <h4>
-          <a href="{{ route('admin.records', $todayDate) }}">
+          <a href="{{ route('admin.records.date', $todayDate) }}">
             <svg class="c-sidebar-nav-icon icons">
               <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-home"></use>
             </svg>
           </a>
-          <a href="{{ route('admin.records', $yesterday) }}">
+          <a href="{{ route('admin.records.date', $yesterday) }}">
             <svg class="c-sidebar-nav-icon icons">
               <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-arrow-left"></use>
             </svg>
           </a>
-          <a href="{{ route('admin.records', $tomorrow) }}">
+          <a href="{{ route('admin.records.date', $tomorrow) }}">
             <svg class="c-sidebar-nav-icon icons">
               <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-arrow-right"></use>
             </svg>
@@ -41,7 +41,7 @@
     <div class="col-12">
       <div class="row">
         @foreach ($offices as $office)
-          <table class="queueTable">
+          <table class="queueTable records">
           @php
             if ($openTime==0){
               $openTime = $office->getOpenTime($date);
@@ -53,19 +53,30 @@
             }
             $closeTime = max($closeTime, $office->getCloseTime($date));
             $col = 0;
+            $iteration = $loop->iteration;
           @endphp
           <tr>
+            @if ($iteration == 1)
             <th class="header"></th>
+            @endif
             <th class="header" colspan="{{ count($office->_queues) }}">{{ $office->title }}</th>
           </tr>
           @foreach ($office->_queues as $queue)
           @php $col++; @endphp
           @if ($col==1)
-            <th class="subheader" colspan="2"><span>{{ $queue->title }}</span>
-              <svg data-toggle="modal" data-target="#queueModal" data-date="{{ date('Y-m-d', strtotime($dateFmt)) }}" data-queue-id="{{ $queue->queue_id }}" class="c-sidebar-nav-icon icons">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use>
-              </svg>
-            </th>
+            @if ($iteration == 1)
+              <th class="subheader" colspan="2"><span>{{ $queue->title }}</span>
+                <svg data-toggle="modal" data-target="#queueModal" data-date="{{ date('Y-m-d', strtotime($dateFmt)) }}" data-queue-id="{{ $queue->queue_id }}" class="c-sidebar-nav-icon icons">
+                  <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use>
+                </svg>
+              </th>
+            @else
+              <th class="subheader" colspan="1"><span>{{ $queue->title }}</span>
+                <svg data-toggle="modal" data-target="#queueModal" data-date="{{ date('Y-m-d', strtotime($dateFmt)) }}" data-queue-id="{{ $queue->queue_id }}" class="c-sidebar-nav-icon icons" >
+                  <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use>
+                </svg>
+              </th>
+            @endif
           @else
             <th class="subheader" colspan="1"><span>{{ $queue->title }}</span>
               <svg data-toggle="modal" data-target="#queueModal" data-date="{{ date('Y-m-d', strtotime($dateFmt)) }}" data-queue-id="{{ $queue->queue_id }}" class="c-sidebar-nav-icon icons" >
@@ -86,13 +97,21 @@
               @if ($slotNumber!==false)
                 @if ($queue->isIntervalBeginning($date,$i))
                   @php $slot = $queue->_slots[$date][$slotNumber]; @endphp
+
                   @switch ($slot->status)
-                    @case (1)
-                    @case (0)
-                    @case (2)
-                      @php $slotCaption = '<span>' . $queue->getSlotStartTime($date, $slotNumber).' - '.$queue->getSlotEndTime($date, $slotNumber) . '</span>'; @endphp
+                    @case (SLOT_STATUS_TAKEN)
+                    @case (SLOT_STATUS_OFFER)
+                    @case (SLOT_STATUS_FREE)
+                      @php
+                        if ($slot->status == 2 && $slot->comment != null)
+                            $slotCaption = '<input type="checkbox" class="discount" data-slot-id="' . $slot->slot_id . '" checked><span>' . $queue->getSlotStartTime($date, $slotNumber).' - '.$queue->getSlotEndTime($date, $slotNumber) . '</span>';
+                        else
+                            $slotCaption = '<input type="checkbox" class="discount" data-slot-id="' . $slot->slot_id . '"><span>' . $queue->getSlotStartTime($date, $slotNumber).' - '.$queue->getSlotEndTime($date, $slotNumber) . '</span>';
+                      @endphp
                       @if (trim($slot->comment)!='')
-                        @php $slotCaption .= $slot->comment; @endphp
+                        @php $slotCaption .= ' <span class="slot-comment">' . $slot->comment . '</span>'; @endphp
+                      @else
+                        @php $slotCaption .= ' <span class="slot-comment"></span>'; @endphp
                       @endif
                       @if ($queue->isVisible($date))
                         @php $slotClass = 'slot-taken-admin'; @endphp
@@ -102,13 +121,13 @@
                       @php
                       //$slotText = '<a href="'. url_self_reference(array('d'=>$date,'qu'=>$queue->id,'time'=>$slot->iorder)).'"></a>';
                       $slotText = $slotCaption;
-                      $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slot->slot_id . '" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
+                      $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
                       @endphp
                     @break
-                    @case (3)
+                    @case (SLOT_STATUS_CLOSED)
                       @php $slotCaption = $queue->getSlotStartTime($date, $slotNumber).' - '.$queue->getSlotEndTime($date, $slotNumber) @endphp
                       @if (trim($slot->comment)=='')
-                        @php $slotCaption .= 'Slēgts!'; @endphp
+                        @php $slotCaption .= ' Slēgts!'; @endphp
                       @else
                         @php $slotCaption .= $slot->comment; @endphp
                       @endif
@@ -116,23 +135,32 @@
                       $slotClass = 'slot-closed';
                       $slotText = $slotCaption;
 
-                      $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slot->slot_id . '" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
+                      $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
                       @endphp
                     @break;
                   @endswitch
                   @if ($col==1)
-                    <td class="header-time">{{ App\Models\Office::timeByInterval($i) }}</td><td @if ($queue->_workingDays[$date]->slotSize>1) rowspan="{!! $queue->_workingDays[$date]->slotSize !!}" @else '' @endif class="slot {{ $slotClass }}"> {!! $slotText.$buttons !!}</td>
+                    @if ($iteration == 1)
+                      <td class="header-time">{{ App\Models\Office::timeByInterval($i) }}</td>
+                    @endif
+                    <td @if ($queue->_workingDays[$date]->slotSize>1) rowspan="{!! $queue->_workingDays[$date]->slotSize !!}" @else '' @endif class="slot {{ $slotClass }}"> {!! $slotText.$buttons !!}</td>
                   @else
-                    <td @if ($queue->_workingDays[$date]->slotSize>1) rowspan="{!! $queue->_workingDays[$date]->slotSize !!}" @else '' @endif class="slot {{ $slotClass }}">{!! $slotText.$buttons !!}</td>
+                    <td @if ($queue->_workingDays[$date]->slotSize>1) rowspan="{!! $queue->_workingDays[$date]->slotSize !!}" @else '' @endif class="slot {{ $slotClass }}"> {!! $slotText.$buttons !!}</td>
                   @endif
                 @else
                   @if ($col==1)
-                    <td class="header-time header-time-small">{{ App\Models\Office::timeByInterval($i) }}</td>
+                    @if ($iteration == 1)
+                      <td class="header-time header-time-small">{{ App\Models\Office::timeByInterval($i) }}</td>
+                    @endif
                   @endif
                 @endif
               @else
                 @if ($col==1)
-                  <td class="header-time">{{ App\Models\Office::timeByInterval($i) }}</td><td class="slot slot-empty"></td>
+                  @if ($iteration == 1)
+                    <td class="header-time">{{ App\Models\Office::timeByInterval($i) }}</td><td class="slot slot-empty"></td>
+                  @else
+                      <td class="slot slot-empty"></td>
+                  @endif
                 @else
                   <td class="slot slot-empty"></td>
                 @endif
@@ -151,7 +179,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="queueModalLabel">Labot rindu</h5>
+          <h5 class="modal-title" id="queueModalLabel">Labot rindu<br><span><h6 class="title"></h6></span></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -180,13 +208,7 @@
               <legend class="col-form-label col-sm-2 float-sm-left pt-0 text-right">Mainīt</legend>
               <div class="col-sm-10">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios1" value="f_purpose0" checked>
-                  <label class="form-check-label" for="gridRadios1">
-                    Nemainīt
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="f_purpose1">
+                  <input class="form-check-input" type="radio" name="gridRadios" id="gridRadios2" value="f_purpose1" checked>
                   <label class="form-check-label" for="gridRadios2">
                     Vienai dienai
                   </label>
@@ -225,7 +247,7 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Atcelt</button>
+          <button type="button" class="btn btn-secondary decline" data-dismiss="modal">Atcelt</button>
           <button type="button" class="btn btn-primary submit">Saglabāt</button>
         </div>
       </div>
@@ -235,7 +257,7 @@
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="queueModalLabel">Labot darba laiku</h5>
+          <h5 class="modal-title" id="queueModalLabel">Labot darba laiku<br><span><h6 class="title"></h6></span></h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -246,10 +268,10 @@
             <input type="hidden" name="date">
             <input type="hidden" name="slot">
             <div class="form-group row">
-              <label for="status" class="col-sm-2 col-form-label text-right">Statuss:</label>
+              <label for="f_status" class="col-sm-2 col-form-label text-right">Statuss:</label>
               <div class="col-3">
-                <select class="custom-select mr-sm-2" id="status">
-                  <option value="0" selected>Brīvs</option>
+                <select class="custom-select mr-sm-2" id="f_status">
+                  <option value="0"we>Brīvs</option>
                   <option value="1">Aizņemts</option>
                   <option value="3">Slēgts</option>
                 </select>

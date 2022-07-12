@@ -268,8 +268,8 @@
                   {{--                                    </section>--}}
 
 
-                  <section class="facet clearfix facet--4">
-                    <h1 class="h6 facet-title hidden-sm-down">Kods</h1>
+                  <section class="facet clearfix facet--4" onclick="showCodeDropdown()">
+                    <h1 class="h6 facet-title hidden-sm-down">Kods <span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
                     <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
                       <h1 class="h6 facet-title">Kods</h1>
                       <span class="float-xs-right">
@@ -280,7 +280,7 @@
                       </span>
                     </div>
 
-                    <ul id="facet_code" class="collapse">
+                    <ul id="facet_code" class="collapse" style="display: none">
                       <li data-label="XL">
                         <label class="facet-label" for="facet_for_xl">
                           <span class="custom-checkbox">
@@ -358,7 +358,7 @@
                   {{--                                    @endif--}}
 
                   <section class="facet clearfix facet--8">
-                    <h1 class="h6 facet-title hidden-sm-down">Degvielas ekonomija</h1>
+                    <h1 class="h6 facet-title hidden-sm-down">Degvielas ekonomija <span class="material-icons fuel-efficiency-dropdown">keyboard_arrow_down</span></h1>
                     <div class="title hidden-md-up" data-target="#facet_70638" data-toggle="collapse">
                       <h1 class="h6 facet-title">Degvielas ekonomija</h1>
                       <span class="float-xs-right">
@@ -368,7 +368,7 @@
                         </span>
                       </span>
                     </div>
-                    <ul id="facet_fuel_eco" class="collapse">
+                    <ul id="facet_fuel_eco" class="collapse" style="display: none;">
                       <li data-label="F">
                         <label class="facet-label" for="facet_fuel_eco_f">
                           <span class="custom-checkbox">
@@ -438,8 +438,8 @@
                   </section>
 
 
-                  <section class="facet clearfix facet--9">
-                    <h1 class="h6 facet-title hidden-sm-down">Slapjš segums</h1>
+                  <section class="facet clearfix facet--9" onclick="showCodeDropdown()">
+                    <h1 class="h6 facet-title hidden-sm-down">Slapjš segums <span class="material-icons wet-surface-dropdown">keyboard_arrow_down</span></h1>
                     <div class="title hidden-md-up" data-target="#facet_8079"
                          data-toggle="collapse">
                       <h1 class="h6 facet-title">Slapjš segums</h1>
@@ -452,7 +452,7 @@
                     </div>
 
 
-                    <ul id="facet_wet" class="collapse">
+                    <ul id="facet_wet" class="collapse" style="display: none;">
                       <li data-label="F">
                         <label class="facet-label" for="facet_wet_f">
                           <span class="custom-checkbox">
@@ -534,7 +534,6 @@
         <div id="content-wrapper" class="col-md-12 col-lg-9">
           <section id="main">
             <section id="products" class="">
-
 {{--11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111--}}
               <div class="tire-image-container" style="display: none">
                 <div class="tire-image-cards">
@@ -555,8 +554,8 @@
                       }
                     @endphp
 {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
-                    <div class="tire-image-card">
-                      <a href="" class="">
+                    <a href="" class="">
+                      <div class="tire-image-card sort-order">
                         <div class="text-center">
                           <img
                             @if ($tire->image)
@@ -574,9 +573,8 @@
                           </div>
                           <div class="tire-price-red">€{{$tire->price1}}</div>
                         </div>
-                      </a>
-                    </div>
-
+                      </div>
+                    </a>
                     @endforeach
                 </div>
               </div>
@@ -596,9 +594,6 @@
                           echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
                       @endphp
 {{--                    TIRES IMAGES--}}
-
-
-
 {{--                      <div class="image-list-item">--}}
 {{--                        <img src='/storage/app/public/auto/tread/215.png' style='width: 200px; height: 200px;'>--}}
 {{--                      </div>--}}
@@ -615,7 +610,10 @@
                         <tr>
                           <th scope="col"></th>
                           <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
-                          <th scope="col" class="hidden-sm-down">LI/SI</th>
+                          <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
+                          @if ($season_id == 2)
+                          <th scope="col" class="hidden-sm-down text-center">Tips</th>
+                          @endif
                           <th scope="col" class="hidden-sm-down text-center">Kods</th>
 
                           <th scope="col" class="hidden-sm-down">
@@ -729,7 +727,7 @@
                             </a>
                           </td>
 
-                          <td class="hidden-sm-down">
+                          <td class="hidden-sm-down text-center">
                             <span>
                               <span data-toggle="tooltip"
                                     title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>
@@ -738,9 +736,17 @@
                             </span>
                           </td>
 
+                          @if ($season_id == 2)
+                            <td scope="col" class="hidden-sm-down text-center">{{$tire->type}}</td>
+                          @endif
+
                           <td class="hidden-sm-down text-center">
                             <span data-toggle="tooltip"
+                                  @if($tire->code == 'XL')
+                                    title="<span style='color: black'>XL ??????????? SUBJECT TO CHANGE</span>"
+                                  @else
                                   title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>"
+                                  @endif
                                   class="hidden-sm-down table-cell prod-code">{{ $tire->code }}</span>
                           </td>
 

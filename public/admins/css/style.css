@@ -19117,9 +19117,53 @@ select[name="status"] option[selected] {
   min-height: 1000px;
 }
 
+table.queueTable {
+  display: flex;
+  align-items: stretch;
+}
+
+table.queueSubTable {
+  border: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+table.queueTable:nth-child(2) {
+  border-left: 2px solid black;
+}
+
 .queueTable tbody th.header {
   border-bottom: 2px solid black;
   font-size: 16px;
+}
+
+.queueTable td.slot.slot-taken-admin {
+  height: 44px;
+}
+
+.queueTable td.slot.slot-empty {
+  height: 22px;
+}
+
+.queueTable:nth-child(2) td.slot-free {
+  height: 45.59px;
+}
+
+.queueTable:nth-child(2) td.slot-free {
+  height: 45.59px;
+}
+
+.queueTable:nth-child(2) table.queueSubTable td.slot-free {
+  height: 44.09px;
+}
+
+.queueTable td.slot-free {
+  height: 44px;
+}
+
+.queueTable td.slot.slot-gray {
+  height: 44px;
 }
 
 .queueTable .header-time {
@@ -19138,6 +19182,31 @@ select[name="status"] option[selected] {
   vertical-align: middle;
   background: #e0ffe0;
 }
+
+.queueTable .slot-taken {
+  color: black;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  background: #a0e0ff;
+}
+
+.queueTable .slot-offer {
+  color: black;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  background: #ffaf40;
+}
+
+.queueTable .slot-closed {
+  color: black;
+  font-weight: normal;
+  text-align: center;
+  vertical-align: middle;
+  background: #ffB0B0;
+}
+
 .queueTable .slot {
   width: 20em;
   border-bottom: 1px solid silver;
@@ -19165,6 +19234,15 @@ select[name="status"] option[selected] {
   border: 0;
 }
 
+#slotModal .time {
+  align-items: center;
+}
+
+#slotModal .bg-light {
+  align-items: center;
+  padding: 5px 0px;
+}
+
 #queueModal .time .form-check {
   padding-left: 2.25rem;
 }
@@ -19175,4 +19253,14 @@ select[name="status"] option[selected] {
 
 #queueModal .time .timeSeparator {
   transform: translateY(15%);
+}
+
+
+.queueTable input.discount {
+  float: left;
+  transform: translate(50%, 50%);
+}
+
+.services_form label.center {
+  margin-bottom: 0;
 }

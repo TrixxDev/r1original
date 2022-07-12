@@ -31,6 +31,8 @@ class SettingsController extends Controller
         $service = new Service;
         $service->timestamps = false;
         $service->title = $request->title;
+        $service->pdf_title = $request->pdf_title;
+        if ($request->f_save == 'on') $service->f_save = 1;
         if ($service->save()) {
             return json_encode(['success' => 'Pakalpojums veiksmīgi izveidots!', 'service_id' => $service->service_id, 'service_title' => $request->title]);
         }

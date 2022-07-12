@@ -49,6 +49,7 @@ class AutoTireController extends Controller
             View::share('current_url', 'ziemas-riepa');
             View::share('season_title', 'ziemas-riepas');
         }
+        View::share('season_id', $this->season);
 
         $this->brands = Tires::getAllAutoBrands($this->season);
 

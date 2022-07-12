@@ -5,6 +5,7 @@
     <div class="container-fluid records">
         <div class="row">
             <div class="main-content clearfix col-md-12 col-xl-12">
+                <div class="loading"></div>
                 <div id="content-wrapper" class="right-column col-lg-12">
                   <div class="schedule-table">
                     @include('components.calendar')
@@ -396,7 +397,7 @@
                                                 <input type="text" class="form-control" id="reg_nr">
                                             </div>
                                         </div>
-                                        <div class="form-group">
+                                        <div class="form-group services">
                                             <div class="row">
                                                 <div class="form-group col-md-3">
                                                     <label for="service"><span class="validate" style="color: red;">*</span>Es vēlos:</label>
@@ -404,7 +405,7 @@
                                                 <div class="col-md-8" id="service">
                                                     @foreach ($services as $service)
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="serviceOption" id="serviceOption{{ $service->service_id }}" value="{{ $service->service_id }}">
+                                                        <input class="form-check-input" type="radio" name="serviceOption" id="serviceOption{{ $service->service_id }}" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif value="{{ $service->service_id }}">
                                                         <label class="form-check-label" for="serviceOption{{ $service->service_id }}">
                                                             {{ $service->title }}
                                                         </label>

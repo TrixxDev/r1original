@@ -16,6 +16,7 @@
           @php
             $visibleDays2 = 6;
             $workingDays = [];
+            $workingDays1 = [];
           @endphp
           @for ($day = 0; $day < $visibleDays; $day++)
             @php
@@ -24,7 +25,12 @@
           @endfor
           @for ($day = 0; $day < $visibleDays2; $day++)
             @php
-              $date1 = $workingDays[$day];
+              array_push($workingDays1, date('Y-m-d', strtotime(date('Y-m-d').'+' . $day . ' days')));
+            @endphp
+          @endfor
+          @for ($day = 0; $day < $visibleDays2; $day++)
+            @php
+              $date1 = $workingDays1[$day];
               $date2 = date('Y-m-d', strtotime($date1.'-2 days'));
               $dayOfWeek1 = $_weekDays[date('N', strtotime($date1.' 00:00:00'))];
               $dateFmt1 = date('d.m.Y', strtotime($date2.' 00:00:00'));
@@ -33,7 +39,7 @@
               $openTime = 0;
               $closeTime = -1;
             @endphp
-            <a href="#">
+            <a href="{{ route('pieraksts.print', [$office->office_id ,date('Y-m-d', strtotime($dateFmt1))]) }}">
               @if (date('Y-m-d', strtotime($dateFmt1)) === $today)
                 <b>{{ $office->title . ' ' . $dateFmt1 }}</b>
               @else

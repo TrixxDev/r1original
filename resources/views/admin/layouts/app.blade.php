@@ -63,7 +63,7 @@
         </li>
           <li class="c-sidebar-nav-item c-sidebar-nav-dropdown"><a class="c-sidebar-nav-link c-sidebar-nav-dropdown-toggle" href="#">
                   <svg class="c-sidebar-nav-icon">
-                      <use xlink:href="/node_modules/@coreui/icons-pro/sprites/linear.svg#cil-scooter"></use>
+                      <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-life-ring"></use>
                   </svg> Kvadru riepas</a>
               <ul class="c-sidebar-nav-dropdown-items">
                   <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#" target="_top">
@@ -118,35 +118,35 @@
           <li class="c-sidebar-nav-title">Diski</li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.rims.index') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-soccer"></use>
               </svg> Jauni lietie diski</a>
           </li>
           <li class="c-sidebar-nav-title">Rezervācijas</li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.reservations') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list-numbered"></use>
               </svg> Rezervācijas</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.records') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-clock"></use>
               </svg> Darba laiki</a>
           </li>
           <li class="c-sidebar-nav-title">Veikals</li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.orders') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-boat-alt"></use>
               </svg> Pasūtījumi</a>
           </li>
           <li class="c-sidebar-nav-title">Iestatījumi</li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.services') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list"></use>
               </svg> Pakalpojumi</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.users') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-lock-locked"></use>
               </svg> Administratori</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.syncs') }}" target="_top">

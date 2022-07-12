@@ -281,6 +281,49 @@
         <div id="content-wrapper" class="col-md-12 col-lg-9">
           <section id="main">
             <section id="products">
+              <div class="tire-image-container" style="display: none">
+                <div class="tire-image-cards">
+                  {{--                <div style="width: auto;">BRAND NAME</div>--}}
+                  @php
+                    $cbrand = '';
+                  @endphp
+                  @foreach($tires as $tire)
+                    @php
+                      $brand = $tire->fullSize;
+                      $tire->includeStock = true;
+                      if ($cbrand!=$brand){
+                        echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex">';
+                        $cbrand = $brand;
+                        $stripe = 1;
+                      } else {
+                          $brand = str_replace(" ", "", $brand);
+                      }
+                    @endphp
+                    {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
+                    <div class="tire-image-card">
+                      <a href="" class="">
+                        <div class="text-center">
+                          <img
+                            @if ($tire->image)
+                            src="{{ $tire->image }}" style='width: 100%; height: 100%;'
+                            @else
+                            src="{{ asset('img/p/r1-logo.svg') }}"
+                            @endif alt="tire-image" class="img-thumbnail border-none text-center"
+                          >
+                        </div>
+                        <div class="tire-list-caption">
+
+                          <div class="card-title-text">{{$tire->title}}</div>
+                          <div class="tire-tread">
+                            {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}
+                          </div>
+                          <div class="tire-price-red">€{{$tire->price1}}</div>
+                        </div>
+                      </a>
+                    </div>
+                  @endforeach
+                </div>
+              </div>
 {{--              <div id="">--}}
 {{--                <div class="row products-selection">--}}
 {{--                  <div class="col-md-8 hidden-md-down">--}}

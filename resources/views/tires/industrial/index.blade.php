@@ -251,29 +251,6 @@
         <div id="content-wrapper" class="col-md-12 col-lg-9">
           <section id="main">
             <section id="products" class="">
-                  {{-- Breadcrumbs --}}
-{{--              <div id="">--}}
-{{--                <div class="row products-selection">--}}
-{{--                  <div class="col-md-8 hidden-md-down">--}}
-{{--                    <nav data-depth="3" class="breadcrumb hidden-sm-down">--}}
-{{--                      <ol itemscope="" itemtype="http://schema.org/BreadcrumbList">--}}
-{{--                        <li itemprop="itemListElement" itemscope=""--}}
-{{--                            itemtype="http://schema.org/ListItem">--}}
-{{--                          <a itemprop="item" href="/">--}}
-{{--                            <span itemprop="name">Sākumlapa</span>--}}
-{{--                          </a>--}}
-{{--                          <meta itemprop="position" content="1">--}}
-{{--                        </li>--}}
-{{--                        <li itemprop="itemListElement" itemscope=""--}}
-{{--                            itemtype="http://schema.org/ListItem">--}}
-{{--                          <span itemprop="name">Lielās riepas</span>--}}
-{{--                          <meta itemprop="position" content="2">--}}
-{{--                        </li>--}}
-{{--                      </ol>--}}
-{{--                    </nav>--}}
-{{--                  </div>--}}
-{{--                </div>--}}
-{{--              </div>--}}
               <div class="tire-image-container" style="display: none">
                 <div class="tire-image-cards">
                   {{--                <div style="width: auto;">BRAND NAME</div>--}}
@@ -285,7 +262,7 @@
                       $brand = $tire->fullSize;
                       $tire->includeStock = true;
                       if ($cbrand!=$brand){
-                        echo '</div><h4 class="tire-brand-name tire-price-red">' . $brand . '</h4><div class="row grid-ex">';
+                        echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex">';
                         $cbrand = $brand;
                         $stripe = 1;
                       } else {
@@ -305,96 +282,18 @@
                           >
                         </div>
                         <div class="tire-list-caption">
-
                           <div class="card-title-text">{{$tire->title}}</div>
-                          <div class="tire-tread">
-                            {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}
-                          </div>
                           <div class="tire-price-red">€{{$tire->price1}}</div>
                         </div>
                       </a>
                     </div>
-
                   @endforeach
                 </div>
               </div>
+
               <div id="">
                 <div id="js-product-list">
                   <div class="products row hide-price">
-                        {{-- Table Header--}}
-{{--                    <div class="table-top product_show_list">--}}
-{{--                      <span class="table-cell">Brends / modelis</span>--}}
-{{--                      <span class="table-cell">Ass</span>--}}
-{{--                      <span class="table-cell">Segums</span>--}}
-{{--                      <span class="table-cell hidden-sm-down">LI/SI</span>--}}
-{{--                      <span class="table-cell">Kods</span>--}}
-{{--                      <span class="table-cell sortable"--}}
-{{--                            data-filter=".product-price-and-shipping .regular-price"--}}
-{{--                            data-order="DESC">Veikala cena</span>--}}
-{{--                      <span class="table-cell sortable"--}}
-{{--                            data-filter=".product-price-and-shipping .price" data-order="DESC">Akcijas cena</span>--}}
-{{--                      <span class="table-cell">Piezīmes--}}
-{{--                        <!--{hook h='displayProductAttributesHeader' listing=$listing}--></span>--}}
-{{--                      <span class="table-cell availability"> </span>--}}
-{{--                    </div>--}}
-{{--                    BRAND NAME 10-16.5 etc --}}
-
-
-                    <div class="tire-image-cards">
-                      @foreach($tires as $tire)
-                        <div class="tire-image-card">
-                          <a href="" class="">
-                            <div class="text-center">
-                              <img
-                                @if ($tire->image)
-                                src="{{ $tire->image }}" style='width: 100%; height: 100%;'
-                                @else
-                                src="{{ asset('img/p/r1-logo.svg') }}"
-                                @endif alt="tire-image" class="img-thumbnail text-center"
-                              >
-                            </div>
-                            <div class="tire-list-caption">
-                              <div class="card-title-text">{{$tire->title}}</div>
-                              <div style="color: #65c2a5">18x8.0</div>
-                            </div>
-                          </a>
-                        </div>
-                      @endforeach
-                    </div>
-
-{{--                    <div class="image-list-container">--}}
-{{--                      @foreach($tires as $tire)--}}
-
-{{--                        <div class="image-list-item">--}}
-{{--                          <a href="" class="">--}}
-{{--                            <div class="text-center">--}}
-{{--                              <img--}}
-{{--                                @if ($tire->image)--}}
-{{--                                src="{{ $tire->image }}" style='width: 200px; height: 200px;'--}}
-{{--                                @else--}}
-{{--                                src="{{ asset('img/p/en-default-home_default.jpg') }}" style='width: 200px; height: 200px;'--}}
-{{--                                @endif alt="tire-image" class="img-thumbnail text-center"--}}
-{{--                              >--}}
-{{--                            </div>--}}
-{{--                            <div class="tire-list-caption">--}}
-{{--                              <h5>{{$tire->title}}</h5>--}}
-{{--                              <p style="color: #65c2a5">18x8.0</p>--}}
-{{--                            </div>--}}
-{{--                          </a>--}}
-{{--                        </div>--}}
-{{--                        --}}{{--                    <div class="image-list-item">--}}
-{{--                        --}}{{--                      <img @if ($tire->image)--}}
-{{--                        --}}{{--                           src="{{ $tire->image }}" style='width: 200px; height: 200px;'--}}
-{{--                        --}}{{--                           @else--}}
-{{--                        --}}{{--                           src="{{ asset('img/p/en-default-home_default.jpg') }}"--}}
-{{--                        --}}{{--                           @endif alt="tire-image" class="img-thumbnail">--}}
-{{--                        --}}{{--                      <div>--}}
-{{--                        --}}{{--                        <h4>DRAG 52573</h4>--}}
-{{--                        --}}{{--                        <h3><a href="">18x8.0</a></h3>--}}
-{{--                        --}}{{--                      </div>--}}
-{{--                        --}}{{--                    </div>--}}
-{{--                      @endforeach--}}
-{{--                    </div>--}}
                     @php
                       $cbrand = '';
                     @endphp

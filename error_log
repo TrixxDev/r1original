@@ -47,3 +47,5 @@ Stack trace:
 [04-Jul-2022 18:12:19 Europe/Riga] PHP Fatal error:  Class declarations may not be nested in /home2/rdevarea/public_html/app/Http/Controllers/CartController.php on line 462
 [04-Jul-2022 18:12:22 Europe/Riga] PHP Fatal error:  Class declarations may not be nested in /home2/rdevarea/public_html/app/Http/Controllers/CartController.php on line 462
 [04-Jul-2022 18:12:23 Europe/Riga] PHP Fatal error:  Class declarations may not be nested in /home2/rdevarea/public_html/app/Http/Controllers/CartController.php on line 462
+[11-Jul-2022 11:26:18 Europe/Riga] PHP Fatal error:  Cannot use [] for reading in /home2/rdevarea/public_html/app/Http/Controllers/Records/RecordController.php on line 562
+[11-Jul-2022 15:28:21 Europe/Riga] PHP Warning:  Unterminated comment starting line 15804 in /home2/rdevarea/public_html/app/Models/Pdf.php on line 15804
