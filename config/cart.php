@@ -24,7 +24,7 @@ return [
     |
     */
 
-    'tax' => 0,
+    'tax' => 21,
 
     /*
     |--------------------------------------------------------------------------
@@ -40,7 +40,7 @@ return [
 
         'connection' => null,
 
-        'table' => 'cart',
+        'table' => 'shoppingcart',
 
     ],
 
@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'destroy_on_logout' => true,
+    'destroy_on_logout' => false,
 
     /*
     |--------------------------------------------------------------------------
@@ -75,7 +75,5 @@ return [
         'thousand_separator' => ',',
 
     ],
-
-    'items' => [],
 
 ];

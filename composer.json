@@ -6,8 +6,13 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "ext-dom": "*",
+        "ext-ftp": "*",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "ext-simplexml": "*",
         "aura/sql": "^3.0",
-        "bumbummen99/shoppingcart": "^4.0",
+        "bumbummen99/shoppingcart": "^4.2",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -16,12 +21,7 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "livewire/livewire": "^2.4",
-        "spatie/laravel-permission": "^4.0",
-        "ext-json": "*",
-      "ext-simplexml": "*",
-      "ext-ftp": "*",
-      "ext-dom": "*",
-      "ext-pdo": "*"
+        "spatie/laravel-permission": "^4.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

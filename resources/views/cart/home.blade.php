@@ -9,7 +9,7 @@
                     <section id="main">
                         <div class="cart-grid row">
                             <!-- Left Block: cart product informations & shpping -->
-                            <div class="cart-grid-body @if ($cart->count() > 0)col-xs-12 col-lg-8 @else col-xs-12 col-lg-12 @endif">
+                            <div class="cart-grid-body @if (\Cart::count() > 0)col-xs-12 col-lg-8 @else col-xs-12 col-lg-12 @endif">
 {{--                              {{dd($cart->content())}}--}}
                                 <!-- cart products detailed -->
                                 <div class="card cart-container">
@@ -17,8 +17,8 @@
                                         <h1 class="h1">Iepirkšanās grozs</h1>
                                     </div>
                                     <hr class="separator">
-                                    @if ($cart->count() > 0)
-                                        @foreach ($cart->content() as $item)
+                                    @if (\Cart::count() > 0)
+                                        @foreach (\Cart::content() as $item)
 {{--                                          {{ dd($item->options) }}--}}
                                         <div class="cart-item-table cart-item-container">
                                           <div class="item-name cart-item-name">
@@ -111,7 +111,7 @@
                                 </a>
                                 <!-- shipping informations -->
                             </div>
-                          @if ($cart->count() > 0)
+                          @if (\Cart::count() > 0)
                             <form method="POST">
                             @csrf
                             <div class="cart-grid-right col-xs-12 col-lg-4">
@@ -138,7 +138,7 @@
                                       <div class="cart-delivery-options">
                                         <label class="cart-delivery-label">
                                           <input type="radio" name="cart-montage-radio" value="1" @if (\Session::has('cartOptions.fitting_needs')) checked @endif>
-                                          <span>{{ $cart->count() }} @if ($cart->count() == 1) Riepai @else Riepām @endif</span>
+                                          <span>{{ \Cart::count() }} @if (\Cart::count() == 1) Riepai @else Riepām @endif</span>
                                         </label>
                                         <label class="cart-delivery-label">
                                           <input type="radio" name="cart-montage-radio" value="2" @if (!\Session::has('cartOptions.fitting_needs')) checked @endif>
@@ -175,9 +175,9 @@
                                     <div class="card-block">
                                       <div class="cart-summary-line" id="cart-subtotal-products">
                                                 <span class="label js-subtotal">
-                                                    {{ $cart->count() }} Preces
+                                                    {{ \Cart::count() }} Preces
                                                 </span>
-                                        <span class="value">€ {{ substr($cart->subtotal(), 0, -3) }}</span>
+                                        <span class="value">€ {{ substr(\Cart::subtotal(), 0, -3) }}</span>
                                       </div>
                                       <div class="cart-summary-line" id="cart-subtotal-montage">
                                                   <span class="label">
@@ -198,7 +198,7 @@
                                     <div class="card-block">
                                       <div class="cart-summary-line cart-total">
                                         <span class="label">Pavisam kopā: (ar PVN)</span>
-                                        <span class="value">€ {{ substr($cart->subtotal(), 0, -3) }}</span>
+                                        <span class="value">€ {{ substr(\Cart::subtotal(), 0, -3) }}</span>
                                       </div>
 
                                       <div class="cart-summary-line">
@@ -208,7 +208,7 @@
                                     </div>
                                     <hr class="separator">
                                   </div>
-                                  @if ($cart->count() > 0)
+                                  @if (\Cart::count() > 0)
                                     <div class="checkout text-sm-center card-block checkout-button">
                                       <button type="submit" class="btn btn-primary"><span>Turpināt maksājumu</span></button>
                                     </div>

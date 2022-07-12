@@ -40,7 +40,5 @@ class AppServiceProvider extends ServiceProvider
 //          config()->set('app.settings.' . $config->name, $config->value);
 //        }
 
-        $cart = new Cart();
-        \View::share('cart', $cart);
     }
 }

@@ -12,16 +12,11 @@ class CheckSession
 
   public $cart;
 
-  public function __construct()
-  {
-    $this->cart = new Cart;
-  }
-
   public function handle($request, Closure $next)
   {
 
     if (Session::has('cart')) {
-      if ($this->cart->countItems() == 0) {
+      if (\Cart::countItems() == 0) {
         Session::remove('cart');
       }
     }

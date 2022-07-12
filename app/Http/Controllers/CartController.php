@@ -8,13 +8,15 @@ use App\Models\Order;
 use App\Models\Pdf;
 use App\Models\Quadr;
 use App\Models\Bigtire;
-use Gloudemans\Shoppingcart\Cart;
+use Cart;
 use Gloudemans\Shoppingcart\CartItem;
 use Gloudemans\Shoppingcart\CartItemOptions;
 use http\Exception;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Auth;
+use Illuminate\Session\SessionManager;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -30,10 +32,6 @@ class CartController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->cart = new Cart();
-    }
 
     protected static function getSelfUrl(): string
     {
@@ -198,8 +196,6 @@ class CartController extends Controller
       public function checkFitting(Request $request)
       {
 
-        $cart = new Cart;
-
         $data = json_decode(json_encode($request->input()));
 
         Session::remove('cartOptions');
@@ -219,7 +215,7 @@ class CartController extends Controller
 
               $catCount = [];
 
-              foreach ($cart->content() as $key => $item) {
+              foreach (Cart::content() as $key => $item) {
                 $size = $item->options->tire['d3'];
                 $item = str_replace('App\\Models\\', '', $item->associatedModel);
                 array_push($catCount, $item);
@@ -255,8 +251,6 @@ class CartController extends Controller
 
     public static function addProduct($model, $tire_id, $quantity = 4)
     {
-
-        $cart = new Cart();
 
         switch($model) {
             case 'Autotire': {
@@ -317,7 +311,7 @@ class CartController extends Controller
 //            if ($item->id == $tire_id) {
 //              return $cart->update($item->rowId, $item->qty + $quantity);
 //            } else {
-              return $cart->add($tire_id, $tire->title, $quantity, $tire->price2, 0, ['tire' => $tire->toArray(), 'link' => $tire->link, 'image' => $image, 'availability' => $availability])
+              return Cart::add($tire_id, $tire->title, $quantity, $tire->price2, 0, ['tire' => $tire->toArray(), 'link' => $tire->link, 'image' => $image, 'availability' => $availability])
                 ->associate('App\Models\\' . ucfirst($model));
 //            }
 //          }
@@ -328,7 +322,7 @@ class CartController extends Controller
     public function remove($id)
     {
 
-        $this->cart->remove($id);
+        Cart::remove($id);
 
         return redirect()->back();
 
@@ -342,9 +336,9 @@ class CartController extends Controller
                                              ->where('auto_tires.tire_id', $request->tire_id)
                                              ->first();
 
-        $totalItems = $this->cart->count();
+        $totalItems = Cart::count();
         $totalItems = $totalItems + 4;
-        $totalSum = (float) $this->cart->totalFloat();
+        $totalSum = (float) Cart::totalFloat();
         $totalSum = $totalSum + ($tire->price2 * 4);
 
         return response()->json([
@@ -357,10 +351,10 @@ class CartController extends Controller
     public function ajaxChangeQty(Request $request)
     {
         if ($request->qty <= 0) $request->qty = 1;
-        $this->cart->update($request->tire_id, $request->qty);
+        Cart::update($request->tire_id, $request->qty);
 
-        $totalItems = $this->cart->count();
-        $totalSum = $this->cart->subtotal();
+        $totalItems = Cart::count();
+        $totalSum = Cart::subtotal();
 
         return json_encode(['total_items' => $totalItems, 'total_sum' => $totalSum]);
     }
@@ -370,7 +364,7 @@ class CartController extends Controller
       if ($request->post()) {
         $cartData = [];
 
-        foreach ($this->cart->content() as $key => $item) {
+        foreach (Cart::content() as $key => $item) {
           array_push($cartData, [
             'tire_id' => $item->id,
             'title' => $item->name,
@@ -399,8 +393,6 @@ class CartController extends Controller
         $amount1 = $amount;
         $email = Session::get('email');
 
-
-
         $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
 
         if (isset($request->pay)) {
@@ -419,7 +411,7 @@ class CartController extends Controller
         $dogs = [];
 
 
-        foreach ($this->cart->content() as $key => $item) {
+        foreach (Cart::content() as $key => $item) {
           $cat = str_replace('App\\Models\\', '', $item->associatedModel);
           array_push($cats, $cat);
           array_push($dogs, $item->options->availability);

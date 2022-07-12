@@ -56,14 +56,14 @@
                         </div>
                     </div>
                     <div id="_desktop_cart">
-                        <div class="blockcart cart-preview @if ($cart->count() > 0) active @else inactive @endif"
+                        <div class="blockcart cart-preview @if (\Cart::count() > 0) active @else inactive @endif"
                              data-refresh-url="//r1riepas.lv/index.php?fc=module&amp;module=ps_shoppingcart&amp;controller=ajax&amp;id_lang=2">
-                            @if ($cart->count() > 0)
+                            @if (\Cart::count() > 0)
                             <div class="header">
                                 <a rel="nofollow" href="{{ route('cart') }}">
                                     <i class="material-icons shopping-cart">shopping_cart</i>
                                     <span class="hidden-sm-down">Grozs:</span>
-                                    <span class="cart-products-count">({{ $cart->count() }})</span>
+                                    <span class="cart-products-count">({{ \Cart::count() }})</span>
                                 </a>
                             </div>
                             @else
@@ -82,14 +82,14 @@
                     <i class="material-icons d-inline"></i>
                 </div>
                 <div class="float-xs-right" id="_mobile_cart">
-                    <div class="blockcart cart-preview @if ($cart->count()) active @else inactive @endif"
+                    <div class="blockcart cart-preview @if (\Cart::count()) active @else inactive @endif"
                          data-refresh-url="//r1riepas.lv/index.php?fc=module&amp;module=ps_shoppingcart&amp;controller=ajax&amp;id_lang=2">
-                        @if ($cart->count() > 0)
+                        @if (\Cart::count() > 0)
                             <div class="header">
                                 <a rel="nofollow" href="{{ route('cart') }}">
                                     <i class="material-icons shopping-cart">shopping_cart</i>
                                     <span class="hidden-sm-down">Grozs:</span>
-                                    <span class="cart-products-count">({{ $cart->count() }})</span>
+                                    <span class="cart-products-count">({{ \Cart::count() }})</span>
                                 </a>
                             </div>
                         @else

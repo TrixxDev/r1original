@@ -7,8 +7,9 @@ use App\Helper\Tires;
 use App\Models\Autobrand;
 use App\Models\Autotire;
 use App\Models\Autotread;
-use Gloudemans\Shoppingcart\Cart;
+use Cart;
 use Illuminate\Http\Request;
+use Route;
 use Auth;
 use View;
 use DB;
@@ -38,12 +39,12 @@ class AutoTireController extends Controller
 
       // || strpos(str_replace(url('/'), '', \URL::previous()), 'vasaras-riepas') !== false
 
-        if (strpos(\Route::current()->uri(), 'vasaras-riepas') !== false) {
+        if (strpos(url()->current(), 'vasaras-riepas') !== false) {
             $this->season = 1;
             View::share('season', 'Vasaras riepas');
             View::share('current_url', 'vasaras-riepa');
             View::share('season_title', 'vasaras-riepas');
-        } else if (strpos(\Route::current()->uri(), 'ziemas-riepas') !== false) {
+        } else if (strpos(url()->current(), 'ziemas-riepas') !== false) {
             $this->season = 2;
             View::share('season', 'Ziemas riepas');
             View::share('current_url', 'ziemas-riepa');
@@ -126,9 +127,8 @@ class AutoTireController extends Controller
             $cart = CartController::addProduct($this->model, $tire->tire_id, 4);
         }
 
-        $cartObj = new Cart();
-        $quantity = $cartObj->count();
-        $total_sum = str_replace([',', '.00'], '', $cartObj->total());
+        $quantity = Cart::count();
+        $total_sum = str_replace([',', '.00'], '', Cart::total());
         $bought = ($request->quantity) ? $request->quantity : 4;
 
         echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
