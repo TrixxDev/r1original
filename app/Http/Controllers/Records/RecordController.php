@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Records;
 
 use App\Http\Controllers\Controller;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
@@ -491,15 +493,24 @@ class RecordController extends Controller
 
   public function reservations_print($office_id, $date)
   {
+
+    $office = Office::findOrFail($office_id);
+    $office->loadQueues();
+
+    $spreadsheet = new Spreadsheet();
+
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle($date .  ' ' . $office->title);
+
     $pdf = new Pdf();
     $pdf->setPrintHeader(false);
     $pdf->setPrintFooter(false);
     $pdf->AddPage();
 
-    $office = Office::findOrFail($office_id);
-    $office->loadQueues();
+
 
     $a = 1;
+    $b = 2;
     foreach ($office->_queues as $queue) {
       if ($a > 1) break;
       $queue->loadWorkingDay($date);
@@ -621,7 +632,15 @@ class RecordController extends Controller
                 }
 
 
+                $sheet->setCellValue('A1', 'Laiks');
+                $sheet->setCellValue('B1', 'Rinda');
+                $sheet->setCellValue('C1', 'Pieraksta info');
+
                 if ($split) {
+
+                  $sheet->setCellValue('A' . $b, Office::timeByInterval($i));
+                  $sheet->setCellValue('A' . ($b + 1), Office::timeByInterval($i + ($queue->_workingDays[$date]->slotSize / 2)));
+
                   if ($slot->status == SLOT_STATUS_OFFER) {
                     $pdf->SetFillColor(255, 175, 64, true);
                   } else {
@@ -641,6 +660,11 @@ class RecordController extends Controller
                   $pdf->SetFont("", "", 10);
                   $pdf->Cell($slotCellWidth, $slotCellHeight / 2, $slotText2, 'TBLR', 1, 'L', 1, '', 0, true);
                 } else {
+
+                  $sheet->setCellValue('A' . $b, Office::timeByInterval($i));
+                  $sheet->setCellValue('B' . $b, $slot->queue_id);
+                  $sheet->setCellValue('C' . $b, $slotText);
+
                   if ($slot->status == SLOT_STATUS_OFFER) {
                     $pdf->SetFillColor(255, 175, 64, true);
                   } else {
@@ -651,7 +675,7 @@ class RecordController extends Controller
                   $pdf->SetFont("", "", 10);
                   $pdf->Cell($slotCellWidth, $slotCellHeight, $slotText, 'TBLR', 1, 'L', 1, '', 0, true);
                 }
-
+                $b++;
               }
 
             }
@@ -673,8 +697,15 @@ class RecordController extends Controller
 //    }
     // Closing line
 //    $pdf->Cell(array_sum($w),0,'','T');
+    $sheet->setAutoFilter('A:B');
+    $lastRow = $sheet->getHighestRow();
+    $sheet->getStyle('A2:B' . $lastRow)->getAlignment()->setHorizontal('center');
+    $writer = new Xlsx($spreadsheet);
+    $writer->save('test.xlsx');
+    die;
     $pdf->lastPage();
     $pdf->Output();
+
   }
 
 }
