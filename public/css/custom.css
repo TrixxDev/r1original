@@ -4482,3 +4482,7 @@ table.queueTable:nth-child(2) {
 .rims-title {
   margin: 10px 0 0 0;
 }
+
+.facet-hover:hover {
+  cursor: pointer;
+}

@@ -206,7 +206,7 @@
                 <div class="sidebar-bottom">
 
                   <section class="facet clearfix facet--4">
-                    <h1 class="h6 facet-title hidden-sm-down">Tips</h1>
+                    <h1 class="h6 facet-title hidden-sm-down facet-hover">Tips<span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
                     <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
                       <h1 class="h6 facet-title">Tips</h1>
                       <span class="float-xs-right">
@@ -236,7 +236,7 @@
                   </section>
 
                   <section class="facet clearfix facet--availability">
-                    <h1 class="h6 facet-title hidden-sm-down">Pieejamība</h1>
+                    <h1 class="h6 facet-title hidden-sm-down facet-hover">Pieejamība<span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
                     <ul id="facet_availability" class="collapse">
                       <li>
                         <label class="facet-label" for="facet_availability_0" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
