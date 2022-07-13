@@ -3173,7 +3173,7 @@ td.slot.slot-taken {
     background: #a0e0ff;
     text-align: center;
     /*line-height: 28px;*/
-    pointer-events: none;
+    /*pointer-events: none;*/
 }
 
 td.slot.slot-taken a {
@@ -3348,7 +3348,7 @@ form textarea {
 }
 
 #service {
-    margin-left: 20px;
+    margin-left: 0px;
 }
 
 .required-input {
@@ -4186,9 +4186,13 @@ table.queueTable:nth-child(2) {
   font-size: 16px;
 }
 
-  .queueTable td.slot.slot-taken-admin {
-    height: 44px;
-  }
+.queueTable td.slot.slot-taken-admin {
+  height: 44px;
+}
+
+.queueTable .queueSubTable td.slot-taken-admin {
+  height: 53px!important;
+}
 
 .queueTable td.slot.slot-empty {
   height: 22px;
@@ -4207,7 +4211,7 @@ table.queueTable:nth-child(2) {
   width: 3.5em;
   color: gray;
   font-weight: bold;
-  border: 1px solid silver;
+  outline: 1px solid silver;
   text-align: right;
   padding: 0 5px;
 }
@@ -4246,9 +4250,8 @@ table.queueTable:nth-child(2) {
 
 .queueTable .slot {
   width: 18em;
-  border-bottom: 1px solid silver;
-  border-top: 1px solid silver;
-  border-right: 1px solid silver;
+  outline: 1px solid silver;
+  padding: 0;
 }
 
 .slot .buttonbar {
@@ -4481,6 +4484,10 @@ table.queueTable:nth-child(2) {
 
 .rims-title {
   margin: 10px 0 0 0;
+}
+
+.facet-hover:hover {
+  cursor: pointer;
 }
 
 .facet-hover:hover {

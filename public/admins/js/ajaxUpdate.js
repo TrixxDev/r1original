@@ -675,9 +675,12 @@ $(document).ready(function () {
         $('.modal#slotModal #f_car').val(data.f_car);
         $('.modal#slotModal #f_model').val(data.f_model);
         $('.modal#slotModal #f_plate').val(data.f_plate);
-        $('.modal#slotModal input[name="gridRadios"]').each(function() {
-          if ($(this).val() === data.f_purpose) {
+        $('.modal#slotModal input[name="serviceOption"]').each(function() {
+          if ($(this).val() == data.f_purpose) {
             $(this).attr('checked', true);
+            if ($(this).data('save') == 1) {
+              $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3 pt-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr" value="' + data.f_storagebin + '"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+            }
           }
         });
         $('.modal#slotModal #f_comment').html(data.f_comment);
@@ -688,6 +691,12 @@ $(document).ready(function () {
         $('.modal#slotModal #f_slotcomment').html(data.f_slotcomment);
       }
     })
+  });
+
+  $('.modal#slotModal').on('hide.bs.modal', function() {
+    if ($('.temp_save_nr').is(':visible')) {
+      $('.modal#slotModal .temp_save_nr').remove();
+    }
   });
 
   $('.modal#slotModal .submit').on('click', function(e) {

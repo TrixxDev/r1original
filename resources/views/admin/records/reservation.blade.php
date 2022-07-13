@@ -263,16 +263,16 @@
               <label for="f_plate" class="col-sm-3 col-form-label text-right">Reģistrācijas numurs:</label>
               <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_plate"></div>
             </div>
-            <div class="form-group row bg-light">
+            <div class="form-group row services bg-light">
               <legend class="col-form-label col-sm-3 float-sm-left pt-0 text-right">Es vēlos:</legend>
               <div class="col-sm-9">
                 @foreach ($services as $service)
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="gridRadios" id="f_purpose{{ $loop->iteration }}" value="service{{ $service->service_id }}">
-                  <label class="form-check-label" for="f_purpose{{ $loop->iteration }}">
-                    {{ $service->title }}
-                  </label>
-                </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="serviceOption" id="serviceOption{{ $service->service_id }}" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif value="{{ $service->service_id }}">
+                    <label class="form-check-label" for="serviceOption{{ $service->service_id }}">
+                      {{ $service->title }}
+                    </label>
+                  </div>
                 @endforeach
               </div>
             </div>

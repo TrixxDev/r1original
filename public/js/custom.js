@@ -1744,6 +1744,14 @@ $(document).ready(function() {
       }
     });
 
+    $('.modal#slotModal #service input[name="serviceOption"]').on('input', function() {
+      if ($(this).data('save') == 1) {
+        $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+      } else {
+        $('#reservation .temp_save_nr').remove();
+      }
+    });
+
     $(document).on('keypress', function(e) {
       if ($('#reservation').is(':visible')) {
         if (e.key === 'Enter') {
@@ -1932,30 +1940,30 @@ $(document).ready(function() {
     })
   });
 
-  $('.modal#slotModal .submit').on('click', function(e) {
-    e.preventDefault();
-    $.ajax({
-      method: 'POST',
-      url: '/admin/pieraksts/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val(),
-      data: {
-        'queue_id': $('.modal#slotModal input[name="queue_id"]').val(),
-        'date': $('.modal#slotModal input[name="date"]').val(),
-        'slot_id': $('.modal#slotModal input[name="slot"]').val(),
-        'f_status': $('.modal#slotModal #f_status').val(),
-        'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
-      },
-      dataType: 'JSON',
-      success: function (data) {
-        if (data.status === 0) {
-          this.error(data);
-        }
-        location.reload();
-      },
-      error: function(data) {
-        console.log(data);
-      }
-    });
-  });
+  // $('.modal#slotModal .submit').on('click', function(e) {
+  //   e.preventDefault();
+  //   $.ajax({
+  //     method: 'POST',
+  //     url: '/admin/pieraksts/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val(),
+  //     data: {
+  //       'queue_id': $('.modal#slotModal input[name="queue_id"]').val(),
+  //       'date': $('.modal#slotModal input[name="date"]').val(),
+  //       'slot_id': $('.modal#slotModal input[name="slot"]').val(),
+  //       'f_status': $('.modal#slotModal #f_status').val(),
+  //       'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+  //     },
+  //     dataType: 'JSON',
+  //     success: function (data) {
+  //       if (data.status === 0) {
+  //         this.error(data);
+  //       }
+  //       location.reload();
+  //     },
+  //     error: function(data) {
+  //       console.log(data);
+  //     }
+  //   });
+  // });
 
   $('.queueTable .discount').each(function() {
     $(this).on('click', function() {
@@ -1991,14 +1999,17 @@ $(document).ready(function() {
       success: function(data) {
         $('.modal#slotModal #f_date').val(data.f_date);
         $('.modal#slotModal #f_time').val(data.f_time);
-        $('.modal#slotModal select#f_office option[value="' + data.q + data.f_office + '"]').attr('selected','selected');
         $('.modal#slotModal #f_car').val(data.f_car);
         $('.modal#slotModal #f_model').val(data.f_model);
         $('.modal#slotModal #f_plate').val(data.f_plate);
         $('.modal#slotModal #f_office').append(data.options);
-        $('.modal#slotModal input[name="gridRadios"]').each(function() {
-          if ($(this).val() === 'service' + data.f_purpose || $(this).val() === data.f_purpose) {
+        $('.modal#slotModal select#f_office option[value="' + data.q + data.f_office + '"]').attr('selected','selected').prop('selected', 'selected');
+        $('.modal#slotModal input[name="serviceOption"]').each(function() {
+          if ($(this).val() == data.f_purpose) {
             $(this).attr('checked', true);
+            if ($(this).data('save') == 1) {
+              $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr" value="' + data.f_storagebin + '"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+            }
           }
         });
         $('.modal#slotModal #f_comment').html(data.f_comment);
@@ -2009,6 +2020,12 @@ $(document).ready(function() {
         $('.modal#slotModal #f_slotcomment').html(data.f_slotcomment);
       }
     })
+  });
+
+  $('.modal#slotModal').on('hide.bs.modal', function() {
+    if ($('.temp_save_nr').is(':visible')) {
+      $('.modal#slotModal .temp_save_nr').remove();
+    }
   });
 
   $('.modal#slotModal .submit').on('click', function(e) {
@@ -2024,8 +2041,8 @@ $(document).ready(function() {
         'f_car': $('.modal#slotModal #f_car').val(),
         'f_model': $('.modal#slotModal #f_model').val(),
         'f_plate': $('.modal#slotModal #f_plate').val(),
-        'f_purpose': $('.modal#slotModal input[name="gridRadios"]:checked').val(),
-        'f_storagebin': $('.modal#slotModal #f_storagebin').val(),
+        'f_purpose': $('.modal#slotModal input[name="serviceOption"]:checked').val(),
+        'f_storagebin': $('.modal#slotModal .temp_save_nr #save_nr').val(),
         'f_comment': $('.modal#slotModal #f_comment').val(),
         'f_name': $('.modal#slotModal #f_name').val(),
         'f_phone': $('.modal#slotModal #f_phone').val(),

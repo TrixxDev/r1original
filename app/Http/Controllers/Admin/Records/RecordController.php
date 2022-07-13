@@ -480,7 +480,7 @@ class RecordController extends Controller
     $tires = new Tires();
     $timeStep = $tires->arrayGCD($slotSizes);
 
-    $services = Service::orderBy('service_id', 'DESC')->get();
+    $services = Service::orderBy('service_id', 'ASC')->get();
 
     return view('admin.records.reservation', compact('offices', 'timeStep', 'date', '_weekDays', 'currentDate', 'services'));
 
@@ -502,6 +502,7 @@ class RecordController extends Controller
         'f_model'=>'',
         'f_plate'=>'',
         'f_purpose'=>'',
+        'f_storagebin'=>'',
         'f_comment'=>'',
         'f_name'=>'',
         'f_phone'=>'',
@@ -583,6 +584,7 @@ class RecordController extends Controller
       $form->vehiclePlate = $request->f_plate;
 
       $form->purpose = $request->f_purpose;
+      $form->storagebin = $request->f_storagebin;
 
       $form->storageBin = $request->f_storagebin;
       $form->comment = $request->f_comment;
