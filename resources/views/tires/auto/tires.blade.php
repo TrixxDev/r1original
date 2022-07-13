@@ -268,8 +268,8 @@
                   {{--                                    </section>--}}
 
 
-                  <section class="facet clearfix facet--4" onclick="showCodeDropdown()">
-                    <h1 class="h6 facet-title hidden-sm-down">Kods <span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
+                  <section class="facet clearfix facet--4">
+                    <h1 class="h6 facet-title hidden-sm-down facet-hover facet-hover" onclick="showCodeDropdown()">Kods<span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
                     <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
                       <h1 class="h6 facet-title">Kods</h1>
                       <span class="float-xs-right">
@@ -358,7 +358,7 @@
                   {{--                                    @endif--}}
 
                   <section class="facet clearfix facet--8">
-                    <h1 class="h6 facet-title hidden-sm-down">Degvielas ekonomija <span class="material-icons fuel-efficiency-dropdown">keyboard_arrow_down</span></h1>
+                    <h1 class="h6 facet-title hidden-sm-down facet-hover" onclick="showFuelDropdown()">Degvielas ekonomija <span class="material-icons fuel-efficiency-dropdown">keyboard_arrow_down</span></h1>
                     <div class="title hidden-md-up" data-target="#facet_70638" data-toggle="collapse">
                       <h1 class="h6 facet-title">Degvielas ekonomija</h1>
                       <span class="float-xs-right">
@@ -438,8 +438,8 @@
                   </section>
 
 
-                  <section class="facet clearfix facet--9" onclick="showCodeDropdown()">
-                    <h1 class="h6 facet-title hidden-sm-down">Slapjš segums <span class="material-icons wet-surface-dropdown">keyboard_arrow_down</span></h1>
+                  <section class="facet clearfix facet--9">
+                    <h1 class="h6 facet-title hidden-sm-down facet-hover" onclick="showWetSurfaceDropdown()">Slapjš segums <span class="material-icons wet-surface-dropdown">keyboard_arrow_down</span></h1>
                     <div class="title hidden-md-up" data-target="#facet_8079"
                          data-toggle="collapse">
                       <h1 class="h6 facet-title">Slapjš segums</h1>

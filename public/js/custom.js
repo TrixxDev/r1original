@@ -2481,32 +2481,32 @@ function showInfoDropdown(){
 function showCodeDropdown(){
   showCode = !showCode;
   if (showCode) {
-    $('#facet_wet').slideDown();
-    $('span.code').text('keyboard_arrow_up');
+    $('#facet_code').slideDown();
+    $('span.code-dropdown').text('keyboard_arrow_up');
   } else {
-    $('#facet_wet').slideUp();
-    $('span.code').text('keyboard_arrow_down');
+    $('#facet_code').slideUp();
+    $('span.code-dropdown').text('keyboard_arrow_down');
   }
 }
 
 function showFuelDropdown(){
-  showInfo = !showInfo;
-  if (showInfo) {
-    $('.dropdown-options.info').slideDown();
-    $('span.info').text('keyboard_arrow_up');
+  showFuel = !showFuel;
+  if (showFuel) {
+    $('#facet_fuel_eco').slideDown();
+    $('span.fuel-efficiency-dropdown').text('keyboard_arrow_up');
   } else {
-    $('.dropdown-options.info').slideUp();
-    $('span.info').text('keyboard_arrow_down');
+    $('#facet_fuel_eco').slideUp();
+    $('span.fuel-efficiency-dropdown').text('keyboard_arrow_down');
   }
 }
 
 function showWetSurfaceDropdown(){
-  showInfo = !showInfo;
-  if (showInfo) {
-    $('.dropdown-options.info').slideDown();
-    $('span.info').text('keyboard_arrow_up');
+  showWetSurface = !showWetSurface;
+  if (showWetSurface) {
+    $('#facet_wet').slideDown();
+    $('span.wet-surface-dropdown').text('keyboard_arrow_up');
   } else {
-    $('.dropdown-options.info').slideUp();
-    $('span.info').text('keyboard_arrow_down');
+    $('#facet_wet').slideUp();
+    $('span.wet-surface-dropdown').text('keyboard_arrow_down');
   }
 }
