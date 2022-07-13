@@ -685,12 +685,12 @@ class RecordController extends Controller
             $slot->takenby2 = '';
           }
 
-          if ($slot->takenby==SLOT_STATUS_FREE && $slot->takenby2==SLOT_STATUS_FREE) {
-            $slot->comment = '';
-            $slot->takenby = '';
-            $slot->createtime = '';
-            $slot->edittime = '';
-          }
+//          if ($slot->takenby==SLOT_STATUS_FREE && $slot->takenby2==SLOT_STATUS_FREE) {
+//            $slot->comment = '';
+//            $slot->takenby = '';
+//            $slot->createtime = '';
+//            $slot->edittime = '';
+//          }
           $slot->timestamps = false;
 
           //PRE($slot);die;
