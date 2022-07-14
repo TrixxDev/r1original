@@ -19264,3 +19264,11 @@ table.queueTable:nth-child(2) {
 .services_form label.center {
   margin-bottom: 0;
 }
+
+.tires-header {
+  padding: 0px 15px;
+}
+
+.tires-header a {
+  text-decoration: none;
+}
