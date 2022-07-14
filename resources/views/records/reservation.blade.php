@@ -128,12 +128,19 @@
                                     @php $slotText = $slotCaption; @endphp
 
                                     @if ($slot->status2 == SLOT_STATUS_TAKEN)
+                                      @if ($slot->createuser>0)
+                                        @php $slotClass2 = 'slot-taken-admin'; @endphp
+                                      @else
+                                        @php $slotClass2 = 'slot-taken'; @endphp
+                                      @endif
                                       @php $takenBy = json_decode($slot->takenby2); @endphp
                                       @if ($slotText=='')
                                         @php
                                           $slotText2='<span style="color: red;font-weight:normal">'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel.' '.$takenBy->ownerPhone.'</span>';
                                         @endphp
                                       @endif
+                                    @elseif ($slot->status2 == SLOT_STATUS_FREE)
+                                      @php $slotClass2 = 'slot-free'; @endphp
                                     @endif
 
                                     @if ($queue->_workingDays[$workingDay]->secondaryAvailable)
@@ -152,16 +159,22 @@
                                       @php $slotClass = 'slot-taken'; @endphp
                                     @endif
 
-                                    @php $slotText = '<div class="slot-body"><span>'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel.' '.$takenBy->ownerPhone . '</span></div>'; @endphp
+                                    @php $slotText = '<span>'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel.' '.$takenBy->ownerPhone . '</span>'; @endphp
+
 
                                     @if ($queue->_workingDays[$workingDay]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN)
+                                      @if ($slot->createuser>0)
+                                        @php $slotClass2 = 'slot-taken-admin'; @endphp
+                                      @else
+                                        @php $slotClass2 = 'slot-taken'; @endphp
+                                      @endif
                                       @php
                                         $takenBy = json_decode($slot->takenby2);
                                         $slotText2='<span style="color: red;font-weight:normal">'. $takenBy->vehicleMake .' '. $takenBy->vehicleModel .' '. $takenBy->ownerPhone .'</span>';
                                       @endphp
                                     @endif
 
-                                    @if ($queue->_workingDays[$date]->secondaryAvailable)
+                                    @if ($queue->_workingDays[$workingDay]->secondaryAvailable)
                                       @php $buttons2 = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="b" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>'; @endphp
                                     @endif
 
@@ -192,7 +205,7 @@
                                   @break
                                 @endswitch
                                 @if ($queue->_workingDays[$workingDay]->secondaryAvailable)
-                                  @php $cellContents = '<table class="queueSubTable"><tr><td class="' . $slotClass . '">'.$slotText.$buttons.'</td></tr><tr><td class="slot-free">'.$slotText2.$buttons2.'</td></tr></table>'; @endphp
+                                  @php $cellContents = '<table class="queueSubTable"><tr><td class="' . $slotClass . '">'.$slotText.$buttons.'</td></tr><tr><td class="' . $slotClass2 . '">'.$slotText2.$buttons2.'</td></tr></table>'; @endphp
                                 @else
                                   @php $cellContents = $slotText.$buttons; @endphp
                                 @endif
@@ -273,13 +286,15 @@
                         <label for="f_plate" class="col-sm-3 col-form-label text-right">Reģistrācijas numurs:</label>
                         <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_plate"></div>
                       </div>
-                      <div class="form-group row bg-light">
-                        <label class="col-form-label col-sm-3 float-sm-left pt-0 text-right">Es vēlos:</label>
-                        <div class="col-sm-9">
+                      <div class="form-group services row bg-light">
+                        <div class="form-group col-md-3 text-right">
+                          <label for="service"><span class="validate" style="color: red;">*</span>Es vēlos:</label>
+                        </div>
+                        <div class="col-md-8" id="service">
                           @foreach ($services as $service)
                             <div class="form-check">
-                              <input class="form-check-input" type="radio" name="gridRadios" id="f_purpose{{ $loop->iteration }}" value="service{{ $service->service_id }}">
-                              <label class="form-check-label" for="f_purpose{{ $loop->iteration }}">
+                              <input class="form-check-input" type="radio" name="serviceOption" id="serviceOption{{ $service->service_id }}" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif value="{{ $service->service_id }}">
+                              <label class="form-check-label" for="serviceOption{{ $service->service_id }}">
                                 {{ $service->title }}
                               </label>
                             </div>
