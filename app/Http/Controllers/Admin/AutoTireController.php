@@ -43,6 +43,51 @@ class AutoTireController extends Controller
         return view('admin.auto_tires.index', compact('tires', 'tread', 'brands', 'treads'));
     }
 
+    public function tire_create($id)
+    {
+      $tread = Autotread::where('tread_id', $id)->first();
+      $brand = Autobrand::where('brand_id', $tread->brand_id)->first();
+
+      return view('admin.auto_tires.tires.create', compact('tread', 'brand'));
+    }
+
+    public function tire_store(Request $request, $id)
+    {
+        $inputs = $request->except(['_token']);
+
+        if (!array_filter($inputs)) {
+          return redirect(route('admin.auto.tires.create', $id))->with('danger', 'Visi lauki ir tukši');
+        }
+
+        $tire = new Autotire;
+        $tire->timestamps = false;
+
+        $tire->make_id = $id;
+        $tire->d1 = ($request->d1 === null) ? '' : $request->d1;
+        $tire->d2 = ($request->d2 === null) ? '' : $request->d2;
+        $tire->d3 = ($request->d3 === null) ? '' : $request->d3;
+        $tire->li = ($request->li === null) ? '' : $request->li;
+        $tire->si = ($request->si === null) ? '' : $request->si;
+        $tire->price1 = ($request->price1 === null) ? '' : $request->price1;
+        $tire->price2 = ($request->price2 === null) ? '' : $request->price2;
+        $tire->comment = ($request->comment === null) ? '' : $request->comment;
+        $tire->code = ($request->code === null) ? '' : $request->code;
+        $tire->eco = ($request->eco === null) ? '' : $request->eco;
+        $tire->wet = ($request->wet === null) ? '' : $request->wet;
+        $tire->noise = ($request->noise === null) ? '' : $request->noise;
+        $tire->article = ($request->article === null) ? '' : $request->article;
+        $tire->quantity = ($request->quantity === null) ? '' : $request->quantity;
+        $tire->visible_list = 1;
+        $tire->visible_users = 1;
+        $tire->urs_quantity = ($request->urs_quantity === null) ? '' : $request->urs_quantity;
+        $tire->krs_quantity = ($request->krs_quantity === null) ? '' : $request->krs_quantity;
+
+        $tire->save();
+
+        return redirect(route('admin.auto.tires.search', $id))->with('success', 'Riepa veiksmīgi pievienota');
+
+    }
+
     public function tire_edit($id)
     {
         $tire = Autotire::with('tread')->where('tire_id', $id)->first();
@@ -74,6 +119,15 @@ class AutoTireController extends Controller
         $tire->save();
 
         return redirect(route('admin.auto.tire.edit', $id))->with('success', 'Informācija veiksmīgi atjaunota');
+    }
+
+    public function tire_destroy($id)
+    {
+
+      Autotire::where('tire_id', $id)->delete();
+
+      return redirect()->back()->with('success', 'Riepa veiksmīgi dzēsta!');
+
     }
 
     public function tire_image(Request $request, $id)

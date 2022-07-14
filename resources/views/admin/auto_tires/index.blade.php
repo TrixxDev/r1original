@@ -4,6 +4,16 @@
 
     <div class="container-fluid">
         <div class="fade-in">
+            @if (session('success'))
+              <div class="alert alert-success">
+                {{ session('success') }}
+              </div>
+            @endif
+            @if (session('danger'))
+              <div class="alert alert-danger">
+                {{ session('danger') }}
+              </div>
+            @endif
             <div class="card">
                 <div class="card-header"> Auto riepas
                     <div class="card-header-actions">
@@ -55,6 +65,11 @@
                                 @endif
                             </div>
                         </div>
+                        @if (isset($tread))
+                        <div class="row justify-content-end tires-header">
+                          <button class="btn btn-md btn-primary new_tire"><a class="text-white" href="{{ route('admin.auto.tires.create', $tread->tread_id) }}">Pievienot</a></button>
+                        </div>
+                        @endif
                         <div class="row">
                             <div class="col-sm-12">
                                 <table class="table table-striped table-bordered datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info" style="border-collapse: collapse !important">
@@ -97,7 +112,7 @@
                                                             <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
                                                         </svg>
                                                     </a>
-                                                    <a class="btn btn-danger" href="#">
+                                                    <a class="btn btn-danger" href="{{ route('admin.auto.tire.destroy', $tire->tire_id) }}">
                                                         <svg class="c-icon">
                                                             <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
                                                         </svg>
