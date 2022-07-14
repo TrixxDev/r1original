@@ -4490,6 +4490,20 @@ table.queueTable:nth-child(2) {
   cursor: pointer;
 }
 
-.facet-hover:hover {
+.filter-button {
+  width: 70%;
+  padding: 7px;
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 2px;
+  background: #d2291d;
+  -webkit-transform: skew(-20deg);
+  -ms-transform: skew(-20deg);
+  transform: skew(-20deg);
+  border-radius: 5px;
   cursor: pointer;
+  margin: auto;
+  display: block;
+  border: 2px solid #d2291d;
+  margin-top: 10px;
 }

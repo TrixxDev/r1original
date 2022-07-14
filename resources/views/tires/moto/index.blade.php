@@ -205,38 +205,11 @@
               <div class="wrap">
                 <div class="sidebar-bottom">
 
-                  <section class="facet clearfix facet--4">
-                    <h1 class="h6 facet-title hidden-sm-down facet-hover">Tips<span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
-                    <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
-                      <h1 class="h6 facet-title">Tips</h1>
-                      <span class="float-xs-right">
-                        <span class="navbar-toggler collapse-icons">
-                          <i class="material-icons add"></i>
-                          <i class="material-icons remove"></i>
-                        </span>
-                      </span>
-                    </div>
 
-                    <ul id="facet_code" class="collapse">
-                      @foreach ($types as $index => $value)
-                      @php $index = strtolower($index); @endphp
-                      <li data-label="{{ $index }}">
-                        <label class="facet-label" for="facet_for_{{ $index }}">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_{{ $index }}" data-search-url="" name="types[]" value="{{ $value }}" data-for="prod-code" data-value="{{ $value }}" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">{{ $value }}</a>
-                        </label>
-                      </li>
-                      @endforeach
-                    </ul>
-                  </section>
 
                   <section class="facet clearfix facet--availability">
-                    <h1 class="h6 facet-title hidden-sm-down facet-hover">Pieejamība<span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
+                    <h3 class="text-uppercase h6 hidden-sm-down">Filtrs</h3>
+                    <h1 class="h6 facet-title hidden-sm-down">Pieejamība</h1>
                     <ul id="facet_availability" class="collapse">
                       <li>
                         <label class="facet-label" for="facet_availability_0" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
@@ -272,7 +245,38 @@
                       </li>
                     </ul>
                   </section>
-                  </form>
+
+                  <section class="facet clearfix facet--4">
+                    <h1 class="h6 facet-title hidden-sm-down facet-hover">Tips<span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
+                    <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
+                      <h1 class="h6 facet-title">Tips</h1>
+                      <span class="float-xs-right">
+                        <span class="navbar-toggler collapse-icons">
+                          <i class="material-icons add"></i>
+                          <i class="material-icons remove"></i>
+                        </span>
+                      </span>
+                    </div>
+
+                    <ul id="facet_code" class="collapse" style="display: none;">
+                      @foreach ($types as $index => $value)
+                        @php $index = strtolower($index); @endphp
+                        <li data-label="{{ $index }}">
+                          <label class="facet-label" for="facet_for_{{ $index }}">
+                          <span class="custom-checkbox">
+                            <input id="facet_for_{{ $index }}" data-search-url="" name="types[]" value="{{ $value }}" data-for="prod-code" data-value="{{ $value }}" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">{{ $value }}</a>
+                          </label>
+                        </li>
+                      @endforeach
+                    </ul>
+                  </section>
+                  <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i>
+                  </button>
                 </div>
               </div>
             </div>
