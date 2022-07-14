@@ -18,57 +18,57 @@
                       <tbody>
                       <tr class="d-flex">
                         <td class="field">Vārds, uzvārds</td>
-                        <td>@if (\Illuminate\Support\Facades\Session::has('cart.name') && \Illuminate\Support\Facades\Session::has('cart.surname')) {{ \Illuminate\Support\Facades\Session::get('cart.name') . ', ' . \Illuminate\Support\Facades\Session::get('cart.surname') }}@endif</td>
+                        <td>@if (\Session::has('cart.name') && \Session::has('cart.surname')) {{ \Session::get('cart.name') . ', ' . \Session::get('cart.surname') }}@endif</td>
                       </tr>
                       <tr>
                         <td class="field">e-pasts</td>
-                        <td><i class="fa fa-mobile fa-lg m-r-5"></i>@if (\Illuminate\Support\Facades\Session::has('cart.email')) {{ \Illuminate\Support\Facades\Session::get('cart.email') }} @endif</td>
+                        <td><i class="fa fa-mobile fa-lg m-r-5"></i>@if (\Session::has('cart.email')) {{ \Session::get('cart.email') }} @endif</td>
                       </tr>
                       <tr>
                         <td class="field">Tālrunis</td>
-                        <td>+371 @if (\Illuminate\Support\Facades\Session::has('cart.phone_number')) {{ \Illuminate\Support\Facades\Session::get('cart.phone_number') }} @endif</td>
+                        <td>+371 @if (\Session::has('cart.phone_number')) {{ \Session::get('cart.phone_number') }} @endif</td>
                       </tr>
                       <tr>
                         <td class="field">Saņemšanas vieta</td>
                         <td>Ulbroka, Institūta iela 1</td>
                       </tr>
-                        @if (\Illuminate\Support\Facades\Session::get('person') == 2)
+                        @if (\Session::get('person') == 2)
 
                           <tr class="highlight">
                             <td class="field">Reģistrācijas Nr.</td>
-                            <td>@if (\Illuminate\Support\Facades\Session::has('cart.company_registration_number')) {{ \Illuminate\Support\Facades\Session::get('cart.company_registration_number') }} @endif</td>
+                            <td>@if (\Session::has('cart.company_registration_number')) {{ \Session::get('cart.company_registration_number') }} @endif</td>
                           </tr>
 
                           <tr class="highlight">
                             <td class="field">PVN numurs</td>
-                            <td>@if (\Illuminate\Support\Facades\Session::has('cart.company_pvn_number')) {{ \Illuminate\Support\Facades\Session::get('cart.company_pvn_number') }} @endif</td>
+                            <td>@if (\Session::has('cart.company_pvn_number')) {{ \Session::get('cart.company_pvn_number') }} @endif</td>
                           </tr>
 
                           <tr class="highlight">
                             <td class="field">Uzņēmuma nosaukums</td>
-                            <td>@if (\Illuminate\Support\Facades\Session::has('cart.company_name')) {{ \Illuminate\Support\Facades\Session::get('cart.company_name') }} @endif</td>
+                            <td>@if (\Session::has('cart.company_name')) {{ \Session::get('cart.company_name') }} @endif</td>
                           </tr>
 
                           <tr class="highlight">
                             <td class="field">Juridiskā adrese</td>
-                            <td>@if (\Illuminate\Support\Facades\Session::has('cart.company_address')) {{ \Illuminate\Support\Facades\Session::get('cart.company_address') }} @endif</td>
+                            <td>@if (\Session::has('cart.company_address')) {{ \Session::get('cart.company_address') }} @endif</td>
                           </tr>
                         @endif
 
                       </tbody>
                     </table>
                     <hr>
-                    @if (\Illuminate\Support\Facades\Session::has('cart.notes') || \Illuminate\Support\Facades\Session::has('cart.email_notifications'))
+                    @if (\Session::has('cart.notes') || \Session::has('cart.email_notifications'))
                       <h4>Papildus informācija</h4>
                       <table class="table table-hover">
                         <tbody>
-                        @if (\Illuminate\Support\Facades\Session::has('cart.notes'))
+                        @if (\Session::has('cart.notes'))
                         <tr class="highlight">
                           <td class="field">Piezīmes</td>
-                          <td>{{ \Illuminate\Support\Facades\Session::get('cart.notes') }}</td>
+                          <td>{{ \Session::get('cart.notes') }}</td>
                         </tr>
                         @endif
-                        @if (\Illuminate\Support\Facades\Session::has('cart.email_notifications'))
+                        @if (\Session::has('cart.email_notifications'))
                         <tr class="highlight">
                           <td class="field">E-pasta paziņojumi</td>
                           <td>Atļauju man sūtīt paziņojumus par akcijām un jaunumiem uz norādīto e-pastu</td>
@@ -83,25 +83,25 @@
                       <tbody>
                       <tr class="highlight d-flex">
                         <td class="field">Marka</td>
-                        <td>@if (\Illuminate\Support\Facades\Session::has('cart.car_brand')) {{ \Illuminate\Support\Facades\Session::get('cart.car_brand') }} @endif</td>
+                        <td>@if (\Session::has('cart.car_brand')) {{ \Session::get('cart.car_brand') }} @endif</td>
                       </tr>
                       <tr class="highlight">
                         <td class="field">Modelis</td>
-                        <td>@if (\Illuminate\Support\Facades\Session::has('cart.car_model')) {{ \Illuminate\Support\Facades\Session::get('cart.car_model') }} @endif</td>
+                        <td>@if (\Session::has('cart.car_model')) {{ \Session::get('cart.car_model') }} @endif</td>
                       </tr>
                       <tr class="highlight">
                         <td class="field">Izlaiduma gads</td>
-                        <td>@if (\Illuminate\Support\Facades\Session::has('cart.car_release_year')) {{ \Illuminate\Support\Facades\Session::get('cart.car_release_year') }} @endif</td>
+                        <td>@if (\Session::has('cart.car_release_year')) {{ \Session::get('cart.car_release_year') }} @endif</td>
                       </tr>
                       <tr class="highlight">
                         <td class="field">Dzinēja tilpums</td>
-                        <td>@if (\Illuminate\Support\Facades\Session::has('cart.car_engine_size')) {{ \Illuminate\Support\Facades\Session::get('cart.car_engine_size') }} @endif</td>
+                        <td>@if (\Session::has('cart.car_engine_size')) {{ \Session::get('cart.car_engine_size') }} @endif</td>
                       </tr>
                       </tbody>
                     </table>
                       <hr>
                       <h4>Pasūtītās preces</h4>
-                    @foreach ($cart->content() as $item)
+                    @foreach (\Cart::content() as $item)
                       <div class="cart-item-table cart-item-container">
                         <div class="item-name cart-item-name">
                           <a href="{{ $item->options->link }}" data-id_customization="0">{{ strtoupper($item->name) . ' ' . $item->options->tire['d1'] . ' ' . $item->options->tire['d2'] . ' ' . $item->options->tire['d3'] . ' ' . $item->options->tire['li'].$item->options->tire['si'] }}</a>

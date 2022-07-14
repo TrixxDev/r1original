@@ -4,36 +4,6 @@
             <div class="hidden-sm-down">
                 <div class="col-md-12 right-nav">
 
-                    <div id="_desktop_language_selector">
-                        <div class="language-selector-wrapper">
-                            <span id="language-selector-label" class="hidden-md-up">Valoda:</span>
-                            <div class="hidden-sm-down" aria-labelledby="language-selector-label">
-                                <li style="display: inline-block;" @if (app()->getLocale() == 'en') class="current" @endif>
-                                    <a href="{{ route('lang', 'en') }}" class="list-item">EN</a>
-                                </li>
-                                <li style="display: inline-block;" @if (app()->getLocale() == 'lv') class="current" @endif>
-                                    <a href="{{ route('lang', 'lv') }}" class="list-item">LV</a>
-                                </li>
-                                <li style="display: inline-block;" @if (app()->getLocale() == 'ru') class="current" @endif>
-                                    <a href="{{ route('lang', 'ru') }}" class="list-item">RU</a>
-                                </li>
-                                </li>
-                            </div>
-                            <div class="language-selector dropdown js-dropdown">
-                                <select class="link hidden-md-up" aria-labelledby="language-selector-label">
-                                    <option value="{{ route('lang', 'en') }}" @if (app()->getLocale() == 'en') selected="selected" @endif>
-                                        EN
-                                    </option>
-                                    <option value="{{ route('lang', 'lv') }}" @if (app()->getLocale() == 'lv') selected="selected" @endif>
-                                        LV
-                                    </option>
-                                    <option value="{{ route('lang', 'ru') }}" @if (app()->getLocale() == 'ru') selected="selected" @endif>
-                                        RU
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
                     <div id="_desktop_user_info">
                         <div class="user-info">
                             @guest

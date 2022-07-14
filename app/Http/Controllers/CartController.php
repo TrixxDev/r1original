@@ -25,8 +25,6 @@ use App\Models\WebToPay;
 class CartController extends Controller
 {
 
-    public $cart;
-
   /**
      * Create a new controller instance.
      *
@@ -379,7 +377,7 @@ class CartController extends Controller
 
         $cartData = serialize($cartData);
 
-        $amount = str_replace(['.', ','], '', $this->cart->subtotal());
+        $amount = str_replace(['.', ','], '', Cart::subtotal());
 
         $order = new Order;
         $order->status = 1;
