@@ -2486,42 +2486,13 @@ function showInfoDropdown(){
     $('span.info').text('keyboard_arrow_down');
   }
 }
-//
-// function showCodeDropdown(){
-//   showCode = !showCode;
-//   if (showCode) {
-//     $('#facet_code').slideDown();
-//     $('span.code-dropdown').text('keyboard_arrow_up');
-//   } else {
-//     $('#facet_code').slideUp();
-//     $('span.code-dropdown').text('keyboard_arrow_down');
-//   }
-// }
-//
-// function showFuelDropdown(){
-//   showFuel = !showFuel;
-//   if (showFuel) {
-//     $('#facet_fuel_eco').slideDown();
-//     $('span.fuel-efficiency-dropdown').text('keyboard_arrow_up');
-//   } else {
-//     $('#facet_fuel_eco').slideUp();
-//     $('span.fuel-efficiency-dropdown').text('keyboard_arrow_down');
-//   }
-// }
-//
-// function showWetSurfaceDropdown(){
-//   showWetSurface = !showWetSurface;
-//   if (showWetSurface) {
-//     $('#facet_wet').slideDown();
-//     $('span.wet-surface-dropdown').text('keyboard_arrow_up');
-//   } else {
-//     $('#facet_wet').slideUp();
-//     $('span.wet-surface-dropdown').text('keyboard_arrow_down');
-//   }
-// }
 
 $('h1.facet-hover').each(function() {
   $(this).on('click', function() {
-    $(this).parent().children('ul.collapse').toggle();
+    $(this).parent().children('ul.collapse').slideToggle();
+    if ($(this).children('span').text() == 'keyboard_arrow_down')
+      $(this).children('span').text('keyboard_arrow_up');
+    else
+      $(this).children('span').text('keyboard_arrow_down');
   });
 })

@@ -189,6 +189,7 @@
               </div>
               <div class="wrap">
                 <div class="sidebar-bottom">
+                  <h3 class="text-uppercase h6 hidden-sm-down">Filtrs</h3>
                   <section class="facet clearfix facet--availability">
                     <h1 class="h6 facet-title hidden-sm-down">Pieejamība</h1>
                     <ul id="facet_availability" class="collapse">
@@ -525,7 +526,8 @@
                       </li>
                     </ul>
                   </section>
-                  </form>
+                  <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i>
+                  </button>
                 </div>
               </div>
             </div>
