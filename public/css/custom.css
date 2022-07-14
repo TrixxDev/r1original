@@ -4190,7 +4190,7 @@ table.queueTable:nth-child(2) {
   height: 44px;
 }
 
-.queueTable .queueSubTable td.slot-taken-admin {
+.queueTable .queueSubTable td.slot-taken-admin, .queueTable .queueSubTable td.slot-taken {
   height: 53px!important;
 }
 
