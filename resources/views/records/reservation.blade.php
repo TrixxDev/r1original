@@ -113,86 +113,86 @@
 
                                 @switch ($slot->status)
                                   @case (SLOT_STATUS_FREE)
-                                  @if (trim($slot->comment)=='')
-                                    @php
-                                      $slotClass = 'slot-free';
-                                      $slotCaption = '';
-                                    @endphp
-                                  @else
-                                    @php
-                                      $slotClass = 'slot-offer';
-                                      $slotCaption = $slot->comment;
-                                    @endphp
-                                  @endif
-
-                                  @php $slotText = $slotCaption; @endphp
-
-                                  @if ($slot->status2 == SLOT_STATUS_TAKEN)
-                                    @php $takenBy = json_decode($slot->takenby2); @endphp
-                                    @if ($slotText=='')
+                                    @if (trim($slot->comment)=='')
                                       @php
-                                        $slotText2='<span style="color: red;font-weight:normal">'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel.' '.$takenBy->ownerPhone.'</span>';
+                                        $slotClass = 'slot-free';
+                                        $slotCaption = '';
+                                      @endphp
+                                    @else
+                                      @php
+                                        $slotClass = 'slot-offer';
+                                        $slotCaption = $slot->comment;
                                       @endphp
                                     @endif
-                                  @endif
 
-                                  @if ($queue->_workingDays[$workingDay]->secondaryAvailable)
-                                    @php $buttons2 = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="b" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>'; @endphp
-                                  @endif
+                                    @php $slotText = $slotCaption; @endphp
 
-                                  @php $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>'; @endphp
+                                    @if ($slot->status2 == SLOT_STATUS_TAKEN)
+                                      @php $takenBy = json_decode($slot->takenby2); @endphp
+                                      @if ($slotText=='')
+                                        @php
+                                          $slotText2='<span style="color: red;font-weight:normal">'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel.' '.$takenBy->ownerPhone.'</span>';
+                                        @endphp
+                                      @endif
+                                    @endif
+
+                                    @if ($queue->_workingDays[$workingDay]->secondaryAvailable)
+                                      @php $buttons2 = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="b" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>'; @endphp
+                                    @endif
+
+                                    @php $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>'; @endphp
                                   @break
                                   @case (SLOT_STATUS_TAKEN)
 
-                                  @php $takenBy = json_decode($slot->takenby); @endphp
+                                    @php $takenBy = json_decode($slot->takenby); @endphp
 
-                                  @if ($slot->createuser>0)
-                                    @php $slotClass = 'slot-taken-admin'; @endphp
-                                  @else
-                                    @php $slotClass = 'slot-taken'; @endphp
-                                  @endif
+                                    @if ($slot->createuser>0)
+                                      @php $slotClass = 'slot-taken-admin'; @endphp
+                                    @else
+                                      @php $slotClass = 'slot-taken'; @endphp
+                                    @endif
 
-                                  @php $slotText = '<div class="slot-body"><span>'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel.' '.$takenBy->ownerPhone . '</span></div>'; @endphp
+                                    @php $slotText = '<div class="slot-body"><span>'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel.' '.$takenBy->ownerPhone . '</span></div>'; @endphp
 
-                                  @if ($queue->_workingDays[$workingDay]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN)
+                                    @if ($queue->_workingDays[$workingDay]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN)
+                                      @php
+                                        $takenBy = json_decode($slot->takenby2);
+                                        $slotText2='<span style="color: red;font-weight:normal">'. $takenBy->vehicleMake .' '. $takenBy->vehicleModel .' '. $takenBy->ownerPhone .'</span>';
+                                      @endphp
+                                    @endif
+
+                                    @if ($queue->_workingDays[$date]->secondaryAvailable)
+                                      @php $buttons2 = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="b" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>'; @endphp
+                                    @endif
+
                                     @php
-                                      $takenBy = json_decode($slot->takenby2);
-                                      $slotText2='<span style="color: red;font-weight:normal">'. $takenBy->vehicleMake .' '. $takenBy->vehicleModel .' '. $takenBy->ownerPhone .'</span>';
+                                      $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
                                     @endphp
-                                  @endif
-
-                                  @if ($queue->_workingDays[$date]->secondaryAvailable)
-                                    @php $buttons2 = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="b" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>'; @endphp
-                                  @endif
-
-                                  @php
-                                    $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
-                                  @endphp
                                   @break
                                   @case (SLOT_STATUS_OFFER)
-                                  @php
-                                    $slotClass = 'slot-offer';
-                                    $slotText = ''.$slot->comment.'';
-                                    $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
-                                  @endphp
-                                  @break
-                                  @case (SLOT_STATUS_CLOSED)
-                                  @if (trim($slot->comment)=='')
-                                    @php $slotCaption = 'Slēgts'; @endphp
-                                  @else
-                                    @php $slotCaption = $slot->comment; @endphp
-                                  @endif
+                                    @php
+                                      $slotClass = 'slot-offer';
+                                      $slotText = ''.$slot->comment.'';
+                                      $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
+                                    @endphp
+                                    @break
+                                    @case (SLOT_STATUS_CLOSED)
+                                    @if (trim($slot->comment)=='')
+                                      @php $slotCaption = 'Slēgts'; @endphp
+                                    @else
+                                      @php $slotCaption = $slot->comment; @endphp
+                                    @endif
 
-                                  @php
-                                    $slotClass = 'slot-closed';
-                                    $slotText = $slotCaption;
+                                    @php
+                                      $slotClass = 'slot-closed';
+                                      $slotText = $slotCaption;
 
-                                    $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
-                                  @endphp
+                                      $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
+                                    @endphp
                                   @break
                                 @endswitch
                                 @if ($queue->_workingDays[$workingDay]->secondaryAvailable)
-                                  @php $cellContents = '<table class="queueSubTable"><tr><td class="slot-free">'.$slotText.$buttons.'</td></tr><tr><td class="slot-free">'.$slotText2.$buttons2.'</td></tr></table>'; @endphp
+                                  @php $cellContents = '<table class="queueSubTable"><tr><td class="' . $slotClass . '">'.$slotText.$buttons.'</td></tr><tr><td class="slot-free">'.$slotText2.$buttons2.'</td></tr></table>'; @endphp
                                 @else
                                   @php $cellContents = $slotText.$buttons; @endphp
                                 @endif

@@ -1744,6 +1744,22 @@ $(document).ready(function() {
       }
     });
 
+    $(document).on('keypress', function(e) {
+      if ($('#reservation').is(':visible')) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          $('#submit-reservation').click();
+        }
+      }
+    });
+
+    $('#reservation').on('hide.bs.modal', function () {
+      $('#reservation form').trigger('reset');
+      $('#reservation .alert').remove();
+      $('#reservation .temp_save_nr').remove();
+      $('#brand, #model, #phone, #email').removeAttr('placeholder');
+    });
+
     $('#submit-reservation').on('click', function() {
 
         let car = $('#reservation #brand').val();
@@ -1834,13 +1850,6 @@ $(document).ready(function() {
                 }
             }
         });
-    });
-
-    $('#reservation #close-modal').on('click', function() {
-      $('#reservation form').trigger('reset');
-      $('#reservation .alert').remove();
-      $('#reservation .temp_save_nr').remove();
-      $('#brand, #model, #phone, #email').removeAttr('placeholder');
     });
 
   $('.queueTable.records .subheader svg').on('click', function() {

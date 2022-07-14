@@ -21,6 +21,8 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "livewire/livewire": "^2.4",
+        "pusher/pusher-php-server": "^7.0",
+        "phpoffice/phpspreadsheet": "^1.24",
         "spatie/laravel-permission": "^4.0"
     },
     "require-dev": {
