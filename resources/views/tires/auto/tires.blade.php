@@ -270,7 +270,7 @@
 
 
                   <section class="facet clearfix facet--4">
-                    <h1 class="h6 facet-title hidden-sm-down facet-hover facet-hover">Kods<span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
+                    <h1 class="h6 facet-title hidden-sm-down facet-hover">Kods<span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
                     <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
                       <h1 class="h6 facet-title">Kods</h1>
                       <span class="float-xs-right">
