@@ -2513,3 +2513,38 @@ $('h1.facet-hover').each(function() {
       $(this).children('span').text('keyboard_arrow_down');
   });
 })
+
+$('.password-eye').on('click', function() {
+  $('span i', this).toggleClass("fa-eye-slash fa-eye");
+  if ($(this).siblings().attr('type') === 'password'){
+    $(this).siblings().attr('type', 'text');
+  } else {
+    $(this).siblings().attr('type', 'password');
+  }
+});
+
+function delay(callback, ms) {
+  let timer = 0;
+  return function() {
+    let context = this, args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      callback.apply(context, args);
+    }, ms || 0);
+  };
+}
+
+
+$('input[type=password]').keyup(delay(function(e) {
+  if ($('#password').val().length >= 8){
+    $('.invalid-password').hide();
+  }
+
+  if ($('#password').val() === $('#password-confirm').val()){
+    $('.form-footer').children('button').prop('disabled', false);
+    $('.password-error').hide();
+    return;
+  }
+  $('.form-footer').children('button').prop('disabled', true);
+  $('.password-error').show();
+}, 500));

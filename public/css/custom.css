@@ -4507,3 +4507,29 @@ table.queueTable:nth-child(2) {
   border: 2px solid #d2291d;
   margin-top: 10px;
 }
+
+.input-group-append {
+ margin-left: -1px;
+}
+
+.password-show {
+  display: flex;
+}
+
+.password-eye {
+  width: 40px;
+  background: lightgray;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, .25);
+  padding: 8px;
+  cursor:pointer;
+}
+
+.invalid-feedback {
+  color: #a94442;
+}
+
+.registration-form-title {
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
