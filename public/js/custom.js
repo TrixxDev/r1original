@@ -1840,8 +1840,8 @@ $(document).ready(function() {
           $('.reservation-modal-footer #submit-reservation').hide();
           $('.reservation-modal-footer #close-modal').text('Aizvērt');
           $('<div class="modal-body finish">' + data.success + '</div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
-          $('<td class="slot slot-taken">' + successText + '</td>').hide().fadeIn().insertAfter($('#' + slot).parent());
-          $('#' + slot).parent().fadeOut().remove();
+          $('<td class="slot slot-taken">' + successText + '</td>').hide().fadeIn().insertAfter($('#' + slot + '[data-date="' + date + '"]').parent());
+          $('#' + slot + '[data-date="' + date + '"]').parent().fadeOut().remove();
           $('#brand, #model, #phone, #email').removeAttr('placeholder');
           $('#reservation form').trigger('reset');
           $('#reservation .temp_save_nr').remove();
@@ -2053,11 +2053,30 @@ $(document).ready(function() {
       success: function (data) {
         if (data.status === 0) {
           this.error(data);
+          return false;
         }
         location.reload();
       },
       error: function(data) {
-        console.log(data);
+        let errors = [];
+        $(data.error_fields).each(function() {
+          $.each($(this)[0], function(key, value) {
+            if (value !== '') {
+              $('.modal#slotModal #' + key).css({'outline': '1px solid red'});
+              errors[key] = value;
+            } else {
+              $('.modal#slotModal #' + key).removeAttr('style');
+            }
+            if (key === 'f_purpose') {
+              if (value !== '') {
+                $('.modal#slotModal #service').css({'outline': '1px solid red'});
+              } else {
+                $('.modal#slotModal #service').removeAttr('style');
+              }
+            }
+          });
+        });
+        // });
       }
     });
   });
@@ -2081,6 +2100,13 @@ $(document).ready(function() {
       $(this).html('');
     })
   });
+
+  $('.modal#slotModal').on('keypress', function(e) {
+    if (e.key === 'Enter') {
+      $('.modal#slotModal .submit').click();
+    }
+  });
+
 });
 
 function unique(array){

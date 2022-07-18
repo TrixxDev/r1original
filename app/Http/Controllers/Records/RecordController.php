@@ -247,15 +247,17 @@ class RecordController extends Controller
         if (!$carModel) $errorText['model'] = "Jābūt aizpildītam!\n";
 
         if (!$purpose) $errorText['purpose'] = "Laukam \"Es vēlos\" jābūt aizpildītam!\n";
-        if (!$phone) $errorText['phone'] = "Jābūt aizpildītam!\n";
-        if ($phone && !is_numeric($phone)) $errorText['wrongPhone'] = "Telefona numuram jāsastāv tikai no cipariem!\n";
         if (!Auth::check()) {
             if (!$email) $errorText['email'] = "Jābūt aizpildītam!\n";
             if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errorText['emptyEmail'] = "Lauks \"Mans e-pasts\" aizpildīts nekorekti!\n";
+            if (!$phone) $errorText['phone'] = "Jābūt aizpildītam!\n";
+            if ($phone && !is_numeric($phone)) $errorText['wrongPhone'] = "Telefona numuram jāsastāv tikai no cipariem!\n";
         } else {
             if (!Auth::user()->hasRole(['administrators', 'moderators'])) {
                 if (!$email) $errorText['email'] = "Jābūt aizpildītam!\n";
                 if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errorText['emptyEmail'] = "Lauks \"Mans e-pasts\" aizpildīts nekorekti!\n";
+                if (!$phone) $errorText['phone'] = "Jābūt aizpildītam!\n";
+                if ($phone && !is_numeric($phone)) $errorText['wrongPhone'] = "Telefona numuram jāsastāv tikai no cipariem!\n";
             }
         }
 
@@ -702,10 +704,16 @@ class RecordController extends Controller
     $lastRow = $sheet->getHighestRow();
     $sheet->getStyle('A2:B' . $lastRow)->getAlignment()->setHorizontal('center');
     $writer = new Xlsx($spreadsheet);
-    $writer->save('test.xlsx');
-    die;
-    $pdf->lastPage();
-    $pdf->Output();
+    $filename = 'pieraksts.xlsx';
+    $writer->save($filename);
+
+    // Set the content-type:
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Content-Length: ' . filesize($filename));
+    readfile($filename); // send file
+    unlink($filename); // delete file
+    exit;
 
   }
 

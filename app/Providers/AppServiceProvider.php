@@ -35,10 +35,6 @@ class AppServiceProvider extends ServiceProvider
       define('SLOT_STATUS_OFFER', 2);
       define('SLOT_STATUS_CLOSED', 3);
 
-//        $configs = DB::table('cart_config')->get()->toArray();
-//        foreach ($configs as $config) {
-//          config()->set('app.settings.' . $config->name, $config->value);
-//        }
-
+      date_default_timezone_set('Europe/Riga');
     }
 }

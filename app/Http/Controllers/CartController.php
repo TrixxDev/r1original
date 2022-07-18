@@ -15,8 +15,8 @@ use http\Exception;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Auth;
 use Illuminate\Session\SessionManager;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
@@ -309,7 +309,7 @@ class CartController extends Controller
 //            if ($item->id == $tire_id) {
 //              return $cart->update($item->rowId, $item->qty + $quantity);
 //            } else {
-              return Cart::add($tire_id, $tire->title, $quantity, $tire->price2, 0, ['tire' => $tire->toArray(), 'link' => $tire->link, 'image' => $image, 'availability' => $availability])
+              return Cart::instance(Session::getId())->add($tire_id, $tire->title, $quantity, $tire->price2, 0, ['tire' => $tire->toArray(), 'link' => $tire->link, 'image' => $image, 'availability' => $availability])
                 ->associate('App\Models\\' . ucfirst($model));
 //            }
 //          }
@@ -359,7 +359,16 @@ class CartController extends Controller
 
     public function order(Request $request)
     {
+
+
+
+      $session_id = Session::getId();
+
       if ($request->post()) {
+//        Session::regenerate(false);
+
+        $order = Order::where('order_token', $session_id)->first();
+
         $cartData = [];
 
         foreach (Cart::content() as $key => $item) {
@@ -379,15 +388,29 @@ class CartController extends Controller
 
         $amount = str_replace(['.', ','], '', Cart::subtotal());
 
-        $order = new Order;
-        $order->status = 1;
-        $order->price = substr($amount, 0, -2);
-        $order->delivery_price = 0;
-        $order->fit_price = 0;
-        $order->info = $cartData;
-        $order->save();
+        if (!$order) {
+          $order = new Order;
+          $order->status = 1;
+          $order->userId = 0;
+          if (Auth::check()) {
+            $order->userId = Auth::user()->id;
+          }
+          $order->price = substr($amount, 0, -2);
+          $order->delivery_price = 0;
+          $order->fit_price = 0;
+          $order->info = $cartData;
+          $order->order_token = Session::getId();
+          $order->timeRemaining = Carbon::now()->addMinutes(30)->format('H:i:s');
 
-        $order_id = $order->id;
+          $order->save();
+
+          $order_id = $order->id;
+          $user_data = $request->input('data');
+        } else {
+          $order_id = $order->id;
+          $user_data = unserialize($order->info);
+        }
+
         $amount1 = $amount;
         $email = Session::get('email');
 
@@ -396,7 +419,7 @@ class CartController extends Controller
         if (isset($request->pay)) {
           return $this->pay($data);
         }
-        $user_data = $request->input('data');
+
         if (!isset($user_data['email_notifications'])) {
           Session::remove('cart.email_notifications');
         }

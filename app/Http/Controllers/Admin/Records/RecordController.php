@@ -363,7 +363,7 @@ class RecordController extends Controller
             break;
           }
           case (1): {
-            $slot->takenby = json_encode(['ownerPhone' => '', 'plate' => '', 'vehicleMake' => '']);
+            $slot->takenby = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
             break;
           }
         }
@@ -599,7 +599,7 @@ class RecordController extends Controller
         if (($f_status == SLOT_STATUS_FREE)||($f_status == SLOT_STATUS_OFFER)) $f_status = SLOT_STATUS_TAKEN;
       }
 
-      if ($f_status==SLOT_STATUS_TAKEN){
+      if ($f_status==SLOT_STATUS_TAKEN && array_filter((array) $form)){
         if ($form->vehicleMake=='') {
           $errorCount++;
           $return['error_fields']['f_car'] = "Laukam \"Auto marka\" jābūt aizpildītam";
@@ -632,9 +632,9 @@ class RecordController extends Controller
         $formData = json_encode($form);
       } else {
         if ($p=='a'){
-          $formData = $slot->takenby;
+          $formData = $slot->takenby = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
         } else {
-          $formData = $slot->takenby2;
+          $formData = $slot->takenby2 = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
         }
       }
 
@@ -829,15 +829,15 @@ class RecordController extends Controller
           $form = json_decode($slot->takenby2);
         }
 
-        $return['f_car'] = $form->vehicleMake;
-        $return['f_model'] = $form->vehicleModel;
-        $return['f_plate'] = $form->vehiclePlate;
-        $return['f_purpose'] = $form->purpose;
-        $return['f_storagebin'] = $form->storageBin;
-        $return['f_comment'] = $form->comment;
-        $return['f_name'] = $form->ownerName;
-        $return['f_phone'] = $form->ownerPhone;
-        $return['f_email'] = $form->ownerEmail;
+        $return['f_car'] = (isset($form->vehicleMake)) ? $form->vehicleMake : '';
+        $return['f_model'] = (isset($form->vehicleModel)) ? $form->vehicleModel : '';
+        $return['f_plate'] = (isset($form->vehiclePlate)) ? $form->vehiclePlate : '';
+        $return['f_purpose'] = (isset($form->purpose)) ? $form->purpose : '';
+        $return['f_storagebin'] = (isset($form->storageBin)) ? $form->storageBin : '';
+        $return['f_comment'] = (isset($form->comment)) ? $form->comment : '';
+        $return['f_name'] = (isset($form->ownerName)) ? $form->ownerName : '';
+        $return['f_phone'] = (isset($form->ownerPhone)) ? $form->ownerPhone : '';
+        $return['f_email'] = (isset($form->ownerEmail)) ? $form->ownerEmail : '';
         break;
       }
     }
