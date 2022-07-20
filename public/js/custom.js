@@ -2535,9 +2535,15 @@ function delay(callback, ms) {
 }
 
 
-$('input[type=password]').keyup(delay(function(e) {
-  if ($('#password').val().length >= 8){
+$('input[type=password].password-confirmation').keyup(delay(function(e) {
+  if ($(this).val().length >= 8){
     $('.invalid-password').hide();
+  }
+
+  if ($('#password').val().length < 8){
+    $('.short-password').show();
+  } else {
+    $('.short-password').hide();
   }
 
   if ($('#password').val() === $('#password-confirm').val()){

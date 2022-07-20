@@ -4527,9 +4527,34 @@ table.queueTable:nth-child(2) {
 
 .invalid-feedback {
   color: #a94442;
+  width: 100%;
+  text-align: left;
 }
 
 .registration-form-title {
   margin-bottom: 30px;
   margin-top: 10px;
+}
+
+.welcome_auth {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.auth_branding {
+  padding: 20px;
+}
+
+.email-reset-card {
+  padding: 20px 15px;
+  margin-bottom: 50px;
+  border-radius: 20px;
+}
+
+.icon-circle.fa-lock:before {
+  padding: 10px 12px;
+  background: #68c0a840;
+  border-radius: 50%;
+  color: #68c0a8;
 }

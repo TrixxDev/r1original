@@ -73,7 +73,7 @@
                         Parole
                       </label>
                       <div class="col-md-6 password-show">
-                        <input type="password" id="password" class="form-control" @error('password') is-invalid
+                        <input type="password" id="password" class="form-control password-confirmation" @error('password') is-invalid
                                @enderror name="password" required autocomplete="new-password">
                         <div class="input-group-append password-eye">
                           <span class="input-group-text">
@@ -90,7 +90,7 @@
                       </label>
                       <div class="col-md-6">
                         <div class="input-group js-parent-focus">
-                          <input id="password-confirm" type="password" class="form-control" name="password_confirmation"
+                          <input id="password-confirm" type="password" class="form-control password-confirmation" name="password_confirmation"
                                  required autocomplete="new-password">
                         </div>
                       </div>
@@ -106,6 +106,17 @@
                         </span>
                       </div>
                       <div class="col-md-3 form-control-comment">
+                      </div>
+                    </div>
+
+                    <div class="form-group row short-password" style="display: none;">
+                      <div class="col-md-3"></div>
+                      <div class="col-md-6">
+                        <span class="invalid-feedback" role="alert">
+                          <strong>Minimālais paroles garums 8 rakstzīmes!</strong>
+                        </span>
+                      </div>
+                      <div class="col-md-3">
                       </div>
                     </div>
 
