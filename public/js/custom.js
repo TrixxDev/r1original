@@ -98,8 +98,8 @@ function formatNumber (num) {
 function activeCart() {
   if ($('.cart-preview').hasClass('inactive')) {
     $('.cart-preview').removeClass('inactive').addClass('active');
-    $('#_desktop_cart .desktop').wrapAll('<a rel="nofollow" href="' + window.location.hostname + '/cart">');
-    $('#_mobile_cart .mobile').wrapAll('<a rel="nofollow" href="' + window.location.hostname + '/cart">');
+    $('#_desktop_cart .desktop').wrapAll('<a rel="nofollow" href="' + window.location.hostname + '/grozs">');
+    $('#_mobile_cart .mobile').wrapAll('<a rel="nofollow" href="' + window.location.hostname + '/grozs">');
   }
 }
 
@@ -812,7 +812,7 @@ if (!user) {
         $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty'));
         $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
         $('.blockcart.cart-preview .header').empty();
-        $('<a rel="nofollow" href="/cart"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + $quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+        $('<a rel="nofollow" href="/grozs"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + $quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
         $('.shopping-cart .cart-products-count').html('(' + (parseInt(cart_count) + parseInt(quantity)) + ')');
         $('span.cart-products-count').html('(' + (parseInt(cart_count) + parseInt(quantity)) + ')');
       }
@@ -877,7 +877,7 @@ $('.ct_matrix_row').each(function(key, value) {
           $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty'));
           $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
           $('.blockcart.cart-preview .header').empty();
-          $('<a rel="nofollow" href="/cart"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + $quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+          $('<a rel="nofollow" href="/grozs"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + $quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
           $('.shopping-cart .cart-products-count').html('(' + (parseInt(cart_count) + parseInt(quantity)) + ')');
           $('span.cart-products-count').html('(' + (parseInt(cart_count) + parseInt(quantity)) + ')');
         }
@@ -2202,7 +2202,6 @@ $('#company_registration_number').on('keyup', function() {
     }
   });
 });
-        $('.modal#slotModal select#f_office option[value="' + data.q + data.f_office + '"]').attr('selected','selected');
 
 const deliveryOptionDisabledFields = $(".cart-delivery-option input");
 
@@ -2356,7 +2355,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
           $('span.cart-products-count').html('(' + cart_quantity + ')');
           $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
           $('.blockcart.cart-preview .header').empty();
-          $('<a rel="nofollow" href="/cart"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+          $('<a rel="nofollow" href="/grozs"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
         }
       });
     } else {
@@ -2514,3 +2513,44 @@ $('h1.facet-hover').each(function() {
       $(this).children('span').text('keyboard_arrow_down');
   });
 })
+
+$('.password-eye').on('click', function() {
+  $('span i', this).toggleClass("fa-eye-slash fa-eye");
+  if ($(this).siblings().attr('type') === 'password'){
+    $(this).siblings().attr('type', 'text');
+  } else {
+    $(this).siblings().attr('type', 'password');
+  }
+});
+
+function delay(callback, ms) {
+  let timer = 0;
+  return function() {
+    let context = this, args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      callback.apply(context, args);
+    }, ms || 0);
+  };
+}
+
+
+$('input[type=password].password-confirmation').keyup(delay(function(e) {
+  if ($(this).val().length >= 8){
+    $('.invalid-password').hide();
+  }
+
+  if ($('#password').val().length < 8){
+    $('.short-password').show();
+  } else {
+    $('.short-password').hide();
+  }
+
+  if ($('#password').val() === $('#password-confirm').val()){
+    $('.form-footer').children('button').prop('disabled', false);
+    $('.password-error').hide();
+    return;
+  }
+  $('.form-footer').children('button').prop('disabled', true);
+  $('.password-error').show();
+}, 500));

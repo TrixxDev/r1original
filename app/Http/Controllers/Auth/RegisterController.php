@@ -52,11 +52,25 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         $validate = Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'surname' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'name' => ['required', 'string', 'max:40'],
+            'surname' => ['required', 'string', 'max:40'],
+            'email' => ['required', 'string', 'email', 'max:100', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'id_gender' => ['required'],
+        ],[
+            'name.required' => 'Lūdzu ievadiet jūsu vārdu!',
+            'name.max' => 'Vārds nedrīkst būt garāks par :max rakstzīmēm!',
+
+            'surname.required' => 'Lūdzu ievadiet jūsu uzvārdu!',
+            'surname.max' => 'Uzvārds nedrīkst būt garāks par :max rakstzīmēm!',
+
+            'email.required' => 'Lūdzu ievadiet jūsu e-pastu!',
+            'email.email' => 'Lūdzu ievadiet korektu e-pastu!',
+            'email.max' => 'E-pasts nedrīkst būt garāks par :max rakstzīmēm!',
+            'email.unique' => 'Lietotājs ar šādu e-pastu jau ir reģistrēts!',
+
+            'password.required' => 'Lūdzu ievadiet paroli!',
+            'password.min' => 'Minimālais paroles garums :min rakstzīmes!',
+            'password.confirmed' => 'Paroles nesakrīt!',
         ]);
 
         return $validate;
@@ -78,7 +92,6 @@ class RegisterController extends Controller
             'surname' => $data['surname'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'gender' => ($data['id_gender'] == 1) ? 'Mr.' : 'Mrs.',
         ]);
         $user->assignRole($role);
 
