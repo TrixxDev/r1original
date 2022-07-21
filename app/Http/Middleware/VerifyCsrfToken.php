@@ -18,7 +18,7 @@ class VerifyCsrfToken extends Middleware
         'kvadraciklu-riepas/*',
         'motociklu-riepas/*',
         'lielas-riepas/*',
-        'grozs/*',
-        'pasutijums/*',
+        'grozs',
+        'pasutijums',
     ];
 }

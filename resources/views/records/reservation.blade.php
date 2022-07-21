@@ -231,10 +231,10 @@
                                 @if ($iteration == 1)
                                   <td class="header-time">{{ App\Models\Office::timeByInterval($i) }}</td><td class="slot slot-empty"></td>
                                 @else
-                                  <td class="slot slot-empty"></td>
+                                  <td class="slot slot-free"></td>
                                 @endif
                               @else
-                                <td class="slot slot-empty"></td>
+                                <td class="slot slot-free"></td>
                               @endif
                             @endif
 
