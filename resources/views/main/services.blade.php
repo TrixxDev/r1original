@@ -7,7 +7,7 @@
             <div class="main-content clearfix col-md-12 col-xl-10">
                 <div id="content-wrapper" class="right-column col-lg-12">
                         <section id="content" class="page-content page-cms page-cms-8 p-1">
-                            <p class="services-image text-center"><img src="{{ asset('img/cms/Darbs3.jpg') }}" alt="" width="700" height="991"></p>
+                            <p class="overflow-image text-center"><img src="{{ asset('img/cms/Darbs3.jpg') }}" alt="" width="700" height="991"></p>
                             <ul>
                                 <li>Riepu uzglabāšana - 20.00 EUR/6mēn.</li>
                                 <li>Riepu utilizācija - 2.00 EUR/gab.</li>
