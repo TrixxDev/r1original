@@ -16,7 +16,7 @@
                             </h1>
                         </header>
                         <section id="content" class="page-content page-cms page-cms-9">
-                            <p><img src="{{ asset('img/cms/kond_liel.jpg') }}" alt="" width="707" height="215"></p>
+                            <p class="overflow-image"><img src="{{ asset('img/cms/kond_liel.jpg') }}" alt="" width="707" height="215"></p>
                             <p>Parūpēsimies par vēsu gaisu Jūsu automašīnā. <br> Piezvanīt un pieteikt vizīti kondicioniera diagnostikai/uzpildei vai remonatam var pa tālruņa Nr.:<br> 67910555, R1 Ulbroka, Institūta iela 1,<br> 67615615, R1 Rīgā, Kalnciema ielā 39.</p>
                             <h4><b>Visērtāk pierakstīties <a href="/content/7-calendar">E-Pierakstā </a><br> Kondicionieru apkope, diagnostika, uzpilde:</b></h4>
                             <ul>
@@ -25,7 +25,7 @@
                             </ul>
                             <h4>AUTO KONDICIONIERU APKOPE, DIAGNOSTIKA, UZPILDE, REMONTS</h4>
                             <p>Kā izskatās kondicioniera sistēma un kā tā strādā? Zemāk redzama uzskatāma shēma - kur, kas un kā atrodas gaisa kondicionētāja sistēmā.</p>
-                            <p><img src="{{ asset('img/cms/kond_1_707.jpg') }}" alt="" width="707" height="398"></p>
+                            <p class="overflow-image"><img src="{{ asset('img/cms/kond_1_707.jpg') }}" alt="" width="707" height="398"></p>
                             <p><b>Kas ietilpst kondicionieru sistēmas apkopē-diagnostikā ?</b></p>
                             <ul>
                                 <li>*kompresora darbspējas pārbaude,</li>
@@ -55,7 +55,7 @@
                                 <li>* kondicioniera sistēmu uzpilda ar ražotāja noteikto gāzes daudzumu, kā arī speciālu eļļu un ultravioleto piemaisījumu.</li>
                             </ul>
                             <p>UV piemaisījums palīdz noskaidrot noplūdes vietu, gadījumos, ja sistēma nav pietiekami hermētiska.</p>
-                            <p><img src="{{ asset('img/cms/IMG_7726_707.jpg') }}" alt="" width="707" height="531"></p>
+                            <p class="overflow-image"><img src="{{ asset('img/cms/IMG_7726_707.jpg') }}" alt="" width="707" height="531"></p>
                             <p><b>Cik daudz gāzes ir nepieciešams kondicioniera sistēmai?</b></p>
                             <p>Pēc auto parametriem tiek noteikts kondicioniera sistēmas gāzes daudzums gramos. To var noskaidrot auto apkopes grāmatiņā vai uzlīmē zem motora pārsega.</p>
                             <p><img src="{{ asset('img/cms/kond_2_350.jpg') }}" alt="" width="350" height="263"><img src="{{ asset('img/cms/kond_3_350.jpg') }}" alt="" width="350" height="263"></p>
@@ -73,7 +73,7 @@
                             <p>Tāpēc pirms auto gaisa kondicioniera sistēmas uzpildes nepieciešama diagnostika.</p>
                             <p><b>R1 iesaka :</b></p>
                             <p>*pārbaudiet temperatūru, kādu kondicionieris pūš salonā</p>
-                            <p><img src="{{ asset('img/cms/Temper_700.jpg') }}" alt="" width="700" height="525"></p>
+                            <p class="overflow-image"><img src="{{ asset('img/cms/Temper_700.jpg') }}" alt="" width="700" height="525"></p>
                             <p>*pārliecinieties, vai salona gaisa filtrs ir tīrs - pie mums to varat nopirkt un nomainīt.</p>
                             <p><img src="{{ asset('img/cms/Filtri_2_350.jpg') }}" alt="" width="350" height="313"><img src="{{ asset('img/cms/Filtri_350.jpg') }}" alt="" width="350" height="297"></p>
                             <p><b>R1</b> servisā <b>Ulbrokā</b> tiek veikta auto kondicionēšanas sistēmas apkope, diagnostika un uzpilde. <br><b>R1</b> servisā <b>Rīgā</b>, Kalnciema ielā 39 tiek veikta auto kondicionēšanas sistēmas apkope, diagnostika, uzpilde un remonts.</p>
