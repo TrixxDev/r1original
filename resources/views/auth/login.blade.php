@@ -27,56 +27,113 @@
                                             </label>
                                             <div class="col-md-6">
                                                 <input id="email" type="email"
+                                                       style="@error('email') border: 1px solid red; @enderror"
                                                        class="form-control @error('email') is-invalid @enderror" name="email"
                                                        value="{{ old('email') }}" required autocomplete="email" autofocus>
-                                                @error('email')
-                                                <span class="invalid-feedback" role="alert">
-                                                    <strong>{{ $message }}</strong>
-                                                </span>
-                                                @enderror
                                             </div>
                                             <div class="col-md-3 form-control-comment">
                                             </div>
                                         </div>
+
+                                        <div class="form-group row">
+
+                                          <div class="col-md-3"></div>
+
+                                          <div class="col-md-6">
+                                            @error('email')
+                                            <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                          </div>
+
+                                          <div class="col-md-3"></div>
+
+                                        </div>
+
                                         <div class="form-group row ">
                                             <label class="col-md-3 form-control-label required">
                                                 {{ __('Parole') }}
                                             </label>
-                                            <div class="col-md-6">
+{{--                                            <div class="col-md-6">--}}
 
-                                                <div class="input-group js-parent-focus">
-                                                    <input class="form-control @error('password') is-invalid @enderror js-child-focus js-visible-password"
-                                                           name="password" type="password" value="" pattern=".{5,}"
-                                                           required="" autocomplete="current-password">
-                                                        <span class="input-group-btn">
-                                                            <button tabindex="-1" class="btn toggle" type="button" data-action="show-password" data-text-show="Rādīt"
-                                                                data-text-hide="Hide" style="height: 38px!important;">
-                                                                Rādīt
-                                                            </button>
-                                                        </span>
-                                                    @error('password')
-                                                    <span class="invalid-feedback" role="alert">
-                                                        <strong>{{ $message }}</strong>
-                                                    </span>
-                                                    @enderror
-                                                </div>
+  {{--                                                <div class="input-group js-parent-focus">--}}
+  {{--                                                    <input class="form-control @error('password') is-invalid @enderror js-child-focus js-visible-password"--}}
+  {{--                                                           name="password" type="password" value="" pattern=".{5,}"--}}
+  {{--                                                           required="" autocomplete="current-password">--}}
+  {{--                                                        <span class="input-group-btn">--}}
+  {{--                                                            <button tabindex="-1" class="btn toggle" type="button" data-action="show-password" data-text-show="Rādīt"--}}
+  {{--                                                                data-text-hide="Hide" style="height: 38px!important;">--}}
+  {{--                                                                Rādīt--}}
+  {{--                                                            </button>--}}
+  {{--                                                        </span>--}}
+  {{--                                                    @error('password')--}}
+  {{--                                                    <span class="invalid-feedback" role="alert">--}}
+  {{--                                                        <strong>{{ $message }}</strong>--}}
+  {{--                                                    </span>--}}
+  {{--                                                    @enderror--}}
+  {{--                                                </div>--}}
+
+{{--                                            </div>--}}
+                                            <div class="col-md-6 password-show">
+                                              <input type="password" id="password" class="form-control" @error('password') style="border: 1px solid red;" is-invalid
+                                                     @enderror name="password" required autocomplete="new-password">
+                                              <div class="input-group-append password-eye">
+                                                <span class="input-group-text">
+                                                  <i class="fa fa-eye-slash"></i>
+                                                </span>
+                                              </div>
                                             </div>
-
                                             <div class="col-md-3 form-control-comment">
 
                                             </div>
+{{--                                            @error('password')--}}
+{{--                                              <span class="invalid-feedback" role="alert">--}}
+{{--                                                  <strong>{{ $message }}</strong>--}}
+{{--                                              </span>--}}
+{{--                                            @enderror--}}
                                         </div>
 
-                                        @if (Route::has('password.request'))
-                                            <div class="forgot-password" style="text-align: center;">
-                                                <a class="btn btn-link" href="{{ route('password.request') }}">
-                                                    {{ __('Forgot Your Password?') }}
-                                                </a>
-                                            </div>
-                                        @endif
+                                        <div class="form-group row">
+
+                                          <div class="col-md-3"></div>
+
+                                          <div class="col-md-6 text-right" style="margin-top: -15px;">
+                                            <a href="{{ route('password.request') }}"><span style="margin-top: -15px;">Aizmirsāt paroli?</span></a>
+                                          </div>
+
+                                          <div class="col-md-3"></div>
+
+                                        </div>
+
+
+                                        <div class="form-group row">
+
+                                          <div class="col-md-3"></div>
+
+                                          <div class="col-md-6 text-left" style="margin-top: -15px;">
+                                            @error('password')
+                                            <span class="invalid-feedback" role="alert">
+                                              <strong>{{ $message }}</strong>
+                                            </span>
+                                            @enderror
+                                          </div>
+
+                                          <div class="col-md-3"></div>
+
+                                        </div>
+
+
+{{--                                        @if (Route::has('password.request'))--}}
+{{--                                            <div class="forgot-password" style="text-align: center;">--}}
+{{--                                                <a class="btn btn-link" href="{{ route('password.request') }}">--}}
+{{--                                                    {{ __('Aizmirsāt paroli?') }}--}}
+{{--                                                </a>--}}
+{{--                                            </div>--}}
+{{--                                        @endif--}}
                                     </section>
 
-                                    <footer class="form-footer text-sm-center clearfix">
+                                    <footer class="form-footer text-sm-center clearfix text-center">
                                         <input type="hidden" name="submitLogin" value="1">
 
                                         <button class="btn btn-primary" data-link-action="sign-in" type="submit">
