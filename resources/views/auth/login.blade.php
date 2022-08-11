@@ -29,7 +29,9 @@
                                                 <input id="email" type="email"
                                                        style="@error('email') border: 1px solid red; @enderror"
                                                        class="form-control @error('email') is-invalid @enderror" name="email"
-                                                       value="{{ old('email') }}" required autocomplete="email" autofocus>
+                                                       value="{{ old('email') }}" required autocomplete="email" autofocus
+                                                       oninvalid="this.setCustomValidity('Lūdzu ievadiet pareizu e-pastu')"
+                                                       oninput="this.setCustomValidity('')"/>
                                             </div>
                                             <div class="col-md-3 form-control-comment">
                                             </div>
@@ -77,7 +79,10 @@
 {{--                                            </div>--}}
                                             <div class="col-md-6 password-show">
                                               <input type="password" id="password" class="form-control" @error('password') style="border: 1px solid red;" is-invalid
-                                                     @enderror name="password" required autocomplete="new-password">
+                                                     @enderror name="password" required autocomplete="new-password"
+                                                     oninvalid="this.setCustomValidity('Lūdzu ievadiet paroli')"
+                                                     oninput="this.setCustomValidity('')"
+                                              >
                                               <div class="input-group-append password-eye">
                                                 <span class="input-group-text">
                                                   <i class="fa fa-eye-slash"></i>

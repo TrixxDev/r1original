@@ -4565,3 +4565,7 @@ td.slot-gray.slot {
   border-radius: 50%;
   color: #68c0a8;
 }
+
+.overflow-image {
+  overflow: auto;
+}

@@ -6,14 +6,8 @@
         <div class="row">
             <div class="main-content clearfix col-md-12 col-xl-10">
                 <div id="content-wrapper" class="right-column col-lg-12">
-                    <section id="main">
-                        <header class="page-header">
-                            <h1>
-                                Pakalpojumi
-                            </h1>
-                        </header>
-                        <section id="content" class="page-content page-cms page-cms-8">
-                            <p><img src="{{ asset('img/cms/Darbs3.jpg') }}" alt="" width="700" height="991"></p>
+                        <section id="content" class="page-content page-cms page-cms-8 p-1">
+                            <p class="overflow-image text-center"><img src="{{ asset('img/cms/Darbs3.jpg') }}" alt="" width="700" height="991"></p>
                             <ul>
                                 <li>Riepu uzglabāšana - 20.00 EUR/6mēn.</li>
                                 <li>Riepu utilizācija - 2.00 EUR/gab.</li>
@@ -32,7 +26,6 @@
                         <footer class="page-footer">
                             <!-- Footer content -->
                         </footer>
-                    </section>
                 </div>
             </div>
             @include('components.right-sidebar')
