@@ -169,5 +169,9 @@
     </div>
   </div>
 
+{{--  <script>--}}
+{{--    window.history.replaceState({}, '',window.location.href);--}}
+{{--  </script>--}}
+
 @endsection
 

@@ -52,7 +52,8 @@ class CartController extends Controller
 
     public static function options(): array
     {
-      $options = [
+      return [
+        'shippingDef' => config('app.settings.shippingDef'),
         'Autotire' => [
           'shipping' => [
             1 => config('app.settings.shipping_autotire_one'),
@@ -126,12 +127,13 @@ class CartController extends Controller
           ]
         ]
       ];
-
-      return $options;
     }
 
     public function index(Request $request)
     {
+
+      $session_id = Session::getId();
+
       if ($request->post()) {
           $delivery = [];
 //          dd($this->cart->content());
@@ -179,14 +181,59 @@ class CartController extends Controller
         return view('cart.home');
       }
 
-      public function checkShipping($data = '')
+      public function checkShipping(Request $request, $data = '')
       {
-        Session::remove('cartOptions');
+        $modelCount = [
+          'Autotire' => [],
+          'Moto' => [],
+          'Quadr' => [],
+          'Bigtire' => [],
+        ];
 
+        Session::remove('cartOptions');
 
         Session::put('cartOptions.shipping', 1);
 
-        dd(Session::all());
+        foreach (Cart::content() as $item) {
+          $model = str_replace('App\Models\\', '', $item->associatedModel);
+          switch ($model) {
+            case 'Autotire': {
+              array_push($modelCount['Autotire'], $item->qty);
+              break;
+            }
+            case 'Moto': {
+              array_push($modelCount['Moto'], $item->qty);
+              break;
+            }
+            case 'Quadr': {
+              array_push($modelCount['Quadr'], $item->qty);
+              break;
+            }
+            case 'Bigtire': {
+              array_push($modelCount['Bigtire'], $item->qty);
+              break;
+            }
+          }
+        }
+
+        foreach ($modelCount as $model => $count) {
+          $modelCount[$model] = array_sum($count);
+        }
+
+        $highestValue = max($modelCount);
+        $highestModel = array_search(max($modelCount), $modelCount);
+
+        if ($highestValue >= 3 && $highestValue < 5) {
+          $data = Self::options()[$highestModel]['shipping'][4];
+        } else if ($highestValue > 4) {
+          $data = Self::options()[$highestModel]['shipping'][5];
+        } else {
+          $data = Self::options()[$highestModel]['shipping'][$highestValue];
+        }
+
+        if ($request->city == 1 || $request->city == 2) {
+          $data = Self::options()['shippingDef'];
+        }
 
         return json_encode($data);
       }

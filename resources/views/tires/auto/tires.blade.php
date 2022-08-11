@@ -724,7 +724,8 @@
                                title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
                                @endif
                                href="{{ route($current_url, [strtolower(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}"
-                               data-content="{{ $tire->title }}">
+                               data-content="{{ $tire->title }}"
+                               data-article="{{ $tire->article }}">
                               {{ $tire->title }}
                             </a>
                           </td>

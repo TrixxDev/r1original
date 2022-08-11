@@ -38,15 +38,22 @@
                         @foreach ($orders as $order)
                         @php
                           $item_count = [];
+                          $item_sum = [];
                           $items = unserialize($order->info);
+                          //unset($items['data']);
                           foreach ($items as $item) {
-                              array_push($item_count, $item['quantity']);
+                            if (!isset($item['quantity'])) continue;
+                            array_push($item_count, $item['quantity']);
+                            array_push($item_sum, ($item['price'] * $item['quantity']));
                           }
                           $item_count = array_sum($item_count);
+                          $item_sum = array_sum($item_sum);
+
+                          $_ENV['tests'] = 'tests';
 
                           $enum = [
-                            1 => 'Pildās',
-                            2 => 'Apstrādājās',
+                            1 => 'Nav apmaksāts',
+                            2 => 'Apmaksāts',
                             3 => 'Gatavs'
                           ];
 
@@ -54,7 +61,7 @@
                         <tr>
                           <td>{{ $order->created_at }}</td>
                           <td>{{ $item_count }}</td>
-                          <td>{{ $order->price }} €</td>
+                          <td>{{ $item_sum }} €</td>
                           <td>{{ $enum[$order->status] }}</td>
                           <td>#</td>
                         </tr>
