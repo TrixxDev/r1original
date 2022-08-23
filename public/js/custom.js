@@ -306,23 +306,23 @@ $('[data-toggle="tooltip"]').tooltip({
 });
 
 sf_height = $('#search_filters').height();
-$('.show_list').click(function(){
-  document.cookie = "show_list=true; expires=Thu, 30 Jan 2100 12:00:00 UTC; path=/";
-  $('#js-product-list .product-miniature').addClass('product_show_list');
-  $('.table-top').addClass('product_show_list');
-  $('.custom_atv_name').addClass('product_show_list');
-  $('.show_list').addClass('active');
-  sortItemsInList();
-});
+// $('.show_list').click(function(){
+//   document.cookie = "show_list=true; expires=Thu, 30 Jan 2100 12:00:00 UTC; path=/";
+//   $('#js-product-list .product-miniature').addClass('product_show_list');
+//   $('.table-top').addClass('product_show_list');
+//   $('.custom_atv_name').addClass('product_show_list');
+//   $('.show_list').addClass('active');
+//   sortItemsInList();
+// });
 
-$('.show_grid').click(function(){
-  document.cookie = "show_list=; expires=Thu, 30 Jan 1970 12:00:00 UTC; path=/";
-  $('#js-product-list .product-miniature').removeClass('product_show_list');
-  $('.table-top').removeClass('product_show_list');
-  $('.custom_atv_name').removeClass('product_show_list');
-  $('.show_list').removeClass('active');
-  sortItemsInBrand();
-});
+// $('.show_grid').click(function(){
+//   document.cookie = "show_list=; expires=Thu, 30 Jan 1970 12:00:00 UTC; path=/";
+//   $('#js-product-list .product-miniature').removeClass('product_show_list');
+//   $('.table-top').removeClass('product_show_list');
+//   $('.custom_atv_name').removeClass('product_show_list');
+//   $('.show_list').removeClass('active');
+//   sortItemsInBrand();
+// });
 
 function sortItemsInBrand() {
   var $brandP = $('.products').first();
@@ -417,18 +417,19 @@ $('#category.category-id-17 .facet--35 li').each(function(){
     $(this).hide();
   }
 })
-$('#quantity_wanted').off('change');
-if ($('#category.category-id-21').length) {
-  $('.show_grid').click();
-} else {
-  $('.show_list').click();
-}
-if ($('#category.category-id-21').length) {
-  $('#search_filters').addClass('auto');
-} else {
-  $('#search_filters .sidebar-auto').remove();
-  $('#search_filters_params').addClass('active');
-}
+// $('#quantity_wanted').off('change');
+// if ($('#category.category-id-21').length) {
+//   $('.show_grid').click();
+// } else {
+//   $('.show_list').click();
+// }
+// if ($('#category.category-id-21').length) {
+//   $('#search_filters').addClass('auto');
+// } else {
+//   $('#search_filters .sidebar-auto').remove();
+//   $('#search_filters_params').addClass('active');
+// }
+
 // $('#search_filters h4 > span').on('click', function(){
 //   var span = $(this);
 //   var active = span.hasClass('active');
@@ -2476,14 +2477,20 @@ $('#facet_availability li label').on('click', function() {
 
 });
 
-$('.can-collapse span.show_list, .can-collapse span.show_grid').on('click', function(){
-  if($('.can-collapse span.show_list').hasClass('active')) {
-    $('#js-product-list').show();
-    $('.tire-image-container').hide();
-  } else {
-    $('#js-product-list').hide();
-    $('.tire-image-container').show();
-  }
+// SHOW LIST VIEW
+$('div.can-collapse span.show_list').on('click', function(){
+  $('#js-product-list').show();
+  $('.tire-image-container').hide();
+  $(this).addClass('active');
+  $('span.show_grid').removeClass('active');
+});
+
+// SHOW GRID VIEW
+$('div.can-collapse span.show_grid').on('click', function(){
+  $('.tire-image-container').show();
+  $('#js-product-list').hide();
+  $(this).addClass('active');
+  $('span.show_list').removeClass('active');
 });
 
 let showTires = false;
