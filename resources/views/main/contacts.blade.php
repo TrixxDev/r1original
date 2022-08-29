@@ -30,8 +30,8 @@
                                     <td><a href="tel:+37167615615"><strong>+371 67615615</strong></a></td>
                                 </tr>
                                 <tr>
-                                    <td><a href="mailto:info@r1.com.lv">info@r1.com.lv</a></td>
-                                    <td><a href="mailto:"></a></td>
+                                    <td><a href="mailto:info@r1riepas.lv">info@r1riepas.lv</a></td>
+                                    <td><a href="mailto:kalnciema@r1riepas.lv">kalnciema@r1riepas.lv</a></td>
                                 </tr>
                                 </tbody>
                             </table>

@@ -85,7 +85,7 @@
                             <p>Gadījumā, ja prece, ko pircējs vēlas iegādāties neatrodas noliktavā, to iespējams pasūtīt no ražotāja. Šajā gadījumā pircējam ir nepieciešams veikt priekšapmaksu 25% apmērā no preces kopējās vērtības.</p>
                             <p>Atgādinām, ka priekšapmaksa tiek uzskatīta par garantijas summu un netiek atgriezta gadījumā, ja pircējs atsakās no pasūtītās preces.</p>
                             <h4><b>Visas Internet veikala cenas norādītas ar PVN 21%.</b></h4>
-                            <p>Jautājumu vai neskaidrību gadījumā, lūdzam sazināties ar mums pa tālruni 67910555 vai rakstot e-pastu uz adresi<a href="mailto:info@r1.com.lv"> info@r1.com.lv.</a></p>
+                            <p>Jautājumu vai neskaidrību gadījumā, lūdzam sazināties ar mums pa tālruni 67910555 vai rakstot e-pastu uz adresi<a href="mailto:info@r1riepas.lv"> info@r1riepas.lv</a></p>
                             <h4 align="center">VEIKSMĪGUS PIRKUMUS! :)</h4>
                             <h4></h4>
                         </section>

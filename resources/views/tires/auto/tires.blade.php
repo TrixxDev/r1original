@@ -548,7 +548,7 @@
                       $brand = $tire->fullSize;
                       $tire->includeStock = true;
                       if ($cbrand!=$brand){
-                        echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex">';
+                        echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex pr-1">';
                         $cbrand = $brand;
                         $stripe = 1;
                       } else {
@@ -556,7 +556,7 @@
                       }
                     @endphp
 {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
-                    <a href="" class="">
+                    <a href="{{ route($current_url, [strtolower(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}" class="">
                       <div class="tire-image-card sort-order">
                         <div class="text-center">
                           <img
@@ -770,7 +770,7 @@
 
                           <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
                           <td id="sale-price" class="text-center tire-price-red sale-price">€ {{ $tire->price2 }}</td>
-                          <td class="hidden-sm-down text-center"></td>
+                          <td class="hidden-sm-down text-center">{{$tire->comment}}</td>
 
                           <td class="shopping-cart-col">
                             <div class="clearfix atc_div text-right">

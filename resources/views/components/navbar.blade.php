@@ -293,7 +293,7 @@
 
     <div class="dropdown-options diski">
       <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ route('lietie-diski') }}">Jauni Lietie Diski</a>
+        <a class="dropdown-item" href="{{ route('lietie-diski') }}">Lietie Diski</a>
       </div>
 
       <div class="nav-dropdown-link">

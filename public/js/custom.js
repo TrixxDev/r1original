@@ -1775,6 +1775,7 @@ $(document).ready(function() {
 
   $('#submit-reservation').on('click', function() {
 
+    let recaptcha_k = $('#recaptcha_k').data('value');
     let car = $('#reservation #brand').val();
     let carModel = $('#reservation #model').val();
     let licPlate = $('#reservation #reg_nr').val();
@@ -1801,9 +1802,17 @@ $(document).ready(function() {
         'email': email,
         'date': date,
         'queue_id': queue_id,
-        'slotNumber': iorder
+        'slotNumber': iorder,
+        'token': $('#reservation input[name=grecaptcha]').val(),
       },
       success: function(data) {
+        grecaptcha.ready(function() {
+          grecaptcha.execute(recaptcha_k, {action: "application_form"}).then(function(token) {
+            $('#reservation input[name=grecaptcha]').val(token);
+            $('#recaptcha_k').data('value', token);
+            $('#reservation input[name=grecaptcha_app]').val('application_form');
+          });
+        });
         if (data.error) {
           if (data.error.brand) $('#brand').attr('placeholder', data.error.brand);
           if (data.error.model) $('#model').attr('placeholder', data.error.model);
@@ -2483,6 +2492,7 @@ $('div.can-collapse span.show_list').on('click', function(){
   $('.tire-image-container').hide();
   $(this).addClass('active');
   $('span.show_grid').removeClass('active');
+  localStorage.setItem("show_type", "list");
 });
 
 // SHOW GRID VIEW
@@ -2491,7 +2501,15 @@ $('div.can-collapse span.show_grid').on('click', function(){
   $('#js-product-list').hide();
   $(this).addClass('active');
   $('span.show_list').removeClass('active');
+  localStorage.setItem("show_type", "grid");
 });
+
+// SHOW VIEW DEPENDING ON LOCAL STORAGE VALUE
+if (localStorage.getItem('show_type') != 'list') {
+  $('div.can-collapse span.show_grid').click();
+} else if (localStorage.getItem('show_type') == 'grid') {
+  $('div.can-collapse span.show_list').click();
+}
 
 let showTires = false;
 let showDisc = false;
@@ -2639,4 +2657,3 @@ $('input[type=password].password-confirmation').keyup(delay(function(e) {
   $('.form-footer').children('button').prop('disabled', true);
   $('.password-error').show();
 }, 500));
-

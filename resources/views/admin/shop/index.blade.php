@@ -32,6 +32,7 @@
                         <th scope="col">Summa</th>
                         <th scope="col">Status</th>
                         <th scope="col">Piezīmes</th>
+                        <th scope="col">Labot</th>
                       </tr>
                       </thead>
                       <tbody>
@@ -58,13 +59,31 @@
                           ];
 
                         @endphp
-                        <tr>
-                          <td>{{ $order->created_at }}</td>
-                          <td>{{ $item_count }}</td>
-                          <td>{{ $item_sum }} €</td>
-                          <td>{{ $enum[$order->status] }}</td>
-                          <td>#</td>
-                        </tr>
+                          <tr>
+                            <td>{{ $order->created_at }}</td>
+                            <td>{{ $item_count }}</td>
+                            <td>{{ $item_sum }} €</td>
+                            <td>{{ $enum[$order->status] }}</td>
+                            <td>#</td>
+                            <td style="width: 153px;">
+
+                              <a href="order/{{$order->id}}" class="btn btn-warning">
+                                <i class="fa-solid fa-pencil" style="color:#fff;"></i>
+                              </a>
+
+                              <a href="order/{{$order->id}}" class="btn btn-success">
+                                <i class="fa-solid fa-circle-check" style="color:#fff;"></i>
+                              </a>
+
+
+                              @method('DELETE')
+
+                              <button type="submit" class="btn btn-danger">
+                                <i class="fa-solid fa-trash" style="color:#fff;"></i>
+                              </button>
+
+                            </td>
+                          </tr>
                         @endforeach
                       </tbody>
                     </table>

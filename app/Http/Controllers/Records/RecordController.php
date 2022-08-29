@@ -15,6 +15,7 @@ use App\Helper\Tires;
 use App\Models\Queue;
 use App\Models\Slot;
 use App\Models\Pdf;
+use App\Rules\ReCaptcha;
 use Auth;
 
 class RecordController extends Controller
@@ -213,9 +214,40 @@ class RecordController extends Controller
     public function fillSlot(Request $request)
     {
 
+      $action = $request->action;
+
+      $curlData = array(
+        'secret' => env('RECAPTCHAV3_SECRET'),
+        'response' => $request->token,
+      );
+
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, "https://www.google.com/recaptcha/api/siteverify");
+      curl_setopt($ch, CURLOPT_POST, 1);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($curlData));
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      $curlResponse = curl_exec($ch);
+
+      $captchaResponse = json_decode($curlResponse, true);
+
+      dd($captchaResponse);
+
+      if ($captchaResponse['success'] == '1' && $captchaResponse['action'] == $action && $captchaResponse['score'] >= 0.5 && $captchaResponse['hostname'] == $_SERVER['SERVER_NAME']) {
+        echo 'Form Submitted Successfully';
+      } else {
+        echo 'You are not a human';
+      }
+//
+//      dd($resultJson);
+//
+//      if ($resultJson->success != true) {
+//        return back()->withErrors(['captcha' => 'ReCaptcha Error']);
+//      }
+//
+//      if ($resultJson->score >= 0.3) {
         $userID = -1;
         if (Auth::check()) {
-            $userID = Auth::user()->id;
+          $userID = Auth::user()->id;
         }
 
         $date = $request->date;

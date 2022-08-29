@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="container-fluid records">
-        <div class="row">
+        <div class="">
             <div class="main-content clearfix col-md-12 col-xl-12">
                 <div class="loading"></div>
                 <div id="content-wrapper" class="right-column col-lg-12">
@@ -242,120 +242,102 @@
                                     </div>
                                     <div class="modal-body mobile-reservation-modal-body">
                                         <div class="container-fluid">
-                                            <div class="row">
+
                                                 <div class="col-md-12 mobile-body">
-                                                    <div class="form-row auto-model row">
-                                                        <div class="form-group col-md-3">
-                                                            <label for="mobile-brand"><span class="validate" style="color: red;">*</span>Auto marka un modelis:</label>
-                                                        </div>
-                                                        <div class="form-group col-md-5">
-                                                            <input type="text" class="form-control" id="mobile-brand">
-                                                        </div>
-                                                        <div class="form-group col-md-4">
-                                                            <input type="text" class="form-control" id="mobile-model">
-                                                        </div>
+
+                                                    <div class="form-group">
+                                                      <label for="mobile-brand"><span class="validate">*</span>Auto marka:</label>
+                                                      <input id="mobile-brand" type="text" class="form-control">
                                                     </div>
-                                                    <div class="form-group row">
-                                                        <label for="mobile-reg_nr" class="col-sm-3" style="text-align: left;">Reģistrācijas numurs:</label>
-                                                        <div class="col-sm-9">
-                                                            <input type="text" class="form-control" id="mobile-reg_nr">
-                                                        </div>
+
+                                                    <div class="form-group">
+                                                      <label for="mobile-model"><span class="validate">*</span>Auto modelis:</label>
+                                                      <input id="mobile-model" type="text" class="form-control">
                                                     </div>
+
+                                                    <div class="form-group">
+                                                      <label for="mobile-reg_nr">Reģistrācijas numurs:</label>
+                                                      <input type="text" class="form-control" id="mobile-reg_nr">
+                                                    </div>
+
                                                     <div class="form-group reservation-filiale">
-                                                        <div class="row">
-                                                            <div class="form-group col-md-3">
-                                                                <label for="mobile-filiale"><span class="validate" style="color: red;">*</span>Filiāle</label>
-                                                            </div>
-                                                            <div class="col-md-9" id="mobile-filiale">
-                                                                <select class="form-control" name="filiale">
-                                                                    <option disabled selected>Izvēlēties</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
+                                                      <span class="validate">*</span><label for="select">Filiāle</label>
+                                                      <div id="mobile-filiale">
+                                                        <select class="custom-select" name="filiale" required="required">
+                                                          <option disabled selected>Izvēlēties</option>
+                                                        </select>
+                                                      </div>
                                                     </div>
+
                                                     <div class="form-group hidden-dates" style="display: none;">
-                                                        <div class="row">
-                                                            <div class="form-group col-md-3">
-                                                                <label for="mobile-date"><span class="validate" style="color: red;">*</span>Datums</label>
-                                                            </div>
-                                                            <div class="col-md-9" id="mobile-date">
-                                                                <select class="form-control" name="reservation-date">
-                                                                    <option class="reservation-disabled" value="0" disabled selected>Izvēlēties</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
+                                                      <label for="reservation-date"><span class="validate">*</span>Datums</label>
+                                                      <div id="mobile-date">
+                                                        <select class="custom-select" name="reservation-date">
+                                                          <option class="reservation-disabled" value="0" disabled selected>Izvēlēties</option>
+                                                        </select>
+                                                      </div>
                                                     </div>
+
                                                     <div class="form-group hidden-times" style="display: none;">
-                                                        <div class="row">
-                                                            <div class="form-group col-md-3">
-                                                                <label for="mobile-time"><span class="validate" style="color: red;">*</span>Brīvie laiki</label>
-                                                            </div>
-                                                            <div class="col-md-9" id="mobile-time">
-                                                                <select class="form-control" name="reservation-time">
-                                                                    <option class="reservation-disabled" value="0" disabled selected>Izvēlēties</option>
-                                                                </select>
-                                                            </div>
-                                                        </div>
+                                                      <label for="reservation-time"><span class="validate">*</span>Brīvie laiki</label>
+                                                      <div id="mobile-time">
+                                                        <select required="required" class="custom-select" name="reservation-time">
+                                                          <option class="reservation-disabled" value="0" disabled selected>Izvēlēties</option>
+                                                        </select>
+                                                      </div>
                                                     </div>
+
                                                     <div class="form-group purpose">
-                                                        <div class="row">
-                                                            <div class="form-group col-md-3">
-                                                                <label for="mobile-service"><span class="validate" style="color: red;">*</span>Es vēlos:</label>
-                                                            </div>
-                                                            <div class="col-md-9" id="mobile-service">
-                                                                <select class="form-control" name="serviceOption">
-                                                                    <option disabled selected>Izvēlēties</option>
-                                                                    @foreach ($services as $service)
-                                                                        <option value="{{ $service->service_id }}">{{ $service->title }}</option>
-                                                                    @endforeach
-                                                                </select>
-                                                            </div>
-                                                        </div>
+                                                      <label for="serviceOption"><span class="validate">*</span>Es vēlos:</label>
+                                                      <div id="mobile-service">
+                                                        <select class="custom-select" name="serviceOption" required="required">
+                                                          <option disabled selected>Izvēlēties</option>
+                                                          @foreach ($services as $service)
+                                                            <option value="{{ $service->service_id }}">{{ $service->title }}</option>
+                                                          @endforeach
+                                                        </select>
+                                                      </div>
                                                     </div>
-                                                    <div class="form-group row">
-                                                        <label for="mobile-comment" class="col-sm-3" style="text-align: left;">Piezīmes:</label>
-                                                        <div class="col-sm-9">
-                                                            <textarea id="mobile-comment" class="form-control" cols="20" rows="10"></textarea>
-                                                        </div>
+
+                                                    <div class="form-group">
+                                                      <label for="mobile-comment">Piezīmes</label>
+                                                      <textarea id="mobile-comment" name="" cols="40" rows="4" class="form-control"></textarea>
                                                     </div>
-                                                    <div class="form-group row">
-                                                        <label for="mobile-name" class="col-sm-3" style="text-align: left;">Mans vārds:</label>
-                                                        <div class="col-sm-9">
-                                                            <input type="text" class="form-control" id="mobile-name">
-                                                        </div>
+
+                                                    <div class="form-group">
+                                                      <label for="mobile-name">Mans vārds:</label>
+                                                      <input id="mobile-name" type="text" class="form-control">
                                                     </div>
-                                                    <div class="form-group phone-number row">
-                                                        <label for="mobile-phone" class="col-sm-3" style="text-align: left;"><span class="validate" style="color: red;">*</span>Mans tālruņa numurs:</label>
-                                                        <div class="col-sm-9">
-                                                            <input type="text" class="form-control" id="mobile-phone">
-                                                        </div>
+
+                                                    <div class="form-group phone-number">
+                                                      <label for="mobile-phone"><span class="validate">*</span>Mans tālruņa numurs:</label>
+                                                      <input type="text" class="form-control" id="mobile-phone">
                                                     </div>
-                                                    <div class="form-group row client-email last">
-                                                        <label for="mobile-email" class="col-sm-3" style="text-align: left;"><span class="validate" style="color: red;">*</span>Mans e-pasts:</label>
-                                                        <div class="col-sm-9">
-                                                            @if (Auth::check() && !Auth::user()->hasRole(['Administrators', 'Moderators']))
-                                                                <input type="email" class="form-control" id="mobile-email" readonly="" value="{{ Auth::user()->email }}">
-                                                            @else
-                                                                <input type="email" class="form-control" id="mobile-email">
-                                                            @endif
-                                                        </div>
+                                                    <div class="form-group client-email last">
+                                                      <label for="mobile-email"><span class="validate">*</span>Mans e-pasts:</label>
+                                                        @if (Auth::check() && !Auth::user()->hasRole(['Administrators', 'Moderators']))
+                                                          <input type="email" class="form-control" id="mobile-email" readonly="" value="{{ Auth::user()->email }}">
+                                                        @else
+                                                          <input type="email" class="form-control" id="mobile-email">
+                                                        @endif
                                                     </div>
+
                                                 </div>
                                                 <div class="mobile-body-success" style="display: none;">
                                                     <div class="alert alert-success">
 
                                                     </div>
                                                 </div>
-                                            </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer reservation-modal-footer">
                                         <button type="button" class="btn btn-primary" id="mobile-submit-reservation">Pierakstīties</button>
-                                        <button type="button" class="btn btn-secondary" id="mobile-close-modal" style="display: none;">Atgriezties</button>
+                                        <button type="button" class="btn btn-primary" id="mobile-close-modal" style="display: none;">Atgriezties</button>
                                     </div>
                                 </div>
                             </div>
                         </form>
+
                     </section>
                 </div>
             </div>
@@ -369,6 +351,7 @@
                 <input type="hidden" name="date">
                 <input type="hidden" name="queue_id">
                 <input type="hidden" name="slotNumber">
+                <input type="hidden" name="grecaptcha">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -442,19 +425,23 @@
                                                 @endif
                                             </div>
                                         </div>
+                                      <input type="hidden" name="recaptcha" id="recaptcha">
                                     </div>
-                                </div>
                             </div>
                         </div>
+                        @if ($errors->has('g-recaptcha-response'))
+                          <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
+                        @endif
                         <div class="modal-footer reservation-modal-footer">
                             <button type="button" class="btn btn-secondary" id="close-modal" data-dismiss="modal" style="margin-right: 10px;">Atcelt</button>
                             <button type="button" class="btn btn-primary" id="submit-reservation">Pierakstīties</button>
+                            <input type="hidden" name="recaptcha" id="recaptcha">
                         </div>
                     </div>
                 </div>
+                </div>
+
             </form>
         </div>
     </div>
-
-
 @endsection
