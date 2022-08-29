@@ -2044,7 +2044,7 @@ p {
 
 .product-main-details{
   background: #fff;
-  padding:15px;
+  padding:15px 15px 0 15px;
 }
 
 #top-menu {
@@ -2277,10 +2277,6 @@ p {
 
   #mobile-main {
     display: block;
-  }
-
-  body:not(.page-index) .main-content {
-    background: none;
   }
 }
 @media (min-width: 1024px) {
@@ -4251,10 +4247,6 @@ table.queueTable:nth-child(2) {
   outline: none!important;
 }
 
-td.slot-gray.slot {
-  width: 67px;
-}
-
 .queueTable .slot {
   width: 18em;
   outline: 1px solid silver;
@@ -4576,4 +4568,44 @@ td.slot-gray.slot {
 
 .overflow-image {
   overflow: auto;
+}
+
+.admin-order-confirm-table {
+  width: 60%;
+  margin-left: 15%;
+}
+
+.admin-order-confirm-table th, .admin-order-confirm-table td {
+  text-align: center;
+}
+
+section#mobile-main form div.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 30px auto;
+}
+
+div.form-group span.validate {
+  color: red;
+}
+
+.float-right {
+  float: right;
+}
+
+/* Auto tread table cell sizes*/
+.tread-name-cell-size {
+  width: 15%;
+}
+
+.tread-code-cell-size {
+  width: 10%;
+}
+
+.tread-comment-cell-size {
+  width: 15%
+}
+
+.tread-tire-table-checkbox {
+  width: 35px;
 }

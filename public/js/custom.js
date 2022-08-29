@@ -306,23 +306,23 @@ $('[data-toggle="tooltip"]').tooltip({
 });
 
 sf_height = $('#search_filters').height();
-$('.show_list').click(function(){
-  document.cookie = "show_list=true; expires=Thu, 30 Jan 2100 12:00:00 UTC; path=/";
-  $('#js-product-list .product-miniature').addClass('product_show_list');
-  $('.table-top').addClass('product_show_list');
-  $('.custom_atv_name').addClass('product_show_list');
-  $('.show_list').addClass('active');
-  sortItemsInList();
-});
+// $('.show_list').click(function(){
+//   document.cookie = "show_list=true; expires=Thu, 30 Jan 2100 12:00:00 UTC; path=/";
+//   $('#js-product-list .product-miniature').addClass('product_show_list');
+//   $('.table-top').addClass('product_show_list');
+//   $('.custom_atv_name').addClass('product_show_list');
+//   $('.show_list').addClass('active');
+//   sortItemsInList();
+// });
 
-$('.show_grid').click(function(){
-  document.cookie = "show_list=; expires=Thu, 30 Jan 1970 12:00:00 UTC; path=/";
-  $('#js-product-list .product-miniature').removeClass('product_show_list');
-  $('.table-top').removeClass('product_show_list');
-  $('.custom_atv_name').removeClass('product_show_list');
-  $('.show_list').removeClass('active');
-  sortItemsInBrand();
-});
+// $('.show_grid').click(function(){
+//   document.cookie = "show_list=; expires=Thu, 30 Jan 1970 12:00:00 UTC; path=/";
+//   $('#js-product-list .product-miniature').removeClass('product_show_list');
+//   $('.table-top').removeClass('product_show_list');
+//   $('.custom_atv_name').removeClass('product_show_list');
+//   $('.show_list').removeClass('active');
+//   sortItemsInBrand();
+// });
 
 function sortItemsInBrand() {
   var $brandP = $('.products').first();
@@ -417,18 +417,19 @@ $('#category.category-id-17 .facet--35 li').each(function(){
     $(this).hide();
   }
 })
-$('#quantity_wanted').off('change');
-if ($('#category.category-id-21').length) {
-  $('.show_grid').click();
-} else {
-  $('.show_list').click();
-}
-if ($('#category.category-id-21').length) {
-  $('#search_filters').addClass('auto');
-} else {
-  $('#search_filters .sidebar-auto').remove();
-  $('#search_filters_params').addClass('active');
-}
+// $('#quantity_wanted').off('change');
+// if ($('#category.category-id-21').length) {
+//   $('.show_grid').click();
+// } else {
+//   $('.show_list').click();
+// }
+// if ($('#category.category-id-21').length) {
+//   $('#search_filters').addClass('auto');
+// } else {
+//   $('#search_filters .sidebar-auto').remove();
+//   $('#search_filters_params').addClass('active');
+// }
+
 // $('#search_filters h4 > span').on('click', function(){
 //   var span = $(this);
 //   var active = span.hasClass('active');
@@ -1786,6 +1787,7 @@ $(document).ready(function() {
 
   $('#submit-reservation').on('click', function() {
 
+    let recaptcha_k = $('#recaptcha_k').data('value');
     let car = $('#reservation #brand').val();
     let carModel = $('#reservation #model').val();
     let licPlate = $('#reservation #reg_nr').val();
@@ -1812,9 +1814,17 @@ $(document).ready(function() {
         'email': email,
         'date': date,
         'queue_id': queue_id,
-        'slotNumber': iorder
+        'slotNumber': iorder,
+        'token': $('#reservation input[name=grecaptcha]').val(),
       },
       success: function(data) {
+        grecaptcha.ready(function() {
+          grecaptcha.execute(recaptcha_k, {action: "application_form"}).then(function(token) {
+            $('#reservation input[name=grecaptcha]').val(token);
+            $('#recaptcha_k').data('value', token);
+            $('#reservation input[name=grecaptcha_app]').val('application_form');
+          });
+        });
         if (data.error) {
           if (data.error.brand) $('#brand').attr('placeholder', data.error.brand);
           if (data.error.model) $('#model').attr('placeholder', data.error.model);
@@ -2533,15 +2543,30 @@ $('#facet_availability li label').on('click', function() {
 
 });
 
-$('.can-collapse span.show_list, .can-collapse span.show_grid').on('click', function(){
-  if($('.can-collapse span.show_list').hasClass('active')) {
-    $('#js-product-list').show();
-    $('.tire-image-container').hide();
-  } else {
-    $('#js-product-list').hide();
-    $('.tire-image-container').show();
-  }
+// SHOW LIST VIEW
+$('div.can-collapse span.show_list').on('click', function(){
+  $('#js-product-list').show();
+  $('.tire-image-container').hide();
+  $(this).addClass('active');
+  $('span.show_grid').removeClass('active');
+  localStorage.setItem("show_type", "list");
 });
+
+// SHOW GRID VIEW
+$('div.can-collapse span.show_grid').on('click', function(){
+  $('.tire-image-container').show();
+  $('#js-product-list').hide();
+  $(this).addClass('active');
+  $('span.show_list').removeClass('active');
+  localStorage.setItem("show_type", "grid");
+});
+
+// SHOW VIEW DEPENDING ON LOCAL STORAGE VALUE
+if (localStorage.getItem('show_type') != 'list') {
+  $('div.can-collapse span.show_grid').click();
+} else if (localStorage.getItem('show_type') == 'grid') {
+  $('div.can-collapse span.show_list').click();
+}
 
 let showTires = false;
 let showDisc = false;
@@ -2660,6 +2685,47 @@ $('.cart-options label input').each(function() {
   })
   // console.log($(this));
 });
+
+$('.password-eye').on('click', function() {
+  $('span i', this).toggleClass("fa-eye-slash fa-eye");
+  if ($(this).siblings().attr('type') === 'password'){
+    $(this).siblings().attr('type', 'text');
+  } else {
+    $(this).siblings().attr('type', 'password');
+  }
+});
+
+function delay(callback, ms) {
+  let timer = 0;
+  return function() {
+    let context = this, args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      callback.apply(context, args);
+    }, ms || 0);
+  };
+}
+
+
+$('input[type=password].password-confirmation').keyup(delay(function(e) {
+  if ($(this).val().length >= 8){
+    $('.invalid-password').hide();
+  }
+
+  if ($('#password').val().length < 8){
+    $('.short-password').show();
+  } else {
+    $('.short-password').hide();
+  }
+
+  if ($('#password').val() === $('#password-confirm').val()){
+    $('.form-footer').children('button').prop('disabled', false);
+    $('.password-error').hide();
+    return;
+  }
+  $('.form-footer').children('button').prop('disabled', true);
+  $('.password-error').show();
+}, 500));
 
 if (__count > 1) {
   $('.cart-montage-choice').hide();

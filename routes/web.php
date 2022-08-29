@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -75,6 +74,7 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
     // Interneta-veikals
     Route::get('/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
     Route::get('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'order'])->name('order');
+//    Route::delete('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'delete'])->name('delete');
 
     // Pieraksts
     Route::get('/pieraksts/date={date}', [App\Http\Controllers\Admin\Records\RecordController::class, 'index'])->name('records.date');
@@ -264,9 +264,9 @@ Route::middleware('checksession')->group(function() {
   });
 
   //  ROUTE FOR TESTING PURPOSES
-  Route::get('/testing', function () {
-    return view('testing');
-  });
+  Route::get('/testing', [TestingPageController::class, 'loadAnalytics']);
+  Route::post('/testing', [TestingPageController::class, 'store']);
+
 
   Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);
 

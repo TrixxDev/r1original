@@ -401,7 +401,7 @@
                                             <a class="dropdown-item dropdown-submenu"
                                                href="{{ route('lietie-diski') }}"
                                                data-depth="1">
-                                                Jauni lietie diski
+                                                Lietie diski
                                             </a>
                                         </li>
                                         <li class="category" id="category-22">
@@ -658,16 +658,6 @@
                                     Facebook
                                 </a>
                             </li>
-                            <li class="twitter">
-                                <a href="https://twitter.com/#!/R1riepasundiski" target="_blank">
-                                    Twitter
-                                </a>
-                            </li>
-                            <li class="draugiem">
-                                <a href="http://www.draugiem.lv/r1" target="_blank">
-                                    Draugiem
-                                </a>
-                            </li>
                         </ul>
                     </div>
 
@@ -783,5 +773,16 @@
         </div>
     </div>
 </div>
+<div id="recaptcha_k" data-value="{{ env('RECAPTCHAV3_SITEKEY') }}" style="display: none;"></div>
+<script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHAV3_SITEKEY') }}"></script>
+
+<script>
+  grecaptcha.ready(function() {
+    grecaptcha.execute($('#recaptcha_k').data('value'), {action: 'application_form'}).then(function(token) {
+      $('#reservation input[name=grecaptcha]').val(token);
+      $('#reservation input[name=grecaptcha_app]').val('application_form');
+    });
+  });
+</script>
 </body>
 </html>

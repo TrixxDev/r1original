@@ -11,7 +11,7 @@
                     <section id="main">
                         <header class="page-header">
                             <h1>
-                                {{ __('Autorizējieties savā kontā') }}
+                                Autorizējieties savā kontā
                             </h1>
                         </header>
                         <section id="content" class="page-content card card-block" style="max-width: 640px!important; margin: 0 auto!important;">
@@ -23,7 +23,7 @@
                                     <section>
                                         <div class="form-group row ">
                                             <label class="col-md-3 form-control-label required">
-                                                {{ __('Email') }}
+                                                Epasts
                                             </label>
                                             <div class="col-md-6">
                                                 <input id="email" type="email"
@@ -55,7 +55,7 @@
 
                                         <div class="form-group row ">
                                             <label class="col-md-3 form-control-label required">
-                                                {{ __('Parole') }}
+                                                Parole
                                             </label>
 {{--                                            <div class="col-md-6">--}}
 
@@ -151,7 +151,7 @@
                             <div class="no-account" style="text-align: center;">
                                 <a href="{{ route('register') }}"
                                    data-link-action="display-register-form">
-                                    {{ __('Jums nav konts? Izveidojiet to') }}
+                                    Jums nav konts? Izveidojiet to
                                 </a>
                             </div>
                         </section>
