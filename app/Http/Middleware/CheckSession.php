@@ -7,6 +7,7 @@ use Auth;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Gloudemans\Shoppingcart\Cart;
 
@@ -17,6 +18,14 @@ class CheckSession
   {
 
     $response = $next($request);
+
+    $routeAction = Route::getCurrentRoute()->getActionName();
+
+    if (strpos($routeAction, 'Auth') === false) {
+      Session::put('returnUrl', url()->previous());
+    }
+
+    var_dump(session('returnUrl'));
 
     Session::put('userTime', Carbon::now()->addMinutes(30));
 

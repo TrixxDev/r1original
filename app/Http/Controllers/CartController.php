@@ -99,6 +99,7 @@ class CartController extends Controller
             1 => config('app.settings.shipping_moto_one'),
             2 => config('app.settings.shipping_moto_two'),
             4 => config('app.settings.shipping_moto_many'),
+            5 => config('app.settings.shipping_moto_many'),
           ],
           'fitting' => [
             1 => config('app.settings.fitting_moto_one'),

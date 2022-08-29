@@ -4565,3 +4565,11 @@ td.slot-gray.slot {
   border-radius: 50%;
   color: #68c0a8;
 }
+
+.cart-montage-choice, .cart-delivery-option, #cart-subtotal-montage, #cart-subtotal-shipping {
+  display: none;
+}
+
+.overflow-image {
+  overflow: auto;
+}

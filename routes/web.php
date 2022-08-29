@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Auth::routes();
+
 // Administrācijas panelis
 
 Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')->group(function() {
@@ -260,8 +262,6 @@ Route::middleware('checksession')->group(function() {
   Route::get('/analytics', function() {
     return view('analytics');
   });
-
-  Auth::routes();
 
   //  ROUTE FOR TESTING PURPOSES
   Route::get('/testing', function () {
