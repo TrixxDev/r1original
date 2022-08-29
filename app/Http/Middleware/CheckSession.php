@@ -25,8 +25,6 @@ class CheckSession
       Session::put('returnUrl', url()->previous());
     }
 
-    var_dump(session('returnUrl'));
-
     Session::put('userTime', Carbon::now()->addMinutes(30));
 
     if (Session::has('cart')) {
