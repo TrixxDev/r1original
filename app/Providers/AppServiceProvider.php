@@ -9,9 +9,11 @@ use Carbon\Carbon;
 use Gloudemans\Shoppingcart\Cart;
 use Gloudemans\Shoppingcart\CartItem;
 use Gloudemans\Shoppingcart\CartItemOptions;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+      //
     }
 
     /**
@@ -47,5 +49,6 @@ class AppServiceProvider extends ServiceProvider
       }
 
       date_default_timezone_set('Europe/Riga');
+
     }
 }

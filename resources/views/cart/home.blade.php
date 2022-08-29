@@ -141,7 +141,7 @@
                                           <span>{{ \Cart::count() }} @if (\Cart::count() == 1) Riepai @else Riepām @endif</span>
                                         </label>
                                         <label class="cart-delivery-label">
-                                          <input type="radio" name="cart-montage-radio" value="2" @if (!\Session::has('cartOptions.fitting_needs')) checked @endif>
+                                          <input type="radio" name="cart-montage-radio" value="0" @if (!\Session::has('cartOptions.fitting_needs')) checked @endif>
                                           <span>Montāža nebūs nepieciešama vai par to maksāšu uz vietas</span>
                                         </label>
                                       </div>
