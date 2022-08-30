@@ -30,6 +30,8 @@ class AutoTireImportController extends Controller
             if (($idx>-1)&&($row!='')){
                 $fields = explode("\t",$row);
 
+                dd($fields);
+
                 $tire = Autotire::where('article', $fields[2])->first();
                 $brand = Autobrand::where('title', $fields[3])->first();
                 $tread = Autotread::where('title', $fields[11])->first();

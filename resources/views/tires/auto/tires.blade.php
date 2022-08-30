@@ -556,7 +556,7 @@
                       }
                     @endphp
 {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
-                    <a href="{{ route($current_url, [strtolower(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}" class="">
+                    <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), \Str::slug($tire->title), $tire->tire_id]) }}" class="">
                       <div class="tire-image-card sort-order">
                         <div class="text-center">
                           <img
@@ -723,7 +723,7 @@
                                @else
                                title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
                                @endif
-                               href="{{ route($current_url, [strtolower(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}"
+                               href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), \Str::slug($tire->title), $tire->tire_id]) }}"
                                data-content="{{ $tire->title }}"
                                data-article="{{ $tire->article }}">
                               {{ $tire->title }}
@@ -795,6 +795,7 @@
                         @endforeach
                         </tbody>
                       </table>
+                      {{ $tires->links() }}
                   </div>
 
                   {{--                                  <div class="table-top product_show_list">--}}

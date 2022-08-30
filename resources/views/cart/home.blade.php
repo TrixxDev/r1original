@@ -114,6 +114,8 @@
                           @if (\Cart::count() > 0)
                             <form method="POST">
                             @csrf
+                            <input type="hidden" name="delivery_price">
+                            <input type="hidden" name="fitting_price">
                             <div class="cart-grid-right col-xs-12 col-lg-4">
                               <div class="card cart-summary">
                                 <div class="cart-delivery-choice">
@@ -218,9 +220,9 @@
                                     </div>
                                   @endif
                                 </div>
-                              </form>
-                            </div>
-                        @endif
+                              </div>
+                            </form>
+                          @endif
                             <!-- Right Block: cart subtotal & cart total -->
 
                         </div>

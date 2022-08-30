@@ -28,7 +28,7 @@ class AutoTireController extends Controller
     public $autoTiresD3;
     public $model = 'Autotire';
     public $tiresSize;
-    public $itemsPerPage = 100;
+    public $itemsPerPage = 25;
     public $code;
     public $fuel;
     public $wet;
@@ -107,7 +107,8 @@ class AutoTireController extends Controller
                            ->orderBy('d3', 'ASC')
                            ->orderBy('d1', 'ASC')
                            ->orderBy('d2', 'ASC')
-                           ->orderBy('price2', 'DESC')->paginate($this->itemsPerPage);
+                           ->orderBy('price2', 'DESC')
+                           ->paginate($this->itemsPerPage);
 
 
         return view('tires.auto.tires', compact('tires'));
