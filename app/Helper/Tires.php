@@ -2,6 +2,8 @@
 
 namespace App\Helper;
 
+use App\Models\Rim;
+use App\Models\Rimbrand;
 use DB;
 use App\Models\Autotire;
 use App\Models\Autotread;
@@ -156,6 +158,10 @@ class Tires
 
     public static function getAutoTireBrand($brand_id) {
         return Autobrand::select('*')->where('brand_id', $brand_id)->first();
+    }
+
+    public static function getAutoRimBrand($brand_id) {
+      return Rimbrand::select('*')->where('brand_id', $brand_id)->first();
     }
 
     public static function getQuadrTireTread($tread_id) {

@@ -160,7 +160,7 @@ Route::middleware('checksession')->group(function() {
 // Motociklu riepas
   Route::get('/motociklu-riepas', [App\Http\Controllers\MotoTireController::class, 'index'])->name('motociklu-riepas');
   Route::post('/motociklu-riepas', [App\Http\Controllers\MotoTireController::class, 'tires_search'])->name('motociklu-riepas');
-  Route::get('/motociklu-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\MotoTireController::class, 'moto_tires_tread'])->name('motociklu-riepa');
+  Route::get('/motociklu-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\MotoTireController::class, 'tires_tread'])->name('motociklu-riepa');
   Route::post('/motociklu-riepas/ajax', [App\Http\Controllers\MotoTireController::class, 'tires_ajax'])->name('motociklu-riepas-ajax');
 
 //Lielās riepas
@@ -172,7 +172,7 @@ Route::middleware('checksession')->group(function() {
 //Diski
 
   Route::get('/lietie-diski', [App\Http\Controllers\RimsController::class, 'autorims'])->name('lietie-diski');
-  Route::get('/lietie-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\RimsController::class, 'autorims_tread']);
+  Route::get('/lietie-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\RimsController::class, 'autorims_tread'])->name('lietais-disks');
   Route::get('/kvadru-diski', [App\Http\Controllers\RimsController::class, 'quadrim'])->name('kvadraciklu-diski');
 
 // Noklusējuma lapas
@@ -264,9 +264,9 @@ Route::middleware('checksession')->group(function() {
   });
 
   //  ROUTE FOR TESTING PURPOSES
-  Route::get('/testing', [TestingPageController::class, 'loadAnalytics']);
-  Route::post('/testing', [TestingPageController::class, 'store']);
-
+  Route::get('/testing', function() {
+    return view('testing');
+  });
 
   Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);
 

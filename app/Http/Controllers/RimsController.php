@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\FilterCars;
 use App\Models\FilterSizes;
 use App\Models\FilterModels;
+use App\Models\Rim;
+use App\Models\Rimbrand;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 
 class RimsController extends Controller
@@ -79,14 +82,21 @@ class RimsController extends Controller
   public function autorims()
   {
 
+    $brands = Rimbrand::paginate(20);
 
+    $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+              ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
+              ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
+              ->paginate(20);
 
-    return view('rims.autorims');
+//    dd($rims);
+
+    return view('rims.autorims', compact('rims','brands'));
   }
 
   public function autorims_tread()
   {
-    return 123;
+    
   }
 
   public function quadrim()

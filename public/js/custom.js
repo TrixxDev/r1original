@@ -2562,9 +2562,10 @@ $('div.can-collapse span.show_grid').on('click', function(){
 });
 
 // SHOW VIEW DEPENDING ON LOCAL STORAGE VALUE
-if (localStorage.getItem('show_type') != 'list') {
+if (localStorage.getItem('show_type') == 'grid') {
   $('div.can-collapse span.show_grid').click();
-} else if (localStorage.getItem('show_type') == 'grid') {
+}
+if (localStorage.getItem('show_type') == 'list') {
   $('div.can-collapse span.show_list').click();
 }
 

@@ -6,6 +6,7 @@
 
 @section('content')
 
+
     <div class="container">
         <div class="row">
             <div class="main-content clearfix col-md-12 col-xl-10">
@@ -314,62 +315,32 @@
                               <div class="tire-image-container" style="display: none">
                                 <div class="tire-image-cards">
                                     <div class="row grid-ex">
-
-                                    <a href="" class="">
-                                      <div class="tire-image-card sort-order">
-                                        <div class="text-center">
-                                          <img
-                                            src="{{ asset('img/p/r1-logo.svg') }}"
-                                            alt="tire-image" class="img-thumbnail border-none text-center"
-                                          >
-                                        </div>
-                                        <div class="tire-list-caption">
-
-                                          <div class="card-title-text">Normāls disks</div>
-                                          <div class="tire-tread">
-                                            12 / 34 / 56
-                                          </div>
-                                          <div class="tire-price-red">€ 50</div>
-                                        </div>
-                                      </div>
-                                    </a>
+                                    @foreach($rims as $rim)
                                       <a href="" class="">
                                         <div class="tire-image-card sort-order">
                                           <div class="text-center">
                                             <img
-                                              src="{{ asset('img/p/r1-logo.svg') }}"
+{{--                                              src="{{ asset('img/p/r1-logo.svg') }}"--}}
+
+                                              @if (\Image::exists('auto-rim', $rim->rim_id))
+                                                src="{{ \Image::showGrid('auto-rim', $rim->rim_id) }}"
+                                              @else
+                                                src="{{ asset('img/p/r1-logo.svg') }}"
+                                              @endif
                                               alt="tire-image" class="img-thumbnail border-none text-center"
                                             >
                                           </div>
                                           <div class="tire-list-caption">
 
-                                            <div class="card-title-text">Ļoti labs disks</div>
+                                            <div class="card-title-text">Normāls disks</div>
                                             <div class="tire-tread">
                                               12 / 34 / 56
                                             </div>
-                                            <div class="tire-price-red">€ 250</div>
+                                            <div class="tire-price-red">€ 50</div>
                                           </div>
                                         </div>
                                       </a>
-                                      <a href="" class="">
-                                        <div class="tire-image-card sort-order">
-                                          <div class="text-center">
-                                            <img
-                                              src="{{ asset('img/p/r1-logo.svg') }}"
-                                              alt="tire-image" class="img-thumbnail border-none text-center"
-                                            >
-                                          </div>
-                                          <div class="tire-list-caption">
-
-                                            <div class="card-title-text">Labs Disks</div>
-                                            <div class="tire-tread">
-                                              12 / 34 / 56
-                                            </div>
-                                            <div class="tire-price-red">€ 100</div>
-                                          </div>
-                                        </div>
-                                      </a>
-
+                                    @endforeach
                                     </div>
                                 </div>
                                 <a id="storage" href="http://aludiski.com/aludiski1001/wheels.php?cat=all&amp;lang=LV&amp;select_wheels=Search" target="_blank">NOLIKTAVA </a>
@@ -387,6 +358,113 @@
 
                                 <div id="js-product-list">
 {{--                                  VECĀ TABULA --}}
+{{--                                      {{ dd($q) }}--}}
+
+                                  <table id="tires-table" class="table rims-sorter tires-table table-hover tablesorter">
+                                    <thead class="tires-thead">
+                                    <tr>
+                                      <th scope="col"></th>
+                                      <th scope="col" class="table-tire-name-cell">Platums / Diametrs</th>
+                                      <th scope="col" class="hidden-sm-down text-center">Centrs</th>
+                                      <th scope="col" class="hidden-sm-down text-center">Krāsa</th>
+
+                                      <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
+                                      <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+
+                                      <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
+                                      <th scope="col"></th>
+                                      <th scope="col">
+                                        <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
+                                      </th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tires-table-body">
+
+                                    @foreach($rims as $rim)
+
+                                      <tr class="tire-table-row">
+                                        <th scope="row" class="tire-table-checkbox">
+                                          <input type="checkbox" value="111" name="product_ids[]"
+                                                 class="tire-table-checkbox">
+                                        </th>
+
+                                        <td class="table-tire-name-cell">
+                                          <a data-toggle="tooltip" data-html="true" class="tire-table-link" style="text-align: center"
+                                             @if (\Image::exists('auto-rim', $rim->rim_id))
+                                             title="{{ \Image::show('auto-rim', $rim->rim_id) }}"
+                                             @else
+                                             title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
+                                             @endif
+                                             href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}"
+                                          >
+                                            {{$rim->d1}}*{{$rim->d3}}({{$rim->pcd}}x{{$rim->skr}})
+                                          </a>
+
+{{--                                             data-content="{{ $tire->title }}"--}}
+{{--                                             data-article="{{ $tire->article }}"--}}
+{{--                                            {{ $tire->title }}--}}
+
+{{--                                          <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}" class="">--}}
+{{--                                            <div class="sort-order">--}}
+{{--                                              {{$rim->d1}}*{{$rim->d3}}({{$rim->pcd}}x{{$rim->skr}})--}}
+{{--                                              <div class="text-center">--}}
+{{--                                                <img--}}
+{{--                                                  @if ($tire->image)--}}
+{{--                                                  src="{{ $tire->image }}" style='width: 100%; height: 100%;'--}}
+{{--                                                  @else--}}
+{{--                                                  src="{{ asset('img/p/r1-logo.svg') }}"--}}
+{{--                                                  @endif alt="tire-image" class="img-thumbnail border-none text-center"--}}
+{{--                                                >--}}
+{{--                                                <img src="{{ asset('storage/auto/rims/rim-')}}{{$rim->rim_id}}.jpg" style="width:100%;">--}}
+{{--                                              </div>--}}
+{{--                                              <div class="tire-list-caption">--}}
+
+{{--                                                <div class="card-title-text">{{$rim->title}}</div>--}}
+{{--                                                <div class="tire-tread">--}}
+{{--                                                  {{$rim->d1}} / {{$rim->d2}} / {{$rim->d3}}--}}
+{{--                                                </div>--}}
+{{--                                                <div class="tire-price-red">€{{$rim->price1}}</div>--}}
+{{--                                              </div>--}}
+{{--                                            </div>--}}
+{{--                                          </a>--}}
+                                        </td>
+
+
+                                        <td class="table-tire-name-cell">
+                                          {{$rim->dc}}
+                                        </td>
+
+{{--{{dd($rim->rim_id)}}--}}
+                                        <td class="hidden-sm-down text-center">
+                                          {{$rim->color}}
+                                        </td>
+
+
+                                        <td id="store-price" class="text-center store-price">€ 888</td>
+                                        <td id="sale-price" class="text-center tire-price-red sale-price">€ 999</td>
+                                        <td class="hidden-sm-down text-center"></td>
+
+                                        <td class="shopping-cart-col">
+                                          <div class="clearfix atc_div text-right">
+                                            <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">
+                                              <i class="material-icons">add_shopping_cart</i>
+                                            </button>
+                                          </div>
+                                        </td>
+
+                                        <td class="dot-availability text-center">
+                            <span class="dot red" data-toggle="tooltip"
+                                  data-html="true"
+                                  title="red">
+                              <span class="sort-order">red</span>
+                            </span>
+                                        </td>
+                                      </tr>
+                                    @endforeach
+                                    </tbody>
+                                  </table>
+
 {{--                                    <div class="products row hide-price">--}}
 
 {{--                                        <div class="table-top product_show_list">--}}
@@ -435,109 +513,94 @@
 {{--                                        </article>--}}
 {{--                                    </div>--}}
 {{--                               NEW TABLE --}}
-                                  <table id="tires-table" class="table rims-sorter tires-table table-hover tablesorter">
-                                    <thead class="tires-thead">
-                                    <tr>
-                                      <th scope="col"></th>
-                                      <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
-                                      <th scope="col" class="hidden-sm-down text-center">Krāsa</th>
+{{--                                  <table id="tires-table" class="table rims-sorter tires-table table-hover tablesorter">--}}
+{{--                                    <thead class="tires-thead">--}}
+{{--                                    <tr>--}}
+{{--                                      <th scope="col"></th>--}}
+{{--                                      <th scope="col" class="table-tire-name-cell">Platums / Diametrs</th>--}}
+{{--                                      <th scope="col" class="hidden-sm-down text-center">Skrūvju attālums</th>--}}
+{{--                                      <th scope="col" class="hidden-sm-down text-center">Izbīdījums</th>--}}
+{{--                                      <th scope="col" class="hidden-sm-down text-center">Centrlais caurums</th>--}}
+{{--                                      <th scope="col" class="hidden-sm-down text-center">Krāsa</th>--}}
 
-                                      <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
-                                      <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+{{--                                      <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>--}}
+{{--                                      <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>--}}
 
-                                      <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
-                                      <th scope="col"></th>
-                                      <th scope="col">
-                                        <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
-                                      </th>
+{{--                                      <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>--}}
+{{--                                      <th scope="col"></th>--}}
+{{--                                      <th scope="col">--}}
+{{--                                        <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>--}}
+{{--                                      </th>--}}
 
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tires-table-body">
-                                    <tr class="tire-table-row">
-                                      <th scope="row" class="tire-table-checkbox">
-                                        <input type="checkbox" value="111" name="product_ids[]"
-                                               class="tire-table-checkbox">
-                                      </th>
+{{--                                    </tr>--}}
+{{--                                    </thead>--}}
+{{--                                    <tbody id="tires-table-body">--}}
+{{--                                    @foreach($rims as $rim)--}}
+{{--                                      {{ dd($rim) }}--}}
+{{--                                    <tr class="tire-table-row">--}}
+{{--                                      <th scope="row" class="tire-table-checkbox">--}}
+{{--                                        <input type="checkbox" value="111" name="product_ids[]"--}}
+{{--                                               class="tire-table-checkbox">--}}
+{{--                                      </th>--}}
 
-                                      <td class="table-tire-name-cell">
-                                        DRAG 52573 - 18x8.0
-                                      </td>
+{{--                                      <td class="table-tire-name-cell">--}}
+{{--                                        DRAG 52573 - 18x8.0--}}
+{{--                                      </td>--}}
 
-                                      <td class="hidden-sm-down text-center">
-                                        Zaļa
-                                      </td>
+{{--                                      <td class="table-tire-name-cell">--}}
+{{--                                        DRAG 52573 - 18x8.0--}}
+{{--                                      </td>--}}
 
+{{--                                      <td class="table-tire-name-cell">--}}
+{{--                                        DRAG 52573 - 18x8.0--}}
+{{--                                      </td>--}}
 
-                                      <td id="store-price" class="text-center store-price">€ 676</td>
-                                      <td id="sale-price" class="text-center tire-price-red sale-price">€ 777</td>
-                                      <td class="hidden-sm-down text-center"></td>
-
-                                      <td class="shopping-cart-col">
-                                        <div class="clearfix atc_div text-right">
-                                          <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">
-                                                  <i class="material-icons">add_shopping_cart</i>
-                                          </button>
-                                        </div>
-                                      </td>
-
-                                      <td class="dot-availability text-center">
-                            <span class="dot red" data-toggle="tooltip"
-                                  data-html="true"
-                                  title="red">
-                              <span class="sort-order">red</span>
-                            </span>
-                                      </td>
-                                    </tr>
-                                    <tr class="tire-table-row">
-                                      <th scope="row" class="tire-table-checkbox">
-                                        <input type="checkbox" value="111" name="product_ids[]"
-                                               class="tire-table-checkbox">
-                                      </th>
-
-                                      <td class="table-tire-name-cell">
-                                        DRAG 52573 - 18x8.0
-                                      </td>
-
-                                      <td class="hidden-sm-down text-center">
-                                        Zaļa
-                                      </td>
+{{--                                      <td class="table-tire-name-cell">--}}
+{{--                                        DRAG 52573 - 18x8.0--}}
+{{--                                      </td>--}}
 
 
-                                      <td id="store-price" class="text-center store-price">€ 888</td>
-                                      <td id="sale-price" class="text-center tire-price-red sale-price">€ 999</td>
-                                      <td class="hidden-sm-down text-center"></td>
+{{--                                      <td class="hidden-sm-down text-center">--}}
+{{--                                        Zaļa--}}
+{{--                                      </td>--}}
 
-                                      <td class="shopping-cart-col">
-                                        <div class="clearfix atc_div text-right">
-                                          <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">
-                                            <i class="material-icons">add_shopping_cart</i>
-                                          </button>
-                                        </div>
-                                      </td>
 
-                                      <td class="dot-availability text-center">
-                            <span class="dot red" data-toggle="tooltip"
-                                  data-html="true"
-                                  title="red">
-                              <span class="sort-order">red</span>
-                            </span>
-                                      </td>
-                                    </tr>
-                                    </tbody>
-                                  </table>
+{{--                                      <td id="store-price" class="text-center store-price">€ 888</td>--}}
+{{--                                      <td id="sale-price" class="text-center tire-price-red sale-price">€ 999</td>--}}
+{{--                                      <td class="hidden-sm-down text-center"></td>--}}
 
-                                    <a id="storage" href="http://aludiski.com/aludiski1001/wheels.php?cat=all&amp;lang=LV&amp;select_wheels=Search" target="_blank">NOLIKTAVA </a>
-                                    <nav class="pagination">
-                                        <div class="col-md-12">
-                                        </div>
-                                    </nav>
-                                    <div class="hidden-md-up text-xs-right up">
-                                        <a href="#header" class="btn btn-secondary">
-                                            Back to top
-                                            <i class="material-icons"></i>
-                                        </a>
-                                    </div>
+{{--                                      <td class="shopping-cart-col">--}}
+{{--                                        <div class="clearfix atc_div text-right">--}}
+{{--                                          <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">--}}
+{{--                                            <i class="material-icons">add_shopping_cart</i>--}}
+{{--                                          </button>--}}
+{{--                                        </div>--}}
+{{--                                      </td>--}}
+
+{{--                                      <td class="dot-availability text-center">--}}
+{{--                            <span class="dot red" data-toggle="tooltip"--}}
+{{--                                  data-html="true"--}}
+{{--                                  title="red">--}}
+{{--                              <span class="sort-order">red</span>--}}
+{{--                            </span>--}}
+{{--                                      </td>--}}
+{{--                                    </tr>--}}
+{{--                                    @endforeach--}}
+{{--                                    </tbody>--}}
+{{--                                  </table>--}}
+
+{{--                                    <a id="storage" href="http://aludiski.com/aludiski1001/wheels.php?cat=all&amp;lang=LV&amp;select_wheels=Search" target="_blank">NOLIKTAVA </a>--}}
+{{--                                    <nav class="pagination">--}}
+{{--                                        <div class="col-md-12">--}}
+{{--                                        </div>--}}
+{{--                                    </nav>--}}
+{{--                                  {{ $rims->links() }}--}}
+{{--                                    <div class="hidden-md-up text-xs-right up">--}}
+{{--                                        <a href="#header" class="btn btn-secondary">--}}
+{{--                                            Back to top--}}
+{{--                                            <i class="material-icons"></i>--}}
+{{--                                        </a>--}}
+{{--                                    </div>--}}
                                 </div>
                             </div>
                             <div id="js-product-list-bottom">
