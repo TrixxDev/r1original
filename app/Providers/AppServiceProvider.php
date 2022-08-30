@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Pagination\Paginator;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,6 +37,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+      Paginator::defaultView('vendor.pagination.custom');
+      Paginator::defaultSimpleView('vendor.pagination.custom');
 
       define('SLOT_STATUS_FREE', 0);
       define('SLOT_STATUS_TAKEN', 1);

@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -265,9 +264,9 @@ Route::middleware('checksession')->group(function() {
   });
 
   //  ROUTE FOR TESTING PURPOSES
-  Route::get('/testing', [TestingPageController::class, 'loadAnalytics']);
-  Route::post('/testing', [TestingPageController::class, 'store']);
-
+  Route::get('/testing', function() {
+    return view('testing');
+});
   Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);
 
 });
