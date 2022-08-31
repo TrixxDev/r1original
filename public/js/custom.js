@@ -717,6 +717,7 @@ function ajaxChangeQty(tire_id, qty, price) {
       $('.cart-total .value').html('€ ' + data.total_sum.replace('.00', ''));
       $('.product-price[data-product-id=' + tire_id + ']').html('<strong>€ ' + (parseInt(price) * parseInt(qty)) + '</strong>');
       $('.js-cart-line-product-quantity[data-product-id=' + tire_id + ']').val(parseInt(qty));
+      $('.cart-montage-choice .cart-delivery-options .cart-delivery-label').first().children('span').html(data.total_items + ' Riepām');
     }
   });
 }
@@ -2262,7 +2263,7 @@ deliveryOptionDisabledFields.each( function() {
 });
 
 function checkShipping(qty = null) {
-  let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', ''));
+  let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
   let shippingCity = parseInt($('.cart-delivery-option .custom-select option:selected').val());
   $.ajax({
     url: '/checkShipping',
@@ -2270,25 +2271,29 @@ function checkShipping(qty = null) {
     data: {city: shippingCity, qty: qty},
     success: function(data) {
       data = parseInt(data);
-      let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', ''));
+      let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
       if (shippingCity === 1 || shippingCity === 2) {
         if (__total > 115) {
           $('#cart-subtotal-shipping #shipping_price').html('Bezmaksas');
-          $('.cart-total .value').html('€ ' + __total);
+          $('.cart-total .value').html('€ ' + formatNumber(__total));
+          $('input[name=delivery_price]').val(0);
         } else {
           $('#cart-subtotal-shipping #shipping_price').html('€ ' + data);
-          $('.cart-total .value').html('€ ' + (__lastPrice + data));
+          $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data)));
+          $('input[name=delivery_price]').val(data);
         }
       } else {
         $('#cart-subtotal-shipping #shipping_price').html('€ ' + data);
-        $('.cart-total .value').html('€ ' + (__lastPrice + data));
+        $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data)));
+        $('input[name=delivery_price]').val(data);
       }
+      $('input[name=fitting_price]').removeAttr('value');
     }
   });
 }
 
 function checkFitting(qty = null) {
-  let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', ''));
+  let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
   let __items = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
   let needsFit = $('.cart-montage-choice .cart-delivery-options .cart-delivery-label input:checked').val();
 
@@ -2303,14 +2308,17 @@ function checkFitting(qty = null) {
     dataType: 'JSON',
     success: function(data) {
       let fittingPrice = parseInt(data.cartOptions.fitting_price);
-      let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', ''));
+      let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
 
-      $('#cart-subtotal-montage #shipping_price').html('€ ' + fittingPrice);
-      $('.cart-total .value').html('€ ' + (__lastPrice + fittingPrice));
+      $('#cart-subtotal-montage #shipping_price').html('€ ' + formatNumber(fittingPrice));
+      $('.cart-total .value').html('€ ' + formatNumber(__lastPrice + fittingPrice));
+      $('input[name=fitting_price]').val(fittingPrice);
       if (fittingPrice === 0) {
         $('#cart-subtotal-montage #shipping_price').html('Nav');
-        $('.cart-total .value').html('€ ' + __lastPrice);
+        $('.cart-total .value').html('€ ' + formatNumber(__lastPrice));
+        $('input[name=fitting_price]').val(0);
       }
+      $('input[name=delivery_price]').removeAttr('value');
     }
   });
 }

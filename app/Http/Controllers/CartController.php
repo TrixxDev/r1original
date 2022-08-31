@@ -137,45 +137,55 @@ class CartController extends Controller
 
       if ($request->post()) {
           $delivery = [];
-//          dd($this->cart->content());
-//        dd($this->cart->content()['765d9b453db5045a4f84faddc5a18876']->associatedModel);
 
-//        $this->checkCart($request->data);
+          //        $this->checkCart($request->data);
 
 //        foreach ($request->data as $key => $value) {
 //          Session::put('.' . $key, $value);
 //        }
 
-//        foreach ($this->cart->content() as $key => $item) {
-//          array_push($delivery, [
-//            'cart_delivery_radio' => $item->cart_delivery_radio,
-//            'shipping_city' => $item->shipping_city,
-//            'shipping_address' => $item->shipping_address,
-//            'door_code' => $item->door_code,
-//          ]);
-//        }
-//        dd($delivery);
-//
-//        $cartData = serialize($cartData);
-//
-//        $amount = str_replace(['.', ','], '', $this->cart->subtotal());
-//
-//        $order = new Order;
-//        $order->status = 1;
-//        $order->price = substr($amount, 0, -2);
-//        $order->delivery_price = 0;
-//        $order->fit_price = 0;
-//        $order->info = $cartData;
-//        $order->save();
-//
-//        $order_id = $order->id;
-//        $amount1 = $amount;
-//        $email = Session::get('email');
-//
-//        $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
 
-//        return 123;
-//        dd($request->request);
+        if ($request->data['cart_delivery_radio'] === 1 || $request->data['cart_delivery_radio'] === 2) {
+          array_push($delivery, [
+            'cart_delivery_radio' => $request->data['cart_delivery_radio'],
+            'shipping_city' => $request->data['shipping_city'],
+            'shipping_address' => $request->data['shipping_address'],
+            'door_code' => $request->data['door_code'],
+          ]);
+        } else {
+          array_push($delivery, [
+            'cart_delivery_radio' => $request->data['cart_delivery_radio'],
+            'cart_montage_radio' => $request->input('cart-montage-radio'),
+          ]);
+        }
+
+        $cartData = serialize($delivery[0]);
+
+        $amount = str_replace(['.', ','], '', Cart::subtotal());
+
+        $order = new Order;
+        $order->status = 1;
+        $order->userId = 0;
+        if (Auth::check()) {
+          $order->userId = Auth::user()->id;
+        }
+        $order->price = substr($amount, 0, -2);
+         $order->delivery_price = 0;
+        $order->fit_price = 0;
+        $order->info = $cartData;
+        $order->order_token = $session_id;
+        $order->timeRemaining = Carbon::now()->addMinutes(30)->format('H:i:s');
+
+        $order->save();
+
+        $order_id = $order->id;
+        $amount1 = $amount;
+        $email = Session::get('email');
+
+        $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
+
+        Session::put('cart_options', $order);
+
         return redirect(route('order'));
       }
 //        dd($this->cart->content());
@@ -455,6 +465,9 @@ class CartController extends Controller
           $order_id = $order->id;
           $user_data = $request->input('data');
         } else {
+
+
+
           $order_id = $order->id;
           $user_data = unserialize($order->info);
         }
