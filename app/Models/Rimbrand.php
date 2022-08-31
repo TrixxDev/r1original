@@ -10,4 +10,6 @@ class Rimbrand extends Model
     use HasFactory;
 
     protected $table = 'rim_brands';
+
+    protected $primaryKey = 'brand_id';
 }
