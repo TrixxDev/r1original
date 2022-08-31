@@ -70,7 +70,7 @@ class Image {
       if (file_exists(str_replace('.jpg', '.png', Self::image($type, $image)))) {
         $img = str_replace('.jpg', '.png', $img);
       }
-      return '<img src="' . $img . '">';
+      return '<img style="width:280px;" src="' . $img . '">';
     } else {
       return '<img src=' . asset('img/p/en-default-home_default.jpg') . '>';
     }
