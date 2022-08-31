@@ -87,6 +87,7 @@ class RimsController extends Controller
     $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
               ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
               ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
+              ->orderBy('rim_brands.brand_id', 'ASC')
               ->paginate(20);
 
     return view('rims.autorims', compact('rims','brands'));

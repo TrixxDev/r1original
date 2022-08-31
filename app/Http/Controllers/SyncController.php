@@ -39,7 +39,7 @@ class SyncController extends Controller
     {
 
         try {
-          $this->accrual = new PDO("sqlsrv:Server=212.3.206.149,1444;Database=accrual", "sa", "cenzors");
+          $this->accrual = new PDO("sqlsrv:Server=192.168.0.36,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
           die("Database connection failed: " . $e->getMessage());
           exit;
@@ -56,7 +56,7 @@ class SyncController extends Controller
                 return false;
             }
 
-            DB::table($tire_table)->update(['quantity' => 0]);
+            DB::table($tire_table)->update(['quantity' => 0, 'krs_quantity' => 0, 'urs_quantity' => 0]);
 
 //        $this->updateStock($stock[1]);
             $this->updateStock($stock[2]);

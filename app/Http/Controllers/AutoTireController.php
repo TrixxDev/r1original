@@ -269,6 +269,8 @@ class AutoTireController extends Controller
 
     public function tires_tread($brand, $tread, $tire) {
 
+
+
         $brand = Autobrand::where('slug', $brand)->first();
 
         $tread = Autotread::where('slug', $tread)->first();

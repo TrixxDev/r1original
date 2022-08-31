@@ -17,102 +17,102 @@ Auth::routes();
 // Administrācijas panelis
 
 Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')->group(function() {
-    Route::get('/', [App\Http\Controllers\Admin\MainController::class, 'home'])->name('home');
+  Route::get('/', [App\Http\Controllers\Admin\MainController::class, 'home'])->name('home');
 
-    // Auto riepas
-    Route::get('/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'index'])->name('auto.tires');
-    Route::get('/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_edit'])->name('auto.tire.edit');
-    Route::post('/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_update'])->name('auto.tire.update');
-    Route::get('/auto/delete/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_destroy'])->name('auto.tire.destroy');
-    Route::post('/auto/ajaxUpdateTreads', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTreads'])->name('auto.tires.ajaxUpdateTreads');
-    Route::post('/auto/ajaxUpdateTires', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTires'])->name('auto.tires.ajaxUpdateTires');
-    Route::get('/auto/tread/{tread_id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tires_search'])->name('auto.tires.search');
-    Route::get('/auto/tread/{tread_id}/create', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_create'])->name('auto.tires.create');
-    Route::post('/auto/tread/{tread_id}/store', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_store'])->name('auto.tires.store');
-    Route::post('/auto/tread/{tread_id}/image', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_image'])->name('auto.tires.image');
-    Route::post('/auto/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTreads'])->name('auto.tires.ajaxUpdateTreads');
-    Route::post('/auto/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTires'])->name('auto.tires.ajaxUpdateTires');
+  // Auto riepas
+  Route::get('/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'index'])->name('auto.tires');
+  Route::get('/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_edit'])->name('auto.tire.edit');
+  Route::post('/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_update'])->name('auto.tire.update');
+  Route::get('/auto/delete/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_destroy'])->name('auto.tire.destroy');
+  Route::post('/auto/ajaxUpdateTreads', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTreads'])->name('auto.tires.ajaxUpdateTreads');
+  Route::post('/auto/ajaxUpdateTires', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTires'])->name('auto.tires.ajaxUpdateTires');
+  Route::get('/auto/tread/{tread_id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tires_search'])->name('auto.tires.search');
+  Route::get('/auto/tread/{tread_id}/create', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_create'])->name('auto.tires.create');
+  Route::post('/auto/tread/{tread_id}/store', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_store'])->name('auto.tires.store');
+  Route::post('/auto/tread/{tread_id}/image', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_image'])->name('auto.tires.image');
+  Route::post('/auto/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTreads'])->name('auto.tires.ajaxUpdateTreads');
+  Route::post('/auto/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTires'])->name('auto.tires.ajaxUpdateTires');
 
-    // Auto riepu imports
-    Route::get('/import/auto', [App\Http\Controllers\Admin\Import\AutoTireImportController::class, 'index'])->name('auto.import');
-    Route::post('/import/auto', [App\Http\Controllers\Admin\Import\AutoTireImportController::class, 'import'])->name('auto.import.post');
+  // Auto riepu imports
+  Route::get('/import/auto', [App\Http\Controllers\Admin\Import\AutoTireImportController::class, 'index'])->name('auto.import');
+  Route::post('/import/auto', [App\Http\Controllers\Admin\Import\AutoTireImportController::class, 'import'])->name('auto.import.post');
 
-    // Kvadru riepu imports
-    Route::get('/import/quadr', [App\Http\Controllers\Admin\Import\QuadrTireImportController::class, 'index'])->name('quadr.import');
-    Route::post('/import/quadr', [App\Http\Controllers\Admin\Import\QuadrTireImportController::class, 'import'])->name('quadr.import.post');
+  // Kvadru riepu imports
+  Route::get('/import/quadr', [App\Http\Controllers\Admin\Import\QuadrTireImportController::class, 'index'])->name('quadr.import');
+  Route::post('/import/quadr', [App\Http\Controllers\Admin\Import\QuadrTireImportController::class, 'import'])->name('quadr.import.post');
 
-    // Moto riepu imports
-    Route::get('/import/moto', [App\Http\Controllers\Admin\Import\MotoTireImportController::class, 'index'])->name('moto.import');
-    Route::post('/import/moto', [App\Http\Controllers\Admin\Import\MotoTireImportController::class, 'import'])->name('moto.import.post');
+  // Moto riepu imports
+  Route::get('/import/moto', [App\Http\Controllers\Admin\Import\MotoTireImportController::class, 'index'])->name('moto.import');
+  Route::post('/import/moto', [App\Http\Controllers\Admin\Import\MotoTireImportController::class, 'import'])->name('moto.import.post');
 
-    // Auto riepu brendi
-    Route::get('/brands/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'brands_list'])->name('auto.brands');
-    Route::get('/brands/auto/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'brands_list'])->name('auto.brands.per_page');
-    Route::match(['get', 'post'],'/brands/auto/search', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_search'])->name('auto.brands.search');
-    Route::match(['get', 'post'],'/brands/auto/search/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_search'])->name('auto.brands.search.per_page');
-    Route::get('/brands/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_add'])->name('auto.brands.add');
-    Route::post('/brands/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_store'])->name('auto.brands.store');
-    Route::get('/brands/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_edit'])->name('auto.brands.edit');
-    Route::post('/brands/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_update'])->name('auto.brands.update');
-    Route::get('/brands/auto/{id}/delete', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_delete'])->name('auto.brands.delete');
+  // Auto riepu brendi
+  Route::get('/brands/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'brands_list'])->name('auto.brands');
+  Route::get('/brands/auto/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'brands_list'])->name('auto.brands.per_page');
+  Route::match(['get', 'post'],'/brands/auto/search', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_search'])->name('auto.brands.search');
+  Route::match(['get', 'post'],'/brands/auto/search/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_search'])->name('auto.brands.search.per_page');
+  Route::get('/brands/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_add'])->name('auto.brands.add');
+  Route::post('/brands/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_store'])->name('auto.brands.store');
+  Route::get('/brands/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_edit'])->name('auto.brands.edit');
+  Route::post('/brands/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_update'])->name('auto.brands.update');
+  Route::get('/brands/auto/{id}/delete', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_delete'])->name('auto.brands.delete');
 
-    // Auto riepu modeļi
-    Route::get('/treads/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_list'])->name('auto.treads');
-    Route::get('/treads/auto/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_list'])->name('auto.treads.per_page');
-    Route::match(['get', 'post'],'/treads/auto/search', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_search'])->name('auto.treads.search');
-    Route::match(['get', 'post'],'/treads/auto/search/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_search'])->name('auto.treads.search.per_page');
-    Route::get('/treads/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_add'])->name('auto.treads.add');
-    Route::post('/treads/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_store'])->name('auto.treads.store');
-    Route::get('/treads/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_edit'])->name('auto.treads.edit');
-    Route::post('/treads/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_update'])->name('auto.treads.update');
-    Route::get('/treads/auto/{id}/delete', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_delete'])->name('auto.treads.delete');
+  // Auto riepu modeļi
+  Route::get('/treads/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_list'])->name('auto.treads');
+  Route::get('/treads/auto/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_list'])->name('auto.treads.per_page');
+  Route::match(['get', 'post'],'/treads/auto/search', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_search'])->name('auto.treads.search');
+  Route::match(['get', 'post'],'/treads/auto/search/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_search'])->name('auto.treads.search.per_page');
+  Route::get('/treads/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_add'])->name('auto.treads.add');
+  Route::post('/treads/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_store'])->name('auto.treads.store');
+  Route::get('/treads/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_edit'])->name('auto.treads.edit');
+  Route::post('/treads/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_update'])->name('auto.treads.update');
+  Route::get('/treads/auto/{id}/delete', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_delete'])->name('auto.treads.delete');
 
-    // Diski
-    Route::get('/rims', [App\Http\Controllers\Admin\RimsController::class, 'index'])->name('rims.index');
-    Route::get('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'edit'])->name('rims.edit');
+  // Diski
+  Route::get('/rims', [App\Http\Controllers\Admin\RimsController::class, 'index'])->name('rims.index');
+  Route::get('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'edit'])->name('rims.edit');
 
-    // Interneta-veikals
-    Route::get('/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
-    Route::get('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'order'])->name('order');
+  // Interneta-veikals
+  Route::get('/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
+  Route::get('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'order'])->name('order');
 //    Route::delete('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'delete'])->name('delete');
 
-    // Pieraksts
-    Route::get('/pieraksts/date={date}', [App\Http\Controllers\Admin\Records\RecordController::class, 'index'])->name('records.date');
-    Route::get('/pieraksts/', [App\Http\Controllers\Admin\Records\RecordController::class, 'index'])->name('records');
+  // Pieraksts
+  Route::get('/pieraksts/date={date}', [App\Http\Controllers\Admin\Records\RecordController::class, 'index'])->name('records.date');
+  Route::get('/pieraksts/', [App\Http\Controllers\Admin\Records\RecordController::class, 'index'])->name('records');
 
-    Route::match(['GET', 'POST'], '/pieraksts/queue_ajax/{queue_id}/{date}', [App\Http\Controllers\Admin\Records\RecordController::class, 'queue_ajax']);
-    Route::match(['GET', 'POST'], '/pieraksts/slot_ajax/{queue_id}/{date}/{slot_id}', [App\Http\Controllers\Admin\Records\RecordController::class, 'slot_ajax']);
-    Route::post('/pieraksts/discount', [App\Http\Controllers\Admin\Records\RecordController::class, 'discount']);
+  Route::match(['GET', 'POST'], '/pieraksts/queue_ajax/{queue_id}/{date}', [App\Http\Controllers\Admin\Records\RecordController::class, 'queue_ajax']);
+  Route::match(['GET', 'POST'], '/pieraksts/slot_ajax/{queue_id}/{date}/{slot_id}', [App\Http\Controllers\Admin\Records\RecordController::class, 'slot_ajax']);
+  Route::post('/pieraksts/discount', [App\Http\Controllers\Admin\Records\RecordController::class, 'discount']);
 
-    Route::get('/rezervacijas/date={date}', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations'])->name('reservations.date');
-    Route::get('/rezervacijas/', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations'])->name('reservations');
+  Route::get('/rezervacijas/date={date}', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations'])->name('reservations.date');
+  Route::get('/rezervacijas/', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations'])->name('reservations');
 
-    Route::match(['GET', 'POST'], '/rezervacijas/slot_ajax/{queue_id}/{date}/{slot_id}/{part}', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations_ajax'])->name('reservations_ajax');
+  Route::match(['GET', 'POST'], '/rezervacijas/slot_ajax/{queue_id}/{date}/{slot_id}/{part}', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations_ajax'])->name('reservations_ajax');
 
   // Iestatījumi
-    // Pakalpojumi
-    Route::get('/settings/services', [App\Http\Controllers\Admin\SettingsController::class, 'services'])->name('settings.services');
-    Route::post('/settings/services/add', [App\Http\Controllers\Admin\SettingsController::class, 'services_store'])->name('settings.services.add');
-    Route::get('/settings/services/{id}/edit', [App\Http\Controllers\Admin\SettingsController::class, 'services_edit'])->name('settings.services.edit');
-    Route::get('/settings/services/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'services_destroy'])->name('settings.services.destroy');
+  // Pakalpojumi
+  Route::get('/settings/services', [App\Http\Controllers\Admin\SettingsController::class, 'services'])->name('settings.services');
+  Route::post('/settings/services/add', [App\Http\Controllers\Admin\SettingsController::class, 'services_store'])->name('settings.services.add');
+  Route::get('/settings/services/{id}/edit', [App\Http\Controllers\Admin\SettingsController::class, 'services_edit'])->name('settings.services.edit');
+  Route::get('/settings/services/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'services_destroy'])->name('settings.services.destroy');
 
-    // Administratori
-    Route::get('/settings/users', [App\Http\Controllers\Admin\SettingsController::class, 'users'])->name('settings.users');
-    Route::get('/settings/users/create', [App\Http\Controllers\Admin\SettingsController::class, 'users_create'])->name('settings.users.create');
-    Route::post('/settings/users/store', [App\Http\Controllers\Admin\SettingsController::class, 'users_store'])->name('settings.users.store');
-    Route::get('/settings/users/{id}/edit', [App\Http\Controllers\Admin\SettingsController::class, 'users_edit'])->name('settings.users.edit');
-    Route::get('/settings/users/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'users_destroy'])->name('settings.users.destroy');
+  // Administratori
+  Route::get('/settings/users', [App\Http\Controllers\Admin\SettingsController::class, 'users'])->name('settings.users');
+  Route::get('/settings/users/create', [App\Http\Controllers\Admin\SettingsController::class, 'users_create'])->name('settings.users.create');
+  Route::post('/settings/users/store', [App\Http\Controllers\Admin\SettingsController::class, 'users_store'])->name('settings.users.store');
+  Route::get('/settings/users/{id}/edit', [App\Http\Controllers\Admin\SettingsController::class, 'users_edit'])->name('settings.users.edit');
+  Route::get('/settings/users/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'users_destroy'])->name('settings.users.destroy');
 
-    // Sinhronizācijas
-    Route::get('/settings/syncs', [App\Http\Controllers\Admin\SettingsController::class, 'syncs'])->name('settings.syncs');
+  // Sinhronizācijas
+  Route::get('/settings/syncs', [App\Http\Controllers\Admin\SettingsController::class, 'syncs'])->name('settings.syncs');
 
-    // Lapas
-    Route::get('/settings/pages', [App\Http\Controllers\Admin\SettingsController::class, 'pages'])->name('settings.pages');
-    Route::get('/settings/pages/create', [App\Http\Controllers\Admin\SettingsController::class, 'pages_create'])->name('settings.pages.create');
-    Route::post('/settings/pages/store', [App\Http\Controllers\Admin\SettingsController::class, 'pages_store'])->name('settings.pages.store');
-    Route::get('/settings/pages/{id}/edit', [App\Http\Controllers\Admin\SettingsController::class, 'pages_edit'])->name('settings.pages.edit');
-    Route::post('/settings/pages/{id}/update', [App\Http\Controllers\Admin\SettingsController::class, 'pages_update'])->name('settings.pages.update');
-    Route::get('/settings/pages/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'pages_destroy'])->name('settings.pages.destroy');
+  // Lapas
+  Route::get('/settings/pages', [App\Http\Controllers\Admin\SettingsController::class, 'pages'])->name('settings.pages');
+  Route::get('/settings/pages/create', [App\Http\Controllers\Admin\SettingsController::class, 'pages_create'])->name('settings.pages.create');
+  Route::post('/settings/pages/store', [App\Http\Controllers\Admin\SettingsController::class, 'pages_store'])->name('settings.pages.store');
+  Route::get('/settings/pages/{id}/edit', [App\Http\Controllers\Admin\SettingsController::class, 'pages_edit'])->name('settings.pages.edit');
+  Route::post('/settings/pages/{id}/update', [App\Http\Controllers\Admin\SettingsController::class, 'pages_update'])->name('settings.pages.update');
+  Route::get('/settings/pages/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'pages_destroy'])->name('settings.pages.destroy');
 });
 
 Route::middleware('checksession')->group(function() {
@@ -160,7 +160,7 @@ Route::middleware('checksession')->group(function() {
 // Motociklu riepas
   Route::get('/motociklu-riepas', [App\Http\Controllers\MotoTireController::class, 'index'])->name('motociklu-riepas');
   Route::post('/motociklu-riepas', [App\Http\Controllers\MotoTireController::class, 'tires_search'])->name('motociklu-riepas');
-  Route::get('/motociklu-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\MotoTireController::class, 'moto_tires_tread'])->name('motociklu-riepa');
+  Route::get('/motociklu-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\MotoTireController::class, 'tires_tread'])->name('motociklu-riepa');
   Route::post('/motociklu-riepas/ajax', [App\Http\Controllers\MotoTireController::class, 'tires_ajax'])->name('motociklu-riepas-ajax');
 
 //Lielās riepas
@@ -172,7 +172,7 @@ Route::middleware('checksession')->group(function() {
 //Diski
 
   Route::get('/lietie-diski', [App\Http\Controllers\RimsController::class, 'autorims'])->name('lietie-diski');
-  Route::get('/lietie-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\RimsController::class, 'autorims_tread']);
+  Route::get('/lietie-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\RimsController::class, 'autorims_tread'])->name('lietais-disks');
   Route::get('/kvadru-diski', [App\Http\Controllers\RimsController::class, 'quadrim'])->name('kvadraciklu-diski');
 
 // Noklusējuma lapas
@@ -266,7 +266,8 @@ Route::middleware('checksession')->group(function() {
   //  ROUTE FOR TESTING PURPOSES
   Route::get('/testing', function() {
     return view('testing');
-});
+  });
+
   Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);
 
 });

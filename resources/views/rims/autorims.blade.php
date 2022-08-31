@@ -403,6 +403,7 @@
                                       </div>
                                     </a>
                                   @endforeach
+                                  {{ $rims->links() }}
                                 </div>
                               </div>
 
