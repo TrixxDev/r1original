@@ -7,6 +7,7 @@ use App\Models\FilterSizes;
 use App\Models\FilterModels;
 use App\Models\Rim;
 use App\Models\Rimbrand;
+use App\Models\Rimmake;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -93,26 +94,35 @@ class RimsController extends Controller
     return view('rims.autorims', compact('rims','brands'));
   }
 
-  public function autorims_tread()
+  public function autorims_tread($brand, $tread, $rim)
   {
 //    $currTire = Rim::with('tread')->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
 //      ->where('auto_treads.title', $tread->title)
 //      ->where('auto_tires.tire_id', $tire)
 //      ->first();
 
-    $currTire = Rim::join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
-      ->select('rims.*', 'rim_makes.*', 'rim_makes.make_id as ')
-      ->limit(20)
-      ->get();
+    $brand = Rimbrand::where('slug', $brand)->first();
 
-    dd($currTire);
+    $tread = Rimmake::where('slug', $tread)->first();
+
+    $currTire = Rim::join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+                     ->where('rim_makes.title', $tread->title)
+                     ->where('rims.rim_id', $rim)
+                     ->first();
+
+//    $currTire = Rim::join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+//      ->select('rims.*', 'rim_makes.*', 'rim_makes.make_id as ')
+//      ->limit(20)
+//      ->get();
+
+//    dd($currTire);
 
     $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
       ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
       ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
       ->paginate(20);
 
-    return view('rims.auto.tread', compact('rims'));
+    return view('rims.auto.tread', compact('rims', 'currTire'));
   }
 
   public function quadrim()

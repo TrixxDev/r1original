@@ -96,29 +96,35 @@
                       <thead>
                       <tr>
                         <th>Platums</th>
-                        <td>d1</td>
+                        <td>{{ $currTire->d1 }}</td>
                       </tr>
                       </thead>
                       <tbody>
                       <tr>
                         <th>Augstums</th>
-                        <td>d2</td>
+                        <td>{{ $currTire->d3 }}</td>
                       </tr>
                       <tr>
-                        <th>Diametrs</th>
-                        <td>d3</td>
+                        <th>Skrūvju izbīdījums</th>
+                        <td>{{ $currTire->pcd }}</td>
                       </tr>
                       <tr>
-                        <th>Kods</th>
-                        <td>code</td>
+                        <th>Centrālais caurums</th>
+                        <td>{{ $currTire->dc }}</td>
                       </tr>
                       <tr>
-                        <th>Li</th>
-                        <td>{{ $currTire->li }}</td>
+                        <th>Skrūvju skaits</th>
+                        <td>{{ $currTire->skr }}</td>
                       </tr>
                       <tr>
-                        <th>Si</th>
-                        <td>{{ $currTire->si }}</td>
+                        <th>Lietots</th>
+                        <td>
+                         @if( $currTire->used === 0)
+                          {{ 'Jauns' }}
+                         @else
+                            {{ 'Lietots' }}
+                          @endif
+                        </td>
                       </tr>
                       <tr>
                         <th>Degvielas ekonomija</th>
