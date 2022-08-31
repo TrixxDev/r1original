@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Rimbrand extends Model
 {
-    use HasFactory;
+  use HasFactory;
 
-    protected $table = 'rim_brands';
+  protected $table = 'rim_brands';
+
+  protected $primaryKey = 'brand_id';
 }
