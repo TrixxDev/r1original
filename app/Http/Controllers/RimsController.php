@@ -89,14 +89,12 @@ class RimsController extends Controller
               ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
               ->paginate(20);
 
-//    dd($rims);
-
     return view('rims.autorims', compact('rims','brands'));
   }
 
   public function autorims_tread()
   {
-    
+
   }
 
   public function quadrim()

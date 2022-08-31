@@ -312,52 +312,103 @@
                             </div>
                             <div id="">
                               <h4 class="rims-title">Jauni lietie diski</h4>
-                              <div class="tire-image-container" style="display: none">
-                                <div class="tire-image-cards">
-                                    <div class="row grid-ex">
-                                    @foreach($rims as $rim)
-                                      <a href="" class="">
-                                        <div class="tire-image-card sort-order">
-                                          <div class="text-center">
-                                            <img
+{{--                              GRID VIEW--}}
+{{--                              <div class="tire-image-container" style="display: none">--}}
+{{--                                <div class="tire-image-cards">--}}
+{{--                                    <div class="row grid-ex">--}}
+{{--                                    @foreach($rims as $rim)--}}
+{{--                                      <a href="" class="">--}}
+{{--                                        <div class="tire-image-card sort-order">--}}
+{{--                                          <div class="text-center">--}}
+{{--                                            <img--}}
 {{--                                              src="{{ asset('img/p/r1-logo.svg') }}"--}}
 
-                                              @if (\Image::exists('auto-rim', $rim->rim_id))
-                                                src="{{ \Image::showGrid('auto-rim', $rim->rim_id) }}"
-                                              @else
-                                                src="{{ asset('img/p/r1-logo.svg') }}"
-                                              @endif
-                                              alt="tire-image" class="img-thumbnail border-none text-center"
-                                            >
-                                          </div>
-                                          <div class="tire-list-caption">
+{{--                                              @if (\Image::exists('auto-rim', $rim->rim_id))--}}
+{{--                                                src="{{ \Image::showGrid('auto-rim', $rim->rim_id) }}"--}}
+{{--                                              @else--}}
+{{--                                                src="{{ asset('img/p/r1-logo.svg') }}"--}}
+{{--                                              @endif--}}
+{{--                                              alt="tire-image" class="img-thumbnail border-none text-center"--}}
+{{--                                            >--}}
+{{--                                          </div>--}}
+{{--                                          <div class="tire-list-caption">--}}
 
-                                            <div class="card-title-text">Normāls disks</div>
-                                            <div class="tire-tread">
-                                              12 / 34 / 56
-                                            </div>
-                                            <div class="tire-price-red">€ 50</div>
-                                          </div>
+{{--                                            <div class="card-title-text">Normāls disks</div>--}}
+{{--                                            <div class="tire-tread">--}}
+{{--                                              12 / 34 / 56--}}
+{{--                                            </div>--}}
+{{--                                            <div class="tire-price-red">--}}
+{{--                                              <p>{{$rim->price1}}</p>--}}
+{{--                                              <p>{{$rim->price2}}</p>--}}
+{{--                                              <p>{{$rim->price3}}</p>--}}
+{{--                                              </div>--}}
+{{--                                          </div>--}}
+{{--                                        </div>--}}
+{{--                                      </a>--}}
+{{--                                    @endforeach--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <a id="storage" href="http://aludiski.com/aludiski1001/wheels.php?cat=all&amp;lang=LV&amp;select_wheels=Search" target="_blank">NOLIKTAVA </a>--}}
+{{--                                <nav class="pagination">--}}
+{{--                                  <div class="col-md-12">--}}
+{{--                                  </div>--}}
+{{--                                </nav>--}}
+{{--                                <div class="hidden-md-up text-xs-right up">--}}
+{{--                                  <a href="#header" class="btn btn-secondary">--}}
+{{--                                    Back to top--}}
+{{--                                    <i class="material-icons"></i>--}}
+{{--                                  </a>--}}
+{{--                                </div>--}}
+{{--                              </div>--}}
+
+
+                              <div class="tire-image-container" style="display: none">
+                                <div class="tire-image-cards">
+                                  {{--                <div style="width: auto;">BRAND NAME</div>--}}
+                                  @php
+                                    $cbrand = '';
+                                  @endphp
+                                  @foreach($rims as $rim)
+                                    @php
+                                      $brand = $rim->brand_title;
+                                      if ($cbrand!=$brand){
+                                        echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex pr-1">';
+                                        $cbrand = $brand;
+                                        $stripe = 1;
+                                      } else {
+                                          $brand = str_replace(" ", "", $brand);
+                                      }
+                                    @endphp
+                                    {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
+                                    <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}" class="">
+                                      <div class="tire-image-card sort-order">
+
+                                        <div class="text-center">
+                                          <img
+{{--                                            @if (\Image::exists('auto-rim', $rim->rim_id))--}}
+{{--                                            src="{{ \Image::showGrid('auto-rim', $rim->rim_id) }}"--}}
+{{--                                            @else--}}
+{{--                                            src="{{ asset('img/p/en-default-home_default.jpg') }}"--}}
+{{--                                            @endif--}}
+                                          >
                                         </div>
-                                      </a>
-                                    @endforeach
-                                    </div>
-                                </div>
-                                <a id="storage" href="http://aludiski.com/aludiski1001/wheels.php?cat=all&amp;lang=LV&amp;select_wheels=Search" target="_blank">NOLIKTAVA </a>
-                                <nav class="pagination">
-                                  <div class="col-md-12">
-                                  </div>
-                                </nav>
-                                <div class="hidden-md-up text-xs-right up">
-                                  <a href="#header" class="btn btn-secondary">
-                                    Back to top
-                                    <i class="material-icons"></i>
-                                  </a>
+
+                                        <div class="tire-list-caption">
+                                          <div class="card-title-text">{{$rim->title}}</div>
+                                          <div class="tire-tread">
+                                            {{$rim->d1}} / {{$rim->d2}} / {{$rim->d3}}
+                                          </div>
+                                          <div class="tire-price-red">€{{$rim->price1}}</div>
+                                        </div>
+                                      </div>
+                                    </a>
+                                  @endforeach
                                 </div>
                               </div>
 
+{{--                              11111111111111111111111111111111111111111111111111--}}
                                 <div id="js-product-list">
-{{--                                  VECĀ TABULA --}}
+{{--                                  LIST VIEW--}}
 {{--                                      {{ dd($q) }}--}}
 
                                   <table id="tires-table" class="table rims-sorter tires-table table-hover tablesorter">
@@ -365,6 +416,7 @@
                                     <tr>
                                       <th scope="col"></th>
                                       <th scope="col" class="table-tire-name-cell">Platums / Diametrs</th>
+                                      <th scope="col" class="hidden-sm-down text-center">Centrs</th>
                                       <th scope="col" class="hidden-sm-down text-center">Centrs</th>
                                       <th scope="col" class="hidden-sm-down text-center">Krāsa</th>
 
@@ -431,7 +483,11 @@
                                         </td>
 
 
-                                        <td class="table-tire-name-cell">
+                                        <td class="table-tire-name-cell text-center">
+                                          {{$rim->dc}}
+                                        </td>
+
+                                        <td class="table-tire-name-cell text-center">
                                           {{$rim->dc}}
                                         </td>
 
