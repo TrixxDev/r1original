@@ -18,7 +18,7 @@
                                     <i class="material-icons"></i>
                                     Iziet
                                 </a>
-                                <a class="account" href="{{ route('my-account') }}" title="Skatīt manu klienta kontu" data-user="{{ Auth::user()->fullName }}" rel="nofollow">
+                                <a class="account" href="{{ route('my-account') }}" title="Skatīt manu klienta kontu" data-role="{{ Auth::user()->getRoleNames() }}" data-user="{{ Auth::user()->fullName }}" rel="nofollow">
                                     <i class="material-icons hidden-md-up logged"></i>
                                     <span class="hidden-sm-down">{{ Auth::user()->fullName }}</span>
                                 </a>

@@ -717,6 +717,7 @@ function ajaxChangeQty(tire_id, qty, price) {
       $('.cart-total .value').html('€ ' + data.total_sum.replace('.00', ''));
       $('.product-price[data-product-id=' + tire_id + ']').html('<strong>€ ' + (parseInt(price) * parseInt(qty)) + '</strong>');
       $('.js-cart-line-product-quantity[data-product-id=' + tire_id + ']').val(parseInt(qty));
+      $('.cart-montage-choice .cart-delivery-options .cart-delivery-label').first().children('input').val(data.total_items);
       $('.cart-montage-choice .cart-delivery-options .cart-delivery-label').first().children('span').html(data.total_items + ' Riepām');
     }
   });
@@ -2328,6 +2329,7 @@ $('.cart-summary .cart-delivery-option .custom-select').on('change', function() 
 });
 
 $('.cart-montage-choice .cart-delivery-options .cart-delivery-label input[name=cart-montage-radio]').each(function() {
+  console.log($(this));
   $(this).on('change', function() {
     switch (parseInt($(this).val())) {
       case 1: {

@@ -136,7 +136,7 @@ class CartController extends Controller
       $session_id = Session::getId();
 
       if ($request->post()) {
-          $delivery = [];
+        $delivery = [];
 
           //        $this->checkCart($request->data);
 
@@ -163,18 +163,28 @@ class CartController extends Controller
 
         $amount = str_replace(['.', ','], '', Cart::subtotal());
 
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+          $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+          $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+          $ip = $_SERVER['REMOTE_ADDR'];
+        }
+
         $order = new Order;
-        $order->status = 1;
         $order->userId = 0;
         if (Auth::check()) {
           $order->userId = Auth::user()->id;
+        } else {
+          $order->userIp = $ip;
         }
+        $order->status = 1;
         $order->price = substr($amount, 0, -2);
-         $order->delivery_price = 0;
+        $order->delivery_price = 0;
         $order->fit_price = 0;
         $order->info = $cartData;
         $order->order_token = $session_id;
-        $order->timeRemaining = Carbon::now()->addMinutes(30)->format('H:i:s');
+        $order->timeRemaining = Carbon::now()->addMinutes(30)->format('Y-m-d H:i:s');
 
         $order->save();
 
@@ -184,13 +194,106 @@ class CartController extends Controller
 
         $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
 
-        Session::put('cart_options', $order);
+        Session::put('cart_options', $data);
 
         return redirect(route('order'));
       }
 //        dd($this->cart->content());
-        return view('cart.home');
+      return view('cart.home');
+    }
+
+    public function order(Request $request)
+    {
+
+      $session_id = Session::getId();
+
+      if ($request->post()) {
+  //        Session::regenerate(false);
+
+        $order = Order::where('order_token', $session_id)->first();
+
+        $cartData = [];
+
+        foreach (Cart::content() as $key => $item) {
+          array_push($cartData, [
+            'tire_id' => $item->id,
+            'title' => $item->name,
+            'quantity' => $item->qty,
+            'price' => (int) $item->price,
+          ]);
+  //            if (){
+  //              allow order online;
+  //            }
+        }
+        $cartData[] = $request->data;
+
+        $cartData = serialize($cartData);
+
+        $amount = str_replace(['.', ','], '', Cart::subtotal());
+
+        if (!$order) {
+          $order = new Order;
+          $order->status = 1;
+          $order->userId = 0;
+          if (Auth::check()) {
+            $order->userId = Auth::user()->id;
+          }
+          $order->price = substr($amount, 0, -2);
+          $order->delivery_price = 0;
+          $order->fit_price = 0;
+          $order->info = $cartData;
+          $order->order_token = Session::getId();
+          $order->timeRemaining = Carbon::now()->addMinutes(30)->format('H:i:s');
+
+          $order->save();
+
+          $order_id = $order->id;
+          $user_data = $request->input('data');
+        } else {
+
+
+
+          $order_id = $order->id;
+          $user_data = unserialize($order->info);
+        }
+
+        $amount1 = $amount;
+        $email = Session::get('email');
+
+        $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
+
+        if (isset($request->pay)) {
+          return $this->pay($data);
+        }
+
+        if (!isset($user_data['email_notifications'])) {
+          Session::remove('cart.email_notifications');
+        }
+        foreach ($user_data as $key => $value) {
+          Session::put('cart.' . $key, $value);
+        }
+        Session::put('person', $request->person);
+
+        $cats = [];
+        $dogs = [];
+
+
+        foreach (Cart::content() as $key => $item) {
+          $cat = str_replace('App\\Models\\', '', $item->associatedModel);
+          array_push($cats, $cat);
+          array_push($dogs, $item->options->availability);
+        }
+
+        $cats = array_unique($cats);
+        $dogs = array_unique($dogs);
+
+        return view('cart.checkout', compact('user_data', 'cats', 'dogs', 'order_id'));
+      }else {
+        if (!Session::exists('person')) Session::put('person', 1);
+        return view('cart.order');
       }
+
+    }
 
       public function checkShipping(Request $request, $data = '')
       {
@@ -413,101 +516,6 @@ class CartController extends Controller
         $totalSum = Cart::subtotal();
 
         return json_encode(['total_items' => $totalItems, 'total_sum' => $totalSum]);
-    }
-
-    public function order(Request $request)
-    {
-
-
-
-      $session_id = Session::getId();
-
-      if ($request->post()) {
-//        Session::regenerate(false);
-
-        $order = Order::where('order_token', $session_id)->first();
-
-        $cartData = [];
-
-        foreach (Cart::content() as $key => $item) {
-          array_push($cartData, [
-            'tire_id' => $item->id,
-            'title' => $item->name,
-            'quantity' => $item->qty,
-            'price' => (int) $item->price,
-          ]);
-//            if (){
-//              allow order online;
-//            }
-        }
-        $cartData[] = $request->data;
-
-        $cartData = serialize($cartData);
-
-        $amount = str_replace(['.', ','], '', Cart::subtotal());
-
-        if (!$order) {
-          $order = new Order;
-          $order->status = 1;
-          $order->userId = 0;
-          if (Auth::check()) {
-            $order->userId = Auth::user()->id;
-          }
-          $order->price = substr($amount, 0, -2);
-          $order->delivery_price = 0;
-          $order->fit_price = 0;
-          $order->info = $cartData;
-          $order->order_token = Session::getId();
-          $order->timeRemaining = Carbon::now()->addMinutes(30)->format('H:i:s');
-
-          $order->save();
-
-          $order_id = $order->id;
-          $user_data = $request->input('data');
-        } else {
-
-
-
-          $order_id = $order->id;
-          $user_data = unserialize($order->info);
-        }
-
-        $amount1 = $amount;
-        $email = Session::get('email');
-
-        $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
-
-        if (isset($request->pay)) {
-          return $this->pay($data);
-        }
-
-        if (!isset($user_data['email_notifications'])) {
-          Session::remove('cart.email_notifications');
-        }
-        foreach ($user_data as $key => $value) {
-          Session::put('cart.' . $key, $value);
-        }
-        Session::put('person', $request->person);
-
-        $cats = [];
-        $dogs = [];
-
-
-        foreach (Cart::content() as $key => $item) {
-          $cat = str_replace('App\\Models\\', '', $item->associatedModel);
-          array_push($cats, $cat);
-          array_push($dogs, $item->options->availability);
-        }
-
-        $cats = array_unique($cats);
-        $dogs = array_unique($dogs);
-
-        return view('cart.checkout', compact('user_data', 'cats', 'dogs', 'order_id'));
-      }else {
-        if (!Session::exists('person')) Session::put('person', 1);
-        return view('cart.order');
-      }
-
     }
 
     public function pay($data)
