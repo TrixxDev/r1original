@@ -381,24 +381,21 @@
                                     @endphp
                                     {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
                                     <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}" class="">
-                                      <div class="tire-image-card sort-order">
+                                      <div class="tire-image-card sort-order card">
 
                                         <div class="text-center">
                                           <img
-{{--                                            @if (\Image::exists('auto-rim', $rim->rim_id))--}}
-{{--                                            src="{{ \Image::showGrid('auto-rim', $rim->rim_id) }}"--}}
-{{--                                            @else--}}
-{{--                                            src="{{ asset('img/p/en-default-home_default.jpg') }}"--}}
-{{--                                            @endif--}}
+                                            @if (\Image::exists('auto-rim', $rim->rim_id))
+                                            src="{{ \Image::showGrid('auto-rim', $rim->rim_id) }}"
+                                            @else
+                                            src="{{ asset('img/p/en-default-home_default.jpg') }}"
+                                            @endif
+                                            style="width: 130px;"
                                           >
                                         </div>
 
                                         <div class="tire-list-caption">
                                           <div class="card-title-text">{{$rim->title}}</div>
-                                          <div class="tire-tread">
-                                            {{$rim->d1}} / {{$rim->d2}} / {{$rim->d3}}
-                                          </div>
-                                          <div class="tire-price-red">€{{$rim->price1}}</div>
                                         </div>
                                       </div>
                                     </a>
@@ -442,7 +439,7 @@
                                                  class="tire-table-checkbox">
                                         </th>
 
-                                        <td class="table-tire-name-cell">
+                                        <td>
                                           <a data-toggle="tooltip" data-html="true" class="tire-table-link" style="text-align: center"
                                              @if (\Image::exists('auto-rim', $rim->rim_id))
                                              title="{{ \Image::show('auto-rim', $rim->rim_id) }}"
@@ -484,22 +481,21 @@
                                         </td>
 
 
-                                        <td class="table-tire-name-cell text-center">
+                                        <td class="text-center">
                                           {{$rim->dc}}
                                         </td>
 
-                                        <td class="table-tire-name-cell text-center">
+                                        <td class="text-center">
                                           {{$rim->dc}}
                                         </td>
 
-{{--{{dd($rim->rim_id)}}--}}
                                         <td class="hidden-sm-down text-center">
                                           {{$rim->color}}
                                         </td>
 
 
-                                        <td id="store-price" class="text-center store-price">€ 888</td>
-                                        <td id="sale-price" class="text-center tire-price-red sale-price">€ 999</td>
+                                        <td id="store-price" class="text-center store-price">€ {{$rim->price2}}</td>
+                                        <td id="sale-price" class="text-center tire-price-red sale-price">€ {{$rim->price3}}</td>
                                         <td class="hidden-sm-down text-center"></td>
 
                                         <td class="shopping-cart-col">
