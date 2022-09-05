@@ -19129,6 +19129,10 @@ table.queueSubTable {
   padding: 0;
 }
 
+table.queueTable.records:nth-child(1) {
+  width: 851px;
+}
+
 table.queueTable:nth-child(2) {
   border-left: 2px solid black;
 }

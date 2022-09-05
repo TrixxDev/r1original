@@ -352,6 +352,7 @@
                 <input type="hidden" name="queue_id">
                 <input type="hidden" name="slotNumber">
                 <input type="hidden" name="grecaptcha">
+                <input type="hidden" name="grecaptcha_app">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -429,13 +430,9 @@
                                     </div>
                             </div>
                         </div>
-                        @if ($errors->has('g-recaptcha-response'))
-                          <span class="text-danger">{{ $errors->first('g-recaptcha-response') }}</span>
-                        @endif
                         <div class="modal-footer reservation-modal-footer">
                             <button type="button" class="btn btn-secondary" id="close-modal" data-dismiss="modal" style="margin-right: 10px;">Atcelt</button>
                             <button type="button" class="btn btn-primary" id="submit-reservation">Pierakstīties</button>
-                            <input type="hidden" name="recaptcha" id="recaptcha">
                         </div>
                     </div>
                 </div>

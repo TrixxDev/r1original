@@ -104,6 +104,7 @@ class AutoTireController extends Controller
                            })->when($this->d3, function($query) {
                                $query->where('d3', $this->d3);
                            })->where('auto_treads.season', $this->season)
+                           ->where('auto_tires.visible_users', '<>', 0)
                            ->orderBy('d3', 'ASC')
                            ->orderBy('d1', 'ASC')
                            ->orderBy('d2', 'ASC')
@@ -120,6 +121,7 @@ class AutoTireController extends Controller
                                                ->rightJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
                                                ->where('auto_treads.season', $this->season)
                                                ->where('auto_tires.tire_id', $request->tire_id)
+                                               ->where('auto_tires.visible_users', '<>', 0)
                                                ->first();
 
         if ($request->quantity) {
@@ -160,6 +162,7 @@ class AutoTireController extends Controller
             })->when($this->wet, function($query) {
                 $query->whereIn('wet', $this->wet);
             })->where('auto_treads.season', $this->season)
+            ->where('auto_tires.visible_users', '<>', 0)
             ->orderBy('d3', 'ASC')
             ->orderBy('d1', 'ASC')
             ->orderBy('d2', 'ASC')

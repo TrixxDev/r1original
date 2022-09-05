@@ -230,12 +230,8 @@ class RecordController extends Controller
 
       $captchaResponse = json_decode($curlResponse, true);
 
-      dd($captchaResponse);
-
-      if ($captchaResponse['success'] == '1' && $captchaResponse['action'] == $action && $captchaResponse['score'] >= 0.5 && $captchaResponse['hostname'] == $_SERVER['SERVER_NAME']) {
-        echo 'Form Submitted Successfully';
+      if ($captchaResponse['success'] == true && $captchaResponse['action'] == $action && $captchaResponse['score'] >= 0.5 && $captchaResponse['hostname'] == $_SERVER['SERVER_NAME']) {
       } else {
-        echo 'You are not a human';
       }
 //
 //      dd($resultJson);

@@ -41,6 +41,14 @@ let selected_date = 0;
 let sf_height = 0;
 
 let user = $('.user-info .account').data('user');
+let user_role = $('.user-info .account').data('role');
+let admin = false;
+$.each(user_role, function(key, value) {
+  if (value === 'administrators' || value === 'moderators') {
+    admin = true;
+  }
+});
+
 let tire_qty = '';
 
 let total_price = parseInt($('.cart-summary-line.cart-total .value').text().trim().replace('€ ', ''));
@@ -779,7 +787,7 @@ $('.js-cart-line-product-quantity').each(function(key, value) {
   });
 });
 //
-if (!user) {
+if (!admin) {
   $('.add-to-cart').on('click', function() {
     let tire_id = $(this).data('info');
     let quantity = $('#quantity_wanted').val();
@@ -855,7 +863,7 @@ if (!user) {
 $('.ct_matrix_row').each(function(key, value) {
   $(value).find('.ct_submit').on('click', function() {
 
-    if (!user) {
+    if (!admin) {
       const tire_id = $(this).data('info');
       let quantity = $('#ct_matrix_' + tire_id + '_idQty').val();
       let tire_price = parseInt($(value).children('.ctd_price').last().children().html().substring(2)) * parseInt(quantity);
@@ -1726,7 +1734,7 @@ $(document).ready(function() {
   });
 
   $('.slot .free-slot-link').on('click', function() {
-    $('.modal-body.finish').remove();
+    $('.modal-body.finish, .finish-footer').remove();
     $('.reservation-modal-body').slideDown();
     $('.reservation-modal-footer #submit-reservation').show();
     $('.reservation-modal-footer #close-modal').text('Atcelt');
@@ -1767,7 +1775,7 @@ $(document).ready(function() {
     if ($(this).data('save') == 1) {
       $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
     } else {
-      $('#reservation .temp_save_nr').remove();
+      $('#slotModal .temp_save_nr').remove();
     }
   });
 
@@ -1818,15 +1826,9 @@ $(document).ready(function() {
         'queue_id': queue_id,
         'slotNumber': iorder,
         'token': $('#reservation input[name=grecaptcha]').val(),
+        'action': $('#reservation input[name=grecaptcha_app]').val(),
       },
       success: function(data) {
-        grecaptcha.ready(function() {
-          grecaptcha.execute(recaptcha_k, {action: "application_form"}).then(function(token) {
-            $('#reservation input[name=grecaptcha]').val(token);
-            $('#recaptcha_k').data('value', token);
-            $('#reservation input[name=grecaptcha_app]').val('application_form');
-          });
-        });
         if (data.error) {
           if (data.error.brand) $('#brand').attr('placeholder', data.error.brand);
           if (data.error.model) $('#model').attr('placeholder', data.error.model);
@@ -1867,8 +1869,8 @@ $(document).ready(function() {
           $('<h5 class="modal-title title-finish" id="modalTitle">Pieraksts</h5>').insertAfter('#modalTitle');
           $('.reservation-modal-footer #submit-reservation').hide();
           $('.reservation-modal-footer #close-modal').text('Aizvērt');
-          $('<div class="modal-body finish">' + data.success + '</div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
-          $('<td class="slot slot-taken">' + successText + '</td>').hide().fadeIn().insertAfter($('#' + slot + '[data-date="' + date + '"]').parent());
+          $('<div class="modal-body finish">' + data.success + '</div><div class="modal-footer finish-footer"><button type="button" class="btn btn-secondary" id="close-modal" data-dismiss="modal" style="margin-right: 10px;">Aizvērt</button></div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
+          $('<td class="taken-slot slot">' + successText + '</td>').hide().fadeIn().insertAfter($('#' + slot + '[data-date="' + date + '"]').parent());
           $('#' + slot + '[data-date="' + date + '"]').parent().fadeOut().remove();
           $('#brand, #model, #phone, #email').removeAttr('placeholder');
           $('#reservation form').trigger('reset');
@@ -2084,27 +2086,31 @@ $(document).ready(function() {
           return false;
         }
         location.reload();
+      }
+    });
+  });
+
+  $('.modal#slotModal .submit').on('click', function(e) {
+    e.preventDefault();
+    $.ajax({
+      method: 'POST',
+      url: '/admin/pieraksts/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val(),
+      data: {
+        'queue_id': $('.modal#slotModal input[name="queue_id"]').val(),
+        'date': $('.modal#slotModal input[name="date"]').val(),
+        'slot_id': $('.modal#slotModal input[name="slot"]').val(),
+        'f_status': $('.modal#slotModal #f_status').val(),
+        'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+      },
+      dataType: 'JSON',
+      success: function (data) {
+        if (data.status === 0) {
+          this.error(data);
+        }
+        location.reload();
       },
       error: function(data) {
-        let errors = [];
-        $(data.error_fields).each(function() {
-          $.each($(this)[0], function(key, value) {
-            if (value !== '') {
-              $('.modal#slotModal #' + key).css({'outline': '1px solid red'});
-              errors[key] = value;
-            } else {
-              $('.modal#slotModal #' + key).removeAttr('style');
-            }
-            if (key === 'f_purpose') {
-              if (value !== '') {
-                $('.modal#slotModal #service').css({'outline': '1px solid red'});
-              } else {
-                $('.modal#slotModal #service').removeAttr('style');
-              }
-            }
-          });
-        });
-        // });
+        console.log(data);
       }
     });
   });
@@ -2330,16 +2336,11 @@ $('.cart-summary .cart-delivery-option .custom-select').on('change', function() 
 
 $('.cart-montage-choice .cart-delivery-options .cart-delivery-label input[name=cart-montage-radio]').each(function() {
   console.log($(this));
+  if ($(this).is(':checked') && $(this).val() == 1) {
+    checkFitting();
+  }
   $(this).on('change', function() {
-    switch (parseInt($(this).val())) {
-      case 1: {
-        checkFitting();
-        break;
-      }
-      default: {
-        $('#cart-subtotal-montage #shipping_price').html('Nav');
-      }
-    }
+    checkFitting();
   });
 });
 
@@ -2418,7 +2419,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
   // ON SHOPPING CART BUTTON CLICK
   $(value).parent().parent().find('.cart-shopping-button').on('click', function() {
 
-    if (!user) {
+    if (!admin) {
       const tire_id = $(this).data('info');
 
       $.ajax({
@@ -2471,13 +2472,13 @@ $('.tire-table-checkbox').children().each(function(key, value){
         }
       });
     } else {
-      const tire_data = $(this).parent().parent();
-      $('.popup input[name=prod]').val(tire_data.data('content'));
-      $('.popup input[name=price]').val(tire_data.find('.price').html().replace('€ ', ''));
+      const tire_data = $(this).parent().parent().parent();
+      $('.popup input[name=prod]').val($('.table-tire-name-cell a', tire_data).data('content'));
+      $('.popup input[name=price]').val($('.tire-price-red', tire_data).html().replace('€ ', ''));
       $('.popup input[name=qty]').val(4);
-      $('.popup input[name=total]').val(parseInt(tire_data.find('.price').html().replace('€ ', '')) * $('.popup input[name=qty]').val());
+      $('.popup input[name=total]').val(parseInt($('.tire-price-red', tire_data).html().replace('€ ', '')) * $('.popup input[name=qty]').val());
       $('.popup input[name=user]').val(user);
-      $('.popup input[name=article]').val(tire_data.siblings('span.tire_article').data('article'));
+      $('.popup input[name=article]').val($('.table-tire-name-cell a', tire_data).data('article'));
     }
 
   })

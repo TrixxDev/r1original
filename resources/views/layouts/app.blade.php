@@ -774,7 +774,7 @@
     </div>
 </div>
 <div id="recaptcha_k" data-value="{{ env('RECAPTCHAV3_SITEKEY') }}" style="display: none;"></div>
-<script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHAV3_SITEKEY') }}"></script>
+<script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHAV3_SITEKEY') }}&hl=lv"></script>
 
 <script>
   grecaptcha.ready(function() {

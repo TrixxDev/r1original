@@ -13,7 +13,7 @@
             $yesterday = date('Y-m-d', strtotime("-1 days",$currentDate));
             $tomorrow = date('Y-m-d', strtotime("+1 days",$currentDate));
           @endphp
-
+          <div class="loading"></div>
           <div class="working-day">
             <div class="col-12">
               <div class="row">
