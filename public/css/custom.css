@@ -4623,3 +4623,10 @@ div.form-group span.validate {
   color: red;
   margin-left: 5px;
 }
+
+.rim-table-link {
+  display: flex;
+  white-space: nowrap;
+  align-items: center;
+  justify-content: center;
+}

@@ -411,8 +411,9 @@
                                     <thead class="tires-thead">
                                     <tr>
                                       <th scope="col"></th>
-                                      <th scope="col" class="table-tire-name-cell">Platums / Diametrs</th>
-                                      <th scope="col" class="hidden-sm-down text-center">Centrs</th>
+                                      <th scope="col" class="text-center">Izmērs</th>
+                                      <th scope="col" class="hidden-sm-down text-center">Skrūvju attālums</th>
+                                      <th scope="col" class="hidden-sm-down text-center">ET</th>
                                       <th scope="col" class="hidden-sm-down text-center">Centrs</th>
                                       <th scope="col" class="hidden-sm-down text-center">Krāsa</th>
 
@@ -437,8 +438,8 @@
                                                  class="tire-table-checkbox">
                                         </th>
 
-                                        <td>
-                                          <a data-toggle="tooltip" data-html="true" class="tire-table-link" style="text-align: center"
+                                        <td class="text-center">
+                                          <a data-toggle="tooltip" data-html="true" class="text-center rim-table-link"
                                              @if (\Image::exists('auto-rim', $rim->rim_id))
                                              title="{{ \Image::show('auto-rim', $rim->rim_id) }}"
                                              @else
@@ -446,7 +447,7 @@
                                              @endif
                                              href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}"
                                           >
-                                            {{$rim->d1}}*{{$rim->d3}}({{$rim->pcd}}x{{$rim->skr}})
+                                            {{$rim->d1}}*{{$rim->d3}}
                                           </a>
 
 {{--                                             data-content="{{ $tire->title }}"--}}
@@ -478,9 +479,12 @@
 {{--                                          </a>--}}
                                         </td>
 
+                                        <td class="text-center">
+                                          {{$rim->skr}} * {{$rim->pcd}}
+                                        </td>
 
                                         <td class="text-center">
-                                          {{$rim->dc}}
+                                          et{{ $rim->et }}
                                         </td>
 
                                         <td class="text-center">

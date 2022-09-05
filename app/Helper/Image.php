@@ -101,7 +101,7 @@ class Image {
       }
       $html = '<div class="zoom-section product-cover card text-center" style="padding: 10px">';
       $html .= '<div class="zoom-small-image">';
-      $html .= '<a class="MagicZoom" data-options="expand: window; zoomWidth:350px; zoomHeight:350px" href="' . $img . '">';
+      $html .= '<a class="MagicZoom" data-options="expand: window;" href="' . $img . '">';
       $html .= '<img class="magic-image" src="' . $img . '" alt=""/>';
       $html .= '</a>';
       $html .= '</div>';
