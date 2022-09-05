@@ -109,7 +109,7 @@
                         <td>{{ $currTire->skr }}</td>
                       </tr>
                       <tr>
-                        <th>Lietots</th>
+                        <th>Stāvoklis</th>
                         <td>
                          @if( $currTire->used === 0)
                           {{ 'Jauns' }}
@@ -241,6 +241,7 @@
                   <tr>
                     <th scope="col"></th>
                     <th scope="col" class="text-center">Izmērs</th>
+                    <th scope="col" class="text-center">Centrs</th>
                     <th scope="col" class="hidden-sm-down text-center">Krāsa</th>
                     <th id="store-price-button" scope="col" class="text-center">
                       Veikala cena
@@ -277,6 +278,10 @@
                         >
                           {{ $rim->d1 }}*{{ $rim->d3 }} ({{ $rim->skr }}*{{$rim->pcd}} {{$rim->et}})
                         </a>
+                      </td>
+
+                      <td class="hidden-sm-down text-center">
+                        {{ $rim->dc }}
                       </td>
 
                       <td class="hidden-sm-down text-center">
