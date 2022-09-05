@@ -12,6 +12,7 @@ class Queue extends Model
 
     public $_slots;		// ielādētie sloti, Slots tipa objektu saraksts
     public $_workingDays;
+    public $notificationEmail;
 
     public function __construct()
     {
@@ -324,6 +325,68 @@ class Queue extends Model
           }
         }
       }
+    }
+
+    function parseNotification($text, $date, $slotNum, $takenBy, $showTime2=false){
+      $_weekDays = array(
+        1=>'pirmdien',
+        2=>'otrdien',
+        3=>'trešdien',
+        4=>'ceturtdien',
+        5=>'piektdien',
+        6=>'sestdien',
+        7=>'svētdien',
+      );
+
+      if (0==1) $office = new Office();
+      $office = Office::findOrFail($this->office_id);
+
+      $time = $this->getSlotStartTime($date,$slotNum,false);
+      $time2 = $this->getSlotStartTime2($date,$slotNum,false);
+      if ($showTime2) $time = $time2;
+      $dateStamp = strtotime($date.' '.$time);
+      $dayOfWeek = $_weekDays[date('N', $dateStamp)];
+      $dateFmt = date('d.m.Y', $dateStamp);
+
+      switch ($takenBy->purpose){
+        case 0:{
+          $purpose = '';
+          $purposeLong = '';
+          break;
+        }
+        case 1:{
+          $purpose = 'riepu nomaiņa';
+          $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri Jums būs līdzi';
+          break;
+        }
+        case 2:{
+          $purpose = 'riepu nomaiņa';
+          $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri glabājas pie mums';
+          break;
+        }
+        case 3:{
+          $purpose = 'riepu nomaiņa';
+          $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
+          break;
+        }
+        case 4:{
+          $purpose = 'kondicioniera uzpilde';
+          $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
+          break;
+        }
+      }
+
+      $outText = str_replace('%TIME%',$time,$text);
+      $outText = str_replace('%TIME2%',$time2,$outText);
+      $outText = str_replace('%DATE%',$dateFmt,$outText);
+      $outText = str_replace('%DATE_LONG%',$dayOfWeek.', '.$dateFmt,$outText);
+      $outText = str_replace('%OFFICE%',$office->title,$outText);
+      $outText = str_replace('%CARMAKE%',$takenBy->vehicleMake,$outText);
+      $outText = str_replace('%CARMODEL%',$takenBy->vehicleModel,$outText);
+      $outText = str_replace('%PURPOSE%',$purpose,$outText);
+      $outText = str_replace('%PURPOSE_LONG%',$purposeLong,$outText);
+
+      return $outText;
     }
 
 }

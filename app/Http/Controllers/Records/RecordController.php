@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Records;
 
+use App\Helper\CMailer;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Config;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Carbon\Carbon;
@@ -293,19 +295,16 @@ class RecordController extends Controller
             return json_encode(['error' => $errorText]);
         }
 
-        $form = json_encode(
-            [
-                'vehicleMake' => $car,
-                'vehicleModel' => $carModel,
-                'vehiclePlate' => $licPlate,
-                'purpose' => $purpose,
-                'storageBin' => $storageBin,
-                'comment' => $comment,
-                'ownerName' => $name,
-                'ownerPhone' => $phone,
-                'ownerEmail' => $email
-            ]
-        );
+        $form = new \stdClass();
+        $form->vehicleMake = $car;
+        $form->vehicleModel = $carModel;
+        $form->vehiclePlate = $licPlate;
+        $form->purpose = $purpose;
+        $form->storageBin = $storageBin;
+        $form->comment = $comment;
+        $form->ownerName = $name;
+        $form->ownerPhone = $phone;
+        $form->ownerEmail = $email;
 
         $queue = Queue::where('queue_id', $queue_id)->first();
         $office = Office::where('office_id', $queue->office_id)->first();
@@ -324,13 +323,24 @@ class RecordController extends Controller
 
         $slot->timestamps = false;
 
-        $slot->takenby = $form;
+        $slot->takenby = json_encode($form);
         $slot->status = 1;
 
         $slot->createTime = $slot->editTime = NOW();
         $slot->createUser = $slot->editUser = $userID;
 
-        $slot->save();
+//        $slot->save();
+
+        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
+        $mailer = new CMailer();
+        $mailer->addRecipient($form->ownerEmail);
+        $bcc = Config::get('app.settings.emails.notify');
+        if ($bcc) $mailer->addBCC($bcc);
+        $mailer->subject = $queue->parseNotification($queue->notificationSubject, $slot->date, $slot->iorder, $form, false);
+        $mailer->message = $mailText;
+        $mailer->send();
+
+        dd($mailText);
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
     }
@@ -391,25 +401,22 @@ class RecordController extends Controller
             return json_encode(['error' => $errorText]);
         }
 
-        $form = json_encode(
-            [
-                'vehicleMake' => $car,
-                'vehicleModel' => $carModel,
-                'vehiclePlate' => $licPlate,
-                'purpose' => $purpose,
-                'storageBin' => $storageBin,
-                'comment' => $comment,
-                'ownerName' => $name,
-                'ownerPhone' => $phone,
-                'ownerEmail' => $email
-            ]
-        );
+        $form = new \stdClass();
+        $form->vehicleMake = $car;
+        $form->vehicleModel = $carModel;
+        $form->vehiclePlate = $licPlate;
+        $form->purpose = $purpose;
+        $form->storageBin = $storageBin;
+        $form->comment = $comment;
+        $form->ownerName = $name;
+        $form->ownerPhone = $phone;
+        $form->ownerEmail = $email;
 
         $slot = Slot::findOrFail($slot_id);
 
         $slot->timestamps = false;
 
-        $slot->takenby = $form;
+        $slot->takenby = json_encode($form);
         $slot->status = 1;
 
         $slot->createTime = date('Y-m-d H:i:s');
