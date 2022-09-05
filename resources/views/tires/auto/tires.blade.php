@@ -556,6 +556,7 @@
                       }
                     @endphp
 {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
+                    @if($tire->price1)
                     <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}" class="">
                       <div class="tire-image-card sort-order">
                         <div class="text-center">
@@ -567,16 +568,23 @@
                             @endif alt="tire-image" class="img-thumbnail border-none text-center"
                           >
                         </div>
+
                         <div class="tire-list-caption">
 
                           <div class="card-title-text">{{$tire->title}}</div>
-                          <div class="tire-tread">
-                            {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}
+                            <div class="tire-tread">
+                              {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}
+                            </div>
+                          <div style="display: inline-flex">
+                            <div class="rim-price-old">€{{$tire->price1}}</div>
+                            <div class="rim-price-red">€{{$tire->price2}}</div>
                           </div>
-                          <div class="tire-price-red">€{{$tire->price1}}</div>
+{{--                          <div class="tire-price-red">€{{$tire->price1}}</div>--}}
                         </div>
+
                       </div>
                     </a>
+                    @endif
                     @endforeach
                 </div>
               </div>

@@ -379,6 +379,7 @@
                                       }
                                     @endphp
                                     {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
+                                    @if($rim->price1)
                                     <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}" class="">
                                       <div class="tire-image-card sort-order card">
 
@@ -399,6 +400,7 @@
                                         </div>
                                       </div>
                                     </a>
+                                    @endif
                                   @endforeach
                                 </div>
                               </div>
