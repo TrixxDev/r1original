@@ -4610,3 +4610,16 @@ div.form-group span.validate {
 .tread-tire-table-checkbox {
   width: 35px;
 }
+
+.rim-tread {
+  color: black;
+  font-size: 0.8rem;
+}
+.rim-price-old {
+  text-decoration: line-through;
+  color: #000;
+}
+.rim-price-red {
+  color: red;
+  margin-left: 5px;
+}

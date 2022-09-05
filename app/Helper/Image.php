@@ -85,9 +85,31 @@ class Image {
       if (file_exists(str_replace('.jpg', '.png', Self::image($type, $image)))) {
         $img = str_replace('.jpg', '.png', $img);
       }
-      return $img;
+      return '<img style="width:130px;" src=' . $img . '>';
     } else {
-      return '<img src=' . asset('img/p/en-default-home_default.jpg') . '>';
+      return '<img style="width:130px;" src=' . asset('img/p/r1-logo.svg') . '>';
+    }
+
+  }
+  public static function treadZoom($type, $image) {
+
+    $img = str_replace(dirname(__DIR__, 2), '', Self::image($type, $image));
+
+    if (Self::exists($type, $image)) {
+      if (file_exists(str_replace('.jpg', '.png', Self::image($type, $image)))) {
+        $img = str_replace('.jpg', '.png', $img);
+      }
+      $html = '<div class="zoom-section product-cover card text-center" style="padding: 10px">';
+      $html .= '<div class="zoom-small-image">';
+      $html .= '<a class="MagicZoom" data-options="expand: window; zoomWidth:350px; zoomHeight:350px" href="' . $img . '">';
+      $html .= '<img class="magic-image" src="' . $img . '" alt=""/>';
+      $html .= '</a>';
+      $html .= '</div>';
+      $html .= '</div>';
+
+      return $html;
+    } else {
+      return '<img style="width:350px; padding: 10px;" class="card product-cover" src=' . asset('img/p/r1-logo.svg') . '>';
     }
 
   }

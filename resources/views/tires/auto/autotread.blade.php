@@ -150,9 +150,7 @@
                                 </div>
                                 <div class="col-sm-12 col-md-8">
                                   <div class="alert" style="border: 1px solid #68c0a8">
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab aliquam aperiam consequuntur cupiditate dolore ea in laudantium maxime mollitia nihil optio possimus quisquam, quo repudiandae sequi sit vel veritatis voluptates!
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Commodi culpa cum ducimus et, eum ex, exercitationem expedita harum inventore itaque maiores, molestiae nam numquam qui quidem quo repellat reprehenderit veniam.
-                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. A accusamus adipisci ducimus eaque eum illo ipsam necessitatibus nulla odit praesentium, similique temporibus velit vero? Aliquid, harum, libero? Atque, eligendi, molestias.
+                                    {{ $currTire->t_comment3 }}
                                   </div>
                                 </div>
                               </div>
