@@ -305,7 +305,7 @@
                     @endphp
                     {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
                     <div class="tire-image-card">
-                      <a href="" class="">
+                      <a href="{{ \Str::slug(\Tires::getMotoTireTread($tire->brand_id)) }}" class="">
                         <div class="text-center">
                           <img
                             @if ($tire->image)
