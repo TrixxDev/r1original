@@ -364,7 +364,6 @@
 
                               <div class="tire-image-container" style="display: none">
                                 <div class="tire-image-cards">
-                                  {{--                <div style="width: auto;">BRAND NAME</div>--}}
                                   @php
                                     $cbrand = '';
                                   @endphp
@@ -384,30 +383,29 @@
                                       <div class="tire-image-card sort-order card">
 
                                         <div class="text-center">
-                                          <img
-                                            @if (\Image::exists('auto-rim', $rim->rim_id))
-                                            src="{{ \Image::showGrid('auto-rim', $rim->rim_id) }}"
-                                            @else
-                                            src="{{ asset('img/p/en-default-home_default.jpg') }}"
-                                            @endif
-                                            style="width: 130px;"
-                                          >
+                                          {!! \Image::showGrid('auto-rim', $rim->rim_id) !!}
                                         </div>
 
                                         <div class="tire-list-caption">
                                           <div class="card-title-text">{{$rim->title}}</div>
+                                          <div class="rim-tread">
+                                            {{ $rim->d1 }}*{{ $rim->d3 }} ({{ $rim->skr }}*{{$rim->pcd}} {{$rim->et}})
+                                          </div>
+                                          <div style="display: inline-flex">
+                                            <div class="rim-price-old">€{{$rim->price2}}</div>
+                                            <div class="rim-price-red">€{{$rim->price3}}</div>
+                                          </div>
+
                                         </div>
                                       </div>
                                     </a>
                                   @endforeach
-                                  {{ $rims->links() }}
                                 </div>
                               </div>
 
 {{--                              11111111111111111111111111111111111111111111111111--}}
                                 <div id="js-product-list">
 {{--                                  LIST VIEW--}}
-{{--                                      {{ dd($q) }}--}}
 
                                   <table id="tires-table" class="table rims-sorter tires-table table-hover tablesorter">
                                     <thead class="tires-thead">
@@ -656,6 +654,7 @@
 {{--                                    </div>--}}
                                 </div>
                             </div>
+                          {{ $rims->links() }}
                             <div id="js-product-list-bottom">
                                 <div id="js-product-list-bottom"></div>
                             </div>
