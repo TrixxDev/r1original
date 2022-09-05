@@ -10,24 +10,48 @@
  */
 
 $(document).ready(function () {
-   $('.summer-sorter').each(function() {
-     $(this).tablesorter({
-         headers: {
-           0: {sorter: false},
-           1: {sorter: false},
-           2: {sorter: false},
-           3: {sorter: false},
-           4: {sorter: false},
-           5: {sorter: false},
-           6: {sorter: false},
-           9: {sorter: false},
-           10: {sorter: false},
-           11: {sorter: false}
-         },
-         // sortList: [[7,1]]
-       }
-     );
-   });
+  if ($('.category-vasaras-riepas').length >= 1){
+    $('.summer-sorter').each(function() {
+      $(this).tablesorter({
+          headers: {
+            0: {sorter: false},
+            1: {sorter: false},
+            2: {sorter: false},
+            3: {sorter: false},
+            4: {sorter: false},
+            5: {sorter: false},
+            6: {sorter: false},
+            9: {sorter: false},
+            10: {sorter: false},
+            11: {sorter: false}
+          },
+          // sortList: [[7,1]]
+        }
+      );
+    });
+  } else if ($('.category-ziemas-riepas').length >= 1){
+    $('.summer-sorter').each(function() {
+      $(this).tablesorter({
+          headers: {
+            0: {sorter: false},
+            1: {sorter: false},
+            2: {sorter: false},
+            3: {sorter: false},
+            4: {sorter: false},
+            5: {sorter: false},
+            6: {sorter: false},
+            7: {sorter: false},
+            8: {sorter: true},
+            9: {sorter: true},
+            10: {sorter: false},
+            11: {sorter: false}
+          },
+          // sortList: [[7,1]]
+        }
+      );
+    });
+  }
+
   $('.industrial-sorter').each(function() {
     $(this).tablesorter({
         headers: {
