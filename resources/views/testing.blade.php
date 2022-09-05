@@ -1,60 +1,27 @@
 <!DOCTYPE html>
-<html>
+<html lang="lv">
 <head>
   <meta charset="utf-8">
   <title>Hello Analytics Reporting API V4</title>
-  <meta name="google-signin-client_id" content="540678637665-thqnsfm47vkp80m0emp5bhve69kulh6v.apps.googleusercontent.com">
-  <meta name="google-signin-scope" content="https://www.googleapis.com/auth/analytics.readonly">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+{{--  <script src="https://cdn.jsdelivr.net/npm/js-image-zoom@0.7.0/js-image-zoom.min.js"></script>--}}
+  <link type="text/css" rel="stylesheet" href="public/css/magiczoomplus.css"/>
+  <script src="public/js/magic.js"></script>
 </head>
 <body>
 
-<h1>Hello Analytics Reporting API V4</h1>
-
-<!-- The Sign-in button. This will run `queryReports()` on success. -->
-<p class="g-signin2" data-onsuccess="queryReports"></p>
-
-<!-- The API response will be printed here. -->
-<textarea cols="80" rows="20" id="query-output"></textarea>
-
-<script>
-  // Replace with your view ID.
-  var VIEW_ID = '268127533';
-
-  // Query the API and print the results to the page.
-  function queryReports() {
-    gapi.client.request({
-      path: '/v4/reports:batchGet',
-      root: 'https://analyticsreporting.googleapis.com/',
-      method: 'POST',
-      body: {
-        reportRequests: [
-          {
-            viewId: VIEW_ID,
-            dateRanges: [
-              {
-                startDate: '7daysAgo',
-                endDate: 'today'
-              }
-            ],
-            metrics: [
-              {
-                expression: 'ga:sessions'
-              }
-            ]
-          }
-        ]
-      }
-    }).then(displayResults, console.error.bind(console));
-  }
-
-  function displayResults(response) {
-    var formattedJson = JSON.stringify(response.result, null, 2);
-    document.getElementById('query-output').value = formattedJson;
-  }
-</script>
-
-<!-- Load the JavaScript API client and Sign-in library. -->
-<script src="https://apis.google.com/js/client:platform.js"></script>
+<div class="zoom-section" style="float: left; width: 300px;">
+  <div class="zoom-small-image">
+    <a class="MagicZoom"
+       data-options="expand: window; zoomWidth:600px; zoomHeight:600px"
+       href="https://i.imgur.com/5PQcTIS.jpeg"
+    >
+      <img class="magic-image" src="https://i.imgur.com/ITZlrPP.jpeg" alt=""/>
+    </a>
+  </div>
+</div>
 
 </body>
 </html>

@@ -556,6 +556,7 @@
                       }
                     @endphp
 {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
+                    @if($tire->price1)
                     <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}" class="">
                       <div class="tire-image-card sort-order">
                         <div class="text-center">
@@ -567,16 +568,23 @@
                             @endif alt="tire-image" class="img-thumbnail border-none text-center"
                           >
                         </div>
+
                         <div class="tire-list-caption">
 
                           <div class="card-title-text">{{$tire->title}}</div>
-                          <div class="tire-tread">
-                            {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}
+                            <div class="tire-tread">
+                              {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}
+                            </div>
+                          <div style="display: inline-flex">
+                            <div class="rim-price-old">€{{$tire->price1}}</div>
+                            <div class="rim-price-red">€{{$tire->price2}}</div>
                           </div>
-                          <div class="tire-price-red">€{{$tire->price1}}</div>
+{{--                          <div class="tire-price-red">€{{$tire->price1}}</div>--}}
                         </div>
+
                       </div>
                     </a>
+                    @endif
                     @endforeach
                 </div>
               </div>
@@ -733,14 +741,45 @@
                           <td class="hidden-sm-down text-center">
                             <span>
                               <span data-toggle="tooltip"
-                                    title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>
-                              <span data-toggle="tooltip"
-                                    title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>
+                                    {{--TODO japieliek li--}}
+                                    title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg<br>{{ $tire->si }}</span>">{{ $tire->li . $tire->si }}
+                              </span>
                             </span>
                           </td>
 
                           @if ($season_id == 2)
-                            <td scope="col" class="hidden-sm-down text-center">{{$tire->type}}</td>
+                            <td scope="col" class="hidden-sm-down text-center">
+                              @switch($tire->type)
+                                @case(1)
+                                <span data-toggle="tooltip">
+                                  <img src="{{asset('images/ms.png')}}" alt="ms" title="<span>Centrāleiropas tipa ziemas riepa</span>">
+                                </span>
+
+                                @break
+
+                                @case(2)
+                                <span data-toggle="tooltip">
+                                  <img src="{{asset('images/radzeb.png')}}" alt="radzojama" title="<span>Radžojama</span>">
+                                </span>
+
+                                @break
+
+                                @case(3)
+                                <span data-toggle="tooltip">
+                                  <img src="{{asset('images/radzea.png')}}" alt="ar radzem" title="<span>Ar radzēm</span>">
+                                </span>
+
+                                @break
+
+                                @case(4)
+                                <span data-toggle="tooltip">
+                                  <img src="{{asset('images/parsla.png')}}" alt="skandinavijas" title="<span>Skandināvijas tipa ziemas riepa</span>">
+                                </span>
+                                @break
+
+                              @endswitch
+
+                            </td>
                           @endif
 
                           <td class="hidden-sm-down text-center">

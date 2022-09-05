@@ -149,9 +149,11 @@
                                   </table>
                                 </div>
                                 <div class="col-sm-12 col-md-8">
-                                  <div class="alert" style="border: 1px solid #68c0a8">
-                                    {{ $currTire->t_comment3 }}
-                                  </div>
+                                  @if($currTire->t_comment)
+                                    <div class="alert" style="border: 1px solid #68c0a8">
+                                      {{ $currTire->t_comment }}
+                                    </div>
+                                  @endif
                                 </div>
                               </div>
                             </div>

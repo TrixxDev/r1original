@@ -305,7 +305,7 @@
                     @endphp
                     {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
                     <div class="tire-image-card">
-                      <a href="" class="">
+                      <a href="{{ \Str::slug(\Tires::getMotoTireTread($tire->brand_id)) }}" class="">
                         <div class="text-center">
                           <img
                             @if ($tire->image)
@@ -321,7 +321,10 @@
                           <div class="tire-tread">
                             {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}
                           </div>
-                          <div class="tire-price-red">€{{$tire->price1}}</div>
+                          <div style="display: inline-flex">
+                            <div class="rim-price-old">€{{$tire->price1}}</div>
+                            <div class="rim-price-red">€{{$tire->price2}}</div>
+                          </div>
                         </div>
                       </a>
                     </div>
