@@ -728,7 +728,7 @@ class RecordController extends Controller
 //    }
     // Closing line
 //    $pdf->Cell(array_sum($w),0,'','T');
-    $sheet->setAutoFilter('A:B');
+    $sheet->setAutoFilter('A:C');
     $lastRow = $sheet->getHighestRow();
     $sheet->getStyle('A2:B' . $lastRow)->getAlignment()->setHorizontal('center');
     $writer = new Xlsx($spreadsheet);

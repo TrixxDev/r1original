@@ -111,7 +111,6 @@ class AutoTireController extends Controller
                            ->orderBy('price2', 'DESC')
                            ->paginate($this->itemsPerPage);
 
-
         return view('tires.auto.tires', compact('tires'));
     }
 
@@ -141,6 +140,9 @@ class AutoTireController extends Controller
 
         DB::enableQueryLog();
 
+        ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
+
+
         ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
         ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
 
@@ -148,25 +150,29 @@ class AutoTireController extends Controller
         ($request->fuel) ? $this->fuel = $request->fuel : $this->fuel = '';
         ($request->wet) ? $this->wet = $request->wet : $this->wet = '';
 
-        $tires = Autotire::with('tread')->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-            ->when($this->d1, function($query) {
-                $query->where('d1', $this->d1);
-            })->when($this->d2, function($query) {
-                $query->where('d2', $this->d2);
-            })->when($this->d3, function($query) {
-                $query->where('d3', $this->d3);
-            })->when($this->code, function($query) {
-                $query->whereIn('code', $this->code);
-            })->when($this->fuel, function($query) {
-                $query->whereIn('eco', $this->fuel);
-            })->when($this->wet, function($query) {
-                $query->whereIn('wet', $this->wet);
-            })->where('auto_treads.season', $this->season)
-            ->where('auto_tires.visible_users', '<>', 0)
-            ->orderBy('d3', 'ASC')
-            ->orderBy('d1', 'ASC')
-            ->orderBy('d2', 'ASC')
-            ->orderBy('price2', 'DESC')->paginate($this->itemsPerPage);
+        $tires = Autotire::with('tread')->select('auto_tires.*', 'auto_treads.*', 'auto_treads.slug as tread_slug', 'auto_brands.slug as brand_slug')
+                          ->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+                          ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
+                          ->when($this->currBrand, function($query) {
+                              $query->where('auto_brands.slug', \Str::slug($this->currBrand));
+                          })->when($this->d1, function($query) {
+                              $query->where('d1', $this->d1);
+                          })->when($this->d2, function($query) {
+                              $query->where('d2', $this->d2);
+                          })->when($this->d3, function($query) {
+                              $query->where('d3', $this->d3);
+                          })->when($this->code, function($query) {
+                              $query->whereIn('code', $this->code);
+                          })->when($this->fuel, function($query) {
+                              $query->whereIn('eco', $this->fuel);
+                          })->when($this->wet, function($query) {
+                              $query->whereIn('wet', $this->wet);
+                          })->where('auto_treads.season', $this->season)
+                          ->where('auto_tires.visible_users', '<>', 0)
+                          ->orderBy('d3', 'ASC')
+                          ->orderBy('d1', 'ASC')
+                          ->orderBy('d2', 'ASC')
+                          ->orderBy('price2', 'DESC')->paginate($this->itemsPerPage)->appends($request->query());
 
 
 //        dd(DB::getQueryLog());
@@ -263,7 +269,7 @@ class AutoTireController extends Controller
           ->orderBy('d1', 'ASC')
           ->orderBy('d2', 'ASC')
           ->orderBy('price2', 'DESC')
-          ->paginate($this->itemsPerPage);
+          ->paginate($this->itemsPerPage)->appends($request->query());
 
         return view('tires.auto.tires',
             compact('tires', 'code')

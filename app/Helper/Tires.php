@@ -63,6 +63,7 @@ class Tires
         return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
                          ->select('d1')
                          ->whereRaw('d1 <> ""')
+                         ->where('auto_tires.visible_users', '<>', 0)
                          ->where('auto_treads.season', $season)
                          ->orderBy('d1')
                          ->groupBy('d1')
@@ -73,6 +74,7 @@ class Tires
         return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
                          ->select('d2')
                          ->whereRaw('d2 <> ""')
+                         ->where('auto_tires.visible_users', '<>', 0)
                          ->where('auto_treads.season', $season)
                          ->orderBy('d2')
                          ->groupBy('d2')
@@ -83,6 +85,7 @@ class Tires
         return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
                          ->select('d3')
                          ->whereRaw('d3 <> ""')
+                         ->where('auto_tires.visible_users', '<>', 0)
                          ->where('auto_treads.season', $season)
                          ->orderBy('d3')
                          ->groupBy('d3')
@@ -186,11 +189,6 @@ class Tires
 
     public static function getBigTireBrand($brand_id) {
         return Bigbrand::select('*')->where('brand_id', $brand_id)->first();
-    }
-
-    public static function addProduct($tire_id)
-    {
-        return $tire_id;
     }
 
     public function GCD($a, $b)
