@@ -390,7 +390,7 @@
                                         <div class="tire-list-caption">
                                           <div class="card-title-text">{{$rim->title}}</div>
                                           <div class="rim-tread">
-                                            {{ $rim->d1 }}*{{ $rim->d3 }} ({{ $rim->skr }}*{{$rim->pcd}} {{$rim->et}})
+                                            {{ $rim->d1 }}*{{ $rim->d3 }} ({{ $rim->skr }}*{{$rim->pcd}} et{{$rim->et}})
                                           </div>
                                           <div style="display: inline-flex">
                                             <div class="rim-price-old">€{{$rim->price2}}</div>
