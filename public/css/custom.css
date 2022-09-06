@@ -3679,7 +3679,6 @@ form textarea {
   text-align: center;
   vertical-align: middle;
   color: #d8261c;
-  font-weight: normal;
 }
 
 th.tire-price-red {
@@ -4631,6 +4630,4 @@ div.form-group span.validate {
 .rim-table-link {
   display: flex;
   white-space: nowrap;
-  align-items: center;
-  justify-content: center;
 }

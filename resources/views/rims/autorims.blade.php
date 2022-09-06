@@ -310,8 +310,10 @@
                                     <h1 class="h6 hidden-xs-up">Active filters</h1>
                                 </section>
                             </div>
+
+                            {{-- GRID VIEW --}}
                             <div id="">
-                              <h4 class="rims-title">Jauni lietie diski</h4>
+                              <h4 class="rims-title">Lietie diski</h4>
 {{--                              GRID VIEW--}}
 {{--                              <div class="tire-image-container" style="display: none">--}}
 {{--                                <div class="tire-image-cards">--}}
@@ -379,7 +381,6 @@
                                       }
                                     @endphp
                                     {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
-                                    @if($rim->price1)
                                     <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}" class="">
                                       <div class="tire-image-card sort-order card">
 
@@ -400,7 +401,6 @@
                                         </div>
                                       </div>
                                     </a>
-                                    @endif
                                   @endforeach
                                 </div>
                               </div>
@@ -413,6 +413,7 @@
                                     <thead class="tires-thead">
                                     <tr>
                                       <th scope="col"></th>
+                                      <th scope="col">Nosaukums</th>
                                       <th scope="col" class="text-center">Izmērs</th>
                                       <th scope="col" class="hidden-sm-down text-center">Skrūvju attālums</th>
                                       <th scope="col" class="hidden-sm-down text-center">ET</th>
@@ -431,7 +432,7 @@
                                     </tr>
                                     </thead>
                                     <tbody id="tires-table-body">
-
+{{--                                    {{ dd($rims) }}--}}
                                     @foreach($rims as $rim)
 
                                       <tr class="tire-table-row">
@@ -440,8 +441,8 @@
                                                  class="tire-table-checkbox">
                                         </th>
 
-                                        <td class="text-center">
-                                          <a data-toggle="tooltip" data-html="true" class="text-center rim-table-link"
+                                        <td>
+                                          <a data-toggle="tooltip" data-html="true" class="rim-table-link"
                                              @if (\Image::exists('auto-rim', $rim->rim_id))
                                              title="{{ \Image::show('auto-rim', $rim->rim_id) }}"
                                              @else
@@ -449,8 +450,12 @@
                                              @endif
                                              href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}"
                                           >
-                                            {{$rim->d1}}*{{$rim->d3}}
+                                            {{ $rim->brand_title . ' ' . $rim->title }}
                                           </a>
+                                        </td>
+                                        <td class="text-center">
+
+                                            {{$rim->d1}}*{{$rim->d3}}
 
 {{--                                             data-content="{{ $tire->title }}"--}}
 {{--                                             data-article="{{ $tire->article }}"--}}
