@@ -3244,6 +3244,10 @@ th.header {
   overflow-y: hidden;
 }
 
+.modal#slotModal {
+  overflow: hidden;
+}
+
 .modal-background {
   background: black;
   position: fixed;
@@ -4286,7 +4290,7 @@ table.queueTable:nth-child(2) {
 }
 
 .modal.fade .modal-dialog {
-  transform: translateY(-1%);
+  transform: translateY(-2%);
 }
 
 @media (min-width: 992px) {
@@ -4296,8 +4300,8 @@ table.queueTable:nth-child(2) {
 }
 
 .modal.show .modal-dialog {
-  -webkit-transform: none;
-  transform: none;
+  /*-webkit-transform: none;*/
+  /*transform: none;*/
 }
 
 .modal-content {

@@ -106,7 +106,7 @@ $('.sidebar-auto input[name=brand]').parent().children('.dropdown-menu').childre
         $('.sidebar-auto input[name=diameter]').parent().children('i').remove();
         $('.sidebar-auto input[name=diameter]').val('Visi');
         $.get('/api/wheels/' + modelId, function() {
-          
+
         }, 'JSON').complete(function(data) {
           data.forEach(function(item) {
             modelOpt += '<a rel="nofollow" class="select-list" data-id="' + item['title'] + '">' + item['title'] + '</a>';
@@ -159,25 +159,25 @@ $('.sidebar-auto input[name=diameter]').parent().children('.dropdown-menu').each
   });
 });
 
-$('.sidebar-auto input').each(function() {
-  $(this).on('change', function() {
-    let empty = $('.sidebar-auto input').filter(function() {
-      return $(this).val().trim() === 'Visi';
-    }).length;
-
-    (empty === 0) && $('.sidebar-auto form').submit();
-  });
-});
-
-$('.sidebar-top input').not(':first').each(function() {
-  $(this).on('change', function() {
-    let empty = $('.sidebar-top input').not(':first').filter(function() {
-      return $(this).val().trim() === 'Visi';
-    }).length;
-
-    (empty === 0) && $('.sidebar-top').parent('form').submit();
-  });
-});
+// $('.sidebar-auto input').each(function() {
+//   $(this).on('change', function() {
+//     let empty = $('.sidebar-auto input').filter(function() {
+//       return $(this).val().trim() === 'Visi';
+//     }).length;
+//
+//     (empty === 0) && $('.sidebar-auto form').submit();
+//   });
+// });
+//
+// $('.sidebar-top input').not(':first').each(function() {
+//   $(this).on('change', function() {
+//     let empty = $('.sidebar-top input').not(':first').filter(function() {
+//       return $(this).val().trim() === 'Visi';
+//     }).length;
+//
+//     (empty === 0) && $('.sidebar-top').parent('form').submit();
+//   });
+// });
 
 $(document).on("click", function(event){
   if(!$(event.target).closest(".size-dropdown").length){

@@ -15,8 +15,10 @@ class CMailer {
 
   function __construct(){
     $this->id = -1;
-    $this->senderAddress = Config::get('app.settings.defaultsender.email');
-    $this->senderName = Config::get('app.settings.defaultsender.name');
+//    $this->senderAddress = Config::get('app.settings.defaultsender.email');
+//    $this->senderName = Config::get('app.settings.defaultsender.name');
+    $this->senderAddress = 'indrikis38@gmail.com';
+    $this->senderName = 'SIA R1';
     $this->recipients = array();
     $this->BCCs = array();
     $this->attachments=array();
@@ -40,9 +42,12 @@ class CMailer {
      */
     $mailer = new PHPMailer();
     $mailer->IsSMTP();
-    $mailer->Host = Config::get('app.settings.email.server');
-    $mailer->Username = Config::get('app.settings.email.username');
-    $mailer->Password = Config::get('app.settings.email.password');
+//    $mailer->Host = Config::get('app.settings.email.server');
+//    $mailer->Username = Config::get('app.settings.email.username');
+//    $mailer->Password = Config::get('app.settings.email.password');
+    $mailer->Host = 'smtp.gmail.com';
+    $mailer->Username = 'indrikis38@gmail.com';
+    $mailer->Password = 'edgars1423';
     $mailer->SMTPAuth = (($mailer->Username!='')||($mailer->Password!=''));
     $mailer->CharSet="UTF-8";
     //$mailer->Encoding="7bit"; // or 8bit?
@@ -50,7 +55,8 @@ class CMailer {
     $mailer->FromName = $this->senderName;
     $mailer->IsHTML(false);
 
-    if ($this->subject=='') $this->subject=Config::get('app.settings.subject.default');
+//    if ($this->subject=='') $this->subject=Config::get('app.settings.subject.default');
+    if ($this->subject=='') $this->subject='Pieraksts';
     $mailer->Subject = $this->subject;
 
     //$mailer->AddBCC('admin@majam.lv');
@@ -69,10 +75,10 @@ class CMailer {
       $mailer->AddBCC($recipient[0],trim($recipient[1]));
     }
 
-    $mailer->ClearAttachments();
-    foreach ($this->attachmentStrings as $attachment){
-      $mailer->AddStringAttachment($attachment[0], $attachment[2], 'base64', $attachment[1]);
-    }
+//    $mailer->ClearAttachments();
+//    foreach ($this->attachmentStrings as $attachment){
+//      $mailer->AddStringAttachment($attachment[0], $attachment[2], 'base64', $attachment[1]);
+//    }
 
     $result = $mailer->Send();
 

@@ -592,6 +592,8 @@ class RecordController extends Controller
       $form->ownerPhone = $request->f_phone;
       $form->ownerEmail = $request->f_email;
 
+//      dd(array_map('intval', str_split($form->ownerPhone)));
+
       /**
        * Ja ir aizpildīts kāds no rezervācijas laukiem un attiecīgais lauks ir brīvs, statuss automātiski nomainās uz "Aizņemts"
        */
@@ -599,42 +601,53 @@ class RecordController extends Controller
         if (($f_status == SLOT_STATUS_FREE)||($f_status == SLOT_STATUS_OFFER)) $f_status = SLOT_STATUS_TAKEN;
       }
 
-      if ($f_status==SLOT_STATUS_TAKEN && array_filter((array) $form)){
-        if ($form->vehicleMake=='') {
-          $errorCount++;
-          $return['error_fields']['f_car'] = "Laukam \"Auto marka\" jābūt aizpildītam";
-        }
-        if ($form->vehicleModel=='') {
-          $errorCount++;
-          $return['error_fields']['f_model'] = "Laukam \"Auto modelis\" jābūt aizpildītam";
-        }
-        if ($form->purpose=='') {
-          $errorCount++;
-          $return['error_fields']['f_purpose'] = "Laukā \"Es vēlos\" jābūt norādītai vienai vērtībai";
-        }
-        if ($form->purpose==2 && (((!$form->storageBin) && (!$form->vehiclePlate)))) {
-          $errorCount++;
-          $return['error_fields']['f_storagebin'] = "Vismaz vienam no laukiem \"Glabāšanas talona numurs\" vai \"Reģistrācijas numurs\" jābūt aizpildītam!\n";
-        }
-        if ($form->ownerPhone=='') {
-          $errorCount++;
-          $return['error_fields']['f_phone'] = "Laukam \"Tālruņa numurs\" jābūt aizpildītam";
-        }
-        /*if ($form->ownerEmail=='') {
-          $errorCount++;
-          $return['error_fields']['f_email'] = "Laukam \"E-pasts\" jābūt aizpildītam";
-        }*/
-        if (($form->ownerEmail=='')&&(!$form->ownerEmail)) {
-          $errorCount++;
-          $return['error_fields']['f_email'] = "Lauks \"E-pasts\" aizpildīts nekorekti";
+      if ($request->f_status == SLOT_STATUS_TAKEN && array_filter((array) $form)){
+        if (intval($form->ownerPhone) > 0) {
+          if ($form->vehicleMake=='') {
+            $errorCount++;
+            $return['error_fields']['f_car'] = "Laukam \"Auto marka\" jābūt aizpildītam";
+          }
+          if ($form->vehicleModel=='') {
+            $errorCount++;
+            $return['error_fields']['f_model'] = "Laukam \"Auto modelis\" jābūt aizpildītam";
+          }
+          if ($form->purpose=='') {
+            $errorCount++;
+            $return['error_fields']['f_purpose'] = "Laukā \"Es vēlos\" jābūt norādītai vienai vērtībai";
+          }
+          if ($form->purpose==2 && (((!$form->storageBin) && (!$form->vehiclePlate)))) {
+            $errorCount++;
+            $return['error_fields']['f_storagebin'] = "Vismaz vienam no laukiem \"Glabāšanas talona numurs\" vai \"Reģistrācijas numurs\" jābūt aizpildītam!\n";
+          }
+          if ($form->ownerPhone=='') {
+            $errorCount++;
+            $return['error_fields']['f_phone'] = "Laukam \"Tālruņa numurs\" jābūt aizpildītam";
+          }
+          /*if ($form->ownerEmail=='') {
+            $errorCount++;
+            $return['error_fields']['f_email'] = "Laukam \"E-pasts\" jābūt aizpildītam";
+          }*/
+          if (($form->ownerEmail=='')&&(!$form->ownerEmail)) {
+            $errorCount++;
+            $return['error_fields']['f_email'] = "Lauks \"E-pasts\" aizpildīts nekorekti";
+          }
         }
 
         $formData = json_encode($form);
       } else {
-        if ($p=='a'){
-          $formData = $slot->takenby = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
+        if ($request->f_status == SLOT_STATUS_FREE) {
+          foreach ($form as $index => $value) {
+            $value = '';
+            $form->$index = $value;
+          }
+          $f_status = $request->f_status;
+          $formData = json_encode($form);
         } else {
-          $formData = $slot->takenby2 = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
+          if ($p=='a'){
+            $formData = $slot->takenby = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
+          } else {
+            $formData = $slot->takenby2 = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
+          }
         }
       }
 

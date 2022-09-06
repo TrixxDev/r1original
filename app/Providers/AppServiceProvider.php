@@ -53,6 +53,8 @@ class AppServiceProvider extends ServiceProvider
         Config::set('app.settings.' . $option->name, (int) $option->value);
       }
 
+
+
       date_default_timezone_set('Europe/Riga');
 
     }

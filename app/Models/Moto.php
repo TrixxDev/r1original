@@ -242,15 +242,17 @@ class Moto extends Model
 
         $availability = '<p>R1 Kopā: ' . $tire->quantity . '</p><br>';
         $availability .= '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
-        $availability .= '<p>Kalnciema iela: ' . $tire->krs_quantity . '</p><br>';
+        $availability .= '<p>Kalnciema iela: ' . $tire->krs_quantity . '</p>';
 
-        foreach ($stock_names as $key => $stock_name) {
+        if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
+          foreach ($stock_names as $key => $stock_name) {
             $stock = Motostock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
             if ($stock && $stock->quantity > 0) {
-                $availability .= '<p>' . $stock_name . ': ' . $stock->quantity . '</p><br>';
+              $availability .= '<br><p>' . $stock_name . ': ' . $stock->quantity . '</p>';
             } else {
-                $availability .= '<p>' . $stock_name . ': 0</p><br>';
+              $availability .= '<br><p>' . $stock_name . ': 0</p>';
             }
+          }
         }
 
         return $availability;
@@ -261,7 +263,7 @@ class Moto extends Model
 
       $tipi = [];
 
-      $types = $this::select('type')->get();
+      $types = Self::select('type')->get();
       foreach ($types as $type) {
         switch ($type->type) {
           case 'Ct':

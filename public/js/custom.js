@@ -2017,8 +2017,20 @@ $(document).ready(function() {
   });
 
   $('.queueTable.reservation .buttonbar svg').on('click', function() {
+    // console.log($(this).data('date'));
+    // throw '';
+
+    let __date = $(this).data('date');
+
     $('.modal#slotModal input[name="queue_id"]').val($(this).data('queue-id'));
-    $('.modal#slotModal input[name="date"]').val($(this).data('date'));
+    $('#f_date option').each(function() {
+      $(this).removeAttr('selected');
+      if ($(this).val() == __date) {
+        $('.modal#slotModal #f_date').val($(this).val());
+        $(this).attr('selected', true).prop('selected', true);
+      }
+    });
+    // $('.modal#slotModal #f_date option[value=' + $(this).data('date') + ']').attr('selected', 'selected').prop('selected', 'selected');
     $('.modal#slotModal input[name="slot"]').val($(this).data('slot-id'));
     $('.modal#slotModal input[name="part"]').val($(this).data('slot-part'));
 
@@ -2086,34 +2098,49 @@ $(document).ready(function() {
           return false;
         }
         location.reload();
-      }
+      },
+      error: function(data) {
+        if (data.error_fields.f_office) {
+          toastr.options.timeOut = 3000;
+          toastr.error(data.error_fields.f_office, 'Kļūda');
+        }
+        if (data.error_fields.f_time) {
+          toastr.options.timeOut = 3000;
+          toastr.error(data.error_fields.f_time, 'Kļūda');
+        }
+      },
     });
   });
 
-  $('.modal#slotModal .submit').on('click', function(e) {
-    e.preventDefault();
-    $.ajax({
-      method: 'POST',
-      url: '/admin/pieraksts/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val(),
-      data: {
-        'queue_id': $('.modal#slotModal input[name="queue_id"]').val(),
-        'date': $('.modal#slotModal input[name="date"]').val(),
-        'slot_id': $('.modal#slotModal input[name="slot"]').val(),
-        'f_status': $('.modal#slotModal #f_status').val(),
-        'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
-      },
-      dataType: 'JSON',
-      success: function (data) {
-        if (data.status === 0) {
-          this.error(data);
-        }
-        location.reload();
-      },
-      error: function(data) {
-        console.log(data);
-      }
-    });
+  $('.modal#slotModal .delete').on('click', function() {
+    $('.modal#slotModal #f_status option[value=0]').attr('selected', 'selected').prop('selected', 'selected');
+    $('.modal#slotModal .submit').click();
   });
+
+  // $('.modal#slotModal .submit').on('click', function(e) {
+  //   e.preventDefault();
+  //   $.ajax({
+  //     method: 'POST',
+  //     url: '/admin/pieraksts/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val(),
+  //     data: {
+  //       'queue_id': $('.modal#slotModal input[name="queue_id"]').val(),
+  //       'date': $('.modal#slotModal input[name="date"]').val(),
+  //       'slot_id': $('.modal#slotModal input[name="slot"]').val(),
+  //       'f_status': $('.modal#slotModal #f_status').val(),
+  //       'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+  //     },
+  //     dataType: 'JSON',
+  //     success: function (data) {
+  //       if (data.status === 0) {
+  //         this.error(data);
+  //       }
+  //       location.reload();
+  //     },
+  //     error: function(data) {
+  //       console.log(data);
+  //     }
+  //   });
+  // });
 
   $('.modal#slotModal .decline, .modal#slotModal button.close').on('click', function() {
     $('.modal#slotModal input[name="gridRadios"]').first().attr('checked', true).prop('checked', true);
@@ -2697,47 +2724,6 @@ $('.cart-options label input').each(function() {
   })
   // console.log($(this));
 });
-
-$('.password-eye').on('click', function() {
-  $('span i', this).toggleClass("fa-eye-slash fa-eye");
-  if ($(this).siblings().attr('type') === 'password'){
-    $(this).siblings().attr('type', 'text');
-  } else {
-    $(this).siblings().attr('type', 'password');
-  }
-});
-
-function delay(callback, ms) {
-  let timer = 0;
-  return function() {
-    let context = this, args = arguments;
-    clearTimeout(timer);
-    timer = setTimeout(function () {
-      callback.apply(context, args);
-    }, ms || 0);
-  };
-}
-
-
-$('input[type=password].password-confirmation').keyup(delay(function(e) {
-  if ($(this).val().length >= 8){
-    $('.invalid-password').hide();
-  }
-
-  if ($('#password').val().length < 8){
-    $('.short-password').show();
-  } else {
-    $('.short-password').hide();
-  }
-
-  if ($('#password').val() === $('#password-confirm').val()){
-    $('.form-footer').children('button').prop('disabled', false);
-    $('.password-error').hide();
-    return;
-  }
-  $('.form-footer').children('button').prop('disabled', true);
-  $('.password-error').show();
-}, 500));
 
 if (__count > 1) {
   $('.cart-montage-choice').hide();

@@ -332,15 +332,15 @@ class RecordController extends Controller
 //        $slot->save();
 
         $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
-        $mailer = new CMailer();
-        $mailer->addRecipient($form->ownerEmail);
-        $bcc = Config::get('app.settings.emails.notify');
-        if ($bcc) $mailer->addBCC($bcc);
-        $mailer->subject = $queue->parseNotification($queue->notificationSubject, $slot->date, $slot->iorder, $form, false);
-        $mailer->message = $mailText;
-        $mailer->send();
+//        $mailer = new CMailer();
+//        $mailer->addRecipient($form->ownerEmail);
+//        $bcc = $form->ownerEmail;
+//        if ($bcc) $mailer->addBCC($bcc);
+//        $mailer->subject = $queue->parseNotification($queue->notificationSubject, $slot->date, $slot->iorder, $form, false);
+//        $mailer->message = $mailText;
+//        $mailer->send();
 
-        dd($mailText);
+        dd(mail($form->ownerEmail, 'asd', $mailText, 'From: indrikis38@gmail.com'));
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
     }

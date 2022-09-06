@@ -4,6 +4,10 @@ $(document).ready(function() {
     let atributs;
     let menu_opened = 0;
 
+    let __filterWidth = $('.select-title.tire-width').val();
+    let __filterHeight = $('.select-title.tire-height').val();
+    let __filterDiameter = $('.select-title.tire-radius').val();
+
     $('.login-form .toggle, .register-form .toggle').on('click', function() {
        if ($(this).data('text-show') == 'Rādīt') {
            $(this).data('text-show', 'Hide');
@@ -67,6 +71,9 @@ $(document).ready(function() {
         if (!$(this).hasClass('open')) {
             $('.facet-dropdown').removeClass('open');
             $(this).addClass('open');
+            $('.dropdown-menu.width').scrollTo($('.dropdown-menu.width .select-list#' + __filterWidth));
+            $('.dropdown-menu.height').scrollTo($('.dropdown-menu.height .select-list#' + __filterHeight));
+            $('.dropdown-menu.radius').scrollTo($('.dropdown-menu.radius .select-list#' + __filterDiameter));
             menu_opened = 1;
         } else {
             $(this).removeClass('open');

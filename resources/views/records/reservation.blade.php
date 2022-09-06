@@ -264,7 +264,14 @@
                       <input type="hidden" name="part">
                       <div class="form-group row time bg-light">
                         <label for="f_date" class="col-sm-3 col-form-label text-right">Datums un laiks:</label>
-                        <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_date"></div>
+{{--                        <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_date"></div>--}}
+                        <div class="col-3">
+                          <select class="form-control" id="f_date">
+                            @foreach ($workingDays as $workingDay)
+                              <option value="{{ $workingDay }}">{{ $workingDay }}</option>
+                            @endforeach
+                          </select>
+                        </div>
                         <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_time"></div> *
                       </div>
                       <div class="form-group row">
@@ -304,23 +311,25 @@
                       <div class="form-group row">
                         <label for="title" class="col-sm-3 col-form-label text-right">Piezīmes:</label>
                         <div class="col-9">
-                          <textarea id="f_comment" class="form-control" cols="30" rows="5"></textarea>
+                          <textarea id="f_comment" class="form-control" cols="30" rows="2"></textarea>
                         </div>
                       </div>
                       <div class="form-group row time bg-light">
                         <label for="f_name" class="col-sm-3 col-form-label text-right">Vārds:</label>
-                        <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_name"></div>
+                        <div class="col-3">
+                          <input type="text" class="form-control ui-datepicker" id="f_name">
+                        </div>
+                        <span class="timeSeparator">-</span>
+                        <div class="col-3">
+                          <input type="text" class="form-control ui-datepicker" id="f_phone">
+                        </div>
                       </div>
                       <div class="form-group row time">
-                        <label for="f_phone" class="col-sm-3 col-form-label text-right">Tālrunis:</label>
-                        <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_phone"></div>
-                      </div>
-                      <div class="form-group row time bg-light">
                         <label for="f_email" class="col-sm-3 col-form-label text-right">E-pasts:</label>
                         <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_email"></div>
                       </div>
                       <div class="separator"></div>
-                      <div class="form-group row">
+                      <div class="form-group row bg-light">
                         <label for="f_status" class="col-sm-3 col-form-label text-right">Statuss:</label>
                         <div class="col-3">
                           <select class="custom-select mr-sm-2" id="f_status">
@@ -330,15 +339,16 @@
                           </select>
                         </div>
                       </div>
-                      <div class="form-group row bg-light">
+                      <div class="form-group row">
                         <label for="title" class="col-sm-3 col-form-label text-right">Komentāri:</label>
                         <div class="col-9">
-                          <textarea id="f_slotcomment" class="form-control" cols="30" rows="5"></textarea>
+                          <textarea id="f_slotcomment" class="form-control" cols="30" rows="2"></textarea>
                         </div>
                       </div>
                     </form>
                   </div>
                   <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary delete" style="float: left;">Dzēst</button>
                     <button type="button" class="btn btn-secondary decline" data-dismiss="modal">Atcelt</button>
                     <button type="button" class="btn btn-primary submit">Saglabāt</button>
                   </div>
