@@ -310,8 +310,10 @@
                                     <h1 class="h6 hidden-xs-up">Active filters</h1>
                                 </section>
                             </div>
+
+                            {{-- GRID VIEW --}}
                             <div id="">
-                              <h4 class="rims-title">Jauni lietie diski</h4>
+                              <h4 class="rims-title">Lietie diski</h4>
 {{--                              GRID VIEW--}}
 {{--                              <div class="tire-image-container" style="display: none">--}}
 {{--                                <div class="tire-image-cards">--}}
@@ -379,7 +381,6 @@
                                       }
                                     @endphp
                                     {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
-                                    @if($rim->price1)
                                     <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}" class="">
                                       <div class="tire-image-card sort-order card">
 
@@ -400,7 +401,6 @@
                                         </div>
                                       </div>
                                     </a>
-                                    @endif
                                   @endforeach
                                 </div>
                               </div>
@@ -431,7 +431,7 @@
                                     </tr>
                                     </thead>
                                     <tbody id="tires-table-body">
-
+{{--                                    {{ dd($rims) }}--}}
                                     @foreach($rims as $rim)
 
                                       <tr class="tire-table-row">
