@@ -4627,6 +4627,4 @@ div.form-group span.validate {
 .rim-table-link {
   display: flex;
   white-space: nowrap;
-  align-items: center;
-  justify-content: center;
 }

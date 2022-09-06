@@ -25,7 +25,6 @@ $(document).ready(function () {
             10: {sorter: false},
             11: {sorter: false}
           },
-          // sortList: [[7,1]]
         }
       );
     });
@@ -46,7 +45,6 @@ $(document).ready(function () {
             10: {sorter: false},
             11: {sorter: false}
           },
-          // sortList: [[7,1]]
         }
       );
     });
@@ -83,7 +81,6 @@ $(document).ready(function () {
           8: {sorter: false},
           9: {sorter: false}
         },
-        // sortList: [[7,1]]
       }
     );
   });
@@ -99,7 +96,6 @@ $(document).ready(function () {
           6: {sorter: false},
           7: {sorter: false}
         },
-        // sortList: [[7,1]]
       }
     );
   });
@@ -114,9 +110,11 @@ $(document).ready(function () {
           4: {sorter: false},
           5: {sorter: false},
           6: {sorter: true},
-          7: {sorter: true}
+          7: {sorter: true},
+          8: {sorter: false},
+          9: {sorter: false},
+          10: {sorter: false}
         },
-        // sortList: [[7,1]]
       }
     );
   });
@@ -127,13 +125,15 @@ $(document).ready(function () {
           0: {sorter: false},
           1: {sorter: false},
           2: {sorter: false},
-          3: {sorter: true},
-          4: {sorter: true},
+          3: {sorter: false},
+          4: {sorter: false},
           5: {sorter: false},
-          6: {sorter: false},
-          7: {sorter: false}
+          6: {sorter: true},
+          7: {sorter: true},
+          8: {sorter: false},
+          9: {sorter: false},
+          10: {sorter: false}
         },
-        // sortList: [[7,1]]
       }
     );
   });
