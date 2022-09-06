@@ -411,7 +411,9 @@
                             $cbrand = $brand;
                             $stripe = 1;
                       @endphp
-                      <table id="tires-table" class="table moto-sorter tires-table table-hover tablesorter">
+
+
+                    <table id="tires-table" class="table moto-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead">
                         <tr>
                           <th scope="col"></th>
@@ -480,10 +482,19 @@
 
                         <td class="hidden-sm-down text-center">
                             <span>
+{{--                              <span data-toggle="tooltip"--}}
+{{--                                    title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>--}}
+{{--                              <span data-toggle="tooltip"--}}
+{{--                                    title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>--}}
+
                               <span data-toggle="tooltip"
-                                    title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>
-                              <span data-toggle="tooltip"
-                                    title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>
+                                    title="
+                                    <span style='color: black'>
+                                    Kravnesības indekss: 91 – 615 kg
+                                    <br>
+                                    {{ $tire->si }} - Ātruma Indekss</span>">
+                                    {{ $tire->li . $tire->si }}
+                              </span>
                             </span>
                         </td>
 
@@ -510,7 +521,7 @@
 
                         <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
                         <td id="sale-price" class="text-center tire-price-red">€ {{ $tire->price2 }}</td>
-                        <td class="text-center">Piezimes</td>
+                        <td>{{ $tire->comment }}</td>
 
                         <td class="shopping-cart-col">
                           <div class="clearfix atc_div text-right">
@@ -523,6 +534,7 @@
                         </td>
 
                         <td class="dot-availability text-center">
+
                             <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip"
                                   data-html="true"
                                   title="{{ $tire->stockAvailability }}">
