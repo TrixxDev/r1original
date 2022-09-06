@@ -204,7 +204,7 @@
                                     $tire->includeStock = true;
                                   @endphp
 
-                                <tr class="tire-table-row">
+                                  <tr @if($currTire->tire_id == $tire->tire_id) style="font-weight: bold;"@endif class="tire-table-row">
                                   <th scope="row" class="tread-tire-table-checkbox text-center">
                                     <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
                                            class="tire-table-checkbox">

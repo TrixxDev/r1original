@@ -152,7 +152,7 @@
 
             <div class="row">
               <div class="">
-                <table id="tires-table" class="table rims-sorter tires-table table-hover tablesorter">
+                <table id="tires-table" class="table rims-tread-sorter tires-table table-hover tablesorter">
                   <thead class="tires-thead">
                   <tr>
                     <th scope="col"></th>
@@ -178,8 +178,7 @@
                   <tbody id="tires-table-body">
 
                   @foreach($rims as $rim)
-
-                    <tr class="tire-table-row">
+                      <tr @if($currTire->rim_id == $rim->rim_id) style="font-weight: bold;" @endif class="tire-table-row">
                       <th scope="row" class="tire-table-checkbox">
                         <input type="checkbox" value="{{$rim->rim_id}}" name="product_ids[]"
                                class="tire-table-checkbox">
@@ -223,7 +222,11 @@
 
 
                       <td id="store-price" class="text-center store-price">€ {{$rim->price2}}</td>
-                      <td id="sale-price" class="text-center tire-price-red sale-price">€ {{$rim->price3}}</td>
+                      <td id="sale-price" class="text-center tire-price-red sale-price">
+                        @if($rim->price3 != 0)
+                          € {{$rim->price3}}
+                        @endif
+                      </td>
                       <td class="hidden-sm-down text-center"></td>
 
                       <td class="shopping-cart-col">

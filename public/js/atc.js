@@ -84,6 +84,24 @@ $(document).ready(function () {
       }
     );
   });
+
+  $('.moto-tread-sorter').each(function() {
+    $(this).tablesorter({
+        headers: {
+          0: {sorter: false},
+          1: {sorter: false},
+          2: {sorter: false},
+          3: {sorter: false},
+          4: {sorter: true},
+          5: {sorter: true},
+          6: {sorter: false},
+          7: {sorter: false},
+          8: {sorter: false}
+        },
+      }
+    );
+  });
+
   $('.quadr-sorter').each(function() {
     $(this).tablesorter({
         headers: {
@@ -109,11 +127,12 @@ $(document).ready(function () {
           3: {sorter: false},
           4: {sorter: false},
           5: {sorter: false},
-          6: {sorter: true},
+          6: {sorter: false},
           7: {sorter: true},
-          8: {sorter: false},
+          8: {sorter: true},
           9: {sorter: false},
-          10: {sorter: false}
+          10: {sorter: false},
+          11: {sorter: false}
         },
       }
     );
@@ -128,11 +147,13 @@ $(document).ready(function () {
           3: {sorter: false},
           4: {sorter: false},
           5: {sorter: false},
-          6: {sorter: true},
-          7: {sorter: true},
-          8: {sorter: false},
-          9: {sorter: false},
-          10: {sorter: false}
+          6: {sorter: false},
+          7: {sorter: false},
+          8: {sorter: true},
+          9: {sorter: true},
+          10: {sorter: false},
+          11: {sorter: false},
+          12: {sorter: false}
         },
       }
     );
