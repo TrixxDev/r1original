@@ -9,6 +9,7 @@ use App\Models\Rim;
 use App\Models\Rimbrand;
 use App\Models\Rimmake;
 use Dflydev\DotAccessData\Data;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -27,6 +28,8 @@ class RimsController extends Controller
   public $currentSkr;
   public $currentPcd;
   public $currentEt;
+
+  public $model = 'Rim';
 
   public $models;
 
@@ -91,32 +94,22 @@ class RimsController extends Controller
               ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
               ->orderBy('rim_brands.brand_id', 'ASC')
               ->where('rims.price1', '<>' , 0)
+              ->where('rims.price2', '<>' , 0)
+              ->where('rims.price3', '<>' , 0)
               ->paginate();
     return view('rims.autorims', compact('rims','brands'));
   }
 
   public function autorims_tread($brand, $tread, $rim)
   {
-//    $currTire = Rim::with('tread')->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-//      ->where('auto_treads.title', $tread->title)
-//      ->where('auto_tires.tire_id', $tire)
-//      ->first();
-
     $brand = Rimbrand::where('slug', $brand)->first();
 
     $tread = Rimmake::where('slug', $tread)->first();
 
-    $currTire = Rim::join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+    $currRim = Rim::join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
                      ->where('rim_makes.title', $tread->title)
                      ->where('rims.rim_id', $rim)
                      ->first();
-
-//    $currTire = Rim::join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
-//      ->select('rims.*', 'rim_makes.*', 'rim_makes.make_id as ')
-//      ->limit(20)
-//      ->get();
-
-//    dd($currTire);
 
     $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
       ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
@@ -124,7 +117,47 @@ class RimsController extends Controller
       ->where('rims.make_id', $tread->make_id )
       ->paginate(20);
 
-    return view('rims.auto.tread', compact('rims', 'currTire', 'brand', 'tread'));
+    return view('rims.auto.tread', compact('rims', 'currRim', 'brand', 'tread'));
+  }
+
+  public function rims_ajax(Request $request)
+  {
+    $rim = Rim::selectRaw('rims.*, rim_makes.*')
+                ->rightJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+                ->where('rims.rim_id', $request->tire_id)
+                ->first();
+
+    if ($request->quantity) {
+      $cart = CartController::addProduct($this->model, $rim->rim_id, $request->quantity);
+    } else {
+      $cart = CartController::addProduct($this->model, $rim->rim_id, 4);
+    }
+
+    $quantity = Cart::count();
+    $total_sum = str_replace([',', '.00'], '', Cart::total());
+    $bought = ($request->quantity) ? $request->quantity : 4;
+
+    echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
+
+//    dd($rim);
+//      Rim::with('tread')->selectRaw('auto_tires.*, auto_treads.*')
+//      ->rightJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+//      ->where('auto_treads.season', $this->season)
+//      ->where('auto_tires.tire_id', $request->tire_id)
+//      ->where('auto_tires.visible_users', '<>', 0)
+//      ->first();
+//
+//    if ($request->quantity) {
+//      $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
+//    } else {
+//      $cart = CartController::addProduct($this->model, $tire->tire_id, 4);
+//    }
+//
+//    $quantity = Cart::count();
+//    $total_sum = str_replace([',', '.00'], '', Cart::total());
+//    $bought = ($request->quantity) ? $request->quantity : 4;
+//
+//    echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
   }
 
   public function quadrim()

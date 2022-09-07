@@ -174,6 +174,8 @@ Route::middleware('checksession')->group(function() {
 
   Route::get('/lietie-diski', [App\Http\Controllers\RimsController::class, 'autorims'])->name('lietie-diski');
   Route::get('/lietie-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\RimsController::class, 'autorims_tread'])->name('lietais-disks');
+  Route::post('/lietie-diski/ajax', [App\Http\Controllers\RimsController::class, 'rims_ajax'])->name('lietie-diski-ajax');
+
   Route::get('/kvadru-diski', [App\Http\Controllers\RimsController::class, 'quadrim'])->name('kvadraciklu-diski');
 
 // Noklusējuma lapas

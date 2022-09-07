@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Pdf;
 use App\Models\Quadr;
 use App\Models\Bigtire;
+use App\Models\Rim;
 use Cart;
 use Gloudemans\Shoppingcart\CartItem;
 use Gloudemans\Shoppingcart\CartItemOptions;
@@ -457,6 +458,17 @@ class CartController extends Controller
                   ->where('big_tires.tire_id', $tire_id)
                   ->first();
                 $image = 'industrial';
+                $availability = $tire->dotAvailable;
+                break;
+            }
+            case 'Rim': {
+                $tire = new Rim;
+
+                $tire = $tire->query()->selectRaw('rim_makes.*, rims.*, rims.comment as rim_comment')
+                  ->rightJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+                  ->where('rims.rim_id', $tire_id)
+                  ->first();
+                $image = 'rims';
                 $availability = $tire->dotAvailable;
                 break;
             }
