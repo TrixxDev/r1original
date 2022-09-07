@@ -618,7 +618,7 @@
                       <table id="tires-table" class="table summer-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead">
                         <tr>
-                          <th scope="col"></th>
+                          <th scope="col"><input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces"></th>
                           <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
                           <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
                           @if ($season_id == 2)
