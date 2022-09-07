@@ -15,7 +15,7 @@
               <div class="col-md-12 col-lg-4">
                 <section class="page-content" id="content">
                   <div class="images-container ">
-                      {!! \Image::treadZoom('auto-rim', $currTire->rim_id) !!}
+                      {!! \Image::treadZoom('auto-rim', $currRim->make_id) !!}
                   </div>
                   <div class="scroll-box-arrows">
                     <i class="material-icons left"></i>
@@ -34,7 +34,7 @@
                     <div class="product-prices">
                       <div class="product-discount">
                         <span>Veikala cena:</span>
-                        <span class="regular-price">€ {{ $currTire->price2 }}</span>
+                        <span class="regular-price">€ {{ $currRim->price2 }}</span>
                       </div>
                       <div class="product-price h5 has-discount" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
                         <link itemprop="availability" href="https://schema.org/InStock">
@@ -42,7 +42,7 @@
 
                         <div class="current-price">
                           <span>Akcijas cena:</span>
-                          <span itemprop="price" content="{{ $currTire->price3 }}">€ {{ $currTire->price3 }}</span>
+                          <span itemprop="price" content="{{ $currRim->price3 }}">€ {{ $currRim->price3 }}</span>
                         </div>
                       </div>
                     </div>
@@ -68,8 +68,9 @@
                           </div>
                         </div>
                         <div class="add">
+{{--                          {{ dd($currRim) }}--}}
                           <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
-                                  data-info="{{ $currTire->tire_id }}"
+                                  data-info="{{ $currRim->rim_id }}"
                           >
                             <i class="material-icons shopping-cart"></i>
                             Pirkt
@@ -88,30 +89,30 @@
                       <thead>
                       <tr>
                         <th>Platums</th>
-                        <td>{{ $currTire->d1 }}</td>
+                        <td>{{ $currRim->d1 }}</td>
                       </tr>
                       </thead>
                       <tbody>
                       <tr>
                         <th>Augstums</th>
-                        <td>{{ $currTire->d3 }}</td>
+                        <td>{{ $currRim->d3 }}</td>
                       </tr>
                       <tr>
                         <th>Skrūvju izbīdījums</th>
-                        <td>{{ $currTire->pcd }}</td>
+                        <td>{{ $currRim->pcd }}</td>
                       </tr>
                       <tr>
                         <th>Centrālais caurums</th>
-                        <td>{{ $currTire->dc }}</td>
+                        <td>{{ $currRim->dc }}</td>
                       </tr>
                       <tr>
                         <th>Skrūvju skaits</th>
-                        <td>{{ $currTire->skr }}</td>
+                        <td>{{ $currRim->skr }}</td>
                       </tr>
                       <tr>
                         <th>Stāvoklis</th>
                         <td>
-                         @if( $currTire->used === 0)
+                         @if( $currRim->used === 0)
                           {{ 'Jauns' }}
                          @else
                             {{ 'Lietots' }}
@@ -122,8 +123,8 @@
                         <th>Piezīmes</th>
                         <td>
                           @php
-                            if($currTire->autocomment) {
-                                echo $currTire->autocomment;
+                            if($currRim->autocomment) {
+                                echo $currRim->autocomment;
                             } else {
                                 echo '-';
                             }
@@ -132,15 +133,15 @@
                       </tr>
                       <tr>
                         <th>Pieejamība</th>
-                        <td>{{ $currTire->available }}</td>
+                        <td>{{ $currRim->available }}</td>
                       </tr>
                       </tbody>
                     </table>
                   </div>
                   <div class="col-sm-12 col-md-8">
-                    @if($currTire->comment)
+                    @if($currRim->comment)
                     <div class="alert" style="border: 1px solid #68c0a8">
-                      {{$currTire->comment}}
+                      {{$currRim->comment}}
                     </div>
                       @endif
                   </div>
@@ -177,8 +178,9 @@
                   </thead>
                   <tbody id="tires-table-body">
 
+{{--                  {{ dd($rims) }}--}}
                   @foreach($rims as $rim)
-                      <tr @if($currTire->rim_id == $rim->rim_id) style="font-weight: bold;" @endif class="tire-table-row">
+                      <tr @if($currRim->rim_id == $rim->rim_id) style="font-weight: bold; background-color: #e0e0e0;" @endif class="tire-table-row">
                       <th scope="row" class="tire-table-checkbox">
                         <input type="checkbox" value="{{$rim->rim_id}}" name="product_ids[]"
                                class="tire-table-checkbox">
@@ -186,12 +188,11 @@
 
                       <td>
                         <a data-toggle="tooltip" data-html="true" class="rim-table-link"
-                           @if (\Image::exists('auto-rim', $rim->rim_id))
-                           title="{{ \Image::show('auto-rim', $rim->rim_id) }}"
+                           @if (\Image::exists('auto-rim', $rim->make_id))
+                           title="{{ \Image::show('auto-rim', $rim->make_id) }}"
                            @else
                            title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
                            @endif
-                           href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}"
                         >
                           {{ $rim->brand_title . ' ' . $rim->title }}
                         </a>

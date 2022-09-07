@@ -237,12 +237,11 @@
 
                                     <td class="tread-name-cell-size">
                                       <a data-toggle="tooltip" data-html="true" class="rim-table-link"
-                                         @if (\Image::exists('auto-rim', $rim->rim_id))
-                                         title="{{ \Image::show('auto-rim', $rim->rim_id) }}"
+                                         @if (\Image::exists('auto-rim', $tire->tire_id))
+                                         title="{{ \Image::show('auto-rim', $tire->tire_id) }}"
                                          @else
                                          title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
                                          @endif
-                                         href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}"
                                       >
                                       {{ $tire->fullSize }}
                                       </a>

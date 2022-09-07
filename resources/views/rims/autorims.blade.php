@@ -6,7 +6,6 @@
 
 @section('content')
 
-
     <div class="container">
         <div class="row">
             <div class="main-content clearfix col-md-12 col-xl-10">
@@ -263,107 +262,18 @@
                             </div>
                         </div>
                     </div>
-                    <!-- end D:\OpenServer\domains\r1old/themes/classic/modules/ps_facetedsearch/ps_facetedsearch.tpl -->
                 </div>
                 <div id="content-wrapper" class="col-md-12 col-lg-9">
                     <section id="main">
                         <section id="products">
-{{--                          BREADCRUMBS  --}}
-{{--                            <div id="">--}}
-{{--                                <div class="row products-selection">--}}
-{{--                                    <div class="col-md-8 hidden-md-down">--}}
-{{--                                        <nav data-depth="3" class="breadcrumb hidden-sm-down">--}}
-{{--                                            <ol itemscope="" itemtype="http://schema.org/BreadcrumbList">--}}
-{{--                                                <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">--}}
-{{--                                                    <a itemprop="item" href="http://r1riepas.lv/index.php">--}}
-{{--                                                        <span itemprop="name">Sākumlapa</span>--}}
-{{--                                                    </a>--}}
-{{--                                                    <meta itemprop="position" content="1">--}}
-{{--                                                </li>--}}
-{{--                                                <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">--}}
-{{--                                                    <a itemprop="item" href="http://r1riepas.lv/index.php?id_category=20&amp;controller=category&amp;id_lang=2">--}}
-{{--                                                        <span itemprop="name">Diski</span>--}}
-{{--                                                    </a>--}}
-{{--                                                    <meta itemprop="position" content="2">--}}
-{{--                                                </li>--}}
-{{--                                                <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">--}}
-{{--                                                    <a itemprop="item" href="http://r1riepas.lv/index.php?id_category=21&amp;controller=category&amp;id_lang=2">--}}
-{{--                                                        <span itemprop="name">Jauni lietie diski</span>--}}
-{{--                                                    </a>--}}
-{{--                                                    <meta itemprop="position" content="3">--}}
-{{--                                                </li>--}}
-{{--                                            </ol>--}}
-{{--                                        </nav>--}}
-{{--                                    </div>--}}
-{{--                                    <div class="col-md-6">--}}
-{{--                                        <div class="row sort-by-row">--}}
-{{--                                            <div class="col-sm-3 col-xs-4 hidden-md-up filter-button">--}}
-{{--                                                <button id="search_filter_toggler" class="btn btn-secondary">--}}
-{{--                                                    Filtrs--}}
-{{--                                                </button>--}}
-{{--                                            </div>--}}
-{{--                                        </div>--}}
-{{--                                    </div>       </div>--}}
-{{--                            </div>--}}
                             <div id="" class="hidden-sm-down">
                                 <section id="js-active-search-filters" class="hide">
                                     <h1 class="h6 hidden-xs-up">Active filters</h1>
                                 </section>
                             </div>
-
                             {{-- GRID VIEW --}}
                             <div id="">
                               <h4 class="rims-title">Lietie diski</h4>
-{{--                              GRID VIEW--}}
-{{--                              <div class="tire-image-container" style="display: none">--}}
-{{--                                <div class="tire-image-cards">--}}
-{{--                                    <div class="row grid-ex">--}}
-{{--                                    @foreach($rims as $rim)--}}
-{{--                                      <a href="" class="">--}}
-{{--                                        <div class="tire-image-card sort-order">--}}
-{{--                                          <div class="text-center">--}}
-{{--                                            <img--}}
-{{--                                              src="{{ asset('img/p/r1-logo.svg') }}"--}}
-
-{{--                                              @if (\Image::exists('auto-rim', $rim->rim_id))--}}
-{{--                                                src="{{ \Image::showGrid('auto-rim', $rim->rim_id) }}"--}}
-{{--                                              @else--}}
-{{--                                                src="{{ asset('img/p/r1-logo.svg') }}"--}}
-{{--                                              @endif--}}
-{{--                                              alt="tire-image" class="img-thumbnail border-none text-center"--}}
-{{--                                            >--}}
-{{--                                          </div>--}}
-{{--                                          <div class="tire-list-caption">--}}
-
-{{--                                            <div class="card-title-text">Normāls disks</div>--}}
-{{--                                            <div class="tire-tread">--}}
-{{--                                              12 / 34 / 56--}}
-{{--                                            </div>--}}
-{{--                                            <div class="tire-price-red">--}}
-{{--                                              <p>{{$rim->price1}}</p>--}}
-{{--                                              <p>{{$rim->price2}}</p>--}}
-{{--                                              <p>{{$rim->price3}}</p>--}}
-{{--                                              </div>--}}
-{{--                                          </div>--}}
-{{--                                        </div>--}}
-{{--                                      </a>--}}
-{{--                                    @endforeach--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                                <a id="storage" href="http://aludiski.com/aludiski1001/wheels.php?cat=all&amp;lang=LV&amp;select_wheels=Search" target="_blank">NOLIKTAVA </a>--}}
-{{--                                <nav class="pagination">--}}
-{{--                                  <div class="col-md-12">--}}
-{{--                                  </div>--}}
-{{--                                </nav>--}}
-{{--                                <div class="hidden-md-up text-xs-right up">--}}
-{{--                                  <a href="#header" class="btn btn-secondary">--}}
-{{--                                    Back to top--}}
-{{--                                    <i class="material-icons"></i>--}}
-{{--                                  </a>--}}
-{{--                                </div>--}}
-{{--                              </div>--}}
-
-
                               <div class="tire-image-container" style="display: none">
                                 <div class="tire-image-cards">
                                   @php
@@ -380,12 +290,11 @@
                                           $brand = str_replace(" ", "", $brand);
                                       }
                                     @endphp
-                                    {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
                                     <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}" class="">
                                       <div class="tire-image-card sort-order card">
 
                                         <div class="text-center">
-                                          {!! \Image::showGrid('auto-rim', $rim->rim_id) !!}
+                                          {!! \Image::showGrid('auto-rim', $rim->make_id) !!}
                                         </div>
 
                                         <div class="tire-list-caption">
@@ -405,10 +314,8 @@
                                 </div>
                               </div>
 
-{{--                              11111111111111111111111111111111111111111111111111--}}
                                 <div id="js-product-list">
 {{--                                  LIST VIEW--}}
-
                                   <table id="tires-table" class="table rims-sorter tires-table table-hover tablesorter">
                                     <thead class="tires-thead">
                                     <tr>
@@ -432,7 +339,6 @@
                                     </tr>
                                     </thead>
                                     <tbody id="tires-table-body">
-{{--                                    {{ dd($rims) }}--}}
                                     @foreach($rims as $rim)
 
                                       <tr class="tire-table-row">
@@ -443,8 +349,8 @@
 
                                         <td>
                                           <a data-toggle="tooltip" data-html="true" class="rim-table-link"
-                                             @if (\Image::exists('auto-rim', $rim->rim_id))
-                                             title="{{ \Image::show('auto-rim', $rim->rim_id) }}"
+                                             @if (\Image::exists('auto-rim', $rim->make_id))
+                                             title="{{ \Image::show('auto-rim', $rim->make_id) }}"
                                              @else
                                              title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
                                              @endif
@@ -454,36 +360,7 @@
                                           </a>
                                         </td>
                                         <td class="text-center">
-
                                             {{$rim->d1}}*{{$rim->d3}}
-
-{{--                                             data-content="{{ $tire->title }}"--}}
-{{--                                             data-article="{{ $tire->article }}"--}}
-{{--                                            {{ $tire->title }}--}}
-
-{{--                                          <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}" class="">--}}
-{{--                                            <div class="sort-order">--}}
-{{--                                              {{$rim->d1}}*{{$rim->d3}}({{$rim->pcd}}x{{$rim->skr}})--}}
-{{--                                              <div class="text-center">--}}
-{{--                                                <img--}}
-{{--                                                  @if ($tire->image)--}}
-{{--                                                  src="{{ $tire->image }}" style='width: 100%; height: 100%;'--}}
-{{--                                                  @else--}}
-{{--                                                  src="{{ asset('img/p/r1-logo.svg') }}"--}}
-{{--                                                  @endif alt="tire-image" class="img-thumbnail border-none text-center"--}}
-{{--                                                >--}}
-{{--                                                <img src="{{ asset('storage/auto/rims/rim-')}}{{$rim->rim_id}}.jpg" style="width:100%;">--}}
-{{--                                              </div>--}}
-{{--                                              <div class="tire-list-caption">--}}
-
-{{--                                                <div class="card-title-text">{{$rim->title}}</div>--}}
-{{--                                                <div class="tire-tread">--}}
-{{--                                                  {{$rim->d1}} / {{$rim->d2}} / {{$rim->d3}}--}}
-{{--                                                </div>--}}
-{{--                                                <div class="tire-price-red">€{{$rim->price1}}</div>--}}
-{{--                                              </div>--}}
-{{--                                            </div>--}}
-{{--                                          </a>--}}
                                         </td>
 
                                         <td class="text-center">
@@ -501,7 +378,6 @@
                                         <td class="hidden-sm-down text-center">
                                           {{$rim->color}}
                                         </td>
-
 
                                         <td id="store-price" class="text-center store-price">€ {{$rim->price2}}</td>
                                         <td id="sale-price" class="text-center tire-price-red sale-price">€ {{$rim->price3}}</td>
@@ -526,143 +402,6 @@
                                     @endforeach
                                     </tbody>
                                   </table>
-
-{{--                                    <div class="products row hide-price">--}}
-
-{{--                                        <div class="table-top product_show_list">--}}
-{{--                                            <span class="table-cell sortable" data-filter=".product-description .product-title a" data-order="DESC">Brends / modelis</span>--}}
-{{--                                            <span class="table-cell hidden-sm-down">Krāsa</span>--}}
-{{--                                            <span class="table-cell sortable" data-filter=".product-price-and-shipping .regular-price" data-order="DESC">Veikala cena</span>--}}
-{{--                                            <span class="table-cell sortable" data-filter=".product-price-and-shipping .price" data-order="DESC">Akcijas cena</span>--}}
-{{--                                            <span class="table-cell">Piezīmes<!--{hook h='displayProductAttributesHeader' listing=$listing}--></span>--}}
-{{--                                            <span class="table-cell availability sortable" data-filter=".product-price-and-shipping .dot" data-order="DESC"> </span>--}}
-{{--                                        </div>--}}
-{{--                                        <h4 class="custom_brand_name product_list_view" data-brand="30" style="display: none;">BSA</h4><h4 class="custom_brand_name product_list_view" data-brand="28" style="display: none;">DRAG</h4><h4 class="custom_brand_name product_list_view" data-brand="29" style="display: none;">Dezent</h4><h4 class="custom_brand_name product_list_view" data-brand="26" style="display: none;">MOMO</h4><h4 class="custom_brand_name product_list_view" data-brand="25" style="display: none;">NANO</h4><h4 class="custom_brand_name product_list_view" data-brand="10" style="display: none;">Oriģinālie</h4><h4 class="custom_brand_name product_list_view" data-brand="24" style="display: none;">REDS</h4><h4 class="custom_brand_name product_list_view" data-brand="27" style="display: none;">Replika</h4><h4 class="custom_brand_name product_list_view" data-brand="11" style="display: none;">VIPER</h4><article class="cat-21 product-miniature js-product-miniature product_show_list" data-id-product="569" data-id-product-attribute="7834" itemscope="" itemtype="http://schema.org/Product" data-brand="28" data-dia="18" data-lug="5" data-stud="112" data-offset="35">--}}
-{{--                                            <div class="thumbnail-container">--}}
-{{--                                                <a href="http://r1riepas.lv/index.php?id_product=569&amp;id_product_attribute=7834&amp;rewrite=drag-52573&amp;controller=product&amp;id_lang=2#/134-lugcount-5/136-studspread-112/149-offset-35/357-wheelsdiameter-18/841-color-silver/971-widthinches-80" class="thumbnail product-thumbnail">--}}
-{{--                                                    <img src="{{ asset('img\p\en-default-home_default.jpg') }}">--}}
-{{--                                                    <!-- NOT WORKING like needed | RDP -->--}}
-{{--                                                    <!-- NOT WORKING like needed | RDP -->--}}
-{{--                                                </a>--}}
-{{--                                                <div class="product-description">--}}
-{{--                                                    <input type="checkbox" value="7834" name="product_ids[]">--}}
-{{--                                                    <h1 class="h3 product-title" itemprop="name">--}}
-{{--                                                        <a data-toggle="tooltip" data-html="true" title="<img src='{{ asset('img\p\en-default-home_default.jpg') }}'>" href="http://r1riepas.lv/index.php?id_product=569&amp;id_product_attribute=7834&amp;rewrite=drag-52573&amp;controller=product&amp;id_lang=2#/134-lugcount-5/136-studspread-112/149-offset-35/357-wheelsdiameter-18/841-color-silver/971-widthinches-80" data-content="DRAG 52573">--}}
-{{--                                                            <div class="product-title-hidden"> DRAG 52573--}}
-{{--                                                                <br> <span style="color: #65c2a5">18x8.0</span>--}}
-{{--                                                            </div>--}}
-{{--                                                        </a>--}}
-{{--                                                    </h1>--}}
-{{--                                                    <div class="product-price-and-shipping" data-content="DRAG 52573 - 8.0*18 (5x112 et35)">--}}
-{{--                                                        <span class="hidden-sm-down table-cell">SILVER</span>--}}
-{{--                                                        <!-- RDP | removed from IF -->--}}
-{{--                                                        <span class="sr-only">Veikala cena</span>--}}
-{{--                                                        <span class="regular-price">€ 168</span>--}}
-{{--                                                        <!-- RDP removed from IF-->--}}
-{{--                                                        <span class="sr-only">Akcijas cena</span>--}}
-{{--                                                        <span itemprop="price" class="price">€ 137</span>--}}
-{{--                                                        <span class="table-cell notes">--}}
-{{--                                                            &nbsp;--}}
-{{--                                                            <span class="table-cell top40">&nbsp;</span>--}}
-{{--                                                        </span>--}}
-{{--                                                        <div class="clearfix atc_div">--}}
-{{--                                                            <button class="btn grid-cart-btn btn-primary" data-callback="showQuickBuyForm" data-callback-param="7834" data-popup-open="popup-2" data-backdrop="2" data-show="1" data-toggle="modal"> <i class="material-icons">add_shopping_cart</i> </button>--}}
-{{--                                                            <span class="dot  red" data-toggle="tooltip" data-html="true" title="<p>R1 Kopā:0</p><br/><p>Noliktava: 0</p><br/><p>Veikals: 0</p><br/><p>Lattako: 0</p><br/><p>Goodyear: 0</p><br/><p>Nokian: 0</p><br/><p>Kumho: 0</p><br/><p>Nevetas: 0</p><br/>"><span class="sort-order">6</span></span>--}}
-{{--                                                        </div>--}}
-{{--                                                    </div>--}}
-{{--                                                </div>--}}
-{{--                                            </div>--}}
-{{--                                        </article>--}}
-{{--                                    </div>--}}
-{{--                               NEW TABLE --}}
-{{--                                  <table id="tires-table" class="table rims-sorter tires-table table-hover tablesorter">--}}
-{{--                                    <thead class="tires-thead">--}}
-{{--                                    <tr>--}}
-{{--                                      <th scope="col"></th>--}}
-{{--                                      <th scope="col" class="table-tire-name-cell">Platums / Diametrs</th>--}}
-{{--                                      <th scope="col" class="hidden-sm-down text-center">Skrūvju attālums</th>--}}
-{{--                                      <th scope="col" class="hidden-sm-down text-center">Izbīdījums</th>--}}
-{{--                                      <th scope="col" class="hidden-sm-down text-center">Centrlais caurums</th>--}}
-{{--                                      <th scope="col" class="hidden-sm-down text-center">Krāsa</th>--}}
-
-{{--                                      <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>--}}
-{{--                                      <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>--}}
-
-{{--                                      <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>--}}
-{{--                                      <th scope="col"></th>--}}
-{{--                                      <th scope="col">--}}
-{{--                                        <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>--}}
-{{--                                      </th>--}}
-
-{{--                                    </tr>--}}
-{{--                                    </thead>--}}
-{{--                                    <tbody id="tires-table-body">--}}
-{{--                                    @foreach($rims as $rim)--}}
-{{--                                      {{ dd($rim) }}--}}
-{{--                                    <tr class="tire-table-row">--}}
-{{--                                      <th scope="row" class="tire-table-checkbox">--}}
-{{--                                        <input type="checkbox" value="111" name="product_ids[]"--}}
-{{--                                               class="tire-table-checkbox">--}}
-{{--                                      </th>--}}
-
-{{--                                      <td class="table-tire-name-cell">--}}
-{{--                                        DRAG 52573 - 18x8.0--}}
-{{--                                      </td>--}}
-
-{{--                                      <td class="table-tire-name-cell">--}}
-{{--                                        DRAG 52573 - 18x8.0--}}
-{{--                                      </td>--}}
-
-{{--                                      <td class="table-tire-name-cell">--}}
-{{--                                        DRAG 52573 - 18x8.0--}}
-{{--                                      </td>--}}
-
-{{--                                      <td class="table-tire-name-cell">--}}
-{{--                                        DRAG 52573 - 18x8.0--}}
-{{--                                      </td>--}}
-
-
-{{--                                      <td class="hidden-sm-down text-center">--}}
-{{--                                        Zaļa--}}
-{{--                                      </td>--}}
-
-
-{{--                                      <td id="store-price" class="text-center store-price">€ 888</td>--}}
-{{--                                      <td id="sale-price" class="text-center tire-price-red sale-price">€ 999</td>--}}
-{{--                                      <td class="hidden-sm-down text-center"></td>--}}
-
-{{--                                      <td class="shopping-cart-col">--}}
-{{--                                        <div class="clearfix atc_div text-right">--}}
-{{--                                          <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">--}}
-{{--                                            <i class="material-icons">add_shopping_cart</i>--}}
-{{--                                          </button>--}}
-{{--                                        </div>--}}
-{{--                                      </td>--}}
-
-{{--                                      <td class="dot-availability text-center">--}}
-{{--                            <span class="dot red" data-toggle="tooltip"--}}
-{{--                                  data-html="true"--}}
-{{--                                  title="red">--}}
-{{--                              <span class="sort-order">red</span>--}}
-{{--                            </span>--}}
-{{--                                      </td>--}}
-{{--                                    </tr>--}}
-{{--                                    @endforeach--}}
-{{--                                    </tbody>--}}
-{{--                                  </table>--}}
-
-{{--                                    <a id="storage" href="http://aludiski.com/aludiski1001/wheels.php?cat=all&amp;lang=LV&amp;select_wheels=Search" target="_blank">NOLIKTAVA </a>--}}
-{{--                                    <nav class="pagination">--}}
-{{--                                        <div class="col-md-12">--}}
-{{--                                        </div>--}}
-{{--                                    </nav>--}}
-{{--                                  {{ $rims->links() }}--}}
-{{--                                    <div class="hidden-md-up text-xs-right up">--}}
-{{--                                        <a href="#header" class="btn btn-secondary">--}}
-{{--                                            Back to top--}}
-{{--                                            <i class="material-icons"></i>--}}
-{{--                                        </a>--}}
-{{--                                    </div>--}}
                                 </div>
                             </div>
                           {{ $rims->links() }}
