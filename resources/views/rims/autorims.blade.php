@@ -319,7 +319,7 @@
                                   <table id="tires-table" class="table rims-sorter tires-table table-hover tablesorter">
                                     <thead class="tires-thead">
                                     <tr>
-                                      <th scope="col"></th>
+                                      <th scope="col"><input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces"></th>
                                       <th scope="col">Nosaukums</th>
                                       <th scope="col" class="text-center">Izmērs</th>
                                       <th scope="col" class="hidden-sm-down text-center">Skrūvju attālums</th>
@@ -343,7 +343,7 @@
 
                                       <tr class="tire-table-row">
                                         <th scope="row" class="tire-table-checkbox">
-                                          <input type="checkbox" value="111" name="product_ids[]"
+                                          <input type="checkbox" value="{{$rim->rim_id}}" name="product_ids[]"
                                                  class="tire-table-checkbox">
                                         </th>
 

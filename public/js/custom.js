@@ -2773,3 +2773,15 @@ $('input[type=password].password-confirmation').keyup(delay(function(e) {
   $('.form-footer').children('button').prop('disabled', true);
   $('.password-error').show();
 }, 500));
+
+$(document).ready(function() {
+
+  const rows = document.querySelectorAll("#tires-table tbody tr")
+  document.getElementById("show-selected-checkbox").addEventListener("click",function() {
+    rows.forEach(row => row.hidden = this.checked && !row.querySelector("input").checked)
+  })
+
+  if (window.location.hash.includes('only_selected')){
+    $('#show-selected-checkbox').click();
+  }
+});
