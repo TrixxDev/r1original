@@ -223,8 +223,7 @@ class Bigtire extends Model
     ($tire->urs_quantity) ?? $tire->urs_quantity = 0;
     ($tire->krs_quantity) ?? $tire->krs_quantity = 0;
 
-    $availability = '<p>R1 Kopā: ' . $tire->quantity . '</p><br>';
-    $availability .= '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
+    $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
     $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
 
     if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
@@ -236,6 +235,13 @@ class Bigtire extends Model
           $availability .= '<br><p>' . $stock_name . ': 0</p>';
         }
       }
+    }
+
+    $dot = $this->getDotAvailableAttribute();
+    if ($dot === 'red') {
+      $availability = '<p style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</p>';
+    } else if ($dot === 'yellow' || $dot === 'half-yellow') {
+      $availability = '<p style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
     }
 
     return $availability;

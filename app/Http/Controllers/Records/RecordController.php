@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Records;
 use App\Helper\CMailer;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Carbon\Carbon;
@@ -331,7 +332,47 @@ class RecordController extends Controller
 
         $slot->save();
 
-        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
+        switch ($form->purpose){
+          case 0:{
+            $purpose = '';
+            $purposeLong = '';
+            break;
+          }
+          case 1:{
+            $purpose = 'riepu nomaiņa';
+            $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri Jums būs līdzi';
+            break;
+          }
+          case 2:{
+            $purpose = 'riepu nomaiņa';
+            $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri glabājas pie mums';
+            break;
+          }
+          case 3:{
+            $purpose = 'riepu nomaiņa';
+            $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
+            break;
+          }
+          case 4:{
+            $purpose = 'kondicioniera uzpilde';
+            $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
+            break;
+          }
+        }
+
+        $details = [
+          'car' => $form->vehicleModel,
+          'make' => $form->vehicleModel,
+          'purpose' => $purpose,
+          'office' => $office->title,
+          'day' => $dayOfWeek2,
+          'date' => $fmtDate,
+          'time' => $time,
+          'longPurpose' => $purposeLong
+        ];
+
+        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($details));
+//        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
 //        $mailer = new CMailer();
 //        $mailer->addRecipient($form->ownerEmail);
 //        $bcc = $form->ownerEmail;

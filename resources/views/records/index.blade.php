@@ -401,7 +401,7 @@
                                         <div class="form-group row">
                                             <label for="comment" class="col-sm-3" style="text-align: left;">Piezīmes:</label>
                                             <div class="col-sm-9">
-                                                <textarea id="comment" class="form-control" cols="20" rows="10"></textarea>
+                                                <textarea id="comment" class="form-control" cols="20" rows="4"></textarea>
                                             </div>
                                         </div>
                                         <div class="form-group row">

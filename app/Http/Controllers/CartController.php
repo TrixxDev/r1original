@@ -139,12 +139,19 @@ class CartController extends Controller
       if ($request->post()) {
         $delivery = [];
 
-          //        $this->checkCart($request->data);
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+          $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+          $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+          $ip = $_SERVER['REMOTE_ADDR'];
+        }
 
-//        foreach ($request->data as $key => $value) {
-//          Session::put('.' . $key, $value);
-//        }
-
+        if (Auth::check()) {
+          $order = Order::where('userId', Auth::user()->id)->first();
+        } else {
+          $order = Order::where('userIp', $ip)->first();
+        }
 
         if ($request->data['cart_delivery_radio'] === 1 || $request->data['cart_delivery_radio'] === 2) {
           array_push($delivery, [
@@ -160,40 +167,34 @@ class CartController extends Controller
           ]);
         }
 
-        $cartData = serialize($delivery[0]);
+        $cartData = serialize($delivery);
 
         $amount = str_replace(['.', ','], '', Cart::subtotal());
 
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-          $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-          $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-          $ip = $_SERVER['REMOTE_ADDR'];
+        if (!$order) {
+          $order = new Order;
+          $order->userId = 0;
+          if (Auth::check()) {
+            $order->userId = Auth::user()->id;
+          } else {
+            $order->userIp = $ip;
+          }
+          $order->status = 1;
+          $order->price = substr($amount, 0, -2);
+          $order->delivery_price = 0;
+          $order->fit_price = 0;
+          $order->info = $cartData;
+          $order->order_token = $session_id;
+          $order->timeRemaining = Carbon::now()->addMinutes(30)->format('Y-m-d H:i:s');
+
+          $order->save();
+
+          $order_id = $order->id;
+          $amount1 = $amount;
+          $email = Session::get('email');
+
+          $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
         }
-
-        $order = new Order;
-        $order->userId = 0;
-        if (Auth::check()) {
-          $order->userId = Auth::user()->id;
-        } else {
-          $order->userIp = $ip;
-        }
-        $order->status = 1;
-        $order->price = substr($amount, 0, -2);
-        $order->delivery_price = 0;
-        $order->fit_price = 0;
-        $order->info = $cartData;
-        $order->order_token = $session_id;
-        $order->timeRemaining = Carbon::now()->addMinutes(30)->format('Y-m-d H:i:s');
-
-        $order->save();
-
-        $order_id = $order->id;
-        $amount1 = $amount;
-        $email = Session::get('email');
-
-        $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
 
         Session::put('cart_options', $data);
 
@@ -219,21 +220,30 @@ class CartController extends Controller
       if ($request->post()) {
   //        Session::regenerate(false);
 
-        $order = Order::where('userIp', $ip)->first();
+        if (Auth::check()) {
+          $order = Order::where('userId', Auth::user()->id)->first();
+        } else {
+          $order = Order::where('userIp', $ip)->first();
+        }
 
-        $cartData = unserialize($order->info);
+
+        $cartData = array_values(unserialize($order->info));
+        $options = $cartData[0];
+        unset($cartData[0]);
 
         foreach (Cart::content() as $key => $item) {
 
-          array_push($cartData, [
-            'tire_id' => $item->id,
-            'title' => $item->name,
-            'quantity' => $item->qty,
-            'price' => (int) $item->price,
-          ]);
-  //            if (){
-  //              allow order online;
-  //            }
+          if (!$cartData) {
+            if (!in_array($item->name, $cartData)) {
+              array_push($cartData, [
+                'tire_id' => $item->id,
+                'title' => $item->name,
+                'quantity' => $item->qty,
+                'price' => (int) $item->price,
+              ]);
+            }
+          }
+
         }
 
         $amount = str_replace(['.', ','], '', Cart::subtotal());
@@ -264,7 +274,7 @@ class CartController extends Controller
 
           $user_data = unserialize($order->info);
 
-          array_push($cartData, $user_data);
+          array_unshift($cartData, $options);
 
           $order->info = serialize($cartData);
 
@@ -277,7 +287,6 @@ class CartController extends Controller
         $email = Session::get('email');
 
         $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
-
 
         if (isset($request->pay)) {
           return $this->pay($data);

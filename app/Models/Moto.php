@@ -240,8 +240,7 @@ class Moto extends Model
             'duell' => 'Duell',
         ];
 
-        $availability = '<p>R1 Kopā: ' . $tire->quantity . '</p><br>';
-        $availability .= '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
+        $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
         $availability .= '<p>Kalnciema iela: ' . $tire->krs_quantity . '</p>';
 
         if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
@@ -253,6 +252,13 @@ class Moto extends Model
               $availability .= '<br><p>' . $stock_name . ': 0</p>';
             }
           }
+        }
+
+        $dot = $this->getDotAvailableAttribute();
+        if ($dot === 'red') {
+          $availability = '<p style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</p>';
+        } else if ($dot === 'yellow' || $dot === 'half-yellow') {
+          $availability = '<p style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
         }
 
         return $availability;

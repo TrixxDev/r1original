@@ -115,6 +115,10 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::get('/settings/pages/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'pages_destroy'])->name('settings.pages.destroy');
 });
 
+Route::get('/sendSMS', function() {
+  (new \App\Helper\SmsSender())->send();
+});
+
 Route::middleware('checksession')->group(function() {
 
   // Sākumlapa/Iziešana no konta
