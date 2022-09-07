@@ -2026,10 +2026,11 @@ $(document).ready(function() {
     $('#f_date option').each(function() {
       $(this).removeAttr('selected');
       if ($(this).val() == __date) {
-        $('.modal#slotModal #f_date').val($(this).val());
+        $(this).parent().val($(this).val());
         $(this).attr('selected', true).prop('selected', true);
       }
     });
+    $('.modal#slotModal input[name="date"]').val($(this).data('date'));
     // $('.modal#slotModal #f_date option[value=' + $(this).data('date') + ']').attr('selected', 'selected').prop('selected', 'selected');
     $('.modal#slotModal input[name="slot"]').val($(this).data('slot-id'));
     $('.modal#slotModal input[name="part"]').val($(this).data('slot-part'));
@@ -2039,8 +2040,9 @@ $(document).ready(function() {
       url: '/admin/rezervacijas/slot_ajax/' + $(this).data('queue-id') + '/' + $(this).data('date') + '/' + $(this).data('slot-id') + '/' + $(this).data('slot-part'),
       dataType: 'JSON',
       success: function(data) {
-        $('.modal#slotModal #f_date').val(data.f_date);
+        // $('.modal#slotModal #f_date').val(data.f_date);
         $('.modal#slotModal #f_time').val(data.f_time);
+        $('.modal#slotModal #f_time option[value="' + data.f_time + '"]').attr('selected', true);
         $('.modal#slotModal #f_car').val(data.f_car);
         $('.modal#slotModal #f_model').val(data.f_model);
         $('.modal#slotModal #f_plate').val(data.f_plate);
@@ -2074,7 +2076,7 @@ $(document).ready(function() {
     e.preventDefault();
     $.ajax({
       method: 'POST',
-      url: '/admin/rezervacijas/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val() + '/' + $('.modal#slotModal input[name="part"]').val(),
+      url: '/admin/rezervacijas/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal #f_date').val() + '/' + $('.modal#slotModal input[name="slot"]').val() + '/' + $('.modal#slotModal input[name="part"]').val(),
       data: {
         'f_office': $('.modal#slotModal #f_office').val(),
         'f_date': $('.modal#slotModal #f_date').val(),
@@ -2338,6 +2340,7 @@ function checkFitting(qty = null) {
   $.ajax({
     url: '/checkFitting',
     method: 'POST',
+    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
     data: {total_items: qty, fitting_needs: needsFit},
     dataType: 'JSON',
     success: function(data) {

@@ -329,7 +329,7 @@ class RecordController extends Controller
         $slot->createTime = $slot->editTime = NOW();
         $slot->createUser = $slot->editUser = $userID;
 
-//        $slot->save();
+        $slot->save();
 
         $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
 //        $mailer = new CMailer();
@@ -340,7 +340,7 @@ class RecordController extends Controller
 //        $mailer->message = $mailText;
 //        $mailer->send();
 
-        dd(mail($form->ownerEmail, 'asd', $mailText, 'From: indrikis38@gmail.com'));
+//        dd(mail($form->ownerEmail, 'asd', $mailText, 'From: indrikis38@gmail.com'));
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
     }

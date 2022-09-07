@@ -526,7 +526,7 @@ class RecordController extends Controller
       $f_office = preg_replace("/[^0-9 ]/", '', $f_office);
 
       //// datuma / laika maiņas
-      $f_date = trim($request->f_date);
+      $f_date = trim(date('d.m.Y', strtotime($request->f_date)));
       $f_time = trim($request->f_time);
       $targetDateTimestamp = $this->parse_datetime($f_date.' '.$f_time);
 

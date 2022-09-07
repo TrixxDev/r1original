@@ -272,7 +272,14 @@
                             @endforeach
                           </select>
                         </div>
-                        <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_time"></div> *
+                        <div class="col-3">
+{{--                          <input type="text" class="form-control ui-datepicker" id="f_time">--}}
+                          <select class="form-control" id="f_time">
+                            @for ($i=$openTime;$i<$closeTime;$i+=$timeStep)
+                              <option value="{{ App\Models\Office::timeByInterval($i) }}">{{ App\Models\Office::timeByInterval($i) }}</option>
+                            @endfor
+                          </select>
+                        </div> *
                       </div>
                       <div class="form-group row">
                         <label for="title" class="col-sm-3 col-form-label text-right">Filiāle/rinda:</label>
@@ -315,11 +322,11 @@
                         </div>
                       </div>
                       <div class="form-group row time bg-light">
-                        <label for="f_name" class="col-sm-3 col-form-label text-right">Vārds:</label>
+                        <label for="f_name" class="col-sm-3 col-form-label text-right">Vārds/Telefons:</label>
                         <div class="col-3">
                           <input type="text" class="form-control ui-datepicker" id="f_name">
                         </div>
-                        <span class="timeSeparator">-</span>
+                        <span class="timeSeparator">/</span>
                         <div class="col-3">
                           <input type="text" class="form-control ui-datepicker" id="f_phone">
                         </div>
@@ -348,7 +355,6 @@
                     </form>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary delete" style="float: left;">Dzēst</button>
                     <button type="button" class="btn btn-secondary decline" data-dismiss="modal">Atcelt</button>
                     <button type="button" class="btn btn-primary submit">Saglabāt</button>
                   </div>
