@@ -8,6 +8,21 @@
         <div id="content-wrapper" class="right-column col-lg-12">
           <section id="main">
             <div class="cart-grid row">
+              {{--Stepper--}}
+              <div class="stepper-wrapper">
+                <ol class="stepper">
+                  <li class="stepper-item stepper-completed">
+                    <h3 class="stepper-title">Grozs</h3>
+                  </li>
+                  <li class="stepper-item stepper-completed">
+                    <h3 class="stepper-title">Dati</h3>
+                  </li>
+                  <li class="stepper-item stepper-active stepper-last">
+                    <h3 class="stepper-title">Maksājums</h3>
+                  </li>
+                </ol>
+              </div>
+
                 <div class="card cart-card">
                   <h1>Pasūtījuma informācija</h1>
                   <hr>
@@ -22,11 +37,11 @@
                       </tr>
                       <tr>
                         <td class="field">e-pasts</td>
-                        <td><i class="fa fa-mobile fa-lg m-r-5"></i>@if (\Session::has('cart.email')) {{ \Session::get('cart.email') }} @endif</td>
+                        <td>@if (\Session::has('cart.email')) {{ \Session::get('cart.email') }} @endif</td>
                       </tr>
                       <tr>
                         <td class="field">Tālrunis</td>
-                        <td>+371 @if (\Session::has('cart.phone_number')) {{ \Session::get('cart.phone_number') }} @endif</td>
+                        <td>@if (\Session::has('cart.phone_number')) {{ \Session::get('cart.phone_number') }} @endif</td>
                       </tr>
                       <tr>
                         <td class="field">Saņemšanas vieta</td>
