@@ -7,10 +7,22 @@
             <div class="main-content clearfix col-md-12 col-xl-10">
                 <div id="content-wrapper" class="right-column col-lg-12">
                     <section id="main">
+                      <div class="stepper-wrapper">
+                        <ol class="stepper">
+                          <li class="stepper-item stepper-active">
+                            <h3 class="stepper-title">Grozs</h3>
+                          </li>
+                          <li class="stepper-item">
+                            <h3 class="stepper-title">Dati</h3>
+                          </li>
+                          <li class="stepper-item stepper-last">
+                            <h3 class="stepper-title">Maksājums</h3>
+                          </li>
+                        </ol>
+                      </div>
                         <div class="cart-grid row">
                             <!-- Left Block: cart product informations & shpping -->
                             <div class="cart-grid-body @if (\Cart::count() > 0)col-xs-12 col-lg-8 @else col-xs-12 col-lg-12 @endif">
-{{--                              {{dd($cart->content())}}--}}
                                 <!-- cart products detailed -->
                                 <div class="card cart-container">
                                     <div class="card-block">

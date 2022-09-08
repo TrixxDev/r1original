@@ -9,10 +9,23 @@
         <div id="content-wrapper" class="right-column col-lg-12">
           <section id="main">
             <div class="cart-grid row">
-              <div class="spinner-border"></div>
               <form method="POST">
                 @CSRF
                 <input type="hidden" name="person" value="{{ \Illuminate\Support\Facades\Session::get('person') }}">
+
+                <div class="stepper-wrapper">
+                  <ol class="stepper">
+                    <li class="stepper-item stepper-completed">
+                      <h3 class="stepper-title">Grozs</h3>
+                    </li>
+                    <li class="stepper-item stepper-active">
+                      <h3 class="stepper-title">Dati</h3>
+                    </li>
+                    <li class="stepper-item stepper-last">
+                      <h3 class="stepper-title">Maksājums</h3>
+                    </li>
+                  </ol>
+                </div>
 
               <h1 class="cart-header">Pasūtījuma noformēšana - <span id="status-name">Privātpersona</span></h1>
 
@@ -92,22 +105,22 @@
                   <h4>Informācija par transportlīdzekli</h4>
 
                   <div class="form-group">
-                    <label for="brand">Marka<span class="required-field"></span></label>
+                    <label for="brand">Marka</label>
                     <input type="text" class="form-control" name="data[car_brand]" id="brand" value="@if (\Illuminate\Support\Facades\Session::has('cart.car_brand')){{\Illuminate\Support\Facades\Session::get('cart.car_brand')}}@endif" placeholder="BMW" >
                   </div>
 
                   <div class="form-group">
-                    <label for="model">Modelis<span class="required-field"></span></label>
+                    <label for="model">Modelis</label>
                     <input type="text" class="form-control" name="data[car_model]" id="model" value="@if (\Illuminate\Support\Facades\Session::has('cart.car_model')){{\Illuminate\Support\Facades\Session::get('cart.car_model')}}@endif" placeholder="330ci" >
                   </div>
 
                   <div class="form-group">
-                    <label for="car_release-year">Izlaiduma gads<span class="required-field"></span></label>
+                    <label for="car_release-year">Izlaiduma gads</label>
                     <input type="text" class="form-control" name="data[car_release_year]" id="car_release-year" value="@if (\Illuminate\Support\Facades\Session::has('cart.car_release_year')){{\Illuminate\Support\Facades\Session::get('cart.car_release_year')}}@endif" placeholder="2015" >
                   </div>
 
                   <div class="form-group">
-                    <label for="car_engine_size">Dzineja tilpums<span class="required-field"></span></label>
+                    <label for="car_engine_size">Dzineja tilpums</label>
                     <input type="text" class="form-control" name="data[car_engine_size]" id="car_engine_size" value="@if (\Illuminate\Support\Facades\Session::has('cart.car_engine_size')){{\Illuminate\Support\Facades\Session::get('cart.car_engine_size')}}@endif" placeholder="3.0" >
                   </div>
 
@@ -126,7 +139,8 @@
                   </div>
                 </div>
 
-                  <button type="submit" class="btn btn-primary" name="submit">Tālāk</button>
+                  <a href="{{ route('cart') }}" class="btn btn-secondary">Atgriezties</a>
+                  <button type="submit" class="btn btn-primary btn-checkout float-right" name="submit">Tālāk</button>
                 </div>
 
               </form>
