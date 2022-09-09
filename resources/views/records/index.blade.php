@@ -344,7 +344,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="reservation" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="reservation" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-background" data-dissmiss="modal"></div>
             <form method="POST">
                 @csrf

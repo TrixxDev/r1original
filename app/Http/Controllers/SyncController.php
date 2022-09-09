@@ -244,7 +244,7 @@ class SyncController extends Controller
         unset($context);
 
         echo "Auto riepas<br>";
-        Autostock::where('itype', 'i3')->update(['quantity' => -1]);
+        Autostock::where('itype', 'i3')->update(['quantity' => 0]);
 
         $updated = 0;
         $counted = 0;
@@ -295,7 +295,7 @@ class SyncController extends Controller
       unset($context);
 
       echo "Moto riepas<br>";
-      Motostock::where('itype', 'i3')->update(['quantity' => -1]);
+      Motostock::where('itype', 'i3')->update(['quantity' => 0]);
 
       $updated = 0;
       $counted = 0;
@@ -345,7 +345,7 @@ class SyncController extends Controller
     unset($context);
 
     echo "Kvadraciklu riepas<br>";
-    Quadrstock::where('itype', 'i3')->update(['quantity' => -1]);
+    Quadrstock::where('itype', 'i3')->update(['quantity' => 0]);
 
     $updated = 0;
     $counted = 0;
@@ -398,7 +398,7 @@ class SyncController extends Controller
       unset($context);
 
       echo "Moto riepas<br>";
-      Motostock::where('itype', 'duell')->update(['quantity' => -1]);
+      Motostock::where('itype', 'duell')->update(['quantity' => 0]);
 
       $updated = 0;
       $counted = 0;
@@ -447,7 +447,7 @@ class SyncController extends Controller
     unset($context);
 
     echo "Kvadraciklu riepas<br>";
-    Quadrstock::where('itype', 'duell')->update(['quantity' => -1]);
+    Quadrstock::where('itype', 'duell')->update(['quantity' => 0]);
 
     $updated = 0;
     $counted = 0;
@@ -492,7 +492,7 @@ class SyncController extends Controller
       unset($context);
 
       echo "Kravas riepas<br>";
-      Bigstock::where('itype', 'i3')->update(['quantity' => -1]);
+      Bigstock::where('itype', 'i3')->update(['quantity' => 0]);
 
       $updated = 0;
       $counted = 0;
@@ -763,7 +763,7 @@ class SyncController extends Controller
         file_put_contents('GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv', $stock);
 
         echo "Auto riepas<br>";
-        Autostock::where('itype', 'gy')->update(['quantity' => -1]);
+        Autostock::where('itype', 'gy')->update(['quantity' => 0]);
 
         $keys = array_keys($stock);
         $values = array_values($stock);
@@ -816,7 +816,7 @@ class SyncController extends Controller
 
         unset($context);
 
-        Autostock::where('itype', 'rz')->update(['quantity' => -1]);
+        Autostock::where('itype', 'rz')->update(['quantity' => 0]);
 
         $updated = 0;
         $counted = 0;

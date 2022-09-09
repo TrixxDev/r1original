@@ -7,12 +7,17 @@ use App\Helper\Tires;
 use App\Models\Autobrand;
 use App\Models\Autotire;
 use App\Models\Autotread;
+use App\Models\Motobrand;
+use App\Models\Mototread;
+use App\Models\Quadrbrand;
+use App\Models\Quadrtread;
 use Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Route;
 use Auth;
 use View;
-use DB;
+
 
 class AutoTireController extends Controller
 {

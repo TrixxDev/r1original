@@ -26,7 +26,7 @@ class Tires
                           ->join('auto_treads', 'auto_brands.brand_id', '=', 'auto_treads.brand_id')
                           ->whereRaw('auto_brands.title <> ""')
                           ->where('auto_treads.season', $season)
-                          ->orderBy('brand_id')
+                          ->orderBy('brand_title')
                           ->groupBy('auto_brands.title')
                           ->get();
     }

@@ -114,6 +114,8 @@
                           @if (\Cart::count() > 0)
                             <form method="POST">
                             @csrf
+                            <input type="hidden" name="delivery">
+                            <input type="hidden" name="fitting">
                             <input type="hidden" name="delivery_price">
                             <input type="hidden" name="fitting_price">
                             <div class="cart-grid-right col-xs-12 col-lg-4">

@@ -42,8 +42,7 @@
                     </section>
                   </template>
 
-                  <form method="post">
-                    @csrf
+                  <form method="get" action="{{ route('kvadraciklu-riepas-meklet') }}">
                     <div class="sidebar-top">
 
 
@@ -578,6 +577,7 @@
                         @endforeach
                         </tbody>
                       </table>
+                      {{ $tires->links() }}
                   </div>
                   <nav class="pagination">
                     <div class="col-md-12">

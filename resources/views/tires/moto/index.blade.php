@@ -42,8 +42,7 @@
                     </section>
                   </template>
 
-                  <form method="post">
-                    @csrf
+                  <form method="get" action="{{ route('motociklu-riepas-meklet') }}">
                     <div class="sidebar-top">
 
 
@@ -296,11 +295,9 @@
                       $brand = $tire->fullSize;
                       $tire->includeStock = true;
                       if ($cbrand!=$brand){
-                        echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex">';
+                        echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex pr-1">';
                         $cbrand = $brand;
                         $stripe = 1;
-                      } else {
-                          $brand = str_replace(" ", "", $brand);
                       }
                     @endphp
                     {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
@@ -319,7 +316,7 @@
 
                           <div class="card-title-text">{{$tire->title}}</div>
                           <div class="tire-tread">
-                            {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}
+                            {{$tire->d1}} / {{$tire->d2}} {{ $tire->d4 }} {{$tire->d3}}
                           </div>
                           <div style="display: inline-flex">
                             <div class="rim-price-old">€{{$tire->price1}}</div>
@@ -404,8 +401,8 @@
                     @endphp
                     @foreach ($tires as $tire)
                       @php
-                        $tire->includeStock = true;
                         $brand = $tire->fullSize;
+                        $tire->includeStock = true;
                         if ($cbrand!=$brand){
                             echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
                             $cbrand = $brand;
@@ -451,11 +448,9 @@
                       @php
                         $cbrand = $brand;
                         $stripe = 1;
-                      } else {
-                          $brand = str_replace(" ", "", $brand);
                       }
                       @endphp
-                      @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif
+                      @if ($loop->last) <h4 class="tire-brand-name">{!! $brand !!}</h4> @endif
 
                       <tr class="tire-table-row">
                         <th scope="row" class="tire-table-checkbox">
@@ -477,7 +472,9 @@
                         </td>
 
                         <td class="hidden-sm-down text-center">
-                          {{ $tire->type }}
+                          <span data-toggle="tooltip"
+                                title="<span style='color: black'>{{ $tire->typeDesc }}</span>">{{ $tire->motoType }}
+                              </span>
                         </td>
 
                         <td class="hidden-sm-down text-center">
@@ -604,6 +601,7 @@
                       @endforeach
                         </tbody>
                       </table>
+                      {{ $tires->links() }}
                   </div>
                   <nav class="pagination">
                     <div class="col-md-12">

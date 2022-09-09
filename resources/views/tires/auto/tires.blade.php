@@ -602,6 +602,8 @@
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){
                           echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
+                          $cbrand = $brand;
+                          $stripe = 1;
                       @endphp
 {{--                    TIRES IMAGES--}}
 {{--                      <div class="image-list-item">--}}
@@ -742,7 +744,7 @@
                             <span>
                               <span data-toggle="tooltip"
                                     {{--TODO japieliek li--}}
-                                    title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg<br>{{ $tire->si }}</span>">{{ $tire->li . $tire->si }}
+                                    title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}
                               </span>
                             </span>
                           </td>
@@ -814,7 +816,10 @@
                           <td class="shopping-cart-col">
                             <div class="clearfix atc_div text-right">
                               <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
-                                      @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"
+                                      @hasrole('administrators')
+                                        data-target="#quick-popup"
+                                      @else
+                                        data-target="#blockcart-modal"
                                       @endhasrole data-info="{{ $tire->tire_id }}"><i
                                   class="material-icons">add_shopping_cart</i>
                               </button>

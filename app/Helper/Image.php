@@ -11,7 +11,7 @@ class Image {
     switch ($type) {
       // AUTO TIRES
       case 'auto':
-        $dir = $path . '/auto/tread/' . $image . '.jpg';
+        $dir = $path . '/auto/' . $image . '-o.jpg';
         break;
       case 'auto-rim':
         $dir = $path . '/auto/rims/rim-' . $image . '.jpg';
@@ -19,7 +19,7 @@ class Image {
 
       // QUAD TIRES
       case 'quadr':
-        $dir = $path . '/quadr/tread/' . $image . '.jpg';
+        $dir = $path . '/quadr/' . $image . '-o.jpg';
         break;
       case 'quadr-rim':
         $dir = $path . '/quadr/rims/rim-' . $image . '.jpg';
@@ -27,7 +27,7 @@ class Image {
 
       // MOTO TIRES
       case 'moto':
-        $dir = $path . '/moto/tread/' . $image . '.jpg';
+        $dir = $path . '/moto/' . $image . '-o.jpg';
         break;
       case 'moto-rim':
         $dir = $path . '/moto/rims/rim-' . $image . 'jpg';

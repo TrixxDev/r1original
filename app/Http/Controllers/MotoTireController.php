@@ -26,7 +26,6 @@ class MotoTireController extends Controller
     public $motoTiresD3;
     public $model = 'Moto';
     public $type;
-    public $itemsPerPage = 15;
     public $availability;
 
     public function __construct(Request $request)
@@ -85,10 +84,11 @@ class MotoTireController extends Controller
                                             })->when($this->d3, function($query) {
                                               $query->where('d3', $this->d3);
                                             })->where('moto_tires.visible_users', '<>', 0)
-                                            ->orderBy('d3', 'ASC')
-                                            ->orderBy('d1', 'ASC')
-                                            ->orderBy('d2', 'ASC')
-                                            ->orderBy('price2', 'DESC')->paginate($this->itemsPerPage);
+                                            ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+                                            ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+                                            ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
+                                            ->orderBy('d4', 'ASC')
+                                            ->orderBy('price2', 'DESC')->paginate();
 
         return view('tires.moto.index',
             compact('tires')
@@ -149,22 +149,11 @@ class MotoTireController extends Controller
         echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
     }
 
-  public function tires_search(Request $request) {
+  public function tires_find(Request $request) {
 
       DB::enableQueryLog();
 
       ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
-
-      $sql = Mototread::selectRaw('moto_treads.*, moto_treads.title as tread_title')
-                        ->selectRaw('moto_brands.*, moto_brands.title as brand_title')
-                        ->leftJoin('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
-                        ->where('moto_tires.visible_users', '<>', 0)
-                        ->where('moto_brands.title', $this->currBrand)
-                        ->get();
-      $makes = [];
-      foreach ($sql as $make) {
-        $makes[] = $make->tread_id;
-      }
 
       $types = (new Moto)->types();
 
@@ -173,23 +162,26 @@ class MotoTireController extends Controller
 
       ($request->type) ? $this->type = $request->type : $this->type = '';
 
-      $tires = Moto::leftJoin('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
-      ->when($this->currBrand, function($query) {
-        $query->where('moto_brands.slug', \Str::slug($this->currBrand));
-      })->when($makes, function($query) use ($makes) {
-        $query->whereIn('make_id', $makes);
-      })->when($this->d1, function($query) {
-        $query->where('d1', $this->d1);
-      })->when($this->d2, function($query) {
-        $query->where('d2', $this->d2);
-      })->where('d3', $this->d3)
-        ->where('moto_tires.visible_users', '<>', 0)
-        ->orderBy('d3', 'ASC')
-        ->orderBy('d1', 'ASC')
-        ->orderBy('d2', 'ASC')
-        ->orderBy('price2', 'DESC')
-        ->paginate($this->itemsPerPage)->appends($request->query());
-      dd(DB::getQueryLog());
+      $tires = Moto::select('moto_tires.*', 'moto_treads.*', 'moto_treads.slug as tread_slug', 'moto_brands.slug as brand_slug')
+                    ->leftJoin('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
+                    ->leftJoin('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
+                    ->when($this->currBrand, function($query) {
+                      $query->where('moto_brands.slug', \Str::slug($this->currBrand));
+                    })->when($this->d1, function($query) {
+                      $query->where('d1', $this->d1);
+                    })->when($this->d2, function($query) {
+                      $query->where('d2', $this->d2);
+                    })->where('d3', $this->d3)
+                      ->where('moto_tires.visible_users', '<>', 0)
+                      ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+                      ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+                      ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
+                      ->orderBy('d4', 'ASC')
+                      ->orderBy('price2', 'DESC')
+                      ->paginate()->appends($request->query());
+
+
+//      dd(DB::getQueryLog());
 
       return view('tires.moto.index',
         compact('tires')

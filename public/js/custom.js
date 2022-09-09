@@ -2023,7 +2023,7 @@ $(document).ready(function() {
     let __date = $(this).data('date');
 
     $('.modal#slotModal input[name="queue_id"]').val($(this).data('queue-id'));
-    $('#f_date option').each(function() {
+    $('.modal#slotModal #f_date option').each(function() {
       $(this).removeAttr('selected');
       if ($(this).val() == __date) {
         $(this).parent().val($(this).val());
@@ -2299,6 +2299,8 @@ deliveryOptionDisabledFields.each( function() {
 });
 
 function checkShipping(qty = null) {
+  $('.cart-grid input[name=delivery]').val(true);
+  $('.cart-grid input[name=fitting]').val(false);
   let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
   let shippingCity = parseInt($('.cart-delivery-option .custom-select option:selected').val());
   $.ajax({
@@ -2312,7 +2314,7 @@ function checkShipping(qty = null) {
         if (__total > 115) {
           $('#cart-subtotal-shipping #shipping_price').html('Bezmaksas');
           $('.cart-total .value').html('€ ' + formatNumber(__total));
-          $('input[name=delivery_price]').val(0);
+          $('input[name=delivery_price]').removeAttr('value');
         } else {
           $('#cart-subtotal-shipping #shipping_price').html('€ ' + data);
           $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data)));
@@ -2332,6 +2334,7 @@ function checkFitting(qty = null) {
   let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
   let __items = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
   let needsFit = $('.cart-montage-choice .cart-delivery-options .cart-delivery-label input:checked').val();
+  console.log(needsFit);
 
   if (qty === null) {
     qty = __items;
@@ -2347,13 +2350,17 @@ function checkFitting(qty = null) {
       let fittingPrice = parseInt(data.cartOptions.fitting_price);
       let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
 
+      $('.cart-grid input[name=delivery]').val(false);
+      $('.cart-grid input[name=fitting]').val(true);
       $('#cart-subtotal-montage #shipping_price').html('€ ' + formatNumber(fittingPrice));
       $('.cart-total .value').html('€ ' + formatNumber(__lastPrice + fittingPrice));
       $('input[name=fitting_price]').val(fittingPrice);
-      if (fittingPrice === 0) {
+      if (fittingPrice == 0) {
+        $('.cart-grid input[name=delivery]').val(false);
+        $('.cart-grid input[name=fitting]').val(false);
         $('#cart-subtotal-montage #shipping_price').html('Nav');
         $('.cart-total .value').html('€ ' + formatNumber(__lastPrice));
-        $('input[name=fitting_price]').val(0);
+        $('input[name=fitting_price]').removeAttr('value');
       }
       $('input[name=delivery_price]').removeAttr('value');
     }
@@ -2365,7 +2372,6 @@ $('.cart-summary .cart-delivery-option .custom-select').on('change', function() 
 });
 
 $('.cart-montage-choice .cart-delivery-options .cart-delivery-label input[name=cart-montage-radio]').each(function() {
-  console.log($(this));
   if ($(this).is(':checked') && $(this).val() == 1) {
     checkFitting();
   }

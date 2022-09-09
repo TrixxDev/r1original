@@ -4631,3 +4631,11 @@ div.form-group span.validate {
   display: flex;
   white-space: nowrap;
 }
+
+.modal#reservation .modal-background {
+  pointer-events: none;
+}
+
+.modal#reservation .modal-dialog{
+  pointer-events: all;
+}

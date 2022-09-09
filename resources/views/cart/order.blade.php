@@ -92,22 +92,22 @@
                   <h4>Informācija par transportlīdzekli</h4>
 
                   <div class="form-group">
-                    <label for="brand">Marka<span class="required-field"> *</span></label>
+                    <label for="brand">Marka<span class="required-field"></span></label>
                     <input type="text" class="form-control" name="data[car_brand]" id="brand" value="@if (\Illuminate\Support\Facades\Session::has('cart.car_brand')){{\Illuminate\Support\Facades\Session::get('cart.car_brand')}}@endif" placeholder="BMW" >
                   </div>
 
                   <div class="form-group">
-                    <label for="model">Modelis<span class="required-field"> *</span></label>
+                    <label for="model">Modelis<span class="required-field"></span></label>
                     <input type="text" class="form-control" name="data[car_model]" id="model" value="@if (\Illuminate\Support\Facades\Session::has('cart.car_model')){{\Illuminate\Support\Facades\Session::get('cart.car_model')}}@endif" placeholder="330ci" >
                   </div>
 
                   <div class="form-group">
-                    <label for="car_release-year">Izlaiduma gads<span class="required-field"> *</span></label>
+                    <label for="car_release-year">Izlaiduma gads<span class="required-field"></span></label>
                     <input type="text" class="form-control" name="data[car_release_year]" id="car_release-year" value="@if (\Illuminate\Support\Facades\Session::has('cart.car_release_year')){{\Illuminate\Support\Facades\Session::get('cart.car_release_year')}}@endif" placeholder="2015" >
                   </div>
 
                   <div class="form-group">
-                    <label for="car_engine_size">Dzineja tilpums<span class="required-field"> *</span></label>
+                    <label for="car_engine_size">Dzineja tilpums<span class="required-field"></span></label>
                     <input type="text" class="form-control" name="data[car_engine_size]" id="car_engine_size" value="@if (\Illuminate\Support\Facades\Session::has('cart.car_engine_size')){{\Illuminate\Support\Facades\Session::get('cart.car_engine_size')}}@endif" placeholder="3.0" >
                   </div>
 

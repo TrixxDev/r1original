@@ -482,7 +482,7 @@ class RecordController extends Controller
 
     $services = Service::orderBy('service_id', 'ASC')->get();
 
-    return view('admin.records.reservation', compact('offices', 'timeStep', 'date', '_weekDays', 'currentDate', 'services'));
+    return view('admin.records.reservation', compact('offices', 'timeStep', 'workingDays', 'date', '_weekDays', 'currentDate', 'services'));
 
   }
 

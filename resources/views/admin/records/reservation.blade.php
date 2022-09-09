@@ -231,8 +231,22 @@
             <input type="hidden" name="part">
             <div class="form-group row time bg-light">
               <label for="f_date" class="col-sm-3 col-form-label text-right">Datums un laiks:</label>
-              <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_date"></div>
-              <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_time"></div> *
+              <div class="col-3">
+                <select class="form-control" id="f_date">
+                  @foreach ($workingDays as $workingDay)
+                    <option value="{{ $workingDay }}">{{ $workingDay }}</option>
+                  @endforeach
+                </select>
+{{--                <input type="text" class="form-control ui-datepicker" id="f_date">--}}
+              </div>
+              <div class="col-3">
+                <select class="form-control" id="f_time">
+                  @for ($i=$openTime;$i<$closeTime;$i+=$timeStep)
+                    <option value="{{ App\Models\Office::timeByInterval($i) }}">{{ App\Models\Office::timeByInterval($i) }}</option>
+                  @endfor
+                </select>
+{{--                <input type="text" class="form-control ui-datepicker" id="f_time">--}}
+              </div> *
             </div>
             <div class="form-group row">
               <label for="title" class="col-sm-3 col-form-label text-right">Filiāle/rinda:</label>

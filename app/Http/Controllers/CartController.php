@@ -138,6 +138,7 @@ class CartController extends Controller
 
       if ($request->post()) {
         $delivery = [];
+        $fitting = [];
 
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
           $ip = $_SERVER['HTTP_CLIENT_IP'];
@@ -152,6 +153,8 @@ class CartController extends Controller
         } else {
           $order = Order::where('userIp', $ip)->first();
         }
+
+        dd($request->data['cart_delivery_radio']);
 
         if ($request->data['cart_delivery_radio'] === 1 || $request->data['cart_delivery_radio'] === 2) {
           array_push($delivery, [
@@ -194,9 +197,8 @@ class CartController extends Controller
           $email = Session::get('email');
 
           $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
+          Session::put('cart_options', $data);
         }
-
-        Session::put('cart_options', $data);
 
         return redirect(route('order'));
       }
@@ -226,6 +228,7 @@ class CartController extends Controller
           $order = Order::where('userIp', $ip)->first();
         }
 
+        dd($order);
 
         $cartData = array_values(unserialize($order->info));
         $options = $cartData[0];
@@ -388,6 +391,7 @@ class CartController extends Controller
         Session::put('cartOptions.fitting', 1);
         Session::put('cartOptions.total_items', $data->total_items);
 
+        dd($data->fitting_needs);
         if ($data->fitting_needs == 1) {
           switch ($data->total_items) {
             case 1:
@@ -419,6 +423,7 @@ class CartController extends Controller
               }
               if ($cat == 'Autotire') {
                 Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$size][$data->total_items]);
+//                dd($cat, $size, $data->total_items, Self::options()[$cat]['fitting'][$size][$data->total_items]);
               } else {
                 Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$data->total_items]);
               }
@@ -428,6 +433,7 @@ class CartController extends Controller
               Session::put('cartOptions.fitting_price', 0);
           }
         } else {
+          dd($data->total_items);
           Session::put('cartOptions.fitting_price', 0);
         }
 

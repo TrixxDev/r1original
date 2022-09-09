@@ -77,7 +77,9 @@ class Quadr extends Model
 
         $count=0;
 
-        $count+=$stock->quantity;
+        if ($stock !== NULL && $stock->quantity >= 1) {
+          $count += $stock->quantity;
+        }
 
         return $count;
     }

@@ -24,7 +24,6 @@ class QuadTireController extends Controller
     public $quadrTiresD2;
     public $quadrTiresD3;
     public $model = 'Quadr';
-    public $itemsPerPage = 15;
     public $availability;
 
     public function __construct(Request $request)
@@ -76,12 +75,14 @@ class QuadTireController extends Controller
                             $query->where('d2', $this->d2);
                           })->when($this->d3, function($query) {
                             $query->where('d3', $this->d3);
-                          })->orderBy('d3', 'ASC')
+                          })->where('quadr_tires.visible_users', '<>', 0)
+                          ->orderBy('d3', 'ASC')
                           ->orderBy('d1', 'ASC')
                           ->orderBy('d2', 'ASC')
-                          ->orderBy('price2', 'DESC')->paginate($this->itemsPerPage);
+                          ->orderBy('price2', 'DESC')->paginate();
 
 //        dd(DB::getQueryLog());
+
 
           return view('tires.quadr.index',
               compact('tires')
@@ -99,6 +100,7 @@ class QuadTireController extends Controller
                                                 quadr_brands.title as brands_title, quadr_treads.title as treads_title')
             ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
             ->join('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
+            ->where('quadr_tires.visible_users', '<>', 0)
             ->where('quadr_brands.title', $brand->title)
             ->where('quadr_treads.title', $tread->title)
             ->get();
@@ -139,35 +141,33 @@ class QuadTireController extends Controller
         echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
     }
 
-  public function tires_search(Request $request) {
+  public function tires_find(Request $request) {
+
+    DB::enableQueryLog();
 
     ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
-
-    $sql = Quadrtread::selectRaw('quadr_treads.*, quadr_treads.title as tread_title')
-      ->selectRaw('quadr_brands.*, quadr_brands.title as brand_title')
-      ->leftJoin('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
-      ->where('quadr_brands.title', $this->currBrand)
-      ->get();
-    $makes = [];
-    foreach ($sql as $make) {
-      $makes[] = $make->tread_id;
-    }
 
     ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
     ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
 
-    $tires = Quadr::join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')->when($makes, function($query) use ($makes) {
-      $query->whereIn('make_id', $makes);
-    })->when($this->d1, function($query) {
-      $query->where('d1', $this->d1);
-    })->when($this->d2, function($query) {
-      $query->where('d2', $this->d2);
-    })->where('d3', $this->d3)
-      ->orderBy('d3', 'ASC')
-      ->orderBy('d1', 'ASC')
-      ->orderBy('d2', 'ASC')
-      ->orderBy('price2', 'DESC')
-      ->paginate($this->itemsPerPage);
+    $tires = Quadr::select('quadr_tires.*', 'quadr_treads.*', 'quadr_treads.slug as tread_slug', 'quadr_brands.slug as brand_slug')
+                    ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
+                    ->join('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
+                    ->when($this->currBrand, function($query) {
+                      $query->where('quadr_brands.slug', \Str::slug($this->currBrand));
+                    })->when($this->d1, function($query) {
+                      $query->where('d1', $this->d1);
+                    })->when($this->d2, function($query) {
+                      $query->where('d2', $this->d2);
+                    })->where('d3', $this->d3)
+                      ->where('quadr_tires.visible_users', '<>', 0)
+                      ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+                      ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+                      ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
+                      ->orderBy('price2', 'DESC')
+                      ->paginate()->appends($request->query());
+//
+//    dd(DB::getQueryLog());
 
     return view('tires.quadr.index',
       compact('tires')

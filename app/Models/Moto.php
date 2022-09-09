@@ -48,7 +48,11 @@ class Moto extends Model
 
     public function getFullSizeAttribute()
     {
-        return $this->d1 . '/' . $this->d2 . ' R' . $this->d3;
+        if ($this->d2 != '') {
+          return $this->d1 . '/' . $this->d2 . ' ' . $this->d4 . ' ' . $this->d3;
+        } else {
+          return $this->d1 . ' ' . $this->d4 . ' ' . $this->d3;
+        }
     }
 
     public function getOfferPriceAttribute()
@@ -272,31 +276,70 @@ class Moto extends Model
       $types = Self::select('type')->get();
       foreach ($types as $type) {
         switch ($type->type) {
-          case 'Ct':
+          case 'custom':
             $tipi[$type->type] = 'Custom';
             break;
-          case 'Hd':
+          case 'harley davidson':
             $tipi[$type->type] = 'Harley Davidson';
             break;
-          case 'Mx':
+          case 'moto cross':
             $tipi[$type->type] = 'Moto Cross';
             break;
-          case 'Rc':
+          case 'racing':
             $tipi[$type->type] = 'Racing';
             break;
-          case 'Sp':
+          case 'sport':
             $tipi[$type->type] = 'Sport';
             break;
-          case 'St':
+          case 'sport touring':
             $tipi[$type->type] = 'Sport Touring';
             break;
-          case 'Tr':
+          case 'trail':
             $tipi[$type->type] = 'Trail';
             break;
         }
       }
 
       return array_unique($tipi);
+    }
+
+    public function getMotoTypeAttribute()
+    {
+      $type = strtolower($this->type);
+
+      if ($type != '') {
+        $arr = [
+          'custom' => 'Ct',
+          'harley davidson' => 'Hd',
+          'moto cross' => 'Mx',
+          'racing' => 'Rc',
+          'sport' => 'Sp',
+          'sport touring' => 'St',
+          'trail' => 'Tr',
+        ];
+
+        return $arr[$type];
+      }
+
+    }
+
+    public function getTypeDescAttribute()
+    {
+      $type = strtolower($this->type);
+
+      if ($type != '') {
+        $arr = [
+          'custom' => 'Custom',
+          'harley davidson' => 'Harley Davidson',
+          'moto cross' => 'Moto Cross',
+          'racing' => 'Racing',
+          'sport' => 'Sport',
+          'sport touring' => 'Sport Touring',
+          'trail' => 'Trail',
+        ];
+
+        return $arr[$type];
+      }
     }
 
     public function tread()
