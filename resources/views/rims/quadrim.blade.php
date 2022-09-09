@@ -265,116 +265,262 @@
                     <!-- end D:\OpenServer\domains\r1old/themes/classic/modules/ps_facetedsearch/ps_facetedsearch.tpl -->
                 </div>
                 <div id="content-wrapper" class="col-md-12 col-lg-9">
-                    <section id="main">
-                        <section id="products">
-                            <div id="">
-                                <div class="row products-selection">
-                                    <div class="col-md-8 hidden-md-down">
-                                        <nav data-depth="3" class="breadcrumb hidden-sm-down">
-                                            <ol itemscope="" itemtype="http://schema.org/BreadcrumbList">
-                                                <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
-                                                    <a itemprop="item" href="http://r1riepas.lv/index.php">
-                                                        <span itemprop="name">Sākumlapa</span>
-                                                    </a>
-                                                    <meta itemprop="position" content="1">
-                                                </li>
-                                                <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
-                                                    <a itemprop="item" href="http://r1riepas.lv/index.php?id_category=20&amp;controller=category&amp;id_lang=2">
-                                                        <span itemprop="name">Diski</span>
-                                                    </a>
-                                                    <meta itemprop="position" content="2">
-                                                </li>
-                                                <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">
-                                                    <a itemprop="item" href="http://r1riepas.lv/index.php?id_category=21&amp;controller=category&amp;id_lang=2">
-                                                        <span itemprop="name">Kvadraciklu diski</span>
-                                                    </a>
-                                                    <meta itemprop="position" content="3">
-                                                </li>
-                                            </ol>
-                                        </nav>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="row sort-by-row">
-                                            <div class="col-sm-3 col-xs-4 hidden-md-up filter-button">
-                                                <button id="search_filter_toggler" class="btn btn-secondary">
-                                                    Filtrs
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>       </div>
-                            </div>
-                            <div id="" class="hidden-sm-down">
-                                <section id="js-active-search-filters" class="hide">
-                                    <h1 class="h6 hidden-xs-up">Active filters</h1>
-                                </section>
-                            </div>
-                            <div id="">
-                                <div id="js-product-list">
-                                    <div class="products row hide-price">
+{{--                    <section id="main">--}}
+{{--                        <section id="products">--}}
+{{--                            <div id="">--}}
+{{--                                <div class="row products-selection">--}}
+{{--                                    <div class="col-md-8 hidden-md-down">--}}
+{{--                                        <nav data-depth="3" class="breadcrumb hidden-sm-down">--}}
+{{--                                            <ol itemscope="" itemtype="http://schema.org/BreadcrumbList">--}}
+{{--                                                <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">--}}
+{{--                                                    <a itemprop="item" href="http://r1riepas.lv/index.php">--}}
+{{--                                                        <span itemprop="name">Sākumlapa</span>--}}
+{{--                                                    </a>--}}
+{{--                                                    <meta itemprop="position" content="1">--}}
+{{--                                                </li>--}}
+{{--                                                <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">--}}
+{{--                                                    <a itemprop="item" href="http://r1riepas.lv/index.php?id_category=20&amp;controller=category&amp;id_lang=2">--}}
+{{--                                                        <span itemprop="name">Diski</span>--}}
+{{--                                                    </a>--}}
+{{--                                                    <meta itemprop="position" content="2">--}}
+{{--                                                </li>--}}
+{{--                                                <li itemprop="itemListElement" itemscope="" itemtype="http://schema.org/ListItem">--}}
+{{--                                                    <a itemprop="item" href="http://r1riepas.lv/index.php?id_category=21&amp;controller=category&amp;id_lang=2">--}}
+{{--                                                        <span itemprop="name">Kvadraciklu diski</span>--}}
+{{--                                                    </a>--}}
+{{--                                                    <meta itemprop="position" content="3">--}}
+{{--                                                </li>--}}
+{{--                                            </ol>--}}
+{{--                                        </nav>--}}
+{{--                                    </div>--}}
+{{--                                    <div class="col-md-6">--}}
+{{--                                        <div class="row sort-by-row">--}}
+{{--                                            <div class="col-sm-3 col-xs-4 hidden-md-up filter-button">--}}
+{{--                                                <button id="search_filter_toggler" class="btn btn-secondary">--}}
+{{--                                                    Filtrs--}}
+{{--                                                </button>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>       </div>--}}
+{{--                            </div>--}}
+{{--                            <div id="" class="hidden-sm-down">--}}
+{{--                                <section id="js-active-search-filters" class="hide">--}}
+{{--                                    <h1 class="h6 hidden-xs-up">Active filters</h1>--}}
+{{--                                </section>--}}
+{{--                            </div>--}}
+{{--                            <div id="">--}}
+{{--                                <div id="js-product-list">--}}
+{{--                                    <div class="products row hide-price">--}}
 
-                                        <div class="table-top product_show_list">
-                                            <span class="table-cell sortable" data-filter=".product-description .product-title a" data-order="DESC">Brends / modelis</span>
-                                            <span class="table-cell hidden-sm-down">Krāsa</span>
-                                            <span class="table-cell sortable" data-filter=".product-price-and-shipping .regular-price" data-order="DESC">Veikala cena</span>
-                                            <span class="table-cell sortable" data-filter=".product-price-and-shipping .price" data-order="DESC">Akcijas cena</span>
-                                            <span class="table-cell">Piezīmes<!--{hook h='displayProductAttributesHeader' listing=$listing}--></span>
-                                            <span class="table-cell availability sortable" data-filter=".product-price-and-shipping .dot" data-order="DESC"> </span>
-                                        </div>
-                                        <h4 class="custom_brand_name product_list_view" data-brand="30" style="display: none;">BSA</h4><h4 class="custom_brand_name product_list_view" data-brand="28" style="display: none;">DRAG</h4><h4 class="custom_brand_name product_list_view" data-brand="29" style="display: none;">Dezent</h4><h4 class="custom_brand_name product_list_view" data-brand="26" style="display: none;">MOMO</h4><h4 class="custom_brand_name product_list_view" data-brand="25" style="display: none;">NANO</h4><h4 class="custom_brand_name product_list_view" data-brand="10" style="display: none;">Oriģinālie</h4><h4 class="custom_brand_name product_list_view" data-brand="24" style="display: none;">REDS</h4><h4 class="custom_brand_name product_list_view" data-brand="27" style="display: none;">Replika</h4><h4 class="custom_brand_name product_list_view" data-brand="11" style="display: none;">VIPER</h4><article class="cat-21 product-miniature js-product-miniature product_show_list" data-id-product="569" data-id-product-attribute="7834" itemscope="" itemtype="http://schema.org/Product" data-brand="28" data-dia="18" data-lug="5" data-stud="112" data-offset="35">
-                                            <div class="thumbnail-container">
-                                                <a href="http://r1riepas.lv/index.php?id_product=569&amp;id_product_attribute=7834&amp;rewrite=drag-52573&amp;controller=product&amp;id_lang=2#/134-lugcount-5/136-studspread-112/149-offset-35/357-wheelsdiameter-18/841-color-silver/971-widthinches-80" class="thumbnail product-thumbnail">
-                                                    <img src="{{ asset('img\p\en-default-home_default.jpg') }}">
-                                                    <!-- NOT WORKING like needed | RDP -->
-                                                    <!-- NOT WORKING like needed | RDP -->
-                                                </a>
-                                                <div class="product-description">
-                                                    <input type="checkbox" value="7834" name="product_ids[]">
-                                                    <h1 class="h3 product-title" itemprop="name">
-                                                        <a data-toggle="tooltip" data-html="true" title="<img src='{{ asset('img\p\en-default-home_default.jpg') }}'>" href="http://r1riepas.lv/index.php?id_product=569&amp;id_product_attribute=7834&amp;rewrite=drag-52573&amp;controller=product&amp;id_lang=2#/134-lugcount-5/136-studspread-112/149-offset-35/357-wheelsdiameter-18/841-color-silver/971-widthinches-80" data-content="DRAG 52573">
-                                                            <div class="product-title-hidden"> DRAG 52573
-                                                                <br> <span style="color: #65c2a5">18x8.0</span>
-                                                            </div>
-                                                        </a>
-                                                    </h1>
-                                                    <div class="product-price-and-shipping" data-content="DRAG 52573 - 8.0*18 (5x112 et35)">
-                                                        <span class="hidden-sm-down table-cell">SILVER</span>
-                                                        <!-- RDP | removed from IF -->
-                                                        <span class="sr-only">Veikala cena</span>
-                                                        <span class="regular-price">€ 168</span>
-                                                        <!-- RDP removed from IF-->
-                                                        <span class="sr-only">Akcijas cena</span>
-                                                        <span itemprop="price" class="price">€ 137</span>
-                                                        <span class="table-cell notes">
-                                                            &nbsp;
-                                                            <span class="table-cell top40">&nbsp;</span>
-                                                        </span>
-                                                        <div class="clearfix atc_div">
-                                                            <button class="btn grid-cart-btn btn-primary" data-callback="showQuickBuyForm" data-callback-param="7834" data-popup-open="popup-2" data-backdrop="2" data-show="1" data-toggle="modal"> <i class="material-icons">add_shopping_cart</i> </button>
-                                                            <span class="dot  red" data-toggle="tooltip" data-html="true" title="<p>R1 Kopā:0</p><br/><p>Noliktava: 0</p><br/><p>Veikals: 0</p><br/><p>Lattako: 0</p><br/><p>Goodyear: 0</p><br/><p>Nokian: 0</p><br/><p>Kumho: 0</p><br/><p>Nevetas: 0</p><br/>"><span class="sort-order">6</span></span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </article>
-                                    </div>
-                                    <a id="storage" href="http://aludiski.com/aludiski1001/wheels.php?cat=all&amp;lang=LV&amp;select_wheels=Search" target="_blank">NOLIKTAVA </a>
-                                    <nav class="pagination">
-                                        <div class="col-md-12">
-                                        </div>
-                                    </nav>
-                                    <div class="hidden-md-up text-xs-right up">
-                                        <a href="#header" class="btn btn-secondary">
-                                            Back to top
-                                            <i class="material-icons"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="js-product-list-bottom">
-                                <div id="js-product-list-bottom"></div>
-                            </div>
+{{--                                        <div class="table-top product_show_list">--}}
+{{--                                            <span class="table-cell sortable" data-filter=".product-description .product-title a" data-order="DESC">Brends / modelis</span>--}}
+{{--                                            <span class="table-cell hidden-sm-down">Krāsa</span>--}}
+{{--                                            <span class="table-cell sortable" data-filter=".product-price-and-shipping .regular-price" data-order="DESC">Veikala cena</span>--}}
+{{--                                            <span class="table-cell sortable" data-filter=".product-price-and-shipping .price" data-order="DESC">Akcijas cena</span>--}}
+{{--                                            <span class="table-cell">Piezīmes<!--{hook h='displayProductAttributesHeader' listing=$listing}--></span>--}}
+{{--                                            <span class="table-cell availability sortable" data-filter=".product-price-and-shipping .dot" data-order="DESC"> </span>--}}
+{{--                                        </div>--}}
+{{--                                        <h4 class="custom_brand_name product_list_view" data-brand="30" style="display: none;">BSA</h4><h4 class="custom_brand_name product_list_view" data-brand="28" style="display: none;">DRAG</h4><h4 class="custom_brand_name product_list_view" data-brand="29" style="display: none;">Dezent</h4><h4 class="custom_brand_name product_list_view" data-brand="26" style="display: none;">MOMO</h4><h4 class="custom_brand_name product_list_view" data-brand="25" style="display: none;">NANO</h4><h4 class="custom_brand_name product_list_view" data-brand="10" style="display: none;">Oriģinālie</h4><h4 class="custom_brand_name product_list_view" data-brand="24" style="display: none;">REDS</h4><h4 class="custom_brand_name product_list_view" data-brand="27" style="display: none;">Replika</h4><h4 class="custom_brand_name product_list_view" data-brand="11" style="display: none;">VIPER</h4><article class="cat-21 product-miniature js-product-miniature product_show_list" data-id-product="569" data-id-product-attribute="7834" itemscope="" itemtype="http://schema.org/Product" data-brand="28" data-dia="18" data-lug="5" data-stud="112" data-offset="35">--}}
+{{--                                            <div class="thumbnail-container">--}}
+{{--                                                <a href="http://r1riepas.lv/index.php?id_product=569&amp;id_product_attribute=7834&amp;rewrite=drag-52573&amp;controller=product&amp;id_lang=2#/134-lugcount-5/136-studspread-112/149-offset-35/357-wheelsdiameter-18/841-color-silver/971-widthinches-80" class="thumbnail product-thumbnail">--}}
+{{--                                                    <img src="{{ asset('img\p\en-default-home_default.jpg') }}">--}}
+{{--                                                    <!-- NOT WORKING like needed | RDP -->--}}
+{{--                                                    <!-- NOT WORKING like needed | RDP -->--}}
+{{--                                                </a>--}}
+{{--                                                <div class="product-description">--}}
+{{--                                                    <input type="checkbox" value="7834" name="product_ids[]">--}}
+{{--                                                    <h1 class="h3 product-title" itemprop="name">--}}
+{{--                                                        <a data-toggle="tooltip" data-html="true" title="<img src='{{ asset('img\p\en-default-home_default.jpg') }}'>" href="http://r1riepas.lv/index.php?id_product=569&amp;id_product_attribute=7834&amp;rewrite=drag-52573&amp;controller=product&amp;id_lang=2#/134-lugcount-5/136-studspread-112/149-offset-35/357-wheelsdiameter-18/841-color-silver/971-widthinches-80" data-content="DRAG 52573">--}}
+{{--                                                            <div class="product-title-hidden"> DRAG 52573--}}
+{{--                                                                <br> <span style="color: #65c2a5">18x8.0</span>--}}
+{{--                                                            </div>--}}
+{{--                                                        </a>--}}
+{{--                                                    </h1>--}}
+{{--                                                    <div class="product-price-and-shipping" data-content="DRAG 52573 - 8.0*18 (5x112 et35)">--}}
+{{--                                                        <span class="hidden-sm-down table-cell">SILVER</span>--}}
+{{--                                                        <!-- RDP | removed from IF -->--}}
+{{--                                                        <span class="sr-only">Veikala cena</span>--}}
+{{--                                                        <span class="regular-price">€ 168</span>--}}
+{{--                                                        <!-- RDP removed from IF-->--}}
+{{--                                                        <span class="sr-only">Akcijas cena</span>--}}
+{{--                                                        <span itemprop="price" class="price">€ 137</span>--}}
+{{--                                                        <span class="table-cell notes">--}}
+{{--                                                            &nbsp;--}}
+{{--                                                            <span class="table-cell top40">&nbsp;</span>--}}
+{{--                                                        </span>--}}
+{{--                                                        <div class="clearfix atc_div">--}}
+{{--                                                            <button class="btn grid-cart-btn btn-primary" data-callback="showQuickBuyForm" data-callback-param="7834" data-popup-open="popup-2" data-backdrop="2" data-show="1" data-toggle="modal"> <i class="material-icons">add_shopping_cart</i> </button>--}}
+{{--                                                            <span class="dot  red" data-toggle="tooltip" data-html="true" title="<p>R1 Kopā:0</p><br/><p>Noliktava: 0</p><br/><p>Veikals: 0</p><br/><p>Lattako: 0</p><br/><p>Goodyear: 0</p><br/><p>Nokian: 0</p><br/><p>Kumho: 0</p><br/><p>Nevetas: 0</p><br/>"><span class="sort-order">6</span></span>--}}
+{{--                                                        </div>--}}
+{{--                                                    </div>--}}
+{{--                                                </div>--}}
+{{--                                            </div>--}}
+{{--                                        </article>--}}
+{{--                                    </div>--}}
+{{--                                    <a id="storage" href="http://aludiski.com/aludiski1001/wheels.php?cat=all&amp;lang=LV&amp;select_wheels=Search" target="_blank">NOLIKTAVA </a>--}}
+{{--                                    <nav class="pagination">--}}
+{{--                                        <div class="col-md-12">--}}
+{{--                                        </div>--}}
+{{--                                    </nav>--}}
+{{--                                    <div class="hidden-md-up text-xs-right up">--}}
+{{--                                        <a href="#header" class="btn btn-secondary">--}}
+{{--                                            Back to top--}}
+{{--                                            <i class="material-icons"></i>--}}
+{{--                                        </a>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
+{{--                            <div id="js-product-list-bottom">--}}
+{{--                                <div id="js-product-list-bottom"></div>--}}
+{{--                            </div>--}}
+{{--                        </section>--}}
+{{--                    </section>--}}
+                    <section id="main">
+                    <section id="products">
+                      <div id="" class="hidden-sm-down">
+                        <section id="js-active-search-filters" class="hide">
+                          <h1 class="h6 hidden-xs-up">Active filters</h1>
                         </section>
+                      </div>
+                      {{-- GRID VIEW --}}
+                      <div id="">
+                        <h4 class="rims-title">Lietie diski</h4>
+                        <div class="tire-image-container" style="display: none">
+                          <div class="tire-image-cards">
+                            @php
+                              $cbrand = '';
+                            @endphp
+                            @foreach($rims as $rim)
+                              @php
+                                $brand = $rim->brand_title;
+                                if ($cbrand!=$brand){
+                                  echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex pr-1">';
+                                  $cbrand = $brand;
+                                  $stripe = 1;
+                                } else {
+                                    $brand = str_replace(" ", "", $brand);
+                                }
+                              @endphp
+                              <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}" class="">
+                                <div class="tire-image-card sort-order card">
+
+                                  <div class="text-center">
+                                    {!! \Image::showGrid('auto-rim', $rim->make_id) !!}
+                                  </div>
+
+                                  <div class="tire-list-caption">
+                                    <div class="card-title-text">{{$rim->title}}</div>
+                                    <div class="rim-tread">
+                                      {{ $rim->d1 }}*{{ $rim->d3 }} ({{ $rim->skr }}*{{$rim->pcd}} et{{$rim->et}})
+                                    </div>
+                                    <div style="display: inline-flex">
+                                      <div class="rim-price-old">€{{$rim->price2}}</div>
+                                      <div class="rim-price-red">€{{$rim->price3}}</div>
+                                    </div>
+
+                                  </div>
+                                </div>
+                              </a>
+                            @endforeach
+                          </div>
+                        </div>
+
+                        <div id="js-product-list">
+                          {{--                                  LIST VIEW--}}
+                          <table id="tires-table" class="table rims-sorter tires-table table-hover tablesorter">
+                            <thead class="tires-thead">
+                            <tr>
+                              <th scope="col"><input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces"></th>
+                              <th scope="col">Nosaukums</th>
+                              <th scope="col" class="text-center">Izmērs</th>
+                              <th scope="col" class="hidden-sm-down text-center">Skrūvju attālums</th>
+                              <th scope="col" class="hidden-sm-down text-center">ET</th>
+                              <th scope="col" class="hidden-sm-down text-center">Centrs</th>
+                              <th scope="col" class="hidden-sm-down text-center">Krāsa</th>
+
+                              <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
+                              <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+
+                              <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
+                              <th scope="col"></th>
+                              <th scope="col">
+                                <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
+                              </th>
+
+                            </tr>
+                            </thead>
+                            <tbody id="tires-table-body">
+                            @foreach($rims as $rim)
+
+                              <tr class="tire-table-row">
+                                <th scope="row" class="tire-table-checkbox">
+                                  <input type="checkbox" value="{{$rim->rim_id}}" name="product_ids[]"
+                                         class="tire-table-checkbox">
+                                </th>
+
+                                <td>
+                                  <a data-toggle="tooltip" data-html="true" class="rim-table-link"
+                                     @if (\Image::exists('auto-rim', $rim->make_id))
+                                     title="{{ \Image::show('auto-rim', $rim->make_id) }}"
+                                     @else
+                                     title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
+                                     @endif
+                                     href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}"
+                                  >
+                                    {{ $rim->brand_title . ' ' . $rim->title }}
+                                  </a>
+                                </td>
+                                <td class="text-center">
+                                  {{$rim->d1}}*{{$rim->d3}}
+                                </td>
+
+                                <td class="text-center">
+                                  {{$rim->skr}} * {{$rim->pcd}}
+                                </td>
+
+                                <td class="text-center">
+                                  et{{ $rim->et }}
+                                </td>
+
+                                <td class="text-center">
+                                  {{$rim->dc}}
+                                </td>
+
+                                <td class="hidden-sm-down text-center">
+                                  {{$rim->color}}
+                                </td>
+
+                                <td id="store-price" class="text-center store-price">€ {{$rim->price2}}</td>
+                                <td id="sale-price" class="text-center tire-price-red sale-price">€ {{$rim->price3}}</td>
+                                <td class="hidden-sm-down text-center"></td>
+
+                                <td class="shopping-cart-col">
+                                  <div class="clearfix atc_div text-right">
+                                    <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">
+                                      <i class="material-icons">add_shopping_cart</i>
+                                    </button>
+                                  </div>
+                                </td>
+
+                                <td class="dot-availability text-center">
+                            <span class="dot red" data-toggle="tooltip"
+                                  data-html="true"
+                                  title="red">
+                              <span class="sort-order">red</span>
+                            </span>
+                                </td>
+                              </tr>
+                            @endforeach
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      {{ $rims->links() }}
+                      <div id="js-product-list-bottom">
+                        <div id="js-product-list-bottom"></div>
+                      </div>
                     </section>
+                  </section>
                 </div>
             </div>
             @include('components.right-sidebar')

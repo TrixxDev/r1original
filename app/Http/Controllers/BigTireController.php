@@ -166,7 +166,7 @@ class BigTireController extends Controller
       $currTire->includeStock = true;
 
       return view('tires.industrial.industrialtread',
-        compact('tires', 'currTire')
+        compact('tires', 'currTire', 'brand', 'tread')
       );
     }
 

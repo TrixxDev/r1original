@@ -120,6 +120,26 @@ class RimsController extends Controller
     return view('rims.auto.tread', compact('rims', 'currRim', 'brand', 'tread'));
   }
 
+  public function quadrims_tread($brand, $tread, $rim)
+  {
+//    $brand = Rimbrand::where('slug', $brand)->first();
+//
+//    $tread = Rimmake::where('slug', $tread)->first();
+//
+//    $currRim = Rim::join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+//      ->where('rim_makes.title', $tread->title)
+//      ->where('rims.rim_id', $rim)
+//      ->first();
+//
+//    $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+//      ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
+//      ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
+//      ->where('rims.make_id', $tread->make_id )
+//      ->paginate(20);
+//
+//    return view('rims.auto.tread', compact('rims', 'currRim', 'brand', 'tread'));
+  }
+
   public function rims_ajax(Request $request)
   {
     $rim = Rim::selectRaw('rims.*, rim_makes.*')
@@ -162,7 +182,18 @@ class RimsController extends Controller
 
   public function quadrim()
   {
-    return view('rims.quadrim');
+    $brands = Rimbrand::paginate();
+
+    $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+      ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
+      ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
+      ->orderBy('rim_brands.brand_id', 'ASC')
+      ->where('rims.price1', '<>' , 0)
+      ->where('rims.price2', '<>' , 0)
+      ->where('rims.price3', '<>' , 0)
+      ->paginate();
+//    return view('rims.autorims', compact('rims','brands'));
+    return view('rims.quadrim', compact('rims', 'brands'));
   }
 
 }
