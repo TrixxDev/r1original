@@ -2782,6 +2782,10 @@ $('input[type=password].password-confirmation').keyup(delay(function(e) {
 
 $(document).ready(function() {
 
+  // $('#tires-table tbody tr').change(function() {
+  //   $('#show-selected-checkbox').attr('disabled', $('th.tire-table-checkbox input:checked').length == 0);
+  // });
+
   const rows = document.querySelectorAll("#tires-table tbody tr")
   document.getElementById("show-selected-checkbox").addEventListener("click",function() {
     rows.forEach(row => row.hidden = this.checked && !row.querySelector("input").checked)

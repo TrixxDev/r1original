@@ -12,12 +12,12 @@
           <section id="main" itemscope="" itemtype="https://schema.org/Product">
             <meta itemprop="url" content="{{ url()->full() }}">
             <div class="row">
-              <div class="col-md-4">
+              <div class="col-md-12 col-lg-4">
                 <section class="page-content" id="content">
                   <div class="images-container">
-                    <div class="product-cover">
+                    <div class="product-cover card">
                       @if ($currTire->image)
-                        <img src="{{ $currTire->image }}" style="width: 360px; height: 360px;">
+                        <img src="{{ $currTire->image }}" style="width: 100%;">
                       @else
                         <img src="{{ asset('img/p/lv-default-large_default.jpg') }}" style="width:100%;">
                       @endif
@@ -33,93 +33,187 @@
                   </div>
                 </section>
               </div>
-              <div class="col-md-8">
-                <div class="product-main-details">
-                  <h1 class="h1" itemprop="name">{{ $currTire->brands_title . ' ' . $currTire->treads_title }}</h1>
-                  <div class="product-information">
-                    <div id="product-description-short-351" itemprop="description"></div>
-                    <div class="product-actions">
-                      <div class="product-variants">
-                        <div class="product-attributes">
-                          <table>
-                            <thead>
-                            <tr>
-                              <th>Platums</th>
-                              <th>Augstums</th>
-                              <th>Diametrs</th>
-                              <th>Ass</th>
-                              <th>Segums</th>
-                              <th>Kods</th>
-                              <th>LI</th>
-                              <th>SI</th>
-                              <th>Piezīmes</th>
-                              <th>Pieejamība</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                              <td>{{ $currTire->d1 }}</td>
-                              <td>{{ $currTire->d2 }}</td>
-                              <td>{{ $currTire->d3 }}</td>
-                              <td>asd</td>
-                              <td>asd</td>
-                              <td>{{ $currTire->code }}</td>
-                              <td>{{ $currTire->li }}</td>
-                              <td>{{ $currTire->si }}</td>
-                              <td>{{ $currTire->autocomment }}</td>
-                              <td class="inventory">
-                                <div class="availability">{{ $currTire->available }}</div>
-                              </td>
-                            </tr>
-                            </tbody>
-                          </table>
-                        </div>
+              <div class="col-md-12 col-lg-8">
+                <div class="row">
+                  <div class="col-sm-12 product-main-details">
+                    <h1 class="h1 mt-1" itemprop="name">{{$brand->title.' '.$tread->title}}</h1>
+                  </div>
+                  <div class="col-sm-12 col-md-12 col-lg-6">
+                    <div class="product-prices">
+                      <div class="product-discount">
+                        <span>Veikala cena:</span>
+                        <span class="regular-price">€ {{ $currTire->price1 }}</span>
                       </div>
-                      <div class="product-prices">
-                        <div class="product-discount">
-                          <span>Veikala cena:</span>
-                          <span class="regular-price">€ {{ $currTire->price1 }}</span>
-                        </div>
-                        <div class="product-price h5 has-discount" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
-                          <link itemprop="availability" href="https://schema.org/InStock">
-                          <meta itemprop="priceCurrency" content="EUR">
+                      <div class="product-price h5 has-discount" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
+                        <link itemprop="availability" href="https://schema.org/InStock">
+                        <meta itemprop="priceCurrency" content="EUR">
 
-                          <div class="current-price">
-                            <span>Akcijas cena:</span>
-                            <span itemprop="price" content="{{ $currTire->price2 }}">€ {{ $currTire->price2 }}</span>
-                          </div>
+                        <div class="current-price">
+                          <span>Akcijas cena:</span>
+                          <span itemprop="price" content="{{ $currTire->price2 }}">€ {{ $currTire->price2 }}</span>
                         </div>
-                      </div>
-                      <div class="product-add-to-cart">
-                        <div class="product-quantity clearfix">
-                          <div class="qty">
-                            <div class="input-group bootstrap-touchspin">
-                              <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
-                              <input type="text" name="qty" id="quantity_wanted" value="4" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
-                              <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
-                              <span class="input-group-btn-vertical">
-                                  <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
-                                      <i class="material-icons touchspin-up"></i>
-                                  </button>
-                                  <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" type="button">
-                                      <i class="material-icons touchspin-down"></i>
-                                  </button>
-                              </span>
-                            </div>
-                          </div>
-                          <div class="add">
-                            <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart" data-info="{{ $currTire->tire_id }}">
-                              <i class="material-icons shopping-cart"></i>
-                              Pirkt
-                            </button>
-                          </div>
-                        </div>
-                        <p class="product-minimal-quantity">
-                        </p>
-                      </div>
-                      <div class="product-additional-info">
                       </div>
                     </div>
+                  </div>
+                  <div class="col-sm-12 col-md-12 col-lg-6">
+                    <div class="product-add-to-cart">
+                      <div class="product-quantity clearfix">
+                        <div class="qty">
+                          <div class="input-group bootstrap-touchspin" style="transform: none;">
+                            <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
+                            {{--                            <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">--}}
+                            {{--                            <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title }}">--}}
+                            <input type="text" name="qty" id="quantity_wanted" value="4" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
+                            <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
+                            <span class="input-group-btn-vertical">
+                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
+                                              <i class="material-icons touchspin-up"></i>
+                                            </button>
+                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" type="button">
+                                              <i class="material-icons touchspin-down"></i>
+                                            </button>
+                                          </span>
+                          </div>
+                        </div>
+                        <div class="add">
+                          {{--                          {{ dd($currRim) }}--}}
+                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
+                                  data-info="{{ $currTire->rim_id }}"
+                          >
+                            <i class="material-icons shopping-cart"></i>
+                            Pirkt
+                          </button>
+                        </div>
+                      </div>
+                      {{--                                    <p class="product-minimal-quantity">--}}
+                      {{--                                    </p>--}}
+                    </div>
+                  </div>
+                </div>
+{{--                <div class="row">--}}
+{{--                  <div class="col-12 col-sm-12 col-md-4">--}}
+{{--                    <table class="table">--}}
+{{--                      <tbody>--}}
+{{--                      <tr>--}}
+{{--                        <th>Platums</th>--}}
+{{--                        <td>{{ $currTire->d1 }}</td>--}}
+{{--                      </tr>--}}
+{{--                      <tr>--}}
+{{--                        <th>Augstums</th>--}}
+{{--                        <td>{{ $currTire->d2 }}</td>--}}
+{{--                      </tr>--}}
+{{--                      <tr>--}}
+{{--                        <th>Diametrs</th>--}}
+{{--                        <td>{{ $currTire->d3 }}</td>--}}
+{{--                      </tr>--}}
+{{--                      <tr>--}}
+{{--                        <th>Ass</th>--}}
+{{--                        <td>{{ $currTire->axile }}</td>--}}
+{{--                      </tr>--}}
+{{--                      <tr>--}}
+{{--                        <th>Segums</th>--}}
+{{--                        <td>{{ $currTire->dc }}</td>--}}
+{{--                      </tr>--}}
+{{--                      <tr>--}}
+{{--                        <th>Kods</th>--}}
+{{--                        <td>{{ $currTire->code }}</td>--}}
+{{--                      </tr>--}}
+{{--                      <tr>--}}
+{{--                        <th>LI</th>--}}
+{{--                        <td>{{ $currTire->li }}</td>--}}
+{{--                      </tr>--}}
+{{--                      <tr>--}}
+{{--                        <th>SI</th>--}}
+{{--                        <td>{{ $currTire->si }}</td>--}}
+{{--                      </tr>--}}
+{{--                      <tr>--}}
+{{--                        <th>Piezīmes</th>--}}
+{{--                        <td>--}}
+{{--                          @php--}}
+{{--                            if($currTire->autocomment) {--}}
+{{--                                echo $currTire->autocomment;--}}
+{{--                            } else {--}}
+{{--                                echo '-';--}}
+{{--                            }--}}
+{{--                          @endphp--}}
+{{--                        </td>--}}
+{{--                      </tr>--}}
+{{--                      <tr>--}}
+{{--                        <th>Pieejamība</th>--}}
+{{--                        <td>{{ $currTire->available }}</td>--}}
+{{--                      </tr>--}}
+{{--                      </tbody>--}}
+{{--                    </table>--}}
+{{--                  </div>--}}
+{{--                  <div class="col-sm-12 col-md-8">--}}
+{{--                    @if($currTire->comment)--}}
+{{--                      <div class="alert" style="border: 1px solid #68c0a8">--}}
+{{--                        {{$currTire->comment}}--}}
+{{--                      </div>--}}
+{{--                    @endif--}}
+{{--                  </div>--}}
+{{--                </div>--}}
+                <div class="row">
+                  <div class="col-12 col-sm-12 col-md-4">
+                    <table class="table">
+                      <thead>
+                      <tr>
+                        <th>Platums</th>
+                        <td>{{ $currTire->d1 }}</td>
+                      </tr>
+                      </thead>
+                      <tbody>
+                      <tr>
+                        <th>Augstums</th>
+                        <td>{{ $currTire->d3 }}</td>
+                      </tr>
+                      <tr>
+                        <th>Skrūvju izbīdījums</th>
+                        <td>{{ $currTire->pcd }}</td>
+                      </tr>
+                      <tr>
+                        <th>Centrālais caurums</th>
+                        <td>{{ $currTire->dc }}</td>
+                      </tr>
+                      <tr>
+                        <th>Skrūvju skaits</th>
+                        <td>{{ $currTire->skr }}</td>
+                      </tr>
+                      <tr>
+                        <th>Stāvoklis</th>
+                        <td>
+                          @if( $currTire->used === 0)
+                            {{ 'Jauns' }}
+                          @else
+                            {{ 'Lietots' }}
+                          @endif
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Piezīmes</th>
+                        <td>
+                          @php
+                            if($currTire->autocomment) {
+                                echo $currTire->autocomment;
+                            } else {
+                                echo '-';
+                            }
+                          @endphp
+                        </td>
+                      </tr>
+                      <tr>
+                        <th>Pieejamība</th>
+                        <td>{{ $currTire->available }}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="col-sm-12 col-md-8">
+                    @if($currTire->comment)
+                      <div class="alert" style="border: 1px solid #68c0a8">
+                        {{$currTire->comment}}
+                      </div>
+                    @endif
                   </div>
                 </div>
               </div>

@@ -12,16 +12,16 @@
 </head>
 <body>
 
-<div class="zoom-section" style="float: left; width: 300px;">
-  <div class="zoom-small-image">
-    <a class="MagicZoom"
-       data-options="expand: window; zoomWidth:600px; zoomHeight:600px"
-       href="https://i.imgur.com/5PQcTIS.jpeg"
-    >
-      <img class="magic-image" src="https://i.imgur.com/ITZlrPP.jpeg" alt=""/>
-    </a>
-  </div>
-</div>
+{{--<div class="zoom-section" style="float: left; width: 300px;">--}}
+{{--  <div class="zoom-small-image">--}}
+{{--    <a class="MagicZoom"--}}
+{{--       data-options="expand: window; zoomWidth:600px; zoomHeight:600px"--}}
+{{--       href="https://i.imgur.com/5PQcTIS.jpeg"--}}
+{{--    >--}}
+{{--      <img class="magic-image" src="https://i.imgur.com/ITZlrPP.jpeg" alt=""/>--}}
+{{--    </a>--}}
+{{--  </div>--}}
+{{--</div>--}}
 
 </body>
 </html>

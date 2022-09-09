@@ -536,26 +536,37 @@
         <div id="content-wrapper" class="col-md-12 col-lg-9">
           <section id="main">
             <section id="products" class="">
-{{--11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111--}}
+              {{--GRID VIEW--}}
               <div class="tire-image-container" style="display: none">
                 <div class="tire-image-cards">
 {{--                <div style="width: auto;">BRAND NAME</div>--}}
                   @php
                     $cbrand = '';
+                    $index = 0;
                   @endphp
                   @foreach($tires as $tire)
                     @php
                       $brand = $tire->fullSize;
                       $tire->includeStock = true;
                       if ($cbrand!=$brand){
-                        echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex pr-1">';
+                        echo '</div><h4 class="tire-brand-name">' . $brand;
+                        if ($index == 0){
+                          switch ($season_id){
+                          case 1:
+                            echo ' Vasaras riepas';
+                            break;
+                          case 2:
+                            echo ' Ziemas riepas';
+                            break;
+                          }
+                        }
+                        echo '</h4><div class="row grid-ex pr-1">';
                         $cbrand = $brand;
                         $stripe = 1;
                       } else {
                           $brand = str_replace(" ", "", $brand);
                       }
                     @endphp
-{{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
                     @if($tire->price1)
                     <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}" class="">
                       <div class="tire-image-card sort-order">
@@ -579,31 +590,45 @@
                             <div class="rim-price-old">€{{$tire->price1}}</div>
                             <div class="rim-price-red">€{{$tire->price2}}</div>
                           </div>
-{{--                          <div class="tire-price-red">€{{$tire->price1}}</div>--}}
                         </div>
 
                       </div>
                     </a>
                     @endif
+                    @php
+                      $index++;
+                    @endphp
                     @endforeach
                 </div>
               </div>
-{{--1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111--}}
+              {{--LIST VIEW--}}
               <div id="">
                 <div id="js-product-list">
                   <div class="products row hide-price">
 
                     @php
                       $cbrand = '';
+                      $index = 0;
                     @endphp
                     @foreach ($tires as $tire)
                       @php
                         $brand = $tire->fullSize;
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){
-                          echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
+                          echo '<h4 class="tire-brand-name">' . $cbrand . '<h4>';
                           $cbrand = $brand;
                           $stripe = 1;
+                          if ($index == 0){
+                          switch ($season_id){
+                            case 1:
+                              echo ' Vasaras riepas';
+                              break;
+                            case 2:
+                              echo ' Ziemas riepas';
+                              break;
+                          }
+                        }
+                        echo '</h4></h4>';
                       @endphp
 {{--                    TIRES IMAGES--}}
 {{--                      <div class="image-list-item">--}}
@@ -743,7 +768,6 @@
                           <td class="hidden-sm-down text-center">
                             <span>
                               <span data-toggle="tooltip"
-                                    {{--TODO japieliek li--}}
                                     title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}
                               </span>
                             </span>
@@ -816,10 +840,7 @@
                           <td class="shopping-cart-col">
                             <div class="clearfix atc_div text-right">
                               <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
-                                      @hasrole('administrators')
-                                        data-target="#quick-popup"
-                                      @else
-                                        data-target="#blockcart-modal"
+                                      @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"
                                       @endhasrole data-info="{{ $tire->tire_id }}"><i
                                   class="material-icons">add_shopping_cart</i>
                               </button>
@@ -835,7 +856,9 @@
                           </td>
 
                         </tr>
-
+                        @php
+                          $index++;
+                        @endphp
                         @endforeach
                         </tbody>
                       </table>
