@@ -148,7 +148,7 @@ class Autotire extends Model
 
     public function getTitleAttribute()
     {
-        $sql = DB::table('auto_treads')->selectRaw('auto_treads.*, auto_treads.title as tread_title')
+        $sql = DB::table('auto_treads')->selectRaw('auto_treads.*, auto_treads.t_title as tread_title')
                                               ->selectRaw('auto_brands.*, auto_brands.title as brand_title')
                                               ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
                                               ->where('auto_treads.tread_id', $this->make_id)
@@ -167,7 +167,7 @@ class Autotire extends Model
 
     public function getBrandAttribute()
     {
-        $sql = DB::table('auto_treads')->selectRaw('auto_treads.*, auto_treads.title as tread_title')
+        $sql = DB::table('auto_treads')->selectRaw('auto_treads.*, auto_treads.t_title as tread_title')
             ->selectRaw('auto_brands.*, auto_brands.title as brand_title')
             ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
             ->where('auto_treads.tread_id', $this->make_id)

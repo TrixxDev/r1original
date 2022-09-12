@@ -262,7 +262,7 @@
                         <li data-label="{{ $index }}">
                           <label class="facet-label" for="facet_for_{{ $index }}">
                           <span class="custom-checkbox">
-                            <input id="facet_for_{{ $index }}" data-search-url="" name="types[]" @if (in_array($index, $types)) checked="" @endif value="{{ $value }}" data-for="prod-code" data-value="{{ $value }}" type="checkbox">
+                            <input id="facet_for_{{ $index }}" data-search-url="" name="type[]" @if (in_array($value, $type)) checked="" @endif value="{{ $value }}" data-for="prod-code" data-value="{{ $value }}" type="checkbox">
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>

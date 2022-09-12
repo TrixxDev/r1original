@@ -605,7 +605,7 @@
                       }
                     @endphp
                     @if($tire->price1)
-                    <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}" class="">
+                    <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}" class="">
                       <div class="tire-image-card sort-order">
                         <div class="text-center">
                           {!! \Image::showGrid('auto', $tire->make_id) !!}
@@ -785,7 +785,7 @@
                           <td class="table-tire-name-cell">
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                                title='{!! \Image::show('auto', $tire->make_id) !!}'
-                               href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}"
+                               href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}"
                                data-content="{{ $tire->title }}"
                                data-article="{{ $tire->article }}">
                               {{ $tire->title }}

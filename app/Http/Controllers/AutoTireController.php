@@ -190,7 +190,6 @@ class AutoTireController extends Controller
                           ->orderBy('price2', 'DESC')->paginate()->appends($request->query());
 
 //        dd(DB::getQueryLog());
-//        dd($tires);
 
         return view('tires.auto.tires',
             compact('tires')
@@ -255,7 +254,7 @@ class AutoTireController extends Controller
         ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
 
         $code = $request->code;
-        $sql = Autotread::selectRaw('auto_treads.*, auto_treads.title as tread_title')
+        $sql = Autotread::selectRaw('auto_treads.*')
             ->selectRaw('auto_brands.*, auto_brands.title as brand_title')
             ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
             ->where('auto_treads.season', $this->season)
@@ -283,7 +282,7 @@ class AutoTireController extends Controller
           ->orderBy('d1', 'ASC')
           ->orderBy('d2', 'ASC')
           ->orderBy('price2', 'DESC')
-          ->paginate($this->itemsPerPage)->appends($request->query());
+          ->paginate()->appends($request->query());
 
         return view('tires.auto.tires',
             compact('tires', 'code')
@@ -292,32 +291,23 @@ class AutoTireController extends Controller
 
     public function tires_tread($brand, $tread, $tire) {
 
-        $brand = Autobrand::where('slug', $brand)->first();
+      DB::enableQueryLog();
 
-        $tread = Autotread::where('slug', $tread)->first();
+      $brand = Autobrand::where('slug', $brand)->first();
 
         $tires = Autotire::selectRaw('auto_tires.*, auto_treads.*, auto_brands.*,
-                                                auto_brands.title as brands_title, auto_treads.title as treads_title')
+                                                auto_brands.title as brands_title')
                                                 ->join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
                                                 ->join('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
                                                 ->where('auto_brands.title', $brand->title)
-                                                ->where('auto_treads.title', $tread->title)
+                                                ->where('auto_treads.t_title', $tread)
                                                 ->orderBy('d3', 'ASC')
                                                 ->orderBy('d1', 'ASC')
                                                 ->orderBy('d2', 'ASC')
                                                 ->get();
 
-//        $currTire = Autotire::with('tread')->selectRaw('auto_tires.*, auto_treads.*, auto_brands.*,
-//                                               auto_brands.title as brands_title, auto_treads.title as treads_title')
-//                                               ->join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-//                                               ->join('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
-//                                               ->where('auto_brands.title', $brand->title)
-//                                               ->where('auto_treads.title', $tread->title)
-//                                               ->where('auto_tires.tire_id', $tire)
-//                                               ->first();
-
         $currTire = Autotire::with('tread')->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-                                                   ->where('auto_treads.title', $tread->title)
+                                                   ->where('auto_treads.t_title', $tread)
                                                    ->where('auto_tires.tire_id', $tire)
                                                    ->first();
 
@@ -326,11 +316,6 @@ class AutoTireController extends Controller
         return view('tires.auto.autotread',
             compact('tires', 'currTire')
         );
-    }
-
-    public function add_product_tread()
-    {
-
     }
 
 }
