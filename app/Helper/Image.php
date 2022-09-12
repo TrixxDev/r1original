@@ -11,7 +11,7 @@ class Image {
     switch ($type) {
       // AUTO TIRES
       case 'auto':
-        $dir = $path . '/auto/' . $image . '-o.jpg';
+        $dir = $path . '/auto/tread/' . $image . '-o.jpg';
         break;
       case 'auto-rim':
         $dir = $path . '/auto/rims/rim-' . $image . '.jpg';
@@ -19,7 +19,7 @@ class Image {
 
       // QUAD TIRES
       case 'quadr':
-        $dir = $path . '/quadr/' . $image . '-o.jpg';
+        $dir = $path . '/quadr/tread/' . $image . '-o.jpg';
         break;
       case 'quadr-rim':
         $dir = $path . '/quadr/rims/rim-' . $image . '.jpg';
@@ -27,7 +27,7 @@ class Image {
 
       // MOTO TIRES
       case 'moto':
-        $dir = $path . '/moto/' . $image . '-o.jpg';
+        $dir = $path . '/moto/tread/' . $image . '-o.jpg';
         break;
       case 'moto-rim':
         $dir = $path . '/moto/rims/rim-' . $image . 'jpg';
@@ -85,9 +85,9 @@ class Image {
       if (file_exists(str_replace('.jpg', '.png', Self::image($type, $image)))) {
         $img = str_replace('.jpg', '.png', $img);
       }
-      return '<img style="width:130px;" src=' . $img . '>';
+      return '<img style="width:170px; height: 170px;" src=' . $img . '>';
     } else {
-      return '<img style="width:130px;" src=' . asset('img/p/r1-logo.svg') . '>';
+      return '<img style="width:170px;" src=' . asset('img/p/r1-logo.svg') . '>';
     }
 
   }

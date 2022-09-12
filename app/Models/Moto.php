@@ -329,13 +329,13 @@ class Moto extends Model
 
       if ($type != '') {
         $arr = [
-          'custom' => 'Custom',
-          'harley davidson' => 'Harley Davidson',
-          'moto cross' => 'Moto Cross',
-          'racing' => 'Racing',
-          'sport' => 'Sport',
-          'sport touring' => 'Sport Touring',
-          'trail' => 'Trail',
+          'custom' => ['Ct', 'Custom'],
+          'harley davidson' => ['Hd', 'Harley Davidson'],
+          'moto cross' => ['Mx', 'Moto Cross'],
+          'racing' => ['Rc', 'Racing'],
+          'sport' => ['Sp', 'Sport'],
+          'sport touring' => ['St', 'Sport Touring'],
+          'trail' => ['Tr', 'Trail'],
         ];
 
         return $arr[$type];

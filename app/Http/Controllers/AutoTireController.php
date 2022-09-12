@@ -33,6 +33,7 @@ class AutoTireController extends Controller
     public $autoTiresD3;
     public $model = 'Autotire';
     public $tiresSize;
+    public $type;
     public $code;
     public $fuel;
     public $wet;
@@ -69,6 +70,7 @@ class AutoTireController extends Controller
         ($request->d2 == 'Visi') ? $this->d2 = 'Visi' : $this->d2 = $request->d2;
         ($request->d3 == NULL) ? $this->d3 = 16 : $this->d3 = $request->d3;
 
+        ($request->types) ? $this->types = $request->types : $this->types = [];
         ($request->code) ? $this->code = $request->code : $this->code = [];
         ($request->fuel) ? $this->fuel = $request->fuel : $this->fuel = [];
         ($request->wet) ? $this->wet = $request->wet : $this->wet = [];
@@ -93,6 +95,7 @@ class AutoTireController extends Controller
         View::share('d1', $this->d1);
         View::share('d2', $this->d2);
         View::share('d3', $this->d3);
+        View::share('types', $this->types);
         View::share('code', $this->code);
         View::share('fuel', $this->fuel);
         View::share('wet', $this->wet);
@@ -100,7 +103,7 @@ class AutoTireController extends Controller
 
     public function tires() {
 
-        $tires = Autotire::with('tread')->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+        $tires = Autotire::leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
                            ->when($this->d1, function($query) {
                                $query->where('d1', $this->d1);
                            })->when($this->d2, function($query) {
@@ -150,11 +153,17 @@ class AutoTireController extends Controller
         ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
         ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
 
+        if ($request->types) {
+          $this->types = $request->types;
+        } else {
+          $this->types = '';
+        }
+
         ($request->code) ? $this->code = $request->code : $this->code = '';
         ($request->fuel) ? $this->fuel = $request->fuel : $this->fuel = '';
         ($request->wet) ? $this->wet = $request->wet : $this->wet = '';
 
-        $tires = Autotire::with('tread')->select('auto_tires.*', 'auto_treads.*', 'auto_treads.slug as tread_slug', 'auto_brands.slug as brand_slug')
+        $tires = Autotire::select('auto_tires.*', 'auto_treads.*', 'auto_treads.slug as tread_slug', 'auto_brands.slug as brand_slug')
                           ->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
                           ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
                           ->when($this->currBrand, function($query) {
@@ -165,8 +174,10 @@ class AutoTireController extends Controller
                               $query->where('d2', $this->d2);
                           })->when($this->d3, function($query) {
                               $query->where('d3', $this->d3);
+                          })->when($this->types, function($query) {
+                              $query->whereIn('auto_tires.type', $this->types);
                           })->when($this->code, function($query) {
-                              $query->whereIn('code', $this->code);
+                            $query->whereIn('code', $this->code);
                           })->when($this->fuel, function($query) {
                               $query->whereIn('eco', $this->fuel);
                           })->when($this->wet, function($query) {
@@ -177,7 +188,6 @@ class AutoTireController extends Controller
                           ->orderBy('d1', 'ASC')
                           ->orderBy('d2', 'ASC')
                           ->orderBy('price2', 'DESC')->paginate()->appends($request->query());
-
 
 //        dd(DB::getQueryLog());
 //        dd($tires);

@@ -198,7 +198,6 @@
                       </section>
 
                     </div>
-                  </form>
                 </div>
               </div>
               <div class="wrap">
@@ -263,7 +262,7 @@
                         <li data-label="{{ $index }}">
                           <label class="facet-label" for="facet_for_{{ $index }}">
                           <span class="custom-checkbox">
-                            <input id="facet_for_{{ $index }}" data-search-url="" name="types[]" value="{{ $value }}" data-for="prod-code" data-value="{{ $value }}" type="checkbox">
+                            <input id="facet_for_{{ $index }}" data-search-url="" name="types[]" @if (in_array($index, $types)) checked="" @endif value="{{ $value }}" data-for="prod-code" data-value="{{ $value }}" type="checkbox">
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>
@@ -274,8 +273,8 @@
                       @endforeach
                     </ul>
                   </section>
-                  <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i>
-                  </button>
+                  <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i></button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -302,15 +301,9 @@
                     @endphp
                     {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
                     <div class="tire-image-card">
-                      <a href="{{ \Str::slug(\Tires::getMotoTireTread($tire->brand_id)) }}" class="">
+                      <a href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}" class="">
                         <div class="text-center">
-                          <img
-                            @if ($tire->image)
-                            src="{{ $tire->image }}" style='width: 100%; height: 100%;'
-                            @else
-                            src="{{ asset('img/p/r1-logo.svg') }}"
-                            @endif alt="tire-image" class="img-thumbnail border-none text-center"
-                          >
+                          {!! \Image::showGrid('moto', $tire->make_id) !!}
                         </div>
                         <div class="tire-list-caption">
 
@@ -361,13 +354,7 @@
                           <div class="tire-image-card">
                             <a href="" class="">
                               <div class="text-center">
-                                <img
-                                  @if ($tire->image)
-                                  src="{{ $tire->image }}" style='width: 100%; height: 100%;'
-                                  @else
-                                  src="{{ asset('img/p/r1-logo.svg') }}"
-                                  @endif alt="tire-image" class="img-thumbnail border-none text-center"
-                                >
+                                {!! \Image::showGrid('moto', $tire->make_id) !!}
                               </div>
                               <div class="tire-list-caption">
 
@@ -460,11 +447,7 @@
 
                         <td class="table-tire-name-cell">
                           <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                             @if ($tire->image)
-                             title="<img src='{{ $tire->image }}' style='width: 280px; height: 280px;'>"
-                             @else
-                             title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
-                             @endif
+                             title='{!! \Image::show('moto', $tire->make_id) !!}'
                              href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"
                              data-content="{{ $tire->title }}">
                             {{ $tire->title }}
@@ -473,7 +456,7 @@
 
                         <td class="hidden-sm-down text-center">
                           <span data-toggle="tooltip"
-                                title="<span style='color: black'>{{ $tire->typeDesc }}</span>">{{ $tire->motoType }}
+                                title="<span style='color: black'>{{ $tire->typeDesc[1] }}</span>">{{ $tire->motoType }}
                               </span>
                         </td>
 

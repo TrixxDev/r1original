@@ -184,7 +184,6 @@
                       </section>
 
                     </div>
-                  </form>
                 </div>
               </div>
               <div class="wrap">
@@ -198,7 +197,7 @@
                                style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                           <span class="custom-checkbox">
                             <input id="facet_availability_0" class="green" type="checkbox"
-                                   data-search-url="#" name="availability[]" value="green"
+                                   data-search-url="#" value="green"
                                    data-for="dot" data-value="green" data-color="green">
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
@@ -213,7 +212,7 @@
                                style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                           <span class="custom-checkbox">
                             <input id="facet_availability_1" class="yellow" type="checkbox"
-                                   data-search-url="#" name="availability[]" value="yellow"
+                                   data-search-url="#" value="yellow"
                                    data-for="dot" data-value="yellow" data-color="yellow">
                             <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                           </span>
@@ -226,7 +225,7 @@
                                style="width: 100%;text-align: left;cursor: pointer">
                           <span class="custom-checkbox">
                             <input id="facet_availability_2" class="red" type="checkbox"
-                                   data-search-url="#" name="availability[]" value="red"
+                                   data-search-url="#" value="red"
                                    data-for="dot" data-value="red" data-color="red">
                             <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                           </span>
@@ -267,7 +266,6 @@
                   {{--                                          </li>--}}
                   {{--                                        </ul>--}}
                   {{--                                    </section>--}}
-
 
                   <section class="facet clearfix facet--4">
                     <h1 class="h6 facet-title hidden-sm-down facet-hover">Kods<span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
@@ -325,38 +323,77 @@
                     </ul>
                   </section>
 
-                  {{--                                    @if ($season_title == 'ziemas-riepas')--}}
+                  @if ($season_title == 'ziemas-riepas')
 
-                  {{--                                    <section class="facet clearfix facet--5">--}}
-                  {{--                                      <h1 class="h6 facet-title hidden-sm-down">Tips</h1>--}}
-                  {{--                                      <div class="title hidden-md-up" data-target="#facet_37451" data-toggle="collapse">--}}
-                  {{--                                        <h1 class="h6 facet-title">Tips</h1>--}}
-                  {{--                                        <span class="float-xs-right">--}}
-                  {{--                                          <span class="navbar-toggler collapse-icons">--}}
-                  {{--                                            <i class="material-icons add"></i>--}}
-                  {{--                                            <i class="material-icons remove"></i>--}}
-                  {{--                                          </span>--}}
-                  {{--                                        </span>--}}
-                  {{--                                      </div>--}}
+                    <section class="facet clearfix facet--4">
+                      <h1 class="h6 facet-title hidden-sm-down facet-hover">Tips<span class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
+                      <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
+                        <h1 class="h6 facet-title">Tips</h1>
+                        <span class="float-xs-right">
+                        <span class="navbar-toggler collapse-icons">
+                          <i class="material-icons add"></i>
+                          <i class="material-icons remove"></i>
+                        </span>
+                      </span>
+                      </div>
 
-                  {{--                                      <ul id="facet_37451" class="collapse">--}}
-                  {{--                                        <li data-label="M%2BS">--}}
-                  {{--                                          <label class="facet-label" for="facet_input_37451_0">--}}
-                  {{--                                            <span class="custom-checkbox">--}}
-                  {{--                                              <input id="facet_input_37451_0" data-search-url="" type="checkbox">--}}
-                  {{--                                              <span class="ps-shown-by-js">--}}
-                  {{--                                                <i class="material-icons checkbox-checked"></i>--}}
-                  {{--                                              </span>--}}
-                  {{--                                            </span>--}}
-                  {{--                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">--}}
-                  {{--                                              M+S--}}
-                  {{--                                            </a>--}}
-                  {{--                                          </label>--}}
-                  {{--                                        </li>--}}
-                  {{--                                      </ul>--}}
-                  {{--                                    </section>--}}
+                      <ul id="facet_code" class="collapse" style="display: none">
+                        <li data-label="M+S">
+                          <label class="facet-label" for="facet_for_ms">
+                          <span class="custom-checkbox">
+                            <input id="facet_for_ms" data-search-url="" name="types[]"
+                                   @if (in_array(1, $types)) checked="" @endif value="1"
+                                   data-for="prod-code" data-value="M+S" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">M+S</a>
+                          </label>
+                        </li>
+                        <li data-label="Studdable">
+                          <label class="facet-label" for="facet_for_studdable">
+                          <span class="custom-checkbox">
+                            <input id="facet_for_studdable" data-search-url="" name="types[]"
+                                   @if (in_array(2, $types)) checked="" @endif value="2"
+                                   data-for="prod-code" data-value="Studdable" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Radžojama</a>
+                          </label>
+                        </li>
+                        <li data-label="Studs">
+                          <label class="facet-label" for="facet_for_studs">
+                          <span class="custom-checkbox">
+                            <input id="facet_for_studs" data-search-url="" name="types[]"
+                                   @if (in_array(3, $types)) checked="" @endif value="3"
+                                   data-for="prod-code" data-value="Studs" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ar radzēm</a>
+                          </label>
+                        </li>
+                        <li data-label="Winter">
+                          <label class="facet-label" for="facet_for_winter">
+                          <span class="custom-checkbox">
+                            <input id="facet_for_winter" data-search-url="" name="types[]"
+                                   @if (in_array(4, $types)) checked="" @endif value="4"
+                                   data-for="prod-code" data-value="Winter" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ziemas</a>
+                          </label>
+                        </li>
+                      </ul>
+                    </section>
 
-                  {{--                                    @endif--}}
+                  @endif
 
                   <section class="facet clearfix facet--8">
                     <h1 class="h6 facet-title hidden-sm-down facet-hover">Degvielas ekonomija <span class="material-icons fuel-efficiency-dropdown">keyboard_arrow_down</span></h1>
@@ -526,8 +563,8 @@
                       </li>
                     </ul>
                   </section>
-                  <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i>
-                  </button>
+                  <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i></button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -571,13 +608,7 @@
                     <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}" class="">
                       <div class="tire-image-card sort-order">
                         <div class="text-center">
-                          <img
-                            @if ($tire->image)
-                            src="{{ $tire->image }}" style='width: 100%; height: 100%;'
-                            @else
-                            src="{{ asset('img/p/r1-logo.svg') }}"
-                            @endif alt="tire-image" class="img-thumbnail border-none text-center"
-                          >
+                          {!! \Image::showGrid('auto', $tire->make_id) !!}
                         </div>
 
                         <div class="tire-list-caption">
@@ -753,11 +784,7 @@
 
                           <td class="table-tire-name-cell">
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                               @if ($tire->image)
-                               title="<img src='{{ $tire->image }}' style='width: 280px; height: 280px;'>"
-                               @else
-                               title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
-                               @endif
+                               title='{!! \Image::show('auto', $tire->make_id) !!}'
                                href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}"
                                data-content="{{ $tire->title }}"
                                data-article="{{ $tire->article }}">
@@ -768,7 +795,6 @@
                           <td class="hidden-sm-down text-center">
                             <span>
                               <span data-toggle="tooltip"
-                                    {{--TODO japieliek li--}}
                                     title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}
                               </span>
                             </span>
@@ -776,6 +802,7 @@
 
                           @if ($season_id == 2)
                             <td scope="col" class="hidden-sm-down text-center">
+
                               @switch($tire->type)
                                 @case(1)
                                 <span data-toggle="tooltip">

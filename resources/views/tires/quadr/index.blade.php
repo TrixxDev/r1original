@@ -284,13 +284,7 @@
                     <div class="tire-image-card">
                       <a href="" class="">
                         <div class="text-center">
-                          <img
-                            @if ($tire->image)
-                            src="{{ $tire->image }}" style='width: 100%; height: 100%;'
-                            @else
-                            src="{{ asset('img/p/r1-logo.svg') }}"
-                            @endif alt="tire-image" class="img-thumbnail border-none text-center"
-                          >
+                          {!! \Image::showGrid('quadr', $tire->make_id) !!}
                         </div>
                         <div class="tire-list-caption">
 
@@ -343,13 +337,7 @@
                           <div class="tire-image-card">
                             <a href="" class="">
                               <div class="text-center">
-                                <img
-                                  @if ($tire->image)
-                                  src="{{ $tire->image }}" style='width: 100%; height: 100%;'
-                                  @else
-                                  src="{{ asset('img/p/r1-logo.svg') }}"
-                                  @endif alt="tire-image" class="img-thumbnail border-none text-center"
-                                >
+                                {!! \Image::showGrid('quadr', $tire->make_id) !!}
                               </div>
                               <div class="tire-list-caption">
 
@@ -510,11 +498,7 @@
 
                           <td class="table-tire-name-cell">
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                               @if ($tire->image)
-                               title="<img src='{{ $tire->image }}' style='width: 280px; height: 280px;'>"
-                               @else
-                               title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
-                               @endif
+                               title='{!! \Image::show('quadr', $tire->make_id) !!}'
                                href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"
                                data-content="{{ $tire->title }}">
                               {{ $tire->title }}
