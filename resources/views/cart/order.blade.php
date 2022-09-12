@@ -9,7 +9,6 @@
         <div id="content-wrapper" class="right-column col-lg-12">
           <section id="main">
             <div class="cart-grid row">
-              <div class="spinner-border"></div>
               <form method="POST">
                 @CSRF
                 <input type="hidden" name="person" value="{{ \Illuminate\Support\Facades\Session::get('person') }}">
@@ -140,7 +139,8 @@
                   </div>
                 </div>
 
-                  <button type="submit" class="btn btn-primary" name="submit">Tālāk</button>
+                  <a href="{{ route('cart') }}" class="btn btn-secondary">Atgriezties</a>
+                  <button type="submit" class="btn btn-primary btn-checkout float-right" name="submit">Tālāk</button>
                 </div>
 
               </form>

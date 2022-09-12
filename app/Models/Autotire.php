@@ -121,7 +121,6 @@ class Autotire extends Model
             case 0: {
                 if ($this->_includeStock) {
                     $count = $this->getStockCount();
-                    var_dump($count);
                     switch ($count){
                         case -1:
                         case 0: {

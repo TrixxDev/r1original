@@ -15,13 +15,7 @@
                         <div class="col-md-12 col-lg-4">
                           <section class="page-content" id="content">
                             <div class="images-container">
-                              <div class="product-cover card">
-                                @if ($currTire->image)
-                                  <img src="{{ $currTire->image }}" style="width: 100%;">
-                                @else
-                                  <img src="{{ asset('img/p/lv-default-large_default.jpg') }}" style="width:100%;">
-                                @endif
-                              </div>
+                              {!! \Image::treadZoom('quadr', $currTire->make_id) !!}
                               <div class="js-qv-mask mask">
                                 <ul class="product-images js-qv-product-images">
                                 </ul>

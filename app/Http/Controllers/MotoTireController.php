@@ -25,7 +25,7 @@ class MotoTireController extends Controller
     public $motoTiresD2;
     public $motoTiresD3;
     public $model = 'Moto';
-    public $type;
+    public $types;
     public $availability;
 
     public function __construct(Request $request)
@@ -43,7 +43,7 @@ class MotoTireController extends Controller
         ($request->d2 == 'Visi') ? $this->d2 = 'Visi' : $this->d2 = $request->d2;
         ($request->d3 == NULL) ? $this->d3 = 17 : $this->d3 = $request->d3;
 
-        ($request->type) ? $this->type = $request->type : $this->type = [];
+        ($request->types) ? $this->types = $request->types : $this->types = [];
 
         if ($request->d1 == NULL && $this->d1 == NULL) {
           $this->d1 = 120;
@@ -65,7 +65,7 @@ class MotoTireController extends Controller
         View::share('d1', $this->d1);
         View::share('d2', $this->d2);
         View::share('d3', $this->d3);
-        View::share('type', $this->type);
+        View::share('types', $this->types);
         View::share('types', (new Moto)->types());
     }
 
@@ -160,7 +160,11 @@ class MotoTireController extends Controller
       ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
       ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
 
-      ($request->type) ? $this->type = $request->type : $this->type = '';
+      if ($request->types) {
+        $this->types = $request->types;
+      } else {
+        $this->types = '';
+      }
 
       $tires = Moto::select('moto_tires.*', 'moto_treads.*', 'moto_treads.slug as tread_slug', 'moto_brands.slug as brand_slug')
                     ->leftJoin('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
@@ -171,6 +175,8 @@ class MotoTireController extends Controller
                       $query->where('d1', $this->d1);
                     })->when($this->d2, function($query) {
                       $query->where('d2', $this->d2);
+                    })->when($this->types, function($query) {
+                      $query->whereIn('moto_tires.type', $this->types);
                     })->where('d3', $this->d3)
                       ->where('moto_tires.visible_users', '<>', 0)
                       ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
