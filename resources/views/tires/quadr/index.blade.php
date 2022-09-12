@@ -282,7 +282,7 @@
                     @endphp
                     {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
                     <div class="tire-image-card">
-                      <a href="" class="">
+                      <a href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}" class="">
                         <div class="text-center">
                           {!! \Image::showGrid('quadr', $tire->make_id) !!}
                         </div>

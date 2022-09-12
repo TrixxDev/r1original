@@ -590,10 +590,10 @@
                         if ($index == 0){
                           switch ($season_id){
                           case 1:
-                            echo ' Vasaras riepas';
+                            echo ' <span style="color: black; class="text-uppercase"">Vasaras riepas</span>';
                             break;
                           case 2:
-                            echo ' Ziemas riepas';
+                            echo ' <span style="color: black;" class="text-uppercase">Ziemas riepas</span>';
                             break;
                           }
                         }

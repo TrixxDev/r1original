@@ -226,7 +226,7 @@
                                   </div>
                                   @if (\Cart::count() > 0)
                                     <div class="checkout text-sm-center card-block checkout-button">
-                                      <button type="submit" class="btn btn-primary"><span>Turpināt maksājumu</span></button>
+                                      <button type="submit" class="btn btn-primary btn-block"><span>Turpināt</span></button>
                                     </div>
                                   @else
                                     <div class="checkout text-sm-center card-block checkout-button">

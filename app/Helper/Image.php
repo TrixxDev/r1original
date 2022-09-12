@@ -35,7 +35,7 @@ class Image {
 
       // INDUSTRIAL TIRES
       case 'big':
-        $dir = $path . '/industrial/tread/' . $image . '.jpg';
+        $dir = $path . '/industrial/tread/' . $image . '-o.jpg';
         break;
       case 'big-rim':
         $dir = $path . '/industrial/rims/rim-' . $image . '.jpg';

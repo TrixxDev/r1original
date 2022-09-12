@@ -767,8 +767,8 @@
                             <p class="cart-products-count">Jūsu grozā ir <span class="cart-products-count"></span> produkti</p>
                             <p><strong>Kopā:</strong>&nbsp;€ <span class="cart-products-total"></span> (ar PVN)</p>
                             <div class="cart-dialog-button-container">
-                                <button type="button" class="btn-secondary cart-dialog-button-item cart-dialog-button" data-dismiss="modal">Turpināt iepirkties</button>
-                                <a href="{{ route('cart') }}" class="btn-primary cart-dialog-button-item cart-dialog-button"><i class="material-icons"></i>Turpināt maksājumu</a>
+                                <button type="button" class="btn-secondary cart-dialog-button-item cart-dialog-button" data-dismiss="modal">Turpināt preču meklēšanu</button>
+                                <a href="{{ route('cart') }}" class="btn-primary cart-dialog-button-item cart-dialog-button"><i class="material-icons"></i>Pārlūkot pirkumu grozu</a>
                             </div>
                         </div>
                     </div>

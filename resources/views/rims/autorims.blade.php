@@ -8,7 +8,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="main-content clearfix col-md-12 col-xl-10">
+            <div class="main-content clearfix col-md-12">
                 <div id="left-column" class="col-md-12 col-lg-3">
                     <!-- begin D:\OpenServer\domains\r1old/themes/classic/modules/ps_facetedsearch/ps_facetedsearch.tpl -->
                     <div id="search_filters_wrapper" class="hidden-sm-down">
@@ -273,7 +273,7 @@
                             </div>
                             {{-- GRID VIEW --}}
                             <div id="">
-                              <h4 class="rims-title">Lietie diski</h4>
+                              <h4 class="rims-title text-uppercase" style="color: black">Lietie diski</h4>
                               <div class="tire-image-container" style="display: none">
                                 <div class="tire-image-cards">
                                   @php
@@ -412,7 +412,7 @@
                     </section>
                 </div>
             </div>
-            @include('components.right-sidebar')
+{{--            @include('components.right-sidebar')--}}
         </div>
     </div>
 
