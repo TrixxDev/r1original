@@ -264,16 +264,21 @@
             <section id="products" class="">
               <div class="tire-image-container" style="display: none">
                 <div class="tire-image-cards">
-                  {{--                <div style="width: auto;">BRAND NAME</div>--}}
+                  {{-- GRID VIEW --}}
                   @php
                     $cbrand = '';
+                    $index = 0;
                   @endphp
                   @foreach($tires as $tire)
                     @php
                       $brand = $tire->fullSize;
                       $tire->includeStock = true;
                       if ($cbrand!=$brand){
-                        echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex">';
+                        if ($index == 0) {
+                          echo '</div><h4 class="tire-brand-name">' . $brand . ' <span class="text-uppercase">kvadraciklu riepas</span></h4><div class="row grid-ex">';
+                        } else {
+                          echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex">';
+                        }
                         $cbrand = $brand;
                         $stripe = 1;
                       } else {
@@ -299,7 +304,9 @@
                         </div>
                       </a>
                     </div>
-
+                  @php
+                    $index++;
+                  @endphp
                   @endforeach
                 </div>
               </div>
@@ -327,7 +334,7 @@
 {{--              </div>--}}
               <div id="">
                 <div id="js-product-list">
-                  <div class="products row hide-price">
+                  <div class="products row hide-price title-flip">
 
 
                     <div class="tire-image-container">
@@ -366,6 +373,7 @@
 {{--                    </div>--}}
                     @php
                       $cbrand = '';
+                      $index = 0;
                     @endphp
                     @foreach ($tires as $tire)
 {{--                      @php--}}
@@ -384,7 +392,11 @@
                         $brand = $tire->fullSize;
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){
-                          echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
+                          if($index == 0) {
+                            echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="text-uppercase flipped-title">Kvadraciklu riepas</span></h4>';
+                          } else {
+                            echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
+                          }
                       @endphp
                       <table id="tires-table" class="table quadr-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead">
