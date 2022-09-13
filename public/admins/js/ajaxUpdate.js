@@ -22,12 +22,13 @@ $(document).ready(function() {
       dataType: 'JSON',
       data: { brand_id: brand_id },
       success: function(data) {
+        data.sort();
         let html = '<select name="tread" class="form-control col-md-3" id="tread_select"><option></option>';
         data.forEach(function(value, key) {
           if (current_tread == value.tread_id) {
-            html += '<option value="' + value.tread_id + '" selected>' + value.title + '</option>';
+            html += '<option value="' + value.tread_id + '" selected>' + value.t_title + '</option>';
           } else {
-            html += '<option value="' + value.tread_id + '">' + value.title + '</option>';
+            html += '<option value="' + value.tread_id + '">' + value.t_title + '</option>';
           }
         });
         html += '</select>';
@@ -608,6 +609,7 @@ $(document).ready(function () {
             }
           });
         }
+        $('.modal#slotModal #f_slotcomment').text(data.f_slotcomment);
       }
     })
   });
@@ -644,7 +646,7 @@ $(document).ready(function () {
 
       if ($(this).is(':checked')) {
         checked = 1;
-        $(this).parent().children('.slot-comment').html(' 30% Atlaide');
+        $(this).parent().children('.slot-comment').html(' -30% darbam ! ! !');
       } else {
         checked = 0;
         $(this).parent().children('.slot-comment').html('');
@@ -710,6 +712,7 @@ $(document).ready(function () {
 
   $('.modal#slotModal .submit').on('click', function(e) {
     e.preventDefault();
+
     $.ajax({
       method: 'POST',
       url: '/admin/rezervacijas/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val() + '/' + $('.modal#slotModal input[name="part"]').val(),

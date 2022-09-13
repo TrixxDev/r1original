@@ -420,7 +420,7 @@ class RecordController extends Controller
 
     if ($request->checked == 1) {
       $slot->status = 2;
-      $slot->comment = '30% Atlaide';
+      $slot->comment = '-30% darbam ! ! !';
     } else {
       if ($slot->takenby !== '') {
         $slot->status = 1;
@@ -569,11 +569,13 @@ class RecordController extends Controller
         }
 
       } else {
-        $errorCount++;
-        $errorDate = $this->parse_datetime($f_date.' 00:00');
-        if ($errorDate<=0) $return['error_fields']['f_date'] = "Nepareizs datuma formāts";
-        $errorTime = $this->parse_datetime(date('d.m.Y').' '.$f_time);
-        if ($errorTime<=0) $return['error_fields']['f_time'] = "Nepareizs laika formāts";
+        if (!$request->f_slotcomment) {
+          $errorCount++;
+          $errorDate = $this->parse_datetime($f_date.' 00:00');
+          if ($errorDate<=0) $return['error_fields']['f_date'] = "Nepareizs datuma formāts";
+          $errorTime = $this->parse_datetime(date('d.m.Y').' '.$f_time);
+          if ($errorTime<=0) $return['error_fields']['f_time'] = "Nepareizs laika formāts";
+        }
       }
 
       $f_status = $request->f_status;

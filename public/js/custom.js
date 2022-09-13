@@ -968,7 +968,7 @@ function sendData(data){
     type: 'POST',
     url: '/accrualOrder',
     data: {info: data},
-    // timeout: 10000,
+    timeout: 10000,
     success: function(resp){
       $('#quick-buy-form').parent().find('.popup-close').click();
       $('.popup input[name=montage]').prop('checked', false);
@@ -978,14 +978,24 @@ function sendData(data){
       $('.popup input[name=price_safe]').attr('disabled', 'disabled');
       $('.popup input[name=price_safe]').val('');
       $('.popup textarea[name=comments]').val('');
-      toastr.options.timeOut = 3000;
-      toastr.success('Pasūtījums ir pieņemts!', 'Paziņojums');
+      Swal.fire({
+        title: 'Paziņojums',
+        text: 'Pasūtījums ir pieņemts!',
+        icon: 'success',
+        confirmButtonText: 'OK'
+      });
     },
-    // error: function(jqXHR, textStatus){
-    //   if (textStatus === 'timeout') {
-    //     toastr.error('Pastūtījums nav pieņemts!', 'Kļūda');
-    //   }
-    // },
+    error: function(jqXHR, textStatus){
+      if (textStatus === 'timeout') {
+        Swal.fire({
+          title: 'Kļūda!',
+          text: 'Pasūtījums nav pieņemts!',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        // toastr.error('Pastūtījums nav pieņemts!', 'Kļūda');
+      }
+    },
     complete: function(){
       $('#quick-buy-form').parent().removeClass('busy');
     }
@@ -1733,7 +1743,7 @@ $(document).ready(function() {
     $('.modal-footer #close-modal').click();
   });
 
-  $('.slot .free-slot-link').on('click', function() {
+  $('.slot .free-slot-link, .slot .offer-slot-link').on('click', function() {
     $('.modal-body.finish, .finish-footer').remove();
     $('.reservation-modal-body').slideDown();
     $('.reservation-modal-footer #submit-reservation').show();
@@ -2489,9 +2499,8 @@ $('.tire-table-checkbox').children().each(function(key, value){
           }
 
           // TIRE IMAGE INSIDE MODAL
-          $('.modal-product-info .product-name').html(data.cart.options.tire.title.toUpperCase());
-          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2));
-          $('.modal-product-info .product-price').attr('data-price', parseInt(data.cart.options.tire.price2));
+          $('.modal-product-info .product-name').html(data.cart.name);
+          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
           $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
           $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
           $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
@@ -2499,8 +2508,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
           $('.modal-product-info .product-li').html(data.cart.options.tire.li);
           $('.modal-product-info .product-si').html(data.cart.options.tire.si);
           $('.cart-content .cart-products-total').html(total_sum);
-          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity));
-          $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty'));
+          $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty')).attr('data-qty', parseInt(data.quantity));
           $('span.cart-products-count').html('(' + cart_quantity + ')');
           $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
           $('.blockcart.cart-preview .header').empty();

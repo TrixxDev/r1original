@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="{{ asset('css/combinationstab.css?rev=' . time()) }}" type="text/css" media="all">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
     <script src="{{ asset('js/loginToggle.js?rev=' . time()) }}"></script>

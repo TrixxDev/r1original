@@ -253,7 +253,7 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="slotModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="slotModalLabel" aria-hidden="true">
+  <div class="modal fade slotSettings" id="slotModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="slotModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
@@ -267,11 +267,12 @@
             <input type="hidden" name="queue_id">
             <input type="hidden" name="date">
             <input type="hidden" name="slot">
+            <input type="hidden" name="part" value="a">
             <div class="form-group row">
               <label for="f_status" class="col-sm-2 col-form-label text-right">Statuss:</label>
               <div class="col-3">
                 <select class="custom-select mr-sm-2" id="f_status">
-                  <option value="0"we>Brīvs</option>
+                  <option value="0">Brīvs</option>
                   <option value="1">Aizņemts</option>
                   <option value="3">Slēgts</option>
                 </select>
