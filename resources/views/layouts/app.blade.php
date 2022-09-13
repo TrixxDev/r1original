@@ -668,8 +668,8 @@
 
 
                     <div class="col-md-4 address">SIA "R1"<br> Juridiskā adrese:Kalnciema iela 39, Rīga, Latvija,
-                        LV-1046<br> Reģistrācijas Nr.: LV 40003479731<br> Banka: DnB NORD<br> Kods: RIKOLV2X<br> Konts:
-                        LV62RIKO0002010410513
+                        LV-1046<br> Reģistrācijas Nr.: LV 40003479731<br> Banka: Luminor Bank AS Latvijas filiāle<br> Kods: RIKOLV2X<br> Konts:
+                        LV91RIKO0001060089254
                     </div>
 
 
@@ -771,6 +771,16 @@
                             <div class="cart-dialog-button-container">
                                 <button type="button" class="btn-secondary cart-dialog-button-item cart-dialog-button" data-dismiss="modal">Turpināt preču meklēšanu</button>
                                 <a href="{{ route('cart') }}" class="btn-primary cart-dialog-button-item cart-dialog-button"><i class="material-icons"></i>Pārlūkot pirkumu grozu</a>
+                            </div>
+                            <div class="order-info alert" role="alert">
+                              <p style="font-weight: bold;">Pasūtīt un iegādāties preci iespējams sekošos veidos:</p>
+                              <ul id="order-type-info">
+                                <li class="list-style">Noformēt pasūtījumu, apmaksāt to kādā no mūsu servisiem un saņemt preci</li>
+                                <br>
+                                <li class="list-style">Noformēt pasūtījumu, veikt apmaksu ar bankas pārskaitījumu. Pēc apmaksas preci saņemt kādā no mūsu servisiem vai ar kurjera piegādi.</li>
+                                <br>
+                                <li class="list-style">Noformēt pasūtījumu, veikt tiešsaistes maksājumu noformējot pasūtījumu. Pēc apmaksas preci varēs saņemt kādā no mūsu servisiem vai ar kurjera piegādi.</li>
+                              </ul>
                             </div>
                         </div>
                     </div>
