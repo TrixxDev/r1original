@@ -4714,3 +4714,20 @@ ol.stepper {
 .modal#reservation .modal-dialog{
   pointer-events: all;
 }
+
+.order-info {
+  margin-top: 20px;
+}
+
+ul#order-type-info li.list-style {
+  list-style: inside;
+}
+
+.title-flip {
+  flex-direction: row-reverse;
+  justify-content: flex-end !important;
+}
+
+.flipped-title {
+  margin-left: 5px;
+}

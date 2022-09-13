@@ -34,8 +34,8 @@
 
                 <div class="can-collapse">
 
-                  <span class="show_list active"><i class="material-icons "></i>Saraksts</span>
-                  <span class="show_grid"><i class="material-icons "></i>Bilde</span>
+                  <span class="show_list"><i class="material-icons "></i>Saraksts</span>
+                  <span class="show_grid"><i class="material-icons "></i>Bildes</span>
 
                   <form method="get" action="/{{ $season_title }}/search">
                     <div class="sidebar-top">
@@ -590,10 +590,10 @@
                         if ($index == 0){
                           switch ($season_id){
                           case 1:
-                            echo ' <span style="color: black; class="text-uppercase"">Vasaras riepas</span>';
+                            echo ' <span class="text-uppercase">Vasaras riepas</span>';
                             break;
                           case 2:
-                            echo ' <span style="color: black;" class="text-uppercase">Ziemas riepas</span>';
+                            echo ' <span class="text-uppercase">Ziemas riepas</span>';
                             break;
                           }
                         }
@@ -635,7 +635,7 @@
               {{--LIST VIEW--}}
               <div id="">
                 <div id="js-product-list">
-                  <div class="products row hide-price">
+                  <div class="products row hide-price title-flip">
 
                     @php
                       $cbrand = '';
@@ -646,20 +646,21 @@
                         $brand = $tire->fullSize;
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){
-                          echo '<h4 class="tire-brand-name">' . $cbrand . '<h4>';
-                          $cbrand = $brand;
-                          $stripe = 1;
-                          if ($index == 0){
+
+                        echo '<h4 class="tire-brand-name">' . $cbrand;
+                        if ($index == 0){
                           switch ($season_id){
-                            case 1:
-                              echo ' Vasaras riepas';
-                              break;
-                            case 2:
-                              echo ' Ziemas riepas';
-                              break;
+                          case 1:
+                            echo ' <span class="text-uppercase flipped-title">Vasaras riepas</span>';
+                            break;
+                          case 2:
+                            echo ' <span class="text-uppercase flipped-title">Ziemas riepas</span>';
+                            break;
                           }
                         }
-                        echo '</h4></h4>';
+                        echo '</h4>';
+                        $cbrand = $brand;
+                        $stripe = 1;
                       @endphp
 {{--                    TIRES IMAGES--}}
 {{--                      <div class="image-list-item">--}}
