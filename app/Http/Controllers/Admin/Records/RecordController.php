@@ -419,13 +419,17 @@ class RecordController extends Controller
     $slot->timestamps = false;
 
     if ($request->checked == 1) {
-      $slot->status = 2;
-      $slot->comment = '-30% darbam ! ! !';
-    } else {
-      if ($slot->takenby !== '') {
-        $slot->status = 1;
+      if ($slot->status === SLOT_STATUS_FREE) {
+        $slot->status = 2;
+        $slot->comment = '-30% darbam ! ! !';
       } else {
+        $slot->comment = '-30% darbam ! ! !';
+      }
+    } else {
+      if ($slot->takenby === '' || $slot->takenby === NULL) {
         $slot->status = 0;
+      } else {
+        $slot->status = 1;
       }
       $slot->comment = '';
     }
@@ -727,7 +731,16 @@ class RecordController extends Controller
             $slot->status2 = $f_status;
             $slot->takenby2 = $formData;
           }
-          $slot->comment = $f_slotcomment;
+          if ($f_slotcomment) {
+            $slot->comment = $f_slotcomment;
+            if ($p=='a'){
+              $slot->status = 2;
+              $slot->takenby = $formData;
+            } else {
+              $slot->status2 = 2;
+              $slot->takenby2 = $formData;
+            }
+          }
 
           if ($slot->createtime=='') {
             $slot->createtime = NOW();

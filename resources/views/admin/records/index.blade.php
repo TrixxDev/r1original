@@ -269,16 +269,6 @@
             <input type="hidden" name="slot">
             <input type="hidden" name="part" value="a">
             <div class="form-group row">
-              <label for="f_status" class="col-sm-2 col-form-label text-right">Statuss:</label>
-              <div class="col-3">
-                <select class="custom-select mr-sm-2" id="f_status">
-                  <option value="0">Brīvs</option>
-                  <option value="1">Aizņemts</option>
-                  <option value="3">Slēgts</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
               <label for="title" class="col-sm-2 col-form-label text-right">Komentāri:</label>
               <div class="col-10">
                 <textarea id="f_slotcomment" class="form-control" cols="30" rows="5"></textarea>

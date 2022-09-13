@@ -99,13 +99,15 @@ class Rim extends Model
 //
 //  public function getStockCount()
 //  {
-//    $stock = Autostock::where('tire_id', $this->tire_id)->first();
+//    $stocks = Autostock::where('tire_id', $this->tire_id)->get();
 //
 //    $count=0;
 //
-//    if ($stock !== NULL && $stock->quantity >= 1) {
-//      $count += $stock->quantity;
-//    }
+//    foreach ($stocks as $stock) {
+//        if ($stock !== NULL && $stock->quantity >= 1) {
+//          $count += $stock->quantity;
+//        }
+//      }
 //
 //    return $count;
 //  }

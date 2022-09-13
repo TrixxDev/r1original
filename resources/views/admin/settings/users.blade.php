@@ -34,7 +34,7 @@
                         <tr>
                           <td>{{ ucfirst($user->name) }}</td>
                           <td>{{ ucfirst($user->surname) }}</td>
-                          <td>Nickname</td>
+                          <td>{{ $user->username }}</td>
                           <td>
                             {{ ucfirst(implode(', ', array_map("ucfirst", $user->getRoleNames()->toArray()))) }}
                           </td>

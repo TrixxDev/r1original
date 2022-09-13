@@ -26,12 +26,12 @@
                                                 Epasts
                                             </label>
                                             <div class="col-md-6">
-                                                <input id="email" type="email"
-                                                       style="@error('email') border: 1px solid red; @enderror"
-                                                       class="form-control @error('email') is-invalid @enderror" name="email"
-                                                       value="{{ old('email') }}" required autocomplete="email" autofocus
-                                                       oninvalid="this.setCustomValidity('Lūdzu ievadiet pareizu e-pastu')"
-                                                       oninput="this.setCustomValidity('')"/>
+                                              <input
+                                                id="username" type="username"
+                                                style="@error('email') border: 1px solid red; @enderror" class="form-control @error('username') is-invalid @enderror"
+                                                name="username" value="{{ old('username') }}" required autofocus
+                                                oninvalid="this.setCustomValidity('Lūdzu ievadiet pareizu e-pastu vai lietotājvārdu')"
+                                                oninput="this.setCustomValidity('')">
                                             </div>
                                             <div class="col-md-3 form-control-comment">
                                             </div>
@@ -42,7 +42,7 @@
                                           <div class="col-md-3"></div>
 
                                           <div class="col-md-6">
-                                            @error('email')
+                                            @error('username')
                                             <span class="invalid-feedback" role="alert">
                                                     <strong>{{ $message }}</strong>
                                                 </span>

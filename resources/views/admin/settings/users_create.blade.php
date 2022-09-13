@@ -32,9 +32,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="nickname">Lietotājvārds</label>
+              <label class="col-md-3 col-form-label" for="username">Lietotājvārds</label>
               <div class="col-md-9">
-                <input class="form-control" id="nickname" type="text" name="nickname" placeholder="Lietotājvārds">
+                <input class="form-control" id="username" type="text" name="username" placeholder="Lietotājvārds">
               </div>
             </div>
             <div class="form-group row">

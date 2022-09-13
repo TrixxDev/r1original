@@ -877,7 +877,7 @@
                           </td>
 
                           <td class="dot-availability text-center">
-                            <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip"
+                            <span class="dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip"
                                   data-html="true"
                                   title="{{ $tire->stockAvailability }}">
                               <span class="sort-order">{{ $tire->dotAvailable }}</span>

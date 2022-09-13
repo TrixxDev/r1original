@@ -240,11 +240,11 @@
 {{--                <input type="text" class="form-control ui-datepicker" id="f_date">--}}
               </div>
               <div class="col-3">
-                <select class="form-control" id="f_time">
-                  @for ($i=$openTime;$i<$closeTime;$i+=$timeStep)
-                    <option value="{{ App\Models\Office::timeByInterval($i) }}">{{ App\Models\Office::timeByInterval($i) }}</option>
-                  @endfor
-                </select>
+                  <select class="form-control" id="f_time">
+                    @for ($i=$openTime;$i<$closeTime;$i+=$timeStep)
+                      <option value="{{ App\Models\Office::timeByInterval($i) }}">{{ App\Models\Office::timeByInterval($i) }}</option>
+                    @endfor
+                  </select>
 {{--                <input type="text" class="form-control ui-datepicker" id="f_time">--}}
               </div> *
             </div>

@@ -2892,15 +2892,14 @@ th.cth_availability.quadr {
   background-color: #4cbb6c;
   border-radius: 0 16px 16px 0;
   width: 10px;
-  margin-left: 4px;
   color: #4cbb6c;
-  margin-left: 10px;
+  margin-left: 11px;
 }
 .dot.half-yellow {
   background-color: #FFFF00;
   border-radius: 0 16px 16px 0;
   width: 10px;
-  margin-left: 6px;
+  margin-left: 11px;
   color: #FFFF00;
 }
 
@@ -3920,9 +3919,9 @@ tr.selected td a {
   width: 8%;
 }
 
-td.slot-empty {
-  width: 50%;
-}
+/*td.slot-empty {*/
+/*  width: 50%;*/
+/*}*/
 
 td.header-empty {
   width: 0;
