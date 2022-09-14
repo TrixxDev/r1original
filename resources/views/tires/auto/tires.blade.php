@@ -590,10 +590,10 @@
                         if ($index == 0){
                           switch ($season_id){
                           case 1:
-                            echo ' <span class="text-uppercase">Vasaras riepas</span>';
+                            echo ' <span class="text-uppercase" style="color:black;">Vasaras riepas</span>';
                             break;
                           case 2:
-                            echo ' <span class="text-uppercase">Ziemas riepas</span>';
+                            echo ' <span class="text-uppercase" style="color:black;">Ziemas riepas</span>';
                             break;
                           }
                         }
@@ -607,16 +607,31 @@
                     @if($tire->price1)
                     <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}" class="">
                       <div class="tire-image-card sort-order">
-                        <div class="text-center">
+                        <div class="text-center image-grid-overflow">
                           {!! \Image::showGrid('auto', $tire->make_id) !!}
                         </div>
 
                         <div class="tire-list-caption">
 
-                          <div class="card-title-text">{{$tire->title}}</div>
-                            <div class="tire-tread">
-                              {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}
-                            </div>
+                          <div class="card-title-text" data-toggle="tooltip" title="<div>{{$tire->title}}</div>">
+                            {{$tire->title}}
+                          </div>
+
+                          <div class="tire-tread">
+                            {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}} <b>{{$tire->li}}{{$tire->si}}</b>
+                          </div>
+                          <div class="grid-tire-icons">
+                            @php
+                              if ($tire->eco) {
+                                echo '<div data-toggle="tooltip" class="tire-table-icon icon-tire-fuel" title="' . '<span>Degvielas ekonomija: ' . $tire->eco . '</span>' . '"></div>';
+                                echo '<div data-toggle="tooltip" class="tire-table-icon icon-tire-rain" title="' . '<span>Mitrs segums: ' . $tire->wet . '</span>' . '"></div>';
+                                echo '<div data-toggle="tooltip" class="tire-table-icon icon-tire-sound" title="' . '<span>Troksnis: ' . $tire->noise . '</span>' . '"></div>';
+                                echo '<div class="grid-image-code">' . $tire->code . '</div>';
+                              } else {
+                                echo '<div class="grid-image-code">' . $tire->code . '</div>';
+                              }
+                            @endphp
+                          </div>
                           <div style="display: inline-flex">
                             <div class="rim-price-old">€{{$tire->price1}}</div>
                             <div class="rim-price-red">€{{$tire->price2}}</div>
@@ -651,10 +666,10 @@
                         if ($index == 0){
                           switch ($season_id){
                           case 1:
-                            echo ' <span class="text-uppercase flipped-title">Vasaras riepas</span>';
+                            echo ' <span class="text-uppercase flipped-title" style="color:black;">Vasaras riepas</span>';
                             break;
                           case 2:
-                            echo ' <span class="text-uppercase flipped-title">Ziemas riepas</span>';
+                            echo ' <span class="text-uppercase flipped-title" style="color:black;">Ziemas riepas</span>';
                             break;
                           }
                         }
