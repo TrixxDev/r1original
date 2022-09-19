@@ -614,6 +614,10 @@
                         <div class="tire-list-caption">
 
                           <div class="card-title-text" data-toggle="tooltip" title="<div>{{$tire->title}}</div>">
+                            <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip"
+                                  data-html="true"
+                                  title="{{ $tire->stockAvailability }}">
+                            </span>
                             {{$tire->title}}
                           </div>
 

@@ -4777,3 +4777,42 @@ ul#order-type-info li.list-style {
 .grid-shopping-button:active {
   background-color: #407866;
 }
+
+.grid-dot {
+  height: 13px;
+  width: 13px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 1px solid #00000045;
+}
+
+.grid-dot.red {
+  background-color: #FF0000;
+  color: #FF0000;
+}
+
+.grid-dot.green {
+  background-color: #4cbb6c;
+  color: #4cbb6c;
+}
+
+.grid-dot.yellow {
+  background-color: #FFFF00;
+  color: #FFFF00;
+}
+
+.grid-dot.half-green {
+  background-color: #4cbb6c;
+  border-radius: 0 6.5px 6.5px 0;
+  width: 8px;
+  margin-left: 0px;
+  color: #4cbb6c;
+}
+
+.grid-dot.half-yellow {
+  background-color: #FFFF00;
+  border-radius: 0 6.5px 6.5px 0;
+  width: 8px;
+  margin-left: 0px;
+  color: #FFFF00;
+}

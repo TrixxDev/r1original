@@ -610,7 +610,7 @@ $.UrlExists = function(url) {
   return http.status!=404;
 }
 // OLD TABLE SHOPPING BUTTON MODAL FUNCTION
-$('.tire-table-row').each(function(key, value) {
+$('.tire-table-row, .tire-image-card').each(function(key, value) {
   products.push($(value).children().children().last().children().first().val());
   $(value).find('.grid-cart-btn').on('click', function() {
     if (!user) {
@@ -654,7 +654,7 @@ $('.tire-table-row').each(function(key, value) {
           $('.modal-product-info .product-li').html(data.cart.options.tire.li);
           $('.modal-product-info .product-si').html(data.cart.options.tire.si);
           $('.cart-content .cart-products-total').html(total_sum);
-          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html($('.modal-product-info .product-qty').attr('data-qty'));
+          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html('4');
           $('span.cart-products-count').html('(' + cart_quantity + ')');
           $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
           $('.blockcart.cart-preview .header').empty();
@@ -831,7 +831,7 @@ if (!admin) {
         $('.modal-product-info .product-li').html(data.cart.options.tire.li);
         $('.modal-product-info .product-si').html(data.cart.options.tire.si);
         $('.cart-content .cart-products-total').html(total_sum);
-        $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html($('.modal-product-info .product-qty').attr('data-qty'));
+        $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html(quantity);
         $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
         $('.blockcart.cart-preview .header').empty();
         $('<a rel="nofollow" href="/grozs"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + $quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
@@ -895,8 +895,7 @@ $('.ct_matrix_row').each(function(key, value) {
           $('.modal-product-info .product-li').html(data.cart.options.tire.li);
           $('.modal-product-info .product-si').html(data.cart.options.tire.si);
           $('.cart-content .cart-products-total').html(total_sum);
-          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity));
-          $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty'));
+          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html(quantity);
           $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
           $('.blockcart.cart-preview .header').empty();
           $('<a rel="nofollow" href="/grozs"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + $quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
