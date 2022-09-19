@@ -627,6 +627,13 @@
                             <div class="rim-price-red">€{{$tire->price2}}</div>
                           </div>
                         </div>
+{{--                        <button class="grid-shopping-button grid-cart-btn" data-toggle="modal" data-target="#blockcart-modal" data-info="148204">Pirkt--}}
+{{--                        </button>--}}
+
+                        <button class="grid-shopping-button grid-cart-btn" data-toggle="modal"
+                                @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"
+                                @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()"><span style="letter-spacing: 2px;">Pirkt</span>
+                        </button>
 
                       </div>
                     </a>
