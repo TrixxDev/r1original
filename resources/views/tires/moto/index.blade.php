@@ -296,7 +296,7 @@
                       $tire->includeStock = true;
                       if ($cbrand!=$brand){
                         if ($index == 0) {
-                          echo '</div><h4 class="tire-brand-name">' . $brand . ' <span class="text-uppercase">Motociklu riepas</span></h4><div class="row grid-ex pr-1">';
+                          echo '</div><h4 class="tire-brand-name">' . $brand . ' <span class="top-product-title">Motociklu riepas</span></h4><div class="row grid-ex pr-1">';
                         } else {
                           echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex pr-1">';
                         }
@@ -403,7 +403,7 @@
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){
                           if ($index == 0) {
-                            echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="text-uppercase flipped-title">Motociklu riepas</span></h4>';
+                            echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="top-product-title flipped-title">Motociklu riepas</span></h4>';
                           } else {
                             '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
                           }
