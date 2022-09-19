@@ -85,9 +85,9 @@ class Image {
       if (file_exists(str_replace('.jpg', '.png', Self::image($type, $image)))) {
         $img = str_replace('.jpg', '.png', $img);
       }
-      return '<img style="width:170px; height: 170px;" src=' . $img . '>';
+      return '<img class="grid-tire-image" src=' . $img . '>';
     } else {
-      return '<img style="width:170px;" src=' . asset('img/p/r1-logo.svg') . '>';
+      return '<img class="grid-tire-image" src=' . asset('img/p/r1-logo.svg') . '>';
     }
 
   }

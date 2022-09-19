@@ -590,10 +590,10 @@
                         if ($index == 0){
                           switch ($season_id){
                           case 1:
-                            echo ' <span class="text-uppercase">Vasaras riepas</span>';
+                            echo ' <span class="text-uppercase" style="color:black;">Vasaras riepas</span>';
                             break;
                           case 2:
-                            echo ' <span class="text-uppercase">Ziemas riepas</span>';
+                            echo ' <span class="text-uppercase" style="color:black;">Ziemas riepas</span>';
                             break;
                           }
                         }
@@ -605,23 +605,35 @@
                       }
                     @endphp
                     @if($tire->price1)
-                    <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}" class="">
+                    <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}">
                       <div class="tire-image-card sort-order">
-                        <div class="text-center">
+                        <div class="text-center image-grid-overflow">
                           {!! \Image::showGrid('auto', $tire->make_id) !!}
                         </div>
 
                         <div class="tire-list-caption">
 
-                          <div class="card-title-text">{{$tire->title}}</div>
-                            <div class="tire-tread">
-                              {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}
-                            </div>
+                          <div class="card-title-text" data-toggle="tooltip" title="<div>{{$tire->title}}</div>">
+                            {{$tire->title}}
+                          </div>
+
+                          <div class="tire-tread">
+                            <b>{{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}} </b>
+                            <span data-toggle="tooltip" title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}</span>
+                            <span class="tire-image-code">{{$tire->code}}</span>
+                          </div>
                           <div style="display: inline-flex">
                             <div class="rim-price-old">€{{$tire->price1}}</div>
                             <div class="rim-price-red">€{{$tire->price2}}</div>
                           </div>
                         </div>
+{{--                        <button class="grid-shopping-button grid-cart-btn" data-toggle="modal" data-target="#blockcart-modal" data-info="148204">Pirkt--}}
+{{--                        </button>--}}
+
+                        <button class="grid-shopping-button grid-cart-btn" data-toggle="modal"
+                                @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"
+                                @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()"><span style="letter-spacing: 2px;">Pirkt</span>
+                        </button>
 
                       </div>
                     </a>
@@ -651,10 +663,10 @@
                         if ($index == 0){
                           switch ($season_id){
                           case 1:
-                            echo ' <span class="text-uppercase flipped-title">Vasaras riepas</span>';
+                            echo ' <span class="text-uppercase flipped-title" style="color:black;">Vasaras riepas</span>';
                             break;
                           case 2:
-                            echo ' <span class="text-uppercase flipped-title">Ziemas riepas</span>';
+                            echo ' <span class="text-uppercase flipped-title" style="color:black;">Ziemas riepas</span>';
                             break;
                           }
                         }

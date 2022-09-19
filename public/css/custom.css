@@ -3714,7 +3714,7 @@ th.tire-price-red {
 }
 
 .icon-tire-sound {
-  background-position: -83px 0;
+  background-position: -82px 0;
 }
 
 .icon-tire-rain {
@@ -3990,7 +3990,7 @@ td.header-empty {
 }
 
 .tire-list-caption {
-  padding: 5px;
+  padding: 10px;
 }
 
 .img-list-thumbnail {
@@ -4015,8 +4015,7 @@ td.header-empty {
 
 .tire-image-card {
   border-radius: 10px;
-  color: white;
-  padding: 10px;
+  color: black;
   height: 100%;
   border: 1px solid rgba(0, 0, 0, .125);
   box-shadow: 2px 2px 8px 0 rgb(0 0 0 / 20%);
@@ -4045,11 +4044,19 @@ td.header-empty {
   font-weight: 700;
   color: #4a4a4a;
   font-size: 1rem;
+  white-space: nowrap;
+  width: 183px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .tire-tread {
   color: black;
   font-size: 0.9rem;
+  width: 183px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .border-none {
@@ -4727,3 +4734,46 @@ ul#order-type-info li.list-style {
   margin-left: 5px;
 }
 
+.grid-tire-image {
+  width: 100%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  margin: 0 !important;
+}
+
+.image-grid-overflow {
+  height: 204.5px;
+  overflow: hidden;
+}
+
+.grid-tire-icons .tire-table-icon{
+  display: inline-block !important;
+}
+
+.grid-image-code {
+  display: inline-block;
+  vertical-align: text-bottom;
+  padding-bottom: 3px;
+  white-space: nowrap;
+  width: 115px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.grid-shopping-button {
+  background-color: #aeaeae;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.grid-shopping-button:hover {
+  background-color: #56a78d;
+}
+
+.grid-shopping-button:active {
+  background-color: #407866;
+}
