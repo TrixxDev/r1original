@@ -66,30 +66,69 @@ class SyncController extends Controller
 
     }
 
-    public function updateStock($stock)
-    {
-        foreach ($stock as $id => $value) {
+  public function updateStock($stock)
+  {
+    foreach ($stock as $id => $value) {
 
-            $noliktavas = explode(';', $value);
-            $urs = @$noliktavas[0];
-            $krs = @$noliktavas[1];
+      $noliktavas = explode(';', $value);
+      $urs = @$noliktavas[0];
+      $krs = @$noliktavas[1];
 
-            $urs = explode(': ', $urs);
-            @$urs_quantity = (int) $urs[1];
+      $urs = explode(': ', $urs);
+      @$urs_quantity = (int) $urs[1];
 
-            $krs = explode(': ', $krs);
-            @$krs_quantity = (int) $krs[1];
+      $krs = explode(': ', $krs);
+      @$krs_quantity = (int) $krs[1];
 
-            $total = $urs_quantity + $krs_quantity;
+      $total = $urs_quantity + $krs_quantity;
 
-            foreach ($this->tire_tables as $tire_table => $tire_stock) {
-                $product = DB::table($tire_table)->where('tire_id', $id);
-                if ($product) {
-                    $product->update(['quantity' => $total, 'urs_quantity' => @$urs_quantity, 'krs_quantity' => @$krs_quantity, 'updated_at' => date('Y-m-d H:i:s')]);
-                }
+      foreach ($this->tire_tables as $tire_table => $tire_stock) {
+        $product = DB::table($tire_table)->where('tire_id', $id)->first();
+
+        if ($product) {
+
+          $article = '';
+
+          $sql = "SELECT ArticleId as ArtikulaId FROM katdetal WHERE Artikuls = '" . $product->article . "'";
+          $result = $this->accrual->query($sql);
+
+          foreach ($result as $row) {
+            $article = $row['ArtikulaId'];
+          }
+
+          $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.ArticleId = '" . $article . "'";
+          $result = $this->accrual->query($sql);
+          if ($result->rowCount()) {
+            foreach ($result as $rows) {
+              set_time_limit(0);
+              $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
+              if ($rows['Deleted'] == 1) {
+                $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+              } else {
+                $akcijas_cena = (int) round(round($rows['Cena'], 5) * 1.21);
+              }
             }
+            DB::table($tire_table)->where('tire_id', $id)->update([
+              'price1' => $veikala_cena,
+              'price2' => $akcijas_cena,
+              'quantity' => $total,
+              'urs_quantity' => @$urs_quantity,
+              'krs_quantity' => @$krs_quantity,
+              'updated_at' => date('Y-m-d H:i:s')
+            ]);
+          } else {
+            DB::table($tire_table)->where('tire_id', $id)->update([
+              'quantity' => $total,
+              'urs_quantity' => @$urs_quantity,
+              'krs_quantity' => @$krs_quantity,
+              'updated_at' => date('Y-m-d H:i:s')
+            ]);
+          }
+
         }
+      }
     }
+  }
 
 //    public function updateStock($stock)
 //    {
@@ -114,41 +153,41 @@ class SyncController extends Controller
 //        }
 //    }
 
-    public function getInventory($tire_table, $article = null)
-    {
-        $map = $this->getAccrualIdToEntityIdMap($tire_table);
+  public function getInventory($tire_table, $article = null)
+  {
+    $map = $this->getAccrualIdToEntityIdMap($tire_table);
 
 //        dd($map);
-        $inventory = $this->getAccrualInventory($article);
+    $inventory = $this->getAccrualInventory($article);
 
 //        dd($inventory);
 
-        if ($article && !isset($inventory[$article])){
-            $inventory = ['_stores' => [$article => ['0']], $article => 0];
-        }
+    if ($article && !isset($inventory[$article])){
+      $inventory = ['_stores' => [$article => ['0']], $article => 0];
+    }
 
-        $stores = $inventory['_stores'];
-        unset($inventory['_stores']);
-        $articles = array_keys($stores);
-        $stores = array_combine($articles, array_map('implode', array_fill(0,count($stores),';'), $stores));
+    $stores = $inventory['_stores'];
+    unset($inventory['_stores']);
+    $articles = array_keys($stores);
+    $stores = array_combine($articles, array_map('implode', array_fill(0,count($stores),';'), $stores));
 
 //        dump($map, $inventory, $stores); die;
 
-        $stock = $this->mapInventory($map, $inventory);
-        $storestock = $this->mapInventory($map, $stores);
+    $stock = $this->mapInventory($map, $inventory);
+    $storestock = $this->mapInventory($map, $stores);
 
 //        dump($stock, $storestock);die;
-        return [$articles, $stock, $storestock];
+    return [$articles, $stock, $storestock];
+  }
+
+  public function getAccrualIdToEntityIdMap($tire_table)
+  {
+    $sql = DB::table($tire_table)->get();
+    $result = [];
+
+    foreach ($sql as $row) {
+      array_push($result, ['tire_id' => $row->tire_id, 'article' => $row->article]);
     }
-
-    public function getAccrualIdToEntityIdMap($tire_table)
-    {
-        $sql = DB::table($tire_table)->get();
-        $result = [];
-
-        foreach ($sql as $row) {
-            array_push($result, ['tire_id' => $row->tire_id, 'article' => $row->article]);
-        }
 
 //        Jāuztaisa masīvs - [
 //        [
@@ -156,68 +195,68 @@ class SyncController extends Controller
 //              'accrual_id' => $accrual_id
 //        ]
 
-        $mapped = array_column($result, 'article', 'tire_id');
+    $mapped = array_column($result, 'article', 'tire_id');
 
-        return $mapped;
+    return $mapped;
+  }
+
+  public function mapInventory($map, $inventory) {
+    $stock = [];
+
+    foreach($map as $entity_id => $accrual_id) {
+      if(array_key_exists($accrual_id, $inventory)) {
+        $stock[$entity_id] = $inventory[$accrual_id];
+      }
     }
 
-    public function mapInventory($map, $inventory) {
-        $stock = [];
+    return $stock;
+  }
 
-        foreach($map as $entity_id => $accrual_id) {
-            if(array_key_exists($accrual_id, $inventory)) {
-                $stock[$entity_id] = $inventory[$accrual_id];
-            }
-        }
+  public function getAccrualInventory($article = null) {
 
-        return $stock;
-    }
-
-    public function getAccrualInventory($article = null) {
-
-        $stores = $this->getAccrualStores();
+    $stores = $this->getAccrualStores();
 
 //        $article = '15215/70DECONODRIVE109SC';
-        $sql = "SELECT k.Artikuls, a.Atlikums, a.Rezervets, (a.Atlikums - a.Rezervets) AS atl_min_rez, a.StorId
+    $sql = "SELECT k.Artikuls, a.Atlikums, a.Rezervets, (a.Atlikums - a.Rezervets) AS atl_min_rez, a.StorId
 		FROM atlikumi a INNER JOIN katdetal k ON (k.ArticleId = a.ArticleId) WHERE a.FrFirmId = 1";
 
-        if($article) $sql .= " AND k.Artikuls = '$article'";
+    if($article) $sql .= " AND k.Artikuls = '$article'";
 
-        $result = $this->accrual->query($sql);
+    $result = $this->accrual->query($sql);
 
-        $inventory = ['_stores'=>[]];
+    $inventory = ['_stores'=>[]];
 
-        foreach ($result as $row) {
-            if($row['StorId'] == 0) {
-                $inventory[$row['Artikuls']] = $row['atl_min_rez'];
-            }
-            else {
-                $storId = $row['StorId'];
+    foreach ($result as $row) {
+      if($row['StorId'] == 0) {
+        $inventory[$row['Artikuls']] = $row['atl_min_rez'];
+      }
+      else {
+        $storId = $row['StorId'];
 
-                if(!isset($inventory['_stores'][$row['Artikuls']])) $inventory['_stores'][$row['Artikuls']] = array();
+        if(!isset($inventory['_stores'][$row['Artikuls']])) $inventory['_stores'][$row['Artikuls']] = array();
 
-                if(isset($stores[$storId])) $inventory['_stores'][$row['Artikuls']][(int)$storId] = $stores[$storId] . ': '. $row['atl_min_rez'];
-            }
-        }
-
-        return $inventory;
+        if(isset($stores[$storId])) $inventory['_stores'][$row['Artikuls']][(int)$storId] = $stores[$storId] . ': '. $row['atl_min_rez'];
+      }
     }
 
-    public function getAccrualStores() {
+    return $inventory;
+  }
 
-        $sql = "SELECT StorId, Nosaukums FROM unobjekti WHERE Deleted = 0 AND Veids = 1;";
+  public function getAccrualStores() {
 
-        $result = $this->accrual->query($sql);
-        $stores = [];
+    $sql = "SELECT StorId, Nosaukums FROM unobjekti WHERE Deleted = 0 AND Veids = 1;";
 
-        foreach ($result as $row) {
-            if (strpos($row['Nosaukums'], 'Noliktava') !== false || strpos($row['Nosaukums'], 'Veikals') !== false) {
-                $stores[$row['StorId']] = $row['Nosaukums'];
-            }
-        }
+    $result = $this->accrual->query($sql);
+    $stores = [];
 
-        return $stores;
+    foreach ($result as $row) {
+      if (strpos($row['Nosaukums'], 'Noliktava') !== false || strpos($row['Nosaukums'], 'Veikals') !== false) {
+        $stores[$row['StorId']] = $row['Nosaukums'];
+      }
     }
+
+    return $stores;
+  }
 
     // Lattako sync
 
