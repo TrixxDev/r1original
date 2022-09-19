@@ -275,7 +275,7 @@
                       $tire->includeStock = true;
                       if ($cbrand!=$brand){
                         if ($index == 0) {
-                          echo '</div><h4 class="tire-brand-name">' . $brand . ' <span class="text-uppercase">kvadraciklu riepas</span></h4><div class="row grid-ex">';
+                          echo '</div><h4 class="tire-brand-name">' . $brand . ' <span class="top-product-title">kvadraciklu riepas</span></h4><div class="row grid-ex">';
                         } else {
                           echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex">';
                         }
@@ -393,31 +393,16 @@
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){
                           if($index == 0) {
-                            echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="text-uppercase flipped-title">Kvadraciklu riepas</span></h4>';
+                            echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="top-product-title flipped-title">Kvadraciklu riepas</span></h4>';
                           } else {
                             echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
                           }
                       @endphp
-                      <table id="tires-table" class="table quadr-sorter tires-table table-hover tablesorter">
+                      <table id="tires-table" class="table quadr-tread-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead">
                         <tr>
                           <th scope="col"><input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces"></th>
-                          <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
-                          <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
-{{--                          <th scope="col" class="hidden-sm-down text-center">Kods</th>--}}
-
-{{--                          <th scope="col" class="hidden-sm-down">--}}
-{{--                            <div class="tire-table-icon icon-tire-fuel" title="Degvielas ekonomija"></div>--}}
-{{--                          </th>--}}
-
-{{--                          <th scope="col" class="hidden-sm-down">--}}
-{{--                            <div class="tire-table-icon icon-tire-rain" title="Slapjš segums"></div>--}}
-{{--                          </th>--}}
-
-{{--                          <th scope="col" class="hidden-sm-down">--}}
-{{--                            <div class="tire-table-icon icon-tire-sound" title="Troksnis"></div>--}}
-{{--                          </th>--}}
-
+                          <th scope="col" class="table-tire-name-cell" style="width:50%;">Brends / modelis</th>
                           <th id="store-price-button" scope="col" class="text-center">
                             Veikala cena
                           </th>
@@ -515,15 +500,6 @@
                                data-content="{{ $tire->title }}">
                               {{ $tire->title }}
                             </a>
-                          </td>
-
-                          <td class="hidden-sm-down li-si-col">
-                            <span>
-                              <span data-toggle="tooltip"
-                                    title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>
-                              <span data-toggle="tooltip"
-                                    title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>
-                            </span>
                           </td>
 
 {{--                          <td class="hidden-sm-down text-center">--}}

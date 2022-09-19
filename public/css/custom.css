@@ -3765,6 +3765,7 @@ th.tire-price-red {
 }
 
 .tire-table-link {
+  color: black;
   display: flex;
   white-space: nowrap;
 }
@@ -3990,7 +3991,7 @@ td.header-empty {
 }
 
 .tire-list-caption {
-  padding: 10px;
+  padding: 10px 10px 1px 10px;
 }
 
 .img-list-thumbnail {
@@ -4815,4 +4816,9 @@ ul#order-type-info li.list-style {
   width: 8px;
   margin-left: 0px;
   color: #FFFF00;
+}
+
+.top-product-title {
+  text-transform: uppercase;
+  color: black;
 }

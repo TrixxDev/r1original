@@ -2527,6 +2527,11 @@ let red = $('.tire-table-row').find('.red').parent().parent();
 let green = $('.tire-table-row').find('.green').parent().parent();
 let yellow = $('.tire-table-row').find('.yellow').parent().parent();
 
+let gridColors = $('.tire-image-card').find('.grid-dot').parent().parent().parent().parent();
+let gridRed = $('.tire-image-card').find('.red').parent().parent().parent().parent();
+let gridYellow = $('.tire-image-card').find('.yellow').parent().parent().parent().parent();
+let gridGreen = $('.tire-image-card').find('.green').parent().parent().parent().parent();
+
 $('#facet_availability li label').on('click', function() {
   // colors.hide();
   colors.each(function(key, value){

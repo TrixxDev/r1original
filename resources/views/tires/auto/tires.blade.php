@@ -636,7 +636,7 @@
 
                         <button class="grid-shopping-button grid-cart-btn" data-toggle="modal"
                                 @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"
-                                @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()"><span style="letter-spacing: 2px;">Pirkt</span>
+                                @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()"><span style="letter-spacing: 2px; text-transform: uppercase;">Pirkt</span>
                         </button>
 
                       </div>
