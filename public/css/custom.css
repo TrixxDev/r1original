@@ -4050,7 +4050,7 @@ td.header-empty {
   color: #4a4a4a;
   font-size: 1rem;
   white-space: nowrap;
-  width: 173px;
+  width: 183px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -4058,6 +4058,10 @@ td.header-empty {
 .tire-tread {
   color: black;
   font-size: 0.9rem;
+  width: 183px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .border-none {

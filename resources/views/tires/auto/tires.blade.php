@@ -605,7 +605,7 @@
                       }
                     @endphp
                     @if($tire->price1)
-                    <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}" class="">
+                    <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}">
                       <div class="tire-image-card sort-order">
                         <div class="text-center image-grid-overflow">
                           {!! \Image::showGrid('auto', $tire->make_id) !!}
@@ -618,19 +618,9 @@
                           </div>
 
                           <div class="tire-tread">
-                            {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}} <b>{{$tire->li}}{{$tire->si}}</b>
-                          </div>
-                          <div class="grid-tire-icons">
-                            @php
-                              if ($tire->eco) {
-                                echo '<div data-toggle="tooltip" class="tire-table-icon icon-tire-fuel" title="' . '<span>Degvielas ekonomija: ' . $tire->eco . '</span>' . '"></div>';
-                                echo '<div data-toggle="tooltip" class="tire-table-icon icon-tire-rain" title="' . '<span>Mitrs segums: ' . $tire->wet . '</span>' . '"></div>';
-                                echo '<div data-toggle="tooltip" class="tire-table-icon icon-tire-sound" title="' . '<span>Troksnis: ' . $tire->noise . '</span>' . '"></div>';
-                                echo '<div class="grid-image-code">' . $tire->code . '</div>';
-                              } else {
-                                echo '<div class="grid-image-code">' . $tire->code . '</div>';
-                              }
-                            @endphp
+                            <b>{{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}} </b>
+                            <span data-toggle="tooltip" title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}</span>
+                            <span class="tire-image-code">{{$tire->code}}</span>
                           </div>
                           <div style="display: inline-flex">
                             <div class="rim-price-old">€{{$tire->price1}}</div>
