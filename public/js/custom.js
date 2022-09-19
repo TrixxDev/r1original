@@ -2835,36 +2835,36 @@ function countdown() {
   }, 1000);
 }
 
-if (user) {
-
-  let sessionCheck;
-
-  function checkSession() {
-    sessionCheck = setInterval(function() {
-      $.get('/testing1', function(data) {
-        if (data == 1) {
-          $('#timeout').modal({
-            keyboard: false,
-            backdrop: false,
-          }).modal('show');
-          countdown();
-          clearInterval(sessionCheck);
-        }
-      });
-    }, 3000);
-  }
-
-  checkSession();
-
-  $('#timeout #stay').on('click', function() {
-    $.post('/testing1', function(data, status) {
-      if (data == 1) {
-        clearInterval(sessionCheck);
-        clearInterval(interval);
-        $('#timeout').modal('hide');
-        $('#timeout .modal-body .time').html($('#timeout .modal-body .time').data('start'));
-        checkSession();
-      }
-    });
-  });
-}
+// if (user) {
+//
+//   let sessionCheck;
+//
+//   function checkSession() {
+//     sessionCheck = setInterval(function() {
+//       $.get('/testing1', function(data) {
+//         if (data == 1) {
+//           $('#timeout').modal({
+//             keyboard: false,
+//             backdrop: false,
+//           }).modal('show');
+//           countdown();
+//           clearInterval(sessionCheck);
+//         }
+//       });
+//     }, 3000);
+//   }
+//
+//   checkSession();
+//
+//   $('#timeout #stay').on('click', function() {
+//     $.post('/testing1', function(data, status) {
+//       if (data == 1) {
+//         clearInterval(sessionCheck);
+//         clearInterval(interval);
+//         $('#timeout').modal('hide');
+//         $('#timeout .modal-body .time').html($('#timeout .modal-body .time').data('start'));
+//         checkSession();
+//       }
+//     });
+//   });
+// }
