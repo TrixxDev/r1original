@@ -8783,7 +8783,8 @@ body#checkout #delivery textarea, body#checkout #gift_message textarea {
 }
 
 .pagination {
-  width: 100%
+  width: 100%;
+  padding-right: 0px!important;
 }
 
 .pagination > div:first-child {
@@ -8812,10 +8813,6 @@ body#checkout #delivery textarea, body#checkout #gift_message textarea {
 
 .pagination .previous {
   float: left
-}
-
-.pagination .next {
-  float: right
 }
 
 .pagination .disabled {

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use DOMDocument;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -16,6 +18,62 @@ class HomeController extends Controller
     public function __construct()
     {
 
+    }
+
+    public function checkSession(Request $request) {
+
+      if ($request->isMethod('post')) {
+        $user = User::findOrFail(Auth::user()->id);
+        $minutesToAdd = gmdate('i', env('session_lifetime'));
+
+        $userTime = \Carbon\Carbon::now()->addMinutes($minutesToAdd)->format('Y-m-d H:i');
+
+        $user->timestamps = false;
+        $user->lastActivityTime = $userTime;
+        $user->save();
+        return 1;
+      }
+
+      if (Auth::check()) {
+
+        $user = User::findOrFail(Auth::user()->id);
+        $currentTime = date('Y-m-d H:i', time());
+
+        $timeLeft = \Carbon\Carbon::parse($user->lastActivityTime)->subMinutes(3)->format('Y-m-d H:i');
+
+        if ($currentTime === $timeLeft) {
+          return 1;
+        } else {
+          return 0;
+        }
+
+      }
+    }
+
+    public function login(Request $request) {
+      if ($request->post()) {
+
+        $field = (str_contains($request->username, '@') || !$request->username) ? 'email' : 'username';
+        $request->merge([$field => $request->username]);
+
+        $request->validate([
+          $field => 'required|string',
+          'password' => 'required|string',
+        ]);
+
+        $credentials = array(
+          $field => $request->$field,
+          "password" => $request->password,
+        );
+
+        if (Auth::attempt($credentials)) {
+          return 1;
+        }
+
+        return 0;
+
+      }
+      return view('testings');
     }
 
     /**
@@ -126,7 +184,7 @@ class HomeController extends Controller
       $summa_pvn = number_format((float)$summa_pvn, 2, '.', '');
 
       $article = $request->info['article'];
-      $prod = $request->info['prod'];
+//      $prod = $request->info['prod'];
       $quantity = $request->info['qty'];
       $price = $request->info['price'];
       $price_pvn = ($price / 1.21);
@@ -167,7 +225,7 @@ class HomeController extends Controller
       $xml_string .= '&#009;<Ieraksti>&#10;';
       $xml_string .= '&#009;&#009;<Ieraksts>&#10;';
       $xml_string .= '&#009;&#009;&#009;<Artikuls>' . $article . '</Artikuls>&#10;';
-      $xml_string .= '&#009;&#009;&#009;<Nosaukums>' . $prod . '</Nosaukums>&#10;';
+//      $xml_string .= '&#009;&#009;&#009;<Nosaukums>' . $prod . '</Nosaukums>&#10;';
       $xml_string .= '&#009;&#009;&#009;<Mervieniba>gab</Mervieniba>&#10;';
       $xml_string .= '&#009;&#009;&#009;<Cena>' . $price_pvn . '</Cena>&#10;';
       $xml_string .= '&#009;&#009;&#009;<Daudzums>' . $quantity . '.000</Daudzums>&#10;';
@@ -178,7 +236,6 @@ class HomeController extends Controller
       if ($montage == 1) {
         $xml_string .= '&#009;&#009;<Ieraksts>&#10;';
         $xml_string .= '&#009;&#009;&#009;<Artikuls>04</Artikuls>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Nosaukums>4 riepu nomaina vienam auto</Nosaukums>&#10;';
         $xml_string .= '&#009;&#009;&#009;<Mervieniba>kompl.</Mervieniba>&#10;';
         $xml_string .= '&#009;&#009;&#009;<Cena>' . $montage_price_pvn . '</Cena>&#10;';
         $xml_string .= '&#009;&#009;&#009;<Daudzums>1.000</Daudzums>&#10;';
@@ -190,7 +247,6 @@ class HomeController extends Controller
       if ($safe == 1) {
         $xml_string .= '&#009;&#009;<Ieraksts>&#10;';
         $xml_string .= '&#009;&#009;&#009;<Artikuls>18</Artikuls>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Nosaukums>Riepu uzglabasana</Nosaukums>&#10;';
         $xml_string .= '&#009;&#009;&#009;<Mervieniba>kompl.</Mervieniba>&#10;';
         $xml_string .= '&#009;&#009;&#009;<Cena>' . $safe_price_pvn . '</Cena>&#10;';
         $xml_string .= '&#009;&#009;&#009;<Daudzums>1.000</Daudzums>&#10;';
@@ -210,7 +266,7 @@ class HomeController extends Controller
 
 //      dd(is_file(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml'));
 //      $ftp = uploadFTP("212.3.218.22", "r1_web", "RA5bgdGc", dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
-      uploadFTP("192.168.0.36", "r1_web", "RA5bgdGc", dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
+      uploadFTP("212.3.218.22", "r1_web", "RA5bgdGc", dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
 
     }
 }

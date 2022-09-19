@@ -125,6 +125,7 @@ Route::middleware('checksession')->group(function() {
 
   Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
   Route::get('/logout', function() {
+    Auth::logout();
     Session::flush();
     return redirect()->back();
   })->name('logout');
@@ -274,6 +275,11 @@ Route::middleware('checksession')->group(function() {
   Route::get('/testing', function() {
     return view('testing');
   });
+
+  Route::get('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);
+  Route::post('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);
+  Route::get('/testing2', [App\Http\Controllers\HomeController::class, 'login']);
+  Route::post('/testing2', [App\Http\Controllers\HomeController::class, 'login']);
 
   Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);
 

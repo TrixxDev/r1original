@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Helper\Env;
 use App\Http\Controllers\CartController;
 use App\Models\Order;
+use App\Models\User;
 use Carbon\Carbon;
 use Gloudemans\Shoppingcart\Cart;
 use Gloudemans\Shoppingcart\CartItem;
@@ -41,6 +42,24 @@ class AppServiceProvider extends ServiceProvider
 
       Paginator::defaultView('vendor.pagination.custom');
       Paginator::defaultSimpleView('vendor.pagination.custom');
+
+      view()->composer('*', function($view)
+      {
+        if (Auth::check()) {
+
+          $user = User::findOrFail(Auth::user()->id);
+
+          $minutesToAdd = gmdate('i', env('session_lifetime'));
+
+          $userTime = \Carbon\Carbon::now()->addMinutes($minutesToAdd)->format('Y-m-d H:i');
+
+          $user->timestamps = false;
+          $user->lastActivityTime = $userTime;
+          $user->save();
+
+        }
+
+      });
 
       define('SLOT_STATUS_FREE', 0);
       define('SLOT_STATUS_TAKEN', 1);

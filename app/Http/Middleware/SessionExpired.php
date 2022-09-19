@@ -10,20 +10,18 @@ use Illuminate\Support\Facades\Session;
 
 class SessionExpired {
   protected $session;
-  protected $timeout = 2100;
 
   public function __construct(Store $session){
     $this->session = $session;
-
   }
 
   public function handle($request, Closure $next){
-    $isLoggedIn = $request->path() != 'dashboard/logout';
+    $isLoggedIn = Auth::check();
     if(! session('lastActivityTime'))
       $this->session->put('lastActivityTime', time());
-    elseif(time() - $this->session->get('lastActivityTime') > $this->timeout){
+    elseif(time() - $this->session->get('lastActivityTime') > env('session_lifetime')){
       $this->session->forget('lastActivityTime');
-      $cookie = cookie('intend', $isLoggedIn ? url()->current() : 'dashboard');
+      $cookie = cookie('intend', $isLoggedIn ? url()->current() : session('url.intended'));
       auth()->logout();
     }
     $isLoggedIn ? $this->session->put('lastActivityTime', time()) : $this->session->forget('lastActivityTime');

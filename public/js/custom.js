@@ -40,6 +40,8 @@ let selected_date = 0;
 
 let sf_height = 0;
 
+let public_url = '/public/storage/';
+
 let user = $('.user-info .account').data('user');
 let user_role = $('.user-info .account').data('role');
 let admin = false;
@@ -615,10 +617,10 @@ $('.tire-table-row').each(function(key, value) {
       const tire_id = $(this).data('info');
 
       $.ajax({
-        url: url + '/ajax',
+        url: '/' + pathParts[1] + '/ajax',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         method: 'POST',
-        data: { tire_id: tire_id },
+        data: { tire_id: tire_id, quantity: 4 },
         success: function(data)
         {
           data = JSON.parse(data);
@@ -626,27 +628,23 @@ $('.tire-table-row').each(function(key, value) {
           cart_quantity = parseInt(cart_quantity);
           let total_sum = data.total_sum;
           total_sum = parseInt(total_sum);
-          const image = data.cart.options.tire.tread.tread_id;
-          // console.log(data.cart);
-
+          const image = data.cart.options.image;
           if (typeof image !== "undefined") {
-            if (data.cart.options.tire.image){
-              fetch('/storage/app/public/' + data.cart.options.image + '/tread/' + image + '.png',
-                { method: 'GET', headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}, },)
-                .then(res => {
-                  if (res.ok) {
-                    $('.modal-image-preview img').attr('src', '/storage/app/public/' + data.cart.options.image + '/tread/' + image + '.png');
-                  } else {
-                    $('.modal-image-preview img').attr('src', '/storage/app/public/' + data.cart.options.image + '/tread/' + image + '.jpg');
-                  }
-                });
-            } else {
-              $('.modal-image-preview img').attr('src', 'https://www.r1-dev.area.lv/public/img/p/en-default-home_default.jpg');
+            if (data.cart.options.tire.make_id){
+              fetch(public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg',
+                  { method: 'GET' },)
+                  .then(res => {
+                    if (res.ok) {
+                      $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg');
+                    } else {
+                      $('.modal-image-preview img').attr('src', 'https://www.r1-dev.area.lv/public/img/p/en-default-home_default.jpg');
+                    }
+                  });
             }
           }
 
           // TIRE IMAGE INSIDE MODAL
-          $('.modal-product-info .product-name').html(data.cart.options.tire.title.toUpperCase());
+          $('.modal-product-info .product-name').html(data.cart.name);
           $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2));
           $('.modal-product-info .product-price').attr('data-price', parseInt(data.cart.options.tire.price2));
           $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
@@ -656,8 +654,7 @@ $('.tire-table-row').each(function(key, value) {
           $('.modal-product-info .product-li').html(data.cart.options.tire.li);
           $('.modal-product-info .product-si').html(data.cart.options.tire.si);
           $('.cart-content .cart-products-total').html(total_sum);
-          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity));
-          $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty'));
+          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html($('.modal-product-info .product-qty').attr('data-qty'));
           $('span.cart-products-count').html('(' + cart_quantity + ')');
           $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
           $('.blockcart.cart-preview .header').empty();
@@ -670,7 +667,7 @@ $('.tire-table-row').each(function(key, value) {
       $('.popup input[name=price]').val($('#sale-price', tire_data).html().trim().replace('€ ', ''));
       $('.popup input[name=qty]').val(4);
       $('.popup input[name=total]').val(parseInt($('.popup input[name=price]').val()) * parseInt($('.popup input[name=qty]').val()));
-      $('.popup input[name=user]').val(user);
+      $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
       $('.popup input[name=article]').val($('.tire-info', tire_data).data('article'));
     }
   });
@@ -808,15 +805,14 @@ if (!admin) {
         $quantity = parseInt($quantity);
         let total_sum = data.total_sum;
         total_sum = parseInt(total_sum);
-        const image = data.cart.options.tire.tread.image;
-        console.log(data);
+        const image = data.cart.options.image;
         if (typeof image !== "undefined") {
-          if (data.cart.options.tire.image){
-            fetch(data.cart.options.tire.image,
+          if (data.cart.options.tire.make_id){
+            fetch(public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg',
               { method: 'GET' },)
               .then(res => {
                 if (res.ok) {
-                  $('.modal-image-preview img').attr('src', data.cart.options.tire.image);
+                  $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg');
                 } else {
                   $('.modal-image-preview img').attr('src', 'https://www.r1-dev.area.lv/public/img/p/en-default-home_default.jpg');
                 }
@@ -825,7 +821,7 @@ if (!admin) {
         }
 
         // TIRE IMAGE INSIDE SPECIFIC TIRE MODAL
-        $('.modal-product-info .product-name').html(data.cart.options.tire.title.toUpperCase());
+        $('.modal-product-info .product-name').html(data.cart.name);
         $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2));
         $('.modal-product-info .product-price').attr('data-price', parseInt(data.cart.options.tire.price2));
         $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
@@ -835,8 +831,7 @@ if (!admin) {
         $('.modal-product-info .product-li').html(data.cart.options.tire.li);
         $('.modal-product-info .product-si').html(data.cart.options.tire.si);
         $('.cart-content .cart-products-total').html(total_sum);
-        $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity));
-        $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty'));
+        $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html($('.modal-product-info .product-qty').attr('data-qty'));
         $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
         $('.blockcart.cart-preview .header').empty();
         $('<a rel="nofollow" href="/grozs"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + $quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
@@ -856,7 +851,7 @@ if (!admin) {
   const tire_article = $('.tire_article').val();
   $('.popup input[name=prod]').val(tire_title);
   $('.popup input[name=price]').val(tire_price);
-  $('.popup input[name=user]').val(user);
+  $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
   $('.popup input[name=article]').val(tire_article);
 }
 
@@ -918,7 +913,7 @@ $('.ct_matrix_row').each(function(key, value) {
       $('.popup input[name=total]').val(parseInt(tire_price) * $('.popup input[name=qty]').val());
       $('.popup input[name=prod]').val(tire_title);
       $('.popup input[name=price]').val(tire_price);
-      $('.popup input[name=user]').val(user);
+      $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
       $('.popup input[name=article]').val(tire_article);
     }
   });
@@ -2521,7 +2516,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
       $('.popup input[name=price]').val($('.tire-price-red', tire_data).html().replace('€ ', ''));
       $('.popup input[name=qty]').val(4);
       $('.popup input[name=total]').val(parseInt($('.tire-price-red', tire_data).html().replace('€ ', '')) * $('.popup input[name=qty]').val());
-      $('.popup input[name=user]').val(user);
+      $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
       $('.popup input[name=article]').val($('.table-tire-name-cell a', tire_data).data('article'));
     }
 
@@ -2803,3 +2798,73 @@ $(document).ready(function() {
     $('#show-selected-checkbox').click();
   }
 });
+
+var interval;
+
+function countdown() {
+  clearInterval(interval);
+  interval = setInterval( function() {
+    var timer = $('#timeout .modal-body .time').data('start');
+    timer = timer.split(':');
+    var minutes = timer[0];
+    var seconds = timer[1];
+    seconds -= 1;
+    if (minutes < 0) return;
+    else if (seconds < 0 && minutes != 0) {
+      minutes -= 1;
+      seconds = 59;
+      minutes = '0' + minutes;
+    }
+    else if (seconds < 10 && length.seconds != 2) seconds = '0' + seconds;
+
+    $('#timeout .modal-body .time').html(minutes + ':' + seconds);
+
+    if (minutes == 0 && seconds == 0) {
+      clearInterval(interval);
+      Swal.fire({
+        title: 'Kļūda!',
+        text: 'Sessijas laiks ir beidzies',
+        icon: 'error',
+        confirmButtonText: 'OK'
+        }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/logout';
+        }
+      });
+    }
+  }, 1000);
+}
+
+if (user) {
+
+  let sessionCheck;
+
+  function checkSession() {
+    sessionCheck = setInterval(function() {
+      $.get('/testing1', function(data) {
+        if (data == 1) {
+          $('#timeout').modal({
+            keyboard: false,
+            backdrop: false,
+          }).modal('show');
+          countdown();
+          clearInterval(sessionCheck);
+        }
+      });
+    }, 3000);
+  }
+
+  checkSession();
+
+  $('#timeout #stay').on('click', function() {
+    $.post('/testing1', function(data, status) {
+      if (data == 1) {
+        clearInterval(sessionCheck);
+        clearInterval(interval);
+        $('#timeout').modal('hide');
+        $('#timeout .modal-body .time').html($('#timeout .modal-body .time').data('start'));
+        checkSession();
+      }
+    });
+  });
+}

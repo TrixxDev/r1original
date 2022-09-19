@@ -787,7 +787,7 @@
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                                title='{!! \Image::show('auto', $tire->make_id) !!}'
                                href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}"
-                               data-content="{{ $tire->title }}"
+                               data-content="{{ $tire->title . ' ' . $tire->fullSize }}"
                                data-article="{{ $tire->article }}">
                               {{ $tire->title }}
                             </a>

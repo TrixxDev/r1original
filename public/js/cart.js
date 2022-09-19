@@ -61,23 +61,26 @@ if ($('.sidebar-auto input[name=brand]').val() !== 'Visi') {
   $('section.facet--auto-model .dropdown-menu .select-list').first().remove();
 }
 
-if ($('.sidebar-auto input[name=model]').val() !== 'Visi') {
-  $('section.facet--auto-dia .dropdown-menu').html('<a rel="nofollow" class="select-list" data-id="Visi" id="Visi">Visi</a>');
-  makeId = $('.sidebar-auto input[name=model]').val();
-  $.ajax({
-    url: '/api/wheels/' + modelId + '/' + encode(makeId),
-    method: 'get',
-    dataType: 'json',
-    async: false,
-    success: function(data) {
-      data.forEach(function(item) {
-        radiusOpt += '<a rel="nofollow" class="select-list">' + item + '</a>';
-      });
-    }
-  });
-  $(radiusOpt).insertAfter($('section.facet--auto-dia .dropdown-menu .select-list').first());
-  $('section.facet--auto-dia .dropdown-menu .select-list').first().remove();
+if ($('body').hasClass('category-jauni-lietie-diski')) {
+  if ($('.sidebar-auto input[name=model]').val() !== 'Visi') {
+    $('section.facet--auto-dia .dropdown-menu').html('<a rel="nofollow" class="select-list" data-id="Visi" id="Visi">Visi</a>');
+    makeId = $('.sidebar-auto input[name=model]').val();
+    $.ajax({
+      url: '/api/wheels/' + modelId + '/' + encode(makeId),
+      method: 'get',
+      dataType: 'json',
+      async: false,
+      success: function(data) {
+        data.forEach(function(item) {
+          radiusOpt += '<a rel="nofollow" class="select-list">' + item + '</a>';
+        });
+      }
+    });
+    $(radiusOpt).insertAfter($('section.facet--auto-dia .dropdown-menu .select-list').first());
+    $('section.facet--auto-dia .dropdown-menu .select-list').first().remove();
+  }
 }
+
 
 $('.sidebar-auto input[name=brand]').parent().children('.dropdown-menu').children('.select-list').each(function() {
   $(this).on('click', function() {

@@ -1,12 +1,10 @@
 @if ($paginator->hasPages())
-    <div class="col-sm-12 col-md-5">
-        <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
-            {{($paginator->currentpage()-1)*$paginator->perpage()+1}} līdz {{$paginator->currentpage()*$paginator->perpage()}}
-            ieraksti no {{$paginator->total()}} ierakstiem
-        </div>
-    </div>
-    <div class="col-sm-12 col-md-7">
+    <div class="col-sm-12 col-md-12">
         <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
+            <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
+                {{($paginator->currentpage()-1)*$paginator->perpage()+1}} līdz {{$paginator->currentpage()*$paginator->perpage()}}
+                ieraksti no {{$paginator->total()}} ierakstiem
+            </div>
             <ul class="pagination">
 
             @if ($paginator->onFirstPage())

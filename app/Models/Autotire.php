@@ -113,6 +113,9 @@ class Autotire extends Model
 
     public function getDotAvailableAttribute()
     {
+        if ($this->quantity < 0) {
+          return 'red';
+        }
         switch ($this->quantity) {
             case 1:
             case 2:
@@ -226,6 +229,7 @@ class Autotire extends Model
             $availability = '<p style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
           }
         }
+        $availability .= 'asd';
 
         return $availability;
     }

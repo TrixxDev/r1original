@@ -1926,10 +1926,6 @@ div:not(.product-main-details) .product-variants {
 /*comments block*/
 /*product page*/
 /*Pagination*/
-.pagination {
-  margin-top: 50px;
-  text-align: center;
-}
 /*pagination*/
 /*products*/
 
@@ -4730,3 +4726,4 @@ ul#order-type-info li.list-style {
 .flipped-title {
   margin-left: 5px;
 }
+
