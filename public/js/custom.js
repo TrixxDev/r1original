@@ -654,7 +654,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
           $('.modal-product-info .product-li').html(data.cart.options.tire.li);
           $('.modal-product-info .product-si').html(data.cart.options.tire.si);
           $('.cart-content .cart-products-total').html(total_sum);
-          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html('4');
+          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html($('.modal-product-info .product-qty').attr('data-qty'));
           $('span.cart-products-count').html('(' + cart_quantity + ')');
           $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
           $('.blockcart.cart-preview .header').empty();
@@ -831,7 +831,7 @@ if (!admin) {
         $('.modal-product-info .product-li').html(data.cart.options.tire.li);
         $('.modal-product-info .product-si').html(data.cart.options.tire.si);
         $('.cart-content .cart-products-total').html(total_sum);
-        $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html(quantity);
+        $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html($('.modal-product-info .product-qty').attr('data-qty'));
         $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
         $('.blockcart.cart-preview .header').empty();
         $('<a rel="nofollow" href="/grozs"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + $quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
@@ -895,7 +895,8 @@ $('.ct_matrix_row').each(function(key, value) {
           $('.modal-product-info .product-li').html(data.cart.options.tire.li);
           $('.modal-product-info .product-si').html(data.cart.options.tire.si);
           $('.cart-content .cart-products-total').html(total_sum);
-          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html(quantity);
+          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity));
+          $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty'));
           $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
           $('.blockcart.cart-preview .header').empty();
           $('<a rel="nofollow" href="/grozs"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + $quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
@@ -2527,11 +2528,6 @@ let red = $('.tire-table-row').find('.red').parent().parent();
 let green = $('.tire-table-row').find('.green').parent().parent();
 let yellow = $('.tire-table-row').find('.yellow').parent().parent();
 
-let gridColors = $('.tire-image-card').find('.grid-dot').parent().parent().parent().parent();
-let gridRed = $('.tire-image-card').find('.red').parent().parent().parent().parent();
-let gridYellow = $('.tire-image-card').find('.yellow').parent().parent().parent().parent();
-let gridGreen = $('.tire-image-card').find('.green').parent().parent().parent().parent();
-
 $('#facet_availability li label').on('click', function() {
   // colors.hide();
   colors.each(function(key, value){
@@ -2803,41 +2799,41 @@ $(document).ready(function() {
   }
 });
 
-var interval;
-
-function countdown() {
-  clearInterval(interval);
-  interval = setInterval( function() {
-    var timer = $('#timeout .modal-body .time').data('start');
-    timer = timer.split(':');
-    var minutes = timer[0];
-    var seconds = timer[1];
-    seconds -= 1;
-    if (minutes < 0) return;
-    else if (seconds < 0 && minutes != 0) {
-      minutes -= 1;
-      seconds = 59;
-      minutes = '0' + minutes;
-    }
-    else if (seconds < 10 && length.seconds != 2) seconds = '0' + seconds;
-
-    $('#timeout .modal-body .time').html(minutes + ':' + seconds);
-
-    if (minutes == 0 && seconds == 0) {
-      clearInterval(interval);
-      Swal.fire({
-        title: 'Kļūda!',
-        text: 'Sessijas laiks ir beidzies',
-        icon: 'error',
-        confirmButtonText: 'OK'
-        }).then((result) => {
-        if (result.isConfirmed) {
-          window.location.href = '/logout';
-        }
-      });
-    }
-  }, 1000);
-}
+// var interval;
+//
+// function countdown() {
+//   clearInterval(interval);
+//   interval = setInterval( function() {
+//     var timer = $('#timeout .modal-body .time').data('start');
+//     timer = timer.split(':');
+//     var minutes = timer[0];
+//     var seconds = timer[1];
+//     seconds -= 1;
+//     if (minutes < 0) return;
+//     else if (seconds < 0 && minutes != 0) {
+//       minutes -= 1;
+//       seconds = 59;
+//       minutes = '0' + minutes;
+//     }
+//     else if (seconds < 10 && length.seconds != 2) seconds = '0' + seconds;
+//
+//     $('#timeout .modal-body .time').html(minutes + ':' + seconds);
+//
+//     if (minutes == 0 && seconds == 0) {
+//       clearInterval(interval);
+//       Swal.fire({
+//         title: 'Kļūda!',
+//         text: 'Sessijas laiks ir beidzies',
+//         icon: 'error',
+//         confirmButtonText: 'OK'
+//         }).then((result) => {
+//         if (result.isConfirmed) {
+//           window.location.href = '/logout';
+//         }
+//       });
+//     }
+//   }, 1000);
+// }
 
 // if (user) {
 //

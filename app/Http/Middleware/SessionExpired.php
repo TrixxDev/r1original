@@ -17,9 +17,10 @@ class SessionExpired {
 
   public function handle($request, Closure $next){
     $isLoggedIn = Auth::check();
-    if(! session('lastActivityTime'))
+    $this->session->put('lastActivityTime', time());
+    if(! session('lastActivityTime')) {
       $this->session->put('lastActivityTime', time());
-    elseif(time() - $this->session->get('lastActivityTime') > env('session_lifetime')){
+    } elseif(time() - $this->session->get('lastActivityTime') > env('session_lifetime')){
       $this->session->forget('lastActivityTime');
       $cookie = cookie('intend', $isLoggedIn ? url()->current() : session('url.intended'));
       auth()->logout();
