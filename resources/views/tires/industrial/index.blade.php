@@ -252,57 +252,92 @@
           <section id="main">
             <section id="products" class="">
               <div class="tire-image-container" style="display: none">
-                <div class="tire-image-cards">
-                  {{--                <div style="width: auto;">BRAND NAME</div>--}}
-                  @php
-                    $cbrand = '';
-                  @endphp
-                  @foreach($tires as $tire)
+                <div class="tire-image-container" style="display: none">
+                  <div class="tire-image-cards">
+                    {{-- GRID VIEW --}}
                     @php
-                      $brand = $tire->fullSize;
-                      $tire->includeStock = true;
-                      if ($cbrand!=$brand){
-                        echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex">';
-                        $cbrand = $brand;
-                        $stripe = 1;
-                      } else {
-                          $brand = str_replace(" ", "", $brand);
-                      }
+                      $cbrand = '';
+                      $index = 0;
                     @endphp
-                    {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
-                    <div class="tire-image-card">
-                      <a href="" class="">
-                        <div class="text-center">
-                          <img
-                            @if ($tire->image)
-                            src="{{ $tire->image }}" style='width: 100%; height: 100%;'
-                            @else
-                            src="{{ asset('img/p/r1-logo.svg') }}"
-                            @endif alt="tire-image" class="img-thumbnail border-none text-center"
-                          >
-                        </div>
-                        <div class="tire-list-caption">
-                          <div class="card-title-text">{{$tire->title}}</div>
-                          <div class="tire-price-red">€{{$tire->price1}}</div>
-                        </div>
-                      </a>
-                    </div>
-                  @endforeach
+                    @foreach($tires as $tire)
+                      @php
+                        $brand = $tire->fullSize;
+                        $tire->includeStock = true;
+                        if ($cbrand!=$brand){
+                          echo '</div><h4 class="tire-brand-name">' . $brand;
+                          echo ' <span class="text-uppercase" style="color:black;">Lielās riepas</span>';
+                          echo '</h4><div class="row grid-ex pr-1">';
+                          $cbrand = $brand;
+                          $stripe = 1;
+                        } else {
+                            $brand = str_replace(" ", "", $brand);
+                        }
+                      @endphp
+                      @if($tire->price1)
+                        <a href="">
+                          <div class="tire-image-card sort-order">
+                            <div class="text-center image-grid-overflow">
+                              {!! \Image::showGrid('big', $tire->make_id) !!}
+                            </div>
+
+                            <div class="tire-list-caption">
+
+                              <div class="card-title-text" data-toggle="tooltip" title="<div>{{$tire->title}}</div>">
+                            <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip"
+                                  data-html="true"
+                                  title="{{ $tire->stockAvailability }}">
+                            </span>
+                                {{$tire->title}}
+                              </div>
+
+                              <div class="tire-tread">
+                                <b>{{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}} </b>
+                                <span data-toggle="tooltip" title="<span style='color: black'>NOT FINISHED YET</span>">{{ $tire->li . $tire->si }}</span>
+                                <span class="tire-image-code">{{$tire->code}}</span>
+                              </div>
+                              <div style="display: inline-flex">
+                                <div class="rim-price-old">€{{$tire->price1}}</div>
+                                <div class="rim-price-red">€{{$tire->price2}}</div>
+                              </div>
+                            </div>
+                            {{--                        <button class="grid-shopping-button grid-cart-btn" data-toggle="modal" data-target="#blockcart-modal" data-info="148204">Pirkt--}}
+                            {{--                        </button>--}}
+
+                            <button class="grid-shopping-button grid-cart-btn" data-toggle="modal"
+                                    @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"
+                            @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()"><span style="letter-spacing: 2px; text-transform: uppercase;">Pirkt</span>
+                            </button>
+
+                          </div>
+                        </a>
+                      @endif
+                      @php
+                        $index++;
+                      @endphp
+                    @endforeach
+                  </div>
                 </div>
               </div>
 
               <div id="">
                 <div id="js-product-list">
-                  <div class="products row hide-price">
+                  <div class="products row hide-price title-flip">
+                    {{-- LIST VIEW --}}
                     @php
                       $cbrand = '';
+                      $index = 0;
                     @endphp
                     @foreach ($tires as $tire)
                       @php
                         $brand = $tire->fullSize;
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){
-                          echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
+                          if ($index == 0) {
+                            echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="top-product-title flipped-title">Lielās riepas</span></h4>';
+                          } else {
+                            '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
+                          }
+
                       @endphp
 
                       <table id="tires-table" class="table industrial-sorter tires-table table-hover tablesorter">
@@ -339,90 +374,6 @@
                       }
                         @endphp
                         @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif
-                      {{-- Old Table data --}}
-{{--                      <article class="product_show_list cat-14 product-miniature js-product-miniature"--}}
-{{--                               id="{{ str_replace(" ", "", $brand) }}"--}}
-{{--                               data-id-product="{{ $tire->tire_id }}" data-id-product-attribute="{{ $tire->tire_id }}" itemscope=""--}}
-{{--                               itemtype="http://schema.org/Product" data-brand="{{ $tire->brand }}"--}}
-{{--                               data-atv="{{ $tire->fullSize }}">--}}
-{{--                        <div class="thumbnail-container">--}}
-{{--                          <a href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"--}}
-{{--                             class="thumbnail product-thumbnail">--}}
-{{--                            @if ($tire->image)--}}
-{{--                              <img src='{{ $tire->image }}' style='width: 280px; height: 280px;'>--}}
-{{--                            @else--}}
-{{--                              <img src='{{ asset('img/p/en-default-home_default.jpg') }}'>--}}
-{{--                            @endif--}}
-{{--                          </a>--}}
-{{--                          <div class="product-description">--}}
-{{--                            <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]">--}}
-{{--                            <h1 class="h3 product-title" itemprop="name">--}}
-{{--                              <a data-toggle="tooltip" data-html="true"--}}
-{{--                                 @if ($tire->image)--}}
-{{--                                 title="<img src='{{ $tire->image }}' style='width: 280px; height: 280px;'>"--}}
-{{--                                 @else--}}
-{{--                                 title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"--}}
-{{--                                 @endif--}}
-{{--                                 href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"--}}
-{{--                                 data-content="{{ $tire->title }}">--}}
-{{--                                <div class="product-title-hidden">{{ $tire->title }}</div>--}}
-{{--                              </a>--}}
-{{--                            </h1>--}}
-{{--                            <div class="product-price-and-shipping" data-content="{{ $tire->title }}">--}}
-{{--                              <span class="table-cell axle">--}}
-{{--                                @if ($tire->axis_bus)--}}
-{{--                                  {{ $tire->axis_bus }}--}}
-{{--                                  @if ($tire->axis_truck)--}}
-{{--                                    | {{ $tire->axis_truck }}--}}
-{{--                                  @endif--}}
-{{--                                @endif--}}
-{{--                                @if ($tire->axis_truck)--}}
-{{--                                  {{ $tire->axis_truck }}--}}
-{{--                                  @if ($tire->axis_bus)--}}
-{{--                                    | {{ $tire->axis_bus }}--}}
-{{--                                  @endif--}}
-{{--                                @endif--}}
-{{--                              </span>--}}
-{{--                              <span class="table-cell surface">--}}
-{{--                                @if ($tire->conditions_bus)--}}
-{{--                                  {{ $tire->conditions_bus }}--}}
-{{--                                  @if ($tire->conditions_truck)--}}
-{{--                                    | {{ $tire->conditions_truck }}--}}
-{{--                                  @endif--}}
-{{--                                @endif--}}
-{{--                                @if ($tire->conditions_truck)--}}
-{{--                                  {{ $tire->conditions_truck }}--}}
-{{--                                  @if ($tire->conditions_bus)--}}
-{{--                                    | {{ $tire->conditions_bus }}--}}
-{{--                                  @endif--}}
-{{--                                @endif--}}
-{{--                              </span>--}}
-{{--                              <span class="hidden-sm-down table-cell">--}}
-{{--                                  <span data-toggle="tooltip" title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>--}}
-{{--                                  <span data-toggle="tooltip" title="<span style='color: black'>H</span>">{{ $tire->si }}</span>--}}
-{{--                              </span>--}}
-{{--                              <span class="table-cell pr">{{ $tire->code }}</span>--}}
-{{--                              <span class="sr-only">Veikala cena</span>--}}
-{{--                              <span class="regular-price">€ {{ $tire->price1 }}</span>--}}
-{{--                              <span class="sr-only">Akcijas cena</span>--}}
-{{--                              <span itemprop="price" class="price">€ {{ $tire->price2 }}</span>--}}
-{{--                              <span class="table-cell notes">--}}
-{{--                                <span class="table-cell top40">Top 40</span>--}}
-{{--                              </span>--}}
-{{--                              <div class="clearfix atc_div">--}}
-{{--                                <button class="btn grid-cart-btn btn-primary" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-info="{{ $tire->tire_id }}"><i--}}
-{{--                                    class="material-icons">add_shopping_cart</i>--}}
-{{--                                </button>--}}
-{{--                                <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip"--}}
-{{--                                      data-html="true"--}}
-{{--                                      title="{{ $tire->stockAvailability }}">--}}
-{{--                                    <span class="sort-order">{{ $tire->dotAvailable }}</span>--}}
-{{--                                </span>--}}
-{{--                              </div>--}}
-{{--                            </div>--}}
-{{--                          </div>--}}
-{{--                        </div>--}}
-{{--                      </article>--}}
                       <tr class="tire-table-row">
                         <th scope="row" class="tire-table-checkbox">
                           <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
@@ -512,6 +463,9 @@
                         </td>
 
                       </tr>
+                      @php
+                        $index++;
+                      @endphp
                     @endforeach
                         </tbody>
                       </table>
