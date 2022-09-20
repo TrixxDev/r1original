@@ -823,28 +823,28 @@
                               @switch($tire->type)
                                 @case(1)
                                 <span data-toggle="tooltip">
-                                  <img src="{{asset('images/ms.png')}}" alt="ms" title="<span>Centrāleiropas tipa ziemas riepa</span>">
+                                  <img src="{{asset('images/ms.png')}}" alt="ms" title="<span>Centrāleiropas tipa ziemas riepa</span>" style="margin:0;">
                                 </span>
 
                                 @break
 
                                 @case(2)
                                 <span data-toggle="tooltip">
-                                  <img src="{{asset('images/radzeb.png')}}" alt="radzojama" title="<span>Radžojama</span>">
+                                  <img src="{{asset('images/radzeb.png')}}" alt="radzojama" title="<span>Radžojama</span>" style="margin:0;">
                                 </span>
 
                                 @break
 
                                 @case(3)
                                 <span data-toggle="tooltip">
-                                  <img src="{{asset('images/radzea.png')}}" alt="ar radzem" title="<span>Ar radzēm</span>">
+                                  <img src="{{asset('images/radzea.png')}}" alt="ar radzem" title="<span>Ar radzēm</span>" style="margin:0;">
                                 </span>
 
                                 @break
 
                                 @case(4)
                                 <span data-toggle="tooltip">
-                                  <img src="{{asset('images/parsla.png')}}" alt="skandinavijas" title="<span>Skandināvijas tipa ziemas riepa</span>">
+                                  <img src="{{asset('images/parsla.png')}}" alt="skandinavijas" title="<span>Skandināvijas tipa ziemas riepa</span>" style="margin:0;">
                                 </span>
                                 @break
 

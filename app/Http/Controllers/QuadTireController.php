@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Helper\Tires;
 use App\Models\Quadrbrand;
 use App\Models\Quadrtread;
-use Gloudemans\Shoppingcart\Cart;
+use Cart;
 use Illuminate\Http\Request;
 use App\Models\Quadr;
 use DB;
@@ -122,10 +122,11 @@ class QuadTireController extends Controller
     }
 
     public function tires_ajax(Request $request) {
-        $tire = Quadr::with('tread')->selectRaw('quadr_tires.*, quadr_tires.comment as tire_comment, quadr_treads.*')
-            ->rightJoin('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
-            ->where('quadr_tires.tire_id', $request->tire_id)
-            ->first();
+
+        $tire = Quadr::with('tread')->selectRaw('quadr_tires.*, quadr_treads.*')
+                          ->rightJoin('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
+                          ->where('quadr_tires.tire_id', $request->tire_id)
+                          ->first();
 
         if ($request->quantity) {
           $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
@@ -133,9 +134,8 @@ class QuadTireController extends Controller
           $cart = CartController::addProduct($this->model, $tire->tire_id, 4);
         }
 
-        $cartObj = new Cart();
-        $quantity = $cartObj->count();
-        $total_sum = str_replace([',', '.00'], '', $cartObj->total());
+        $quantity = Cart::count();
+        $total_sum = str_replace([',', '.00'], '', Cart::total());
         $bought = ($request->quantity) ? $request->quantity : 4;
 
         echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);

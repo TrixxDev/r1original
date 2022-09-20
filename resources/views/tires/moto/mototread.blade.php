@@ -145,56 +145,6 @@
 
                         <div class="row">
                             <div class="">
-{{--                                <table id="ct_matrix" class="rwd-table">--}}
-{{--                                    <thead>--}}
-{{--                                    <tr class="ct_matrix_head">--}}
-{{--                                        <th style="user-select: none; padding-right: 14px; margin-right: 5px;">Izmērs</th>--}}
-{{--                                        <th style="user-select: none; padding-right: 14px; margin-right: 5px;">LI/SI</th>--}}
-{{--                                        <th style="user-select: none; padding-right: 14px; margin-right: 5px;">Kods</th>--}}
-{{--                                        <th style="user-select: none; padding-right: 14px; margin-right: 5px;">Veikala cena</th>--}}
-{{--                                        <th style="user-select: none; padding-right: 14px; margin-right: 5px;">Akcijas cena</th>--}}
-{{--                                        <th style="user-select: none; padding-right: 14px; margin-right: 5px;">Piezīmes</th>--}}
-{{--                                        <th style="user-select: none; padding-right: 14px; margin-right: 5px;">Grozs</th>--}}
-{{--                                        <th class="cth_availability moto" style="user-select: none; padding-right: 14px; margin-right: 5px;"></th>--}}
-{{--                                    </tr>--}}
-{{--                                    </thead>--}}
-{{--                                    <tbody aria-live="polite" aria-relevant="all">--}}
-{{--                                    @foreach ($tires as $tire)--}}
-
-{{--                                        @php--}}
-{{--                                            $tire->includeStock = true;--}}
-{{--                                        @endphp--}}
-
-{{--                                        <tr class="ct_matrix_row ctr0 @if ($currTire->tire_id == $tire->tire_id) {{ 'current' }} @endif" id="ctrcombid12359" role="row">--}}
-{{--                                            <form action="http://r1riepas.lv/index.php?controller=cart" method="post" id="ct_matrix_12359" name="ct_matrix_12359"></form>--}}
-{{--                                            <td>--}}
-{{--                                                <input type="checkbox" value="12359" name="product_ids2[]"> {{ $tire->fullSize }}--}}
-{{--                                            </td>--}}
-{{--                                            <td class="hidden-sm-down">{{ $tire->lisi }}</td>--}}
-{{--                                            <td class="hidden-sm-down">{{ $tire->code }}</td>--}}
-{{--                                            <td data-label="Veikala cena" class="ctd_price ctd_attr_group_price">--}}
-{{--                                                € {{ $tire->price1 }}--}}
-{{--                                            </td>--}}
-{{--                                            <td data-label="Akcijas cena" class="ctd_price ctd_attr_group_price">--}}
-{{--                                                <strong class="strongprice">€ {{ $tire->price2 }}</strong>--}}
-{{--                                            </td>--}}
-{{--                                            <td class="hidden-sm-down">{{ $tire->autocomment }}</td>--}}
-{{--                                            <td class="ctd_addtocart" data-label="Grozs">--}}
-{{--                                                <input alt="ct_matrix_{{ $tire->tire_id }}" name="qty" class="qty" id="ct_matrix_{{ $tire->tire_id }}_idQty" value="4 " type="text" style="display:none!important;">--}}
-{{--                                                <div class="ct_submit btn btn-sm  btn-primary" data-toggle="modal" data-target="#blockcart-modal" data-info="{{ $tire->tire_id }}" id="ct_matrix_{{ $tire->tire_id }}_submit">--}}
-{{--                                                    <i class="material-icons">add_shopping_cart</i>--}}
-{{--                                                </div>--}}
-{{--                                            </td>--}}
-{{--                                            <td class="ctd_availability">--}}
-{{--                                            <span class="clearfix atc_div">--}}
-{{--                                                <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip" data-html="true" title="{{ $tire->stockAvailability }}"><span class="sort-order">6</span></span>--}}
-{{--                                            </span>--}}
-{{--                                            </td>--}}
-{{--                                        </tr>--}}
-{{--                                    @endforeach--}}
-{{--                                    </tbody>--}}
-{{--                                </table>--}}
-
                               <table id="tires-table" class="table moto-tread-sorter tires-table table-hover tablesorter">
                                 <thead class="tires-thead" style="position:sticky; top: -1px;">
                                 <tr>

@@ -12,16 +12,13 @@
           <section id="main" itemscope="" itemtype="https://schema.org/Product">
             <meta itemprop="url" content="{{ url()->full() }}">
             <div class="row">
-              <div class="col-md-12 col-lg-4">
+              <div class="col-md-4">
                 <section class="page-content" id="content">
                   <div class="images-container">
-                    <div class="product-cover card">
-                      @if ($currTire->image)
-                        <img src="{{ $currTire->image }}" style="width: 100%;">
-                      @else
-                        <img src="{{ asset('img/p/lv-default-large_default.jpg') }}" style="width:100%;">
-                      @endif
-                    </div>
+{{--                    {{dd($currTire->make_id)} 294 --}}
+{{--                    {{dd($currTire)}}--}}
+                    {!! \Image::treadZoom('big', $currTire->make_id) !!}
+
                     <div class="js-qv-mask mask">
                       <ul class="product-images js-qv-product-images">
                       </ul>
@@ -36,7 +33,7 @@
               <div class="col-md-12 col-lg-8">
                 <div class="row">
                   <div class="col-sm-12 product-main-details">
-                    <h1 class="h1 mt-1" itemprop="name">{{$brand->title.' '.$tread->title}}</h1>
+                    <h1 class="h1 mt-1" itemprop="name">{{ $tires[0]->brands_title.' '.$tires[0]->treads_title }}</h1>
                   </div>
                   <div class="col-sm-12 col-md-12 col-lg-6">
                     <div class="product-prices">
@@ -61,8 +58,8 @@
                         <div class="qty">
                           <div class="input-group bootstrap-touchspin" style="transform: none;">
                             <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
-                            {{--                            <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">--}}
-                            {{--                            <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title }}">--}}
+                            <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">
+                            <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title }}">
                             <input type="text" name="qty" id="quantity_wanted" value="4" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                             <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                             <span class="input-group-btn-vertical">
@@ -76,10 +73,7 @@
                           </div>
                         </div>
                         <div class="add">
-                          {{--                          {{ dd($currRim) }}--}}
-                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
-                                  data-info="{{ $currTire->rim_id }}"
-                          >
+                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart" data-info="{{ $currTire->tire_id }}">
                             <i class="material-icons shopping-cart"></i>
                             Pirkt
                           </button>
@@ -90,69 +84,6 @@
                     </div>
                   </div>
                 </div>
-{{--                <div class="row">--}}
-{{--                  <div class="col-12 col-sm-12 col-md-4">--}}
-{{--                    <table class="table">--}}
-{{--                      <tbody>--}}
-{{--                      <tr>--}}
-{{--                        <th>Platums</th>--}}
-{{--                        <td>{{ $currTire->d1 }}</td>--}}
-{{--                      </tr>--}}
-{{--                      <tr>--}}
-{{--                        <th>Augstums</th>--}}
-{{--                        <td>{{ $currTire->d2 }}</td>--}}
-{{--                      </tr>--}}
-{{--                      <tr>--}}
-{{--                        <th>Diametrs</th>--}}
-{{--                        <td>{{ $currTire->d3 }}</td>--}}
-{{--                      </tr>--}}
-{{--                      <tr>--}}
-{{--                        <th>Ass</th>--}}
-{{--                        <td>{{ $currTire->axile }}</td>--}}
-{{--                      </tr>--}}
-{{--                      <tr>--}}
-{{--                        <th>Segums</th>--}}
-{{--                        <td>{{ $currTire->dc }}</td>--}}
-{{--                      </tr>--}}
-{{--                      <tr>--}}
-{{--                        <th>Kods</th>--}}
-{{--                        <td>{{ $currTire->code }}</td>--}}
-{{--                      </tr>--}}
-{{--                      <tr>--}}
-{{--                        <th>LI</th>--}}
-{{--                        <td>{{ $currTire->li }}</td>--}}
-{{--                      </tr>--}}
-{{--                      <tr>--}}
-{{--                        <th>SI</th>--}}
-{{--                        <td>{{ $currTire->si }}</td>--}}
-{{--                      </tr>--}}
-{{--                      <tr>--}}
-{{--                        <th>Piezīmes</th>--}}
-{{--                        <td>--}}
-{{--                          @php--}}
-{{--                            if($currTire->autocomment) {--}}
-{{--                                echo $currTire->autocomment;--}}
-{{--                            } else {--}}
-{{--                                echo '-';--}}
-{{--                            }--}}
-{{--                          @endphp--}}
-{{--                        </td>--}}
-{{--                      </tr>--}}
-{{--                      <tr>--}}
-{{--                        <th>Pieejamība</th>--}}
-{{--                        <td>{{ $currTire->available }}</td>--}}
-{{--                      </tr>--}}
-{{--                      </tbody>--}}
-{{--                    </table>--}}
-{{--                  </div>--}}
-{{--                  <div class="col-sm-12 col-md-8">--}}
-{{--                    @if($currTire->comment)--}}
-{{--                      <div class="alert" style="border: 1px solid #68c0a8">--}}
-{{--                        {{$currTire->comment}}--}}
-{{--                      </div>--}}
-{{--                    @endif--}}
-{{--                  </div>--}}
-{{--                </div>--}}
                 <div class="row">
                   <div class="col-12 col-sm-12 col-md-4">
                     <table class="table">
@@ -165,29 +96,23 @@
                       <tbody>
                       <tr>
                         <th>Augstums</th>
+                        <td>{{ $currTire->d2 }}</td>
+                      </tr>
+                      <tr>
+                        <th>Diametrs</th>
                         <td>{{ $currTire->d3 }}</td>
                       </tr>
                       <tr>
-                        <th>Skrūvju izbīdījums</th>
-                        <td>{{ $currTire->pcd }}</td>
+                        <th>Li</th>
+                        <td>{{ $currTire->li }}</td>
                       </tr>
                       <tr>
-                        <th>Centrālais caurums</th>
-                        <td>{{ $currTire->dc }}</td>
+                        <th>Si</th>
+                        <td>{{ $currTire->si }}</td>
                       </tr>
                       <tr>
-                        <th>Skrūvju skaits</th>
-                        <td>{{ $currTire->skr }}</td>
-                      </tr>
-                      <tr>
-                        <th>Stāvoklis</th>
-                        <td>
-                          @if( $currTire->used === 0)
-                            {{ 'Jauns' }}
-                          @else
-                            {{ 'Lietots' }}
-                          @endif
-                        </td>
+                        <th>Kods</th>
+                        <td>{{ $currTire->code }}</td>
                       </tr>
                       <tr>
                         <th>Piezīmes</th>
@@ -211,136 +136,168 @@
                   <div class="col-sm-12 col-md-8">
                     @if($currTire->comment)
                       <div class="alert" style="border: 1px solid #68c0a8">
-                        {{$currTire->comment}}
+                        {{ $currTire->comment }}
                       </div>
                     @endif
                   </div>
                 </div>
               </div>
             </div>
-            <div class="comments_note">
-            </div>
-
             <div class="row">
-              <div class="col-lg-9 col-md-12 float-lg-right">
+              <div class="">
+                <table id="tires-table" class="table moto-tread-sorter tires-table table-hover tablesorter">
+                  <thead class="tires-thead" style="position:sticky; top: -1px;">
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col" class="">Izmērs</th>
+                    <th scope="col" class="hidden-sm-down text-center">Ass</th>
+                    <th scope="col" class="hidden-sm-down text-center">Segums</th>
+                    <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
+                    <th scope="col" class="hidden-sm-down text-center">Kods</th>
+                    <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
+                    <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+                    <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
+                    <th scope="col">Grozs</th>
+                    <th scope="col">
+                      <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
+                    </th>
 
-                <table id="ct_matrix">
-                  <thead>
-                  <tr class="ct_matrix_head">
-                    <th style="user-select: none;">Izmērs</th>
-                    <th class="hidden-sm-down">Ass</th>
-                    <th class="hidden-sm-down">Segums</th>
-                    <th class="hidden-sm-down" aria-sort="none" style="user-select: none;">LI/SI</th>
-                    <th class="hidden-sm-down" aria-sort="none" style="user-select: none;">Kods</th>
-                    <th class="cth_price" style="user-select: none;">Veikala cena</th>
-                    <th class="cth_price" style="user-select: none;">Akcijas cena</th>
-                    <th class="hidden-sm-down" style="user-select: none;">Piezīmes</th>
-                    <th class="cth_addtocart" style="user-select: none;">Grozs</th>
-                    <th class="cth_availability quadr" style="user-select: none;"></th>
                   </tr>
                   </thead>
-                  <tbody>
+                  <tbody id="tires-table-body">
                   @foreach ($tires as $tire)
 
                     @php
                       $tire->includeStock = true;
                     @endphp
 
-                    <tr class="ct_matrix_row ctr0 @if ($currTire->tire_id == $tire->tire_id) {{ 'current' }} @endif" id="ctrcombid{{ $tire->tire_id }}" role="row">
-                      <td>
-                        <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids2[]"> {{ $tire->fullSize }}
+                    <tr @if($currTire->tire_id == $tire->tire_id) style="font-weight: bold; background-color: #e0e0e0;" @endif class="tire-table-row">
+                      <th scope="row" class="tread-tire-table-checkbox">
+                        <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
+                               class="tire-table-checkbox">
+                      </th>
+
+                      <td class="big-tire-tread-name-cell-size">
+                        <a data-toggle="tooltip" data-html="true" class="rim-table-link"
+                           @if (\Image::exists('auto-rim', $tire->tire_id))
+                           title="{{ \Image::show('auto-rim', $tire->tire_id) }}"
+                           @else
+                           title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
+                          @endif
+                        >
+                          {{ $tire->fullSize }}
+                        </a>
                       </td>
-                      <td class="hidden-sm-down">asd</td>
-                      <td class="hidden-sm-down">asd</td>
-                      <td class="hidden-sm-down">{{ $tire->lisi }}</td>
-                      <td class="hidden-sm-down">{{ $tire->code }}</td>
-                      <td data-label="Veikala cena" class="ctd_price ctd_attr_group_price">
-                        € {{ $tire->price1 }}
+                      <td class="hidden-sm-down text-center">ass</td>
+                      <td class="hidden-sm-down text-center">segums</td>
+                      <td class="hidden-sm-down text-center">
+                        <span>
+                          <span data-toggle="tooltip"
+                                title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>
+                          <span data-toggle="tooltip"
+                                title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>
+                        </span>
                       </td>
-                      <td data-label="Akcijas cena" class="ctd_price ctd_attr_group_price">
-                        <strong class="strongprice">€ {{ $tire->price2 }}</strong>
+
+                      <td class="hidden-sm-down text-center tread-code-cell-size">
+                        <span data-toggle="tooltip"
+                              @if($tire->code == 'XL')
+                              title="<span style='color: black'>XL ??????????? SUBJECT TO CHANGE</span>"
+                              @else
+                              title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>"
+                              @endif
+                              class="hidden-sm-down table-cell prod-code">{{ $tire->code }}
+                        </span>
                       </td>
-                      <td class="hidden-sm-down">{{ $tire->autocomment }}</td>
-                      <td class="ctd_addtocart" data-label="Grozs">
-                        <input alt="ct_matrix_{{ $tire->tire_id }}" name="qty" class="qty" id="ct_matrix_{{ $tire->tire_id }}_idQty" value="4 " type="text" style="display:none!important;">
-                        <div class="ct_submit btn btn-sm btn-primary" id="ct_matrix_{{ $tire->tire_id }}_submit" data-toggle="modal" data-target="#blockcart-modal" data-info="{{ $tire->tire_id }}">
-                          <i class="material-icons">add_shopping_cart</i>
+
+                      <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
+                      <td id="sale-price" class="text-center tire-price-red sale-price">€ {{ $tire->price2 }}</td>
+                      <td class="hidden-sm-down text-center tread-comment-cell-size">{{$tire->comment}}</td>
+                      <td class="shopping-cart-col">
+                        <div class="clearfix atc_div text-right">
+                          <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
+                                  @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal"
+                                  @endif data-info="{{ $tire->tire_id }}"><i
+                              class="material-icons">add_shopping_cart</i>
+                          </button>
                         </div>
                       </td>
-                      <td class="ctd_availability">
-                                              <span class="clearfix atc_div">
-                                                  <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip" data-html="true" title="{{ $tire->stockAvailability }}"><span class="sort-order">6</span></span>
-                                              </span>
+
+                      <td class="dot-availability text-center">
+                        <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip"
+                              data-html="true"
+                              title="{{ $tire->stockAvailability }}">
+                          <span class="sort-order">{{ $tire->dotAvailable }}</span>
+                        </span>
                       </td>
                     </tr>
                   @endforeach
                   </tbody>
                 </table>
-                {{--                                <nav class="pagination ct_pagination">--}}
-                {{--                                    <ul id="ct_pagination" class="page-list clearfix text-xs-center"></ul>--}}
-                {{--                                </nav>--}}
-                {{--                                <input type="hidden" name="ctab_id_product" class="ctab_id_product" value="351"><!-- end D:\OpenServer\domains\r1old/modules/combinationstab/views/templates/hook/productfooter.tpl -->--}}
-                {{--                                <script type="text/javascript">--}}
-                {{--                                    var productcomments_controller_url = 'http://r1riepas.lv/index.php?fc=module&module=productcomments&controller=default&id_lang=2';--}}
-                {{--                                    var confirm_report_message = 'Are you sure that you want to report this comment?';--}}
-                {{--                                    var secure_key = 'ecd08b6b11bbf8aa900e405ad158179e';--}}
-                {{--                                    var productcomments_url_rewrite = '0';--}}
-                {{--                                    var productcomment_added = 'Your comment has been added!';--}}
-                {{--                                    var productcomment_added_moderation = 'Your comment has been submitted and will be available once approved by a moderator.';--}}
-                {{--                                    var productcomment_title = 'New comment';--}}
-                {{--                                    var productcomment_ok = 'OK';--}}
-                {{--                                    var moderation_active = 1;--}}
-                {{--                                </script>--}}
-
+                <nav class="pagination ct_pagination">
+                  <ul id="ct_pagination" class="page-list clearfix text-xs-center"></ul>
+                </nav>
               </div>
-              {{--                            <div class="col-lg-3 col-md-12 float-lg-left">--}}
-              {{--                                <div id="productCommentsBlock">--}}
-
-              {{--                                    <div class="tabs">--}}
-              {{--                                        <div class="clearfix pull-right">--}}
-              {{--                                            <a class="open-comment-form btn btn-primary" href="#new_comment_form">Rakstīt komentāru</a>--}}
-              {{--                                        </div>--}}
-              {{--                                        <div id="new_comment_form_ok" class="alert alert-success" style="display:none;padding:15px 25px"></div>--}}
-              {{--                                        <div id="product_comments_block_tab">--}}
-
-
-              {{--                                        </div>--}}
-              {{--                                    </div>--}}
-
-              {{--                                    <!-- Fancybox -->--}}
-              {{--                                    <div style="display:none">--}}
-              {{--                                        <div id="new_comment_form" style="display: none;">--}}
-              {{--                                            <form id="id_new_comment_form" action="#">--}}
-              {{--                                                <div class="new_comment_form_content">--}}
-              {{--                                                    <h2>Rakstīt komentāru</h2>--}}
-              {{--                                                    <div id="new_comment_form_error" class="error" style="display:none;padding:15px 25px">--}}
-              {{--                                                        <ul></ul>--}}
-              {{--                                                    </div>--}}
-              {{--                                                    <label>Vārds<sup class="required">*</sup></label>--}}
-              {{--                                                    <input id="commentCustomerName" name="customer_name" type="text" value="">--}}
-
-              {{--                                                    <label for="comment_title">Nosaukums<sup class="required">*</sup></label>--}}
-              {{--                                                    <input id="comment_title" name="title" type="text" value="">--}}
-
-              {{--                                                    <label for="content">Komentārs<sup class="required">*</sup></label>--}}
-              {{--                                                    <textarea id="content" name="content"></textarea>--}}
-              {{--                                                    <div id="new_comment_form_footer">--}}
-              {{--                                                        <input id="id_product_comment_send" name="id_product" type="hidden" value="351">--}}
-              {{--                                                        <p class="fl required"><sup>*</sup> Obligāts</p>--}}
-              {{--                                                        <p class="fr">--}}
-              {{--                                                            <button class="btn btn-primary" id="submitNewMessage" name="submitMessage" type="submit">Sūtīt</button>&nbsp;--}}
-              {{--                                                            vai&nbsp;<a href="#" onclick="$.fancybox.close();">Aizvert</a>--}}
-              {{--                                                        </p>--}}
-              {{--                                                        <div class="clearfix"></div>--}}
-              {{--                                                    </div>--}}
-              {{--                                                </div>--}}
-              {{--                                            </form><!-- /end new_comment_form_content -->--}}
-              {{--                                        </div>--}}
-              {{--                                    </div>--}}
-              {{--                                    <!-- End fancybox -->--}}
-              {{--                                </div>--}}
-              {{--                            </div>--}}
             </div>
+            <div class="comments_note">
+            </div>
+{{--            <div class="row">--}}
+{{--              <div class="col-lg-9 col-md-12 float-lg-right">--}}
+
+{{--                <table id="ct_matrix">--}}
+{{--                  <thead>--}}
+{{--                  <tr class="ct_matrix_head">--}}
+{{--                    <th style="user-select: none;">Izmērs</th>--}}
+{{--                    <th class="hidden-sm-down">Ass</th>--}}
+{{--                    <th class="hidden-sm-down">Segums</th>--}}
+{{--                    <th class="hidden-sm-down" aria-sort="none" style="user-select: none;">LI/SI</th>--}}
+{{--                    <th class="hidden-sm-down" aria-sort="none" style="user-select: none;">Kods</th>--}}
+{{--                    <th class="cth_price" style="user-select: none;">Veikala cena</th>--}}
+{{--                    <th class="cth_price" style="user-select: none;">Akcijas cena</th>--}}
+{{--                    <th class="hidden-sm-down" style="user-select: none;">Piezīmes</th>--}}
+{{--                    <th class="cth_addtocart" style="user-select: none;">Grozs</th>--}}
+{{--                    <th class="cth_availability quadr" style="user-select: none;"></th>--}}
+{{--                  </tr>--}}
+{{--                  </thead>--}}
+{{--                  <tbody>--}}
+{{--                  @foreach ($tires as $tire)--}}
+
+{{--                    @php--}}
+{{--                      $tire->includeStock = true;--}}
+{{--                    @endphp--}}
+
+{{--                    <tr class="ct_matrix_row ctr0 @if ($currTire->tire_id == $tire->tire_id) {{ 'current' }} @endif" id="ctrcombid{{ $tire->tire_id }}" role="row">--}}
+{{--                      <td>--}}
+{{--                        <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids2[]"> {{ $tire->fullSize }}--}}
+{{--                      </td>--}}
+{{--                      <td class="hidden-sm-down">asd</td>--}}
+{{--                      <td class="hidden-sm-down">asd</td>--}}
+{{--                      <td class="hidden-sm-down">{{ $tire->lisi }}</td>--}}
+{{--                      <td class="hidden-sm-down">{{ $tire->code }}</td>--}}
+{{--                      <td data-label="Veikala cena" class="ctd_price ctd_attr_group_price">--}}
+{{--                        € {{ $tire->price1 }}--}}
+{{--                      </td>--}}
+{{--                      <td data-label="Akcijas cena" class="ctd_price ctd_attr_group_price">--}}
+{{--                        <strong class="strongprice">€ {{ $tire->price2 }}</strong>--}}
+{{--                      </td>--}}
+{{--                      <td class="hidden-sm-down">{{ $tire->autocomment }}</td>--}}
+{{--                      <td class="ctd_addtocart" data-label="Grozs">--}}
+{{--                        <input alt="ct_matrix_{{ $tire->tire_id }}" name="qty" class="qty" id="ct_matrix_{{ $tire->tire_id }}_idQty" value="4 " type="text" style="display:none!important;">--}}
+{{--                        <div class="ct_submit btn btn-sm btn-primary" id="ct_matrix_{{ $tire->tire_id }}_submit" data-toggle="modal" data-target="#blockcart-modal" data-info="{{ $tire->tire_id }}">--}}
+{{--                          <i class="material-icons">add_shopping_cart</i>--}}
+{{--                        </div>--}}
+{{--                      </td>--}}
+{{--                      <td class="ctd_availability">--}}
+{{--                        <span class="clearfix atc_div">--}}
+{{--                          <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip" data-html="true" title="{{ $tire->stockAvailability }}"><span class="sort-order">6</span></span>--}}
+{{--                        </span>--}}
+{{--                      </td>--}}
+{{--                    </tr>--}}
+{{--                  @endforeach--}}
+{{--                  </tbody>--}}
+{{--                </table>--}}
+{{--              </div>--}}
+{{--            </div>--}}
             <div class="modal fade js-product-images-modal" id="product-modal">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -364,23 +321,12 @@
             </div><!-- /.modal -->
             <!-- /.modal -->
             <!-- /.modal -->
-
-
-
             <footer class="page-footer">
-
               <!-- Footer content -->
-
             </footer>
-
           </section>
-
-
-
         </div>
-
       </div>
-
     </div>
   </div>
 

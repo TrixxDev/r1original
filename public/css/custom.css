@@ -4822,3 +4822,11 @@ ul#order-type-info li.list-style {
   text-transform: uppercase;
   color: black;
 }
+
+.quad-tread-name-cell-size {
+  width: 55%;
+}
+
+.big-tire-tread-name-cell-size {
+  width: 20%;
+}
