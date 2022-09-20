@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Moto;
 use App\Models\Motobrand;
 use App\Models\Mototread;
-use Gloudemans\Shoppingcart\Cart;
+use Cart;
 use View;
 use Auth;
 use DB;
@@ -131,9 +131,9 @@ class MotoTireController extends Controller
     public function tires_ajax(Request $request) {
 
         $tire = Moto::query()->with('tread')->selectRaw('moto_tires.*, moto_tires.comment as tire_comment, moto_treads.*')
-            ->rightJoin('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
-            ->where('moto_tires.tire_id', $request->tire_id)
-            ->first();
+                      ->rightJoin('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
+                      ->where('moto_tires.tire_id', $request->tire_id)
+                      ->first();
 
         if ($request->quantity) {
           $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
@@ -141,9 +141,8 @@ class MotoTireController extends Controller
           $cart = CartController::addProduct($this->model, $tire->tire_id, 4);
         }
 
-        $cartObj = new Cart();
-        $quantity = $cartObj->count();
-        $total_sum = str_replace([',', '.00'], '', $cartObj->total());
+        $quantity = Cart::count();
+        $total_sum = str_replace([',', '.00'], '', Cart::total());
         $bought = ($request->quantity) ? $request->quantity : 4;
 
         echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);

@@ -166,7 +166,7 @@ Route::middleware('checksession')->group(function() {
   Route::get('/motociklu-riepas', [App\Http\Controllers\MotoTireController::class, 'index'])->name('motociklu-riepas');
   Route::post('/motociklu-riepas', [App\Http\Controllers\MotoTireController::class, 'tires_search'])->name('motociklu-riepas');
   Route::get('/motociklu-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\MotoTireController::class, 'tires_tread'])->name('motociklu-riepa');
-  Route::post('/motociklu-riepas/search/ajax', [App\Http\Controllers\MotoTireController::class, 'tires_ajax'])->name('motociklu-riepas-ajax');
+  Route::post('/motociklu-riepas/ajax', [App\Http\Controllers\MotoTireController::class, 'tires_ajax'])->name('motociklu-riepas-ajax');
   Route::get('/motociklu-riepas/search', [App\Http\Controllers\MotoTireController::class, 'tires_find'])->name('motociklu-riepas-meklet');
 
 //Lielās riepas

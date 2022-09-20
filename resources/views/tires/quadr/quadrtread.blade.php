@@ -104,14 +104,6 @@
                                   <td>{{ $currTire->code }}</td>
                                 </tr>
                                 <tr>
-                                  <th>Li</th>
-                                  <td>{{ $currTire->li }}</td>
-                                </tr>
-                                <tr>
-                                  <th>Si</th>
-                                  <td>{{ $currTire->si }}</td>
-                                </tr>
-                                <tr>
                                   <th>Piezīmes</th>
                                   <td>
                                     @php
@@ -131,9 +123,9 @@
                               </table>
                             </div>
                             <div id="product-comments" class="col-sm-12 col-md-8">
-                              @if($currTire->t_comment)
+                              @if($currTire->comment)
                                 <div class="alert" style="border: 1px solid #68c0a8">
-                                  {{ $currTire->t_comment }}
+                                  {{ $currTire->comment }}
                                 </div>
                               @endif
                             </div>
@@ -150,9 +142,8 @@
                             <thead class="tires-thead" style="position:sticky; top: -1px;">
                             <tr>
                               <th scope="col"></th>
-                              <th scope="col" class="text-center">Izmērs</th>
-                              <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
-                              <th scope="col" class="hidden-sm-down text-center">Kods</th>
+                              <th scope="col">Izmērs</th>
+                              <th scope="col" class="hidden-sm-down text-center" title="Kordu slāņu skaits">PR</th>
 
                               <th id="store-price-button" scope="col" class="text-center">
                                 Veikala cena
@@ -179,7 +170,7 @@
                                          class="tire-table-checkbox">
                                 </th>
 
-                                <td class="tread-name-cell-size text-center">
+                                <td class="quad-tread-name-cell-size">
                                   {{ $tire->fullSize }}
                                 </td>
 
@@ -192,20 +183,20 @@
                                     </span>
                                 </td>
 
-                                <td class="hidden-sm-down text-center tread-code-cell-size">
-                                    <span data-toggle="tooltip"
-                                          @if($tire->code == 'XL')
-                                          title="<span style='color: black'>XL ??????????? SUBJECT TO CHANGE</span>"
-                                          @else
-                                          title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>"
-                                          @endif
-                                          class="hidden-sm-down table-cell prod-code">{{ $tire->code }}
-                                    </span>
-                                </td>
+{{--                                <td class="hidden-sm-down text-center tread-code-cell-size">--}}
+{{--                                    <span data-toggle="tooltip"--}}
+{{--                                          @if($tire->code == 'XL')--}}
+{{--                                          title="<span style='color: black'>XL ??????????? SUBJECT TO CHANGE</span>"--}}
+{{--                                          @else--}}
+{{--                                          title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>"--}}
+{{--                                          @endif--}}
+{{--                                          class="hidden-sm-down table-cell prod-code">{{ $tire->code }}--}}
+{{--                                    </span>--}}
+{{--                                </td>--}}
 
                                 <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
                                 <td id="sale-price" class="text-center tire-price-red sale-price">€ {{ $tire->price2 }}</td>
-                                <td class="hidden-sm-down text-center tread-comment-cell-size">{{$tire->comment}}</td>
+                                <td class="hidden-sm-down text-center tread-comment-cell-size">{{$tire->t_comment}}</td>
                                 <td class="shopping-cart-col">
                                   <div class="clearfix atc_div text-right">
                                     <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"

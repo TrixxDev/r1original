@@ -7,7 +7,7 @@ use App\Helper\Tires;
 use App\Models\Bigbrand;
 use App\Models\Bigtire;
 use App\Models\Bigtread;
-use Gloudemans\Shoppingcart\Cart;
+use Cart;
 use Illuminate\Http\Request;
 use Auth;
 use View;
@@ -183,9 +183,8 @@ class BigTireController extends Controller
         $cart = CartController::addProduct($this->model, $tire->tire_id, 4);
       }
 
-      $cartObj = new Cart();
-      $quantity = $cartObj->count();
-      $total_sum = str_replace([',', '.00'], '', $cartObj->total());
+      $quantity = Cart::count();
+      $total_sum = str_replace([',', '.00'], '', Cart::total());
       $bought = ($request->quantity) ? $request->quantity : 4;
 
       echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
