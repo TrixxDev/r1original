@@ -4008,6 +4008,10 @@ td.header-empty {
   border-bottom: 1px solid #65c2a5;
 }
 
+.grid-ex:nth-last-child(1) {
+  border: none;
+}
+
 .tire-image-cards img {
   margin-left: 0 !important;
   padding: 0;
@@ -4829,4 +4833,14 @@ ul#order-type-info li.list-style {
 
 .big-tire-tread-name-cell-size {
   width: 20%;
+}
+
+.navbar-link-btn {
+  display: block;
+  color: white !important;
+  text-align: center;
+}
+
+.navbar-link-btn:focus {
+  text-decoration: none;
 }

@@ -304,9 +304,6 @@
   <button class="nav-dropdown-button navbar-item" onclick="showServissDropdown()">Serviss <span class="material-icons serviss">keyboard_arrow_down</span></button>
 
   <div class="dropdown-options serviss">
-      <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ route('pieraksts') }}">E-Pieraksts</a>
-      </div>
 
       <div class="nav-dropdown-link">
         <a class="dropdown-item" href="{{ route('pakalpojumi') }}">Pakalpojumi</a>
@@ -335,7 +332,7 @@
       </div>
     </div>
 
-
+    <a class="nav-dropdown-button navbar-item navbar-link-btn" href="{{ route('pieraksts') }}">E-Pieraksts</a>
 
 {{--    <div class="nav-dropdown-button">--}}
 {{--      <a href="" class="nav-dropdown-btn-link">Serviss</a>--}}
