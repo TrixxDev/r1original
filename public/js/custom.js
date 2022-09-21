@@ -2434,9 +2434,12 @@ $(document).on('change', 'input[type="checkbox"][name="product_ids[]"]', functio
   const $ids = $(document).find('input[type="checkbox"][name="product_ids[]"]:checked');
   let ids_str = '';
   $('.tire-table-row').removeClass('selected');
+  $('.tire-image-card').removeClass('selected');
+
   if ($ids.length) {
     $ids.each(function() {
       $(this).parents('.tire-table-row').addClass('selected');
+      $(this).parents('.tire-image-card').addClass('selected');
     });
     ids_str = $.map($ids, function(id) {
       return $(id).val();

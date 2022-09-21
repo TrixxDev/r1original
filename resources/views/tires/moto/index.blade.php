@@ -605,7 +605,6 @@
                       @endforeach
                         </tbody>
                       </table>
-                      {{ $tires->links() }}
                   </div>
                   <nav class="pagination">
                     <div class="col-md-12">
@@ -618,6 +617,7 @@
                     </a>
                   </div>
                 </div>
+                {{ $tires->links() }}
               </div>
               <div id="js-product-list-bottom">
                 <div id="js-product-list-bottom"></div>

@@ -481,6 +481,7 @@
                     </a>
                   </div>
                 </div>
+                {{ $tires->links() }}
               </div>
               <div id="js-product-list-bottom">
                 <div id="js-product-list-bottom"></div>

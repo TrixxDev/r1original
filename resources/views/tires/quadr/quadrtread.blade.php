@@ -138,7 +138,7 @@
                       <div class="row">
                         <div class="">
 
-                          <table id="tires-table" class="table summer-sorter tires-table table-hover tablesorter">
+                          <table id="tires-table" class="table quad-sorter tires-table table-hover tablesorter">
                             <thead class="tires-thead" style="position:sticky; top: -1px;">
                             <tr>
                               <th scope="col"></th>

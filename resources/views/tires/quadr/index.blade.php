@@ -398,7 +398,7 @@
                             echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
                           }
                       @endphp
-                      <table id="tires-table" class="table quadr-tread-sorter tires-table table-hover tablesorter">
+                      <table id="tires-table" class="table quadr-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead">
                         <tr>
                           <th scope="col"><input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces"></th>
@@ -549,7 +549,6 @@
                         @endforeach
                         </tbody>
                       </table>
-                      {{ $tires->links() }}
                   </div>
                   <nav class="pagination">
                     <div class="col-md-12">
@@ -562,6 +561,7 @@
                     </a>
                   </div>
                 </div>
+                {{ $tires->links() }}
               </div>
               <div id="js-product-list-bottom">
                 <div id="js-product-list-bottom"></div>
