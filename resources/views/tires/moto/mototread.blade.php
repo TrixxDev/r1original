@@ -180,15 +180,7 @@
                                     </th>
 
                                     <td class="tread-name-cell-size">
-                                      <a data-toggle="tooltip" data-html="true" class="rim-table-link"
-                                         @if (\Image::exists('auto-rim', $tire->tire_id))
-                                         title="{{ \Image::show('auto-rim', $tire->tire_id) }}"
-                                         @else
-                                         title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
-                                         @endif
-                                      >
                                       {{ $tire->fullSize }}
-                                      </a>
                                     </td>
 
                                     <td class="hidden-sm-down text-center">
