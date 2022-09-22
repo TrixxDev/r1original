@@ -359,18 +359,6 @@
                         @endforeach
                       </div>
                     </div>
-{{--                    <div class="table-top product_show_list">--}}
-{{--                      <span class="table-cell">Brends / modelis</span>--}}
-{{--                      <span class="table-cell hidden-sm-down">LI/SI</span>--}}
-{{--                      <span class="table-cell sortable"--}}
-{{--                            data-filter=".product-price-and-shipping .regular-price"--}}
-{{--                            data-order="DESC">Veikala cena</span>--}}
-{{--                      <span class="table-cell sortable"--}}
-{{--                            data-filter=".product-price-and-shipping .price" data-order="DESC">Akcijas cena</span>--}}
-{{--                      <span class="table-cell">Piezīmes--}}
-{{--                        <!--{hook h='displayProductAttributesHeader' listing=$listing}--></span>--}}
-{{--                      <span class="table-cell availability"> </span>--}}
-{{--                    </div>--}}
                     @php
                       $cbrand = '';
                       $index = 0;
@@ -546,6 +534,9 @@
                           </td>
 
                         </tr>
+                         @php
+                           $index++;
+                         @endphp
                         @endforeach
                         </tbody>
                       </table>
