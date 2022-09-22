@@ -274,7 +274,7 @@
                         }
                       @endphp
                       @if($tire->price1)
-                        <a href="">
+                        <a href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}">
                           <div class="tire-image-card sort-order">
                             <div class="text-center image-grid-overflow">
                               {!! \Image::showGrid('big', $tire->make_id) !!}
