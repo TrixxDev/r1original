@@ -474,15 +474,15 @@
                                   {{$rim->d1}}*{{$rim->d3}}
                                 </td>
 
-                                <td class="text-center">
+                                <td class="hidden-sm-down text-center">
                                   {{$rim->skr}} * {{$rim->pcd}}
                                 </td>
 
-                                <td class="text-center">
+                                <td class="hidden-sm-down text-center">
                                   et{{ $rim->et }}
                                 </td>
 
-                                <td class="text-center">
+                                <td class="hidden-sm-down text-center">
                                   {{$rim->dc}}
                                 </td>
 
