@@ -459,7 +459,7 @@
                                 </th>
 
                                 <td>
-                                  <a data-toggle="tooltip" data-html="true" class="rim-table-link"
+                                  <a data-toggle="tooltip" data-html="true" class="rim-table-link tire-table-link"
                                      @if (\Image::exists('auto-rim', $rim->make_id))
                                      title="{{ \Image::show('auto-rim', $rim->make_id) }}"
                                      @else
