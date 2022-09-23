@@ -426,11 +426,8 @@
                         </td>
 {{--                        LI/SI--}}
                         <td class="text-center">
-                          <span>
-                            <span data-toggle="tooltip"
-                                  title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>
-                            <span data-toggle="tooltip"
-                                  title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>
+                          <span data-toggle="tooltip"
+                            title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . ' ' . $tire->si }}
                           </span>
                         </td>
 

@@ -357,28 +357,28 @@
                 <div id="js-product-list">
                   <div class="products row hide-price title-flip">
 
-                    <div class="tire-image-container">
-                      <div class="tire-image-cards" style="display: none">
-                        {{--                <div style="width: auto;">BRAND NAME</div>--}}
-                        @foreach($tires as $tire)
-                          <div class="tire-image-card">
-                            <a href="" class="">
-                              <div class="text-center">
-                                {!! \Image::showGrid('moto', $tire->make_id) !!}
-                              </div>
-                              <div class="tire-list-caption">
+{{--                    <div class="tire-image-container">--}}
+{{--                      <div class="tire-image-cards" style="display: none">--}}
+{{--                        --}}{{-- GRID VIEW --}}
+{{--                        @foreach($tires as $tire)--}}
+{{--                          <div class="tire-image-card">--}}
+{{--                            <a href="" class="">--}}
+{{--                              <div class="text-center">--}}
+{{--                                {!! \Image::showGrid('moto', $tire->make_id) !!}--}}
+{{--                              </div>--}}
+{{--                              <div class="tire-list-caption">--}}
 
-                                <div class="card-title-text">{{$tire->title}}</div>
-                                <div class="tire-tread">
-                                  {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}
-                                </div>
-                                <div class="tire-price-red">€{{$tire->price1}}</div>
-                              </div>
-                            </a>
-                          </div>
-                        @endforeach
-                      </div>
-                    </div>
+{{--                                <div class="card-title-text">{{$tire->title}}</div>--}}
+{{--                                <div class="tire-tread">--}}
+{{--                                  {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}--}}
+{{--                                </div>--}}
+{{--                                <div class="tire-price-red">€{{$tire->price1}}</div>--}}
+{{--                              </div>--}}
+{{--                            </a>--}}
+{{--                          </div>--}}
+{{--                        @endforeach--}}
+{{--                      </div>--}}
+{{--                    </div>--}}
 {{--                    <div class="table-top product_show_list">--}}
 {{--                      <span class="table-cell">Brends / modelis</span>--}}
 {{--                      <span class="table-cell hidden-sm-down">Tips</span>--}}
@@ -479,21 +479,9 @@
                         </td>
 
                         <td class="hidden-sm-down text-center">
-                            <span>
-{{--                              <span data-toggle="tooltip"--}}
-{{--                                    title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>--}}
-{{--                              <span data-toggle="tooltip"--}}
-{{--                                    title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>--}}
-
-                              <span data-toggle="tooltip"
-                                    title="
-                                    <span style='color: black'>
-                                    Kravnesības indekss: 91 – 615 kg
-                                    <br>
-                                    {{ $tire->si }} - Ātruma Indekss</span>">
-                                    {{ $tire->li . $tire->si }}
-                              </span>
-                            </span>
+                          <span data-toggle="tooltip"
+                                title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}
+                          </span>
                         </td>
 
                         <td class="hidden-sm-down text-center">

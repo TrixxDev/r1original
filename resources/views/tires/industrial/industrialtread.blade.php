@@ -103,12 +103,12 @@
                         <td>{{ $currTire->d3 }}</td>
                       </tr>
                       <tr>
-                        <th>Li</th>
-                        <td>{{ $currTire->li }}</td>
-                      </tr>
-                      <tr>
-                        <th>Si</th>
-                        <td>{{ $currTire->si }}</td>
+                        <th>Li/Si</th>
+                        <td>
+                          <span data-toggle="tooltip"
+                                title="<span style='color: black'>{{ $currTire->lisiDesc($currTire->li, $currTire->si) }}</span>">{{ $currTire->li . ' ' . $currTire->si }}
+                          </span>
+                        </td>
                       </tr>
                       <tr>
                         <th>Kods</th>
@@ -172,7 +172,7 @@
                     @endphp
 
                     <tr @if($currTire->tire_id == $tire->tire_id) style="font-weight: bold; background-color: #e0e0e0;" @endif class="tire-table-row">
-                      <th scope="row" class="tread-tire-table-checkbox">
+                      <th scope="row" class="t read-tire-table-checkbox">
                         <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
                                class="tire-table-checkbox">
                       </th>
@@ -183,11 +183,8 @@
                       <td class="hidden-sm-down text-center">ass</td>
                       <td class="hidden-sm-down text-center">segums</td>
                       <td class="hidden-sm-down text-center">
-                        <span>
-                          <span data-toggle="tooltip"
-                                title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>
-                          <span data-toggle="tooltip"
-                                title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>
+                        <span data-toggle="tooltip"
+                              title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . ' ' . $tire->si }}
                         </span>
                       </td>
 
@@ -198,7 +195,7 @@
                               @else
                               title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>"
                               @endif
-                              class="hidden-sm-down table-cell prod-code">{{ $tire->code }}
+                              class="hidden-sm-down table-cell prod-code">{{ $tire->code }} as
                         </span>
                       </td>
 

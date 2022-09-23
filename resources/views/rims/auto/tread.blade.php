@@ -187,13 +187,7 @@
                       </th>
 
                       <td>
-                        <a data-toggle="tooltip" data-html="true" class="rim-table-link"
-                           @if (\Image::exists('auto-rim', $rim->make_id))
-                           title="{{ \Image::show('auto-rim', $rim->make_id) }}"
-                           @else
-                           title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"
-                           @endif
-                        >
+                        <a data-toggle="tooltip" data-html="true" class="rim-table-link">
                           {{ $rim->brand_title . ' ' . $rim->title }}
                         </a>
                       </td>
@@ -249,23 +243,6 @@
                   @endforeach
                   </tbody>
                 </table>
-
-
-                <nav class="pagination ct_pagination">
-                  <ul id="ct_pagination" class="page-list clearfix text-xs-center"></ul>
-                </nav>
-                <input type="hidden" name="ctab_id_product" class="ctab_id_product" value="351"><!-- end D:\OpenServer\domains\r1old/modules/combinationstab/views/templates/hook/productfooter.tpl -->
-                <script type="text/javascript">
-                  var productcomments_controller_url = 'http://r1riepas.lv/index.php?fc=module&module=productcomments&controller=default&id_lang=2';
-                  var confirm_report_message = 'Are you sure that you want to report this comment?';
-                  var secure_key = 'ecd08b6b11bbf8aa900e405ad158179e';
-                  var productcomments_url_rewrite = '0';
-                  var productcomment_added = 'Your comment has been added!';
-                  var productcomment_added_moderation = 'Your comment has been submitted and will be available once approved by a moderator.';
-                  var productcomment_title = 'New comment';
-                  var productcomment_ok = 'OK';
-                  var moderation_active = 1;
-                </script>
 
               </div>
               {{--                            <div class="col-lg-3 col-md-12 float-lg-left">--}}

@@ -104,12 +104,12 @@
                                       <td>{{ $currTire->code }}</td>
                                     </tr>
                                     <tr>
-                                      <th>Li</th>
-                                      <td>{{ $currTire->li }}</td>
-                                    </tr>
-                                    <tr>
-                                      <th>Si</th>
-                                      <td>{{ $currTire->si }}</td>
+                                      <th>Li/Si</th>
+                                      <td>
+                                        <span data-toggle="tooltip"
+                                              title="<span style='color: black'>{{ $currTire->lisiDesc($currTire->li, $currTire->si) }}</span>">{{ $currTire->li . $currTire->si }}
+                                        </span>
+                                      </td>
                                     </tr>
                                     <tr>
                                       <th>Degvielas ekonomija</th>
@@ -269,22 +269,6 @@
                                 @endforeach
                                 </tbody>
                               </table>
-
-                                <nav class="pagination ct_pagination">
-                                    <ul id="ct_pagination" class="page-list clearfix text-xs-center"></ul>
-                                </nav>
-                                <input type="hidden" name="ctab_id_product" class="ctab_id_product" value="351"><!-- end D:\OpenServer\domains\r1old/modules/combinationstab/views/templates/hook/productfooter.tpl -->
-                                <script type="text/javascript">
-                                    var productcomments_controller_url = 'http://r1riepas.lv/index.php?fc=module&module=productcomments&controller=default&id_lang=2';
-                                    var confirm_report_message = 'Are you sure that you want to report this comment?';
-                                    var secure_key = 'ecd08b6b11bbf8aa900e405ad158179e';
-                                    var productcomments_url_rewrite = '0';
-                                    var productcomment_added = 'Your comment has been added!';
-                                    var productcomment_added_moderation = 'Your comment has been submitted and will be available once approved by a moderator.';
-                                    var productcomment_title = 'New comment';
-                                    var productcomment_ok = 'OK';
-                                    var moderation_active = 1;
-                                </script>
 
                             </div>
 {{--                            <div class="col-lg-3 col-md-12 float-lg-left">--}}
