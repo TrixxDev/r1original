@@ -614,10 +614,6 @@
                         <div class="tire-list-caption">
 
                           <div class="card-title-text" data-toggle="tooltip" title="<div>{{$tire->title}}</div>">
-                            <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip"
-                                  data-html="true"
-                                  title="{{ $tire->stockAvailability }}">
-                            </span>
                             {{$tire->title}}
                           </div>
 
@@ -626,18 +622,25 @@
                             <span data-toggle="tooltip" title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}</span>
                             <span class="tire-image-code">{{$tire->code}}</span>
                           </div>
-                          <div style="display: inline-flex">
-                            <div class="rim-price-old">€{{$tire->price1}}</div>
-                            <div class="rim-price-red">€{{$tire->price2}}</div>
+                          <div style="display: flex;">
+                            <input type="checkbox" name="product_ids[]" value="{{$tire->tire_id}}" style="margin-right: 5px;">
+                            <div class="rim-price-old" style="align-self: center;">€{{$tire->price1}}</div>
+                            <div class="rim-price-red" style="align-self: center;">€{{$tire->price2}}</div>
+                            <i class="material-icons" style="margin-left: auto;">add_shopping_cart</i>
+{{--                            <button class="" data-toggle="modal"--}}
+{{--                                    @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"--}}
+{{--                            @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()"><span style="letter-spacing: 2px; text-transform: uppercase;"></span>--}}
+{{--                            </button>--}}
+                            <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip" style="align-self: center;"
+                                  data-html="true"
+                                  title="{{ $tire->stockAvailability }}">
+                            </span>
                           </div>
                         </div>
 {{--                        <button class="grid-shopping-button grid-cart-btn" data-toggle="modal" data-target="#blockcart-modal" data-info="148204">Pirkt--}}
 {{--                        </button>--}}
 
-                        <button class="grid-shopping-button grid-cart-btn" data-toggle="modal"
-                                @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"
-                                @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()"><span style="letter-spacing: 2px; text-transform: uppercase;">Pirkt</span>
-                        </button>
+
 
                       </div>
                     </a>
@@ -810,11 +813,9 @@
                           </td>
 
                           <td class="hidden-sm-down text-center">
-                            <span>
                               <span data-toggle="tooltip"
                                     title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}
                               </span>
-                            </span>
                           </td>
 
                           @if ($season_id == 2)
@@ -907,7 +908,7 @@
                         @endforeach
                         </tbody>
                       </table>
-                      {{ $tires->links() }}
+
                   </div>
 
                   {{--                                  <div class="table-top product_show_list">--}}
@@ -1021,6 +1022,7 @@
                     </a>
                   </div>
                 </div>
+                {{ $tires->links() }}
               </div>
               <div id="js-product-list-bottom">
                 <div id="js-product-list-bottom"></div>

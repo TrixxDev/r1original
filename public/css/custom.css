@@ -4019,7 +4019,6 @@ td.header-empty {
 }
 
 .tire-image-card {
-  border-radius: 10px;
   color: black;
   height: 100%;
   border: 1px solid rgba(0, 0, 0, .125);
@@ -4741,8 +4740,6 @@ ul#order-type-info li.list-style {
 
 .grid-tire-image {
   width: 100%;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   margin: 0 !important;
 }
 
@@ -4842,5 +4839,9 @@ ul#order-type-info li.list-style {
 }
 
 .navbar-link-btn:focus {
+  text-decoration: none;
+}
+
+.tire-image-container a {
   text-decoration: none;
 }
