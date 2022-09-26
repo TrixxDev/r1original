@@ -391,10 +391,10 @@
                         <tr>
                           <th scope="col"><input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces"></th>
                           <th scope="col" class="table-tire-name-cell" style="width:50%;">Brends / modelis</th>
+                          <th scope="col" class="text-center">PR</th>
                           <th id="store-price-button" scope="col" class="text-center">
                             Veikala cena
                           </th>
-
                           <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
                           <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
                           <th scope="col"></th>
@@ -510,7 +510,7 @@
 {{--                            <span data-toggle="tooltip"--}}
 {{--                                  title="<span style='color: black'>{{ $tire->noise }}</span>">{{ $tire->noise }}</span>--}}
 {{--                          </td>--}}
-
+                          <td class="text-center">{{$tire->pr}}</td>
                           <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
                           <td id="sale-price" class="text-center tire-price-red sale-price">€ {{ $tire->price2 }}</td>
                           <td class="hidden-sm-down text-center"></td>

@@ -4845,3 +4845,8 @@ ul#order-type-info li.list-style {
 .tire-image-container a {
   text-decoration: none;
 }
+
+input#show-selected-checkbox {
+  align-self: flex-end;
+  margin-bottom: 5px;
+}

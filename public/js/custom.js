@@ -2849,13 +2849,30 @@ $(document).ready(function() {
   //   $('#show-selected-checkbox').attr('disabled', $('th.tire-table-checkbox input:checked').length == 0);
   // });
 
-  const rows = document.querySelectorAll("#tires-table tbody tr")
-  document.getElementById("show-selected-checkbox").addEventListener("click",function() {
-    rows.forEach(row => row.hidden = this.checked && !row.querySelector("input").checked)
-  })
+  const rows = $(".tire-table-row");
+  const rowsGrid = $("a.grid-view-link");
+  $("#show-selected-checkbox").on("click",function() {
+    if ($(this).is(':checked')) {
+      rows.each(function() {
+        $(this).hide();
+        if ($(this).hasClass('selected')) {
+          $(this).show();
+        }
+      });
+      rowsGrid.each(function() {
+        $(this).hide();
+        if ($(this).children().hasClass('selected')) {
+          $(this).show();
+        }
+      });
+    } else {
+      rows.show();
+      rowsGrid.show();
+    }
+  });
 
-  if (window.location.hash.includes('only_selected')){
-    $('#show-selected-checkbox').click();
+  if (window.location.hash.indexOf('o') != -1){
+    $('#show-selected-checkbox').trigger('click');
   }
 });
 

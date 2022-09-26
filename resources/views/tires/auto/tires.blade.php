@@ -574,6 +574,7 @@
           <section id="main">
             <section id="products" class="">
               {{--GRID VIEW--}}
+              <input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces">
               <div class="tire-image-container" style="display: none">
                 <div class="tire-image-cards">
 {{--                <div style="width: auto;">BRAND NAME</div>--}}
@@ -605,7 +606,7 @@
                       }
                     @endphp
                     @if($tire->price1)
-                    <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}">
+                    <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}" class="grid-view-link">
                       <div class="tire-image-card sort-order">
                         <div class="text-center image-grid-overflow">
                           {!! \Image::showGrid('auto', $tire->make_id) !!}
@@ -696,7 +697,7 @@
                       <table id="tires-table" class="table summer-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead">
                         <tr>
-                          <th scope="col"><input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces"></th>
+                          <th scope="col"></th>
                           <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
                           <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
                           @if ($season_id == 2)
