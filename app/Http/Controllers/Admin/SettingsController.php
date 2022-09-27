@@ -1,54 +1,54 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+  namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Models\Autotire;
-use App\Models\Moto;
-use App\Models\Quadr;
-use App\Models\User;
-use DOMDocument;
-use Illuminate\Http\Request;
-use App\Models\Service;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Spatie\Permission\Models\Role;
+  use App\Http\Controllers\Controller;
+  use App\Models\Autotire;
+  use App\Models\Moto;
+  use App\Models\Quadr;
+  use App\Models\User;
+  use DOMDocument;
+  use Illuminate\Http\Request;
+  use App\Models\Service;
+  use Illuminate\Support\Facades\DB;
+  use Illuminate\Support\Facades\File;
+  use Illuminate\Support\Facades\Hash;
+  use Illuminate\Support\Str;
+  use Spatie\Permission\Models\Role;
 
-class SettingsController extends Controller
-{
+  class SettingsController extends Controller
+  {
 
     public function services()
     {
-        $services = Service::orderBy('service_id', 'DESC')->get();
+      $services = Service::orderBy('service_id', 'DESC')->get();
 
-        return view('admin.settings.services', compact('services'));
+      return view('admin.settings.services', compact('services'));
     }
 
     public function services_store(Request $request)
     {
-        $service = new Service;
-        $service->timestamps = false;
-        $service->title = $request->title;
-        $service->pdf_title = $request->pdf_title;
-        if ($request->f_save == 'on') $service->f_save = 1;
-        if ($service->save()) {
-            return json_encode(['success' => 'Pakalpojums veiksmīgi izveidots!', 'service_id' => $service->service_id, 'service_title' => $request->title]);
-        }
+      $service = new Service;
+      $service->timestamps = false;
+      $service->title = $request->title;
+      $service->pdf_title = $request->pdf_title;
+      if ($request->f_save == 'on') $service->f_save = 1;
+      if ($service->save()) {
+        return json_encode(['success' => 'Pakalpojums veiksmīgi izveidots!', 'service_id' => $service->service_id, 'service_title' => $request->title]);
+      }
 
     }
 
     public function services_edit($id)
     {
-        return $id;
+      return $id;
     }
 
     public function services_destroy($id)
     {
-        $service = Service::findOrFail($id);
-        $service->delete();
-        return redirect(route('admin.settings.services'))->with('success', 'Pakalpojums veiksmīgi dzēsts!');
+      $service = Service::findOrFail($id);
+      $service->delete();
+      return redirect(route('admin.settings.services'))->with('success', 'Pakalpojums veiksmīgi dzēsts!');
     }
 
     // Administratori
@@ -295,7 +295,7 @@ class SettingsController extends Controller
           continue;
         }
         $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', $tire->fullName);
+        $child_node_title = $dom->createElement('name', $tire->title);
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('price', $tire->offerPrice);
         $item->appendChild($child_node_title);
@@ -318,7 +318,7 @@ class SettingsController extends Controller
           $child_node_title = $dom->createElement('category_link', route('ziemas-riepas'));
           $item->appendChild($child_node_title);
         }
-        $child_node_title = $dom->createElement('in_stock', $tire->stocks);
+        $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
         $item->appendChild($child_node_title);
         $root->appendChild($item);
         $dom->appendChild($root);
@@ -339,7 +339,7 @@ class SettingsController extends Controller
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('category_link', route('motociklu-riepas'));
         $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('in_stock', $tire->stocks);
+        $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
         $item->appendChild($child_node_title);
         $root->appendChild($item);
         $dom->appendChild($root);
@@ -360,7 +360,7 @@ class SettingsController extends Controller
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('category_link', route('kvadraciklu-riepas'));
         $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('in_stock', $tire->stocks);
+        $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
         $item->appendChild($child_node_title);
         $root->appendChild($item);
         $dom->appendChild($root);
@@ -417,4 +417,4 @@ class SettingsController extends Controller
       return view('admin.settings.syncs');
     }
 
-}
+  }

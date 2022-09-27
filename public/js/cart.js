@@ -156,9 +156,9 @@ $('.sidebar-auto input[name=model]').parent().children('.dropdown-menu').each(fu
   })
 });
 
-$('.sidebar-auto input[name=diameter]').parent().children('.dropdown-menu').each(function() {
+$('.sidebar-auto input[name=tire-radius]').parent().children('.dropdown-menu').each(function() {
   $(this).on('click', '.select-list', function() {
-    $('.sidebar-auto input[name=diameter]').attr('value', $(this).text()).val($(this).text()).trigger('change');
+    $('.sidebar-auto input[name=tire-radius]').attr('value', $(this).text()).val($(this).text()).trigger('change');
   });
 });
 

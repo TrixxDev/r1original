@@ -497,7 +497,7 @@
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                                title='{!! \Image::show('quadr', $tire->make_id) !!}'
                                href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"
-                               data-content="{{ $tire->title }}">
+                               data-content="{{ $tire->title . ' ' . $tire->fullSize }}">
                               {{ $tire->title }}
                             </a>
                           </td>

@@ -300,14 +300,14 @@ class AutoTireController extends Controller
                                                 ->join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
                                                 ->join('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
                                                 ->where('auto_brands.title', $brand->title)
-                                                ->where('auto_treads.t_title', $tread)
+                                                ->where('auto_treads.t_title', str_replace('_', '/', $tread))
                                                 ->orderBy('d3', 'ASC')
                                                 ->orderBy('d1', 'ASC')
                                                 ->orderBy('d2', 'ASC')
                                                 ->get();
 
         $currTire = Autotire::with('tread')->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-                                                   ->where('auto_treads.t_title', $tread)
+                                                   ->where('auto_treads.t_title', str_replace('_', '/', $tread))
                                                    ->where('auto_tires.tire_id', $tire)
                                                    ->first();
 

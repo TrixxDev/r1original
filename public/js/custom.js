@@ -842,17 +842,17 @@ if (!admin) {
 
   });
 } else {
-  const tire_price = $('.product-prices').find('.has-discount span[itemprop=price]').attr('content');
   $('.add-to-cart').on('click', function() {
+    const tire_price = $('.product-prices').find('.has-discount span[itemprop=price]').attr('content');
+    const tire_title = $('.tire_title').val();
+    const tire_article = $('.tire_article').val();
     $('.popup input[name=qty]').val($('.product-quantity .qty .input-group input[name=qty]').attr('value'));
     $('.popup input[name=total]').val(parseInt(tire_price) * $('.popup input[name=qty]').val());
-  });
-  const tire_title = $('.tire_title').val();
-  const tire_article = $('.tire_article').val();
-  $('.popup input[name=prod]').val(tire_title);
-  $('.popup input[name=price]').val(tire_price);
-  $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
-  $('.popup input[name=article]').val(tire_article);
+    $('.popup input[name=prod]').val(tire_title);
+    $('.popup input[name=price]').val(parseInt($('.current-price').children().last().attr('content')));
+    $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
+    $('.popup input[name=article]').val(tire_article);
+  })
 }
 
 $('.ct_matrix_row').each(function(key, value) {
@@ -1802,6 +1802,9 @@ $(document).ready(function() {
 
   $('#submit-reservation').on('click', function() {
 
+    $(this).attr('disabled', true).prop('disabled', true);
+    $('#close-modal').attr('disabled', true).prop('disabled', true);
+
     let recaptcha_k = $('#recaptcha_k').data('value');
     let car = $('#reservation #brand').val();
     let carModel = $('#reservation #model').val();
@@ -1834,6 +1837,8 @@ $(document).ready(function() {
         'action': $('#reservation input[name=grecaptcha_app]').val(),
       },
       success: function(data) {
+        $('#submit-reservation').removeAttr('disabled');
+        $('#close-modal').removeAttr('disabled');
         if (data.error) {
           if (data.error.brand) $('#brand').attr('placeholder', data.error.brand);
           if (data.error.model) $('#model').attr('placeholder', data.error.model);
@@ -1863,6 +1868,8 @@ $(document).ready(function() {
           }
         } else if (data.success) {
 
+          $('#submit-reservation').removeAttr('disabled');
+          $('#close-modal').removeAttr('disabled');
           let plate = phone.substr(-3);
           plate = parseInt(plate);
           plate = $.trim(plate);
@@ -1881,6 +1888,7 @@ $(document).ready(function() {
           $('#reservation form').trigger('reset');
           $('#reservation .temp_save_nr').remove();
         } else if (data.taken) {
+          $('#submit-reservation, #close-modal').removeAttr('disabled');
           $('.reservation-modal-body').slideToggle();
           $('#modalTitle').first().slideToggle();
           $('<h5 class="modal-title title-finish" id="modalTitle">Pieraksts</h5>').insertAfter('#modalTitle');

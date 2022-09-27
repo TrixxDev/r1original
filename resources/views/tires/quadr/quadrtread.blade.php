@@ -56,7 +56,7 @@
                                     <div class="input-group bootstrap-touchspin" style="transform: none;">
                                       <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
                                       <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">
-                                      <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title }}">
+                                      <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title . ' ' . $currTire->fullSize }}">
                                       <input type="text" name="qty" id="quantity_wanted" value="4" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                                       <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                                       <span class="input-group-btn-vertical">
@@ -165,6 +165,7 @@
                               @endphp
 
                               <tr @if($currTire->tire_id == $tire->tire_id) style="font-weight: bold;"@endif class="tire-table-row">
+                                <th class="tire-info" style="display: none;" data-article="{{ $tire->article }}" data-content="{{ $tire->title . ' ' . $tire->fullSize }}"></th>
                                 <th scope="row" class="tread-tire-table-checkbox text-center">
                                   <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
                                          class="tire-table-checkbox">

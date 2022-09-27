@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helper\Image;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
@@ -24,12 +25,7 @@ class Autotire extends Model
 
     public function getImageAttribute()
     {
-        $fileName = '/storage/app/public/auto/tread/' . $this->tread_id . '.png';
-        if (file_exists(dirname(__DIR__, 2) . $fileName)) {
-          return $fileName;
-        } else {
-          return false;
-        }
+        return Image::showAd('auto', $this->make_id);
     }
 
     public function getFullSizeAttribute()
@@ -186,7 +182,7 @@ class Autotire extends Model
 
     public function getLinkAttribute()
     {
-        $tire = Autotread::selectRaw('auto_treads.*, auto_treads.slug as tread_title')
+        $tire = Autotread::selectRaw('auto_treads.*, auto_treads.t_title as tread_title')
             ->selectRaw('auto_brands.*, auto_brands.slug as brand_title')
             ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
             ->where('auto_treads.tread_id', $this->make_id)
@@ -194,7 +190,7 @@ class Autotire extends Model
         if (!isset($tire->brand_title) || !isset($tire->tread_title)) {
             return false;
         } else {
-            return route('vasaras-riepa', [$tire->brand_title, $tire->tread_title, $this->tire_id]);
+            return route('vasaras-riepa', [$tire->brand_title, str_replace('/', '_', $tire->tread_title), $this->tire_id]);
         }
     }
 

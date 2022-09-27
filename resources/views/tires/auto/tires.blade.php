@@ -91,7 +91,7 @@
                         <ul id="facet_78843" class="collapse in">
                           <li>
                             <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <input type="text" readonly class="select-title tire-width" name="d1" value="{{ $d1 }}">
+                              <input type="text" readonly class="select-title tire-width" name="d1" pattern="/^\d+$/" maxlength="3" value="{{ $d1 }}">
                               <i class="material-icons float-xs-right"></i>
                               <div class="dropdown-menu width">
 
@@ -127,7 +127,7 @@
                         <ul id="facet_15402" class="collapse in">
                           <li>
                             <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <input type="text" class="select-title tire-height" readonly name="d2" value="{{ $d2 }}">
+                              <input type="text" class="select-title tire-height" readonly maxlength="2" pattern="/^\d+$/" name="d2" value="{{ $d2 }}">
                               <i class="material-icons float-xs-right"></i>
                               <div class="dropdown-menu height">
 
@@ -163,7 +163,7 @@
                         <ul id="facet_24954" class="collapse in">
                           <li>
                             <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <input type="text" class="select-title tire-radius" readonly name="d3" value="{{ $d3 }}">
+                              <input type="text" class="select-title tire-radius" readonly name="d3" maxlength="2" pattern="/^\d+$/" value="{{ $d3 }}">
                               <i class="material-icons float-xs-right"></i>
                               <div class="dropdown-menu radius">
                                 @foreach ($autoTiresD3 as $tire)
@@ -316,8 +316,7 @@
                               <i class="material-icons checkbox-checked"></i>
                             </span>
                           </span>
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Šī
-                            gada</a>
+                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Šī gada</a>
                         </label>
                       </li>
                     </ul>
