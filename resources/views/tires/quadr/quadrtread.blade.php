@@ -138,7 +138,7 @@
                       <div class="row">
                         <div class="">
 
-                          <table id="tires-table" class="table summer-sorter tires-table table-hover tablesorter">
+                          <table id="tires-table" class="table quadr-tread-sorter tires-table table-hover tablesorter">
                             <thead class="tires-thead" style="position:sticky; top: -1px;">
                             <tr>
                               <th scope="col"></th>
@@ -176,12 +176,7 @@
                                 </td>
 
                                 <td class="hidden-sm-down text-center">
-                                    <span>
-                                      <span data-toggle="tooltip"
-                                            title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>
-                                      <span data-toggle="tooltip"
-                                            title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>
-                                    </span>
+                                  {{$tire->pr}}
                                 </td>
 
 {{--                                <td class="hidden-sm-down text-center tread-code-cell-size">--}}

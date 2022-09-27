@@ -274,7 +274,7 @@
                         }
                       @endphp
                       @if($tire->price1)
-                        <a href="">
+                        <a href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}">
                           <div class="tire-image-card sort-order">
                             <div class="text-center image-grid-overflow">
                               {!! \Image::showGrid('big', $tire->make_id) !!}
@@ -426,11 +426,8 @@
                         </td>
 {{--                        LI/SI--}}
                         <td class="text-center">
-                          <span>
-                            <span data-toggle="tooltip"
-                                  title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>
-                            <span data-toggle="tooltip"
-                                  title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>
+                          <span data-toggle="tooltip"
+                            title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . ' ' . $tire->si }}
                           </span>
                         </td>
 
@@ -481,6 +478,7 @@
                     </a>
                   </div>
                 </div>
+                {{ $tires->links() }}
               </div>
               <div id="js-product-list-bottom">
                 <div id="js-product-list-bottom"></div>

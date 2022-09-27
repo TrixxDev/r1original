@@ -4008,6 +4008,10 @@ td.header-empty {
   border-bottom: 1px solid #65c2a5;
 }
 
+.grid-ex:nth-last-child(1) {
+  border: none;
+}
+
 .tire-image-cards img {
   margin-left: 0 !important;
   padding: 0;
@@ -4015,7 +4019,6 @@ td.header-empty {
 }
 
 .tire-image-card {
-  border-radius: 10px;
   color: black;
   height: 100%;
   border: 1px solid rgba(0, 0, 0, .125);
@@ -4737,8 +4740,6 @@ ul#order-type-info li.list-style {
 
 .grid-tire-image {
   width: 100%;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   margin: 0 !important;
 }
 
@@ -4829,4 +4830,23 @@ ul#order-type-info li.list-style {
 
 .big-tire-tread-name-cell-size {
   width: 20%;
+}
+
+.navbar-link-btn {
+  display: block;
+  color: white !important;
+  text-align: center;
+}
+
+.navbar-link-btn:focus {
+  text-decoration: none;
+}
+
+.tire-image-container a {
+  text-decoration: none;
+}
+
+input#show-selected-checkbox {
+  align-self: flex-end;
+  margin-bottom: 5px;
 }

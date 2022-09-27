@@ -348,7 +348,7 @@
                                         </th>
 
                                         <td>
-                                          <a data-toggle="tooltip" data-html="true" class="rim-table-link"
+                                          <a data-toggle="tooltip" data-html="true" class="rim-table-link tire-table-link"
                                              @if (\Image::exists('auto-rim', $rim->make_id))
                                              title="{{ \Image::show('auto-rim', $rim->make_id) }}"
                                              @else
@@ -363,15 +363,15 @@
                                             {{$rim->d1}}*{{$rim->d3}}
                                         </td>
 
-                                        <td class="text-center">
+                                        <td class="text-center hidden-sm-down">
                                           {{$rim->skr}} * {{$rim->pcd}}
                                         </td>
 
-                                        <td class="text-center">
+                                        <td class="text-center hidden-sm-down">
                                           et{{ $rim->et }}
                                         </td>
 
-                                        <td class="text-center">
+                                        <td class="text-center hidden-sm-down">
                                           {{$rim->dc}}
                                         </td>
 
