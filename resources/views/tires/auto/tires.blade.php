@@ -190,6 +190,21 @@
                 <div class="sidebar-bottom">
                   <h3 class="text-uppercase h6 hidden-sm-down">Filtrs</h3>
                   <section class="facet clearfix facet--availability">
+                    <h1 class="h6 facet-title hidden-sm-down">Atlase</h1>
+                    <ul class="collapse">
+                      <li class="show-selected-checkbox-li">
+                        <label class="facet-label" for="show-selected-checkbox"
+                               style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+                          <span class="custom-checkbox">
+                            <input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces" disabled>
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+                          <span>Atrādīt izvēlētos</span>
+                        </label>
+                      </li>
+                    </ul>
                     <h1 class="h6 facet-title hidden-sm-down">Pieejamība</h1>
                     <ul id="facet_availability" class="collapse">
                       <li>
@@ -573,7 +588,6 @@
           <section id="main">
             <section id="products" class="">
               {{--GRID VIEW--}}
-              <input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces">
               <div class="tire-image-container" style="display: none">
                 <div class="tire-image-cards">
 {{--                <div style="width: auto;">BRAND NAME</div>--}}
@@ -586,7 +600,7 @@
                       $brand = $tire->fullSize;
                       $tire->includeStock = true;
                       if ($cbrand!=$brand){
-                        echo '</div><h4 class="tire-brand-name">' . $brand;
+                        echo '</div><h4 class="tire-brand-name grid-t">' . $brand;
                         if ($index == 0){
                           switch ($season_id){
                           case 1:
@@ -631,9 +645,15 @@
 {{--                                    @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"--}}
 {{--                            @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()"><span style="letter-spacing: 2px; text-transform: uppercase;"></span>--}}
 {{--                            </button>--}}
-                            <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip" style="align-self: center;"
+{{--                            <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip" style="align-self: center;"--}}
+{{--                                  data-html="true"--}}
+{{--                                  title="{{ $tire->stockAvailability }}">--}}
+{{--                            </span>--}}
+
+                            <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip"
                                   data-html="true"
                                   title="{{ $tire->stockAvailability }}">
+                              <span class="sort-order" style="display: none;">{{ $tire->dotAvailable }}</span>
                             </span>
                           </div>
                         </div>
@@ -733,8 +753,6 @@
                         @php
                           $cbrand = $brand;
                           $stripe = 1;
-                      } else {
-                          $brand = str_replace(" ", "", $brand);
                       }
                         @endphp
                         @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif
