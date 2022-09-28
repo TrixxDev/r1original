@@ -15,19 +15,19 @@ class CheckCart
   public function handle($request, Closure $next)
   {
 
-    if (Session::has('cart')) {
-      if (\Cart::countItems() == 0) {
-        Session::remove('cart');
-        return redirect(route('home'));
-      }
-    }
-
-    $session_id = Session::getId();
-
-    if (\Cart::instance($session_id)->content()->count() <= 0) {
-      \Cart::erase();
-      return Redirect::home();
-    }
+//    if (Session::has('cart')) {
+//      if (\Cart::countItems() == 0) {
+//        Session::remove('cart');
+//        return redirect(route('home'));
+//      }
+//    }
+//
+//    $session_id = Session::getId();
+//
+//    if (\Cart::instance($session_id)->content()->count() <= 0) {
+//      \Cart::erase();
+//      return Redirect::home();
+//    }
 
     return $next($request);
 

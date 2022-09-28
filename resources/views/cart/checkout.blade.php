@@ -45,8 +45,24 @@
                       </tr>
                       <tr>
                         <td class="field">Saņemšanas vieta</td>
-                        <td>Ulbroka, Institūta iela 1</td>
+                        <td>
+                          @if (isset($user_data['fitting']))
+                            {{ \App\Models\Office::findOrFail($user_data['fitting_address'])->shipping }}
+                          @else
+                            @if (isset($user_data['shipping_address']))
+                              {{ $user_data['shipping_address'] }}, @if ($user_data['shipping_city'] == 1) Rīga @elseif ($user_data['shipping_city'] == 2) Salaspils @else Cits @endif
+                            @else
+                              {{ \App\Models\Office::findOrFail($user_data['fitting_address'])->shipping }}
+                            @endif
+                          @endif
+                        </td>
                       </tr>
+                      @if (isset($user_data['door_code']))
+                      <tr>
+                        <td class="field">Durvju kods</td>
+                        <td>{{ $user_data['door_code'] }}</td>
+                      </tr>
+                      @endif
                         @if (\Session::get('person') == 2)
 
                           <tr class="highlight">
@@ -93,6 +109,7 @@
                       </table>
                       <hr>
                     @endif
+                    @if (\Session::has('cart.car_brand'))
                     <h4>Informācija par automašīnu</h4>
                     <table class="table table-hover">
                       <tbody>
@@ -115,6 +132,7 @@
                       </tbody>
                     </table>
                       <hr>
+                    @endif
                       <h4>Pasūtītās preces</h4>
                     @foreach (\Cart::content() as $item)
                       <div class="cart-item-table cart-item-container">
@@ -123,12 +141,6 @@
                           <br>
                           <span class="item-price">€ {{ $item->options->tire['price2'] }} x {{$item->qty}}</span>
                           <br>
-                        </div>
-                        <div class="qty-item">
-                          <div class="input-group bootstrap-touchspin">
-                            <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
-                            <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
-                          </div>
                         </div>
                         <div class="tire-price">
                           <div class="price">
@@ -139,36 +151,65 @@
                         </div>
                       </div>
                     @endforeach
+                    @if (isset($user_data['fitting']) && $user_data['fitting'] == true)
+                      <div class="cart-item-table cart-item-container">
+                        <div class="item-name cart-item-name">
+                          Riepu montāža
+                        </div>
+                        <div class="tire-price">
+                          <div class="price">
+                            <span class="product-price">
+                              <strong>€ {{ $user_data['fitting_price'] }}</strong>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    @endif
+                    @if (isset($user_data['shipping_city']))
+                      <div class="cart-item-table cart-item-container">
+                        <div class="item-name cart-item-name">
+                          Piegāde
+                        </div>
+                        <div class="tire-price">
+                          <div class="price">
+                            <span class="product-price">
+                              @if ($user_data['delivery_price'] == null)
+                                <strong>Bezmaksas!</strong>
+                              @else
+                                <strong>€ {{ $user_data['delivery_price'] }}</strong>
+                              @endif
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    @endif
                     <hr>
-                    <form method="POST">
+                    <form method="post" class="checkout-buttons">
+                      @csrf
                       <div class="form-check">
-                        <input type="radio" value="" id="paymentCheck1" name="payment">
+                        <input type="radio" value="1" id="paymentCheck1" name="payment">
                         <label for="paymentCheck1">
                           Apmaksa saņemšanas brīdī
                         </label>
                       </div>
                       <div class="form-check">
-                        <input type="radio" value="" id="paymentCheck2" name="payment">
+                        <input type="radio" value="2" id="paymentCheck2" name="payment">
                         <label for="paymentCheck2">
                           Bankas pārskaitījums
                         </label>
                       </div>
                       @if (count($cats) == 1 && !in_array('red', $dogs))
                       <div class="form-check">
-                        <input type="radio" value="" id="paymentCheck3" name="payment" checked>
+                        <input type="radio" value="3" id="paymentCheck3" name="payment" checked>
                         <label for="paymentCheck3">
                           Tiešsaistes apmaksa
                         </label>
                       </div>
                       @endif
-                    </form>
-                    <hr>
-                    <form method="post" class="checkout-buttons">
-                      @csrf
+                      <hr>
                       <div class="btn-checkout-group" role="group" aria-label="Basic example">
                         <a href="{{ route('cart') }}" class="btn-secondary btn-checkout">Labot grozu</a>
                         <a href="{{ route('order') }}" class="btn-secondary btn-checkout">Labot datus</a>
-                        <a href="{{ route('order.printCart', $order_id) }}" class="btn-secondary btn-checkout print-checkout-button">Drukāt</a>
                         <button type="submit" name="pay" value="pay" class="btn-checkout-primary btn-checkout">Apmaksāt</button>
                       </div>
                     </form>

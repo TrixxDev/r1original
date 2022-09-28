@@ -136,6 +136,8 @@ class CartController extends Controller
 
       $session_id = Session::getId();
 
+      $_SESSION['cart'] = [];
+
       if ($request->post()) {
         $delivery = [];
         $fitting = [];
@@ -150,55 +152,50 @@ class CartController extends Controller
 
         if (Auth::check()) {
           $order = Order::where('userId', Auth::user()->id)->first();
+          $_SESSION['cart']['user'] = Auth::user()->id;
         } else {
           $order = Order::where('userIp', $ip)->first();
+          $_SESSION['cart']['user'] = $ip;
         }
 
-        dd($request->data['cart_delivery_radio']);
-
-        if ($request->data['cart_delivery_radio'] === 1 || $request->data['cart_delivery_radio'] === 2) {
-          array_push($delivery, [
-            'cart_delivery_radio' => $request->data['cart_delivery_radio'],
-            'shipping_city' => $request->data['shipping_city'],
-            'shipping_address' => $request->data['shipping_address'],
-            'door_code' => $request->data['door_code'],
-          ]);
+        if ($request->data['cart_delivery_radio'] == 1 || $request->data['cart_delivery_radio'] == 2) {
+          $fitting['fitting_address'] = $request->data['cart_delivery_radio'];
+          $fitting['fitting'] = $request->fitting;
+          $fitting['fitting_price'] = $request->fitting_price;
         } else {
-          array_push($delivery, [
-            'cart_delivery_radio' => $request->data['cart_delivery_radio'],
-            'cart_montage_radio' => $request->input('cart-montage-radio'),
-          ]);
+          $delivery['shipping_city'] = $request->data['shipping_city'];
+          $delivery['shipping_address'] = $request->data['shipping_address'];
+          $delivery['door_code'] = $request->data['door_code'];
+          $delivery['delivery_price'] = $request->delivery_price;
         }
 
-        $cartData = serialize($delivery);
+        $cartData = (empty($fitting)) ? serialize($delivery) : serialize($fitting);
 
         $amount = str_replace(['.', ','], '', Cart::subtotal());
 
-        if (!$order) {
-          $order = new Order;
-          $order->userId = 0;
-          if (Auth::check()) {
-            $order->userId = Auth::user()->id;
-          } else {
-            $order->userIp = $ip;
-          }
-          $order->status = 1;
-          $order->price = substr($amount, 0, -2);
-          $order->delivery_price = 0;
-          $order->fit_price = 0;
-          $order->info = $cartData;
-          $order->order_token = $session_id;
-          $order->timeRemaining = Carbon::now()->addMinutes(30)->format('Y-m-d H:i:s');
-
-          $order->save();
-
-          $order_id = $order->id;
-          $amount1 = $amount;
-          $email = Session::get('email');
-
-          $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
-          Session::put('cart_options', $data);
+        if (!$order) $order = new Order;
+        $order->userId = 0;
+        $order->userIp = 0;
+        if (Auth::check()) {
+          $order->userId = Auth::user()->id;
+        } else {
+          $order->userIp = $ip;
         }
+        $order->status = 1;
+        $order->price = substr($amount, 0, -2);
+        $order->delivery_price = (isset($delivery['delivery_price'])) ? $delivery['delivery_price'] : 0;
+        $order->fit_price = (isset($fitting['fitting_price'])) ? $fitting['fitting_price'] : 0;
+        $order->info = $cartData;
+
+        $order->save();
+
+        $order_id = $order->id;
+        $amount1 = $amount;
+        $email = Session::get('email');
+
+        $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
+        Session::put('cart_options', $data);
+        Session::put('cart.user', (Auth::check()) ? Auth::user()->id : $ip);
 
         return redirect(route('order'));
       }
@@ -220,6 +217,7 @@ class CartController extends Controller
       $session_id = Session::getId();
 
       if ($request->post()) {
+
   //        Session::regenerate(false);
 
         if (Auth::check()) {
@@ -227,73 +225,59 @@ class CartController extends Controller
         } else {
           $order = Order::where('userIp', $ip)->first();
         }
-
-        dd($order);
-
-        $cartData = array_values(unserialize($order->info));
-        $options = $cartData[0];
-        unset($cartData[0]);
-
-        foreach (Cart::content() as $key => $item) {
-
-          if (!$cartData) {
-            if (!in_array($item->name, $cartData)) {
-              array_push($cartData, [
-                'tire_id' => $item->id,
-                'title' => $item->name,
-                'quantity' => $item->qty,
-                'price' => (int) $item->price,
-              ]);
-            }
-          }
-
-        }
-
         $amount = str_replace(['.', ','], '', Cart::subtotal());
-
-        if (!$order) {
-
-          $cartData[] = $request->data;
-          $cartData = serialize($cartData);
-
-          $order = new Order;
-          $order->status = 1;
-          $order->userId = 0;
-          if (Auth::check()) {
-            $order->userId = Auth::user()->id;
-          }
-          $order->price = substr($amount, 0, -2);
-          $order->delivery_price = 0;
-          $order->fit_price = 0;
-          $order->info = $cartData;
-          $order->order_token = Session::getId();
-          $order->timeRemaining = Carbon::now()->addMinutes(30)->format('H:i:s');
-
-          $order->save();
-
-          $order_id = $order->id;
-          $user_data = $request->input('data');
-        } else {
-
-          $user_data = unserialize($order->info);
-
-          array_unshift($cartData, $options);
-
-          $order->info = serialize($cartData);
-
-          $order_id = $order->id;
-
-          $order->save();
-        }
-
         $amount1 = $amount;
         $email = Session::get('email');
+        $order_id = $order->id;
 
         $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
 
         if (isset($request->pay)) {
           return $this->pay($data);
+        } else if (isset($request->end)) {
+          dd($order);
         }
+
+        $cartData = unserialize($order->info);
+        $i = 0;
+
+        foreach (Cart::content() as $key => $item) {
+
+          $cartData['items'][$i] = [
+            'tire_id' => $item->id,
+            'title' => $item->name,
+            'quantity' => $item->qty,
+            'price' => (int) $item->price,
+          ];
+
+          $i++;
+
+        }
+
+
+        $user_data = $request->input('data');
+        $user_data = array_merge($user_data, $cartData);
+        unset($user_data['items']);
+
+        if (!$order) $order = new Order;
+
+        $order->status = 1;
+        $order->userId = 0;
+        $order->userIp = 0;
+        if (Auth::check()) {
+          $order->userId = Auth::user()->id;
+        } else {
+          $order->userIp = $ip;
+        }
+        $order->price = substr($amount, 0, -2);
+        $order->delivery_price = (isset($cartData['fitting_price'])) ? $cartData['fitting_price'] : 0;
+        $order->fit_price = (isset($cartData['shipping_price'])) ? $cartData['shipping_price'] : 0;
+        $cartData = serialize($cartData);
+        $order->info = $cartData;
+
+        $order->save();
+
+        $order_id = $order->id;
 
         if (!isset($user_data['email_notifications'])) {
           Session::remove('cart.email_notifications');
@@ -388,11 +372,7 @@ class CartController extends Controller
 
         Session::remove('cartOptions');
 
-        Session::put('cartOptions.fitting', 1);
-        Session::put('cartOptions.total_items', $data->total_items);
-
-        dd($data->fitting_needs);
-        if ($data->fitting_needs == 1) {
+        if ($data->fitting == 1) {
           switch ($data->total_items) {
             case 1:
             case 2:
@@ -429,12 +409,7 @@ class CartController extends Controller
               }
               break;
             }
-            default:
-              Session::put('cartOptions.fitting_price', 0);
           }
-        } else {
-          dd($data->total_items);
-          Session::put('cartOptions.fitting_price', 0);
         }
 
         return json_encode(['cartOptions' => Session::get('cartOptions')]);
@@ -573,7 +548,7 @@ class CartController extends Controller
           'p_email' => $data['email'],
           'currency' => 'EUR',
           'country' => 'LV',
-          'accepturl' => Self::getSelfUrl() . '',
+          'accepturl' => Self::getSelfUrl() . '/',
           'cancelurl' => Self::getSelfUrl() . 'pasutijums',
           'callbackurl' => Self::getSelfUrl() . 'callback.php',
           'test' => 1,

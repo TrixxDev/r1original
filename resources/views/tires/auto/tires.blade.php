@@ -885,7 +885,7 @@
 
                           <td class="shopping-cart-col">
                             <div class="clearfix atc_div text-right">
-                              <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
+                              <button class="cart-shopping-button" data-toggle="modal"
                                       @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"
                                       @endhasrole data-info="{{ $tire->tire_id }}"><i
                                   class="material-icons">add_shopping_cart</i>

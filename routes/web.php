@@ -246,7 +246,7 @@ Route::middleware('checksession')->group(function() {
     Route::match(['GET', 'POST'],'/grozs', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
     Route::match(['GET', 'POST'], '/pasutijums', [App\Http\Controllers\CartController::class, 'order'])->name('order');
   });
-  Route::get('/cart/remove/{id}', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
+  Route::get('/grozs/remove/{id}', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
   Route::get('/pasutijums/print/{id}', [App\Http\Controllers\CartController::class, 'printCart'])->name('order.printCart');
   Route::post('/checkShipping', [App\Http\Controllers\CartController::class, 'checkShipping']);
   Route::post('/checkFitting', [App\Http\Controllers\CartController::class, 'checkFitting']);

@@ -26,19 +26,18 @@
                         </div>
                     </div>
                     <div id="_desktop_cart">
-                        <div class="blockcart cart-preview @if (\Cart::count() > 0) active @else inactive @endif"
-                             data-refresh-url="//r1riepas.lv/index.php?fc=module&amp;module=ps_shoppingcart&amp;controller=ajax&amp;id_lang=2">
+                        <div class="blockcart cart-preview @if (\Cart::count() > 0) active @else inactive @endif">
                             @if (\Cart::count() > 0)
-                            <div class="header">
-                                <a rel="nofollow" href="{{ route('cart') }}">
-                                    <i class="material-icons shopping-cart">shopping_cart</i>
-                                    <span class="hidden-sm-down">Grozs:</span>
-                                    <span class="cart-products-count">({{ \Cart::count() }})</span>
-                                </a>
-                            </div>
+                                <div class="header">
+                                    <a rel="nofollow" href="{{ route('cart') }}">
+                                        <i data-url="{{ route('cart') }}" class="desktop material-icons shopping-cart">shopping_cart</i>
+                                        <span class="hidden-sm-down">Grozs:</span>
+                                        <span class="cart-products-count">({{ \Cart::count() }})</span>
+                                    </a>
+                                </div>
                             @else
                                 <div class="header">
-                                    <i class="desktop material-icons shopping-cart">shopping_cart</i>
+                                    <i data-url="{{ route('cart') }}" class="desktop material-icons shopping-cart">shopping_cart</i>
                                     <span class="desktop hidden-sm-down">Grozs:</span>
                                     <span class="desktop cart-products-count">(0)</span>
                                 </div>
