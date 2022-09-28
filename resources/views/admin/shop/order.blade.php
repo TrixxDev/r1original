@@ -124,7 +124,7 @@
           Piegādes adrese
         </label>
         <div class="col-md-6 col-sm">
-          <input class="form-control" name="delivery_adress" type="text" value="LUDZU SALABOT VAJAG DELIVERY ADDRESS PIEVIENOT" required="">
+          <input class="form-control" name="delivery_adress" type="text" value="@if (isset($userData->delivery_address)) {{ $userData->delivery_address }} @endif" required="">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
@@ -308,6 +308,12 @@
               <td style="border-color: #c6c6c6;">@php echo ($tire->quantity * $tire->price) @endphp &euro;</td>
             </tr>
           @endforeach
+          @php dd($userData); @endphp
+          {{-- if ($order->fit_price > 0) --}}
+            {{-- Montāža - {{ $order->fit_price }} --}}
+          {{-- elseif ($order->delivery_price > 0 --}}
+            {{-- Piegāde - {{ $order->delivery_price }} --}}
+          {{-- endif --}}
             <tr class="table-dark">
               <th style="border-color: #c6c6c6; text-align: right" colspan="4"></th>
               <th style="border-color: #c6c6c6;">{{$order->price}} &euro;</th>
