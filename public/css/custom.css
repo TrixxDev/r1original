@@ -4786,6 +4786,7 @@ ul#order-type-info li.list-style {
   border-radius: 50%;
   display: inline-block;
   border: 1px solid #00000045;
+  align-self: center;
 }
 
 .grid-dot.red {
@@ -4850,3 +4851,38 @@ input#show-selected-checkbox {
   align-self: flex-end;
   margin-bottom: 5px;
 }
+
+.row.grid-ex.pr-1 {
+  padding: 0 16px 10px 0;
+}
+
+h4.tire-brand-name.grid-t {
+  margin-left: -15px;
+}
+
+label.only_selected_checkbox {
+  margin-bottom: 0;
+}
+
+input#show-selected-checkbox {
+  margin-left: -15px;
+}
+
+.custom-checkbox input[type=checkbox][disabled] + span {
+  border: 2px solid #d1d1d1;
+  background-color: #f9f9f9;
+  pointer-events: none;
+}
+
+.custom-checkbox input[type=checkbox][disabled] li.show-selected-checkbox-li{
+  /*background: red;*/
+}
+
+/*body {*/
+/*  animation: rotate 1000s linear infinite;*/
+/*  !*transform: skew(10deg, 10deg);*!*/
+/*}*/
+/*@keyframes rotate {*/
+/*  from {transform: rotate(0deg);}*/
+/*  to {transform: rotate(360deg);}*/
+/*}*/
