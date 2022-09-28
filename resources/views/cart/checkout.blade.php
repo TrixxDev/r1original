@@ -17,8 +17,11 @@
                   <li class="stepper-item stepper-completed">
                     <h3 class="stepper-title">Dati</h3>
                   </li>
-                  <li class="stepper-item stepper-active stepper-last">
+                  <li class="stepper-item stepper-active">
                     <h3 class="stepper-title">Maksājums</h3>
+                  </li>
+                  <li class="stepper-item stepper-last">
+                    <h3 class="stepper-title">Pabeigts</h3>
                   </li>
                 </ol>
               </div>
@@ -187,7 +190,7 @@
                     <form method="post" class="checkout-buttons">
                       @csrf
                       <div class="form-check">
-                        <input type="radio" value="1" id="paymentCheck1" name="payment">
+                        <input type="radio" value="1" id="paymentCheck1" name="payment" checked>
                         <label for="paymentCheck1">
                           Apmaksa saņemšanas brīdī
                         </label>
@@ -210,7 +213,11 @@
                       <div class="btn-checkout-group" role="group" aria-label="Basic example">
                         <a href="{{ route('cart') }}" class="btn-secondary btn-checkout">Labot grozu</a>
                         <a href="{{ route('order') }}" class="btn-secondary btn-checkout">Labot datus</a>
-                        <button type="submit" name="pay" value="pay" class="btn-checkout-primary btn-checkout">Apmaksāt</button>
+                        @if (count($cats) == 1 && !in_array('red', $dogs))
+                          <button type="submit" name="pay" value="pay" class="btn-checkout-primary btn-checkout">Apmaksāt</button>
+                        @else
+                          <button type="submit" name="end" value="end" class="btn-checkout-primary btn-checkout">Turpināt</button>
+                        @endif
                       </div>
                     </form>
                   </div>

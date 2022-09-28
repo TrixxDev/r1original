@@ -18,7 +18,7 @@
 
       <div class="form-group row">
         <label class="col-md-3 form-control-label required text-left text-md-right">
-          <h4>Rēķins</h4>
+          <h3>Pasūtījuma informācija</h3>
         </label>
         <div class="col-md-6">
 
@@ -308,15 +308,16 @@
               <td style="border-color: #c6c6c6;">@php echo ($tire->quantity * $tire->price) @endphp &euro;</td>
             </tr>
           @endforeach
-          @php dd($userData); @endphp
-          {{-- if ($order->fit_price > 0) --}}
-            {{-- Montāža - {{ $order->fit_price }} --}}
-          {{-- elseif ($order->delivery_price > 0 --}}
-            {{-- Piegāde - {{ $order->delivery_price }} --}}
-          {{-- endif --}}
+          <tr id="confirm-table">
+            <th style="border-color: #c6c6c6;" scope="row"></th>
+            <td style="border-color: #c6c6c6;" scope="row">{{ ($order->fit_price) ? 'Montāža' : 'Piegāde' }}</td>
+            <td style="border-color: #c6c6c6;" scope="row"></td>
+            <td style="border-color: #c6c6c6;" scope="row"></td>
+            <td style="border-color: #c6c6c6;">{{ ($order->fit_price) ? $order->fit_price : $order->delivery_price }} &euro;</td>
+          </tr>
             <tr class="table-dark">
               <th style="border-color: #c6c6c6; text-align: right" colspan="4"></th>
-              <th style="border-color: #c6c6c6;">{{$order->price}} &euro;</th>
+              <th style="border-color: #c6c6c6;">{{$order->price + (($order->fit_price) ? $order->fit_price : $order->delivery_price) }} &euro;</th>
             </tr>
           </tbody>
         </table>

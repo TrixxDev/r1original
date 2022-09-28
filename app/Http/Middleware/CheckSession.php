@@ -19,6 +19,14 @@ class CheckSession
 
     $response = $next($request);
 
+    if (\Cart::countItems() == 0) {
+      if (Auth::check()) {
+        Order::where('userId', Auth::user()->id)->where('status', 1)->delete();
+      } else {
+        Order::where('userIp', user_ip)->where('status', 1)->delete();
+      }
+    }
+
 //    $session_id = Session::getId();
 //
 //    if (Auth::check()) {

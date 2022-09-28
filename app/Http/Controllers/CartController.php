@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
-use App\Models\WebToPay;
+use App\Paysera\WebToPay;
 
 class CartController extends Controller
 {
@@ -142,20 +142,12 @@ class CartController extends Controller
         $delivery = [];
         $fitting = [];
 
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-          $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-          $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-          $ip = $_SERVER['REMOTE_ADDR'];
-        }
-
         if (Auth::check()) {
-          $order = Order::where('userId', Auth::user()->id)->first();
+          $order = Order::where('userId', Auth::user()->id)->where('status', 1)->first();
           $_SESSION['cart']['user'] = Auth::user()->id;
         } else {
-          $order = Order::where('userIp', $ip)->first();
-          $_SESSION['cart']['user'] = $ip;
+          $order = Order::where('userIp', user_ip)->where('status', 1)->first();
+          $_SESSION['cart']['user'] = user_ip;
         }
 
         if ($request->data['cart_delivery_radio'] == 1 || $request->data['cart_delivery_radio'] == 2) {
@@ -179,7 +171,7 @@ class CartController extends Controller
         if (Auth::check()) {
           $order->userId = Auth::user()->id;
         } else {
-          $order->userIp = $ip;
+          $order->userIp = user_ip;
         }
         $order->status = 1;
         $order->price = substr($amount, 0, -2);
@@ -195,7 +187,7 @@ class CartController extends Controller
 
         $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
         Session::put('cart_options', $data);
-        Session::put('cart.user', (Auth::check()) ? Auth::user()->id : $ip);
+        Session::put('cart.user', (Auth::check()) ? Auth::user()->id : user_ip);
 
         return redirect(route('order'));
       }
@@ -206,25 +198,21 @@ class CartController extends Controller
     public function order(Request $request)
     {
 
-      if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-        $ip = $_SERVER['HTTP_CLIENT_IP'];
-      } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-      } else {
-        $ip = $_SERVER['REMOTE_ADDR'];
-      }
-
       $session_id = Session::getId();
+
+      if (Auth::check()) {
+        $order = Order::where('userId', Auth::user()->id)->where('status', 1)->first();
+      } else {
+        $order = Order::where('userIp', user_ip)->where('status', 1)->first();
+      }
+      if (!$order) return Redirect::route('cart');
+      $delivery_price = ($order->delivery_price) ? $order->delivery_price : 0;
+      $fit_price = ($order->fit_price) ? $order->fit_price : 0;
 
       if ($request->post()) {
 
   //        Session::regenerate(false);
 
-        if (Auth::check()) {
-          $order = Order::where('userId', Auth::user()->id)->first();
-        } else {
-          $order = Order::where('userIp', $ip)->first();
-        }
         $amount = str_replace(['.', ','], '', Cart::subtotal());
         $amount1 = $amount;
         $email = Session::get('email');
@@ -235,7 +223,7 @@ class CartController extends Controller
         if (isset($request->pay)) {
           return $this->pay($data);
         } else if (isset($request->end)) {
-          dd($order);
+          return $this->end();
         }
 
         $cartData = unserialize($order->info);
@@ -257,9 +245,6 @@ class CartController extends Controller
 
         $user_data = $request->input('data');
         $user_data = array_merge($user_data, $cartData);
-        unset($user_data['items']);
-
-        if (!$order) $order = new Order;
 
         $order->status = 1;
         $order->userId = 0;
@@ -267,12 +252,12 @@ class CartController extends Controller
         if (Auth::check()) {
           $order->userId = Auth::user()->id;
         } else {
-          $order->userIp = $ip;
+          $order->userIp = user_ip;
         }
         $order->price = substr($amount, 0, -2);
-        $order->delivery_price = (isset($cartData['fitting_price'])) ? $cartData['fitting_price'] : 0;
-        $order->fit_price = (isset($cartData['shipping_price'])) ? $cartData['shipping_price'] : 0;
-        $cartData = serialize($cartData);
+        $order->delivery_price = $delivery_price;
+        $order->fit_price = $fit_price;
+        $cartData = serialize($user_data);
         $order->info = $cartData;
 
         $order->save();
@@ -317,7 +302,7 @@ class CartController extends Controller
           'Bigtire' => [],
         ];
 
-        Session::remove('cartOptions');
+//        Session::remove('cartOptions');
 
         Session::put('cartOptions.shipping', 1);
 
@@ -370,9 +355,10 @@ class CartController extends Controller
 
         $data = json_decode(json_encode($request->input()));
 
-        Session::remove('cartOptions');
+//        Session::remove('cartOptions');
 
-        if ($data->fitting == 1) {
+
+        if ($data->fitting >= 1) {
           switch ($data->total_items) {
             case 1:
             case 2:
@@ -401,6 +387,7 @@ class CartController extends Controller
                 $cat = $cats[0];
                 $size = $cats[1];
               }
+
               if ($cat == 'Autotire') {
                 Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$size][$data->total_items]);
 //                dd($cat, $size, $data->total_items, Self::options()[$cat]['fitting'][$size][$data->total_items]);
@@ -409,7 +396,11 @@ class CartController extends Controller
               }
               break;
             }
+            default:
+              Session::put('cartOptions.fitting_price', 0);
           }
+        } else {
+          Session::put('cartOptions.fitting_price', 0);
         }
 
         return json_encode(['cartOptions' => Session::get('cartOptions')]);
@@ -548,7 +539,7 @@ class CartController extends Controller
           'p_email' => $data['email'],
           'currency' => 'EUR',
           'country' => 'LV',
-          'accepturl' => Self::getSelfUrl() . '/',
+          'accepturl' => route('order.success'),
           'cancelurl' => Self::getSelfUrl() . 'pasutijums',
           'callbackurl' => Self::getSelfUrl() . 'callback.php',
           'test' => 1,
@@ -556,6 +547,26 @@ class CartController extends Controller
       } catch (Exception $exception) {
         echo get_class($exception) . ':' . $exception->getMessage();
       }
+    }
+
+    public function end() {
+      Cart::destroy();
+      Session::flush();
+      if (Auth::check()) {
+        $order = Order::where('userId', Auth::user()->id)->where('status', 1)->first();
+      } else {
+        $order = Order::where('userIp', user_ip)->where('status', 1)->first();
+      }
+
+      $order->status = 2;
+      $order->save();
+      $order_id = $order->id;
+      return Redirect::route('order.done')->with('order_id', $order_id);
+    }
+
+    public function order_done() {
+
+      return view('cart.done');
     }
 
     public function printCart($id)

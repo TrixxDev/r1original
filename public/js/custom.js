@@ -2401,7 +2401,6 @@ function checkFitting(qty = null) {
   let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
   let __items = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
   let needsFit = $('.cart-montage-choice .cart-delivery-options .cart-delivery-label input:checked').val();
-  console.log(needsFit);
 
   if (qty === null) {
     qty = __items;

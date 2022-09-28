@@ -63,6 +63,14 @@ class AppServiceProvider extends ServiceProvider
 
       });
 
+      if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        define('user_ip', $_SERVER['HTTP_CLIENT_IP']);
+      } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        define('user_ip', $_SERVER['HTTP_X_FORWARDED_FOR']);
+      } else {
+        define('user_ip', $_SERVER['REMOTE_ADDR']);
+      }
+
       define('SLOT_STATUS_FREE', 0);
       define('SLOT_STATUS_TAKEN', 1);
       define('SLOT_STATUS_OFFER', 2);

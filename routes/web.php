@@ -245,17 +245,18 @@ Route::middleware('checksession')->group(function() {
   Route::middleware('checkcart')->group(function() {
     Route::match(['GET', 'POST'],'/grozs', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
     Route::match(['GET', 'POST'], '/pasutijums', [App\Http\Controllers\CartController::class, 'order'])->name('order');
+    Route::get('/pasutijums/accept', [App\Http\Controllers\CartController::class, 'order_success'])->name('order.success');
   });
+  Route::get('/pasutijums/done', [App\Http\Controllers\CartController::class, 'order_done'])->name('order.done');
   Route::get('/grozs/remove/{id}', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
   Route::get('/pasutijums/print/{id}', [App\Http\Controllers\CartController::class, 'printCart'])->name('order.printCart');
   Route::post('/checkShipping', [App\Http\Controllers\CartController::class, 'checkShipping']);
   Route::post('/checkFitting', [App\Http\Controllers\CartController::class, 'checkFitting']);
   Route::get('/cart/empty', function() {
-    $cart = new \Gloudemans\Shoppingcart\Cart();
-    $cart->destroy();
+    \Cart::destroy();
 
     return redirect()->back();
-  });
+  })->name('cart.empty');
   Route::get('/cart/ajaxRefresh', [App\Http\Controllers\CartController::class, 'ajaxRefresh'])->name('cart.ajaxRefresh');
   Route::post('/cart/ajaxChangeQty', [App\Http\Controllers\CartController::class, 'ajaxChangeQty'])->name('cart.ajaxChangeQty');
   Route::post('/cart/ajaxQtyUp', [App\Http\Controllers\CartController::class, 'ajaxQtyUp'])->name('cart.ajaxQtyUp');

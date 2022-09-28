@@ -15,8 +15,11 @@
                           <li class="stepper-item">
                             <h3 class="stepper-title">Dati</h3>
                           </li>
-                          <li class="stepper-item stepper-last">
+                          <li class="stepper-item">
                             <h3 class="stepper-title">Maksājums</h3>
+                          </li>
+                          <li class="stepper-item stepper-last">
+                            <h3 class="stepper-title">Pabeigts</h3>
                           </li>
                         </ol>
                       </div>

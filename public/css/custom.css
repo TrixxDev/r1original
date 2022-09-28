@@ -3439,7 +3439,7 @@ form textarea {
 }
 
 .cart-card {
-  width: 85%;
+  /*width: 85%;*/
   margin: 20px auto;
   padding: 20px;
 }
