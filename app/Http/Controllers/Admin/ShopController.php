@@ -24,14 +24,9 @@ class ShopController extends Controller
 
     $userData = json_decode(json_encode(unserialize($order->info)));
 
-    $count = count($userData) - 1;
-
-    $userData = $userData[$count];
-
     $tires = json_decode(json_encode(unserialize($order->info)));
 
-    $orderedTires = array_pop($tires);
-
+    $tires = $tires->items;
 
     if (property_exists($userData,'company_registration_number')){
       $hasCompanyData = true;
