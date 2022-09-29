@@ -530,6 +530,8 @@ class CartController extends Controller
     public function pay($data)
     {
 
+      $order_id = $data['order_id'];
+
       try {
         WebToPay::redirectToPayment([
           'projectid' => '230756',
@@ -539,7 +541,7 @@ class CartController extends Controller
           'p_email' => $data['email'],
           'currency' => 'EUR',
           'country' => 'LV',
-          'accepturl' => route('order.success'),
+          'accepturl' => route('order.success', $order_id),
           'cancelurl' => Self::getSelfUrl() . 'pasutijums',
           'callbackurl' => Self::getSelfUrl() . 'callback.php',
           'test' => 1,
@@ -564,9 +566,33 @@ class CartController extends Controller
       return Redirect::route('order.done')->with('order_id', $order_id);
     }
 
+    public function order_success($id) {
+      Session::put('order_id', $id);
+
+      return Redirect::route('order.done');
+    }
+
     public function order_done() {
 
-      return view('cart.done');
+      if (!Session::has('order_id')) {
+        return Redirect::route('home');
+      } else {
+        $order_id = Session::get('order_id');
+      }
+
+      $order = Order::findOrFail($order_id);
+
+      $order->status = 2;
+      $order->save();
+
+      Session::remove('cart');
+      Session::remove('cartOptions');
+      Session::remove('cart_options');
+      Session::remove('person');
+      Session::remove('order_id');
+      \Cart::destroy();
+
+      return view('cart.done', compact('order_id'));
     }
 
     public function printCart($id)

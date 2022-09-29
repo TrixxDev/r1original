@@ -30,7 +30,7 @@
                 <h1>Pasūtījuma informācija</h1>
                 <hr>
                 <!-- begin table -->
-
+                {{ $order_id }}
 
               </div>
 

@@ -549,34 +549,33 @@
     </section>
 
 
-    <section class="wrapper-below">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-
-
-                    <div class="footer-top-logo">
-                        <img src="{{ asset('images/1.png') }}" alt="logo">
-                        <img src="{{ asset('images/2.png') }}" alt="logo">
-                    </div>
-
-                </div>
-                <div class="col-md-6">
-
-
-                    <div class="payment-icons">
-                        <img src="{{ asset('images/3.png') }}" alt="logo">
-                    </div>
-
-                </div>
-
-
-            </div>
-        </div>
-    </section>
-
     <footer id="footer">
 
+      <section class="wrapper-below">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+
+
+              <div class="footer-top-logo">
+                <img src="{{ asset('images/1.png') }}" alt="logo">
+                <img src="{{ asset('images/2.png') }}" alt="logo">
+              </div>
+
+            </div>
+            <div class="col-md-6">
+
+
+              <div class="payment-icons">
+                <img src="{{ asset('images/3.png') }}" alt="logo">
+              </div>
+
+            </div>
+
+
+          </div>
+        </div>
+      </section>
 
         <div class="container">
             <div class="row">
