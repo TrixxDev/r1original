@@ -155,7 +155,10 @@ body {
 
 #footer {
   background: #c1c1c1;
-  padding-top: 0px;
+  padding-top: 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 }
 footer .address {
   color: #7a7a7a;
@@ -4878,11 +4881,12 @@ input#show-selected-checkbox {
   /*background: red;*/
 }
 
-/*body {*/
-/*  animation: rotate 1000s linear infinite;*/
-/*  !*transform: skew(10deg, 10deg);*!*/
-/*}*/
-/*@keyframes rotate {*/
-/*  from {transform: rotate(0deg);}*/
-/*  to {transform: rotate(360deg);}*/
-/*}*/
+.done-cart-title {
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  display: inline-flex;
+}
+
+.done-cart-subtext {
+  color: #6c757d;
+}

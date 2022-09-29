@@ -26,11 +26,15 @@
                 </ol>
               </div>
 
-              <div class="card cart-card">
-                <h1>Pasūtījuma informācija</h1>
-                <hr>
-                <!-- begin table -->
+              <div class="card cart-card text-center">
+                <div style="display: inline-flex;">
+                  <i class="fa-solid fa-cart-shopping" style="font-size: 23px; margin-right: 10px;"></i>
+                  <h1 class="done-cart-title">Paldies!</h1>
+                </div>
 
+                <h2>Jūsu pasūtījums ir saņemts un tiek izpildīts.</h2>
+
+                <div class="done-cart-subtext">Pasūtījuma numurs <b>B001240379</b>. Par pasūtījuma gaitu paziņosim Jums e-pastā. Paldies, ka iepērkaties pie mums.</div>
 
               </div>
 
