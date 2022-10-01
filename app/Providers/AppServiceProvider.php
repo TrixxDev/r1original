@@ -68,7 +68,9 @@ class AppServiceProvider extends ServiceProvider
       } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
         define('user_ip', $_SERVER['HTTP_X_FORWARDED_FOR']);
       } else {
-        define('user_ip', $_SERVER['REMOTE_ADDR']);
+        if (isset($_SERVER['REMOTE_ADDR'])) {
+          define('user_ip', $_SERVER['REMOTE_ADDR']);
+        }
       }
 
       define('SLOT_STATUS_FREE', 0);
