@@ -671,7 +671,7 @@
                     @endforeach
                 </div>
               </div>
-              {{--LIST VIEW--}}
+              {{-- GRID VIEW--}}
               <div id="">
                 <div id="js-product-list">
                   <div class="products row hide-price title-flip">
@@ -712,7 +712,7 @@
 {{--                        <img src='/storage/app/public/auto/tread/215.png' style='width: 200px; height: 200px;'>--}}
 {{--                      </div>--}}
 
-{{--                    TIRES TABLE--}}
+                      {{-- TIRES TABLE --}}
                       <table id="tires-table" class="table summer-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead">
                         <tr>

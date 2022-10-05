@@ -207,6 +207,21 @@
 
                   <section class="facet clearfix facet--availability">
                     <h3 class="text-uppercase h6 hidden-sm-down">Filtrs</h3>
+                    <h1 class="h6 facet-title hidden-sm-down">Atlase</h1>
+                    <ul class="collapse">
+                      <li class="show-selected-checkbox-li">
+                        <label class="facet-label" for="show-selected-checkbox"
+                               style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+                          <span class="custom-checkbox">
+                            <input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces" disabled>
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+                          <span>Atrādīt izvēlētos</span>
+                        </label>
+                      </li>
+                    </ul>
                     <h1 class="h6 facet-title hidden-sm-down">Pieejamība</h1>
                     <ul id="facet_availability" class="collapse">
                       <li>
@@ -296,9 +311,9 @@
                       $tire->includeStock = true;
                       if ($cbrand!=$brand){
                         if ($index == 0) {
-                          echo '</div><h4 class="tire-brand-name">' . $brand . ' <span class="top-product-title">Motociklu riepas</span></h4><div class="row grid-ex pr-1">';
+                          echo '</div><h4 class="tire-brand-name grid-t">' . $brand . ' <span class="top-product-title">Motociklu riepas</span></h4><div class="row grid-ex pr-1">';
                         } else {
-                          echo '</div><h4 class="tire-brand-name">' . $brand . '</h4><div class="row grid-ex pr-1">';
+                          echo '</div><h4 class="tire-brand-name grid-t">' . $brand . '</h4><div class="row grid-ex pr-1">';
                         }
 
                         $cbrand = $brand;
@@ -306,93 +321,51 @@
                       }
 
                     @endphp
-                    {{--                    @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif--}}
-                    <div class="tire-image-card">
-                      <a href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}" class="">
-                        <div class="text-center">
-                          {!! \Image::showGrid('moto', $tire->make_id) !!}
-                        </div>
-                        <div class="tire-list-caption">
+                    @if($tire->price1)
+                      <a href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}" class="grid-view-link">
+                        <div class="tire-image-card sort-order">
+                          <div class="text-center image-grid-overflow">
+                            {!! \Image::showGrid('moto', $tire->make_id) !!}
+                          </div>
 
-                          <div class="card-title-text">{{$tire->title}}</div>
-                          <div class="tire-tread">
-                            {{$tire->d1}} / {{$tire->d2}} {{ $tire->d4 }} {{$tire->d3}}
+                          <div class="tire-list-caption">
+
+                            <div class="card-title-text" data-toggle="tooltip" title="<div>{{$tire->title}}</div>">
+                              {{$tire->title}}
+                            </div>
+
+                            <div class="tire-tread">
+                              <b>{{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}} </b>
+                              <span data-toggle="tooltip" title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}</span>
+                              <span class="tire-image-code">{{$tire->code}}</span>
+                            </div>
+                            <div style="display: flex;">
+                              <input type="checkbox" name="product_ids[]" value="{{$tire->tire_id}}" style="margin-right: 5px;">
+                              <div class="rim-price-old" style="align-self: center;">€{{$tire->price1}}</div>
+                              <div class="rim-price-red" style="align-self: center;">€{{$tire->price2}}</div>
+                              <i class="material-icons" style="margin-left: auto;">add_shopping_cart</i>
+
+                              <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip"
+                                    data-html="true"
+                                    title="{{ $tire->stockAvailability }}">
+                              <span class="sort-order" style="display: none;">{{ $tire->dotAvailable }}</span>
+                            </span>
+                            </div>
                           </div>
-                          <div style="display: inline-flex">
-                            <div class="rim-price-old">€{{$tire->price1}}</div>
-                            <div class="rim-price-red">€{{$tire->price2}}</div>
-                          </div>
+
                         </div>
                       </a>
-                    </div>
+                    @endif
                     @php
                       $index++;
                     @endphp
                   @endforeach
                 </div>
               </div>
-{{--              <div id="">--}}
-{{--                <div class="row products-selection">--}}
-{{--                  <div class="col-md-8 hidden-md-down">--}}
-{{--                    <nav data-depth="3" class="breadcrumb hidden-sm-down">--}}
-{{--                      <ol itemscope="" itemtype="http://schema.org/BreadcrumbList">--}}
-{{--                        <li itemprop="itemListElement" itemscope=""--}}
-{{--                            itemtype="http://schema.org/ListItem">--}}
-{{--                          <a itemprop="item" href="/">--}}
-{{--                            <span itemprop="name">Sākumlapa</span>--}}
-{{--                          </a>--}}
-{{--                          <meta itemprop="position" content="1">--}}
-{{--                        </li>--}}
-{{--                        <li itemprop="itemListElement" itemscope=""--}}
-{{--                            itemtype="http://schema.org/ListItem">--}}
-{{--                          <span itemprop="name">Motociklu riepas</span>--}}
-{{--                          <meta itemprop="position" content="2">--}}
-{{--                        </li>--}}
-{{--                      </ol>--}}
-{{--                    </nav>--}}
-{{--                  </div>--}}
-{{--                </div>--}}
-{{--              </div>--}}
               <div id="">
                 <div id="js-product-list">
                   <div class="products row hide-price title-flip">
 
-{{--                    <div class="tire-image-container">--}}
-{{--                      <div class="tire-image-cards" style="display: none">--}}
-{{--                        --}}{{-- GRID VIEW --}}
-{{--                        @foreach($tires as $tire)--}}
-{{--                          <div class="tire-image-card">--}}
-{{--                            <a href="" class="">--}}
-{{--                              <div class="text-center">--}}
-{{--                                {!! \Image::showGrid('moto', $tire->make_id) !!}--}}
-{{--                              </div>--}}
-{{--                              <div class="tire-list-caption">--}}
-
-{{--                                <div class="card-title-text">{{$tire->title}}</div>--}}
-{{--                                <div class="tire-tread">--}}
-{{--                                  {{$tire->d1}} / {{$tire->d2}} / {{$tire->d3}}--}}
-{{--                                </div>--}}
-{{--                                <div class="tire-price-red">€{{$tire->price1}}</div>--}}
-{{--                              </div>--}}
-{{--                            </a>--}}
-{{--                          </div>--}}
-{{--                        @endforeach--}}
-{{--                      </div>--}}
-{{--                    </div>--}}
-{{--                    <div class="table-top product_show_list">--}}
-{{--                      <span class="table-cell">Brends / modelis</span>--}}
-{{--                      <span class="table-cell hidden-sm-down">Tips</span>--}}
-{{--                      <span class="table-cell hidden-sm-down">LI/SI</span>--}}
-{{--                      <span class="table-cell hidden-sm-down">Kods</span>--}}
-{{--                      <span class="table-cell sortable"--}}
-{{--                            data-filter=".product-price-and-shipping .regular-price"--}}
-{{--                            data-order="DESC">Veikala cena</span>--}}
-{{--                      <span class="table-cell sortable"--}}
-{{--                            data-filter=".product-price-and-shipping .price" data-order="DESC">Akcijas cena</span>--}}
-{{--                      <span class="table-cell">Piezīmes--}}
-{{--                        <!--{hook h='displayProductAttributesHeader' listing=$listing}--></span>--}}
-{{--                      <span class="table-cell availability" style="margin-left: 24px;"> </span>--}}
-{{--                    </div>--}}
                     @php
                       $cbrand = '';
                       $index = 0;
@@ -408,7 +381,6 @@
                             '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
                           }
 
-
                             echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
                             $cbrand = $brand;
                             $stripe = 1;
@@ -418,23 +390,11 @@
                     <table id="tires-table" class="table moto-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead">
                         <tr>
-                          <th scope="col"><input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces"></th>
+                          <th scope="col"></th>
                           <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
                           <th scope="col" class="hidden-sm-down text-center">Tips</th>
                           <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
                           <th scope="col" class="hidden-sm-down text-center">Kods</th>
-
-{{--                          <th scope="col" class="hidden-sm-down">--}}
-{{--                            <div class="tire-table-icon icon-tire-fuel" title="Degvielas ekonomija"></div>--}}
-{{--                          </th>--}}
-
-{{--                          <th scope="col" class="hidden-sm-down">--}}
-{{--                            <div class="tire-table-icon icon-tire-rain" title="Slapjš segums"></div>--}}
-{{--                          </th>--}}
-
-{{--                          <th scope="col" class="hidden-sm-down">--}}
-{{--                            <div class="tire-table-icon icon-tire-sound" title="Troksnis"></div>--}}
-{{--                          </th>--}}
 
                           <th id="store-price-button" scope="col" class="text-center">
                             Veikala cena
@@ -490,21 +450,6 @@
                                   class="hidden-sm-down table-cell prod-code">{{ $tire->code }}</span>
                         </td>
 
-{{--                        <td class="hidden-sm-down text-center">--}}
-{{--                            <span data-toggle="tooltip"--}}
-{{--                                  title="<span style='color: black'>{{ $tire->eco }}</span>">{{ $tire->eco }}</span>--}}
-{{--                        </td>--}}
-
-{{--                        <td class="hidden-sm-down text-center">--}}
-{{--                            <span data-toggle="tooltip"--}}
-{{--                                  title="<span style='color: black'>{{ $tire->wet }}</span>">{{ $tire->wet }}</span>--}}
-{{--                        </td>--}}
-
-{{--                        <td class="hidden-sm-down text-center">--}}
-{{--                            <span data-toggle="tooltip"--}}
-{{--                                  title="<span style='color: black'>{{ $tire->noise }}</span>">{{ $tire->noise }}</span>--}}
-{{--                        </td>--}}
-
                         <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
                         <td id="sale-price" class="text-center tire-price-red">€ {{ $tire->price2 }}</td>
                         <td>{{ $tire->comment }}</td>
@@ -529,64 +474,6 @@
                         </td>
 
                       </tr>
-
-{{--                      <article class="product_show_list cat-14 product-miniature js-product-miniature"--}}
-{{--                               id="{{ str_replace(" ", "", $brand) }}"--}}
-{{--                               data-id-product="{{ $tire->tire_id }}" data-id-product-attribute="{{ $tire->tire_id }}" itemscope=""--}}
-{{--                               itemtype="http://schema.org/Product" data-brand="{{ $tire->brand }}"--}}
-{{--                               data-atv="{{ $tire->d1 }}{{ $tire->sep }}{{ $tire->d2 }}{{ $tire->sep2 }}{{ $tire->d3 }}">--}}
-{{--                        <div class="thumbnail-container">--}}
-{{--                          <a href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"--}}
-{{--                             class="thumbnail product-thumbnail">--}}
-{{--                            @if ($tire->image)--}}
-{{--                              <img src='/storage/app/public/moto/tread/{{ $tire->image }}' style='width: 280px; height: 280px;'>--}}
-{{--                            @else--}}
-{{--                              <img src='{{ asset('img/p/en-default-home_default.jpg') }}'>--}}
-{{--                            @endif--}}
-{{--                          </a>--}}
-{{--                          <div class="product-description">--}}
-{{--                            <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]">--}}
-{{--                            <h1 class="h3 product-title" itemprop="name">--}}
-{{--                              <a data-toggle="tooltip" data-html="true"--}}
-{{--                                 @if ($tire->image)--}}
-{{--                                 title="<img src='/storage/app/public/moto/tread/{{ $tire->image }}' style='width: 280px; height: 280px;'>"--}}
-{{--                                 @else--}}
-{{--                                 title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"--}}
-{{--                                 @endif--}}
-{{--                                 href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"--}}
-{{--                                 data-content="{{ $tire->title }}">--}}
-{{--                                <div class="product-title-hidden">{{ $tire->title }}</div>--}}
-{{--                              </a>--}}
-{{--                            </h1>--}}
-{{--                            <div class="product-price-and-shipping" data-content="{{ $tire->title }}">--}}
-{{--                              <span class="table-cell">{{ $tire->type }}</span>--}}
-{{--                              <span class="hidden-sm-down table-cell">--}}
-{{--                                  <span data-toggle="tooltip" title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>--}}
-{{--                                  <span data-toggle="tooltip" title="<span style='color: black'>H</span>">{{ $tire->si }}</span>--}}
-{{--                              </span>--}}
-{{--                              <span data-toggle="tooltip" title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>" class="hidden-sm-down table-cell prod-code">--}}
-{{--                                  {{ $tire->code }}--}}
-{{--                              </span>--}}
-{{--                              <span class="sr-only">Veikala cena</span>--}}
-{{--                              <span class="regular-price">€ {{ $tire->price1 }}</span>--}}
-{{--                              <span class="sr-only">Akcijas cena</span>--}}
-{{--                              <span itemprop="price" class="price">€ {{ $tire->price2 }}</span>--}}
-{{--                              <span class="table-cell notes"><nbsp></nbsp><span class="table-cell top40">Top 40</span>--}}
-{{--                              </span>--}}
-{{--                              <div class="clearfix atc_div">--}}
-{{--                                <button class="btn grid-cart-btn btn-primary" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-info="{{ $tire->tire_id }}"><i--}}
-{{--                                    class="material-icons">add_shopping_cart</i>--}}
-{{--                                </button>--}}
-{{--                                <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip"--}}
-{{--                                      data-html="true"--}}
-{{--                                      title="{{ $tire->stockAvailability }}">--}}
-{{--                                                            <span class="sort-order">{{ $tire->dotAvailable }}</span>--}}
-{{--                                                        </span>--}}
-{{--                              </div>--}}
-{{--                            </div>--}}
-{{--                          </div>--}}
-{{--                        </div>--}}
-{{--                      </article>--}}
                       @php
                         $index++;
                       @endphp
