@@ -46,25 +46,26 @@
 
                             <script>
                                 document.addEventListener('mapLoaded', initMap2, false);
-                                var map2;
-                                var bound2;
+                                let map2;
+                                let bound2;
                                 function initMap2() {
                                     bound2 = new google.maps.LatLngBounds();
                                     const letlongs = [
                                         {
-                                            coords: new google.maps.LatLng(56.94440000, 24.28898000),
-                                            text: 'Institūta iela 1, Ulbroka, LV-2130<br> Tālr.: <a href="tel:+37167910555"><strong>+371 67910555</strong></a><br><br> <a style="text-transform: uppercase;" href="https://www.google.com/maps/search/?api=1&query=56.94440000,24.28898000" target="_blank"><strong>Atvert karte</strong></a>',
+                                            coords: { lat: 56.94440000, lng: 24.28898000 },
+                                            text: 'Acones iela 2A, Ulbroka, LV-2130<br> Tālr.: <a href="tel:+37167910555"><strong>+371 67910555</strong></a><br><br> <a style="text-transform: uppercase;" href="https://www.google.com/maps/search/?api=1&query=56.94440000,24.28898000" target="_blank"><strong>Atvert karte</strong></a>',
                                             icon: '{{ asset('images/kartei_u.png') }}'
                                         },
                                         {
-                                            coords: new google.maps.LatLng(56.94318810, 24.06548220),
+                                            coords: { lat: 56.94318810, lng:24.06548220 },
                                             text: 'Kalnciema ielā 39, Rīga, LV-1046<br> Tālr.: <a href="tel:+37167615615"><strong>+371 67615615</strong></a><br><br> <a style="text-transform: uppercase;" href="https://www.google.com/maps/search/?api=1&query=56.94318810,24.06548220" target="_blank"><strong>Atvert karte</strong></a>',
                                             icon: '{{ asset('images/kartei_k.png') }}'
                                         },
                                     ];
                                     map2 = new google.maps.Map(document.getElementById('map_contacts'), {
-                                        zoom: 8,
-                                        center: letlongs[0].coords
+                                        zoom: 11,
+                                        center: centerMap(letlongs),
+                                        gestureHandling: 'greedy'
                                     });
                                     letlongs.forEach(function(item) {
                                         const icon = new google.maps.MarkerImage(
@@ -84,11 +85,18 @@
                                         });
                                         bound2.extend(item.coords);
                                     });
-                                    centerMap2();
+                                    centerMap(letlongs);
                                 }
-                                function centerMap2() {
-                                    //map.setCenter(bound.getCenter());
-                                    map2.fitBounds(bound2);
+
+                                // Uztaisiju dinamisku servisu centrēšanu
+                                function centerMap(letlongs) {
+                                  let totalLat = 0;
+                                  let totalLng = 0;
+                                  letlongs.forEach(function(serviss) {
+                                    totalLat += serviss.coords.lat;
+                                    totalLng += serviss.coords.lng;
+                                  })
+                                  return { lat: totalLat / letlongs.length, lng: totalLng / letlongs.length };
                                 }
                             </script>
                             <!-- end D:\OpenServer\domains\r1old/modules/r1_theme/views/templates/hook/contacts_page.tpl -->

@@ -1076,8 +1076,9 @@ $('.tire-table-row, .tire-image-card').each(function() {
     const baseUrl = window.location.href.split('#')[0];
     if ($ids.length) {
       window.location.replace(baseUrl + '#|' + $ids);
+      $('input#show-selected-checkbox').prop( "disabled", false );
     } else {
-      console.log(123);
+      $('input#show-selected-checkbox').prop( "disabled", true );
       let uri = window.location.toString();
 
       if (uri.indexOf("#") > 0) {
@@ -2588,29 +2589,6 @@ $('.tire-table-checkbox').children().each(function(key, value){
   })
 });
 
-let colors = $('.tire-table-row').find('.dot').parent().parent();
-let red = $('.tire-table-row').find('.red').parent().parent();
-let green = $('.tire-table-row').find('.green').parent().parent();
-let yellow = $('.tire-table-row').find('.yellow').parent().parent();
-
-$('#facet_availability li label').on('click', function() {
-  // colors.hide();
-  colors.each(function(key, value){
-    if ($('.tire-table-row').find('.red')){
-      red.show();
-    }
-    else if ($('.tire-table-row').find('.green')){
-      console.log('green');
-    }
-    else if ($('.tire-table-row').find('.yellow')){
-      console.log('yellow');
-    }
-
-    // console.log($(this).children().children());
-    // if (this.val())
-  })
-});
-
 $('#facet_availability li label').on('click', function() {
   let $colors = [];
   const $checked = $('#facet_availability li label .custom-checkbox input:checked');
@@ -2622,6 +2600,15 @@ $('#facet_availability li label').on('click', function() {
       });
       $(this).show().prev().show();
     });
+
+    $('.grid-view-link').each(function() {
+      $(this).show();
+    })
+
+    $('.tire-brand-name.grid-t').each(function(){
+      $(this).show();
+    })
+
     return true;
   }
 
@@ -2654,6 +2641,31 @@ $('#facet_availability li label').on('click', function() {
       }
     });
 
+
+
+    $('.row.grid-ex.pr-1').each(function(){
+      if($(this).find('a.grid-view-link:visible').length === 0) {
+
+      }
+    })
+
+    $('.grid-view-link').each(function() {
+
+        $(this).hide();
+
+        if ($colors.includes($(this).find('.grid-dot .sort-order').text().toLowerCase())) {
+          $(this).show();
+        }
+
+        let length = $(this).filter(function() {
+          return $(this).css("display") !== "none";
+        }).length;
+
+        if (length !== 0) {
+          $(this).show();
+        }
+
+    });
   });
 
 });
@@ -2856,6 +2868,13 @@ $(document).ready(function() {
 
   const rows = $(".tire-table-row");
   const rowsGrid = $("a.grid-view-link");
+
+  $('.tire-table-checkbox').each(function(){
+    if($(this).is(':checked')){
+      $('input#show-selected-checkbox').prop( "disabled", false );
+    }
+  })
+
   $("#show-selected-checkbox").on("click",function() {
     if ($(this).is(':checked')) {
       rows.each(function() {
@@ -2866,19 +2885,65 @@ $(document).ready(function() {
       });
       rowsGrid.each(function() {
         $(this).hide();
+
         if ($(this).children().hasClass('selected')) {
           $(this).show();
+        } else {
+          $(this).hide();
         }
       });
+
+      $('.tires-table').each(function() {
+        $(this).children('#tires-table-body').each(function() {
+          let list_count = $(this).children('.tire-table-row').filter(function() {
+            return $(this).css('display') !== 'none';
+          }).length;
+          if (list_count == 0) {
+            $(this).parent().prev().hide();
+            $(this).parent().hide();
+          }
+        });
+      });
+
+      $('.grid-ex').each(function() {
+        let grid_count = $(this).children('.grid-view-link').filter(function() {
+          return $(this).css('display') !== 'none';
+        }).length;
+        if (grid_count == 0) {
+          $(this).prev().hide();
+          $(this).hide();
+        }
+      });
+
     } else {
+      $('.grid-ex').show();
+      $('.tires-table, .tire-brand-name').show();
       rows.show();
       rowsGrid.show();
     }
   });
 
-  if (window.location.hash.indexOf('o') != -1){
-    $('#show-selected-checkbox').trigger('click');
-  }
+  // if (window.location.hash.indexOf('o') != -1){
+  //   $('#show-selected-checkbox').trigger('click');
+  // }
+
+  // if (!window.location.hash) {
+  //   $('input#show-selected-checkbox').prop( "disabled", true );
+  //   $('.show-selected-checkbox-li').css('pointer-events', 'none');
+  // } else {
+  //   $('input#show-selected-checkbox').prop( "disabled", false );
+  //   $('.show-selected-checkbox-li').css('pointer-events', 'auto');
+  // }
+  //
+  // $('#products input[type=checkbox]').on('change', function(){
+  //   if (!window.location.hash) {
+  //     $('input#show-selected-checkbox').prop( "disabled", true );
+  //   } else {
+  //     $('input#show-selected-checkbox').prop( "disabled", false );
+  //     $('.show-selected-checkbox-li').css('pointer-events', 'auto');
+  //   }
+  // });
+
 });
 
 // var interval;
@@ -2960,4 +3025,12 @@ $('.cart-card .checkout-buttons .form-check input[name=payment]').each(function(
       $('.btn-checkout').last().attr('name', 'pay').val('pay').text('Apmaksāt');
     }
   });
+});
+
+$("a.popup-close.cls-btn").on("click", function () {
+  $('.popup.modal.fade.show').toggle();
+});
+
+$('#map-modal-toggle').on('click', function (){
+  $('.popup.modal.fade.show').toggle();
 });

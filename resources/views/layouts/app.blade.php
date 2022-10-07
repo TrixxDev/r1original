@@ -125,25 +125,26 @@
                                                 }, 200);
                                             }
                                             document.addEventListener('mapLoaded', initMap, false);
-                                            var map;
-                                            var bound;
+                                            let map;
+                                            let bound;
                                             function initMap() {
                                                 bound = new google.maps.LatLngBounds();
                                                 const letlongs = [
                                                     {
-                                                        coords: new google.maps.LatLng(56.94440000, 24.28898000),
-                                                        text: 'Institūta iela 1, Ulbroka, LV-2130<br> Tālr.: <a href="tel:+37167910555"><strong>+371 67910555</strong></a><br><br> <a style="text-transform: uppercase;" href="https://www.google.com/maps/search/?api=1&query=56.94440000,24.28898000" target="_blank"><strong>Atvert karte</strong></a>',
+                                                        coords: { lat: 56.94440000, lng: 24.28898000 },
+                                                        text: 'Acones iela 2A, Ulbroka, LV-2130<br> Tālr.: <a href="tel:+37167910555"><strong>+371 67910555</strong></a><br><br> <a style="text-transform: uppercase;" href="https://www.google.com/maps/search/?api=1&query=56.94440000,24.28898000" target="_blank"><strong>Atvert karte</strong></a>',
                                                         icon: '{{ asset('images/kartei_u.png') }}'
                                                     },
                                                     {
-                                                        coords: new google.maps.LatLng(56.94318810, 24.06548220),
+                                                        coords: { lat: 56.94318810, lng:24.06548220 },
                                                         text: 'Kalnciema ielā 39, Rīga, LV-1046<br> Tālr.: <a href="tel:+37167615615"><strong>+371 67615615</strong></a><br><br> <a style="text-transform: uppercase;" href="https://www.google.com/maps/search/?api=1&query=56.94318810,24.06548220" target="_blank"><strong>Atvert karte</strong></a>',
                                                         icon: '{{ asset('images/kartei_k.png') }}'
-                                                    },
+                                                    }
                                                 ];
                                                 map = new google.maps.Map(document.getElementById('map'), {
-                                                    zoom: 8,
-                                                    center: letlongs[0].coords
+                                                    zoom: 11,
+                                                    center: centerMap(),
+                                                    gestureHandling: 'greedy',
                                                 });
                                                 letlongs.forEach(function(item) {
                                                     const icon = new google.maps.MarkerImage(
@@ -164,16 +165,26 @@
                                                     bound.extend(item.coords);
                                                 });
                                                 centerMap();
+                                              // Uztaisiju dinamisku servisu centrēšanu
+                                              function centerMap() {
+                                                let totalLat = 0;
+                                                let totalLng = 0;
+                                                letlongs.forEach(function(serviss) {
+                                                  totalLat += serviss.coords.lat;
+                                                  totalLng += serviss.coords.lng;
+                                                })
+                                                return { lat: totalLat / letlongs.length, lng: totalLng / letlongs.length };
+                                              }
                                             }
-                                            function centerMap() {
-                                                //map.setCenter(bound.getCenter());
-                                                map.fitBounds(bound);
-                                            }
-                                        </script>
-                                        <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIpmH3qj7YD36P0uZkTMvYZtaVt_ksF7g&amp;callback=mapLoaded">
-                                        </script>
 
-                                        <a class="popup-close" aria-label="close" data-dismiss="modal" href="#">x</a>
+                                        </script>
+{{--                                        <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIpmH3qj7YD36P0uZkTMvYZtaVt_ksF7g&amp;callback=mapLoaded">--}}
+{{--                                        </script>--}}
+                                      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-s4K1G5lDxiMdB7lLapvxcLCxhQ223oA&callback=mapLoaded"></script>
+                                        <a class="popup-close cls-btn" aria-label="close" data-dismiss="modal" href="#">x</a>
+{{--                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
+{{--                                        <span aria-hidden="true">&times;</span>--}}
+{{--                                      </button>--}}
                                     </div>
                                 </div>
 
@@ -329,7 +340,7 @@
                                 </div>
 
                                 <div class="top-map">
-                                    <button type="button" data-toggle="modal" data-target="#popup-1">
+                                    <button id="map-modal-toggle" type="button" data-toggle="modal" data-target="#popup-1">
                                         karte </button>
                                 </div>
                             </div>
