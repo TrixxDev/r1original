@@ -42,26 +42,28 @@ let dia;
 let modelOpt = '';
 let radiusOpt = '';
 
-if ($('.sidebar-auto input[name=brand]').val() !== 'Visi') {
-  $('section.facet--auto-model .dropdown-menu').html('<a rel="nofollow" class="select-list" data-id="Visi" id="Visi">Visi</a>');
-  $('section.facet--auto-dia .dropdown-menu').html('<a rel="nofollow" class="select-list" data-id="Visi" id="Visi">Visi</a>');
-  modelId = $('.sidebar-auto input[name=brand]').parent().children('.dropdown-menu').find('.select-list#' + $('.sidebar-auto input[name=brand]').val());
- $.ajax({
-    url: '/api/wheels/' + modelId,
-    method: 'get',
-    dataType: 'json',
-    async: false,
-    success: function(data) {
-      data.forEach(function(item) {
-        modelOpt += '<a rel="nofollow" class="select-list" data-id="' + item['title'] + '">' + item['title'] + '</a>';
-      });
-    }
-  });
-  $(modelOpt).insertAfter($('section.facet--auto-model .dropdown-menu .select-list').first());
-  $('section.facet--auto-model .dropdown-menu .select-list').first().remove();
-}
-
 if ($('body').hasClass('category-jauni-lietie-diski')) {
+
+  if ($('.sidebar-auto input[name=brand]').val() !== 'Visi') {
+    $('section.facet--auto-model .dropdown-menu').html('<a rel="nofollow" class="select-list" data-id="Visi" id="Visi">Visi</a>');
+    $('section.facet--auto-dia .dropdown-menu').html('<a rel="nofollow" class="select-list" data-id="Visi" id="Visi">Visi</a>');
+    modelId = $('.sidebar-auto input[name=brand]').parent().children('.dropdown-menu').find('.select-list#' + $('.sidebar-auto input[name=brand]').val());
+    $.ajax({
+      url: '/api/wheels/' + modelId,
+      method: 'get',
+      dataType: 'json',
+      async: false,
+      success: function(data) {
+        data.forEach(function(item) {
+          modelOpt += '<a rel="nofollow" class="select-list" data-id="' + item['title'] + '">' + item['title'] + '</a>';
+        });
+      }
+    });
+    $(modelOpt).insertAfter($('section.facet--auto-model .dropdown-menu .select-list').first());
+    $('section.facet--auto-model .dropdown-menu .select-list').first().remove();
+  }
+
+
   if ($('.sidebar-auto input[name=model]').val() !== 'Visi') {
     $('section.facet--auto-dia .dropdown-menu').html('<a rel="nofollow" class="select-list" data-id="Visi" id="Visi">Visi</a>');
     makeId = $('.sidebar-auto input[name=model]').val();
