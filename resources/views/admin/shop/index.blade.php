@@ -82,7 +82,7 @@
                                 <i class="fa-solid fa-circle-check" style="color:#fff;"></i>
                               </a>
 
-                              @method('DELETE)
+                              @method('DELETE')
 
                               <button type="submit" class="btn btn-danger">
                                 <i class="fa-solid fa-trash" style="color:#fff;"></i>
