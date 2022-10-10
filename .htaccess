@@ -26,6 +26,7 @@ RewriteRule .* - [E=noconntimeout:1]
 
     #RewriteCond %{REMOTE_ADDR} !^77\.219\.9\.229$
     RewriteCond %{REMOTE_ADDR} !^212\.3\.218\.22$
+    RewriteCond %{REMOTE_ADDR} !^212\.3\.207\.203$
     RewriteRule ^ http://r1.com.lv/ [R]	
 
 </IfModule>
