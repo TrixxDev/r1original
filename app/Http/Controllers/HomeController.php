@@ -260,7 +260,10 @@ class HomeController extends Controller
       $dom->preserveWhiteSpace = FALSE;
       $dom->loadXML($xml_string);
 
-      $dom->save(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml');
+      $xml_file = fopen(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', 'wb');
+      fwrite($xml_file, $xml_string);
+      fclose($xml_file);
+      //$dom->save(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml');
 
 //      dd(is_file(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml'));
 //      $ftp = uploadFTP("212.3.218.22", "r1_web", "RA5bgdGc", dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");

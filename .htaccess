@@ -22,4 +22,10 @@ RewriteRule .* - [E=noconntimeout:1]
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+
+
+    #RewriteCond %{REMOTE_ADDR} !^77\.219\.9\.229$
+    RewriteCond %{REMOTE_ADDR} !^212\.3\.218\.22$
+    RewriteRule ^ http://r1.com.lv/ [R]	
+
 </IfModule>

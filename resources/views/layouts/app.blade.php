@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>R1</title>
+    <link rel="SHORTCUT ICON" href="{{ asset('images/favicon.ico') }}">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="{{ asset('images/favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <meta name="csrf-token" content="{!! csrf_token() !!}">
     <meta name="verify-paysera" content="8edf175c7d27ddd50c1f859814a5812f">
     <meta name="description" content="R1Riepas">
@@ -460,7 +463,7 @@
                                     <ul class="top-menu" data-depth="1">
                                         <li class="cms-page" id="cms-page-8">
                                             <a class="dropdown-item dropdown-submenu"
-                                               href="{{ route('pakalpojumi') }}"
+                                               href="/pakalpojumi"
                                                data-depth="1">
                                                 Pakalpojumi
                                             </a>
@@ -661,7 +664,7 @@
                                     </li>
                                     <li>
                                         <a id="link-cms-page-8-2" class="cms-page-link"
-                                           href="{{ route('pakalpojumi') }}"
+                                           href="pakalpojumi"
                                            title="">
                                             Pakalpojumi
                                         </a>

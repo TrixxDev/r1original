@@ -204,7 +204,7 @@ Route::middleware('checksession')->group(function() {
 
 //
 
-  Route::get('/pakalpojumi', [App\Http\Controllers\HomeController::class, 'services'])->name('pakalpojumi');
+  //Route::get('/pakalpojumi', [App\Http\Controllers\HomeController::class, 'services'])->name('pakalpojumi');
   Route::get('/kondicionieris', [App\Http\Controllers\HomeController::class, 'conditioner'])->name('kondicionieris');
 
   Route::get('/kontakti', [App\Http\Controllers\HomeController::class, 'contacts'])->name('contacts');

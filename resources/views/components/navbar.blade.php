@@ -182,7 +182,7 @@
 {{--                            </a>--}}
 {{--                        </li>--}}
 {{--                        <li class="cms-page">--}}
-{{--                            <a class="dropdown-item dropdown-submenu" href="{{ route('pakalpojumi') }}" data-depth="1">--}}
+{{--                            <a class="dropdown-item dropdown-submenu" href="/pakalpojumi" data-depth="1">--}}
 {{--                                Pakalpojumi--}}
 {{--                            </a>--}}
 {{--                        </li>--}}
@@ -305,7 +305,7 @@
   <div class="dropdown-options serviss">
 
       <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ route('pakalpojumi') }}">Pakalpojumi</a>
+        <a class="dropdown-item" href="/pakalpojumi">Pakalpojumi</a>
       </div>
 
       <div class="nav-dropdown-link">
