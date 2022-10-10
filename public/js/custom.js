@@ -3028,11 +3028,3 @@ $('.cart-card .checkout-buttons .form-check input[name=payment]').each(function(
     }
   });
 });
-
-$("a.popup-close.cls-btn").on("click", function () {
-  $('.popup.modal.fade.show').toggle();
-});
-
-$('#map-modal-toggle').on('click', function (){
-  $('.popup.modal.fade.show').toggle();
-});

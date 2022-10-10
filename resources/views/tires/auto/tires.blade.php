@@ -586,7 +586,7 @@
         </div>
         <div id="content-wrapper" class="col-md-12 col-lg-9">
           <section id="main">
-            <section id="products" class="">
+            <section id="products">
               {{--GRID VIEW--}}
               <div class="tire-image-container" style="display: none">
                 <div class="tire-image-cards">
@@ -671,7 +671,7 @@
                     @endforeach
                 </div>
               </div>
-              {{-- GRID VIEW--}}
+              {{-- LIST VIEW--}}
               <div id="">
                 <div id="js-product-list">
                   <div class="products row hide-price title-flip">
