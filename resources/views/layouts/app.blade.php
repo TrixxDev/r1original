@@ -4,8 +4,11 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>R1</title>
+    <link rel="SHORTCUT ICON" href="{{ asset('images/favicon.ico') }}">
+    <link rel="icon" type="image/vnd.microsoft.icon" href="{{ asset('images/favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <meta name="csrf-token" content="{!! csrf_token() !!}">
-    <meta name="verify-paysera" content="8edf175c7d27ddd50c1f859814a5812f">
+    <meta name="verify-paysera" content="8efacf3cf88620d4c363c6eb973712bb">
     <meta name="description" content="R1Riepas">
     <meta name="keywords" content="riepas, diski, kondicionieris, montāža, balansēšana, riepu diski">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -114,6 +117,18 @@
                                     </tbody>
                                 </table>
 
+                                <!-- Karte Popup -->
+                                <div class="modal fade" id="popup-1" tabindex="-1" aria-labelledby="kartePopup" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-body">
+                                        <a class="popup-close cls-btn" aria-label="close" data-dismiss="modal" href="#" data-target="#popup-1" data-dismiss="modal">x</a>
+                                        <div id="map"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
                                 <div class="popup modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="popup-1">
                                     <div class="popup-inner">
 
@@ -178,13 +193,7 @@
                                             }
 
                                         </script>
-{{--                                        <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIpmH3qj7YD36P0uZkTMvYZtaVt_ksF7g&amp;callback=mapLoaded">--}}
-{{--                                        </script>--}}
                                       <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-s4K1G5lDxiMdB7lLapvxcLCxhQ223oA&callback=mapLoaded"></script>
-                                        <a class="popup-close cls-btn" aria-label="close" data-dismiss="modal" href="#">x</a>
-{{--                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
-{{--                                        <span aria-hidden="true">&times;</span>--}}
-{{--                                      </button>--}}
                                     </div>
                                 </div>
 
@@ -460,7 +469,7 @@
                                     <ul class="top-menu" data-depth="1">
                                         <li class="cms-page" id="cms-page-8">
                                             <a class="dropdown-item dropdown-submenu"
-                                               href="{{ route('pakalpojumi') }}"
+                                               href="/pakalpojumi"
                                                data-depth="1">
                                                 Pakalpojumi
                                             </a>
@@ -661,7 +670,7 @@
                                     </li>
                                     <li>
                                         <a id="link-cms-page-8-2" class="cms-page-link"
-                                           href="{{ route('pakalpojumi') }}"
+                                           href="pakalpojumi"
                                            title="">
                                             Pakalpojumi
                                         </a>
@@ -710,7 +719,7 @@
 
 </main>
 
-@livewireScripts
+
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-230419920-1"></script>
 <script>
@@ -733,7 +742,7 @@
 <script type="text/javascript" src="{{ asset('js/homeslider.js?rev=' . time()) }}"></script>
 <script type="text/javascript" src="{{ asset('js/custom.js?rev=' . time()) }}"></script>
 <script type="text/javascript" src="{{ asset('js/cart.js?rev=' . time()) }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-Atwg2Pkwv9vp0ygtn1JAojH0nYbwNJLPhwyoVbhoPwBhjQPR5VtM2+xf0Uwh9KtT" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-76Y13VND83"></script>
 <script>
@@ -823,5 +832,6 @@
     });
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>

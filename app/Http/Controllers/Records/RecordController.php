@@ -782,7 +782,8 @@ class RecordController extends Controller
     $sheet->getStyle('A2:B' . $lastRow)->getAlignment()->setHorizontal('center');
     $writer = new Xlsx($spreadsheet);
     $filename = 'pieraksts.xlsx';
-    $writer->save($filename);
+
+    $writer->save('storage/app/schedules/' . $filename);
 
     // Set the content-type:
     header('Content-Type: application/vnd.ms-excel');

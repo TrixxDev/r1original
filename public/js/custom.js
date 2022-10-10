@@ -121,16 +121,18 @@ $(document).ready(function() {
     }
   });
 
-  $.ajax({
-    url: '/pieraksts/fillFiliale',
-    method: 'POST',
-    dataType: 'JSON',
-    success: function (data) {
-      data.forEach(function (value, key) {
-        $('<option value="' + value.office_id + '">' + value.title + '</option>').insertAfter($('#mobile-filiale select[name="filiale"] option').first());
-      });
-    }
-  });
+  if ($('.records').length !== 0) {
+    $.ajax({
+      url: '/pieraksts/fillFiliale',
+      method: 'POST',
+      dataType: 'JSON',
+      success: function (data) {
+        data.forEach(function (value, key) {
+          $('<option value="' + value.office_id + '">' + value.title + '</option>').insertAfter($('#mobile-filiale select[name="filiale"] option').first());
+        });
+      }
+    });
+  }
 
   $('#mobile-filiale select[name="filiale"]').on('change', function () {
     if ($(this).hasClass('required-input')) {
@@ -3025,12 +3027,4 @@ $('.cart-card .checkout-buttons .form-check input[name=payment]').each(function(
       $('.btn-checkout').last().attr('name', 'pay').val('pay').text('Apmaksāt');
     }
   });
-});
-
-$("a.popup-close.cls-btn").on("click", function () {
-  $('.popup.modal.fade.show').toggle();
-});
-
-$('#map-modal-toggle').on('click', function (){
-  $('.popup.modal.fade.show').toggle();
 });

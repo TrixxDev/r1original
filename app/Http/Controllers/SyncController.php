@@ -39,7 +39,7 @@ class SyncController extends Controller
     {
 
         try {
-          $this->accrual = new PDO("sqlsrv:Server=192.168.0.36,1444;Database=accrual", "sa", "cenzors");
+          $this->accrual = new PDO("sqlsrv:Server=212.3.218.22,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
           die("Database connection failed: " . $e->getMessage());
           exit;
@@ -71,13 +71,18 @@ class SyncController extends Controller
     foreach ($stock as $id => $value) {
 
       $noliktavas = explode(';', $value);
-      $urs = @$noliktavas[0];
-      $krs = @$noliktavas[1];
+      if (strpos(@$noliktavas[0], 'Noliktava') !== false) {
+        $urs = @$noliktavas[0];
+        $krs = @$noliktavas[1];
+      } else if (strpos(@$noliktavas[0], 'Veikals') !== false) {
+        $urs = @$noliktavas[1];
+        $krs = @$noliktavas[0];
+      }
 
-      $urs = explode(': ', $urs);
+      @$urs = explode(': ', $urs);
       @$urs_quantity = (int) $urs[1];
 
-      $krs = explode(': ', $krs);
+      @$krs = explode(': ', $krs);
       @$krs_quantity = (int) $krs[1];
 
       $total = $urs_quantity + $krs_quantity;
