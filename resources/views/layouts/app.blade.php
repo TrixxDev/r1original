@@ -114,6 +114,18 @@
                                     </tbody>
                                 </table>
 
+                                <!-- Karte Popup -->
+                                <div class="modal fade" id="popup-1" tabindex="-1" aria-labelledby="kartePopup" aria-hidden="true">
+                                  <div class="modal-dialog">
+                                    <div class="modal-content">
+                                      <div class="modal-body">
+                                        <a class="popup-close cls-btn" aria-label="close" data-dismiss="modal" href="#" data-bs-toggle="modal" data-bs-target="#popup-1" data-bs-dismiss="modal" aria-label="Close">x</a>
+                                        <div id="map"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
                                 <div class="popup modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="popup-1">
                                     <div class="popup-inner">
 
@@ -178,13 +190,7 @@
                                             }
 
                                         </script>
-{{--                                        <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIpmH3qj7YD36P0uZkTMvYZtaVt_ksF7g&amp;callback=mapLoaded">--}}
-{{--                                        </script>--}}
                                       <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-s4K1G5lDxiMdB7lLapvxcLCxhQ223oA&callback=mapLoaded"></script>
-                                        <a class="popup-close cls-btn" aria-label="close" data-dismiss="modal" href="#">x</a>
-{{--                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
-{{--                                        <span aria-hidden="true">&times;</span>--}}
-{{--                                      </button>--}}
                                     </div>
                                 </div>
 
@@ -340,7 +346,7 @@
                                 </div>
 
                                 <div class="top-map">
-                                    <button id="map-modal-toggle" type="button" data-toggle="modal" data-target="#popup-1">
+                                    <button id="map-modal-toggle" type="button" data-bs-toggle="modal" data-bs-target="#popup-1">
                                         karte </button>
                                 </div>
                             </div>
@@ -823,5 +829,6 @@
     });
   });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
