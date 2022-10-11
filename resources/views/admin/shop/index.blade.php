@@ -31,8 +31,8 @@
                         <th scope="col">Preces</th>
                         <th scope="col">Summa</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Piezīmes</th>
-                        <th scope="col">Labot</th>
+                        <th scope="col">Apmaksas veids</th>
+                        <th scope="col"></th>
                       </tr>
                       </thead>
                       <tbody>
@@ -42,7 +42,7 @@
                           $item_sum = [];
                           $items = unserialize($order->info);
                           //unset($items['data']);
-                          foreach ($items as $item) {
+                          foreach ($items['items'] as $item) {
                             if (!isset($item['quantity'])) continue;
                             array_push($item_count, $item['quantity']);
                             array_push($item_sum, ($item['price'] * $item['quantity']));
@@ -50,12 +50,18 @@
                           $item_count = array_sum($item_count);
                           $item_sum = array_sum($item_sum);
 
-                          $_ENV['tests'] = 'tests';
-
-                          $enum = [
+                          $status_enum = [
                             1 => 'Nav apmaksāts',
-                            2 => 'Apmaksāts',
-                            3 => 'Gatavs'
+                            2 => 'Jauns',
+                            3 => 'Gaidām apmaksu',
+                            4 => 'Gaidām preci',
+                            5 => 'Pabeigts',
+                          ];
+
+                          $pay_enum = [
+                            1 => 'Apmaksa saņemšanas brīdī',
+                            2 => 'Bankas pārskaitījums',
+                            3 => 'Tiešsaistes apmaksa',
                           ];
 
                         @endphp
@@ -63,20 +69,20 @@
                             <td>{{ $order->created_at }}</td>
                             <td>{{ $item_count }}</td>
                             <td>{{ $item_sum }} €</td>
-                            <td>{{ $enum[$order->status] }}</td>
-                            <td>#</td>
+                            <td>{{ $status_enum[$order->status] }}</td>
+                            <td>{{ $pay_enum[$order->payment] }}</td>
                             <td style="width: 153px;">
 
-                              <a href="order/{{$order->id}}" class="btn btn-warning">
+                              <a href="{{ route('admin.order', $order->id) }}" class="btn btn-warning">
                                 <i class="fa-solid fa-pencil" style="color:#fff;"></i>
                               </a>
 
-                              <a href="order/{{$order->id}}" class="btn btn-success">
+
+                              <a href="{{ route('admin.order', $order->id) }}" class="btn btn-success disabled">
                                 <i class="fa-solid fa-circle-check" style="color:#fff;"></i>
                               </a>
 
-
-                              @method('DELETE')
+                              @method('DELETE)
 
                               <button type="submit" class="btn btn-danger">
                                 <i class="fa-solid fa-trash" style="color:#fff;"></i>

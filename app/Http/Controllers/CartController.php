@@ -534,8 +534,8 @@ class CartController extends Controller
 
       try {
         WebToPay::redirectToPayment([
-          'projectid' => '230756',
-          'sign_password' => 'c32f7c8bde605f29bb9c115bc85713a8',
+          'projectid' => '209872',
+          'sign_password' => 'ef3e86e4902558e3779ecc84d72a6d8c',
           'orderid' => $data['order_id'],
           'amount' => $data['amount'],
           'p_email' => $data['email'],
@@ -544,7 +544,7 @@ class CartController extends Controller
           'accepturl' => route('order.success', $order_id),
           'cancelurl' => Self::getSelfUrl() . 'pasutijums',
           'callbackurl' => Self::getSelfUrl() . 'callback.php',
-          'test' => 1,
+          //'test' => 1,
         ]);
       } catch (Exception $exception) {
         echo get_class($exception) . ':' . $exception->getMessage();

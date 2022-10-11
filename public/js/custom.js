@@ -121,16 +121,18 @@ $(document).ready(function() {
     }
   });
 
-  $.ajax({
-    url: '/pieraksts/fillFiliale',
-    method: 'POST',
-    dataType: 'JSON',
-    success: function (data) {
-      data.forEach(function (value, key) {
-        $('<option value="' + value.office_id + '">' + value.title + '</option>').insertAfter($('#mobile-filiale select[name="filiale"] option').first());
-      });
-    }
-  });
+  if ($('.records').length !== 0) {
+    $.ajax({
+      url: '/pieraksts/fillFiliale',
+      method: 'POST',
+      dataType: 'JSON',
+      success: function (data) {
+        data.forEach(function (value, key) {
+          $('<option value="' + value.office_id + '">' + value.title + '</option>').insertAfter($('#mobile-filiale select[name="filiale"] option').first());
+        });
+      }
+    });
+  }
 
   $('#mobile-filiale select[name="filiale"]').on('change', function () {
     if ($(this).hasClass('required-input')) {
