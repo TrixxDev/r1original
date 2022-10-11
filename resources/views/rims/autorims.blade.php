@@ -354,13 +354,18 @@
                         @foreach($rims as $rim)
                           @php
                             $brand = $rim->brand_title;
+                            $rim->includeStock = true;
                             if ($cbrand!=$brand){
-                              echo '</div><h4 class="tire-brand-name grid-t">' . $brand . '</h4><div class="row grid-ex pr-1">';
+                              if ($index == 0) {
+                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand . ' <span class="top-product-title">Lietie diski</span></h4><div class="row grid-ex pr-1">';
+                              } else {
+                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand . '</h4><div class="row grid-ex pr-1">';
+                              }
+
                               $cbrand = $brand;
                               $stripe = 1;
-                            } else {
-                                $brand = str_replace(" ", "", $brand);
                             }
+
                           @endphp
                           <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}" class="">
                             <div class="tire-image-card sort-order card">
@@ -382,26 +387,34 @@
                                   <input type="checkbox" name="product_ids[]" value="{{$rim->rim_id}}" style="margin-right: 5px;">
                                   <div class="rim-price-old" style="align-self: center;">€{{$rim->price1}}</div>
                                   <div class="rim-price-red" style="align-self: center;">€{{$rim->price2}}</div>
-                                  <i class="material-icons" style="margin-left: auto;">add_shopping_cart</i>
-                                  {{--                            <button class="" data-toggle="modal"--}}
-                                  {{--                                    @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"--}}
-                                  {{--                            @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()"><span style="letter-spacing: 2px; text-transform: uppercase;"></span>--}}
-                                  {{--                            </button>--}}
-                                  {{--                            <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip" style="align-self: center;"--}}
-                                  {{--                                  data-html="true"--}}
-                                  {{--                                  title="{{ $tire->stockAvailability }}">--}}
-                                  {{--                            </span>--}}
+
+                                  <span style="margin-left: auto;" data-toggle="tooltip" title="<span style='color: black'>Pievienot grozam</span>">
+                                    <button class="grid-buy-btn" data-toggle="modal"
+                                            @hasrole('administrators') data-target="#quick-popup"
+                                            @else data-target="#blockcart-modal"
+                                            @endhasrole data-info="{{ $rim->rim_id }}" onclick="event.preventDefault()"
+
+                                    >
+                                    <i class="material-icons" style="margin-left: auto; font-size: 21px;">add_shopping_cart</i>
+                                  </span>
+                                  <span style="letter-spacing: 2px; text-transform: uppercase;"></span>
+                                  </button>
+
 
                                   <span class="grid-dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}" data-toggle="tooltip"
                                         data-html="true"
                                         title="{{ $rim->stockAvailability }}">
                                     <span class="sort-order" style="display: none;">{{ $rim->dotAvailable }}</span>
                                   </span>
+
                                 </div>
                               </div>
 
                             </div>
                           </a>
+                          @php
+                            $index++;
+                          @endphp
                         @endforeach
                       </div>
                     </div>
@@ -419,12 +432,16 @@
                               $brand = $rim->brand_title;
                               $rim->includeStock = true;
                               if ($cbrand!=$brand){
-                                if($index == 0) {
-                                  echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="top-product-title flipped-title">Lietie diski</span></h4>';
-                                } else {
-                                  echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
-                                }
-                            @endphp
+                              if ($index == 0) {
+                                echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="top-product-title flipped-title">Lietie diski</span></h4>';
+                              } else {
+                                '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
+                              }
+
+                                echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
+                                $cbrand = $brand;
+                                $stripe = 1;
+                              @endphp
                             <table id="tires-table" class="table quadr-sorter tires-table table-hover tablesorter">
                               <thead class="tires-thead">
                               <tr>
@@ -501,8 +518,13 @@
 
                                 <td class="shopping-cart-col">
                                   <div class="clearfix atc_div text-right">
-                                    <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">
-                                      <i class="material-icons">add_shopping_cart</i>
+{{--                                    <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">--}}
+{{--                                      <i class="material-icons">add_shopping_cart</i>--}}
+{{--                                    </button>--}}
+                                    <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
+                                            @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal"
+                                            @endif data-info="{{ $rim->rim_id }}"><i
+                                        class="material-icons">add_shopping_cart</i>
                                     </button>
                                   </div>
                                 </td>
