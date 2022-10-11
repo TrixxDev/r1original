@@ -640,15 +640,25 @@
                             <input type="checkbox" name="product_ids[]" value="{{$tire->tire_id}}" style="margin-right: 5px;">
                             <div class="rim-price-old" style="align-self: center;">€{{$tire->price1}}</div>
                             <div class="rim-price-red" style="align-self: center;">€{{$tire->price2}}</div>
-                            <i class="material-icons" style="margin-left: auto;">add_shopping_cart</i>
-{{--                            <button class="" data-toggle="modal"--}}
-{{--                                    @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"--}}
-{{--                            @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()"><span style="letter-spacing: 2px; text-transform: uppercase;"></span>--}}
-{{--                            </button>--}}
-{{--                            <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip" style="align-self: center;"--}}
-{{--                                  data-html="true"--}}
-{{--                                  title="{{ $tire->stockAvailability }}">--}}
-{{--                            </span>--}}
+{{--                            <i class="material-icons" style="margin-left: auto;">add_shopping_cart</i>--}}
+                            <span style="margin-left: auto;" data-toggle="tooltip" title="<span style='color: black'>Pievienot grozam</span>">
+                              <button class="grid-buy-btn" data-toggle="modal"
+                                      @hasrole('administrators') data-target="#quick-popup"
+                                      @else data-target="#blockcart-modal"
+                                      @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()">
+                                <i class="material-icons">add_shopping_cart</i>
+                              </button>
+                            </span>
+
+{{--                            <div class="clearfix atc_div text-right">--}}
+{{--                              <button class="grid-buy-btn" data-toggle="modal"--}}
+{{--                                      @hasrole('administrators') data-target="#quick-popup"--}}
+{{--                                      @else data-target="#blockcart-modal"--}}
+{{--                                      @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()">--}}
+{{--                              <i class="material-icons">add_shopping_cart</i>--}}
+{{--                              </button>--}}
+{{--                            </div>--}}
+
 
                             <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip"
                                   data-html="true"

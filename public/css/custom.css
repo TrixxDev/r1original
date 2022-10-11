@@ -4896,3 +4896,22 @@ input#show-selected-checkbox {
 .done-cart-subtext {
   color: #6c757d;
 }
+
+.grid-buy-btn {
+  padding: 0 4px;
+  margin-right: 5px;
+  background-color: #65c2a5;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border: 1px solid darkcyan;
+  margin-bottom: 3px;
+}
+
+.grid-buy-btn:hover {
+  background-color: #529781;
+}
+
+.grid-buy-btn i {
+  font-size: 21px;
+}
