@@ -434,7 +434,7 @@
 
                         <td class="hidden-sm-down text-center">
                           <span data-toggle="tooltip"
-                                title="<span style='color: black'>{{ $tire->typeDesc[1] }}</span>">{{ $tire->motoType }}
+                                title="<span style='color: black'>@if (isset($tire->typeDesc[1])) {{ $tire->typeDesc[1] }} @endif</span>">{{ $tire->motoType }}
                               </span>
                         </td>
 

@@ -679,9 +679,14 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
       // console.log($('.tire-info', tire_data).data('article'));
       // console.log('data-article: ', $('.tire-table-link').data('article'));
 
-      console.log(  tire_data.parent().parent().data('article')   );
-      calcData = tire_data.find('.card-title-text').text().trim();
-      popCalc('/testing3',700,325, calcData);
+      calcData = {
+          'article': tire_data.parent().parent().data('article'),
+          'tests2': 321,
+      }
+
+      const urlData = new URLSearchParams(calcData).toString();
+
+      popCalc('/testing3',780,400, urlData);
     }
   });
 
@@ -3096,7 +3101,7 @@ function popCalc(url,popW,popH, data){
 
   let id=Math.floor(Math.random()*10000);
 
-  pops=window.open(url,id,'scrollbars=yes,resizable=0,width=' + popW + ',height=' + popH + ',top=' + topPos + ',left=' + leftPos);
+  pops=window.open(url + '?' +  data,id,'resizable scrollbars menubar=yes width=' + popW + ' height=' + popH + ' top=' + topPos + ' left=' + leftPos);
 
   if (pops.opener == null)
     pops.opener = self;

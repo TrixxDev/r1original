@@ -194,11 +194,11 @@ class HomeController extends Controller
 
       @$montage = $request->info['montage'];
       @$montage_price = round($request->info['price_montage']);
-      @$montage_price_pvn = round($montage_price / 1.21);
+      @$montage_price_pvn = $montage_price / 1.21;
 
       @$safe = $request->info['safe'];
       @$safe_price = $request->info['price_safe'];
-      @$safe_price_pvn = round($safe_price / 1.21);
+      @$safe_price_pvn = $safe_price / 1.21;
 
       $xml_order = \Illuminate\Support\Facades\DB::table('xml_orders')->insertGetId([
         'created_at' => date("Y-m-d H:i:s"),
