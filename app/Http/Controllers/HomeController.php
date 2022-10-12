@@ -270,4 +270,7 @@ class HomeController extends Controller
       uploadFTP("212.3.218.22", "r1_web", "RA5bgdGc", dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
 
     }
+    function fastOrder() {
+      return view('/testing3');
+    }
 }
