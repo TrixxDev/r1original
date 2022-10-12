@@ -414,7 +414,31 @@
 
     public function syncs()
     {
-      return view('admin.settings.syncs');
+
+      $accrual_last_time = DB::table('sync_times')->where('name', 'accrual')->first()->updated_at;
+      $i3_auto = DB::table('sync_times')->where('name', 'i3-auto')->first()->updated_at;
+      $gy_auto = DB::table('sync_times')->where('name', 'gy-auto')->first()->updated_at;
+      $rz_auto = DB::table('sync_times')->where('name', 'rz-auto')->first()->updated_at;
+      $i3_moto = DB::table('sync_times')->where('name', 'i3-moto')->first()->updated_at;
+      $duell_moto = DB::table('sync_times')->where('name', 'duell-moto')->first()->updated_at;
+      $i3_quadr = DB::table('sync_times')->where('name', 'i3-quadr')->first()->updated_at;
+      $duell_quadr = DB::table('sync_times')->where('name', 'duell-quadr')->first()->updated_at;
+      $i3_big = DB::table('sync_times')->where('name', 'i3-big')->first()->updated_at;
+      $starco_big = DB::table('sync_times')->where('name', 'starco-big')->first()->updated_at;
+
+      return view('admin.settings.syncs',
+              compact('accrual_last_time',
+                'i3_auto',
+                'gy_auto',
+                'rz_auto',
+                'i3_moto',
+                'duell_moto',
+                'i3_quadr',
+                'duell_quadr',
+                'i3_big',
+                'starco_big'
+              )
+            );
     }
 
   }

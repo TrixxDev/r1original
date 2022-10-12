@@ -41,6 +41,7 @@ class SyncController extends Controller
         try {
           $this->accrual = new PDO("sqlsrv:Server=212.3.218.22,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
+          DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
           die("Database connection failed: " . $e->getMessage());
           exit;
         }
@@ -58,10 +59,11 @@ class SyncController extends Controller
 
             DB::table($tire_table)->update(['quantity' => 0, 'krs_quantity' => 0, 'urs_quantity' => 0]);
 
-//        $this->updateStock($stock[1]);
+//          $this->updateStock($stock[1]);
             $this->updateStock($stock[2]);
         }
 
+        DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
         return 'Done';
 
     }
@@ -311,6 +313,7 @@ class SyncController extends Controller
             }
             $counted++;
         }
+        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => NOW()]);
         echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
     }
@@ -362,6 +365,7 @@ class SyncController extends Controller
         }
         $counted++;
       }
+      DB::table('sync_times')->where('name', 'i3-moto')->update(['updated_at' => NOW()]);
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
@@ -412,6 +416,7 @@ class SyncController extends Controller
       }
       $counted++;
     }
+    DB::table('sync_times')->where('name', 'i3-quadr')->update(['updated_at' => NOW()]);
     echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
   }
 
@@ -460,6 +465,7 @@ class SyncController extends Controller
         }
         $counted++;
       }
+      DB::table('sync_times')->where('name', 'duell_moto')->update(['updated_at' => NOW()]);
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
     }
@@ -509,6 +515,7 @@ class SyncController extends Controller
       }
       $counted++;
     }
+    DB::table('sync_times')->where('name', 'duell_quadr')->update(['updated_at' => NOW()]);
     echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
   }
@@ -766,6 +773,7 @@ class SyncController extends Controller
         }
 
       }
+      DB::table('sync_times')->where('name', 'i3-big')->update(['updated_at' => NOW()]);
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
@@ -837,6 +845,7 @@ class SyncController extends Controller
             }
             $counted++;
         }
+        DB::table('sync_times')->where('name', 'gy-auto')->update(['updated_at' => NOW()]);
         echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
@@ -882,7 +891,8 @@ class SyncController extends Controller
           }
           $counted++;
         }
-      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+        DB::table('sync_times')->where('name', 'rz-auto')->update(['updated_at' => NOW()]);
+        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
     private static function multiexplode($delimiters, $string) {
@@ -1170,6 +1180,7 @@ class SyncController extends Controller
 
         }
 
+        DB::table('sync_times')->where('name', 'starco-big')->update(['updated_at' => NOW()]);
         echo 'Preču cenas atjaunotas!';
 
     }
