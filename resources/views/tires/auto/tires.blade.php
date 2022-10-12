@@ -619,7 +619,9 @@
                       }
                     @endphp
                     @if($tire->price1)
-                    <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}" class="grid-view-link">
+                    <a href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower($tire->t_title), $tire->tire_id]) }}"
+                       class="grid-view-link"
+                       data-article="{{ $tire->article }}">
                       <div class="tire-image-card sort-order">
                         <div class="text-center image-grid-overflow">
                           {!! \Image::showGrid('auto', $tire->make_id) !!}
@@ -642,11 +644,24 @@
                             <div class="rim-price-red" style="align-self: center;">€{{$tire->price2}}</div>
 {{--                            <i class="material-icons" style="margin-left: auto;">add_shopping_cart</i>--}}
                             <span style="margin-left: auto;" data-toggle="tooltip" title="<span style='color: black'>Pievienot grozam</span>">
-                              <button class="grid-buy-btn" data-toggle="modal"
-                                      @hasrole('administrators') data-target="#quick-popup"
-                                      @else data-target="#blockcart-modal"
-                                      @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()">
-                                <i class="material-icons">add_shopping_cart</i>
+{{--                              <button class="grid-buy-btn" data-toggle="modal"--}}
+{{--                                      @hasrole('administrators') data-target="#quick-popup"--}}
+{{--                                      @else data-target="#blockcart-modal"--}}
+{{--                                      @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()">--}}
+{{--                                <i class="material-icons">add_shopping_cart</i>--}}
+{{--                              </button>--}}
+
+                              <button class="grid-buy-btn cart-shopping-button"
+                                      data-toggle="modal"
+                                      data-info="{{ $tire->tire_id }}"
+{{--                                      data-info="{{ $currTire->tire_id }}--}}
+                                      onclick="event.preventDefault()"
+                                      @hasrole('administrators')
+                                        data-target="#quick-popup"
+                                      @else
+                                        data-target="#blockcart-modal"
+                                      @endhasrole>
+                                  <i class="material-icons">add_shopping_cart</i>
                               </button>
                             </span>
 
