@@ -29,10 +29,10 @@
 
       <div class="form-group row">
         <label class="col-md-3 form-control-label required text-left text-md-right">
-          Rēķina nummurs
+          Rēķina numurs
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="bill_number" type="text" value="{{$order->id}}" required="">
+          <input class="form-control" disabled="" name="bill_number" type="text" value="{{$order->id}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
@@ -55,9 +55,10 @@
         <div class="col-md-6">
 {{--          <input class="form-control" name="status" type="text" value="{{$order->status}}" required="">--}}
           <select id="select" name="select" required="required" class="custom-select">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
+            <option value="1">Jauns</option>
+            <option value="2">Gaidam samaksu</option>
+            <option value="3">Gaidam preci</option>
+	    <option value="4">Gatavs</option>
           </select>
         </div>
         <div class="col-md-3 form-control-comment">
@@ -333,3 +334,4 @@
       </div>
     </div>
   @endsection
+

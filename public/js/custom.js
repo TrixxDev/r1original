@@ -981,6 +981,11 @@ function sendData(data){
         icon: 'success',
         confirmButtonText: 'OK'
       });
+      //$.ajax({
+      //  type: 'GET',
+      //  url: '/sync/accrual',
+      //  
+      //})
     },
     error: function(jqXHR, textStatus){
       if (textStatus === 'timeout') {
