@@ -580,7 +580,11 @@ class RecordController extends Controller
     $spreadsheet = new Spreadsheet();
 
     $sheet = $spreadsheet->getActiveSheet();
-    $sheet->setTitle($date .  ' ' . $office->title);
+    if ($office->office_id == 1) {
+        $sheet->setTitle($date . ' Ulbroka');
+    } else {
+        $sheet->setTitle($date . ' Kalnciema iela');
+    }
 
     $pdf = new Pdf();
     $pdf->setPrintHeader(false);
@@ -783,7 +787,7 @@ class RecordController extends Controller
     $writer = new Xlsx($spreadsheet);
     $filename = 'pieraksts.xlsx';
 
-    $writer->save('storage/app/schedules/' . $filename);
+    $writer->save($filename);
 
     // Set the content-type:
     header('Content-Type: application/vnd.ms-excel');
