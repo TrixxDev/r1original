@@ -160,6 +160,11 @@
                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-browser"></use>
               </svg> Lapas</a>
           </li>
+          <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.codes') }}" target="_top">
+              <svg class="c-sidebar-nav-icon">
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
+              </svg> Paskaidrojumi</a>
+          </li>
       </ul>
       <button class="c-sidebar-minimizer c-class-toggler" type="button" data-target="_parent" data-class="c-sidebar-minimized"></button>
     </div>
@@ -283,6 +288,7 @@
     </script>
     <script src="{{ asset('admins/js/ajaxUpdate.js?rev=' . time()) }}"></script>
     <script src="{{ asset('admins/js/bootstrap-multiselect.js?rev=' . time()) }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <!-- CoreUI and necessary plugins-->
     <script src="{{ asset('admins/js/coreui.bundle.min.js?rev=' . time()) }}"></script>
     <!--[if IE]><!-->

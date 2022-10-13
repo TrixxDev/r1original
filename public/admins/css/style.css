@@ -19276,3 +19276,29 @@ table.queueTable:nth-child(2) {
 .tires-header a {
   text-decoration: none;
 }
+
+.no-codes {
+  border: 3px dashed #6397b3a6;
+  padding: 20px;
+  text-align: center;
+  color: black;
+  border-radius: 10px;
+}
+
+.no-codes:hover {
+  border-color: #4a7993a6;
+  background-color: #e9e9e9;
+}
+
+.no-codes-title {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.no-codes-link {
+  text-decoration: none !important;
+}
+
+.no-codes-icon {
+  font-size: 30px;
+}
