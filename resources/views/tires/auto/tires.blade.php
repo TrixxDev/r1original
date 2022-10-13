@@ -899,8 +899,10 @@
 
                           <td class="hidden-sm-down text-center">
                             <span data-toggle="tooltip"
-                                  @if($tire->code == 'XL')
-                                    title="<span style='color: black'>XL ??????????? SUBJECT TO CHANGE</span>"
+                                  @if(in_array($tire->code, $code_names))
+                                    title="<span style='color: black'>
+                                  {{$code->explanation}}
+                                  </span>"
                                   @else
                                   title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>"
                                   @endif

@@ -7,6 +7,7 @@ use App\Helper\Tires;
 use App\Models\Autobrand;
 use App\Models\Autotire;
 use App\Models\Autotread;
+use App\Models\Code;
 use App\Models\Motobrand;
 use App\Models\Mototread;
 use App\Models\Quadrbrand;
@@ -117,8 +118,19 @@ class AutoTireController extends Controller
                            ->orderBy('d2', 'ASC')
                            ->orderBy('price2', 'DESC')
                            ->paginate();
+//        $codes = Code::all()->toArray();
+        $codes = Code::all();
+        $code_names = Code::pluck('name')->toArray();
 
-        return view('tires.auto.tires', compact('tires'));
+//      dd($codes);
+
+//        if (in_array('RSC', $code_names)){
+//          dd('ir');
+//        } else {
+//          dd('nav');
+//        }
+
+        return view('tires.auto.tires', compact('tires', 'codes', 'code_names'));
     }
 
     public function tires_ajax(Request $request) {
