@@ -120,9 +120,13 @@ class AutoTireController extends Controller
                            ->paginate();
 //        $codes = Code::all()->toArray();
         $codes = Code::all();
-        $code_names = Code::pluck('name')->toArray();
 
-//      dd($codes);
+	$code_array = [];
+
+	foreach ($codes as $code) {
+		$code_array[$code->name] = $code->explanation;
+	}
+
 
 //        if (in_array('RSC', $code_names)){
 //          dd('ir');
@@ -130,7 +134,7 @@ class AutoTireController extends Controller
 //          dd('nav');
 //        }
 
-        return view('tires.auto.tires', compact('tires', 'codes', 'code_names'));
+        return view('tires.auto.tires', compact('tires', 'code_array'));
     }
 
     public function tires_ajax(Request $request) {
