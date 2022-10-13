@@ -681,7 +681,10 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
 
       calcData = {
           'article': tire_data.parent().parent().data('article'),
-          'tests2': 321,
+          'qty': 4,
+	  'user': user,
+	  'prod': tire_data.find('.card-title-text').text().trim(),
+	  'price': tire_data.find('.rim-price-red').text().trim().replace(' ^b ', ''),
       }
 
       const urlData = new URLSearchParams(calcData).toString();
@@ -3100,8 +3103,9 @@ function popCalc(url,popW,popH, data){
   let topPos = Math.round((h-popH)/2);
 
   let id=Math.floor(Math.random()*10000);
+  let strWindowFeatures = "toolbar=no,scrollbars=no,location=no,resizable=yes,width=" + popW + ",height=" + popH + ",top=" + topPos + ",left=" + leftPos;
 
-  pops=window.open(url + '?' +  data,id,'resizable scrollbars menubar=yes width=' + popW + ' height=' + popH + ' top=' + topPos + ' left=' + leftPos);
+  pops=window.open(url + '?' +  data, id, strWindowFeatures);
 
   if (pops.opener == null)
     pops.opener = self;

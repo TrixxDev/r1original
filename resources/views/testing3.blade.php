@@ -6,27 +6,28 @@
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+  <link rel="stylesheet" href="/public/css/custom.css">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
 
-<div class="popup" id="quick-popup" data-popup="popup-3">
+<div class="popup" id="quick-popup" data-popup="popup-3" style="display: block;">
   <div class="popup-inner">
     <div class="busy_bgr"><div class="busy_img"></div></div>
     <form id="quick-buy-form">
-      <input type="hidden" name="article">
+      <input type="hidden" name="article" value="{{ $param->article }}">
       <div class="location-wraper">
         <div class="radio-field"><input id="loc_URS" type="radio" name="location" value="URS" checked=""><label for="loc_URS">URS</label></div>
         <div class="radio-field"><input id="loc_KRS" type="radio" name="location" value="KRS"><label for="loc_KRS">KRS</label></div>
       </div>
       <div class="top-long-fields">
-        <input type="text" placeholder="Prece" name="prod" readonly="">
+        <input type="text" placeholder="Prece" name="prod" value="{{ $param->prod }}" readonly="">
         <label for="qty">Sk.</label>
-        <input type="number" min="1" placeholder="Daudzums" name="qty" onchange="calcQuickBuyPrice()" onkeyup="calcQuickBuyPrice()" style="width: 70px;">
+        <input type="number" min="1" placeholder="Daudzums" name="qty" value="{{ $param->qty }}" onchange="calcQuickBuyPrice()" onkeyup="calcQuickBuyPrice()" style="width: 70px;">
         <label for="price">Cena</label>
-        <input type="text" placeholder="Cena" name="price" style="width: 80px" onchange="calcQuickBuyPrice()" onkeyup="calcQuickBuyPrice()">
+        <input type="text" placeholder="Cena" name="price" style="width: 80px" value="{{ $param->price }}" onchange="calcQuickBuyPrice()" onkeyup="calcQuickBuyPrice()">
 
       </div>
       <div class="bottom-long-fields">
@@ -42,11 +43,10 @@
         <input style="width: 100px;" type="text" placeholder="Cena" name="price_safe" onkeyup="addSafePrice()" disabled="">
       </div>
       <div class="user-fields">
-        <input type="text" name="user" placeholder="Lietotājs" value=" ">
+        <input type="text" name="user" placeholder="Lietotājs" value="{{ $param->user }}">
         <textarea type="textarea" name="comments" placeholder="Komentāri"></textarea>
       </div>
       <a style="margin-left: 0;" class="button" onclick="return sendData(getFormData($('#quick-buy-form')));">Apstiprināt</a>
-      <a class="popup-close" data-dismiss="popup" aria-hidden="true" aria-label="Close" href="#"></a>
     </form>
 
     <style>
@@ -159,10 +159,70 @@
         display: block;
       }
     </style>
-    <a class="popup-close" data-dismiss="popup" aria-hidden="true" data-popup-close="popup-2" href="#">x</a>
   </div>
 </div>
 
+<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script> -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
+<script>
+function calcQuickBuyPrice(){
+  var total = parseFloat($('#quick-buy-form input[name=qty]').val()) * parseFloat($('#quick-buy-form input[name=price]').val());
+  $('#quick-buy-form input[name=total]').val(isNaN(total) ? '' : total);
+}
+
+let montage = '';
+let safe = '';
+
+function toggleMontage(){
+  if ($('#montage').prop('checked')) {
+    $('#quick-buy-form input[name=price_montage]').removeAttr('disabled').focus();
+  } else {
+    $('#quick-buy-form input[name=price_montage]').attr('disabled','disabled').val('');
+  }
+  addMontagePrice();
+}
+
+function addMontagePrice(){
+  if (!isNaN(parseFloat($('#quick-buy-form input[name=price]').val())) && !isNaN(parseFloat($('#quick-buy-form input[name=qty]').val()))) {
+    montage = isNaN(parseFloat($('#quick-buy-form input[name=price_montage]').val())) ? 0 : parseFloat($('#quick-buy-form input[name=price_montage]').val());
+    $('#quick-buy-form input[name=total]').val(montage+parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+    if (montage > 0 && safe > 0) {
+      $('#quick-buy-form input[name=total]').val(montage + safe + parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+    } else if (montage === 0 && safe > 0) {
+      $('#quick-buy-form input[name=total]').val(safe + parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+    }
+  }
+}
+
+function toggleSafe(){
+  if ($('#safe').prop('checked')) {
+    $('#quick-buy-form input[name=price_safe]').removeAttr('disabled').focus();
+  } else {
+    $('#quick-buy-form input[name=price_safe]').attr('disabled','disabled').val('');
+  }
+  addSafePrice();
+}
+
+function addSafePrice(){
+  if (!isNaN(parseFloat($('#quick-buy-form input[name=price]').val())) && !isNaN(parseFloat($('#quick-buy-form input[name=qty]').val()))) {
+    safe = isNaN(parseFloat($('#quick-buy-form input[name=price_safe]').val())) ? 0 : parseFloat($('#quick-buy-form input[name=price_safe]').val());
+    $('#quick-buy-form input[name=total]').val(safe+parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+    if (safe > 0 && montage > 0) {
+      $('#quick-buy-form input[name=total]').val(safe + montage + parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+    } else if (safe === 0 && montage > 0) {
+      $('#quick-buy-form input[name=total]').val(montage + parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+    }
+  }
+}
+
+function showQuickBuyForm(id) {
+  $('#quick-buy-form input[name=prod_id]').val(id);
+  $('#quick-buy-form input[name=price]').val($('#js-product-list article[data-id-product-attribute="'+id+'"]').find('.price').text().substr(2));
+  $('#quick-buy-form input[name=prod]').val($('#js-product-list article[data-id-product-attribute="'+id+'"]').find('.product-title-hidden').text());
+  calcQuickBuyPrice();
+};
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 </body>
 </html>
