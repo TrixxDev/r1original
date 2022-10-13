@@ -39,8 +39,8 @@
 
           </div>
           <div class="card-footer">
-            <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>
-            <a class="btn btn-md btn-info" href="{{ route('admin.settings.codes') }}"> Atpakaļ</a>
+            <button class="btn btn-md btn-success" type="submit"> Saglabāt</button>
+            <a class="btn btn-md btn-secondary" href="{{ route('admin.settings.codes') }}"> Atpakaļ</a>
           </div>
         </form>
       </div>
