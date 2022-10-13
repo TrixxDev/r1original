@@ -160,6 +160,11 @@
                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-browser"></use>
               </svg> Lapas</a>
           </li>
+          <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.codes') }}" target="_top">
+              <svg class="c-sidebar-nav-icon">
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
+              </svg> Paskaidrojumi</a>
+          </li>
       </ul>
       <button class="c-sidebar-minimizer c-class-toggler" type="button" data-target="_parent" data-class="c-sidebar-minimized"></button>
     </div>

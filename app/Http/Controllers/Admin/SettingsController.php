@@ -4,6 +4,7 @@
 
   use App\Http\Controllers\Controller;
   use App\Models\Autotire;
+  use App\Models\Code;
   use App\Models\Moto;
   use App\Models\Quadr;
   use App\Models\User;
@@ -417,4 +418,62 @@
       return view('admin.settings.syncs');
     }
 
+    public function codes()
+    {
+      $codes = Code::all();
+
+      return view('admin.settings.codes', compact('codes'));
+    }
+
+    public function codes_create()
+    {
+      return view('admin.settings.codes_create');
+    }
+
+    public function codes_store(Request $request)
+    {
+      $request->validate([
+        'name' => 'required|max:50',
+        'explanation' => 'required|max:150',
+      ]);
+
+      $code = new Code;
+      $code->name = $request->name;
+      $code->explanation = $request->explanation;
+      $code->save();
+
+      return redirect()->route('admin.settings.codes')
+                       ->with('success', 'Kods ' . $code->name . ' pievienots veiksmīgi!');
+
+    }
+
+    public function codes_edit($id)
+    {
+      $code = DB::table('code')->where('code_id', $id)->first();
+
+      return view('admin.settings.codes_edit',compact('code'));
+    }
+
+    public function codes_update(Request $request, Code $code)
+    {
+      $request->validate([
+        'name' => 'required',
+        'explanation' => 'required',
+      ]);
+
+      $code->update($request->all());
+
+      return redirect()
+        ->route('admin.settings.codes')
+        ->withSuccess('Kods tika veiksmīgi labots!');
+    }
+
+    public function codes_destroy($id)
+    {
+      $code = Code::findOrFail($id);
+      $code->delete();
+
+      return redirect()->route('admin.settings.codes')
+        ->with('success','Kods - ' . $code->name . ' tika veiksmīgi dzēsts!');
+    }
   }
