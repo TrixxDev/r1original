@@ -473,19 +473,24 @@
 
     public function codes_edit($id)
     {
-      $code = DB::table('code')->where('code_id', $id)->first();
+      $code = Code::findOrFail($id);
 
       return view('admin.settings.codes_edit',compact('code'));
     }
 
-    public function codes_update(Request $request, Code $code)
+    public function codes_update(Request $request, $code)
     {
       $request->validate([
         'name' => 'required',
         'explanation' => 'required',
       ]);
 
-      $code->update($request->all());
+      $code = Code::findOrFail($code);
+      $code->name = $request->name;
+      $code->explanation = $request->explanation;
+      $code->save();
+
+      //$code->update($request->all());
 
       return redirect()
         ->route('admin.settings.codes')
