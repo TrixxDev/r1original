@@ -20,11 +20,14 @@
             <form class="form-horizontal services_form" method="post">
               @csrf
               <input type="hidden" name="service_id">
-              <div class="card-header">Lapas <span style="float: right;"><a class="btn btn-success" href="{{ route('admin.settings.codes.create') }}"><i class="fa-solid fa-plus"></i> Pievienot</a></span></div>
+              <div class="card-header">Lapas @if($codes->first())<span style="float: right;"><a class="btn btn-success" href="{{ route('admin.settings.codes.create') }}"><i class="fa-solid fa-plus"></i> Pievienot</a></span>@endif</div>
 
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-12">
+{{--                    {{dd($codes)}}--}}
+                    @if($codes->first())
+
                     <table class="table table-striped table-bordered">
                       <thead>
                       <tr>
@@ -34,7 +37,6 @@
                       </tr>
                       </thead>
                       <tbody>
-{{--                      {{dd($codes)}}--}}
                         @foreach($codes as $code)
                         <tr>
                           <td>{{$code->name}}</td>
@@ -54,6 +56,15 @@
                         @endforeach
                       </tbody>
                     </table>
+                    @else
+                      <a class="no-codes-link" href="{{ route('admin.settings.codes.create') }}">
+                      <div class="no-codes">
+                        <i class="fa-sharp fa-solid fa-eye-slash no-codes-icon"></i>
+                        <div class="no-codes-title">Pagaidām vēl nav neviena ieraksta!</div>
+                        <div>spied šeit lai pievienotu</div>
+                      </div>
+                      </a>
+                    @endif
                   </div>
                 </div>
               </div>

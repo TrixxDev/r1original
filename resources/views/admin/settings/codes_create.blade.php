@@ -40,7 +40,7 @@
           </div>
           <div class="card-footer">
             <button class="btn btn-md btn-success" type="submit"> Saglabāt</button>
-            <a class="btn btn-md btn-secondary" href="{{ route('admin.settings.codes') }}"> Atpakaļ</a>
+            <a class="btn btn-md btn-outline-secondary" href="{{ route('admin.settings.codes') }}"> Atpakaļ</a>
           </div>
         </form>
       </div>
