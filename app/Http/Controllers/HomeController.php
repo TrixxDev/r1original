@@ -271,6 +271,8 @@ class HomeController extends Controller
 
     }
     function fastOrder() {
-      return view('/testing3');
+      $param = (object) request()->input();
+    
+      return view('/testing3', compact('param'));
     }
 }
