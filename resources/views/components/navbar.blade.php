@@ -326,7 +326,7 @@
         </div>
 
         <div class="nav-dropdown-link">
-          <a class="dropdown-item" href="{{ route('about') }}">Par I-Veikalu</a>
+          <a class="dropdown-item" href="{{ url('/internet-veikals')  }}">Par I-Veikalu</a>
         </div>
       </div>
     </div>
