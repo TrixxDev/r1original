@@ -684,7 +684,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
           'qty': 4,
 	  'user': user,
 	  'prod': tire_data.find('.card-title-text').text().trim(),
-	  'price': tire_data.find('.rim-price-red').text().trim().replace(' ^b ', ''),
+	  'price': tire_data.find('.rim-price-red').text().trim().replace('€', ''),
       }
 
       const urlData = new URLSearchParams(calcData).toString();
@@ -873,7 +873,21 @@ if (!admin) {
     $('.popup input[name=price]').val(parseInt($('.current-price').children().last().attr('content')));
     $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
     $('.popup input[name=article]').val(tire_article);
-  })
+  
+    calcData = {
+          'article': tire_article,
+          'qty': $('.product-quantity .qty .input-group input[name=qty]').attr('value'),
+          'user': user,
+          'prod': tire_title,
+          'price': tire_price,
+      }
+
+      const urlData = new URLSearchParams(calcData).toString();
+
+      popCalc('/testing3',780,400, urlData);
+
+
+})
 }
 
 $('.ct_matrix_row').each(function(key, value) {
@@ -936,7 +950,21 @@ $('.ct_matrix_row').each(function(key, value) {
       $('.popup input[name=price]').val(tire_price);
       $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
       $('.popup input[name=article]').val(tire_article);
-    }
+    
+      calcData = {
+          'article': tire_article,
+          'qty': 4,
+          'user': user,
+          'prod': tire_title,
+          'price': tire_price,
+      }
+
+      const urlData = new URLSearchParams(calcData).toString();
+
+      popCalc('/testing3',780,400, urlData);
+
+
+     }
   });
 });
 //
@@ -2611,6 +2639,20 @@ $('.tire-table-checkbox').children().each(function(key, value){
       $('.popup input[name=total]').val(parseInt($('.tire-price-red', tire_data).html().replace('€ ', '')) * $('.popup input[name=qty]').val());
       $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
       $('.popup input[name=article]').val($('.table-tire-name-cell a', tire_data).data('article'));
+    
+      calcData = {
+          'article': $('.table-tire-name-cell a', tire_data).data('article'),
+          'qty': 4,
+          'user': user,
+          'prod': $('.table-tire-name-cell a', tire_data).data('content'),
+          'price': $('.tire-price-red', tire_data).html().replace('€', ''),
+      }
+
+      const urlData = new URLSearchParams(calcData).toString();
+
+      popCalc('/testing3',780,400, urlData);
+
+
     }
 
   })
