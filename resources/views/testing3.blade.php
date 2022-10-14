@@ -24,8 +24,8 @@
       @csrf
       <input type="hidden" name="article" value="{{ $param->article }}">
       <div class="location-wraper">
-        <div class="radio-field"><input id="loc_URS" type="radio" name="location" value="URS" checked=""><label for="loc_URS">URS</label></div>
-        <div class="radio-field"><input id="loc_KRS" type="radio" name="location" value="KRS"><label for="loc_KRS">KRS</label></div>
+        <div class="radio-field"><input id="loc_URS" type="radio" name="location" value="URS" checked=""><label for="loc_URS">URS - <span id="urs_quantity"></span></label></div>
+        <div class="radio-field"><input id="loc_KRS" type="radio" name="location" value="KRS"><label for="loc_KRS">KRS - <span id="krs_quantity"></span></label></div>
       </div>
       <div class="top-long-fields">
         <input type="text" placeholder="Prece" name="prod" value="{{ $param->prod }}" readonly="">
@@ -63,7 +63,8 @@
 
       .popup .location-wraper {
         float: left;
-        margin: 0 15px 15px 0;
+        margin: 0 0 15px -13px;
+	width: 80px;
       }
 
       .popup .location-wraper input {
@@ -176,10 +177,24 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
 <script>
+  let article = <?php echo "'" . $param->article . "';" ?>
+</script>
+<script>
 function calcQuickBuyPrice(){
   var total = parseFloat($('#quick-buy-form input[name=qty]').val()) * parseFloat($('#quick-buy-form input[name=price]').val());
   $('#quick-buy-form input[name=total]').val(isNaN(total) ? '' : total);
 }
+
+$.ajax({
+  url: '/sync/accrual',
+  method: 'GET',
+  dataType: 'JSON',
+  data: {'article': article},
+  success: function(data) {
+    $('#urs_quantity').html(data.urs_quantity);
+    $('#krs_quantity').html(data.krs_quantity);
+  }
+});
 
 function getFormData(form){
   var paramObj = {};

@@ -490,7 +490,7 @@
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                                title='{!! \Image::show('quadr', $tire->make_id) !!}'
                                href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"
-                               data-content="{{ $tire->title . ' ' . $tire->fullSize }}">
+                               data-content="{{ $tire->title . ' ' . $tire->fullSize }}" data-article="{{ $tire->article }}">
                               {{ $tire->title }}
                             </a>
                           </td>
@@ -523,7 +523,7 @@
                           <td class="shopping-cart-col">
                             <div class="clearfix atc_div text-right">
                               <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
-                                      @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal"
+                                      @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
                                       @endif data-info="{{ $tire->tire_id }}"><i
                                   class="material-icons">add_shopping_cart</i>
                               </button>

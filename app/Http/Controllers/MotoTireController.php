@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Moto;
 use App\Models\Motobrand;
 use App\Models\Mototread;
+use App\Models\Code;
 use Cart;
 use View;
 use Auth;
@@ -27,6 +28,7 @@ class MotoTireController extends Controller
     public $model = 'Moto';
     public $type;
     public $availability;
+    public $code_array = [];
 
     public function __construct(Request $request)
     {
@@ -57,6 +59,12 @@ class MotoTireController extends Controller
           $this->d3 = 17;
         }
 
+	$codes = Code::all();
+
+        foreach ($codes as $code) {
+            $this->code_array[$code->name] = $code->explanation;
+        }
+
         View::share('brands', $this->brands);
         View::share('motoTiresD1', $this->motoTiresD1);
         View::share('motoTiresD2', $this->motoTiresD2);
@@ -67,6 +75,7 @@ class MotoTireController extends Controller
         View::share('d3', $this->d3);
         View::share('type', $this->type);
         View::share('types', (new Moto)->types());
+	View::share('code_array', $this->code_array);
     }
 
     public function index()

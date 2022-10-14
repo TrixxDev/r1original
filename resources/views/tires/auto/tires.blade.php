@@ -645,7 +645,7 @@
 {{--                            <i class="material-icons" style="margin-left: auto;">add_shopping_cart</i>--}}
                             <span style="margin-left: auto;" data-toggle="tooltip" title="<span style='color: black'>Pievienot grozam</span>">
 {{--                              <button class="grid-buy-btn" data-toggle="modal"--}}
-{{--                                      @hasrole('administrators') data-target="#quick-popup"--}}
+{{--                                      @hasrole('administrators') data-target=""--}}
 {{--                                      @else data-target="#blockcart-modal"--}}
 {{--                                      @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()">--}}
 {{--                                <i class="material-icons">add_shopping_cart</i>--}}
@@ -657,7 +657,7 @@
 {{--                                      data-info="{{ $currTire->tire_id }}--}}
                                       onclick="event.preventDefault()"
                                       @hasrole('administrators')
-                                        data-target="#quick-popup"
+                                        data-target="#"
                                       @else
                                         data-target="#blockcart-modal"
                                       @endhasrole>
@@ -667,7 +667,7 @@
 
 {{--                            <div class="clearfix atc_div text-right">--}}
 {{--                              <button class="grid-buy-btn" data-toggle="modal"--}}
-{{--                                      @hasrole('administrators') data-target="#quick-popup"--}}
+{{--                                      @hasrole('administrators') data-target=""--}}
 {{--                                      @else data-target="#blockcart-modal"--}}
 {{--                                      @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()">--}}
 {{--                              <i class="material-icons">add_shopping_cart</i>--}}
@@ -901,16 +901,13 @@
                             <span data-toggle="tooltip" title="<span style='color: black'>
 				@php $codes = explode(' ', $tire->code); @endphp
 				@foreach ($codes as $code)
-					@if (count($codes) > 1)
-						@if (isset($code_array[$code]))
-							{{ $code_array[$code] . '<br>' }}
-						@endif
-					@else
-						@if (isset($code_array[$code]))
-							{{ $code_array[$code] }}
-						@endif
+					@if (isset($code_array[$code]))
+						{!! $code_array[$code] . '<br>' !!}
 					@endif
 				@endforeach
+				@if (strpos($tire->code, 'DOT') !== false)
+					{!! $code_array['DOT'] !!}
+				@endif
 			    </span>" class="hidden-sm-down table-cell prod-code">{{ $tire->code }}</span>
                           </td>
 
@@ -936,7 +933,7 @@
                           <td class="shopping-cart-col">
                             <div class="clearfix atc_div text-right">
                               <button class="cart-shopping-button" data-toggle="modal"
-                                      @hasrole('administrators') data-target="#quick-popup" @else data-target="#blockcart-modal"
+                                      @hasrole('administrators') data-target="#" @else data-target="#blockcart-modal"
                                       @endhasrole data-info="{{ $tire->tire_id }}"><i
                                   class="material-icons">add_shopping_cart</i>
                               </button>

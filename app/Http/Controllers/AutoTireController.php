@@ -39,6 +39,7 @@ class AutoTireController extends Controller
     public $fuel;
     public $wet;
     public $availability;
+    public $code_array = [];
 
     public function __construct(Request $request)
     {
@@ -84,6 +85,13 @@ class AutoTireController extends Controller
             $this->d2 = 55;
         }
 
+	$codes = Code::all();
+
+        foreach ($codes as $code) {
+            $this->code_array[$code->name] = $code->explanation;
+        }
+
+
 //        if ($request->d3 == NULL && $this->d3 == NULL) {
 //            $this->d3 = 16;
 //        }
@@ -100,6 +108,7 @@ class AutoTireController extends Controller
         View::share('code', $this->code);
         View::share('fuel', $this->fuel);
         View::share('wet', $this->wet);
+	View::share('code_array', $this->code_array);
     }
 
     public function tires() {

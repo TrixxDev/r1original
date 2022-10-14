@@ -70,7 +70,7 @@
                                         </div>
                                       </div>
                                       <div class="add">
-                                        <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart" data-info="{{ $currTire->tire_id }}">
+                                        <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart" data-info="{{ $currTire->tire_id }}">
                                           <i class="material-icons shopping-cart"></i>
                                           Pirkt
                                         </button>
@@ -194,13 +194,17 @@
                                     </td>
 
                                     <td class="hidden-sm-down text-center tread-code-cell-size">
-                                    <span data-toggle="tooltip"
-                                          @if($tire->code == 'XL')
-                                          title="<span style='color: black'>XL ??????????? SUBJECT TO CHANGE</span>"
-                                          @else
-                                          title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>"
-                                          @endif
-                                          class="hidden-sm-down table-cell prod-code">{{ $tire->code }}
+                        		<span data-toggle="tooltip" title="<span style='color: black'>
+                                                @php $codes = explode(' ', $tire->code); @endphp
+                                                @foreach ($codes as $code)
+                                                        @if (isset($code_array[$code]))
+                                                                {!! $code_array[$code] . '<br>' !!}
+                                                        @endif
+                                                @endforeach
+						@if (strpos($tire->code, 'DOT') !== false)
+							{!! $code_array['DOT'] !!}
+						@endif
+                                               </span>" class="hidden-sm-down table-cell prod-code">{{ $tire->code }}
                                     </span>
                                     </td>
 
@@ -210,7 +214,7 @@
                                     <td class="shopping-cart-col">
                                       <div class="clearfix atc_div text-right">
                                         <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
-                                                @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal"
+                                                @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
                                                 @endif data-info="{{ $tire->tire_id }}"><i
                                             class="material-icons">add_shopping_cart</i>
                                         </button>

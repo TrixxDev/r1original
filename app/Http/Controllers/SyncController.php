@@ -35,21 +35,22 @@ class SyncController extends Controller
 
     // Accrual Sync
 
-    public function accrual()
+    public function accrual(Request $request)
     {
 
         try {
           $this->accrual = new PDO("sqlsrv:Server=212.3.218.22,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
-          DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
           die("Database connection failed: " . $e->getMessage());
           exit;
         }
 
-        echo 'Go Stock!' . PHP_EOL;
+        //echo 'Go Stock!' . PHP_EOL;
+
+	(isset($request->article)) ? $article = $request->article : $article = '';
 
         foreach ($this->tire_tables as $tire_table => $tire_stock) {
-            $stock = $this->getInventory($tire_table);
+            $stock = $this->getInventory($tire_table, $article);
 
 
             if($stock === FALSE) {
@@ -57,14 +58,29 @@ class SyncController extends Controller
                 return false;
             }
 
-            DB::table($tire_table)->update(['quantity' => 0, 'krs_quantity' => 0, 'urs_quantity' => 0]);
-
 //          $this->updateStock($stock[1]);
-            $this->updateStock($stock[2]);
-        }
 
-        DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
-        return 'Done';
+            if ($request->article) {
+                $this->updateStock($stock[2]);
+		$tire = DB::table('auto_tires')->where('article', $request->article)->first();
+		if ($tire === null) {
+			$tire = DB::table('moto_tires')->where('article', $request->article)->first();
+		}
+		if ($tire === null) {
+			$tire = DB::table('quadr_tires')->where('article', $request->article)->first();
+		}
+		if ($tire === null) {
+			return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
+		}
+		return json_encode(['urs_quantity' => $tire->urs_quantity, 'krs_quantity' => $tire->krs_quantity]);
+            } else {
+                DB::table($tire_table)->update(['quantity' => 0, 'krs_quantity' => 0, 'urs_quantity' => 0]);
+                $this->updateStock($stock[2]);
+                DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
+		return 'Done';
+	    }
+
+        }
 
     }
 
