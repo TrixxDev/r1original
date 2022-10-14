@@ -898,13 +898,20 @@
                           @endif
 
                           <td class="hidden-sm-down text-center">
-                            <span data-toggle="tooltip"
-                                  @if($tire->code == 'XL')
-                                    title="<span style='color: black'>XL ??????????? SUBJECT TO CHANGE</span>"
-                                  @else
-                                  title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>"
-                                  @endif
-                                  class="hidden-sm-down table-cell prod-code">{{ $tire->code }}</span>
+                            <span data-toggle="tooltip" title="<span style='color: black'>
+				@php $codes = explode(' ', $tire->code); @endphp
+				@foreach ($codes as $code)
+					@if (count($codes) > 1)
+						@if (isset($code_array[$code]))
+							{{ $code_array[$code] . '<br>' }}
+						@endif
+					@else
+						@if (isset($code_array[$code]))
+							{{ $code_array[$code] }}
+						@endif
+					@endif
+				@endforeach
+			    </span>" class="hidden-sm-down table-cell prod-code">{{ $tire->code }}</span>
                           </td>
 
                           <td class="hidden-sm-down text-center">
