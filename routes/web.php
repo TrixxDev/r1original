@@ -133,7 +133,9 @@ Route::middleware('checksession')->group(function() {
 
   // Sākumlapa/Iziešana no konta
 
-  Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+  Route::get('/', function() {
+   return redirect('/ziemas-riepas');
+  })->name('home');
   Route::get('/logout', function() {
     Auth::logout();
     Session::flush();

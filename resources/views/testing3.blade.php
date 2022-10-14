@@ -232,6 +232,10 @@ function sendData(data){
         text: 'Pasūtījums ir pieņemts!',
         icon: 'success',
         confirmButtonText: 'OK'
+      }).then((result) => {
+	if (result.isConfirmed) {
+		window.close();
+	}
       });
       //$.ajax({
       //  type: 'GET',
@@ -255,6 +259,10 @@ function sendData(data){
     }
   })
 }
+
+$(document).ready(function() {
+  $('.swal2-confirm').on('click', function() { window.close(); })
+});
 
 let montage = '';
 let safe = '';

@@ -49,10 +49,6 @@
                           }
                           $item_count = array_sum($item_count);
                           $item_sum = array_sum($item_sum);
-<<<<<<< HEAD
-                          $_ENV['tests'] = 'tests';
-=======
->>>>>>> ff70bc3679cb304804ce53e37ceb4d0541e46bc1
 
                           $status_enum = [
                             1 => 'Nav apmaksāts',
@@ -62,14 +58,9 @@
                             5 => 'Pabeigts',
                           ];
 
-                          $pay_enum = [
-                            1 => 'Apmaksa saņemšanas brīdī',
-                            2 => 'Bankas pārskaitījums',
-                            3 => 'Tiešsaistes apmaksa',
-                          ];
-
 			  $pay_enum = [
-                            1 => 'Apmaksa saņemšanas brīdī',
+                            0 => '',
+			    1 => 'Apmaksa saņemšanas brīdī',
                             2 => 'Bankas pārskaitījums',
                             3 => 'Tiešsaistes apmaksa',
                           ];

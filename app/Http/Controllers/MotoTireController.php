@@ -147,12 +147,12 @@ class MotoTireController extends Controller
         if ($request->quantity) {
           $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
         } else {
-          $cart = CartController::addProduct($this->model, $tire->tire_id, 4);
+          $cart = CartController::addProduct($this->model, $tire->tire_id, 1);
         }
 
         $quantity = Cart::count();
         $total_sum = str_replace([',', '.00'], '', Cart::total());
-        $bought = ($request->quantity) ? $request->quantity : 4;
+        $bought = ($request->quantity) ? $request->quantity : 1;
 
         echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
     }

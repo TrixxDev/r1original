@@ -51,7 +51,7 @@ class AutoTireController extends Controller
             View::share('season', 'Vasaras riepas');
             View::share('current_url', 'vasaras-riepa');
             View::share('season_title', 'vasaras-riepas');
-        } else if (strpos(url()->current(), 'ziemas-riepas') !== false) {
+        } else if (strpos(url()->current(), 'ziemas-riepas') !== false || \Request::route()->getName() == 'home') {
             $this->season = 2;
             View::share('season', 'Ziemas riepas');
             View::share('current_url', 'ziemas-riepa');
@@ -200,10 +200,17 @@ class AutoTireController extends Controller
                           })->when($this->d3, function($query) {
                               $query->where('d3', $this->d3);
                           })->when($this->types, function($query) {
-                              $query->whereIn('auto_tires.type', $this->types);
+			      $query->whereIn('auto_tires.type', $this->types);
                           })->when($this->code, function($query) {
-                            $query->whereIn('code', $this->code);
-                          })->when($this->fuel, function($query) {
+				if (in_array('CURRYEAR', $this->code)) {
+					$query->where('code', 'like', 'DOT%' . substr(date('Y'), -2));
+					if (($key = array_search('CURRYEAR', $this->code)) !== false) {
+						unset($this->code[$key]);
+					}
+				}
+			  })->when($this->code, function($query) {
+                              $query->orWhereIn('code', $this->code);
+			  })->when($this->fuel, function($query) {
                               $query->whereIn('eco', $this->fuel);
                           })->when($this->wet, function($query) {
                               $query->whereIn('wet', $this->wet);
@@ -214,7 +221,7 @@ class AutoTireController extends Controller
                           ->orderBy('d2', 'ASC')
                           ->orderBy('price2', 'DESC')->paginate()->appends($request->query());
 
-//        dd(DB::getQueryLog());
+	//dd(DB::getQueryLog());
 
         return view('tires.auto.tires',
             compact('tires')
@@ -222,7 +229,6 @@ class AutoTireController extends Controller
     }
 
     public function tires_filter(Request $request) {
-
       DB::enableQueryLog();
 
       $this->d1 = $request->d1;
