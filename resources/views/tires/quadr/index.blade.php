@@ -248,7 +248,7 @@
                                         <span class="ps-shown-by-js"><i
                                             class="material-icons checkbox-checked"></i></span>
                                       </span>
-                          Pasūtams
+                          Pasūtāms
                           <span class="dot yellow" style="float:right;margin-top: 3px;"></span>
                         </label>
                       </li>
