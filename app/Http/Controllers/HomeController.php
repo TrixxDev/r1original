@@ -123,7 +123,7 @@ class HomeController extends Controller
 
     public function about()
     {
-        return view('main.about');
+        return view('pages.internet-veikals');
     }
 
     public function moto_terms()
@@ -272,7 +272,7 @@ class HomeController extends Controller
     }
     function fastOrder() {
       $param = (object) request()->input();
-    
+
       return view('/testing3', compact('param'));
     }
 }
