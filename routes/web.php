@@ -136,6 +136,9 @@ Route::middleware('checksession')->group(function() {
   Route::get('/', function() {
    return redirect('/ziemas-riepas');
   })->name('home');
+  Route::get('/callback', function() {
+   require_once('app/Paysera/callback.php');
+  });
   Route::get('/logout', function() {
     Auth::logout();
     Session::flush();

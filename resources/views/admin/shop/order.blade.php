@@ -55,10 +55,10 @@
         <div class="col-md-6">
 {{--          <input class="form-control" name="status" type="text" value="{{$order->status}}" required="">--}}
           <select id="select" name="select" required="required" class="custom-select">
-            <option value="1">Jauns</option>
-            <option value="2">Gaidam samaksu</option>
-            <option value="3">Gaidam preci</option>
-	    <option value="4">Gatavs</option>
+            <option value="2" @if ($order->status == 2) selected="" @endif>Jauns</option>
+            <option value="3" @if ($order->status == 3) selected="" @endif>Gaidam samaksu</option>
+            <option value="4" @if ($order->status == 4) selected="" @endif>Gaidam preci</option>
+	    <option value="5" @if ($order->status == 5) selected="" @endif>Gatavs</option>
           </select>
         </div>
         <div class="col-md-3 form-control-comment">
@@ -309,13 +309,16 @@
               <td style="border-color: #c6c6c6;">@php echo ($tire->quantity * $tire->price) @endphp &euro;</td>
             </tr>
           @endforeach
+	  @if ($order->fit_price != 0 || $order->delivery_price != 0)
           <tr id="confirm-table">
             <th style="border-color: #c6c6c6;" scope="row"></th>
-            <td style="border-color: #c6c6c6;" scope="row">{{ ($order->fit_price) ? 'Montāža' : 'Piegāde' }}</td>
+	    @if ($order->fit_price != 0) <td style="border-color: #c6c6c6;" scope="row">Montāža</td> @endif
+            @if ($order->delivery_price != 0) <td style="border-color: #c6c6c6;" scope="row">Piegāde</td> @endif
             <td style="border-color: #c6c6c6;" scope="row"></td>
             <td style="border-color: #c6c6c6;" scope="row"></td>
             <td style="border-color: #c6c6c6;">{{ ($order->fit_price) ? $order->fit_price : $order->delivery_price }} &euro;</td>
           </tr>
+	  @endif
             <tr class="table-dark">
               <th style="border-color: #c6c6c6; text-align: right" colspan="4"></th>
               <th style="border-color: #c6c6c6;">{{$order->price + (($order->fit_price) ? $order->fit_price : $order->delivery_price) }} &euro;</th>

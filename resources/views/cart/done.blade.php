@@ -34,7 +34,7 @@
 
                 <h2>Jūsu pasūtījums ir saņemts un tiek izpildīts.</h2>
 
-                <div class="done-cart-subtext">Pasūtījuma numurs <b>B001240379</b>. Par pasūtījuma gaitu paziņosim Jums e-pastā. Paldies, ka iepērkaties pie mums.</div>
+                <div class="done-cart-subtext">Pasūtījuma numurs <b>@if (isset($order_id)) {{ $order_id}} @endif</b>. Par pasūtījuma gaitu paziņosim Jums e-pastā. Paldies, ka iepērkaties pie mums.</div>
 
               </div>
 

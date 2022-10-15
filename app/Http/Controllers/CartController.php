@@ -543,7 +543,7 @@ class CartController extends Controller
           'country' => 'LV',
           'accepturl' => route('order.success', $order_id),
           'cancelurl' => Self::getSelfUrl() . 'pasutijums',
-          'callbackurl' => Self::getSelfUrl() . 'callback.php',
+          'callbackurl' => Self::getSelfUrl() . 'callback',
           //'test' => 1,
         ]);
       } catch (Exception $exception) {
@@ -552,8 +552,8 @@ class CartController extends Controller
     }
 
     public function end() {
-      Cart::destroy();
-      Session::flush();
+      //Cart::destroy();
+      //Session::flush();
       if (Auth::check()) {
         $order = Order::where('userId', Auth::user()->id)->where('status', 1)->first();
       } else {
@@ -561,6 +561,7 @@ class CartController extends Controller
       }
 
       $order->status = 2;
+      $order->payment = request()->payment;
       $order->save();
       $order_id = $order->id;
       return Redirect::route('order.done')->with('order_id', $order_id);
@@ -583,6 +584,15 @@ class CartController extends Controller
       $order = Order::findOrFail($order_id);
 
       $order->status = 2;
+      switch($order->payment) {
+	case 1:
+	case 2: {
+	  $order->payment = $order->payment;
+	  break;
+	}
+	default:
+	  $order->payment = 3;
+      }
       $order->save();
 
       Session::remove('cart');

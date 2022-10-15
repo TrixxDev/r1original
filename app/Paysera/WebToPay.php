@@ -114,11 +114,12 @@ class WebToPay extends Model {
     $factory = new WebToPay_Factory(array('projectId' => $projectId, 'password' => $password));
     $url = $factory->getRequestBuilder()
       ->buildRequestUrlFromData($data);
-
+    
     if (headers_sent()) {
       echo '<script type="text/javascript">window.location = "' . addslashes($url) . '";</script>';
     } else {
       header("Location: $url", true);
+      exit();
     }
     printf(
       'Redirecting to <a href="%s">%s</a>. Please wait.',
