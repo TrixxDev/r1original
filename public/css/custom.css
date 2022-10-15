@@ -516,6 +516,7 @@ ul#top-menu li .sub-menu a.dropdown-item:before{
 #header .header-nav .blockcart .header {
   margin-top: 0;
   max-height: 25px;
+  background: none;
 }
 #header .header-nav .right-nav div {
   height: 30px;
