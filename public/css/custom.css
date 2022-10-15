@@ -11,7 +11,7 @@ input:focus, textarea:focus, select:focus, button:focus{
 
 body {
   background-image: url(../images/cover.jpg);
-  background-size: inherit;
+  background-size: cover;
   background-position: top center;
   background-repeat: no-repeat;
   background-attachment: fixed;
