@@ -35,6 +35,13 @@ class ShopController extends Controller
     return view('admin.shop.order', compact('order', 'userData', 'tires'));
 
   }
+
+  public function order_update($id)
+  {
+    $order = Order::findOrFail($id);
+
+    dd($order);
+  }
 //
 //  public function delete($id) {
 //

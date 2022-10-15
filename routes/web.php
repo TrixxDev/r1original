@@ -74,6 +74,7 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   // Interneta-veikals
   Route::get('/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
   Route::get('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'order'])->name('order');
+  Route::post('/order/{id}/update', [App\Http\Controllers\Admin\ShopController::class, 'order_update'])->name('order.update');
 //    Route::delete('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'delete'])->name('delete');
 
   // Pieraksts

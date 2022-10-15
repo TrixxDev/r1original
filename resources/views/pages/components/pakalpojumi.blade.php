@@ -1,150 +1,150 @@
-<p style="text-align: center;"><strong><span style="font-size: 18pt;">Riepu nomaiņa</span></strong></p>
-<table dir="ltr" style="width: 100.638%; height: 246.297px; margin-left: auto; margin-right: auto;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 23.1884%;" width="111"><col style="width: 18.4783%;" width="63"><col style="width: 17.7536%;" width="63"><col style="width: 20.7488%;" width="63"><col style="width: 19.8309%;" width="63"></colgroup>
+<p style="text-align: center;"><strong><span style="font-size: 18pt;">RIEPU NOMAIŅA</span></strong></p>
+<table dir="ltr" style="width: 100.638%; height: 238.140625px; margin-left: auto; margin-right: auto;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 26.00492206726825%;" width="111"><col style="width: 15.586546349466776%;" width="63"><col style="width: 17.719442165709598%;" width="63"><col style="width: 20.754716981132077%;" width="63"><col style="width: 19.85233798195242%;" width="63"></colgroup>
 <tbody>
-<tr style="height: 22.3906px;">
-<td style="height: 44.7812px;" colspan="1" rowspan="2">
+<tr style="height: 22.375px;">
+<td style="height: 44.75px;" colspan="1" rowspan="2">
 <div><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGcAAAAlCAYAAABf0feeAAAAAXNSR0IArs4c6QAAH8VJREFUaEPtm3d0XOW19n/nnGmaUe/NKpZsWZJt2ZbcADdwwzYYTIwJNfQaCLlcbgKhJiShXEIKSfiCU6gxGGwIxh0DtnHFlrtkq1lWsepo1DUz55xvve+ZsQ0BkrXuH1m3jJcszZlT9/PuvZ/97D2KaZomX/syMUwTxVQwTAPD0Bno66f2ZD37939OZeVxOtrbAGsf62VC+M+vP/G//BP50Ofes7wjRd6+qYhn0FF0DVTrvaY5iHA5iYmNJS0tneHDh1NaWkpsXCwKpvyHqYaeX5xdnEtBOWOLs0ZRzm78Rjso3wSOwM00dXkCX5eP/eXlrHxjBQcP7sTl0ImKdOGwqyiK2C90I98A9b8ckb+7ActgEgxx3+KXWIwYmIomDazYPbgjkxkxcgyTpkxlWE4OTmcEff1DoX3FbgqqClGRbjyREbgjIrBrIaAEuoDf76e1pRWn00FiQiKaTZPHfdPrG8HBNNGNIC0trax4cwXvrXyNYWlOpkzMYHR+MvHREWiaAop1A+HXv9Jx/uHasFwm5OPWnRoSldB2EwzpBBF44vJwxxeBI4Wm1n4OHq2hqqaJpuZOmlva0Q0TRdXkj83mIDM9mdS0WPKHpzO2IJvhOclERrgwdIM1a9ZQX1+PqqhMmz6N0aNHo2piYX+9tb4ZHMPE2+XllVf/wuq3XmX6xBTmzSrE0HXcLgfRkSqKahAIQkeXTnS0E4/DkG7+hdj2T7rxP+dZ55r/qx/sC5E6FLXPHCVxsN4ZZ/AIfyrCuIrdnUpMxiRs7uF8Xt7Amg27OHj0FA1NHfT1DmIaBgF/LxDEZnOjuSLRnFEoNgea3Y47ykNGehxjRmVy0dRRFGbH8eflL3PF0iUcKD+At9PLVVddRVx8HKpwObFczskuYcC+EpzwjnpQZ8tHm3nmp48xfWIyl8zJwxXhZO2OfjSHiwm5flLiPRw7GSAyZRK7t/+NJbPT0QjKUCcCtiLi8Bcd65/D4Gv3+ntwrPAbPsBaGFYOkE8tPcVURN4856TnfKyYBrpioBgOXAmFJA+/EK/PzlPP/IVte07Q3TeIHjRCeTWIOXSa669ZwKiCXBqaWjh8+AR7yusxY/PRtQhU1YZh01CdDjxuFwVpNkZFenni8YdoaDjFW2+9xcyZMyktKz0DThggGVYVkSIUvhYcsZO3s5OfPPk4jbV7uPeGiaSluOXKOtrgJqfwIpor1xMfNUjrQCanu6Pp6WrmgsIu4j3i5CaoVpL8rzjOl/mKuOnwNgsQ633oT0lgwkidxSIEWAgduYs4MnycIDuKA3fSaJKzZvLpzjoee+Z1Gpo6sSkapilClw6GDX9vEy+9+ACzZkzhdEsLecPzZJB45501/PCnr2MmjUa3OaTRTdWGroJiBMnTj/Dem7/C4bCz/OU/kpU1jOF5+ezYsQOv10tqaooELD09HU3T5PFfC45hGBw+dIgH7r2DudNSWTy3AJsmViAcbzBoGRzF0EAPwcEOouOHcd4Fc2hqOEVtxWZSo3sYnu5AEeCIFSD/hWO9FfRCvmz9luh9KRSG3ksgwkY8s83a/1yeGfIPuS0ctqxjw9c6g1nofMKTwszSRmRSMe7k8/jb+qP8+g/v0e4dQDU1i9ApYp2ZmMYAw5KC/G31clwuF+1t7ThdLpKTE+nt7eOBf3+SXZW9dDlSwRUTIhU2mVuc3nJW/uq75A3P4eWXl1NZWUlhYSFlZWVERLjZs2cvB/bv57rrr6NsYhk2m+2L4Fg5UTy0iWGY/Gn5H3j7td/y3RunUDQy3mIxJrT1uChvTKOgYCz+wQHi4uLIzc1haHCQmuoqyj/fSElxNFFupwRFhBS5SuXvcApW5Wcy7gtO8eVELdifoPCIHHY2WesSbP0MbQ2HL0MwphCI4W2CQZ5J/pJN6rjMXjS9Wz6HIAJiF3dsPtFpM/lwSzW/W/4Bze09KOfEYomPasfwN/PUwzdw7TVXUl5ezp49e0hJSWHhwoUEgzotLc2s/2gHv1vxGR32bHC4pfdoioZyeg9/evIasrIyOXLkCMXFRTJ0tbW10d3TQzAQZNu27Xg8bm677VaSk5O/5DkhA4mH6/J1c/tN15Pk8XL7dVOJdFt0WXzmNbN57m9DxLojmJifSHZaEhkZaZiGTktrGxu27qa2T4OIRGkc1VQIqhqaRMIiDKaiYsgVKTYKM6kohhKqMcRhFhWVJYfYQwAYCkViuy4eWB4X9ks95FdhKEML4ozHQoxLY/6oboZ7auW9ioSOPZHMwsvZvq+T5379DrUN7aEzWolSnl2EGZsdVW/j3dd+hk018Pm6OXLkKJnD0mVIGpE/QlJoX3cPjz+7nLd2d6HGDAMBjmrgad7OK/95D/39vURFRUlQPB6P/Bny+9FUjWAwyKaNG5k7by4TJ078clg7Gyo+3rKF//jebdx1w0SmTR4WWtnWCm7Tc7j7DZPO9m4uL0vg+kunkZGaIj2u4kQVnx86wdrDXg41a0R5bLhtGj0BA38gQJRbQ8VG92AAj0OgY6ez149DUUiNtuPx2Gjo6MOBHVPTGPAP4XY6GBgK4rSp2B0SMvSgyWAwgMtpp6dfJxAM4HY6iXSo9AwGibBrOFTw9VvMUleC2FWdu6cblCWdBMOPgSaT/4BWyIM/+gP7j9SBDGVWYFQUFU21SWAUuwPNaOd3T99Nf28nU6eeR1AP0tHRgaooDM/Nw+my098/wG+Wv80v3zuOmjACU1WxEyS941P+9JuHaWhslOWH3WYnMzOTffv2MTg4iEgjLpebLVs2c/H8+cybP/9LYU2EM9Mk4A9w5+23crpmL089vICYKLEKrZUk1mdbcCR3v2nQ3dXHzbMyuXTGaBobmojyeKhrbqappYu69iCfVnbw0iPXUpKXSu3pLt7fUs49y2bQ0Orj2dc38IPr5nGqs4fnX93ED78zh8KsZHoHAjzzxmbuWzaD2sY2Pj9Yw/zp41m55QBXzBhDQWY8A4Egn5RXUd/Uxryp43nopS3sqWjhzR8vJjk6gufe2ML9357J8NQ4fvXXtSydO5UPdlTxh/cOcNdMg9KkGkx9AGdUDkVTbuKJZ9/hL29sBMWOqpjStxVFQ7XbUTWRM+xgs8v8+vi9i7n+usWyqDx27BiqqjF6dDGaKuKBQkenl3979PdsrhNVabrMO3bFT3rrZpb/+hE+37efhLhYmQZWrV7FrbfcSnx8vAyLYkmcOH6C1atWcf/37/8KcAydY8eOcsXll7FswUi+c+V4KwydCXnQEszl3jcCqAGd+xYXkZ8RR21tPU6XgwO1Pl5fv4/0WCelZSXce81cTre0kpoQS2dPH4lxMXxafopT7T7uuGwKL7z6AfNnlBHpcPDT17ZTXtPKBcWp/PK+RXT4+tBsNnYdraeqsZ2r54yny9dFQ5uPNzYf5fr5E/H1DvLcit3EuGHlT65jzY5jHK1qYtnsMbgcdto6vWRlZnDtk+9wuqufO6YHKUuowzQNsosW4B3KZekNT+Lr9aOgSW9RBFOy21BV4TF2EOAIkAZP8+df3s/QgFcmcVHtF40qwOlyyogy5A/y0p9W8NyK/ZjJJTKkCenApqjYa9fxy4eW0dffh9PhkJ4yPG+4ZGrV1TUEdZ2oqGg62tuprqriyR8/8ffgBAJ+XvjlC7y+/Hc888gC8rOjwqWCpSCZ0Kpnc9+bOol2uHXBKKLdTtrb2xmRl8cv3vyUj2t1nA6V7y2bTOmIdBpaWzl/bAHb9x8nIzWe97cfZ3xBBkW5ydz/i1U8cdMi4qLtbNp3gk/31bJ4+mjKRqaz+1g9U8fmsvqTQ6QkRDNrXC5b9x+mrqmXow0dPHHzxbS0d7F+bw2p8ZFcOXs8j7+8jlllBXhsOgkxkeRnpfDZ4ZPc9fxm4qPs3DHdT1lSPQ53HDljr+K5Fzfzx9c2S/lF/KdoDukpIpQJUBTNJn+bNgem3svi6TlcfclUMjLSiY6OwuOOQKTNltZO9h04wdo12/m4KkC3LRI8Uag2FcVby/gEL/OnjWH6BeezZ+9eUlPT8Ho7ycuzNLrw61hFBWvXrOXOu+44C064djhVX89tt9xEZnw/379zBpoiEnZY7hDSholPz+Tx93vJj4vn8lljKT98kLTkFApHjOAny1dS4bMR4XQyYUS8VBOCuklSnEcm2/S0OGpPeclKi0U81faDTRRkxcufoGFSWd9KenIMgUGdhnYfI7MSqTvtIynWTUqsR7LuZm8/zW1dlIxIxaYotHT2YberaPYENu9rpXhEGr19g0R5HMRGRlBR18HReh/JUTbunDXEpORGEtLHYHimsPTGn9HS2osmvESzoQgKa3NKTxFAifeGKvJQiFsONLF4SiqXLpjN6DFFRLgj2bHjKIcO1Eod0u1KZPMnh6isr2LQocvi9rJpedxxw+XUn2rA5XTQ29tLff0ppk6dIgVUUeu4PW5GFoxk985d0nuWLbvq7z1HxLufPvEw37t9CqVFCefUJJbEYBoKQ/ZU1lf2E+/KISczi492bidvWDbxUR62H92GM84mmZSovAULk7WoTLAW2xMMKFyLCPnA2hZOwmJfQzI8iwlb+4dUSVkTGaIolOcKWmzOFMxPobw2mvK6hJAhxR2EKLik3wZJUTa+OzPApPRW0vJnsvOQyd3//ns0zYmqOcAmkr8jFMbsGJomEzpDHSRH9JMU52TmjAs4b/wIMtJTcTjcrFuzn7VrK5gydSQuu87uPfUkp9uZODGTfft34u3q4kcPP0haajJbt26VjGzSpEls3vwRE0pLiY+LY/XqVUyfPo2KyuN88vEnXHvtNRQVFp0FR8TA/oF+Hv/RYxzdt5EnH56DxybqnbOGFMAohkmPPZXXd7iJNAIkJUVxoL6LrFg3Daea6I5IIsLtknWNMKQw7Zk2QrgmDEkG1idCWrckdwmaVIgt+h1S8EMgWbWqddpwESooubW/qEtMQyMg8oaIM5JRh7U3QWgMoiNUFo3uYWRiH2n5l/HM77fw2lu7sAkKKMOYA9VmwxSKsSYAdxBleGUoGz8ml7FjRpOZnYnDbsPn62P5yxsIBmwUFeZw7PARfL1VxMRmMXtuKSdrT9DbN0B+Xh6TJpfR29vPK6+8wtVXX01iQgKtra188OFakhJFuQEul5NNmzbjdDi5/Y7bJJM7oxAIcPbv389DDz7AjAkxXDovH1MXJrNqiTPlgqniN3Tq2t34AinEqo3kJmvUdaicN/tmtqx/jezkXpxCcRdrVxpeO0dSCZXs55T3lvRi6Ulh7V7qCAIfkaDln5bmFJIULFFBHhNaBKp1LU0R+9lDu4WknNB+4hyGqeN0pxKbtZgHf/I+W7YfR7E7UUJJH5FbJI1XcKo9LJuVw+UXTyc2PoaszDRAo69vkFf/8iF1Nf3ExSXR319PINhMTEw037nlanbv2k1GejobNm7giiuWMCK/gIrKY9TW1sqCVdynkH72HzjA8YpKGhsbpbckJ6fwu9/+lmVXLaO4uNgCR4SroaFBli//I6v++jL3fmciWZkeq7YR9FrqWZYWZSm5Os0+By2ddiJdPnKSbbIoPFHVQ0yMRlpShAWKNK4lwVvFZ8gb5C8rWMnwJ3YKG15U8sIPrIuf2S6FQAmQqNbDIIn3lsBqCuFSsi1DBFLpiXK3MIjo1nVMFVd0PrakOdz1g7c5WNmKYtNQQgTA1IdIjTUYlZuA3d/DzTdeIZyIwqIiXE4XQ/4h/t9L71Fb3cPsORNoa2vkYPk+snPSufOeG9i+fSuJSSmyPXD8+HGWXbmUtLQ0Ke+ImignJ8dKD9LmQ5w8eZIPPljDfffdK+n5s888y8JFi5g4sUzY2zKd2OnHjz+OOVDDjVeW4IrQ0M6ovSoDAZ2A3yQiQtQCQii0agHTCIIhRBaTvn5wOS3ZfXAoKI0j9tc0kXnCTSmLrgqAFVPHlBYUIAg5JwygBYJUtSWQIkxZoUtukyeziEoISkxVgKIxMOSXIEQ4hVhpZbSQm4UWA9ij87EnzOXuh96h/EQ72F0Yko35GR47yPdums+CedNZv2EjY8aMxu8fkolbSFor397E/s8bmTGrjH2799Hf30LQCHLf/beQlBzL2g/XM6F0AocPH5ZgTJs2jays7DOkKhAI0NPTQ09PL3V1tXR2dpKfP0Jep6WlhRd/81uWXrmUsWPHCHB0U4S0jes38Z8/f5SFF2YzZXwaqmiiCSndUDle08HmrdV0dQ0w/bxsLpicbZlFNJsUK+y1evt45c3dzJ09gb37qhn0G9hVk8sWjpGeJETEAX2IA0daqDzeyuTSXOyaQmubl8mT86VhNUWX7WELiFBIE6puSCMTdbAmLG4YZ0RVCZmwvwa6obH8tW2MG5vN1PHDpDfJRaDYMFWxGCxSY48egS1+Hnc8toaDtT4MLcIKY4OnuWvJBG66YTHRngi2frqdzGGZtLScJjsri+OVzax6Zw+jivJJTnKx7ZOPQQsyfkIhl1w6TyrOu3ftIS8/T4IjPCE9PYMJEyZgswl125SEQIDT3d2Nz+cjISFBepZYUNu3b2fzps3cfPPNZGVnWeB0dXXx6xd+xe7t73PjVWWkJ7utMGRC34DB6g2HON0SoL6hldmzirEpfmpr2xk1KpXBAb+UVqIjY9h9oJq0pFj2HjxFdno8WcNiyUyLZf/RGpJjI5g1bQxrNh6kraOHmdOKWbvuMAOBAIUj0jl+vJbZM0Yx96IRuITuoqhU1HhZ8+Fh0tKjKByZzp4DdXR3DfCtK87n44/2Y3PY8AeHKB6RzdHqenKHpfHZjhPMmTuBfeWVuB025l40jvfX7KJ/IMjC2SMZW5KO3ZOLGjefO372Mftqes+EzshAG4/eMoMli6bjsGk0NJ6mqalRGvP06Q4+3lTL9FkzaGpuo6O5gt6BLiZPHYPdrjN+wgTy8/PYtOkjxo0vobKiUoqiW7duk401kY9kRpCishCQz/ZtxHZxjRdffJGkxCSuv+56XIJUBYMB88SJ4/zb9+6hKNfBotkFOBwWBRVotrT38erb+/AHFHIzIomJSWTN+j3ExscR4xG6lqgnbPh1SIiLwtfdL+sam6aQnBjHkYp6EhLjaWhsYvqUYnbvq8Lp0Jg4bjgbPj1MYUEONXVNsrYZmRfDty8bjdulMqjbeezpNQz5XbjdNvRAABQXx07UcvXSC1j57meUjE7HxEZkVBR1dSc5f+o4Nmzaw6jCLI5XNZEQFy3P1dWtEwgEWbwgl0vnjAR7LJ6My3n0lSre+bgOFUECdDyDjfzg2slctWQOLpcDvz/A1q2fERHhoqa6k+amANOmjWH71k9oaqyjbFIZV12ziN6ePrZt28asC2exYcMmiosLOXXqlPQKEcaEen3ttdcSESEaceH+llWWiFze19/DOyvflcrMfffeR1p6utXC9g/5zTUfvMfzP3+Ua75VQklxiozxMiGb0OEdZN3H1bIBdfGsYk41dXC8tp2kePHgGk6nyoXTinn1r59w8fxSPvrkIEWjhtHc0iOyA+1eL7OmFlF3qpHTHQG8XT2kJEWTl5vG1h2HWHrpdN58dyul47K4bN5IhmVEoihCUDR59OmNZA5Loaggmc9210hRsqurk7FjCmhpPMlV35rKX1eX09TWzcILS/hs92FSkxPo8PZhd9iZM6uALZ8cpcMX4MKZ+cyblkFslIqpeYjOuIyXNvTywjuVUhkg0M+4+B6WXTSSqZMmEOkRBa9CU1MzgYDC7h21eCJjqamqp7+/lri4GB74jztkZ1jY6eSpelmniOGNimPHKCoqlPmkpKREsrRdu3Yxc+YsIqMi8bg9UosT9Lq9s4NNGzdIheXOO+8kNzdXepgEsae313z8Rz+koWoHN19TRlyMLZSEIRAw2bqrnqrabmobO8lIS6Cisp7E5ERUY4CoqAiS4z2kpcWwafMRFl8+jZXvbGX6+YUcqWiSWlNKQiwRLpP8EWm8vWovkVERFBYk4+3sRdehID+JYzWd9HR6ufOmyeQPj8VUdPaWd7Jpcw2nTneRmR6L1zfI0FCAsUVZHDxWy/mTh1FSnMmLL++S9cQd35nJ0y+8zzXLZlJd00zNSS+TSzMZGtJlnktN0fjJD+egKAHL21JmcqAln1ue2cqgoeIJdnLr7GxuvXoebe1t7Nq5k9xcoX110e0Tac5Bf6+f6upD9PR28oOH7iUzQ+SKUHEOtLa3U1dTy8mTdcTGxsq8IsKX1VCLkC2Gvr5+K8QpBrt27eWNN1aw+NJLuOeeO0lKSjpTLkh22tHRZt5w9bfJTfNz3dLx2G2CGVljTr19On96czcHjrQRHeNk9KgsNnx0kOzsVJISHDJUjB89jPqGNvQgRHgiaW1pZ1hmIidPtdPZ1Y9/CHw9XhYtnMyq1bvJzU1mSmk2u/aeYFJZMStXbSEhMZlxo5O44cpxREWp6IrKUz/fQkW1j+TkSOLioqiubpEsceH8Mt5a9QlPPbwEr8/Lc7/ZxswLCoiPdfG3deWcN7mIjz49Rk52EgnxLiqPt0vWuOjiQq66LD9EY1XsnnzUpEu4/dnd7K7uIlHp5IErRrNk0TROVJ6QRaF4ng8/3Mih8jbGloxnqL+Zg+V7uP/B71I8Oj9U5wrqIjmh1Z01TAYGB2WRKdr8TU1NMjyWl+8nPj5RNtNON5+m9uRJjp9opncwyLsrXiI3J+uMx4R1NqWjo928/ppl5KYFuHFZKXabxcDEy68rVFV7aWzuJjkpksQEN5Un2tA0lWFZsfR2D5KS5KGlrY/YODed7f1ERmmy1yJiZn9/QIbF9NRIkpI9HDzYQlyCg8yUKBqaeikYmUDTaZ+UeIalR5IY55TTPIKdlR/yUn+6h6z0SNxujepaH1EeFylJbuobfEyfmkZH5wCHKryMGplAl68PX2+A5IR4Kk+0kp4eRUykg+o6r3ymiaUZRLsFe1NF0EZRI4jNvpJ39xo8unwvEcF27lmQz9zpJRi6SV5eDns/L6eq6iQb15WTkJBMj6+G8RPGcv1NV8oBQ02IoudMUIaL5HAdI/KNIFtPPv4Er614n7iMMahmkMDQEAZOVHs81317Do/94HrsQtOTrYpwDQfKQH+/+fzzz7Luvde588apjClKQMUvqa0V30SRKLQuzepGyrpDfGbVJFI+kR1LG6oSlKtIdjgVUQSeVdJEQ+pMP14cp4pjRA9DSgmhPrVVu6iGA1P1S4qumla1LwREYVirvAxReFNDVXQ5gCGubZiWpmc1y6wpVCt3aiH1TlxGRAZxLhu2mHEoSZey5OEPqDvZykX5BgumZHP+eVNITUth5469HD9+ioaGNuJiXPT0dLNk6SJ27d7Bybo6EuITiItPwB3hkkYV1FkA09fXh9fno7mpSdZGvs4OVqzeSsrYyzB1BTMYwAwGifQEWbn8YUbkZMjSwJq6OTuqpASCAbOmqprHHnmE+trD5GVHk5DgQlPEqhDEQJor1Eq2qnFrRCMkSEqgw1qW9dlZwTI8nirQMsA4ZxJHNrWswtPC5mx72VITxDaxICxjWnqCMKowtNW+NlRrbkDqDVImkqMu8u7Cwml4jEA+slQtzhkkUd0sXvYAVX0J/Py1vfS31VPobuGnj9xNVnYGWz/dxr59lSQmphHpUSgrK6GwcGRonEmRNYv40XWxQKxGpViEwsgioYtelF2z09HRxvQZc+giB1dsLmZgCM0c4r5bF3L3rZdb0UJ6jbDPOeAYhmGKkwtGsW7tOiqPVRAMWlW29fryVMzXbQtHym86RsJwznnDI6vnHvvlv8PjM2Hd7auOsRbN2VGb8Dm+6t6t6RwJtWkybnwply79Nr94dz+rP61Bb6nkviUl3HjtJezcuYvPtlXQ1zvElKkjmD17OtGx0aEnOHcYLzTgcO7lQvNysgk3FGDhgks5VD2EO2EU6AEumJzPU4/cRFZmcuhmLbt8IayFtTUxxShWwcDAALqowK1dv8lq/+0/E6KTGI91R3qoqPfy/Fv72VZeT8xQLVfPyqNsbAFHjzayZ9dhbrltMVMmj0eR48dnh72+bNAvLFHRMjENKdVceNF8GlrduGKzKCnK5oF7L2dKWRF2uwjF4fGwL9r7i3NrX73Q/tuD8HcPIL9JEJpvk7NtOv6gycHqdp5bsY89FU1E9DYyLHKQgc42mptaKBuXw6xp4zn//KkUFI6S4SsMzLmrPVz5h0mBWPB//OOfeeiRp/HET2B0yUi+f9cSzp9ULAtdEcXOfEPjS9OXXwAnfOL/eWh86YlC4FhRO/T1DUMliMGxU5387LWdbKvolXlM0QcxdD/qoBe9rRqz4wTZ6W6yUpOYML5YDneImWcxpSlzjaLIyCO+MtPQ0MSqd1exbv023LGjKCkt5Uf/cS2lJXlyklQkdCHmyjk8mWu+yXP+x6PyzQ9ofQfJpL1nkKdf38mm8hZ8AzoBXYi8YpY6gKYPYQ72o/e1ovc1w2A3ylAf/v4ezGA/phkItVesyR3NEUFCSi6Ty8bw8IPXMTxbFJoqqpi7+y99BeR/GVhhxiXyhNAH131ezXvb6jhQ00FbZz+6X8R90SIJoBm6nIFWdR1V96MIEhUYwggOYASDKHqA2CinFHUvWXgeC+ZMkROwFlsU4AintVjd172++Ssg/wvBscKc1QYR1X5b9wB7jjWy41Ajh6pOc6qpE293P2ZADLbrEAygBIcg6EfTB4l0aVLELRqZyeSykTLpC9lLzLdZ3VvLqGHCZXnPVxOv/wPnK5j72Vkjy25B3ZBfA2n19tDm7aOp1UeHt1e2DkzdkF6SFBdNapL4iSExPkoq8rExkZKNnVuOnG3Fhy/89Yz4/8D5h9HBIgxypPtMP0aXrXfxzbbwN+JU1ZTeEfaQsBTzj/LKN13+/wP1ON6xfVLxKQAAAABJRU5ErkJggg=="></strong></div>
 </td>
-<td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>Vieglie Auto</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{">
+<td style="text-align: center; height: 22.375px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>Vieglie Auto</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{">
 <div>
 <div><strong>KROSOVERI/SUV/CARGO</strong></div>
 </div>
 </td>
-<td style="text-align: center; height: 22.3906px;"> </td>
+<td style="text-align: center; height: 22.375px;"> </td>
 </tr>
-<tr style="height: 22.3906px;">
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>4 riepu nomaiņa</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>2 riepu nomaiņa</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>4 riepu nomaiņa</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{">
+<tr style="height: 22.375px;">
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>4 riepu nomaiņa</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>2 riepu nomaiņa</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>4 riepu nomaiņa</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{">
 <div>
 <div><strong>2 riepu nomaiņa</strong></div>
 </div>
 </td>
 </tr>
-<tr style="height: 22.3906px;">
-<td style="height: 22.3906px;" data-sheets-value="{"><strong> Tērauda diski</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>29</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>17</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>40</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>25</strong></td>
+<tr style="height: 22.375px;">
+<td style="height: 22.375px;" data-sheets-value="{"><strong> Tērauda diski</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 29.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 17.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 40.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 25.00</strong></td>
 </tr>
-<tr style="height: 22.3906px;">
-<td style="height: 22.3906px;" data-sheets-value="{"><strong> Lietie diski 12-16</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>35</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>20</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>45</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>28</strong></td>
+<tr style="height: 22.375px;">
+<td style="height: 22.375px;" data-sheets-value="{"><strong> Lietie diski 12-16</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 35.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 20.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 45.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 28.00</strong></td>
 </tr>
-<tr style="height: 22.3906px;">
-<td style="height: 22.3906px;" data-sheets-value="{"><strong> Lietie diski 17-18</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>39</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>23</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>49</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>30</strong></td>
+<tr style="height: 22.375px;">
+<td style="height: 22.375px;" data-sheets-value="{"><strong> Lietie diski 17-18</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 39.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 23.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 49.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 30.00</strong></td>
 </tr>
-<tr style="height: 22.3906px;">
-<td style="height: 22.3906px;" data-sheets-value="{"><strong> Lietie diski 19-20</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>45</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>27</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>60</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>35</strong></td>
+<tr style="height: 22.375px;">
+<td style="height: 22.375px;" data-sheets-value="{"><strong> Lietie diski 19-20</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 45.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 27.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 60.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 35.00</strong></td>
 </tr>
-<tr style="height: 22.3906px;">
-<td style="height: 22.3906px;" data-sheets-value="{"><strong> Lietie diski 21 <</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>55</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>30</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>60</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>35</strong></td>
+<tr style="height: 22.375px;">
+<td style="height: 22.375px;" data-sheets-value="{"><strong> Lietie diski 21 <</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 55.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€30.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 60.00</strong></td>
+<td style="text-align: center; height: 22.375px;" data-sheets-value="{"><strong>€ 35.00</strong></td>
 </tr>
-<tr style="height: 22.3906px;">
-<td style="height: 44.7812px;" colspan="1" rowspan="2" data-sheets-value="{">
+<tr style="height: 22.375px;">
+<td style="height: 44.75px;" colspan="1" rowspan="2" data-sheets-value="{">
 <div><strong> Riepu Uzglabāšana</strong></div>
 </td>
-<td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>bez diskiem €30.00</strong></td>
-<td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>bez diskiem € 35.00</strong></td>
+<td style="text-align: center; height: 22.375px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>bez diskiem €30.00</strong></td>
+<td style="text-align: center; height: 22.375px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>bez diskiem € 35.00</strong></td>
 </tr>
-<tr style="height: 22.3906px;">
-<td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>ar diskiem € 35.00</strong></td>
-<td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>ar diskiem € 45.00</strong></td>
+<tr style="height: 22.375px;">
+<td style="text-align: center; height: 22.375px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>ar diskiem € 35.00</strong></td>
+<td style="text-align: center; height: 22.375px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>ar diskiem € 45.00</strong></td>
 </tr>
-<tr style="height: 44.7812px;">
-<td style="height: 44.7812px; text-align: center;" data-sheets-value="{"><strong> par RSC, ROF un sporta riepu   montāžu</strong></td>
-<td style="text-align: center; height: 44.7812px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>plus 2 € par riteni</strong></td>
-<td style="text-align: center; height: 44.7812px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>plus 2 € par riteni</strong></td>
+<tr style="height: 36.765625px;">
+<td style="height: 36.765625px; text-align: center;" data-sheets-value="{"><strong> par RSC, ROF un sporta riepu   montāžu</strong></td>
+<td style="text-align: center; height: 36.765625px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>plus € 2 par riteni</strong></td>
+<td style="text-align: center; height: 36.765625px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>plus € 2 par riteni</strong></td>
 </tr>
 </tbody>
 </table>
 <p> </p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">MOTOCIKLIEM, MOTOROLLERIEM</span></strong></p>
-<table dir="ltr" style="width: 100.543%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 32.9866%;" width="222"><col style="width: 8.46954%;" width="57"><col style="width: 9.06389%;" width="61"><col style="width: 8.46954%;" width="57"><col style="width: 8.46954%;" width="57"><col style="width: 8.46954%;" width="57"><col style="width: 8.9153%;" width="60"><col style="width: 15.156%;" width="102"></colgroup>
+<table dir="ltr" style="width: 100.543%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 32.92282430213464%;" width="222"><col style="width: 0%;" width="57"><col style="width: 14.878386699507388%;" width="61"><col style="width: 0%;" width="57"><col style="width: 17.524887110016422%;" width="57"><col style="width: 0%;" width="57"><col style="width: 20.330459770114942%;" width="60"><col style="width: 15.10673234811166%;" width="102"></colgroup>
 <tbody>
 <tr>
 <td style="text-align: center;"><strong><img src="data:image/png;base64,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"></strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>BEZ KAMERAS</strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{"><strong>AR KAMERU R15 <</strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{"><strong>AR KAMERU R10-R14</strong></td>
-<td data-sheets-value="{"><strong>AR RIEPAS PIESPIEDĒJU</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>BEZ KAMERAS</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{"><strong>AR KAMERU R15 <</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{"><strong>AR KAMERU R10-R14</strong></td>
+<td style="text-align: center;" data-sheets-value="{"><strong>AR RIEPAS PIESPIEDĒJU</strong></td>
 </tr>
 <tr>
 <td data-sheets-value="{"><strong> 1 RIEPAS DEMONTĀŽA</strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 10.00</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 10.00</strong></td>
 <td data-sheets-value="{" data-sheets-numberformat="{"><strong>PAPILDUS</strong></td>
 </tr>
 <tr>
 <td data-sheets-value="{"><strong> 1 RIEPAS MONTĀŽA</strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 10.00</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 10.00</strong></td>
 <td data-sheets-value="{" data-sheets-numberformat="{" data-sheets-textstyleruns="{"><strong>5€ PAR</strong></td>
 </tr>
 <tr>
 <td data-sheets-value="{"><strong> 1 RIEPAS BALANSĒŠANA</strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
-<td colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
+<td style="text-align: center;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
 <td data-sheets-value="{" data-sheets-numberformat="{"><strong>PIESPIEDĒJU</strong></td>
 </tr>
 <tr>
-<td data-sheets-value="{"><strong> 1 RIEPAS PĀRSKRŪVĒŠ.</strong></td>
-<td colspan="7" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>no 15 - 40 €</strong></td>
+<td data-sheets-value="{"><strong> 1 RITEŅA PĀRSKRŪVĒŠ.</strong></td>
+<td style="text-align: center;" colspan="7" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>no €15 - €40 </strong></td>
 </tr>
 </tbody>
 </table>
 <p> </p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">KVADRACIKLIEM</span></strong></p>
-<table dir="ltr" style="width: 101.093%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 64.1342%;" width="63"><col style="width: 35.8658%;" width="63"></colgroup>
+<table dir="ltr" style="width: 101.093%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 35.62091503267974%;" width="63"><col style="width: 64.37908496732027%;" width="63"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 4 RIEPU PILNA MONTĀŽA (bez balansēšanas)</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>30</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>€ 30.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 2 RIEPU PILNA MONTĀŽA (bez balansēšanas)</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>15</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>€ 15.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 RIEPAS DEMONTĀŽA</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>3</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>€ 3.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 RIEPAS MONTĀŽA</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>3</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>€ 3.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 RIEPAS BALANSĒŠANA</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>10</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>€ 10.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 RIEPAS PĀRSKRŪVĒŠANA</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>3</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>€ 3.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> par katru BADLOCK disku</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>plus 5 eur</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>plus € 5.00 </strong></td>
 </tr>
 </tbody>
 </table>
@@ -167,43 +167,43 @@
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riepas montāža</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>2.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>2.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 2.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 2.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riepas demontāža</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>2.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>2.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 2.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 2.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņa balansēšana</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņa noskrūv/uzskrūv</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņa pilns darbs</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>9.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>10.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>12.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>14.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>16.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 9.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 10.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 12.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 14.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 16.00</strong></td>
 </tr>
 </tbody>
 </table>
@@ -224,38 +224,38 @@
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riepas montāža</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riepas demontāža</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>3.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņa balansēšana</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>5.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>5.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 5.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 5.50</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņa noskrūv/uzskrūv</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>4.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>5.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>5.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 5.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 5.50</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņa pilns darbs</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>14.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>14.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>16.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>18.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 14.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 14.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 16.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 18.00</strong></td>
 </tr>
 </tbody>
 </table>
@@ -271,23 +271,23 @@
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px; text-align: left;" data-sheets-value="{"><strong>Tērauda diski</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>22.00</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>12.00</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 22.00</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 12.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px; text-align: left;" data-sheets-value="{"><strong>Lietie diski 12-16</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>26.00</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>14.00</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 26.00</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 14.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px; text-align: left;" data-sheets-value="{"><strong>Lietie diski 17-18</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>28.00</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>16.00</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 28.00</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 16.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px; text-align: left;" data-sheets-value="{"><strong>Lietie diski 19 <</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>32.00</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>18.00</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 32.00</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 18.00</strong></td>
 </tr>
 </tbody>
 </table>
@@ -302,23 +302,24 @@
 </tr>
 <tr>
 <td data-sheets-value="{"><strong>Tērauda diski</strong></td>
-<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>32.00</strong></td>
-<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>18.00</strong></td>
+<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 32.00</strong></td>
+<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 18.00</strong></td>
 </tr>
 <tr>
 <td data-sheets-value="{"><strong>Lietie diski 12-16</strong></td>
-<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>32.00</strong></td>
-<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>18.00</strong></td>
+<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 32.00</strong></td>
+<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 18.00</strong></td>
 </tr>
 <tr>
 <td data-sheets-value="{"><strong>Lietie diski 17-18</strong></td>
-<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>36.00</strong></td>
-<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>20.00</strong></td>
+<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 36.00</strong></td>
+<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 20.00</strong></td>
 </tr>
 <tr>
 <td data-sheets-value="{"><strong>Lietie diski 19 <</strong></td>
-<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>40.00</strong></td>
-<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>22.00</strong></td>
+<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 40.00</strong></td>
+<td style="text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 22.00</strong></td>
 </tr>
 </tbody>
 </table>
+<p> </p>

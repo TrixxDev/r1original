@@ -17,7 +17,7 @@
     <div class="container">
 
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           <h3>Pasūtījuma informācija</h3>
         </label>
         <div class="col-md-6">
@@ -26,9 +26,10 @@
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
-
+      <form id="orderUpdate" method="POST" action="{{ route('admin.order.update', $order->id) }}">
+      @csrf
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           Rēķina numurs
         </label>
         <div class="col-md-6">
@@ -39,22 +40,22 @@
       </div>
 
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           Pasūtīšanas datums
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="order_date" type="text" value="{{$order->created_at}}" required="">
+          <input class="form-control" name="order_date" type="text" value="{{$order->created_at}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           Statuss
         </label>
         <div class="col-md-6">
 {{--          <input class="form-control" name="status" type="text" value="{{$order->status}}" required="">--}}
-          <select id="select" name="select" required="required" class="custom-select">
+          <select id="select" name="select" class="custom-select">
             <option value="2" @if ($order->status == 2) selected="" @endif>Jauns</option>
             <option value="3" @if ($order->status == 3) selected="" @endif>Gaidam samaksu</option>
             <option value="4" @if ($order->status == 4) selected="" @endif>Gaidam preci</option>
@@ -66,18 +67,18 @@
       </div>
 
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           Kopsumma
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="total" type="text" value="{{$order->price}}" required="">
+          <input class="form-control" name="total" type="text" value="{{$order->price}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
 
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           <h4>Pamatinformācija</h4>
         </label>
         <div class="col-md-6">
@@ -88,44 +89,44 @@
       </div>
 
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           Vārds, uzvārds
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="name_suraname" type="text" value="{{$userData->name . ", " . $userData->surname}}" required="">
+          <input class="form-control" name="name_suraname" type="text" value="{{$userData->name . ", " . $userData->surname}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
 
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           E-pasts
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="email" type="email" value="{{$userData->email}}" required="">
+          <input class="form-control" name="email" type="email" value="{{$userData->email}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
 
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           Tālrunis
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="phone_number" type="text" value="{{$userData->phone_number}}" required="">
+          <input class="form-control" name="phone_number" type="text" value="{{$userData->phone_number}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
 
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           Piegādes adrese
         </label>
         <div class="col-md-6 col-sm">
-          <input class="form-control" name="delivery_adress" type="text" value="@if (isset($userData->delivery_address)) {{ $userData->delivery_address }} @endif" required="">
+          <input class="form-control" name="delivery_adress" type="text" value="@if (isset($userData->delivery_address)) {{ $userData->delivery_address }} @endif">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
@@ -145,7 +146,7 @@
         <div>
 
         <div class="form-group row">
-          <label class="col-md-3 form-control-label required text-left text-md-right">
+          <label class="col-md-3 form-control-label text-left text-md-right">
             <h4>Uzņēmuma informācija</h4>
           </label>
           <div class="col-md-6">
@@ -156,7 +157,7 @@
         </div>
 
         <div class="form-group row">
-          <label class="col-md-3 form-control-label required text-left text-md-right">
+          <label class="col-md-3 form-control-label text-left text-md-right">
             Reģistrācijas Nr.
           </label>
           <div class="col-md-6">
@@ -164,7 +165,6 @@
                    name="name_suraname"
                    type="text"
                    value="@if($hasCompanyData){{$userData->company_registration_number}}@endif"
-                   required=""
             >
           </div>
           <div class="col-md-3 form-control-comment">
@@ -172,7 +172,7 @@
         </div>
 
           <div class="form-group row">
-          <label class="col-md-3 form-control-label required text-left text-md-right">
+          <label class="col-md-3 form-control-label text-left text-md-right">
             PVN numurs
           </label>
           <div class="col-md-6">
@@ -180,7 +180,6 @@
                    name="name_suraname"
                    type="text"
                    value="@if($hasCompanyData){{$userData->company_pvn_number}}@endif"
-                   required=""
             >
           </div>
           <div class="col-md-3 form-control-comment">
@@ -188,7 +187,7 @@
         </div>
 
         <div class="form-group row">
-          <label class="col-md-3 form-control-label required text-left text-md-right">
+          <label class="col-md-3 form-control-label text-left text-md-right">
             Uzņēmuma nosaukums
           </label>
           <div class="col-md-6">
@@ -196,7 +195,6 @@
                    name="name_suraname"
                    type="text"
                    value="@if($hasCompanyData){{$userData->company_name}}@endif"
-                   required=""
             >
           </div>
           <div class="col-md-3 form-control-comment">
@@ -204,7 +202,7 @@
         </div>
 
         <div class="form-group row">
-          <label class="col-md-3 form-control-label required text-left text-md-right">
+          <label class="col-md-3 form-control-label text-left text-md-right">
             Juridiskā adrese
           </label>
           <div class="col-md-6">
@@ -212,7 +210,6 @@
                    name="name_suraname"
                    type="text"
                    value="@if($hasCompanyData){{$userData->company_address}}@endif"
-                   required=""
             >
           </div>
           <div class="col-md-3 form-control-comment">
@@ -222,7 +219,7 @@
         </div>
 
       <div class="form-group row">
-        <label class="col-md-3 col-sm-12 form-control-label required text-left text-md-right">
+        <label class="col-md-3 col-sm-12 form-control-label text-left text-md-right">
           <h4>Auto dati</h4>
         </label>
         <div class="col-md-6">
@@ -233,51 +230,52 @@
       </div>
 
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           Auto brends
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="car_brand" type="text" value="{{$userData->car_brand}}" required="">
+          <input class="form-control" name="car_brand" type="text" value="{{$userData->car_brand}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
 
       <div class="form-group row ">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           Auto modelis
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="car_model" type="text" value="{{$userData->car_model}}" required="">
+          <input class="form-control" name="car_model" type="text" value="{{$userData->car_model}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
 
       <div class="form-group row ">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           Auto izlaiduma gads
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="car_release_year" type="text" value="{{$userData->car_release_year}}" required="">
+          <input class="form-control" name="car_release_year" type="text" value="{{$userData->car_release_year}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
 
       <div class="form-group row ">
-        <label class="col-md-3 form-control-label required text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           Auto dzinēja izmērs
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="car_engine_size" type="text" value="{{$userData->car_engine_size}}" required="">
+          <input class="form-control" name="car_engine_size" type="text" value="{{$userData->car_engine_size}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
+      </form>
 
       <div class="form-group row">
-        <label class="col-md-3 form-control-label required text-left">
+        <label class="col-md-3 form-control-label text-left">
           <h4 class="float-md-right">Pasūtītās preces</h4>
         </label>
         <div class="col-md-6">
@@ -330,7 +328,7 @@
       <div class="form-group row">
         <div class="col-sm-3"></div>
         <div class="col-sm-6">
-          <button type="button" class="btn btn-primary ml-1 float-right">Saglabāt</button>
+          <button type="submit" form="orderUpdate" class="btn btn-primary ml-1 float-right">Saglabāt</button>
           <a href="/admin/orders" class="btn btn-secondary float-right">Atgriezties</a>
         </div>
         <div class="col-sm-3"></div>

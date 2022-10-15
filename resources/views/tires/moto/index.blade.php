@@ -242,7 +242,7 @@
                             <input id="facet_availability_1" class="yellow" type="checkbox" data-search-url="#" name="availability[]" value="yellow" data-for="dot" data-value="yellow" data-color="yellow">
                             <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                           </span>
-                          Pasūtams
+                          Pasūtāms
                           <span class="dot yellow" style="float:right;margin-top: 3px;"></span>
                         </label>
                       </li>
