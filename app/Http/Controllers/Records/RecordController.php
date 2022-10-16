@@ -362,7 +362,7 @@ class RecordController extends Controller
         }
 
         $details = [
-          'car' => $form->vehicleModel,
+          'car' => $form->vehicleMake,
           'make' => $form->vehicleModel,
           'purpose' => $purpose,
           'office' => $office->title,

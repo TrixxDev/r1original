@@ -21,6 +21,7 @@ class Mail extends Mailable
     public function __construct($details)
     {
         $this->details = $details;
+	//dd($this->details);
     }
 
     /**
