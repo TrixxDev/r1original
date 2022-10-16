@@ -10,7 +10,7 @@
   !!! Ja netiksiet šajā laikā vai radušies kādi citi jautājumi<br>
   * Zvaniet uz riepu servisu {{ $details['office'] }} - 67910555<br>
   <br>
-  Aktuālie pakalpojumu izcenojums Šeit: http://r1riepas.lv/pakalpojumi<br>
+  Aktuālie pakalpojumu izcenojums Šeit: https://r1riepas.lv/pakalpojumi<br>
   <br>
   Drošu ceļu vēlot,<br>
   R1<br>

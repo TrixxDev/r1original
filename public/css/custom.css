@@ -3179,6 +3179,8 @@ td.slot.slot-taken {
   background: #a0e0ff;
   text-align: center;
   height: 24px;
+  /*line-height: 28px;*/
+  /*pointer-events: none;*/
 }
 
 td.slot.slot-taken a {
@@ -4220,7 +4222,8 @@ table.queueTable:nth-child(2) {
 }
 
 .queueTable td.slot.slot-taken-admin {
-  height: 44px;
+  /*height: 44px;*/
+  height: 53px;
 }
 
 .queueTable .queueSubTable td.slot-taken-admin, .queueTable .queueSubTable td.slot-taken {
@@ -4286,6 +4289,7 @@ table.queueTable:nth-child(2) {
   width: 18em;
   outline: 1px solid silver;
   padding: 0;
+  height: 53px;
 }
 
 .slot .buttonbar {

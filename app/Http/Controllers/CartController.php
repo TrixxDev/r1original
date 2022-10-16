@@ -593,9 +593,14 @@ class CartController extends Controller
 	default:
 	  $order->payment = 3;
       }
+
+      $data = unserialize($order->info);
+
+      //dd($data);
+
       $order->save();
 
-      
+      Mail::to($data->email)->send(new \App\Mail\CartMail($data));
 
       Session::remove('cart');
       Session::remove('cartOptions');

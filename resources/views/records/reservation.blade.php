@@ -62,7 +62,7 @@
                           }
                         }
                         $closeTime = max($closeTime, $office->getCloseTime($workingDay));
-                        $col = 0;
+			$col = 0;
                         $iteration = $loop->iteration;
                       @endphp
                       <tr>
@@ -275,7 +275,7 @@
                         <div class="col-3">
 {{--                          <input type="text" class="form-control ui-datepicker" id="f_time">--}}
                           <select class="form-control" id="f_time">
-                            @for ($i=$openTime;$i<$closeTime;$i+=$timeStep)
+                            @for ($i=$openTime;$i<114;$i+=$timeStep)
                               <option value="{{ App\Models\Office::timeByInterval($i) }}">{{ App\Models\Office::timeByInterval($i) }}</option>
                             @endfor
                           </select>
