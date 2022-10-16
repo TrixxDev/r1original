@@ -55,7 +55,7 @@
         </label>
         <div class="col-md-6">
 {{--          <input class="form-control" name="status" type="text" value="{{$order->status}}" required="">--}}
-          <select id="select" name="select" class="custom-select">
+          <select id="select" name="order_status" class="custom-select">
             <option value="2" @if ($order->status == 2) selected="" @endif>Jauns</option>
             <option value="3" @if ($order->status == 3) selected="" @endif>Gaidam samaksu</option>
             <option value="4" @if ($order->status == 4) selected="" @endif>Gaidam preci</option>
@@ -162,7 +162,7 @@
           </label>
           <div class="col-md-6">
             <input class="form-control"
-                   name="name_suraname"
+                   name="company_registration_number"
                    type="text"
                    value="@if($hasCompanyData){{$userData->company_registration_number}}@endif"
             >
@@ -177,7 +177,7 @@
           </label>
           <div class="col-md-6">
             <input class="form-control"
-                   name="name_suraname"
+                   name="company_pvn_number"
                    type="text"
                    value="@if($hasCompanyData){{$userData->company_pvn_number}}@endif"
             >
@@ -192,7 +192,7 @@
           </label>
           <div class="col-md-6">
             <input class="form-control"
-                   name="name_suraname"
+                   name="company_name"
                    type="text"
                    value="@if($hasCompanyData){{$userData->company_name}}@endif"
             >
@@ -207,7 +207,7 @@
           </label>
           <div class="col-md-6">
             <input class="form-control"
-                   name="name_suraname"
+                   name="company_address"
                    type="text"
                    value="@if($hasCompanyData){{$userData->company_address}}@endif"
             >

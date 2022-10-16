@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Order;
 
 class ShopController extends Controller
@@ -36,11 +37,15 @@ class ShopController extends Controller
 
   }
 
-  public function order_update($id)
+  public function order_update(Request $request, $id)
   {
     $order = Order::findOrFail($id);
 
-    dd($order);
+    $data = (object) unserialize($order->info);
+
+    
+
+    dd($request, $data);
   }
 //
 //  public function delete($id) {

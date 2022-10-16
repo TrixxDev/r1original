@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -39,6 +41,22 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+      Builder::macro('whereLike', function($attributes, $terms) {
+	$this->where(function($query) use ($attributes, $terms) {
+	  foreach (Arr::wrap($attributes) as $attribute) {
+	    foreach (Arr::wrap($terms) as $term) {
+		//if (in_array('DOT%' . substr(date('Y'), -2)), $terms) { unset('DOT%' . substr(date('Y'), -2)) }
+		if ($term == 'CURRYEAR') {
+			$query->orWhere($attribute, 'LIKE', '%' . $term . '%');
+			$query->orWhere($attribute, 'LIKE', 'DOT%' . substr(date('Y'), -2));
+		}
+		$query->orWhere($attribute, 'LIKE', '%' . $term . '%');
+	    }
+	  }
+	});
+	return $this;
+      });
 
       Paginator::defaultView('vendor.pagination.custom');
       Paginator::defaultSimpleView('vendor.pagination.custom');

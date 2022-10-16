@@ -91,7 +91,8 @@
                         <ul id="facet_78843" class="collapse in">
                           <li>
                             <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <input type="text" readonly class="select-title tire-width" name="d1" pattern="/^\d+$/" maxlength="3" value="{{ $d1 }}">
+				<!-- pattern="/^\d+$/" maxlength="3" -->
+                              <input type="text" readonly class="select-title tire-width" name="d1" value="{{ $d1 }}">
                               <i class="material-icons float-xs-right"></i>
                               <div class="dropdown-menu width">
 
@@ -321,11 +322,25 @@
                           <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">RSC</a>
                         </label>
                       </li>
+		      <li data-label="MFS">
+                        <label class="facet-label" for="facet_for_mfs">
+                          <span class="custom-checkbox">
+                            <input id="facet_for_mfs" data-search-url="" name="code[]"
+                                   @if (in_array('MFS', $code)) checked="" @endif value="MFS"
+                                   data-for="prod-code" data-value="MFS" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">MFS</a>
+                        </label>
+                      </li>
                       <li data-label="CURRYEAR">
                         <label class="facet-label" for="facet_for_curryear">
                           <span class="custom-checkbox">
                             <input id="facet_for_curryear" data-search-url="" name="code[]"
-                                   value="CURRYEAR" data-for="prod-code" data-value="CURRYEAR"
+                                   @if (in_array('CURRYEAR', $code)) checked="" @endif value="CURRYEAR"
+				   data-for="prod-code" data-value="CURRYEAR"
                                    type="checkbox">
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>

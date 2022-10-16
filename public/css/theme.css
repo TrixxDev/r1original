@@ -10766,7 +10766,9 @@ li.product-flag:not(.discount):not(.on-sale) ~ li.product-flag {
 }
 
 #header .logo {
-  max-width: 100%
+  max-width: 100%;
+  position: relative;
+  top: 3px;
 }
 
 #header a {

@@ -73,7 +73,7 @@ $(document).ready(function() {
         if (!$(this).hasClass('open')) {
             $('.facet-dropdown').removeClass('open');
             $(this).addClass('open');
-            $(this).children().first().removeAttr('readonly');
+            //$(this).children().first().removeAttr('readonly');
             $('.dropdown-menu.width').scrollTo($('.dropdown-menu.width .select-list#' + __filterWidth));
             $('.dropdown-menu.height').scrollTo($('.dropdown-menu.height .select-list#' + __filterHeight));
             $('.dropdown-menu.radius').scrollTo($('.dropdown-menu.radius .select-list#' + __filterDiameter));
@@ -98,18 +98,18 @@ $(document).ready(function() {
 
 
 
-    $('.select-title.tire-width, .select-title.tire-height, .select-title.tire-radius').on('keyup', function(e) {
-        if (e.which == 32) {
-            let $number = $(this).val();
-            $number = $number.replaceAll(" ", "");
-            $(this).val($number);
-        } else if (e.ctrlKey && e.shiftKey && e.which == 82) {
-            location.reload();
-        }
-        if ($(this).val().length == $(this).attr('maxlength')) {
-            $('')
-        }
-    });
+    //$('.select-title.tire-width, .select-title.tire-height, .select-title.tire-radius').on('keyup', function(e) {
+    //    if (e.which == 32) {
+    //        let $number = $(this).val();
+    //        $number = $number.replaceAll(" ", "");
+    //        $(this).val($number);
+    //    } else if (e.ctrlKey && e.shiftKey && e.which == 82) {
+    //        location.reload();
+    //    }
+    //    if ($(this).val().length == $(this).attr('maxlength')) {
+    //        $('')
+    //    }
+    //});
 
 
     if (menu_opened === 1) {
