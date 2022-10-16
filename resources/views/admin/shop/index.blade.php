@@ -42,11 +42,12 @@
                           $item_sum = [];
                           $items = unserialize($order->info);
                           //unset($items['data']);
+			  if (isset($items['items'])) {
                           foreach ($items['items'] as $item) {
                             if (!isset($item['quantity'])) continue;
                             array_push($item_count, $item['quantity']);
                             array_push($item_sum, ($item['price'] * $item['quantity']));
-                          }
+                          }}
                           $item_count = array_sum($item_count);
                           $item_sum = array_sum($item_sum);
 
