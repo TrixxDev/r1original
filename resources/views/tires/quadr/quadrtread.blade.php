@@ -138,7 +138,7 @@
                       <div class="row">
                         <div class="">
 
-                          <table id="tires-table" class="table quadr-tread-sorter tires-table table-hover tablesorter">
+                          <table id="tires-table" class="table table-striped quadr-tread-sorter tires-table table-hover tablesorter">
                             <thead class="tires-thead" style="position:sticky; top: -1px;">
                             <tr>
                               <th scope="col"></th>
@@ -164,7 +164,7 @@
                                 $tire->includeStock = true;
                               @endphp
 
-                              <tr @if($currTire->tire_id == $tire->tire_id) style="font-weight: bold; background-color: #e0e0e0;"@endif class="tire-table-row">
+                              <tr @if($currTire->tire_id == $tire->tire_id) style="font-weight: bold; background-color: #cbcbcb;"@endif class="tire-table-row">
                                 <th class="tire-info" style="display: none;" data-article="{{ $tire->article }}" data-content="{{ $tire->title . ' ' . $tire->fullSize }}"></th>
                                 <th scope="row" class="tread-tire-table-checkbox text-center">
                                   <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"

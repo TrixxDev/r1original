@@ -612,6 +612,85 @@ $.UrlExists = function(url) {
   return http.status!=404;
 }
 // OLD TABLE SHOPPING BUTTON MODAL FUNCTION
+
+$('.tire-table-row, .tire-image-card').each(function(key, value) {
+  products.push($(value).children().children().last().children().first().val());
+  $(value).find('.grid-cart-btn').on('click', function() {
+    if (!user) {
+      const tire_id = $(this).data('info');
+
+      $.ajax({
+        url: '/' + pathParts[1] + '/ajax',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        method: 'POST',
+        data: { tire_id: tire_id, quantity: 4 },
+        success: function(data)
+        {
+          data = JSON.parse(data);
+          let cart_quantity = data.quantity;
+          cart_quantity = parseInt(cart_quantity);
+          let total_sum = data.total_sum;
+          total_sum = parseInt(total_sum);
+          const image = data.cart.options.image;
+          if (typeof image !== "undefined") {
+            if (data.cart.options.tire.make_id){
+              fetch(public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg',
+                { method: 'GET' },)
+                .then(res => {
+                  if (res.ok) {
+                    $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg');
+                  } else {
+                    $('.modal-image-preview img').attr('src', 'https://www.r1-dev.area.lv/public/img/p/en-default-home_default.jpg');
+                  }
+                });
+            }
+          }
+          // TIRE IMAGE INSIDE MODAL
+
+          $('.modal-product-info .product-name').html(data.cart.name);
+          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2));
+          $('.modal-product-info .product-price').attr('data-price', parseInt(data.cart.options.tire.price2));
+          $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
+          $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
+          $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
+          $('.modal-product-info .product-type').html(data.cart.options.tire.d3);
+          $('.modal-product-info .product-li').html(data.cart.options.tire.li);
+          $('.modal-product-info .product-si').html(data.cart.options.tire.si);
+          $('.cart-content .cart-products-total').html(total_sum);
+          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html($('.modal-product-info .product-qty').attr('data-qty'));
+          $('span.cart-products-count').html('(' + cart_quantity + ')');
+          $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+          $('.blockcart.cart-preview .header').empty();
+          $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+        }
+      });
+    } else {
+      const tire_data = $(this).parent().parent().parent();
+      let product = $('.product-main-details h1').text();
+      $('.popup input[name=qty]').val(4);
+      $('.popup input[name=total]').val(parseInt($('.popup input[name=price]').val()) * parseInt($('.popup input[name=qty]').val()));
+      $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
+      $('.popup input[name=article]').val($('.tire-info', tire_data).data('article'));
+      $('.popup input[name=prod]').val($('.tire-info', tire_data).data('content'));
+      $('.popup input[name=price]').val($('#sale-price', tire_data).html().trim().replace('€ ', ''));
+
+      calcData = {
+        'article': tire_data.find('th').data('article'),
+        'qty': 4,
+        'user': user,
+        'prod': $('.product-main-details h1').text(),
+        'price': tire_data.find('.tire-price-red').text().trim().replace('€', ''),
+      }
+
+      const urlData = new URLSearchParams(calcData).toString();
+
+      popCalc('/testing3',780,400, urlData);
+    }
+  });
+
+});
+
+
 $('.tire-table-row, .tire-image-card').each(function(key, value) {
   products.push($(value).children().children().last().children().first().val());
   $(value).find('.grid-buy-btn').on('click', function() {
@@ -873,7 +952,7 @@ if (!admin) {
     $('.popup input[name=price]').val(parseInt($('.current-price').children().last().attr('content')));
     $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
     $('.popup input[name=article]').val(tire_article);
-  
+
     calcData = {
           'article': tire_article,
           'qty': $('.product-quantity .qty .input-group input[name=qty]').attr('value'),
@@ -950,7 +1029,7 @@ $('.ct_matrix_row').each(function(key, value) {
       $('.popup input[name=price]').val(tire_price);
       $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
       $('.popup input[name=article]').val(tire_article);
-    
+
       calcData = {
           'article': tire_article,
           'qty': 4,
@@ -1031,7 +1110,7 @@ function sendData(data){
       //$.ajax({
       //  type: 'GET',
       //  url: '/sync/accrual',
-      //  
+      //
       //})
     },
     error: function(jqXHR, textStatus){
@@ -2639,7 +2718,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
       $('.popup input[name=total]').val(parseInt($('.tire-price-red', tire_data).html().replace('€ ', '')) * $('.popup input[name=qty]').val());
       $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
       $('.popup input[name=article]').val($('.table-tire-name-cell a', tire_data).data('article'));
-    
+
       calcData = {
           'article': $('.table-tire-name-cell a', tire_data).data('article'),
           'qty': 4,

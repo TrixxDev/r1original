@@ -3154,6 +3154,7 @@ td.slot button.free-slot-link {
   border: none;
   background: #e0ffe0;
   cursor: pointer;
+  font-size: 13px;
 }
 
 td.slot button.offer-slot-link {
@@ -3872,15 +3873,19 @@ tr.selected td a {
   margin-top: 40px;
 }
 .records {
-  padding-left: 200px!important;
-  padding-right: 200px!important;
+  /*padding-left: 200px!important;*/
+  /*padding-right: 200px!important;*/
 }
 
 @media (min-width: 1366px) {
   /*#mobile-main {*/
   /*  display: none;*/
   /*}*/
-
+  .records {
+    width: 1230px;
+    /*padding-left: 200px!important;*/
+    /*padding-right: 200px!important;*/
+  }
   .card.cart-summary .checkout .btn {
     padding: 5px 34px!important;
   }
@@ -4039,6 +4044,13 @@ td.header-empty {
   background: #65c2a538;
 }
 
+@media (max-width: 600px) {
+  .products.row.hide-price.title-flip {
+    padding-right: 0;
+  }
+  .grid-ex { grid-template-columns: repeat(2, 1fr); }
+}
+
 /* Screen larger than 600px? 2 column */
 @media (min-width: 600px) {
   .grid-ex { grid-template-columns: repeat(2, 1fr); }
@@ -4052,6 +4064,9 @@ td.header-empty {
 /* Screen larger than 1200px? 4 columns */
 @media (min-width: 1200px) {
   .grid-ex { grid-template-columns: repeat(4, 1fr); }
+  .products.row.hide-price.title-flip {
+    padding-right: 10px;
+  }
 }
 
 .card-title-text {
@@ -4864,11 +4879,11 @@ input#show-selected-checkbox {
 }
 
 .row.grid-ex.pr-1 {
-  padding: 0 16px 10px 0;
+  /*padding: 0 16px 10px 0;*/
 }
 
 h4.tire-brand-name.grid-t {
-  margin-left: -15px;
+  /*margin-left: -15px;*/
 }
 
 label.only_selected_checkbox {

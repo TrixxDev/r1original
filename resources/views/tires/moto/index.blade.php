@@ -387,7 +387,7 @@
                       @endphp
 
                     {{--LIST VIEW--}}
-                    <table id="tires-table" class="table moto-sorter tires-table table-hover tablesorter">
+                    <table id="tires-table" class="table table-striped moto-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead">
                         <tr>
                           <th scope="col"></th>

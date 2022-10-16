@@ -391,7 +391,7 @@
                             echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
                           }
                       @endphp
-                      <table id="tires-table" class="table quadr-sorter tires-table table-hover tablesorter">
+                      <table id="tires-table" class="table table-striped quadr-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead">
                         <tr>
                           <th scope="col"></th>
