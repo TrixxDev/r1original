@@ -117,7 +117,7 @@
 </div>
 <p style="text-align: center;"> </p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">KVADRACIKLIEM</span></strong></p>
-<table dir="ltr" style="width: 101.093%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 49.5816%;" width="63"><col style="width: 50.4184%;" width="63"></colgroup>
+<table dir="ltr" style="width: 101.093%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 71.3774%;" width="63"><col style="width: 28.6042%;" width="63"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 4 RIEPU PILNA MONTĀŽA (bez balansēšanas)</strong></td>
