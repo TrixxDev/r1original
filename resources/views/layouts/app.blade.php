@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>R1</title>
+    <title>R1 Riepu Serviss</title>
     <link rel="SHORTCUT ICON" href="{{ asset('images/favicon.ico') }}">
     <link rel="icon" type="image/vnd.microsoft.icon" href="{{ asset('images/favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">

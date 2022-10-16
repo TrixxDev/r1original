@@ -3177,9 +3177,7 @@ td.slot.slot-gray {
 td.slot.slot-taken {
   background: #a0e0ff;
   text-align: center;
-  /*height: 53px;*/
-  /*line-height: 28px;*/
-  /*pointer-events: none;*/
+  height: 24px;
 }
 
 td.slot.slot-taken a {
@@ -4918,4 +4916,11 @@ input#show-selected-checkbox {
 
 .grid-buy-btn i {
   font-size: 21px;
+}
+
+.mobile-filter-button {
+  background-color: red;
+  color: white;
+  border: 1px solid black;
+  text-align: center;
 }
