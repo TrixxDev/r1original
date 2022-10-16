@@ -410,18 +410,18 @@
                                                 Motociklu riepas
                                             </a>
                                         </li>
-                                        <li class="category" id="category-18">
+                                       <!-- <li class="category" id="category-18">
                                           <a class="dropdown-item dropdown-submenu"
                                              href="{{ route('lielas-riepas') }}"
                                              data-depth="1">
                                                 Lielās riepas
                                           </a>
-                                        </li>
+                                        </li>-->
                                     </ul>
 
                                 </div>
                             </li>
-                            <li class="category" id="category-20">
+                            <!--<li class="category" id="category-20">
                                 <a class="dropdown-item" href="#" data-depth="0">
 
                                     <span class="float-xs-right hidden-md-up">
@@ -453,7 +453,7 @@
 
                                 </div>
                             </li>
-                            <li class="category" id="cms-category-3">
+                            --><li class="category" id="cms-category-3">
                                 <a class="dropdown-item" href="#" data-depth="0">
 
                                     <span class="float-xs-right hidden-md-up">
@@ -720,6 +720,12 @@
 </main>
 
 
+<!-- Panelbear -->
+<script async src="https://cdn.panelbear.com/analytics.js?site=2KLteTQogNz"></script>
+<script>
+    window.panelbear = window.panelbear || function() { (window.panelbear.q = window.panelbear.q || []).push(arguments); };
+    panelbear('config', { site: '2KLteTQogNz' });
+</script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-230419920-1"></script>
 <script>

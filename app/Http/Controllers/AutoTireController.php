@@ -202,14 +202,24 @@ class AutoTireController extends Controller
                           })->when($this->types, function($query) {
 			      $query->whereIn('auto_tires.type', $this->types);
                           })->when($this->code, function($query) {
-				if (in_array('CURRYEAR', $this->code)) {
-					$query->where('code', 'like', 'DOT%' . substr(date('Y'), -2));
-					if (($key = array_search('CURRYEAR', $this->code)) !== false) {
-						unset($this->code[$key]);
-					}
-				}
+			//	if (in_array('CURRYEAR', $this->code)) {
+			//		$query->where('code', 'like', 'DOT%' . substr(date('Y'), -2));
+			//		if (($key = array_search('CURRYEAR', $this->code)) !== false) {
+			//			unset($this->code[$key]);
+			//		}
+			//	}
 			  })->when($this->code, function($query) {
-                              $query->orWhereIn('code', $this->code);
+				//foreach ($this->code as $key => $code) {
+					//if ($key == 0) {
+					//	$query->where('code', 'like', '%' . $code . '%');
+					//}
+					//$query->whereRaw("code LIKE ('%" . implode("%' OR '%", $this->code) . "%')");
+				//}
+                              //$query->orWhere('code', $this->code);
+			      //if (in_array('CURRYEAR', $this->code)) {
+				//$this->code[array_search('CURRYEAR', $this->code)] = 'DOT%' . substr(date('Y'), -2);
+			      //}
+			      $query->whereLike('code', $this->code);
 			  })->when($this->fuel, function($query) {
                               $query->whereIn('eco', $this->fuel);
                           })->when($this->wet, function($query) {

@@ -116,7 +116,7 @@
 </table>
 <p> </p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">KVADRACIKLIEM</span></strong></p>
-<table dir="ltr" style="width: 101.093%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 35.62091503267974%;" width="63"><col style="width: 64.37908496732027%;" width="63"></colgroup>
+<table dir="ltr" style="width: 101.093%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 39.05289052890529%;" width="63"><col style="width: 60.88560885608856%;" width="63"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 4 RIEPU PILNA MONTĀŽA (bez balansēšanas)</strong></td>

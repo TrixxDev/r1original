@@ -281,13 +281,13 @@
         <a class="dropdown-item" href="{{ route('motociklu-riepas') }}">Motociklu Riepas</a>
       </div>
 
-      <div class="nav-dropdown-link">
+      <!--<div class="nav-dropdown-link">
         <a class="dropdown-item" href="{{ route('lielas-riepas') }}">Lielās riepas</a>
-      </div>
+      </div>-->
 
     </div>
 
-  <button class="nav-dropdown-button navbar-item" onclick="showDiskiDropdown()">Diski <span class="material-icons diski">keyboard_arrow_down</span></button>
+  <!-- <button class="nav-dropdown-button navbar-item" onclick="showDiskiDropdown()">Diski <span class="material-icons diski">keyboard_arrow_down</span></button>
 
 
     <div class="dropdown-options diski">
@@ -298,7 +298,7 @@
       <div class="nav-dropdown-link">
         <a class="dropdown-item" href="{{ route('kvadraciklu-diski') }}">Kvadraciklu Diski</a>
       </div>
-    </div>
+    </div>-->
 
   <button class="nav-dropdown-button navbar-item" onclick="showServissDropdown()">Serviss <span class="material-icons serviss">keyboard_arrow_down</span></button>
 

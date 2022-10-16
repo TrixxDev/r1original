@@ -595,6 +595,8 @@ class CartController extends Controller
       }
       $order->save();
 
+      
+
       Session::remove('cart');
       Session::remove('cartOptions');
       Session::remove('cart_options');

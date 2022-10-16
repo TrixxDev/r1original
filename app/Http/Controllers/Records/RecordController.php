@@ -173,9 +173,9 @@ class RecordController extends Controller
                     if (($slotNumber!==false)&&($queue->isVisible($request->date))) {
                         if ($queue->isIntervalBeginning($request->date,$i)) {
                             $slot = $queue->_slots[$request->date][$slotNumber];
-                            $times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => true];
+                            //$times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => true];
                             if ($slot->status == 0) {
-                              $times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => false];
+                              $times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id];
                             }
                         }
                     }
