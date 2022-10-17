@@ -3154,6 +3154,7 @@ td.slot button.free-slot-link {
   border: none;
   background: #e0ffe0;
   cursor: pointer;
+  font-size: 13px;
 }
 
 td.slot button.offer-slot-link {
@@ -3219,7 +3220,9 @@ td.header-time {
 
 td.slot {
   height: 24px;
+  font-size: 13px;
 }
+
 
 th.header {
   text-align: center;
@@ -3851,9 +3854,10 @@ tr.selected td a {
 }
 
 .tire-brand-name {
-  cursor: default;
+  cursor: default;.modal.show .modal-dialog
   margin-bottom: 0;
   padding-top: 1rem;
+  align-self: baseline;
 }
 
 .table-spacer-right {
@@ -3874,15 +3878,19 @@ tr.selected td a {
   margin-top: 40px;
 }
 .records {
-  padding-left: 200px!important;
-  padding-right: 200px!important;
+  /*padding-left: 200px!important;*/
+  /*padding-right: 200px!important;*/
 }
 
 @media (min-width: 1366px) {
   /*#mobile-main {*/
   /*  display: none;*/
   /*}*/
-
+  .records {
+    width: 1230px;
+    /*padding-left: 200px!important;*/
+    /*padding-right: 200px!important;*/
+  }
   .card.cart-summary .checkout .btn {
     padding: 5px 34px!important;
   }
@@ -3914,6 +3922,7 @@ tr.selected td a {
 .closed-slot {
   background: #ffB0B0;
   text-align: center;
+  font-size: 13px;
 }
 
 .taken-slot {
@@ -4041,6 +4050,13 @@ td.header-empty {
   background: #65c2a538;
 }
 
+@media (max-width: 600px) {
+  .products.row.hide-price.title-flip {
+    padding-right: 0;
+  }
+  .grid-ex { grid-template-columns: repeat(2, 1fr); }
+}
+
 /* Screen larger than 600px? 2 column */
 @media (min-width: 600px) {
   .grid-ex { grid-template-columns: repeat(2, 1fr); }
@@ -4054,6 +4070,9 @@ td.header-empty {
 /* Screen larger than 1200px? 4 columns */
 @media (min-width: 1200px) {
   .grid-ex { grid-template-columns: repeat(4, 1fr); }
+  .products.row.hide-price.title-flip {
+    padding-right: 10px;
+  }
 }
 
 .card-title-text {
@@ -4321,6 +4340,7 @@ table.queueTable:nth-child(2) {
 .modal.show .modal-dialog {
   /*-webkit-transform: none;*/
   /*transform: none;*/
+  padding-right: 20px;
 }
 
 .modal-content {
@@ -4868,11 +4888,11 @@ input#show-selected-checkbox {
 }
 
 .row.grid-ex.pr-1 {
-  padding: 0 16px 10px 0;
+  /*padding: 0 16px 10px 0;*/
 }
 
 h4.tire-brand-name.grid-t {
-  margin-left: -15px;
+  /*margin-left: -15px;*/
 }
 
 label.only_selected_checkbox {
@@ -4927,4 +4947,10 @@ input#show-selected-checkbox {
   color: white;
   border: 1px solid black;
   text-align: center;
+}
+
+.sm-filter-btn {
+  right: 15px;
+  top: 10px;
+  position: absolute;
 }
