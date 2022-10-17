@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Auth::routes();
+Route::get('/register', function() { return abort(404); })->name('register');
 
 // Administrācijas panelis
 
@@ -75,7 +76,7 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::get('/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
   Route::get('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'order'])->name('order');
   Route::post('/order/{id}/update', [App\Http\Controllers\Admin\ShopController::class, 'order_update'])->name('order.update');
-//    Route::delete('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'delete'])->name('delete');
+  Route::get('/order/{id}/delete', [App\Http\Controllers\Admin\ShopController::class, 'delete'])->name('order.delete');
 
   // Pieraksts
   Route::get('/pieraksts/date={date}', [App\Http\Controllers\Admin\Records\RecordController::class, 'index'])->name('records.date');

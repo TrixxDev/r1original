@@ -819,3 +819,23 @@ $(document).ready(function () {
   });
 
 });
+
+let shipping_city = $('select.custom-select[name=shipping_city] option:selected').val();
+let shipping_address = $('input[name=shipping_address]').val();
+
+if ($('select.custom-select[name=delivery_address]').val() == 3) {
+	$('select.custom-select[name=delivery_address]').parent().parent().next().show();
+}
+
+$('select.custom-select[name=shipping_city]').on('change', function() {
+	shipping_city = $(this).val();
+});
+
+$('select[name=delivery_address]').on('change', function() {
+	if ($(this).val() == 3) {
+		$(this).parent().parent().next().show();
+		shipping_city = $('select.custom-select[name=shipping_city] option:selected').val();
+	} else {
+		$(this).parent().parent().next().hide();
+	}
+});

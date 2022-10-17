@@ -123,15 +123,51 @@
 
       <div class="form-group row">
         <label class="col-md-3 form-control-label text-left text-md-right">
-          Piegādes adrese
+          Saņemšanas vieta
         </label>
-	{{ dd($userData); }}
-        <div class="col-md-6 col-sm">
-          <input class="form-control" name="delivery_adress" type="text" value="@if (isset($userData->delivery_address)) {{ $userData->delivery_address }} @endif">
+	<div class="col-md-6 col-sm">
+	  <select id="select" name="delivery_address" class="custom-select">
+	    @foreach ($offices as $office)
+            <option value="{{ $office->office_id }}" @if (isset($userData->fitting_address) && $userData->fitting_address == $office->id) selected="" @endif>{{ $office->shipping }}</option>
+	    @endforeach
+	    @if (isset($userData->shipping_city))
+		@switch($userData->shipping_city)
+			@case(1)
+			@case(2)
+			@case(3)
+	                  <option value="3" selected="">Piegāde</option>
+			@break
+			@default
+			  <option value="3">Piegāde</option>
+		@endswitch
+	    @else
+	    	<option value="3">Piegāde</option>
+	    @endif
+	  </select>
+<!--          <input class="form-control" name="delivery_adress" type="text" value="">-->
         </div>
+
         <div class="col-md-3 form-control-comment">
         </div>
+
       </div>
+        <div class="form-group row" style="display: none;">
+           <label class="col-md-3 form-control-label text-left text-md-right">
+                Piegādes adrese
+           </label>
+	   <div class="col-md-2 col-sm">
+		<select id="select" class="custom-select" name="shipping_city">
+	   	<option value="1" @if (isset($userData->shipping_city) && $userData->shipping_city == 1) selected="" @endif>Rīga</option>
+	   	<option value="2" @if (isset($userData->shipping_city) && $userData->shipping_city == 2) selected="" @endif>Salaspils</option>
+	   	<option value="3" @if (isset($userData->shipping_city) && $userData->shipping_city == 3) selected="" @endif>Cits</option>
+		</select>
+	   </div>
+	   <div class="col-md-4">
+		<input class="form-control" name="shipping_address" type="text" @if (isset($userData->shipping_address)) value="{{ $userData->shipping_address }}" @endif>
+	   </div>
+        </div>
+
+
 {{--      @php echo $order @endphp--}}
 
       @php
@@ -285,7 +321,7 @@
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
-      <div class="form-group col-12 col-lg-6" style="margin: auto;">
+      <div class="form-group col-10" style="margin: auto;">
         <table class="table admin-order-confirm-table table-light" >
           <thead class="table-dark">
           <tr>
@@ -300,10 +336,24 @@
           {{--@php dd($tires) @endphp--}}
 
           @foreach ($tires as $tire)
+    	    @php
+	    if (isset($tire->article)) {
+		$tireObj = App\Models\Autotire::where('article', $tire->article)->first();
+                if (!$tireObj) $tireObj = App\Models\Moto::where('article', $tire->article)->first();
+                if (!$tireObj) $tireObj = App\Models\Quadr::where('article', $tire->article)->first();
+	    }
+
+
+
+	    @endphp
             <tr id="confirm-table">
               <th style="border-color: #c6c6c6;" scope="row">{{$tire->tire_id}}</th>
-              <td style="border-color: #c6c6c6;">{{$tire->title}}</td>
-              <td style="border-color: #c6c6c6;">{{$tire->quantity}}</td>
+	      @if (isset($tireObj))
+                <td style="border-color: #c6c6c6;">{!! '<b>' . $tireObj->fullSize . '</b> ' . $tire->title!!}</td>
+              @else
+                <td style="border-color: #c6c6c6;">{!! $tire->title!!}</td>
+	      @endif
+	      <td style="border-color: #c6c6c6;">{{$tire->quantity}}</td>
               <td style="border-color: #c6c6c6;">{{$tire->quantity}} x {{$tire->price}} &euro;</td>
               <td style="border-color: #c6c6c6;">@php echo ($tire->quantity * $tire->price) @endphp &euro;</td>
             </tr>

@@ -192,7 +192,7 @@ class CartController extends Controller
 
         return redirect(route('order'));
       }
-//        dd($this->cart->content());
+        //dd(Cart::content());
       return view('cart.home');
     }
 
@@ -232,17 +232,19 @@ class CartController extends Controller
 
         foreach (Cart::content() as $key => $item) {
 
+	  //dd($item->options->tire);
+
           $cartData['items'][$i] = [
             'tire_id' => $item->id,
             'title' => $item->name,
             'quantity' => $item->qty,
             'price' => (int) $item->price,
-          ];
+            'article' => $item->options->tire['article'],
+	  ];
 
           $i++;
 
         }
-
 
         $user_data = $request->input('data');
         $user_data = array_merge($user_data, $cartData);
@@ -561,6 +563,7 @@ class CartController extends Controller
         $order = Order::where('userIp', user_ip)->where('status', 1)->first();
       }
 
+
       $order->status = 2;
       $order->payment = request()->payment;
       $order->save();
@@ -595,11 +598,11 @@ class CartController extends Controller
 	  $order->payment = 3;
       }
 
-      $data = $order;
-      $data->info = unserialize($order->info);
       //dd($data);
-
       $order->save();
+
+      $data = $order;
+      $data->info = unserialize($data->info);
 
       //DMail::to($data->email)->send(new \App\Mail\CartMail($data));
 

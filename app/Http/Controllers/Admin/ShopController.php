@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Office;
 
 class ShopController extends Controller
 {
@@ -12,7 +13,7 @@ class ShopController extends Controller
   public function orders()
   {
 
-    $orders = Order::whereIn('status', [1,2,3])->orderBy('id', 'desc')->paginate(30);
+    $orders = Order::whereIn('status', [1,2,3,4,5])->orderBy('id', 'desc')->paginate(30);
 
     return view('admin.shop.index', compact('orders'));
 
@@ -24,8 +25,10 @@ class ShopController extends Controller
     $order = Order::findOrFail($id);
 
     @$userData = json_decode(json_encode(unserialize($order->info)));
-
+    //dd($order);
     if ($userData == false || !isset($userData->items)) { return \Redirect::to(route('admin.orders'))->with('danger', 'Nevar atvērt pasūtījumu'); }
+
+    $offices = Office::all();
 
     $tires = $userData->items;
 
@@ -35,7 +38,7 @@ class ShopController extends Controller
       $hasCompanyData = false;
     }
 
-    return view('admin.shop.order', compact('order', 'userData', 'tires'));
+    return view('admin.shop.order', compact('order', 'userData', 'tires', 'offices'));
 
   }
 
@@ -45,17 +48,30 @@ class ShopController extends Controller
 
     $data = (object) unserialize($order->info);
 
-    
+    if (strpos($request->name_suraname, ',') !== false) {
+        $names = explode(', ', $request->name_suraname);
+    } else {
+	$names = explode(' ', $request->name_suraname);
+    }
 
-    dd($request, $data);
+    $data->name = $names[0];
+    $data->surname = $names[1];
+    $data->email = $request->email;
+
+    dd($request, $names, $data, $order);
   }
-//
-//  public function delete($id) {
-//
-//    Order::where('id', $id)->delete();
-//
-//    return redirect()->route('admin.shop.orders')
-//      ->with('success','Product deleted successfully');
-//  }
+
+  public function delete($id) {
+
+    $order = Order::findOrFail($id);
+
+    if ($order->delete()) {
+	return redirect()->route('admin.orders')
+          ->with('success','Pasūtījums veiksmīgi dzēsts');
+    } else {
+	return redirect()->route('admin.shop.orders')->with('danger', 'Kļūda pasūtījuma dzēšanā');
+    }
+
+  }
 
 }

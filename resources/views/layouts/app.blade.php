@@ -696,6 +696,7 @@
                                 </a>
                             </li>
                         </ul>
+			<a href="https://www.salidzini.lv/" target="_blank"><img border="0" alt="Salidzini.lv logotips" id="salidzini-banner" title="Interneta veikali. Labākā cena" src="https://static.salidzini.lv/images/logo_button.gif"/></a>
                     </div>
 
 

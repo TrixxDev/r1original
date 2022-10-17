@@ -68,7 +68,7 @@
 
                         @endphp
                           <tr>
-                            <td>{{ $order->created_at }}</td>
+                            <td>{{ $order->created_at . ' - ' . $items['name'] . ', ' . $items['surname'] }}</td>
                             <td>{{ $item_count }}</td>
                             <td>{{ $item_sum }} €</td>
                             <td>{{ $status_enum[$order->status] }}</td>
@@ -84,9 +84,7 @@
                                 <i class="fa-solid fa-circle-check" style="color:#fff;"></i>
                               </a>
 
-                              @method('DELETE')
-
-                              <button type="submit" class="btn btn-danger">
+                              <a onclick="return confirm('Tiešām vēlies dzēst?')" href="{{ route('admin.order.delete', $order->id) }}" class="btn btn-danger">
                                 <i class="fa-solid fa-trash" style="color:#fff;"></i>
                               </button>
 

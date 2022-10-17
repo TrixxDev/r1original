@@ -3935,6 +3935,7 @@ tr.selected td a {
   background: white;
   text-align: center;
   width: 8%;
+  font-size: 14px;
 }
 
 /*td.slot-empty {*/

@@ -190,7 +190,11 @@ class Autotire extends Model
         if (!isset($tire->brand_title) || !isset($tire->tread_title)) {
             return false;
         } else {
-            return route('vasaras-riepa', [$tire->brand_title, str_replace('/', '_', $tire->tread_title), $this->tire_id]);
+	    if ($tire->season == 1) {
+                return route('vasaras-riepa', [$tire->brand_title, str_replace('/', '_', $tire->tread_title), $this->tire_id]);
+	    } else {
+                return route('ziemas-riepa', [$tire->brand_title, str_replace('/', '_', $tire->tread_title), $this->tire_id]);
+	    }
         }
     }
 
