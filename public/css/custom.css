@@ -3220,7 +3220,9 @@ td.header-time {
 
 td.slot {
   height: 24px;
+  font-size: 13px;
 }
+
 
 th.header {
   text-align: center;
@@ -3852,9 +3854,10 @@ tr.selected td a {
 }
 
 .tire-brand-name {
-  cursor: default;
+  cursor: default;.modal.show .modal-dialog
   margin-bottom: 0;
   padding-top: 1rem;
+  align-self: baseline;
 }
 
 .table-spacer-right {
@@ -3919,6 +3922,7 @@ tr.selected td a {
 .closed-slot {
   background: #ffB0B0;
   text-align: center;
+  font-size: 13px;
 }
 
 .taken-slot {
@@ -4336,6 +4340,7 @@ table.queueTable:nth-child(2) {
 .modal.show .modal-dialog {
   /*-webkit-transform: none;*/
   /*transform: none;*/
+  padding-right: 20px;
 }
 
 .modal-content {
