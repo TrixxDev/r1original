@@ -4054,7 +4054,18 @@ td.header-empty {
   .products.row.hide-price.title-flip {
     padding-right: 0;
   }
-  .grid-ex { grid-template-columns: repeat(2, 1fr); }
+
+  .grid-ex {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tire-tread, .card-title-text {
+    width: 150px !important;
+  }
+
+  .row.grid-ex.pr-1 {
+    margin: 0;
+  }
 }
 
 /* Screen larger than 600px? 2 column */
