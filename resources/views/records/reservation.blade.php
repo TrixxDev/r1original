@@ -49,7 +49,7 @@
               <div class="col-12">
                 <br>
                 <h4>{{ $_weekDays[date('N', strtotime($workingDay.' 00:00:00'))] }}, {{ date('d.m.Y', strtotime($workingDay.' 00:00:00')) }}</h4>
-                <div class="row">
+                <div class="row" style="display: flex;">
                   @foreach ($offices as $office)
                     <table class="queueTable reservation">
                       @php

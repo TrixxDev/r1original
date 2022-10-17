@@ -19151,15 +19151,15 @@ table.queueTable:nth-child(2) {
 }
 
 .queueTable:nth-child(2) td.slot-free {
-  height: 53px;
+  height: 54.6px;
 }
 
 .queueTable:nth-child(2) table.queueSubTable td.slot-free {
-  height: 44.09px;
+  height: 44px;
 }
 
 .queueTable td.slot-free {
-  height: 44px;
+  height: 53px;
 }
 
 .queueTable td.slot.slot-gray {

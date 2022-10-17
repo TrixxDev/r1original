@@ -3,7 +3,7 @@
 <table dir="ltr" style="width: 100.638%; height: 223.906px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 26.8116%;" width="63"><col style="width: 15.2174%;" width="63"><col style="width: 15.2174%;" width="63"><col style="width: 21.4674%;" width="63"><col style="width: 21.3768%;" width="63"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
-<td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="https://mail.google.com/mail/u/0?ui=2&ik=6143802916&attid=0.1.2&permmsgid=msg-f:1746675598132437592&th=183d7033c486e258&view=fimg&fur=ip&sz=s0-l75-ft&attbid=ANGjdJ-LipoeOzpm0lmtep8zdOYocgczBiIFiYyI2BBJU8aFOu1yYggMohKhutoi6SZXU2CFbwjWpEZsQh_gPDU4ZcK8H9xLwUgicSje6L1pWoJ9LyaZN7NKNSQrW_E&disp=emb" width="195" height="75"></strong></td>
+<td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
 <td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>VIEGLIE AUTO</strong></td>
 <td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>KROSOVERI/SUV/CARGO</strong></td>
 </tr>
@@ -77,7 +77,7 @@
 <table dir="ltr" style="width: 101.275%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 26.0126%;" width="63"><col style="width: 17.1017%;" width="63"><col style="width: 15.3915%;" width="63"><col style="width: 24.7598%;" width="63"><col style="width: 16.7344%;" width="63"></colgroup>
 <tbody>
 <tr>
-<td><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="https://mail.google.com/mail/u/0?ui=2&ik=6143802916&attid=0.1.2&permmsgid=msg-f:1746675598132437592&th=183d7033c486e258&view=fimg&fur=ip&sz=s0-l75-ft&attbid=ANGjdJ-LipoeOzpm0lmtep8zdOYocgczBiIFiYyI2BBJU8aFOu1yYggMohKhutoi6SZXU2CFbwjWpEZsQh_gPDU4ZcK8H9xLwUgicSje6L1pWoJ9LyaZN7NKNSQrW_E&disp=emb" width="195" height="75"></strong></td>
+<td><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
 <td style="text-align: center;" data-sheets-value="{"><strong>BEZ KAMERAS</strong></td>
 <td style="text-align: center;" data-sheets-value="{"><strong>AR KAMERU R15<</strong></td>
 <td style="text-align: center;" data-sheets-value="{"><strong>AR KAMERU R10-R14</strong></td>
@@ -156,7 +156,7 @@
 <tbody>
 <tr style="height: 22.3906px;">
 <td style="height: 67.1406px;" colspan="1" rowspan="2">
-<div style="text-align: center;"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="https://mail.google.com/mail/u/0?ui=2&ik=6143802916&attid=0.1.2&permmsgid=msg-f:1746675598132437592&th=183d7033c486e258&view=fimg&fur=ip&sz=s0-l75-ft&attbid=ANGjdJ-LipoeOzpm0lmtep8zdOYocgczBiIFiYyI2BBJU8aFOu1yYggMohKhutoi6SZXU2CFbwjWpEZsQh_gPDU4ZcK8H9xLwUgicSje6L1pWoJ9LyaZN7NKNSQrW_E&disp=emb" width="195" height="75"></strong></div>
+<div style="text-align: center;"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></div>
 </td>
 <td style="height: 22.3906px; text-align: center;" colspan="5" rowspan="1" data-sheets-value="{"><strong>VIEGLIE AUTO</strong></td>
 </tr>
@@ -215,7 +215,7 @@
 <table dir="ltr" style="width: 100.543%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.668%;" width="222"><col style="width: 21.7609%;" width="57"><col style="width: 17.3171%;" width="61"><col style="width: 18.4051%;" width="57"><col style="width: 20.7624%;" width="57"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
-<td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="https://mail.google.com/mail/u/0?ui=2&ik=6143802916&attid=0.1.2&permmsgid=msg-f:1746675598132437592&th=183d7033c486e258&view=fimg&fur=ip&sz=s0-l75-ft&attbid=ANGjdJ-LipoeOzpm0lmtep8zdOYocgczBiIFiYyI2BBJU8aFOu1yYggMohKhutoi6SZXU2CFbwjWpEZsQh_gPDU4ZcK8H9xLwUgicSje6L1pWoJ9LyaZN7NKNSQrW_E&disp=emb" width="195" height="75"></strong></td>
+<td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
 <td style="height: 22.3906px; text-align: center;" colspan="4" rowspan="1" data-sheets-value="{"><strong>KROSOVERI/SUV/CARGO</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
@@ -268,7 +268,7 @@
 <table dir="ltr" style="width: 100.911%; height: 111.953px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 17.3442%;" width="63"><col style="width: 40.7485%;" width="63"><col style="width: 41.9073%;" width="63"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
-<td style="height: 22.3906px; text-align: left;"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="https://mail.google.com/mail/u/0?ui=2&ik=6143802916&attid=0.1.2&permmsgid=msg-f:1746675598132437592&th=183d7033c486e258&view=fimg&fur=ip&sz=s0-l75-ft&attbid=ANGjdJ-LipoeOzpm0lmtep8zdOYocgczBiIFiYyI2BBJU8aFOu1yYggMohKhutoi6SZXU2CFbwjWpEZsQh_gPDU4ZcK8H9xLwUgicSje6L1pWoJ9LyaZN7NKNSQrW_E&disp=emb" width="195" height="75"></strong></td>
+<td style="height: 22.3906px; text-align: left;"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
 <td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>4 riteņi</strong></td>
 <td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>2 riteņi</strong></td>
 </tr>
@@ -299,7 +299,7 @@
 <table dir="ltr" style="width: 101.093%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 17.4031%;" width="63"><col style="width: 40.585%;" width="63"><col style="width: 42.012%;" width="63"></colgroup>
 <tbody>
 <tr>
-<td><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="https://mail.google.com/mail/u/0?ui=2&ik=6143802916&attid=0.1.2&permmsgid=msg-f:1746675598132437592&th=183d7033c486e258&view=fimg&fur=ip&sz=s0-l75-ft&attbid=ANGjdJ-LipoeOzpm0lmtep8zdOYocgczBiIFiYyI2BBJU8aFOu1yYggMohKhutoi6SZXU2CFbwjWpEZsQh_gPDU4ZcK8H9xLwUgicSje6L1pWoJ9LyaZN7NKNSQrW_E&disp=emb" width="195" height="75"></strong></td>
+<td><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
 <td style="text-align: center;" data-sheets-value="{"><strong>4 riteņi</strong></td>
 <td style="text-align: center;" data-sheets-value="{"><strong>2 riteņi</strong></td>
 </tr>

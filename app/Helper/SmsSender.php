@@ -55,7 +55,8 @@ class SmsSender {
               $sendString .= '["'.$target.'","'.$smsText.'"]';
             }
           }
-          if ($queue->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN){
+	  
+          if ($queue->_workingDays[$date]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN){
             $form = json_decode($slot->takenby2);
             $smsText = $queue->parseNotification($queue->notificationSMS, $date, $slot->iorder, $form, true);
             $target = $this->isValidPhoneNumber($form->ownerPhone);
@@ -70,9 +71,10 @@ class SmsSender {
       }
     }
     $sendString = '['.$sendString.']';
+    //$sendString .= '["28344474","'.$smsText.'"]';
 
     $object = json_decode($sendString);
-//    dd($sendString, $object);
+    //dd($sendString, $object);
 
 //https://traffic.sales.lv/API:0.14/
 
@@ -82,7 +84,7 @@ class SmsSender {
 //      audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, 0,0, $sendString);
 //      die;
 //    }
-//$sendString = '[[26417776, "Hello"]]';
+//$sendString = '[[28344474, "Hello"]]';
 
     $postdata = http_build_query(
       array(
@@ -134,6 +136,7 @@ class SmsSender {
     $context = stream_context_create($opts);
     $result = file_get_contents('https://traffic.sales.lv/API:0.14/', false, $context);
 
+    
 //    audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SENT SMS: '.$result);
 
     dd($result);

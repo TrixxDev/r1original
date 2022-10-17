@@ -7,6 +7,7 @@ use DOMDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Redirect;
 
 class HomeController extends Controller
 {
@@ -147,7 +148,7 @@ class HomeController extends Controller
       $db = DB::table('pages')->where('route', $page)->first();
 
       if ($db === null) {
-        abort(404);
+        return Redirect::to(route('home'));
       }
 
       return view('pages.' . $page);

@@ -136,7 +136,7 @@ Route::middleware('checksession')->group(function() {
   // Sākumlapa/Iziešana no konta
 
   Route::get('/', function() {
-   return redirect('/ziemas-riepas');
+   return redirect('/pieraksts');
   })->name('home');
   Route::get('/callback', function() {
    require_once('app/Paysera/callback.php');
