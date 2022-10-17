@@ -23,7 +23,9 @@ class ShopController extends Controller
 
     $order = Order::findOrFail($id);
 
-    $userData = json_decode(json_encode(unserialize($order->info)));
+    @$userData = json_decode(json_encode(unserialize($order->info)));
+
+    if ($userData == false || !isset($userData->items)) { return \Redirect::to(route('admin.orders'))->with('danger', 'Nevar atvērt pasūtījumu'); }
 
     $tires = $userData->items;
 

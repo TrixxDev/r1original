@@ -3177,7 +3177,7 @@ td.slot.slot-gray {
 td.slot.slot-taken {
   background: #a0e0ff;
   text-align: center;
-  height: 24px;
+  /*height: 24px;*/
   /*line-height: 28px;*/
   /*pointer-events: none;*/
 }

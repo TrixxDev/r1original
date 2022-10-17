@@ -5657,8 +5657,8 @@ html:not([dir=rtl]) .was-validated .custom-select:invalid, html:not([dir=rtl]) .
 .row {
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
+  /*-ms-flex-wrap: wrap;
+  flex-wrap: wrap;*/
   margin-right: -15px;
   margin-left: -15px
 }
@@ -19143,19 +19143,15 @@ table.queueTable:nth-child(2) {
 }
 
 .queueTable td.slot.slot-taken-admin {
-  height: 44px;
+  height: 53px;
 }
 
 .queueTable td.slot.slot-empty {
-  height: 22px;
+  height: 53px;
 }
 
 .queueTable:nth-child(2) td.slot-free {
-  height: 45.59px;
-}
-
-.queueTable:nth-child(2) td.slot-free {
-  height: 45.59px;
+  height: 53px;
 }
 
 .queueTable:nth-child(2) table.queueSubTable td.slot-free {

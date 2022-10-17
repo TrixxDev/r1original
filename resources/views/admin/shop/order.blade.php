@@ -59,7 +59,7 @@
             <option value="2" @if ($order->status == 2) selected="" @endif>Jauns</option>
             <option value="3" @if ($order->status == 3) selected="" @endif>Gaidam samaksu</option>
             <option value="4" @if ($order->status == 4) selected="" @endif>Gaidam preci</option>
-	    <option value="5" @if ($order->status == 5) selected="" @endif>Gatavs</option>
+	    <option value="5" @if ($order->status == 5) selected="" @endif>Pabeigts</option>
           </select>
         </div>
         <div class="col-md-3 form-control-comment">
@@ -125,6 +125,7 @@
         <label class="col-md-3 form-control-label text-left text-md-right">
           Piegādes adrese
         </label>
+	{{ dd($userData); }}
         <div class="col-md-6 col-sm">
           <input class="form-control" name="delivery_adress" type="text" value="@if (isset($userData->delivery_address)) {{ $userData->delivery_address }} @endif">
         </div>

@@ -720,30 +720,38 @@ class RecordController extends Controller
                 $sheet->setCellValue('B1', 'Rinda');
                 $sheet->setCellValue('C1', 'Pieraksta info');
 
-                if ($split) {
+  		if ($slot->queue_id == 3) {
+                        $slot->queue_id = 1;
+                } else if ($slot->queue_id == 4) {
+                        $slot->queue_id = 2;
+                } else if ($slot->queue_id == 5) {
+                        $slot->queue_id = 3;
+                }
 
-                  $sheet->setCellValue('A' . $b, Office::timeByInterval($i));
-                  $sheet->setCellValue('A' . ($b + 1), Office::timeByInterval($i + ($queue->_workingDays[$date]->slotSize / 2)));
+                //if ($split) {
 
-                  if ($slot->status == SLOT_STATUS_OFFER) {
-                    $pdf->SetFillColor(255, 175, 64, true);
-                  } else {
-                    $pdf->SetFillColor(255, 255, 255, true);
-                  }
-                  $pdf->SetFont("", "", 11);
-                  $pdf->Cell($slotTimeWidth, $slotCellHeight / 2, Office::timeByInterval($i), 'TBLR', 0, 'C', 1, '', 0, true);
-                  $pdf->SetFont("", "", 10);
-                  $pdf->Cell($slotCellWidth, $slotCellHeight / 2, $slotText, 'TBLR', 1, 'L', 1, '', 0, true);
-                  if ($slot->status == SLOT_STATUS_OFFER) {
-                    $pdf->SetFillColor(255, 175, 64, true);
-                  } else {
-                    $pdf->SetFillColor(255, 255, 255, true);
-                  }
-                  $pdf->SetFont("", "", 11);
-                  $pdf->Cell($slotTimeWidth, $slotCellHeight / 2, Office::timeByInterval($i + ($queue->_workingDays[$date]->slotSize / 2)), 'TBLR', 0, 'C', 1, '', 0, true);
-                  $pdf->SetFont("", "", 10);
-                  $pdf->Cell($slotCellWidth, $slotCellHeight / 2, $slotText2, 'TBLR', 1, 'L', 1, '', 0, true);
-                } else {
+                  //$sheet->setCellValue('A' . $b, Office::timeByInterval($i));
+                  //$sheet->setCellValue('A' . ($b + 1), Office::timeByInterval($i + ($queue->_workingDays[$date]->slotSize / 2)));
+
+                  //if ($slot->status == SLOT_STATUS_OFFER) {
+                  //  $pdf->SetFillColor(255, 175, 64, true);
+                  //} else {
+                  //  $pdf->SetFillColor(255, 255, 255, true);
+                  //}
+                  //$pdf->SetFont("", "", 11);
+                  //$pdf->Cell($slotTimeWidth, $slotCellHeight / 2, Office::timeByInterval($i), 'TBLR', 0, 'C', 1, '', 0, true);
+                  //$pdf->SetFont("", "", 10);
+                  //$pdf->Cell($slotCellWidth, $slotCellHeight / 2, $slotText, 'TBLR', 1, 'L', 1, '', 0, true);
+                  //if ($slot->status == SLOT_STATUS_OFFER) {
+                  //  $pdf->SetFillColor(255, 175, 64, true);
+                  //} else {
+                  //  $pdf->SetFillColor(255, 255, 255, true);
+                  //}
+                  //$pdf->SetFont("", "", 11);
+                  //$pdf->Cell($slotTimeWidth, $slotCellHeight / 2, Office::timeByInterval($i + ($queue->_workingDays[$date]->slotSize / 2)), 'TBLR', 0, 'C', 1, '', 0, true);
+                  //$pdf->SetFont("", "", 10);
+                  //$pdf->Cell($slotCellWidth, $slotCellHeight / 2, $slotText2, 'TBLR', 1, 'L', 1, '', 0, true);
+                //} else {
 
                   $sheet->setCellValue('A' . $b, Office::timeByInterval($i));
                   $sheet->setCellValue('B' . $b, $slot->queue_id);
@@ -758,7 +766,7 @@ class RecordController extends Controller
                   $pdf->Cell($slotTimeWidth, $slotCellHeight, Office::timeByInterval($i), 'TBLR', 0, 'C', 1, '', 0, true);
                   $pdf->SetFont("", "", 10);
                   $pdf->Cell($slotCellWidth, $slotCellHeight, $slotText, 'TBLR', 1, 'L', 1, '', 0, true);
-                }
+                //}
                 $b++;
               }
 

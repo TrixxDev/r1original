@@ -40,7 +40,7 @@
                         @php
 			  $item_count = [];
                           $item_sum = [];
-                          $items = unserialize($order->info);
+                          @$items = unserialize($order->info);
                           //unset($items['data']);
 			  if (isset($items['items'])) {
                           foreach ($items['items'] as $item) {

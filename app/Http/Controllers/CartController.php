@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use App\Paysera\WebToPay;
+use Illuminate\Support\Facades\Mail;
 
 class CartController extends Controller
 {
@@ -594,13 +595,13 @@ class CartController extends Controller
 	  $order->payment = 3;
       }
 
-      $data = unserialize($order->info);
-
+      $data = $order;
+      $data->info = unserialize($order->info);
       //dd($data);
 
       $order->save();
 
-      Mail::to($data->email)->send(new \App\Mail\CartMail($data));
+      //DMail::to($data->email)->send(new \App\Mail\CartMail($data));
 
       Session::remove('cart');
       Session::remove('cartOptions');
