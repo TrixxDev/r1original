@@ -9,6 +9,9 @@
                 <div id="content-wrapper" class="right-column col-lg-12">
                   <div class="schedule-table">
                     @include('components.calendar')
+                    @php
+                      $iteration = 0;
+                    @endphp
                       @for ($day = 0; $day < $visibleDays; $day++)
 
                         @php
@@ -21,7 +24,12 @@
                           $closeTime = -1;
                         @endphp
 
-                        <h1>{{ $dayOfWeek . ', ' . $dateFmt }}</h1>
+                        @if ($iteration == 0)
+                            <h1>{{ $dayOfWeek . ", " . $dateFmt }}</h1>
+                            <div class="alert alert-warning">Tekošajā dienā E-pierakstīties nav iespējams, ja redzat brīvus laikus un vēlaties šodien nomainīt riepas, tad lūdzu zvaniet!</div>
+                        @else
+                          <h1>{{ $dayOfWeek . ", " . $dateFmt  }}</h1>
+                        @endif
                         <div class="row">
                           @foreach ($offices as $office)
                             @php
@@ -224,6 +232,10 @@
                                   </div>
                                   @endforeach
                               </div>
+
+                              @php
+                                $iteration++;
+                              @endphp
                               @endfor
                         </div>
                     <section id="mobile-main">
