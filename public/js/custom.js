@@ -3092,6 +3092,11 @@ $(document).ready(function() {
   //   }
   // });
 
+  // IF MOBILE THEN SET LOCAL STORAGE TO DISPLAY GRID VIEW
+  if (navigator.userAgentData.mobile && !localStorage.getItem('show_type') ) {
+    $('div.can-collapse span.show_grid').click();
+  }
+
 });
 
 // var interval;

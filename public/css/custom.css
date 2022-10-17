@@ -4948,3 +4948,9 @@ input#show-selected-checkbox {
   border: 1px solid black;
   text-align: center;
 }
+
+.sm-filter-btn {
+  right: 15px;
+  top: 10px;
+  position: absolute;
+}
