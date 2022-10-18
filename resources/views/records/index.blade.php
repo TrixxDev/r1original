@@ -257,21 +257,6 @@
 
                                                 <div class="col-md-12 mobile-body">
 
-                                                    <div class="form-group">
-                                                      <label for="mobile-brand"><span class="validate">*</span>Auto marka:</label>
-                                                      <input id="mobile-brand" type="text" class="form-control">
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                      <label for="mobile-model"><span class="validate">*</span>Auto modelis:</label>
-                                                      <input id="mobile-model" type="text" class="form-control">
-                                                    </div>
-
-                                                    <div class="form-group">
-                                                      <label for="mobile-reg_nr">Reģistrācijas numurs:</label>
-                                                      <input type="text" class="form-control" id="mobile-reg_nr">
-                                                    </div>
-
                                                     <div class="form-group reservation-filiale">
                                                       <span class="validate">*</span><label for="select">Filiāle</label>
                                                       <div id="mobile-filiale">
@@ -309,6 +294,21 @@
                                                           @endforeach
                                                         </select>
                                                       </div>
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                      <label for="mobile-brand"><span class="validate">*</span>Auto marka:</label>
+                                                      <input id="mobile-brand" type="text" class="form-control">
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                      <label for="mobile-model"><span class="validate">*</span>Auto modelis:</label>
+                                                      <input id="mobile-model" type="text" class="form-control">
+                                                    </div>
+
+                                                    <div class="form-group">
+                                                      <label for="mobile-reg_nr">Reģistrācijas numurs:</label>
+                                                      <input type="text" class="form-control" id="mobile-reg_nr">
                                                     </div>
 
                                                     <div class="form-group">

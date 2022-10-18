@@ -318,7 +318,7 @@
                       <div class="form-group row">
                         <label for="title" class="col-sm-3 col-form-label text-right">Piezīmes:</label>
                         <div class="col-9">
-                          <textarea id="f_comment" class="form-control" cols="30" rows="2"></textarea>
+                          <textarea id="f_comment" class="form-control specialClass" cols="30" rows="2"></textarea>
                         </div>
                       </div>
                       <div class="form-group row time bg-light">
