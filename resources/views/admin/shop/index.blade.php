@@ -52,7 +52,7 @@
                           $item_sum = array_sum($item_sum);
 
                           $status_enum = [
-                            1 => 'Nav apmaksāts',
+                            1 => 'Nav pabeigts/Nav informācijas',
                             2 => 'Jauns',
                             3 => 'Gaidām apmaksu',
                             4 => 'Gaidām preci',
@@ -68,8 +68,12 @@
 
                         @endphp
                           <tr>
-                            <td>{{ $order->created_at . ' - ' . $items['name'] . ', ' . $items['surname'] }}</td>
-                            <td>{{ $item_count }}</td>
+                            @if (isset($items['name']) || isset($items['surname']))
+			      <td>{{ $order->created_at . ' - ' . $items['name'] . ', ' . $items['surname'] }}</td>
+                            @else
+			      <td>{{ $order->created_at }}</td>
+			    @endif
+			    <td>{{ $item_count }}</td>
                             <td>{{ $item_sum }} €</td>
                             <td>{{ $status_enum[$order->status] }}</td>
                             <td>{{ $pay_enum[$order->payment] }}</td>

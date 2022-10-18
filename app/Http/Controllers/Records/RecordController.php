@@ -586,15 +586,11 @@ class RecordController extends Controller
         $sheet->setTitle($date . ' Kalnciema iela');
     }
 
-    $pdf = new Pdf();
-    $pdf->setPrintHeader(false);
-    $pdf->setPrintFooter(false);
-    $pdf->AddPage();
-
-
+    $rowArray = [];
 
     $a = 1;
     $b = 2;
+
     foreach ($office->_queues as $queue) {
       if ($a > 1) break;
       $queue->loadWorkingDay($date);
@@ -616,16 +612,6 @@ class RecordController extends Controller
         /// Viss salasīts, sākam zīmēt tabulu...
         $openTime = Office::intervalByTime($queue->getOpenTime($date));
         $closeTime = Office::intervalByTime($queue->getCloseTime($date));
-
-        // set margins
-        $pdf->SetMargins(10, 10, 0);
-
-        // set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, 0);
-
-        $pdf->SetFont('freesans', '', 14);
-        $pdf->Cell(0, 15, $office->title . ' | ' . $dayOfWeek . ', ' . $dateFmt, 0, true, 'L', 0, '', 0, true);
-        $pdf->SetFont('freesans', '', 10);
 
         $maxPageHeight = 320; //30 rindas pa 6;
 
@@ -678,18 +664,20 @@ class RecordController extends Controller
                   }
                 }
 
-                $split = false;
+		$split = false;
                 if ($queue->_workingDays[$date]->secondaryAvailable) {
-
+		  $split = true;
+		  $slotTime = Office::timeByInterval($queue->getSlotTime($date, $slot->iorder) + $queue->_workingDays[$date]->slotSize / 2);
                   switch ($slot->status2) {
                     case SLOT_STATUS_FREE:
                     {
+		      //var_dump($slot->slot_id);
                       $slotText2 = $slot->comment . '';
                       break;
                     }
                     case SLOT_STATUS_TAKEN:
                     {
-                      $split = true;
+		      //var_dump('Aizņemts');
                       $takenBy = json_decode($slot->takenby2);
                       $service = Service::where('service_id', $takenBy->purpose)->first();
                       $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $service->pdf_title . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
@@ -697,11 +685,13 @@ class RecordController extends Controller
                     }
                     case SLOT_STATUS_OFFER:
                     {
+		      //var_dump('Akcija');
                       $slotText2 = $slot->comment;
                       break;
                     }
                     case SLOT_STATUS_CLOSED:
                     {
+		      //var_dump('Aizvērts');
                       if (trim($slot->comment) == '') {
                         $slotCaption = 'Slēgts!';
                       } else {
@@ -720,53 +710,56 @@ class RecordController extends Controller
                 $sheet->setCellValue('B1', 'Rinda');
                 $sheet->setCellValue('C1', 'Pieraksta info');
 
-  		if ($slot->queue_id == 3) {
-                        $slot->queue_id = 1;
-                } else if ($slot->queue_id == 4) {
-                        $slot->queue_id = 2;
-                } else if ($slot->queue_id == 5) {
-                        $slot->queue_id = 3;
+
+		/*switch ($slot->queue_id) {
+		  case(1):
+		    $queue_id = 1;
+		    break;
+		  case(2):
+		    $queue_id = 2;
+		    break;
+		  case(3):
+		    $queue_id = 1;
+		    break;
+		  case(4):
+		    $queue_id = 2;
+		    break;
+		  case(5):
+		    $queue_id = 3;
+		    break;
+		}*/
+
+  		//if ($slot->queue_id == ) {
+                //        $slot->queue_id = 1;
+                //} else if ($slot->queue_id == 4) {
+                //        $slot->queue_id = 2;
+                //} else if ($slot->queue_id == 5) {
+                //        $slot->queue_id = 3;
+                //}
+
+		$lastRow = $sheet->getHighestRow();
+
+		$rowArray[] = $lastRow;
+		//$rowArray = array_slice($rowArray,-1,1);
+		if (((int) $i + 2) == $closeTime) {
+			$lastRowI = $rowArray[count($rowArray) - 1];
+		}
+
+                if (isset($lastRowI)) {
+
+                  //$sheet->setCellValue('A' . $, Office::timeByInterval($i));
+                  $sheet->setCellValue('D' . ($lastRowI), $slotTime);
+		  //$sheet->setCellValue('B' . $b, $slot->queue_id);
+		  $sheet->setCellValue('E' . ($lastRowI), $slot->queue_id);
+		  //$sheet->setCellValue('C' . $b, $slotText);
+		  $sheet->setCellValue('F' . ($lastRowI), $slotText2);
+		  $lastRowI++;
                 }
 
-                //if ($split) {
+                $sheet->setCellValue('A' . $b, Office::timeByInterval($i));
+                $sheet->setCellValue('B' . $b, $slot->queue_id);
+                $sheet->setCellValue('C' . $b, $slotText);
 
-                  //$sheet->setCellValue('A' . $b, Office::timeByInterval($i));
-                  //$sheet->setCellValue('A' . ($b + 1), Office::timeByInterval($i + ($queue->_workingDays[$date]->slotSize / 2)));
-
-                  //if ($slot->status == SLOT_STATUS_OFFER) {
-                  //  $pdf->SetFillColor(255, 175, 64, true);
-                  //} else {
-                  //  $pdf->SetFillColor(255, 255, 255, true);
-                  //}
-                  //$pdf->SetFont("", "", 11);
-                  //$pdf->Cell($slotTimeWidth, $slotCellHeight / 2, Office::timeByInterval($i), 'TBLR', 0, 'C', 1, '', 0, true);
-                  //$pdf->SetFont("", "", 10);
-                  //$pdf->Cell($slotCellWidth, $slotCellHeight / 2, $slotText, 'TBLR', 1, 'L', 1, '', 0, true);
-                  //if ($slot->status == SLOT_STATUS_OFFER) {
-                  //  $pdf->SetFillColor(255, 175, 64, true);
-                  //} else {
-                  //  $pdf->SetFillColor(255, 255, 255, true);
-                  //}
-                  //$pdf->SetFont("", "", 11);
-                  //$pdf->Cell($slotTimeWidth, $slotCellHeight / 2, Office::timeByInterval($i + ($queue->_workingDays[$date]->slotSize / 2)), 'TBLR', 0, 'C', 1, '', 0, true);
-                  //$pdf->SetFont("", "", 10);
-                  //$pdf->Cell($slotCellWidth, $slotCellHeight / 2, $slotText2, 'TBLR', 1, 'L', 1, '', 0, true);
-                //} else {
-
-                  $sheet->setCellValue('A' . $b, Office::timeByInterval($i));
-                  $sheet->setCellValue('B' . $b, $slot->queue_id);
-                  $sheet->setCellValue('C' . $b, $slotText);
-
-                  if ($slot->status == SLOT_STATUS_OFFER) {
-                    $pdf->SetFillColor(255, 175, 64, true);
-                  } else {
-                    $pdf->SetFillColor(255, 255, 255, true);
-                  }
-                  $pdf->SetFont("", "", 11);
-                  $pdf->Cell($slotTimeWidth, $slotCellHeight, Office::timeByInterval($i), 'TBLR', 0, 'C', 1, '', 0, true);
-                  $pdf->SetFont("", "", 10);
-                  $pdf->Cell($slotCellWidth, $slotCellHeight, $slotText, 'TBLR', 1, 'L', 1, '', 0, true);
-                //}
                 $b++;
               }
 
@@ -777,18 +770,10 @@ class RecordController extends Controller
       }
       $a++;
     }
-      // Data;
-//    foreach($slots2 as $row)
-//    {
-//      $queue = Queue::where('queue_id', $row['queue_id'])->first();
-//      $queue->loadWorkingDay($date);
-//      $slotTime = $queue->getSlotTime($date, $row['iorder']);
-//      $pdf->Cell($w[0],10,Office::timeByInterval($slotTime),1);
-//      $pdf->Cell($w[1],10,$row['takenby'],1,0,'L');
-//      $pdf->ln();
-//    }
-    // Closing line
-//    $pdf->Cell(array_sum($w),0,'','T');
+    //die;
+      // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); // 
+    //$pdf->Cell($w[0],10,Office::timeByInterval($slotTime),1); // $pdf->Cell($w[1],10,$row['takenby'],1,0,'L'); // $pdf->ln(); // }
+    // Closing line // $pdf->Cell(array_sum($w),0,'','T');
     $sheet->setAutoFilter('A:C');
     $lastRow = $sheet->getHighestRow();
     $sheet->getStyle('A2:B' . $lastRow)->getAlignment()->setHorizontal('center');
