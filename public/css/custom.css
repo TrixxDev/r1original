@@ -4051,16 +4051,40 @@ td.header-empty {
   background: #65c2a538;
 }
 
-@media (max-width: 600px) {
+@media (min-width: 100px) {
+  .grid-ex {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .row.grid-ex.pr-1 {
+     margin: 0;
+  }
+}
+/* Screen larger than 600px? 2 column */
+@media (min-width: 380px) {
   .products.row.hide-price.title-flip {
     padding-right: 0;
   }
-  .grid-ex { grid-template-columns: repeat(2, 1fr); }
+  .tire-tread, .card-title-text {
+    width: 150px;
+  }
+  .row.grid-ex.pr-1 {
+    margin: 0;
+  }
 }
 
 /* Screen larger than 600px? 2 column */
-@media (min-width: 600px) {
+@media (min-width: 400px) {
   .grid-ex { grid-template-columns: repeat(2, 1fr); }
+  .tire-tread, .card-title-text {
+    width: 150px !important;
+  }
+}
+
+@media (min-width: 450px) {
+  .grid-ex { grid-template-columns: repeat(2, 1fr); }
+  .tire-tread, .card-title-text {
+    width: 180px !important;
+  }
 }
 
 /* Screen larger than 900px? 3 columns */

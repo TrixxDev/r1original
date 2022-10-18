@@ -2366,7 +2366,7 @@ $(document).ready(function() {
   });
 
   $('.modal#slotModal').on('keypress', function(e) {
-    if (e.key === 'Enter') {
+    if (e.key == 'Enter' && e.target == $('textarea.specialClass')) {
       $('.modal#slotModal .submit').click();
     }
   });
@@ -2710,6 +2710,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
         }
       });
     } else {
+      // IF ADMIN
       const tire_data = $(this).parent().parent().parent();
       // console.log('tire_data: ', tire_data);
       $('.popup input[name=prod]').val($('.table-tire-name-cell a', tire_data).data('content'));
