@@ -40,7 +40,7 @@
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> LIETIE DISKI 19-20</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€45</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 45</strong></td>
 <td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 27</strong></td>
 <td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 60</strong></td>
 <td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 35</strong></td>
@@ -89,24 +89,24 @@
 </tr>
 <tr>
 <td data-sheets-value="{"><strong> 1 RIEPAS DEMONTĀŽA</strong></td>
-<td style="text-align: center;" data-sheets-value="{"><strong>4.5</strong></td>
-<td style="text-align: center;" data-sheets-value="{"><strong>6</strong></td>
-<td style="text-align: center;" data-sheets-value="{"><strong>10</strong></td>
+<td style="text-align: center;" data-sheets-value="{"><strong>€ 4.5</strong></td>
+<td style="text-align: center;" data-sheets-value="{"><strong>€ 6</strong></td>
+<td style="text-align: center;" data-sheets-value="{"><strong>€ 10</strong></td>
 <td style="text-align: center;" colspan="1" rowspan="3" data-sheets-value="{">
 <div><strong>PAPILDUS 5€ PAR PIESPIEDĒJU</strong></div>
 </td>
 </tr>
 <tr>
 <td data-sheets-value="{"><strong> 1 RIEPAS MONTĀŽA</strong></td>
-<td style="text-align: center;" data-sheets-value="{"><strong>4.5</strong></td>
-<td style="text-align: center;" data-sheets-value="{"><strong>6</strong></td>
-<td style="text-align: center;" data-sheets-value="{"><strong>10</strong></td>
+<td style="text-align: center;" data-sheets-value="{"><strong>€ 4.5</strong></td>
+<td style="text-align: center;" data-sheets-value="{"><strong>€ 6</strong></td>
+<td style="text-align: center;" data-sheets-value="{"><strong>€ 10</strong></td>
 </tr>
 <tr>
 <td data-sheets-value="{"><strong> 1 RIEPAS BALANSĒŠANA</strong></td>
-<td style="text-align: center;" data-sheets-value="{"><strong>6</strong></td>
-<td style="text-align: center;" data-sheets-value="{"><strong>6</strong></td>
-<td style="text-align: center;" data-sheets-value="{"><strong>6</strong></td>
+<td style="text-align: center;" data-sheets-value="{"><strong>€ 6</strong></td>
+<td style="text-align: center;" data-sheets-value="{"><strong>€ 6</strong></td>
+<td style="text-align: center;" data-sheets-value="{"><strong>€ 6</strong></td>
 </tr>
 <tr>
 <td data-sheets-value="{"><strong> 1 RIEPAS PĀRSKRŪVĒŠ.</strong></td>
