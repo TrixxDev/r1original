@@ -19,38 +19,38 @@
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> TĒRAUDA DISKI</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>29</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>17</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>40</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>25</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 29</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 17</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 40</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 25</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> LIETIE DISKI 12-16</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>35</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>20</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>45</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>28</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 35</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 20</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 45</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 28</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> LIETIE DISKI 17-18</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>39</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>23</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>49</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>30</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 39</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 23</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 49</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 30</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> LIETIE DISKI 19-20</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>45</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>27</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>60</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>35</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€45</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 27</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 60</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 35</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> LIETIE DISKI 21 <</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>55</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>30</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>60</strong></td>
-<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>35</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 55</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 30</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 60</strong></td>
+<td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>€ 35</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 44.7812px;" colspan="1" rowspan="2" data-sheets-value="{">
@@ -295,9 +295,7 @@
 </tbody>
 </table>
 <p style="text-align: center;"> </p>
-<p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:none;font-family:'Times New Roman';font-style:normal;text-decoration-skip-ink:none;">RITEŅU BALANSĒŠANA </span></span></strong></p>
-<p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:none;font-family:'Times New Roman';font-style:normal;text-decoration-skip-ink:none;">KROSOVERI/SUV/CARGO </span></span></strong></p>
-<p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:underline;font-family:''Times New Roman'';font-style:normal;text-decoration-skip-ink:none;">AR NOMAIŅU UZ AUTO</span></span></strong></p>
+<p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:none;font-family:'Times New Roman';font-style:normal;text-decoration-skip-ink:none;">RITEŅU BALANSĒŠANA</span></span></strong><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:none;font-family:'Times New Roman';font-style:normal;text-decoration-skip-ink:none;"> KROSOVERI/SUV/CARGO</span></span></strong><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:underline;font-family:''Times New Roman'';font-style:normal;text-decoration-skip-ink:none;"> AR NOMAIŅU UZ AUTO</span></span></strong></p>
 <table dir="ltr" style="width: 100%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 17.4031%;" width="63"><col style="width: 40.585%;" width="63"><col style="width: 42.012%;" width="63"></colgroup>
 <tbody>
 <tr>
