@@ -1,6 +1,6 @@
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">RIEPU NOMAIŅA</span></strong></p>
-<div style="overflow-x: auto;">
-<table dir="ltr" style="width: 100.638%; height: 223.906px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 26.8116%;" width="63"><col style="width: 15.2174%;" width="63"><col style="width: 15.2174%;" width="63"><col style="width: 21.4674%;" width="63"><col style="width: 21.3768%;" width="63"></colgroup>
+<div class="pak-table">
+<table dir="ltr" style="width: 100%; height: 223.906px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 27.5356%;" width="63"><col style="width: 14.4934%;" width="63"><col style="width: 15.2174%;" width="63"><col style="width: 21.4674%;" width="63"><col style="width: 21.2862%;" width="63"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
 <td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
@@ -73,8 +73,8 @@
 </div>
 <p style="text-align: center;"> </p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">MOTOCIKLIEM, MOTOROLLERIEM</span></strong></p>
-<div style="overflow-x: auto;">
-<table dir="ltr" style="width: 101.275%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 26.0126%;" width="63"><col style="width: 17.1017%;" width="63"><col style="width: 15.3915%;" width="63"><col style="width: 24.7598%;" width="63"><col style="width: 16.7344%;" width="63"></colgroup>
+<div class="pak-table">
+<table dir="ltr" style="width: 100%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 26.0126%;" width="63"><col style="width: 17.1017%;" width="63"><col style="width: 15.3915%;" width="63"><col style="width: 24.7598%;" width="63"><col style="width: 16.7344%;" width="63"></colgroup>
 <tbody>
 <tr>
 <td><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
@@ -117,7 +117,7 @@
 </div>
 <p style="text-align: center;"> </p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">KVADRACIKLIEM</span></strong></p>
-<table dir="ltr" style="width: 101.093%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 71.3774%;" width="63"><col style="width: 28.6042%;" width="63"></colgroup>
+<table dir="ltr" style="width: 100%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 71.3774%;" width="63"><col style="width: 28.6042%;" width="63"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 4 RIEPU PILNA MONTĀŽA (bez balansēšanas)</strong></td>
@@ -151,8 +151,8 @@
 </table>
 <p style="text-align: center;"> </p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">RITEŅU MONTĀŽA</span></strong></p>
-<div style="overflow-x: auto;">
-<table dir="ltr" style="width: 100.93%; height: 179.094px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.2264%;" width="222"><col style="width: 19.5069%;" width="57"><col style="width: 14.6315%;" width="61"><col style="width: 16.4378%;" width="57"><col style="width: 17.07%;" width="57"><col style="width: 11.0188%;" width="57"></colgroup>
+<div class="pak-table">
+<table dir="ltr" style="width: 100%; height: 179.094px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.2264%;" width="222"><col style="width: 19.5069%;" width="57"><col style="width: 14.6315%;" width="61"><col style="width: 16.4378%;" width="57"><col style="width: 17.07%;" width="57"><col style="width: 11.0188%;" width="57"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
 <td style="height: 67.1406px;" colspan="1" rowspan="2">
@@ -211,8 +211,8 @@
 </table>
 </div>
 <p> </p>
-<div style="overflow-x: auto;">
-<table dir="ltr" style="width: 100.543%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.668%;" width="222"><col style="width: 21.7609%;" width="57"><col style="width: 17.3171%;" width="61"><col style="width: 18.4051%;" width="57"><col style="width: 20.7624%;" width="57"></colgroup>
+<div class="pak-table">
+<table dir="ltr" style="width: 100%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.668%;" width="222"><col style="width: 21.7609%;" width="57"><col style="width: 17.3171%;" width="61"><col style="width: 18.4051%;" width="57"><col style="width: 20.7624%;" width="57"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
 <td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
@@ -265,7 +265,7 @@
 <p> </p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">RITEŅU BALANSĒŠANA</span></strong></p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:none;font-family:'Times New Roman';font-style:normal;text-decoration-skip-ink:none;">RITEŅU BALANSĒŠANA VIEGLAJIEM AUTO </span><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:underline;font-family:''Times New Roman'';font-style:normal;text-decoration-skip-ink:none;">AR NOMAIŅU UZ AUTO</span></span></strong></p>
-<table dir="ltr" style="width: 100.911%; height: 111.953px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 17.3442%;" width="63"><col style="width: 40.7485%;" width="63"><col style="width: 41.9073%;" width="63"></colgroup>
+<table dir="ltr" style="width: 100%; height: 111.953px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 17.3442%;" width="63"><col style="width: 40.7485%;" width="63"><col style="width: 41.9073%;" width="63"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px; text-align: left;"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
@@ -296,7 +296,7 @@
 </table>
 <p style="text-align: center;"> </p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:none;font-family:'Times New Roman';font-style:normal;text-decoration-skip-ink:none;">RITEŅU BALANSĒŠANA KROSOVERI/SUV/CARGO </span><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:underline;font-family:''Times New Roman'';font-style:normal;text-decoration-skip-ink:none;">AR NOMAIŅU UZ AUTO</span></span></strong></p>
-<table dir="ltr" style="width: 101.093%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 17.4031%;" width="63"><col style="width: 40.585%;" width="63"><col style="width: 42.012%;" width="63"></colgroup>
+<table dir="ltr" style="width: 100%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 17.4031%;" width="63"><col style="width: 40.585%;" width="63"><col style="width: 42.012%;" width="63"></colgroup>
 <tbody>
 <tr>
 <td><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
