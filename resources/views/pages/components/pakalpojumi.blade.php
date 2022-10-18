@@ -295,7 +295,9 @@
 </tbody>
 </table>
 <p style="text-align: center;"> </p>
-<p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:none;font-family:'Times New Roman';font-style:normal;text-decoration-skip-ink:none;">RITEŅU BALANSĒŠANA KROSOVERI/SUV/CARGO </span><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:underline;font-family:''Times New Roman'';font-style:normal;text-decoration-skip-ink:none;">AR NOMAIŅU UZ AUTO</span></span></strong></p>
+<p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:none;font-family:'Times New Roman';font-style:normal;text-decoration-skip-ink:none;">RITEŅU BALANSĒŠANA </span></span></strong></p>
+<p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:none;font-family:'Times New Roman';font-style:normal;text-decoration-skip-ink:none;">KROSOVERI/SUV/CARGO </span></span></strong></p>
+<p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:underline;font-family:''Times New Roman'';font-style:normal;text-decoration-skip-ink:none;">AR NOMAIŅU UZ AUTO</span></span></strong></p>
 <table dir="ltr" style="width: 100%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 17.4031%;" width="63"><col style="width: 40.585%;" width="63"><col style="width: 42.012%;" width="63"></colgroup>
 <tbody>
 <tr>
