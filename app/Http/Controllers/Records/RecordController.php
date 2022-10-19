@@ -19,6 +19,7 @@ use App\Models\Queue;
 use App\Models\Slot;
 use App\Models\Pdf;
 use App\Rules\ReCaptcha;
+use App\Helper\Utility;
 use Auth;
 
 class RecordController extends Controller
@@ -264,15 +265,15 @@ class RecordController extends Controller
             7=>'svētdien',
         );
 
-        $car = $request->car;
-        $carModel = $request->carModel;
-        $licPlate = $request->licPlate;
-        $purpose = $request->purpose;
-        $storageBin = $request->storageBin;
-        $comment = $request->comment;
-        $name = $request->name;
-        $phone = $request->phone;
-        $email = $request->email;
+        $car = Utility::stripXXS($request->car);
+        $carModel = Utility::stripXXS($request->carModel);
+        $licPlate = Utility::stripXXS($request->licPlate);
+        $purpose = Utility::stripXXS($request->purpose);
+        $storageBin = Utility::stripXXS($request->storageBin);
+        $comment = Utility::stripXXS($request->comment);
+        $name = Utility::stripXXS($request->name);
+        $phone = Utility::stripXXS($request->phone);
+        $email = Utility::stripXXS($request->email);
 
         $errorText = [];
         if (!$car) $errorText['brand'] = "Jābūt aizpildītam!\n";
@@ -664,54 +665,13 @@ class RecordController extends Controller
                   }
                 }
 
-		$split = false;
-                if ($queue->_workingDays[$date]->secondaryAvailable) {
-		  $split = true;
-		  $slotTime = Office::timeByInterval($queue->getSlotTime($date, $slot->iorder) + $queue->_workingDays[$date]->slotSize / 2);
-                  switch ($slot->status2) {
-                    case SLOT_STATUS_FREE:
-                    {
-		      //var_dump($slot->slot_id);
-                      $slotText2 = $slot->comment . '';
-                      break;
-                    }
-                    case SLOT_STATUS_TAKEN:
-                    {
-		      //var_dump('Aizņemts');
-                      $takenBy = json_decode($slot->takenby2);
-                      $service = Service::where('service_id', $takenBy->purpose)->first();
-                      $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $service->pdf_title . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-                      break;
-                    }
-                    case SLOT_STATUS_OFFER:
-                    {
-		      //var_dump('Akcija');
-                      $slotText2 = $slot->comment;
-                      break;
-                    }
-                    case SLOT_STATUS_CLOSED:
-                    {
-		      //var_dump('Aizvērts');
-                      if (trim($slot->comment) == '') {
-                        $slotCaption = 'Slēgts!';
-                      } else {
-                        $slotCaption = $slot->comment;
-                      }
-                      $slotText2 = $slotCaption;
-                      break;
-                    }
-
-                  }
-
-                }
-
 
                 $sheet->setCellValue('A1', 'Laiks');
                 $sheet->setCellValue('B1', 'Rinda');
                 $sheet->setCellValue('C1', 'Pieraksta info');
 
 
-		/*switch ($slot->queue_id) {
+		switch ($slot->queue_id) {
 		  case(1):
 		    $queue_id = 1;
 		    break;
@@ -727,40 +687,63 @@ class RecordController extends Controller
 		  case(5):
 		    $queue_id = 3;
 		    break;
-		}*/
-
-  		//if ($slot->queue_id == ) {
-                //        $slot->queue_id = 1;
-                //} else if ($slot->queue_id == 4) {
-                //        $slot->queue_id = 2;
-                //} else if ($slot->queue_id == 5) {
-                //        $slot->queue_id = 3;
-                //}
-
-		$lastRow = $sheet->getHighestRow();
-
-		$rowArray[] = $lastRow;
-		//$rowArray = array_slice($rowArray,-1,1);
-		if (((int) $i + 2) == $closeTime) {
-			$lastRowI = $rowArray[count($rowArray) - 1];
 		}
 
-                if (isset($lastRowI)) {
+                /*if (isset($lastRowI)) {
 
                   //$sheet->setCellValue('A' . $, Office::timeByInterval($i));
-                  $sheet->setCellValue('D' . ($lastRowI), $slotTime);
 		  //$sheet->setCellValue('B' . $b, $slot->queue_id);
-		  $sheet->setCellValue('E' . ($lastRowI), $slot->queue_id);
+		  $sheet->setCellValue('E' . ($lastRowI), $queue_id);
 		  //$sheet->setCellValue('C' . $b, $slotText);
 		  $sheet->setCellValue('F' . ($lastRowI), $slotText2);
 		  $lastRowI++;
-                }
+                }*/
 
                 $sheet->setCellValue('A' . $b, Office::timeByInterval($i));
-                $sheet->setCellValue('B' . $b, $slot->queue_id);
+                $sheet->setCellValue('B' . $b, $queue_id);
                 $sheet->setCellValue('C' . $b, $slotText);
 
                 $b++;
+
+		if ($queue->_workingDays[$date]->secondaryAvailable) {
+                  $slotTime = Office::timeByInterval($queue->getSlotTime($date, $slot->iorder) + $queue->_workingDays[$date]->slotSize / 2);
+                  switch ($slot->status2) {
+                    case SLOT_STATUS_FREE:
+                    {
+                      $slotText2 = $slot->comment . '';
+                      break;
+                    }
+                    case SLOT_STATUS_TAKEN:
+                    {
+                      $takenBy = json_decode($slot->takenby2);
+                      $service = Service::where('service_id', $takenBy->purpose)->first();
+                      $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel;
+                      break;
+                    }
+                    case SLOT_STATUS_OFFER:
+                    {
+                      $slotText2 = $slot->comment;
+                      break;
+                    }
+                    case SLOT_STATUS_CLOSED:
+                    {
+                      if (trim($slot->comment) == '') {
+                        $slotCaption = 'Sl ^sgts!';
+                      } else {
+                        $slotCaption = $slot->comment;
+                      }
+                      $slotText2 = $slotCaption;
+                      break;
+                    }
+
+                  }
+
+                  $sheet->setCellValue('A' . ($b), $slotTime);
+                  $sheet->setCellValue('B' . ($b), $queue_id);
+                  $sheet->setCellValue('C' . ($b), $slotText2);
+                }
+
+		$b++;
               }
 
             }
