@@ -3099,6 +3099,9 @@ $(document).ready(function() {
   // });
 
   // IF MOBILE THEN SET LOCAL STORAGE TO DISPLAY GRID VIEW
+  // if (navigator.userAgentData.mobile ) {
+  //   $('.pak-table').css('overflow', 'scroll');
+  // }
   if (navigator.userAgentData.mobile && !localStorage.getItem('show_type') ) {
     $('div.can-collapse span.show_grid').click();
   }
@@ -3243,3 +3246,12 @@ function popCalc(url,popW,popH, data){
     pops.opener = self;
 
 }
+
+
+$('button.offer-slot-link').on('click', function() {
+  let discount = $(this).text().match(/\d+/)[0];
+  if ($('div.alert.alert-warning.discount-alert').length === 0 ){
+    $('.modal-dialog').find('.form-group.services')
+      .append("<div class='alert alert-warning discount-alert' style='font-size: 14px;'><b>Šajā pieraksta laikā tiek piemērota atlaide (-" + discount + "% darbam!!!)</b></div>");
+  }
+})
