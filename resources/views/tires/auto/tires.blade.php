@@ -1128,8 +1128,11 @@
 
                               <span class="show_list active"><i class="material-icons "></i>Saraksts</span>
                               <span class="show_grid"><i class="material-icons "></i>Bildes</span>
-
-                              <form method="get" action="/ziemas-riepas/search">
+                              @if($season_id === 2)
+                                <form method="get" action="/ziemas-riepas/search">
+                              @elseif($season_id === 1)
+                                <form method="get" action="/vasaras-riepas/search">
+                              @endif
                                 <div class="sidebar-top">
 
                                   <section class="facet clearfix facet--0 facet-ind-0">
