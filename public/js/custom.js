@@ -2224,6 +2224,10 @@ $(document).ready(function() {
     let __date = $(this).data('date');
 
     $('.modal#slotModal input[name="queue_id"]').val($(this).data('queue-id'));
+    $('.modal#slotModal input[name="serviceOption"]').each(function() {
+      $(this).removeAttr('checked').prop('checked', false);
+    });
+
     $('.modal#slotModal #f_date option').each(function() {
       $(this).removeAttr('selected');
       if ($(this).val() == __date) {
@@ -2241,7 +2245,6 @@ $(document).ready(function() {
       url: '/admin/rezervacijas/slot_ajax/' + $(this).data('queue-id') + '/' + $(this).data('date') + '/' + $(this).data('slot-id') + '/' + $(this).data('slot-part'),
       dataType: 'JSON',
       success: function(data) {
-        console.log(data.f_status);
         // $('.modal#slotModal #f_date').val(data.f_date);
         $('.modal#slotModal #f_time').val(data.f_time);
         $('.modal#slotModal #f_time option[value="' + data.f_time + '"]').attr('selected', true);
@@ -2252,7 +2255,7 @@ $(document).ready(function() {
         $('.modal#slotModal select#f_office option[value="' + data.q + data.f_office + '"]').attr('selected','selected').prop('selected', 'selected');
         $('.modal#slotModal input[name="serviceOption"]').each(function() {
           if ($(this).val() == data.f_purpose) {
-            $(this).attr('checked', true);
+            $(this).attr('checked', true).prop('checked', true);
             if ($(this).data('save') == 1) {
               $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr" value="' + data.f_storagebin + '"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
             }
