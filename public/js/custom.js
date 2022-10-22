@@ -2251,6 +2251,7 @@ $(document).ready(function() {
       url: '/admin/rezervacijas/slot_ajax/' + $(this).data('queue-id') + '/' + $(this).data('date') + '/' + $(this).data('slot-id') + '/' + $(this).data('slot-part'),
       dataType: 'JSON',
       success: function(data) {
+        console.log(data.f_status);
         // $('.modal#slotModal #f_date').val(data.f_date);
         $('.modal#slotModal #f_time').val(data.f_time);
         $('.modal#slotModal #f_time option[value="' + data.f_time + '"]').attr('selected', true);
@@ -2271,7 +2272,11 @@ $(document).ready(function() {
         $('.modal#slotModal #f_name').val(data.f_name);
         $('.modal#slotModal #f_phone').val(data.f_phone);
         $('.modal#slotModal #f_email').val(data.f_email);
-        $('.modal#slotModal #f_status').val(data.f_status);
+        if (data.f_status != 0) {
+          $('.modal#slotModal #f_status').val(data.f_status);
+        } else {
+          $('.modal#slotModal #f_status').val(1);
+        }
         $('.modal#slotModal #f_slotcomment').html(data.f_slotcomment);
          if (data.p == 'a') {
           if (data.f_edittime == '') {
@@ -3118,6 +3123,9 @@ $(document).ready(function() {
   // });
 
   // IF MOBILE THEN SET LOCAL STORAGE TO DISPLAY GRID VIEW
+  // if (navigator.userAgentData.mobile ) {
+  //   $('.pak-table').css('overflow', 'scroll');
+  // }
   if (navigator.userAgentData.mobile && !localStorage.getItem('show_type') ) {
     $('div.can-collapse span.show_grid').click();
   }
@@ -3262,3 +3270,12 @@ function popCalc(url,popW,popH, data){
     pops.opener = self;
 
 }
+
+
+$('button.offer-slot-link').on('click', function() {
+  let discount = $(this).text().match(/\d+/)[0];
+  if ($('div.alert.alert-warning.discount-alert').length === 0 ){
+    $('.modal-dialog').find('.form-group.services')
+      .append("<div class='alert alert-warning discount-alert' style='font-size: 14px;'><b>Šajā pieraksta laikā tiek piemērota atlaide (-" + discount + "% darbam!!!)</b></div>");
+  }
+})

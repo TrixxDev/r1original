@@ -175,7 +175,6 @@ class RecordController extends Controller
                         if ($queue->isIntervalBeginning($request->date,$i)) {
                             $slot = $queue->_slots[$request->date][$slotNumber];
                             //$times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => true];
-			    
                             if ($slot->status == 0) {
                               $times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id];
                             }
@@ -266,15 +265,15 @@ class RecordController extends Controller
             7=>'svētdien',
         );
 
-        $car = $request->car;
-        $carModel = $request->carModel;
-        $licPlate = $request->licPlate;
-        $purpose = $request->purpose;
-        $storageBin = $request->storageBin;
-        $comment = $request->comment;
-        $name = $request->name;
-        $phone = $request->phone;
-        $email = $request->email;
+        $car = strip_tags($request->car);
+        $carModel = strip_tags($request->carModel);
+        $licPlate = strip_tags($request->licPlate);
+        $purpose = strip_tags($request->purpose);
+        $storageBin = strip_tags($request->storageBin);
+        $comment = strip_tags($request->comment);
+        $name = strip_tags($request->name);
+        $phone = strip_tags($request->phone);
+        $email = strip_tags($request->email);
 
         $errorText = [];
         if (!$car) $errorText['brand'] = "Jābūt aizpildītam!\n";
@@ -755,7 +754,7 @@ class RecordController extends Controller
       $a++;
     }
     //die;
-      // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); // 
+      // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); //
     //$pdf->Cell($w[0],10,Office::timeByInterval($slotTime),1); // $pdf->Cell($w[1],10,$row['takenby'],1,0,'L'); // $pdf->ln(); // }
     // Closing line // $pdf->Cell(array_sum($w),0,'','T');
     $sheet->setAutoFilter('A:C');

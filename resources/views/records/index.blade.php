@@ -328,7 +328,7 @@
                                                     </div>
                                                     <div class="form-group client-email last">
                                                       <label for="mobile-email"><span class="validate">*</span>Mans e-pasts:</label>
-                                                      <input type="email" class="form-control" id="mobile-email">
+                                                        <input type="email" class="form-control" id="mobile-email">
                                                     </div>
 
                                                 </div>
