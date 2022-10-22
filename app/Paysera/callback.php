@@ -20,8 +20,8 @@
   try {
     $response = WebToPay::validateAndParseData(
       $_REQUEST,
-      '230756',
-      'c32f7c8bde605f29bb9c115bc85713a8'
+      '209872',
+      'ef3e86e4902558e3779ecc84d72a6d8c'
     );
 
     if ($response['status'] === '1' || $response['status'] === '3') {

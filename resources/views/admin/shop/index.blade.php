@@ -50,6 +50,11 @@
                           }}
                           $item_count = array_sum($item_count);
                           $item_sum = array_sum($item_sum);
+			  if ($order->delivery_price > 0) {
+			    $item_sum = $item_sum + (int) substr($order->delivery_price, 0, -2);
+			  } else if ($order->fit_price > 0) {
+			    $item_sum = $item_sum + (int) substr($order->fit_price, 0, -2);
+			  }
 
                           $status_enum = [
                             1 => 'Nav pabeigts/Nav informācijas',

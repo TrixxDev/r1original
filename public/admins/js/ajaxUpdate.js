@@ -658,7 +658,7 @@ $(document).ready(function () {
       dataType: 'JSON',
       success: function(data) {
         $('.modal#slotModal h6.title').text(data.f_office + ', ' + data.f_date + ' ' + data.f_time);
-        if (parseInt(data.f_status) === 2) {
+        /*if (parseInt(data.f_status) === 2) {
           $('select#f_status').append($('<option>', {value:2, text:'Akcija', selected: 'selected'}));
         } else {
           $('select#f_status option').each(function() {
@@ -667,36 +667,36 @@ $(document).ready(function () {
               $(this).attr('selected', 'selected');
             }
           });
-        }
+        }*/
         $('.modal#slotModal #f_slotcomment').text(data.f_slotcomment);
       }
     })
   });
 
-  // $('.modal#slotModal .submit').on('click', function(e) {
-  //   e.preventDefault();
-  //   $.ajax({
-  //     method: 'POST',
-  //     url: '/admin/pieraksts/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val(),
-  //     data: {
-  //       'queue_id': $('.modal#slotModal input[name="queue_id"]').val(),
-  //       'date': $('.modal#slotModal input[name="date"]').val(),
-  //       'slot_id': $('.modal#slotModal input[name="slot"]').val(),
-  //       'f_status': $('.modal#slotModal #f_status').val(),
-  //       'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
-  //     },
-  //     dataType: 'JSON',
-  //     success: function (data) {
-  //       if (data.status === 0) {
-  //         this.error(data);
-  //       }
-  //       location.reload();
-  //     },
-  //     error: function(data) {
-  //       console.log(data);
-  //     }
-  //   });
-  // });
+   $('.slotSettings#slotModal .submit').on('click', function(e) {
+     e.preventDefault();
+     $.ajax({
+       method: 'POST',
+       url: '/admin/pieraksts/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val(),
+       data: {
+         'queue_id': $('.modal#slotModal input[name="queue_id"]').val(),
+         'date': $('.modal#slotModal input[name="date"]').val(),
+         'slot_id': $('.modal#slotModal input[name="slot"]').val(),
+         //'f_status': $('.modal#slotModal #f_status').val(),
+         'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+       },
+       dataType: 'JSON',
+       success: function (data) {
+         if (data.status === 0) {
+           this.error(data);
+         }
+         location.reload();
+       },
+       error: function(data) {
+         console.log(data);
+       }
+     });
+   });
 
   $('.queueTable .discount').each(function() {
     $(this).on('click', function() {
@@ -705,7 +705,7 @@ $(document).ready(function () {
 
       if ($(this).is(':checked')) {
         checked = 1;
-        $(this).parent().children('.slot-comment').html(' -30% darbam ! ! !');
+        $(this).parent().children('.slot-comment').html(' -20% darbam ! ! !');
       } else {
         checked = 0;
         $(this).parent().children('.slot-comment').html('');
@@ -720,6 +720,13 @@ $(document).ready(function () {
   });
 
   $('.queueTable.reservation .buttonbar svg').on('click', function() {
+
+    if ($('.last-info').length) {
+	$('.last-info').remove();
+    }
+    if ($('.temp_save_nr').length) {
+	$('.temp_save_nr').remove();
+    }
 
     let __date = $(this).data('date');
 
@@ -746,12 +753,13 @@ $(document).ready(function () {
         $('.modal#slotModal #f_model').val(data.f_model);
         $('.modal#slotModal #f_plate').val(data.f_plate);
         $('.modal#slotModal input[name="serviceOption"]').each(function() {
-          if ($(this).val() == data.f_purpose) {
-            $(this).attr('checked', true);
+          $(this).removeAttr('checked');
+	  if ($(this).val() == data.f_purpose) {
+            $(this).attr('checked', true).prop('checked', true);
             if ($(this).data('save') == 1) {
-              $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3 pt-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr" value="' + data.f_storagebin + '"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+	      $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3 pt-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr" value="' + data.f_storagebin + '"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px;line-height: 15px;margin-left: -12px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
             }
-          }
+	  }
         });
         $('.modal#slotModal #f_comment').html(data.f_comment);
         $('.modal#slotModal #f_name').val(data.f_name);
@@ -759,6 +767,19 @@ $(document).ready(function () {
         $('.modal#slotModal #f_email').val(data.f_email);
         $('.modal#slotModal #f_status').val(data.f_status);
         $('.modal#slotModal #f_slotcomment').html(data.f_slotcomment);
+	if (data.p == 'a') {
+	  if (data.f_edittime == '') {
+	    $('<div class="last-info">Izveidots: ' + data.f_createtime + ' (' + data.f_createuser + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
+	  } else {
+	    $('<div class="last-info">Izveidots: ' + data.f_createtime + ' (' + data.f_createuser + ')<br>Labots: ' + data.f_edittime + ' (' + data.f_edituser + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
+	  }
+        } else {
+	  if (data.f_edittime2 == '') {
+	    $('<div class="last-info">Izveidots: ' + data.f_createtime2 + ' (' + data.f_createuser2 + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
+	  } else {
+	    $('<div class="last-info">Izveidots: ' + data.f_createtime2 + ' (' + data.f_createuser2 + ')<br>Labots: ' + data.f_edittime2 + ' (' + data.f_edituser2 + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
+	  }
+	}
       }
     })
   });
@@ -838,4 +859,105 @@ $('select[name=delivery_address]').on('change', function() {
 	} else {
 		$(this).parent().parent().next().hide();
 	}
+});
+
+let buttons = '<button type="submit" style="width: 49%;" class="btn btn-success change-price">Saglabāt</button>';
+buttons = buttons + '<button type="button" style="width: 49%;" class="btn btn-danger cancel-edit">Atcelt</button>';
+
+let button = $('.edit-price').parent().html();
+
+if (button) button = button.trim();
+
+let inputs = {};
+let $id = 0;
+
+let $input = '';
+
+$('.prices_form tbody tr').each(function() {
+
+	$(this).on('click', '.edit-price', function(e) {
+		e.preventDefault();
+		let field_count = $(this).parent().parent().children(':visible');
+		field_count.each(function(e) {
+			if(e === field_count.length-1) {
+				return;
+			}
+			$input = $(this).html();
+			$(this).html('<input type="text" class="form-control" value="' + $input + '">');
+			$(this).parent().children().last().css({'display': 'flex', 'justify-content': 'space-around'}).html(buttons);
+		});
+	});
+
+	$(this).on('click', '.cancel-edit', function(e) {
+		e.preventDefault();
+		let field_count = $(this).parent().parent().children(':visible');
+		$input = $(this).parent().parent();
+		let abbr = $input.data('abbr');
+		let name = $input.data('name');
+		let price = $input.data('value');
+
+		field_count.each(function(e) {
+			if (e === field_count.length-1) {
+				return;
+			}
+			if (e === 0) $(this).html(abbr);
+			if (e === 1) $(this).html(name);
+			if (e === 2) $(this).html(price);
+			$(this).parent().children().last().removeAttr('style').html(button);
+		});
+		$('.alert.price-alert').each(function() {
+			$(this).hide();
+		});
+	});
+
+	$(this).on('click', '.change-price', function(e) {
+		e.preventDefault();
+		let field_count = $(this).parent().parent().children(':visible');
+		field_count.each(function(e) {
+			if (e === field_count.length-1) {
+				return;
+			}
+
+			$id = $(this).parent().children().first().data('id');
+
+			$input = $(this).children().val();
+			if (e === 0) inputs.text = $input;
+			if (e === 1) inputs.name = $input;
+			if (e === 2) inputs.price = $input;
+
+
+		});
+		$.ajax({
+	                url: '/admin/settings/prices/' + $id + '/update',
+        	        method: 'POST',
+                	data: {'inputs': inputs, '_token': $('meta[name="csrf-token"]').attr('content')},
+                        dataType: 'JSON',
+			success: function(data) {
+				$('.alert.price-alert').each(function() {
+                                        $(this).hide();
+                                });
+				if (data.success) {
+					field_count.not(':last').each(function(e) {
+						let edited_input = $('input', this).val();
+						if (e === 0) $(this).parent().attr('data-abbr', edited_input);
+						if (e === 1) $(this).parent().attr('data-name', edited_input);
+						if (e === 2) $(this).parent().attr('data-value', edited_input);
+						$(this).html(edited_input);
+					});
+					field_count.last().html(button);
+					$('.alert-success.price-alert').show().children().first().html(data.success);
+				} else if (data.warning) {
+					$('.alert-warning.price-alert').show().children().first().html(data.warning);
+				} else {
+					$('.alert-danger.price-alert').show().children().first().html(data.danger);
+				}
+                        }
+                });
+
+	});
+});
+
+$('.price-alert button.close').on('click', function(e) {
+	e.preventDefault();
+	$(this).parent().hide();
 });

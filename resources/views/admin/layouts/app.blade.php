@@ -165,6 +165,12 @@
                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
               </svg> Paskaidrojumi</a>
           </li>
+	  <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.prices') }}" target="_top">
+              <svg class="c-sidebar-nav-icon">
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-dollar"></use>
+              </svg> Cenas</a>
+          </li>
+
       </ul>
       <button class="c-sidebar-minimizer c-class-toggler" type="button" data-target="_parent" data-class="c-sidebar-minimized"></button>
     </div>

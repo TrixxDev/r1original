@@ -162,7 +162,7 @@
                         <div class="tire-price">
                           <div class="price">
                             <span class="product-price">
-                              <strong>€ {{ $user_data['fitting_price'] }}</strong>
+                              <strong>€ {{ substr($user_data['fitting_price'], 0, -2) }}</strong>
                             </span>
                           </div>
                         </div>
@@ -179,7 +179,7 @@
                               @if ($user_data['delivery_price'] == null)
                                 <strong>Bezmaksas!</strong>
                               @else
-                                <strong>€ {{ $user_data['delivery_price'] }}</strong>
+                                <strong>€ {{ substr($user_data['delivery_price'], 0, -2) }}</strong>
                               @endif
                             </span>
                           </div>

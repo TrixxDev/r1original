@@ -99,7 +99,8 @@
                                                       @else
                                                         @php
                                                           $slotClass = 'slot-offer';
-                                                          $slotCaption = $slot->comment;
+                                                          $slotCaption = '<button class="offer-slot-link" id="slot' . $slot->iorder . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slot->iorder . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
+                                                          //$slotCaption = $slot->comment;
                                                         @endphp
                                                       @endif
                                                       @php
@@ -327,11 +328,7 @@
                                                     </div>
                                                     <div class="form-group client-email last">
                                                       <label for="mobile-email"><span class="validate">*</span>Mans e-pasts:</label>
-                                                        @if (Auth::check() && !Auth::user()->hasRole(['Administrators', 'Moderators']))
-                                                          <input type="email" class="form-control" id="mobile-email" readonly="" value="{{ Auth::user()->email }}">
-                                                        @else
-                                                          <input type="email" class="form-control" id="mobile-email">
-                                                        @endif
+                                                      <input type="email" class="form-control" id="mobile-email">
                                                     </div>
 
                                                 </div>
@@ -431,11 +428,7 @@
                                         <div class="form-group row last">
                                             <label for="email" class="col-sm-3" style="text-align: left;"><span class="validate" style="color: red;">*</span>Mans e-pasts:</label>
                                             <div class="col-sm-9">
-                                                @if (Auth::check() && !Auth::user()->hasRole(['Administrators', 'Moderators']))
-                                                    <input type="email" class="form-control" id="email" readonly="" value="{{ Auth::user()->email }}">
-                                                @else
-                                                    <input type="email" class="form-control" id="email">
-                                                @endif
+                                                <input type="email" class="form-control" id="email">
                                             </div>
                                         </div>
                                       <input type="hidden" name="recaptcha" id="recaptcha">

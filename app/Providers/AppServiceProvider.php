@@ -69,6 +69,13 @@ class AppServiceProvider extends ServiceProvider
 
           $user = User::findOrFail(Auth::user()->id);
 
+	  Config::set('app.debug', true);
+	  //if ($user->hasRole(['administrators']) {
+	    //Config::set('app.debug', true);
+	  //} else {
+	    //Config::set('app.debug', false);
+	  //}
+
           $minutesToAdd = gmdate('i', env('session_lifetime'));
 
           $userTime = \Carbon\Carbon::now()->addYear()->format('Y-m-d H:i');
@@ -77,7 +84,9 @@ class AppServiceProvider extends ServiceProvider
           $user->lastActivityTime = $userTime;
           $user->save();
 
-        }
+        } else {
+	  Config::set('app.debug', false);
+	}
 
       });
 

@@ -125,6 +125,9 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::post('/settings/codes/{id}/update', [App\Http\Controllers\Admin\SettingsController::class, 'codes_update'])->name('settings.codes.update');
   Route::delete('/settings/codes/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'codes_destroy'])->name('settings.codes.destroy');
 
+  // Montāžu/Piegāžu cenas
+  Route::get('/settings/prices', [App\Http\Controllers\Admin\SettingsController::class, 'prices'])->name('settings.prices');
+  Route::post('/settings/prices/{id}/update', [App\Http\Controllers\Admin\SettingsController::class, 'price_update'])->name('settings.prices.update');
 });
 
 Route::get('/sendSMS', function() {
@@ -251,6 +254,7 @@ Route::middleware('checksession')->group(function() {
   Route::get('/sync/rz-auto', [App\Http\Controllers\SyncController::class, 'rzauto'])->name('rz-auto');
   Route::get('/sync/duell-moto', [App\Http\Controllers\SyncController::class, 'duellmoto'])->name('duellmoto');
   Route::get('/sync/duell-quadr', [App\Http\Controllers\SyncController::class, 'duellquadr'])->name('duellquadr');
+  Route::get('/sync/rz-auto/show', [App\Http\Controllers\SyncController::class, 'rzautoshow']);
 
 // XML Ģenerēšana (Salidzini.lv/Kurpirkt.lv)
 
@@ -294,6 +298,9 @@ Route::middleware('checksession')->group(function() {
     return view('testing');
   });
 
+  Route::get('/testing4', function() {
+    dd(App\Helper\Tires::getAllMotoBrands());
+  });
 
   Route::get('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);
   Route::post('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);

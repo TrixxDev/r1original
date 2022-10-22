@@ -154,12 +154,12 @@ class CartController extends Controller
         if ($request->data['cart_delivery_radio'] == 1 || $request->data['cart_delivery_radio'] == 2) {
           $fitting['fitting_address'] = $request->data['cart_delivery_radio'];
           $fitting['fitting'] = $request->fitting;
-          $fitting['fitting_price'] = $request->fitting_price;
+          $fitting['fitting_price'] = $request->fitting_price . '00';
         } else {
           $delivery['shipping_city'] = $request->data['shipping_city'];
           $delivery['shipping_address'] = $request->data['shipping_address'];
           $delivery['door_code'] = $request->data['door_code'];
-          $delivery['delivery_price'] = $request->delivery_price;
+          $delivery['delivery_price'] = $request->delivery_price . '00';
         }
 
         $cartData = (empty($fitting)) ? serialize($delivery) : serialize($fitting);
@@ -216,6 +216,12 @@ class CartController extends Controller
 
         $amount = str_replace(['.', ','], '', Cart::subtotal());
         $amount1 = $amount;
+	if ($delivery_price > 0) {
+	  $amount1 = (int) $amount1 + (int) $delivery_price;
+	} elseif ($fit_price > 0) {
+	  $amount1 = (int) $amount1 + (int) $fit_price;
+	}
+
         $email = Session::get('email');
         $order_id = $order->id;
 
@@ -482,7 +488,7 @@ class CartController extends Controller
 //            if ($item->id == $tire_id) {
 //              return $cart->update($item->rowId, $item->qty + $quantity);
 //            } else {
-              return Cart::instance(Session::getId())->add($tire_id, $tire->title, $quantity, $tire->price2, 0, ['tire' => $tire->toArray(), 'link' => $tire->link, 'image' => $image, 'availability' => $availability])
+              return Cart::instance(Session::getId())->add($tire_id, $tire->title, $quantity, $tire->price2, 0, ['tire' => $tire->toArray(), 'tireObj' => $tire, 'link' => $tire->link, 'image' => $image, 'availability' => $availability])
                 ->associate('App\Models\\' . ucfirst($model));
 //            }
 //          }
@@ -604,7 +610,11 @@ class CartController extends Controller
       $data = $order;
       $data->info = unserialize($data->info);
 
-      //DMail::to($data->email)->send(new \App\Mail\CartMail($data));
+      $data->cart = Cart::content();
+
+      if (user_ip == '212.3.218.22') {
+          Mail::to($data->info['email'])->cc('info@r1riepas.lv')->send(new \App\Mail\CartMail($data));
+      }
 
       Session::remove('cart');
       Session::remove('cartOptions');

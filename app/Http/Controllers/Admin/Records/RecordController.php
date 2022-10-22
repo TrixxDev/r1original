@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\Workingday;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Helper\Utility;
 
 class RecordController extends Controller
 {
@@ -421,9 +422,9 @@ class RecordController extends Controller
     if ($request->checked == 1) {
       if ($slot->status === SLOT_STATUS_FREE) {
         $slot->status = 2;
-        $slot->comment = '-30% darbam ! ! !';
+        $slot->comment = '-20% darbam ! ! !';
       } else {
-        $slot->comment = '-30% darbam ! ! !';
+        $slot->comment = '-20% darbam ! ! !';
       }
     } else {
       if ($slot->takenby === '' || $slot->takenby === NULL) {
@@ -518,11 +519,15 @@ class RecordController extends Controller
       $return['error_fields']['f_model'] = "";
       $return['error_fields']['f_purpose'] = "";*/
 
+      $date = $request->f_currDate;
+
       $queue = Queue::where('queue_id', $q)->first();
       $queue->loadWorkingDay($date);
       $queue->loadSlots($date);
 
       $slot = $queue->_slots[$date][$s];
+
+      $f_currDate = $request->f_currDate;
 
       //// filiāles/rindas maiņas
       $f_office = $request->f_office;
@@ -554,7 +559,7 @@ class RecordController extends Controller
 
           $targetSlotNum = $targetQueue->getSlotNumberByInterval($targetDate, Queue::intervalByTime($targetTime));
           if (($targetSlotNum===false) || (!isset($targetQueue->_slots[$targetDate][$targetSlotNum]))){
-            $errorCount++;
+	    $errorCount++;
             $return['error_fields']['f_time'] = "Norādītais laiks ir ārpus darba laika";
           } else {
             $targetSlot = $targetQueue->_slots[$targetDate][$targetSlotNum];
@@ -581,6 +586,8 @@ class RecordController extends Controller
           if ($errorTime<=0) $return['error_fields']['f_time'] = "Nepareizs laika formāts";
         }
       }
+
+      //dd($f_currDate, $targetDate, $move);
 
       $f_status = $request->f_status;
       $form = new \stdClass();
@@ -650,8 +657,10 @@ class RecordController extends Controller
           $formData = json_encode($form);
         } else {
           if ($p=='a'){
+	    $canDiscount = 1;
             $formData = $slot->takenby = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
           } else {
+	    $canDiscount = 1;
             $formData = $slot->takenby2 = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
           }
         }
@@ -671,17 +680,21 @@ class RecordController extends Controller
           if ($f_part=='a'){
             $targetSlot->status = $f_status;
             $targetSlot->takenby = $formData;
+	    $targetSlot->createtime = $slot->createTime;
+            $targetSlot->createuser = $slot->createUser;
+            $targetSlot->edittime = NOW();
+            $targetSlot->edituser = $userId;
           } else {
             $bQueue = true;
             $targetSlot->status2 = $f_status;
             $targetSlot->takenby2 = $formData;
-          }
+            $targetSlot->createtime2 = $slot->createTime;
+            $targetSlot->createuser2 = $slot->createUser;
+            $targetSlot->edittime2 = NOW();
+            $targetSlot->edituser2 = $userId;
+	  }
           $targetSlot->comment = $f_slotcomment;
 
-          $targetSlot->createtime = $slot->createTime;
-          $targetSlot->createuser = $slot->createUser;
-          $targetSlot->edittime = NOW();
-          $targetSlot->edituser = $userId;
           $targetSlot->timestamps = false;
 
           $targetSlot->save();
@@ -724,30 +737,50 @@ class RecordController extends Controller
           $mailQueue = $queue;
 
           if ($f_part=='a'){
-            $slot->status = $f_status;
+            //dd($f_status);
+	    $slot->status = $f_status;
             $slot->takenby = $formData;
+	    if ($slot->createtime=='') {
+              $slot->createtime = NOW();
+              $slot->createuser = $userId;
+            }
+            $slot->edittime = NOW();
+            $slot->edituser = $userId;
           } else {
             $bQueue = true;
             $slot->status2 = $f_status;
             $slot->takenby2 = $formData;
-          }
+            if ($slot->createtime2=='') {
+              $slot->createtime2 = NOW();
+              $slot->createuser2 = $userId;
+            }
+            $slot->edittime2 = NOW();
+            $slot->edituser2 = $userId;
+	  }
           if ($f_slotcomment) {
             $slot->comment = $f_slotcomment;
             if ($p=='a'){
-              $slot->status = 2;
+	      //dd((array) $formData);
+	      $slot->status = $f_status;
               $slot->takenby = $formData;
+	      if ($slot->createtime=='') {
+                $slot->createtime = NOW();
+                $slot->createuser = $userId;
+              }
+              $slot->edittime = NOW();
+              $slot->edituser = $userId;
             } else {
-              $slot->status2 = 2;
+	      $slot->status = $f_status;
               $slot->takenby2 = $formData;
-            }
+              if ($slot->createtime2=='') {
+                $slot->createtime2 = NOW();
+                $slot->createuser2 = $userId;
+              }
+              $slot->edittime2 = NOW();
+              $slot->edituser2 = $userId;
+	    }
           }
 
-          if ($slot->createtime=='') {
-            $slot->createtime = NOW();
-            $slot->createuser = $userId;
-          }
-          $slot->edittime = NOW();
-          $slot->edituser = $userId;
           $slot->timestamps = false;
 
           $slot->save();
@@ -893,6 +926,31 @@ class RecordController extends Controller
     } else {
       $return['f_createuser'] = 'apmeklētājs';
     }
+
+    if ($slot->createtime2!=''){
+      $return['f_createtime2'] = date('d.m.Y H:i:s',strtotime($slot->createtime2));
+    } else {
+      $return['f_createtime2'] = '';
+    }
+
+    if (($slot->edittime2!='')&&($slot->edittime2!=$slot->createtime2)){
+      $return['f_edittime2'] = date('d.m.Y H:i:s',strtotime($slot->edittime2));
+    } else {
+      $return['f_edittime2']='';
+    }
+
+    if ($slot->edituser2>0){
+      $user = User::findOrFail($slot->edituser2);
+      $return['f_edituser2'] = $user->name.' '.$user->surname;
+    }
+
+    if ($slot->createuser2>0){
+      $user = User::findOrFail($slot->createuser2);
+      $return['f_createuser2'] = $user->name.' '.$user->surname;
+    } else {
+      $return['f_createuser2'] = 'apmeklētājs';
+    }
+
 
     $json = json_encode($return);
     echo $json;

@@ -670,7 +670,7 @@
                                     </li>
                                     <li>
                                         <a id="link-cms-page-8-2" class="cms-page-link"
-                                           href="pakalpojumi"
+                                           href="/pakalpojumi"
                                            title="">
                                             Pakalpojumi
                                         </a>

@@ -108,8 +108,7 @@ class MotoTireController extends Controller
     {
         $brand = Motobrand::where('title', $brand)->first();
 
-        $tread = Mototread::where('slug', $tread)->first();
-
+        $tread = Mototread::where('title', $tread)->first();
 
         $tires = Moto::selectRaw('moto_tires.*, moto_treads.*, moto_brands.*,
                                   moto_brands.title as brands_title, moto_treads.title as treads_title')
@@ -117,7 +116,7 @@ class MotoTireController extends Controller
                                   ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
                                   ->where('moto_tires.visible_users', '<>', 0)
                                   ->where('moto_brands.title', $brand->title)
-                                  ->where('moto_treads.title', $tread->title)
+                                  ->where('moto_treads.title', str_replace('_', '/', $tread->title))
                                   ->get();
 
         $currTire = Moto::selectRaw('moto_tires.*, moto_treads.*, moto_brands.*,
@@ -126,10 +125,12 @@ class MotoTireController extends Controller
                                  ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
                                  ->where('moto_tires.visible_users', '<>', 0)
                                  ->where('moto_brands.title', $brand->title)
-                                 ->where('moto_treads.title', $tread->title)
+                                 ->where('moto_treads.title', str_replace('_', '/', $tread->title))
                                  ->where('moto_tires.tire_id', $tire)
                                  ->first();
 
+	//dd($tire);
+	//$stock = DB::table('moto_stock')->where('tire_id', $currTire->tire_id)->first();
         $currTire->includeStock = true;
 
         return view('tires.moto.mototread',
@@ -146,12 +147,12 @@ class MotoTireController extends Controller
 
         if ($request->quantity) {
           $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
-        } else {
+	} else {
           $cart = CartController::addProduct($this->model, $tire->tire_id, 1);
         }
 
         $quantity = Cart::count();
-        $total_sum = str_replace([',', '.00'], '', Cart::total());
+        $total_sum = str_replace([',', '.00'], '', Cart::subTotal());
         $bought = ($request->quantity) ? $request->quantity : 1;
 
         echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);

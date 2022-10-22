@@ -175,6 +175,7 @@ class RecordController extends Controller
                         if ($queue->isIntervalBeginning($request->date,$i)) {
                             $slot = $queue->_slots[$request->date][$slotNumber];
                             //$times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => true];
+			    
                             if ($slot->status == 0) {
                               $times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id];
                             }
@@ -265,15 +266,15 @@ class RecordController extends Controller
             7=>'svētdien',
         );
 
-        $car = Utility::stripXXS($request->car);
-        $carModel = Utility::stripXXS($request->carModel);
-        $licPlate = Utility::stripXXS($request->licPlate);
-        $purpose = Utility::stripXXS($request->purpose);
-        $storageBin = Utility::stripXXS($request->storageBin);
-        $comment = Utility::stripXXS($request->comment);
-        $name = Utility::stripXXS($request->name);
-        $phone = Utility::stripXXS($request->phone);
-        $email = Utility::stripXXS($request->email);
+        $car = $request->car;
+        $carModel = $request->carModel;
+        $licPlate = $request->licPlate;
+        $purpose = $request->purpose;
+        $storageBin = $request->storageBin;
+        $comment = $request->comment;
+        $name = $request->name;
+        $phone = $request->phone;
+        $email = $request->email;
 
         $errorText = [];
         if (!$car) $errorText['brand'] = "Jābūt aizpildītam!\n";
@@ -373,7 +374,7 @@ class RecordController extends Controller
           'longPurpose' => $purposeLong
         ];
 
-        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($details));
+        //Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($details));
 //        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
 //        $mailer = new CMailer();
 //        $mailer->addRecipient($form->ownerEmail);
@@ -645,7 +646,7 @@ class RecordController extends Controller
                   {
                     $takenBy = json_decode($slot->takenby);
                     $service = Service::where('service_id', $takenBy->purpose)->first();
-                    $slotText = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $service->pdf_title . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                    $slotText = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                     break;
                   }
                   case SLOT_STATUS_OFFER:
@@ -717,7 +718,7 @@ class RecordController extends Controller
                     {
                       $takenBy = json_decode($slot->takenby2);
                       $service = Service::where('service_id', $takenBy->purpose)->first();
-                      $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel;
+                      $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                       break;
                     }
                     case SLOT_STATUS_OFFER:

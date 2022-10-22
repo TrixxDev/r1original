@@ -31,6 +31,27 @@ class Tires
                           ->get();
     }
 
+    public static function getAllAutoBrands1($season = 1) {
+	$brand_list = [];
+
+	$tires = Autotire::select('make_id')->get();
+	foreach ($tires as $tire) {
+	  $brand = Autotread::select('auto_treads.brand_id', 'auto_treads.tread_id', 'auto_treads.season', 'auto_brands.*')
+			        ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
+				->where('tread_id', $tire->make_id)
+				->where('season', $season)
+				->first();
+	  if (!$brand) continue;
+	  $brand_list[$brand->brand_id] = ucwords(strtolower($brand->title));
+	}
+
+	$brand_list = array_unique($brand_list);
+	asort($brand_list);
+
+	return $brand_list;
+
+    }
+
 //    public static function getAllAutoTreads() {
 //        return DB::table('auto_treads')->select('title')->whereRaw('')
 //    }
@@ -52,11 +73,46 @@ class Tires
     }
 
     public static function getAllQuadrBrands() {
-        return Quadrbrand::selectRaw('quadr_brands.brand_id as id, title')->whereRaw('title <> ""')->orderBy('brand_id')->groupBy('title')->get();
+        //return Quadrbrand::selectRaw('quadr_brands.brand_id as id, title')->whereRaw('title <> ""')->orderBy('brand_id')->groupBy('title')->get();
+
+	$brand_list = [];
+
+        $tires = Quadr::select('make_id')->get();
+        foreach ($tires as $tire) {
+          $brand = Quadrtread::select('quadr_treads.brand_id', 'quadr_treads.tread_id', 'quadr_brands.*')
+				->leftJoin('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
+				->where('tread_id', $tire->make_id)
+				->first();
+          if (!$brand) continue;
+          $brand_list[$brand->brand_id] = ucwords(strtolower($brand->title));
+        }
+
+        $brand_list = array_unique($brand_list);
+        asort($brand_list);
+
+        return $brand_list;
     }
 
     public static function getAllMotoBrands() {
-        return Motobrand::selectRaw('moto_brands.brand_id as id, title')->whereRaw('title <> ""')->orderBy('brand_id')->groupBy('title')->get();
+        //return Motobrand::selectRaw('moto_brands.brand_id as id, title')->whereRaw('title <> ""')->orderBy('brand_id')->groupBy('title')->get();
+
+	$brand_list = [];
+
+        $tires = Moto::select('make_id')->get();
+        foreach ($tires as $tire) {
+          $brand = Mototread::select('moto_treads.brand_id', 'moto_treads.tread_id', 'moto_brands.*')
+                                ->leftJoin('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
+                                ->where('tread_id', $tire->make_id)
+				->where('moto_brands.title', '!=', '')
+                                ->first();
+          if (!$brand) continue;
+          $brand_list[$brand->brand_id] = ucwords(strtolower($brand->title));
+        }
+
+        $brand_list = array_unique($brand_list);
+        asort($brand_list);
+
+        return $brand_list;
     }
 
     public static function getAutoTiresD1($season = 1) {

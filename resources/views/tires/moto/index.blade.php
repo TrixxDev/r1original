@@ -67,11 +67,16 @@
                                 <a rel="nofollow" id="Visi" class="select-list">
                                   Visi
                                 </a>
-                                @foreach ($brands as $brand)
+                                {{--@foreach ($brands as $brand)
                                   <a rel="nofollow" class="select-list" id="{{ $brand->title }}">
                                     {{ $brand->title }}
                                   </a>
-                                @endforeach
+                                @endforeach--}}
+				@foreach ($brands as $brand_id => $brand_title)
+				  <a rel="nofollow" class="select-list" id="{{ $brand_title }}">
+                                    {{ $brand_title }}
+                                  </a>
+				@endforeach
 
                               </div>
                             </div>
@@ -322,7 +327,7 @@
 
                     @endphp
                     @if($tire->price1)
-                      <a href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}" class="grid-view-link">
+                      <a href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}" class="grid-view-link">
                         <div class="tire-image-card sort-order">
                           <div class="text-center image-grid-overflow">
                             {!! \Image::showGrid('moto', $tire->make_id) !!}
@@ -426,7 +431,7 @@
                         <td class="table-tire-name-cell">
                           <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                              title='{!! \Image::show('moto', $tire->make_id) !!}'
-                             href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"
+                             href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
                              data-content="{{ $tire->title . ' ' . $tire->fullSize }}" data-article="{{ $tire->article }}">
                             {{ $tire->title }}
                           </a>
@@ -466,7 +471,7 @@
 
                         <td class="shopping-cart-col">
                           <div class="clearfix atc_div text-right">
-                            <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
+                            <button class="cart-shopping-button" data-toggle="modal"
                                     @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
                                     @endif data-info="{{ $tire->tire_id }}"><i
                                 class="material-icons">add_shopping_cart</i>

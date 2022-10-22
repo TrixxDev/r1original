@@ -162,7 +162,8 @@ class AutoTireController extends Controller
         }
 
         $quantity = Cart::count();
-        $total_sum = str_replace([',', '.00'], '', Cart::total());
+        //dd(Cart::subTotal());
+        $total_sum = str_replace([',', '.00'], '', Cart::subTotal());
         $bought = ($request->quantity) ? $request->quantity : 4;
 
         echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);

@@ -1,11 +1,11 @@
 <?php
 namespace App\Helper;
-use Illuminate\Support\Facades\Input;
+use Illuminate\Http\Request;
 
 class Utility {
     public static function stripXSS()
     {
-        $sanitized = static::cleanArray(Input::get());
+        $sanitized = static::cleanArray(Request::input());
         Input::merge($sanitized);
     }
     public static function cleanArray($array)

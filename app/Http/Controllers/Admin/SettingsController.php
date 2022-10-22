@@ -282,9 +282,10 @@
 
     public function salidzini()
     {
-      $tires = Autotire::with('tread')->where('visible_users', 0)->get();
-      $moto = Moto::with('tread')->where('visible_users', 0)->get();
-      $quadr = Quadr::with('tread')->where('visible_users', 0)->get();
+      set_time_limit(0);
+      $tires = Autotire::with('tread')->where('visible_users', '<>', 0)->get();
+      $moto = Moto::with('tread')->where('visible_users', '<>', 0)->get();
+      $quadr = Quadr::with('tread')->where('visible_users', '<>', 0)->get();
       $dom = new DOMDocument();
       $dom->encoding = 'utf-8';
       $dom->xmlVersion = '1.0';
@@ -296,13 +297,13 @@
           continue;
         }
         $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', $tire->title);
+        $child_node_title = $dom->createElement('name', $tire->title . ' ' . $tire->fullSize);
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('price', $tire->offerPrice);
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('link', $tire->link);
         $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', $tire->image);
+        $child_node_title = $dom->createElement('image', 'https://' . $tire->image);
         $item->appendChild($child_node_title);
         if ($tire->tread->season === 1) {
           $child_node_title = $dom->createElement('category', 'Vasaras riepas >> R' . $tire->d3);
@@ -332,7 +333,7 @@
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('link', $tire->link);
         $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', $tire->image);
+        $child_node_title = $dom->createElement('image', 'https://' . $tire->image);
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('category', 'Motociklu riepas');
         $item->appendChild($child_node_title);
@@ -347,13 +348,13 @@
       }
       foreach ($quadr as $tire) {
         $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', $tire->fullName);
+        $child_node_title = $dom->createElement('name', htmlspecialchars($tire->fullName));
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('price', $tire->offerPrice);
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('link', $tire->link);
         $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', $tire->image);
+        $child_node_title = $dom->createElement('image', 'https://' . $tire->image);
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('category', 'Kvadraciklu riepas');
         $item->appendChild($child_node_title);
@@ -504,5 +505,39 @@
 
       return redirect()->route('admin.settings.codes')
         ->with('success','Kods - ' . $code->name . ' tika veiksmīgi dzēsts!');
+
     }
-  }
+
+    // Cenas
+
+    public function prices() {
+
+      $prices = DB::table('cart_config')->get();
+
+      return view('admin.settings.prices', compact('prices'));
+
+    }
+
+    public function price_update(Request $request, $id) {
+
+      $price = DB::table('cart_config')->where('id', $id)->first();
+
+      $update = DB::table('cart_config')->where('id', $id)->update([
+						'name' => $request->inputs['name'],
+						'abbr' => $request->inputs['text'],
+						'value' => $request->inputs['price']
+						]);
+
+	//dd($update, $request->inputs);
+
+      if ($update == 1) {
+	return json_encode(['success' => 'Cena veiksmīgi izlabota!']);
+      } elseif ($update == 0 && $price->name == $request->inputs['name'] && $price->abbr == $request->inputs['text'] && $price->value == $request->inputs['price']) {
+	return json_encode(['warning' => 'Nav labojumu!']);
+      } else {
+	return json_encode(['error' => 'Notika kļūda']);
+      }
+
+    }
+
+}

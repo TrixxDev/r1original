@@ -209,11 +209,21 @@ class Autotire extends Model
             'rz' => 'RiepuZona',
         ];
 
-        $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
-        $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
+	if ($tire->urs_quantity >= 4) {
+            $availability = '<p>Ulbrokā: 4 un vairāk</p><br>';
+	} else {
+            $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
+	}
+	if ($tire->krs_quantity >= 4) {
+            $availability .= '<p>Kalnciema ielā: 4 un vairāk</p>';
+	} else {
+            $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
+	}
 
         if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
-            foreach ($stock_names as $key => $stock_name) {
+            $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
+	    $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
+	    foreach ($stock_names as $key => $stock_name) {
                 $stock = Autostock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
                 if ($stock && $stock->quantity > 0) {
                     $availability .= '<br><p>' . $stock_name . ': ' . $stock->quantity . '</p>';
@@ -229,7 +239,7 @@ class Autotire extends Model
             $availability = '<p style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
           }
         }
-        $availability .= 'asd';
+        $availability .= '';
 
         return $availability;
     }

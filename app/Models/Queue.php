@@ -93,6 +93,8 @@ class Queue extends Model
       $_queues = array_reverse($_queues);
       $list = Slot::where('date', $date)->where('status', 0)->whereIn('queue_id', $_queues)->orderBy('queue_id', 'DESC')->get();
 
+      
+
       foreach ($list as $object){
         $this->_slots[$date][$object->slot_id] = $object;
       }

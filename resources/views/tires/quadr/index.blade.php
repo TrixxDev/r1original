@@ -68,11 +68,16 @@
                                 <a rel="nofollow" id="Visi" class="select-list">
                                   Visi
                                 </a>
-                                @foreach ($brands as $brand)
+                                {{--@foreach ($brands as $brand)
                                   <a rel="nofollow" class="select-list" id="{{ $brand->title }}">
                                     {{ $brand->title }}
                                   </a>
-                                @endforeach
+                                @endforeach--}}
+				@foreach ($brands as $brand_id => $brand_title)
+				  <a rel="nofollow" class="select-list" id="{{ $brand_title }}">
+                                    {{ $brand_title }}
+                                  </a>
+				@endforeach
 
                               </div>
                             </div>
@@ -522,7 +527,7 @@
 
                           <td class="shopping-cart-col">
                             <div class="clearfix atc_div text-right">
-                              <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
+                              <button class="cart-shopping-button" data-toggle="modal"
                                       @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
                                       @endif data-info="{{ $tire->tire_id }}"><i
                                   class="material-icons">add_shopping_cart</i>

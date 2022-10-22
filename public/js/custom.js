@@ -623,7 +623,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
         url: '/' + pathParts[1] + '/ajax',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         method: 'POST',
-        data: { tire_id: tire_id, quantity: 4 },
+        data: { tire_id: tire_id },
         success: function(data)
         {
           data = JSON.parse(data);
@@ -2217,9 +2217,19 @@ $(document).ready(function() {
     });
   });
 
+  $('.reservation_edit#slotModal').on('change', '#f_time', function() {
+    let selected_time = $('option:selected', this);
+    $('option', this).each(function() { $(this).removeAttr('selected'); });
+    selected_time.attr('selected', 'selected').prop('selected', 'selected');
+  });
+
   $('.queueTable.reservation .buttonbar svg').on('click', function() {
     // console.log($(this).data('date'));
     // throw '';
+
+    if ($('.last-info').length) {
+	$('.last-info').remove();
+    }
 
     let __date = $(this).data('date');
 
@@ -2263,6 +2273,19 @@ $(document).ready(function() {
         $('.modal#slotModal #f_email').val(data.f_email);
         $('.modal#slotModal #f_status').val(data.f_status);
         $('.modal#slotModal #f_slotcomment').html(data.f_slotcomment);
+         if (data.p == 'a') {
+          if (data.f_edittime == '') {
+            $('<div class="last-info">Izveidots: ' + data.f_createtime + ' (' + data.f_createuser + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
+          } else {
+            $('<div class="last-info">Izveidots: ' + data.f_createtime + ' (' + data.f_createuser + ')<br>Labots: ' + data.f_edittime + ' (' + data.f_edituser + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
+          }
+        } else {
+          if (data.f_edittime2 == '') {
+            $('<div class="last-info">Izveidots: ' + data.f_createtime2 + ' (' + data.f_createuser2 + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
+          } else {
+            $('<div class="last-info">Izveidots: ' + data.f_createtime2 + ' (' + data.f_createuser2 + ')<br>Labots: ' + data.f_edittime2 + ' (' + data.f_edituser2 + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
+          }
+        }
       }
     })
   });
@@ -2279,6 +2302,7 @@ $(document).ready(function() {
       method: 'POST',
       url: '/admin/rezervacijas/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal #f_date').val() + '/' + $('.modal#slotModal input[name="slot"]').val() + '/' + $('.modal#slotModal input[name="part"]').val(),
       data: {
+	'f_currDate': $('.modal#slotModal input[name=date]').val(),
         'f_office': $('.modal#slotModal #f_office').val(),
         'f_date': $('.modal#slotModal #f_date').val(),
         'f_time': $('.modal#slotModal #f_time').val(),

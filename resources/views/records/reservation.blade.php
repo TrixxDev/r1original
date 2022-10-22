@@ -188,6 +188,18 @@
                                       $slotText = ''.$slot->comment.'';
                                       $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
                                     @endphp
+
+				    @if ($queue->_workingDays[$workingDay]->secondaryAvailable && $slot->status2==SLOT_STATUS_OFFER)
+                                      @php
+                                        $slotClass2 = 'slot-offer';
+                                      	$slotText = ''.$slot->comment.'';
+                                        $buttons2 = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
+                                      @endphp
+                                    @endif
+
+                                    @if ($queue->_workingDays[$workingDay]->secondaryAvailable)
+                                      @php $buttons2 = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="b" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>'; @endphp
+                                    @endif
                                     @break
                                     @case (SLOT_STATUS_CLOSED)
                                     @if (trim($slot->comment)=='')
@@ -205,7 +217,7 @@
                                   @break
                                 @endswitch
                                 @if ($queue->_workingDays[$workingDay]->secondaryAvailable)
-                                  @php $cellContents = '<table class="queueSubTable"><tr><td class="' . $slotClass . '">'.$slotText.$buttons.'</td></tr><tr><td class="' . $slotClass2 . '">'.$slotText2.$buttons2.'</td></tr></table>'; @endphp
+                                  @php $cellContents = '<table class="queueSubTable"><tr><td class="' . $slotClass . '">'.$slotText.$buttons.'</td></tr><tr><td class="slot-free">'.$slotText2.$buttons2.'</td></tr></table>'; @endphp
                                 @else
                                   @php $cellContents = $slotText.$buttons; @endphp
                                 @endif
@@ -247,7 +259,7 @@
               </div>
             @endforeach
             <!-- Modal -->
-            <div class="modal fade" id="slotModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="slotModalLabel" aria-hidden="true">
+            <div class="reservation_edit modal fade" id="slotModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="slotModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                   <div class="modal-header">

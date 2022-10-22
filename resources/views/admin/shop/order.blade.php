@@ -365,12 +365,12 @@
             @if ($order->delivery_price != 0) <td style="border-color: #c6c6c6;" scope="row">Piegāde</td> @endif
             <td style="border-color: #c6c6c6;" scope="row"></td>
             <td style="border-color: #c6c6c6;" scope="row"></td>
-            <td style="border-color: #c6c6c6;">{{ ($order->fit_price) ? $order->fit_price : $order->delivery_price }} &euro;</td>
+            <td style="border-color: #c6c6c6;">{{ ($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2) }} &euro;</td>
           </tr>
 	  @endif
             <tr class="table-dark">
               <th style="border-color: #c6c6c6; text-align: right" colspan="4"></th>
-              <th style="border-color: #c6c6c6;">{{$order->price + (($order->fit_price) ? $order->fit_price : $order->delivery_price) }} &euro;</th>
+              <th style="border-color: #c6c6c6;">{{$order->price + (($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2)) }} &euro;</th>
             </tr>
           </tbody>
         </table>
