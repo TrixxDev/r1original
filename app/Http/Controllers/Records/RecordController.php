@@ -644,9 +644,13 @@ class RecordController extends Controller
                   case SLOT_STATUS_TAKEN:
                   {
                     $takenBy = json_decode($slot->takenby);
-                    $service = Service::where('service_id', $takenBy->purpose)->first();
-                    $slotText = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-                    break;
+		    if (!$takenBy->purpose) {
+		      $slotText = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		    } else {
+                      $service = Service::where('service_id', $takenBy->purpose)->first();
+		      $slotText = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $service->pdf_title . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		    }
+		    break;
                   }
                   case SLOT_STATUS_OFFER:
                   {
@@ -716,8 +720,12 @@ class RecordController extends Controller
                     case SLOT_STATUS_TAKEN:
                     {
                       $takenBy = json_decode($slot->takenby2);
-                      $service = Service::where('service_id', $takenBy->purpose)->first();
-                      $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		      if (!$takenBy->purpose) {
+  		        $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		      } else {
+                        $service = Service::where('service_id', $takenBy->purpose)->first();
+			$slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $service->pdf_title . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		      }
                       break;
                     }
                     case SLOT_STATUS_OFFER:
