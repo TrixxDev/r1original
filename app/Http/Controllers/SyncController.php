@@ -49,8 +49,9 @@ class SyncController extends Controller
 
 	(isset($request->article)) ? $article = $request->article : $article = '';
 
+	if (!$article)
         foreach ($this->tire_tables as $tire_table => $tire_stock) {
-            $stock = $this->getInventory($tire_table, $article);
+            $stock = $this->getInventory($tire_table);
 	    //$tires_map = $this->getAccrualIdToEntityIdMap($tire_table);
 	    $tires_map = DB::table($tire_table)->get();
 	    //dd($tires_map);
@@ -62,28 +63,29 @@ class SyncController extends Controller
 
 //          $this->updateStock($stock[1]);
 
-            if ($request->article) {
-                $this->updateStock($stock[2]);
-		$tire = DB::table('auto_tires')->where('article', $request->article)->first();
-		if ($tire === null) {
-			$tire = DB::table('moto_tires')->where('article', $request->article)->first();
-		}
-		if ($tire === null) {
-			$tire = DB::table('quadr_tires')->where('article', $request->article)->first();
-		}
-		if ($tire === null) {
-			return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
-		}
-		echo json_encode(['urs_quantity' => $tire->urs_quantity, 'krs_quantity' => $tire->krs_quantity]);
-            } else {
                 //DB::table($tire_table)->update(['quantity' => 0, 'krs_quantity' => 0, 'urs_quantity' => 0]);
-                $this->updateStock($stock[2]);
-		$this->updatePrices($tires_map);
-	    }
+	    $this->updateStock($stock[2]);
+	    $this->updatePrices($tires_map);
+	    DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
+	    echo 'Done';
 
+        } else {
+	  $stock = $this->getInventory('auto_tires', $article);
+	  $this->updateStock($stock[2]);
+	  $tire = DB::table('auto_tires')->where('article', $request->article)->first();
+          if ($tire === null) {
+	    $stock = $this->getInventory('moto_tires', $article);
+            $tire = DB::table('moto_tires')->where('article', $request->article)->first();
+          }
+          if ($tire === null) {
+	    $stock = $this->getInventory('quadr_tires', $article);
+            $tire = DB::table('quadr_tires')->where('article', $request->article)->first();
+          }
+          if ($tire === null) {
+            return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
+          }
+          echo json_encode(['urs_quantity' => $tire->urs_quantity, 'krs_quantity' => $tire->krs_quantity]);
         }
-        DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
-	echo 'Done';
 
 
     }

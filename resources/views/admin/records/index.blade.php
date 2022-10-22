@@ -103,7 +103,7 @@
                     @case (SLOT_STATUS_OFFER)
                     @case (SLOT_STATUS_FREE)
                       @php
-                        if ($slot->status == 2 && $slot->comment != null)
+                        if (trim($slot->comment != null))
                             $slotCaption = '<input type="checkbox" class="discount" data-slot-id="' . $slot->slot_id . '" checked><span>' . $queue->getSlotStartTime($date, $slotNumber).' - '.$queue->getSlotEndTime($date, $slotNumber) . '</span>';
                         else
                             $slotCaption = '<input type="checkbox" class="discount" data-slot-id="' . $slot->slot_id . '"><span>' . $queue->getSlotStartTime($date, $slotNumber).' - '.$queue->getSlotEndTime($date, $slotNumber) . '</span>';

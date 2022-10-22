@@ -191,6 +191,7 @@ $.ajax({
   dataType: 'JSON',
   data: {'article': article},
   success: function(data) {
+    console.log(data);
     $('#urs_quantity').html(data.urs_quantity);
     $('#krs_quantity').html(data.krs_quantity);
   }
