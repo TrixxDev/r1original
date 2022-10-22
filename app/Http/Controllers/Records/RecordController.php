@@ -265,15 +265,15 @@ class RecordController extends Controller
             7=>'svētdien',
         );
 
-        $car = Utility::stripXXS($request->car);
-        $carModel = Utility::stripXXS($request->carModel);
-        $licPlate = Utility::stripXXS($request->licPlate);
-        $purpose = Utility::stripXXS($request->purpose);
-        $storageBin = Utility::stripXXS($request->storageBin);
-        $comment = Utility::stripXXS($request->comment);
-        $name = Utility::stripXXS($request->name);
-        $phone = Utility::stripXXS($request->phone);
-        $email = Utility::stripXXS($request->email);
+        $car = strip_tags($request->car);
+        $carModel = strip_tags($request->carModel);
+        $licPlate = strip_tags($request->licPlate);
+        $purpose = strip_tags($request->purpose);
+        $storageBin = strip_tags($request->storageBin);
+        $comment = strip_tags($request->comment);
+        $name = strip_tags($request->name);
+        $phone = strip_tags($request->phone);
+        $email = strip_tags($request->email);
 
         $errorText = [];
         if (!$car) $errorText['brand'] = "Jābūt aizpildītam!\n";
@@ -754,7 +754,7 @@ class RecordController extends Controller
       $a++;
     }
     //die;
-      // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); // 
+      // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); //
     //$pdf->Cell($w[0],10,Office::timeByInterval($slotTime),1); // $pdf->Cell($w[1],10,$row['takenby'],1,0,'L'); // $pdf->ln(); // }
     // Closing line // $pdf->Cell(array_sum($w),0,'','T');
     $sheet->setAutoFilter('A:C');

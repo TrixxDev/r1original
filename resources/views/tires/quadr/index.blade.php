@@ -386,7 +386,11 @@
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){
                           if($index == 0) {
-                            echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="top-product-title flipped-title">Kvadraciklu riepas</span></h4>';
+                            echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="top-product-title flipped-title">Kvadraciklu riepas
+                                <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
+                                  Filtrs
+                                </button>
+                            </span></h4>';
                           } else {
                             echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
                           }
