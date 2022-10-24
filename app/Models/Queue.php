@@ -37,8 +37,8 @@ class Queue extends Model
         $day->timestamps = false;
         $day->queue_id = $this->queue_id;
         $day->date = $date;
-	$day->secondaryAvailable = 0;
-	$day->slotSize = 2;
+	      $day->secondaryAvailable = 0;
+	      $day->slotSize = 2;
 
         if (!$day->fillWorkingHours()){
           $day->openTime = $this->opentime;
@@ -95,7 +95,7 @@ class Queue extends Model
       $_queues = array_reverse($_queues);
       $list = Slot::where('date', $date)->where('status', 0)->whereIn('queue_id', $_queues)->orderBy('queue_id', 'DESC')->get();
 
-      
+
 
       foreach ($list as $object){
         $this->_slots[$date][$object->slot_id] = $object;
@@ -177,7 +177,6 @@ class Queue extends Model
         if ($start === NULL) return true;
         if ($end === NULL) return true;
 
-	
         $length = floor(($end-$start) / $this->_workingDays[$date]['slotSize']);
         return $length;
     }
@@ -306,8 +305,8 @@ class Queue extends Model
         foreach ($list as $object) {
           if ($object->iorder % 2 == 0) {
             $slot1 = Slot::where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $object->iorder + 1)->first();
-	    if ($slot1->takenby != '') $object->takenby2 = $slot1->takenby;
-            if ($object->takenby2 != '') {
+	          if ($slot1->takenby != '') $object->takenby2 = (!empty($slot1->takenby)) ? $slot1->takenby : '';
+            if (!empty($object->takenby2)) {
               $object->status2 = 1;
             }
             $arr = [
