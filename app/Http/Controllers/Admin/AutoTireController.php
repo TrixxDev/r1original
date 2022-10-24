@@ -7,8 +7,7 @@ use App\Models\Autobrand;
 use App\Models\Autotire;
 use App\Models\Autotread;
 use Illuminate\Http\Request;
-use Intervention\Image\Image as Image;
-use Intervention\Image\Size;
+use Intervention\Image\ImageManagerStatic as Image;
 use Storage;
 
 class AutoTireController extends Controller

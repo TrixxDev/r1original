@@ -309,7 +309,7 @@
                       <a href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}" class="grid-view-link">
                         <div class="tire-image-card sort-order">
                           <div class="text-center image-grid-overflow">
-                            {!! \Image::showGrid('quadr', $tire->make_id) !!}
+                            {!! App\Helper\Image::showGrid('quadr', $tire->make_id) !!}
                           </div>
 
                           <div class="tire-list-caption">
@@ -497,7 +497,7 @@
 
                           <td class="table-tire-name-cell">
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                               title='{!! \Image::show('quadr', $tire->make_id) !!}'
+                               title='{!! App\Helper\Image::show('quadr', $tire->make_id) !!}'
                                href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"
                                data-content="{{ $tire->title . ' ' . $tire->fullSize }}" data-article="{{ $tire->article }}">
                               {{ $tire->title }}
