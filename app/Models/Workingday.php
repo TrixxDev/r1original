@@ -16,6 +16,8 @@ class Workingday extends Model
       $d = $this->date;
 
       $weekday = $this->weekday;
+      $secondaryAvailable = $this->secondaryAvailable;
+      $slotSize = $this->slotSize;
 
       $workingDayList = Self::where('queue_id', $id)->where('date', '<', $d)->where('weekday', $weekday)->first();
 

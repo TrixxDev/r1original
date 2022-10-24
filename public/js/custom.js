@@ -723,7 +723,6 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
                   });
             }
           }
-          console.log('not_admin_grid');
           // TIRE IMAGE INSIDE MODAL
           $('.modal-product-info .product-name').html(data.cart.name);
           $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2));
@@ -2234,6 +2233,10 @@ $(document).ready(function() {
     let __date = $(this).data('date');
 
     $('.modal#slotModal input[name="queue_id"]').val($(this).data('queue-id'));
+    $('.modal#slotModal input[name="serviceOption"]').each(function() {
+      $(this).removeAttr('checked').prop('checked', false);
+    });
+
     $('.modal#slotModal #f_date option').each(function() {
       $(this).removeAttr('selected');
       if ($(this).val() == __date) {
@@ -2251,7 +2254,6 @@ $(document).ready(function() {
       url: '/admin/rezervacijas/slot_ajax/' + $(this).data('queue-id') + '/' + $(this).data('date') + '/' + $(this).data('slot-id') + '/' + $(this).data('slot-part'),
       dataType: 'JSON',
       success: function(data) {
-        console.log(data.f_status);
         // $('.modal#slotModal #f_date').val(data.f_date);
         $('.modal#slotModal #f_time').val(data.f_time);
         $('.modal#slotModal #f_time option[value="' + data.f_time + '"]').attr('selected', true);
@@ -2262,7 +2264,7 @@ $(document).ready(function() {
         $('.modal#slotModal select#f_office option[value="' + data.q + data.f_office + '"]').attr('selected','selected').prop('selected', 'selected');
         $('.modal#slotModal input[name="serviceOption"]').each(function() {
           if ($(this).val() == data.f_purpose) {
-            $(this).attr('checked', true);
+            $(this).attr('checked', true).prop('checked', true);
             if ($(this).data('save') == 1) {
               $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr" value="' + data.f_storagebin + '"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
             }
@@ -3039,7 +3041,6 @@ $('input[type=password].password-confirmation').keyup(delay(function(e) {
 }, 500));
 
 $(document).ready(function() {
-
   // $('#tires-table tbody tr').change(function() {
   //   $('#show-selected-checkbox').attr('disabled', $('th.tire-table-checkbox input:checked').length == 0);
   // });
@@ -3055,6 +3056,11 @@ $(document).ready(function() {
 
   $("#show-selected-checkbox").on("click",function() {
     if ($(this).is(':checked')) {
+      // IF THERES NO CHECKBOX CHECKED
+      if (!window.location.hash.has(',atlase')) {
+        const linkHash = window.location.hash;
+        window.location.replace(linkHash + ',atlase');
+      }
       rows.each(function() {
         $(this).hide();
         if ($(this).hasClass('selected')) {
@@ -3094,6 +3100,13 @@ $(document).ready(function() {
       });
 
     } else {
+      // IF THERES NO CHECKBOX CHECKED
+      if (window.location.hash.has(',atlase')) {
+        const baseUrl = window.location.href;
+        window.location.hash = window.location.hash.replace(',atlase', '');
+        // window.location.replace('atlase', '');
+      }
+
       $('.grid-ex').show();
       $('.tires-table, .tire-brand-name').show();
       rows.show();
@@ -3126,8 +3139,12 @@ $(document).ready(function() {
   // if (navigator.userAgentData.mobile ) {
   //   $('.pak-table').css('overflow', 'scroll');
   // }
-  if (navigator.userAgentData.mobile && !localStorage.getItem('show_type') ) {
+  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && !localStorage.getItem('show_type')){
     $('div.can-collapse span.show_grid').click();
+  }
+
+  if (window.location.hash.has(',atlase')) {
+    $('#show-selected-checkbox').click();
   }
 
 });
