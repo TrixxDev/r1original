@@ -723,7 +723,6 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
                   });
             }
           }
-          console.log('not_admin_grid');
           // TIRE IMAGE INSIDE MODAL
           $('.modal-product-info .product-name').html(data.cart.name);
           $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2));
@@ -3140,7 +3139,7 @@ $(document).ready(function() {
   // if (navigator.userAgentData.mobile ) {
   //   $('.pak-table').css('overflow', 'scroll');
   // }
-  if (navigator.userAgentData.mobile && !localStorage.getItem('show_type') ) {
+  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && !localStorage.getItem('show_type')){
     $('div.can-collapse span.show_grid').click();
   }
 
