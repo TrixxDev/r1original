@@ -687,6 +687,7 @@ body#category .main-content {
   border-radius: 15px;
   margin-bottom: 15px;
   padding: 0px 0px 20px 0px;
+  min-height: 100px;
 }
 #left-column{
   /*padding: 0;*/

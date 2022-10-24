@@ -8,6 +8,9 @@
     <div class="row">
       <div class="main-content clearfix col-md-12 col-xl-12">
         <div id="left-column" class="col-md-12 col-lg-3">
+          <button style="z-index: 999;" type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
+            Filtrs
+          </button>
           <!-- begin D:\OpenServer\domains\r1old/themes/classic/modules/ps_facetedsearch/ps_facetedsearch.tpl -->
           <div id="search_filters_wrapper" class="hidden-sm-down">
             <div id="search_filter_controls" class="hidden-md-up">
@@ -629,18 +632,10 @@
                         if ($index == 0){
                           switch ($season_id){
                           case 1:
-                            echo ' <span class="text-uppercase" style="color:black;">Vasaras riepas
-                                     <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-                                        Filtrs
-                                     </button>
-                                    </span>';
+                            echo ' <span class="text-uppercase" style="color:black;">Vasaras riepas</span>';
                             break;
                           case 2:
-                            echo ' <span class="text-uppercase" style="color:black;">Ziemas riepas
-                                      <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-                                        Filtrs
-                                      </button>
-                                   </span>';
+                            echo ' <span class="text-uppercase" style="color:black;">Ziemas riepas</span>';
                             break;
                           }
                         }
@@ -752,18 +747,10 @@
                         if ($index == 0){
                           switch ($season_id){
                           case 1:
-                            echo ' <span class="text-uppercase flipped-title" style="color:black;">Vasaras riepas
-                                    <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-                                      Filtrs
-                                    </button>
-                                   </span>';
+                            echo ' <span class="text-uppercase flipped-title" style="color:black;">Vasaras riepas</span>';
                             break;
                           case 2:
-                            echo ' <span class="text-uppercase flipped-title" style="color:black;">Ziemas riepas
-                                    <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-                                      Filtrs
-                                    </button>
-                                    </span>';
+                            echo ' <span class="text-uppercase flipped-title" style="color:black;">Ziemas riepas</span>';
                             break;
                           }
                         }
@@ -1134,7 +1121,7 @@
                       <div class="modal-body">
                         <div id="search_filters" class="params">
                           <input type="hidden" id="facet_all_val" value="Visi" title="">
-
+                          <form method="get" action="/{{$season_title}}/search">
                           <div class="wrap">
                             <div class="search-filter-loader">
                               <div class="search-filter-loader-spinner">
@@ -1150,11 +1137,6 @@
 
                               <span class="show_list active"><i class="material-icons "></i>Saraksts</span>
                               <span class="show_grid"><i class="material-icons "></i>Bildes</span>
-                              @if($season_id === 2)
-                                <form method="get" action="/ziemas-riepas/search">
-                                  @elseif($season_id === 1)
-                                    <form method="get" action="/vasaras-riepas/search">
-                                      @endif
                                       <div class="sidebar-top">
 
                                         <section class="facet clearfix facet--0 facet-ind-0">
@@ -1292,7 +1274,6 @@
                                         </section>
 
                                       </div>
-                                    </form>
                             </div>
                           </div>
                           <div class="wrap">
@@ -1366,12 +1347,6 @@
                                     class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
                                 <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
                                   <h1 class="h6 facet-title">Kods</h1>
-                                  <span class="float-xs-right">
-                                                          <span class="navbar-toggler collapse-icons">
-                                                            <i class="material-icons add"></i>
-                                                            <i class="material-icons remove"></i>
-                                                          </span>
-                                                        </span>
                                 </div>
 
                                 <ul id="facet_code" class="collapse" style="display: block">
@@ -1436,12 +1411,6 @@
                                     class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
                                 <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
                                   <h1 class="h6 facet-title">Tips</h1>
-                                  <span class="float-xs-right">
-                                                          <span class="navbar-toggler collapse-icons">
-                                                            <i class="material-icons add"></i>
-                                                            <i class="material-icons remove"></i>
-                                                          </span>
-                                                        </span>
                                 </div>
 
                                 <ul id="facet_code" class="collapse" style="display: block">
@@ -1506,12 +1475,6 @@
                                     class="material-icons fuel-efficiency-dropdown">keyboard_arrow_down</span></h1>
                                 <div class="title hidden-md-up" data-target="#facet_70638" data-toggle="collapse">
                                   <h1 class="h6 facet-title">Degvielas ekonomija</h1>
-                                  <span class="float-xs-right">
-                                                          <span class="navbar-toggler collapse-icons">
-                                                            <i class="material-icons add"></i>
-                                                            <i class="material-icons remove"></i>
-                                                          </span>
-                                                        </span>
                                 </div>
                                 <ul id="facet_fuel_eco" class="collapse" style="display: block;">
                                   <li data-label="F">
@@ -1588,12 +1551,6 @@
                                     class="material-icons wet-surface-dropdown">keyboard_arrow_down</span></h1>
                                 <div class="title hidden-md-up" data-target="#facet_8079" data-toggle="collapse">
                                   <h1 class="h6 facet-title">Slapjš segums</h1>
-                                  <span class="float-xs-right">
-                                                          <span class="navbar-toggler collapse-icons">
-                                                            <i class="material-icons add"></i>
-                                                            <i class="material-icons remove"></i>
-                                                          </span>
-                                                        </span>
                                 </div>
 
 
@@ -1675,6 +1632,7 @@
 
                             </div>
                           </div>
+                          </form>
                         </div>
                       </div>
                     </div>
