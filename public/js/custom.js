@@ -3296,3 +3296,70 @@ $('button.offer-slot-link').on('click', function() {
       .append("<div class='alert alert-warning discount-alert' style='font-size: 14px;'><b>Šajā pieraksta laikā tiek piemērota atlaide (-" + discount + "% darbam!!!)</b></div>");
   }
 })
+
+// if ($('.code-dropdown-btn').find('span.code-dropdown').text() == 'keyboard_arrow_up') {
+//   localStorage.setItem('code-dropdown', 'true');
+// }
+$('.code-dropdown-btn').on('click', function() {
+  if ($(this).find('span.code-dropdown').text() == 'keyboard_arrow_up') {
+    localStorage.setItem('code-dropdown', 'true');
+  } else {
+    localStorage.removeItem('code-dropdown');
+  }
+})
+
+$('.fuel-eco-dropdown-btn').on('click', function() {
+  if ($(this).find('span.fuel-efficiency-dropdown').text() == 'keyboard_arrow_up') {
+    localStorage.setItem('fuel-eco-dropdown', 'true');
+  } else {
+    localStorage.removeItem('fuel-eco-dropdown');
+  }
+})
+
+$('.wet-surface-dropdown-btn').on('click', function() {
+  if ($(this).find('span.wet-surface-dropdown').text() == 'keyboard_arrow_up') {
+    localStorage.setItem('wet-surface-dropdown', 'true');
+  } else {
+    localStorage.removeItem('wet-surface-dropdown');
+  }
+})
+
+if (localStorage.getItem('code-dropdown') === 'true') {
+  $('.code-dropdown-btn').click();
+}
+
+if (localStorage.getItem('fuel-eco-dropdown') === 'true') {
+  $('.fuel-eco-dropdown-btn').click();
+}
+
+if (localStorage.getItem('wet-surface-dropdown') === 'true') {
+  $('.wet-surface-dropdown-btn').click();
+}
+// if ($('.fuel-eco-dropdown-btn').find('span.fuel-efficiency-dropdown').text() == 'keyboard_arrow_up') {
+//   localStorage.setItem('fuel-eco-dropdown', 'true');
+// }
+// if ($('.wet-surface-dropdown-btn').find('span.wet-surface-dropdown').text() == 'keyboard_arrow_up') {
+//   localStorage.setItem('wet-surface-dropdown', 'true');
+// }
+//
+//
+// if (localStorage.getItem('code-dropdown') == 'true') {
+//   $('.code-dropdown-btn').click();
+// }
+//
+//
+// $('.code-dropdown-btn').on('click', function() {
+//   localStorage.setItem('code-dropdown', true);
+// });
+//
+// $('.code-dropdown-btn').on('click', function() {
+//   localStorage.setItem('code-dropdown', true);
+// });
+//
+// $('.code-dropdown-btn').on('click', function() {
+//   localStorage.setItem('code-dropdown', true);
+// });
+//
+// $('.code-dropdown-btn').on('click', function() {
+//   localStorage.setItem('code-dropdown', true);
+// });
