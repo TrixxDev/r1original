@@ -3324,6 +3324,18 @@ $('.wet-surface-dropdown-btn').on('click', function() {
   }
 })
 
+$('.type-dropdown-btn').on('click', function() {
+  if ($(this).find('span.type-dropdown').text() == 'keyboard_arrow_up') {
+    localStorage.setItem('type-dropdown', 'true');
+  } else {
+    localStorage.removeItem('type-dropdown');
+  }
+})
+
+if (localStorage.getItem('type-dropdown') === 'true') {
+  $('.type-dropdown-btn').click();
+}
+
 if (localStorage.getItem('code-dropdown') === 'true') {
   $('.code-dropdown-btn').click();
 }

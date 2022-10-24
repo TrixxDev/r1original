@@ -359,8 +359,8 @@
                   @if ($season_title == 'ziemas-riepas')
 
                     <section class="facet clearfix facet--4">
-                      <h1 class="h6 facet-title hidden-sm-down facet-hover">Tips<span
-                          class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
+                      <h1 class="h6 facet-title hidden-sm-down facet-hover type-dropdown-btn">Tips<span
+                          class="material-icons type-dropdown">keyboard_arrow_down</span></h1>
                       <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
                         <h1 class="h6 facet-title">Tips</h1>
                         <span class="float-xs-right">
