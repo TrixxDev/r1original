@@ -128,7 +128,7 @@
 	<div class="col-md-6 col-sm">
 	  <select id="select" name="delivery_address" class="custom-select">
 	    @foreach ($offices as $office)
-            <option value="{{ $office->office_id }}" @if (isset($userData->fitting_address) && $userData->fitting_address == $office->id) selected="" @endif>{{ $office->shipping }}</option>
+            <option value="{{ $office->office_id }}" @if (isset($userData->fitting_address) && $userData->fitting_address == $office->office_id) selected="" @endif>{{ $office->shipping }}</option>
 	    @endforeach
 	    @if (isset($userData->shipping_city))
 		@switch($userData->shipping_city)
