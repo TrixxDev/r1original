@@ -722,11 +722,19 @@ $(document).ready(function () {
   $('.queueTable.reservation .buttonbar svg').on('click', function() {
 
     if ($('.last-info').length) {
-	$('.last-info').remove();
+	    $('.last-info').remove();
     }
     if ($('.temp_save_nr').length) {
-	$('.temp_save_nr').remove();
+	    $('.temp_save_nr').remove();
     }
+
+    $('.slotSettings #f_time option').each(function() {
+      $(this).removeAttr('selected');
+      if ($(this).val() == __date) {
+        $(this).parent().val($(this).val());
+        $(this).attr('selected', true).prop('selected', true);
+      }
+    });
 
     let __date = $(this).data('date');
 
@@ -754,12 +762,12 @@ $(document).ready(function () {
         $('.modal#slotModal #f_plate').val(data.f_plate);
         $('.modal#slotModal input[name="serviceOption"]').each(function() {
           $(this).removeAttr('checked');
-	  if ($(this).val() == data.f_purpose) {
+	        if ($(this).val() == data.f_purpose) {
             $(this).attr('checked', true).prop('checked', true);
             if ($(this).data('save') == 1) {
-	      $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3 pt-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr" value="' + data.f_storagebin + '"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px;line-height: 15px;margin-left: -12px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+	            $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3 pt-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr" value="' + data.f_storagebin + '"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px;line-height: 15px;margin-left: -12px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
             }
-	  }
+	        }
         });
         $('.modal#slotModal #f_comment').html(data.f_comment);
         $('.modal#slotModal #f_name').val(data.f_name);

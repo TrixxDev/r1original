@@ -93,7 +93,7 @@ class Queue extends Model
       $_queues = array_reverse($_queues);
       $list = Slot::where('date', $date)->where('status', 0)->whereIn('queue_id', $_queues)->orderBy('queue_id', 'DESC')->get();
 
-      
+
 
       foreach ($list as $object){
         $this->_slots[$date][$object->slot_id] = $object;
@@ -302,8 +302,8 @@ class Queue extends Model
         foreach ($list as $object) {
           if ($object->iorder % 2 == 0) {
             $slot1 = Slot::where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $object->iorder + 1)->first();
-            $object->takenby2 = $slot1->takenby;
-            if ($object->takenby2 != '') {
+            $object->takenby2 = (!empty($slot1->takenby)) ? $slot1->takenby : '';
+            if (!empty($object->takenby2)) {
               $object->status2 = 1;
             }
             $arr = [
@@ -323,7 +323,7 @@ class Queue extends Model
               $id = 0;
             }
             $object->where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $id)->update($arr);
-            $slot1->save();
+            //$slot1->save();
           }
         }
       }

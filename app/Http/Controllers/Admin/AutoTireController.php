@@ -7,6 +7,8 @@ use App\Models\Autobrand;
 use App\Models\Autotire;
 use App\Models\Autotread;
 use Illuminate\Http\Request;
+use Intervention\Image\Image as Image;
+use Intervention\Image\Size;
 use Storage;
 
 class AutoTireController extends Controller
@@ -22,6 +24,10 @@ class AutoTireController extends Controller
      *
      *
      */
+
+    public function __construct()
+    {
+    }
 
     public function index($perPage = 10)
     {
@@ -133,15 +139,29 @@ class AutoTireController extends Controller
     public function tire_image(Request $request, $id)
     {
         if ($request->hasFile('tread_image')) {
-            $tread = Autotread::findOrFail($id);
-            $tread->timestamps = false;
-
             $image      = $request->file('tread_image');
-            $fileName   = 'auto_' . $id . '.' . $image->getClientOriginalExtension();
+            $fileName   = $id . '.' . $image->getClientOriginalExtension();
+            $fileNameSmall   = $id . '-s.' . $image->getClientOriginalExtension();
+            $fileNameMed   = $id . '-n.' . $image->getClientOriginalExtension();
+            $fileNameLarge   = $id . '-o.' . $image->getClientOriginalExtension();
 //            dd($image);
-            Storage::disk('public')->putFileAs('tread', $image, $fileName);
-            $tread->image = $fileName;
-            $tread->save();
+            Image::make($image->getRealPath())->save('public/storage/auto/tread/' . $fileName);
+            Image::make($image->getRealPath())
+              ->resize(100, 100, function($constraint) {
+                $constraint->aspectRatio();
+              })->save('public/storage/auto/tread/' . $fileNameSmall);
+            Image::make($image->getRealPath())
+              ->resize(200, 200, function($constraint) {
+                $constraint->aspectRatio();
+              })->save('public/storage/auto/tread/' . $fileNameMed);
+            Image::make($image->getRealPath())
+              ->resize(1500, 1500, function($constraint) {
+                $constraint->aspectRatio();
+              })->save('public/storage/auto/tread/' . $fileNameLarge);
+//            Storage::putFileAs('public/auto/tread/' . $fileName, (string)$image->encode('png', 95), $fileName);
+//            Storage::putFileAs('public/auto/tread/' . $fileNameSmall, (string)$imageSmall->encode('png', 95), $fileNameSmall);
+//            Storage::putFileAs('public/auto/tread/' . $fileNameMed, (string)$imageMed->encode('png', 95), $fileNameMed);
+//            Storage::putFileAs('public/auto/tread/' . $fileNameLarge, (string)$imageLarge->encode('png', 95), $fileNameLarge);
         }
         return redirect()->back();
     }
