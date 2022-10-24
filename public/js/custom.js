@@ -3042,7 +3042,6 @@ $('input[type=password].password-confirmation').keyup(delay(function(e) {
 }, 500));
 
 $(document).ready(function() {
-
   // $('#tires-table tbody tr').change(function() {
   //   $('#show-selected-checkbox').attr('disabled', $('th.tire-table-checkbox input:checked').length == 0);
   // });
@@ -3058,6 +3057,11 @@ $(document).ready(function() {
 
   $("#show-selected-checkbox").on("click",function() {
     if ($(this).is(':checked')) {
+      // IF THERES NO CHECKBOX CHECKED
+      if (!window.location.hash.has(',atlase')) {
+        const linkHash = window.location.hash;
+        window.location.replace(linkHash + ',atlase');
+      }
       rows.each(function() {
         $(this).hide();
         if ($(this).hasClass('selected')) {
@@ -3097,6 +3101,13 @@ $(document).ready(function() {
       });
 
     } else {
+      // IF THERES NO CHECKBOX CHECKED
+      if (window.location.hash.has(',atlase')) {
+        const baseUrl = window.location.href;
+        window.location.hash = window.location.hash.replace(',atlase', '');
+        // window.location.replace('atlase', '');
+      }
+
       $('.grid-ex').show();
       $('.tires-table, .tire-brand-name').show();
       rows.show();
@@ -3131,6 +3142,10 @@ $(document).ready(function() {
   // }
   if (navigator.userAgentData.mobile && !localStorage.getItem('show_type') ) {
     $('div.can-collapse span.show_grid').click();
+  }
+
+  if (window.location.hash.has(',atlase')) {
+    $('#show-selected-checkbox').click();
   }
 
 });
