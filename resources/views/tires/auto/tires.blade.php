@@ -196,7 +196,7 @@
                         <label class="facet-label" for="show-selected-checkbox"
                                style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                           <span class="custom-checkbox">
-                            <input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces" disabled>
+                            <input type="checkbox" class="tire-table-checkbox" id="show-selected-checkbox" title="Rādīt tikai atzīmētās preces" disabled>
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>
