@@ -79,7 +79,7 @@ class RecordController extends Controller
       $office->loadQueues();
       foreach ($office->_queues as $queue){
         $queue->loadWorkingDay($date,true);
-        $queue->loadSlots($date,false);
+        $queue->loadSlots($date,true);
         $workingDays[] = $date;
       }
     }
