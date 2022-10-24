@@ -71,6 +71,16 @@ class SyncController extends Controller
 
         } else {
 	  $stock = $this->getInventory('auto_tires', $article);
+	  if (empty($stock[2])) {
+	    $stock = $this->getInventory('moto_tires', $article);
+	  }
+	  if (empty($stock[2])) {
+	    $stock = $this->getInventory('quadr_tires', $article);
+	  }
+	  if (empty($stock[2])) {
+	    return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
+	  }
+	  //dd($stock);
 	  $this->updateStock($stock[2]);
 	  $tire = DB::table('auto_tires')->where('article', $request->article)->first();
           if ($tire === null) {
