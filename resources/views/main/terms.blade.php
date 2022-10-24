@@ -12,7 +12,7 @@
                         </h1>
                     </header>
                     <section id="content" class="page-content page-cms page-cms-11">
-                        <p><img src="{{ asset('img/cms/Parametri_uz_riepas_saniem_679x480.jpg') }}" alt="" width="679" height="480"></p>
+                        <p style="overflow-x: auto;"><img src="{{ asset('img/cms/Parametri_uz_riepas_saniem_679x480.jpg') }}" alt="" width="679" height="480"></p>
                     </section>
                     <footer class="page-footer">
                         <!-- Footer content -->

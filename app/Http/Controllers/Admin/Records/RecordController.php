@@ -640,9 +640,11 @@ class RecordController extends Controller
             $errorCount++;
             $return['error_fields']['f_email'] = "Laukam \"E-pasts\" jābūt aizpildītam";
           }*/
-          if (($form->ownerEmail=='')&&(!$form->ownerEmail)) {
-            $errorCount++;
-            $return['error_fields']['f_email'] = "Lauks \"E-pasts\" aizpildīts nekorekti";
+          if (!Auth::check()) {
+            if (($form->ownerEmail == '') && (!$form->ownerEmail)) {
+              $errorCount++;
+              $return['error_fields']['f_email'] = "Lauks \"E-pasts\" aizpildīts nekorekti";
+            }
           }
         }
 
