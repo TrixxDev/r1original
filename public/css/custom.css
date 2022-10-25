@@ -687,6 +687,7 @@ body#category .main-content {
   border-radius: 15px;
   margin-bottom: 15px;
   padding: 0px 0px 20px 0px;
+  min-height: 100px;
 }
 #left-column{
   /*padding: 0;*/
@@ -2884,8 +2885,8 @@ th.cth_availability.quadr {
                                   supported by Chrome and Opera */
 }
 .dot.red {
-  background-color: #FF0000;
-  color: #FF0000;
+  background-color: lightgrey;
+  color: lightgrey;
 }
 .dot.green {
   background-color: #4cbb6c;
@@ -4855,8 +4856,8 @@ ul#order-type-info li.list-style {
 }
 
 .grid-dot.red {
-  background-color: #FF0000;
-  color: #FF0000;
+  background-color: lightgrey;
+  color: lightgrey;
 }
 
 .grid-dot.green {
@@ -4983,4 +4984,12 @@ input#show-selected-checkbox {
   right: 15px;
   top: 10px;
   position: absolute;
+}
+
+.popup-code-dropdown {
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
 }
