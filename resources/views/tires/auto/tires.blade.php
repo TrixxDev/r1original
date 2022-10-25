@@ -1345,11 +1345,12 @@
                               <section class="facet clearfix facet--4">
                                 <h1 class="h6 facet-title hidden-sm-down facet-hover">Kods<span
                                     class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
-                                <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
+                                <div style="display: flex;" class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
                                   <h1 class="h6 facet-title">Kods</h1>
+                                  <span style="margin-top: -5px; transform: rotate(180deg);" class="material-icons popup-code-dropdown">keyboard_arrow_down</span>
                                 </div>
 
-                                <ul id="facet_code" class="collapse" style="display: block">
+                                <ul id="facet_code" class="collapse" style="display: block;">
                                   <li data-label="XL">
                                     <label class="facet-label" for="facet_for_xl">
                           <span class="custom-checkbox">
@@ -1409,11 +1410,12 @@
                               <section class="facet clearfix facet--4">
                                 <h1 class="h6 facet-title hidden-sm-down facet-hover">Tips<span
                                     class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
-                                <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
+                                <div style="display: flex;" class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
                                   <h1 class="h6 facet-title">Tips</h1>
+                                  <span style="margin-top: -5px; transform: rotate(180deg);" class="material-icons popup-code-dropdown">keyboard_arrow_down</span>
                                 </div>
 
-                                <ul id="facet_code" class="collapse" style="display: block">
+                                <ul id="facet_code" class="collapse" style="display: block;">
                                   <li data-label="M+S">
                                     <label class="facet-label" for="facet_for_ms">
                           <span class="custom-checkbox">
@@ -1473,10 +1475,11 @@
                               <section class="facet clearfix facet--8">
                                 <h1 class="h6 facet-title hidden-sm-down facet-hover">Degvielas ekonomija <span
                                     class="material-icons fuel-efficiency-dropdown">keyboard_arrow_down</span></h1>
-                                <div class="title hidden-md-up" data-target="#facet_70638" data-toggle="collapse">
+                                <div style="display: flex;" class="title hidden-md-up" data-target="#facet_70638" data-toggle="collapse">
                                   <h1 class="h6 facet-title">Degvielas ekonomija</h1>
+                                  <span style="margin-top: -5px;" class="material-icons popup-code-dropdown">keyboard_arrow_down</span>
                                 </div>
-                                <ul id="facet_fuel_eco" class="collapse" style="display: block;">
+                                <ul id="facet_fuel_eco" class="collapse" style="display: none;">
                                   <li data-label="F">
                                     <label class="facet-label" for="facet_fuel_eco_f">
                           <span class="custom-checkbox">
@@ -1549,12 +1552,13 @@
                               <section class="facet clearfix facet--9">
                                 <h1 class="h6 facet-title hidden-sm-down facet-hover">Slapjš segums <span
                                     class="material-icons wet-surface-dropdown">keyboard_arrow_down</span></h1>
-                                <div class="title hidden-md-up" data-target="#facet_8079" data-toggle="collapse">
+                                <div style="display: flex;" class="title hidden-md-up" data-target="#facet_8079" data-toggle="collapse">
                                   <h1 class="h6 facet-title">Slapjš segums</h1>
+                                  <span style="margin-top: -5px;" class="material-icons popup-code-dropdown">keyboard_arrow_down</span>
                                 </div>
 
 
-                                <ul id="facet_wet" class="collapse" style="display: block;">
+                                <ul id="facet_wet" class="collapse" style="display: none;">
                                   <li data-label="F">
                                     <label class="facet-label" for="facet_wet_f">
                           <span class="custom-checkbox">
