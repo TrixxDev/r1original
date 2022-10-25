@@ -723,7 +723,6 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
                   });
             }
           }
-          console.log('not_admin_grid');
           // TIRE IMAGE INSIDE MODAL
           $('.modal-product-info .product-name').html(data.cart.name);
           $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2));
@@ -3140,7 +3139,7 @@ $(document).ready(function() {
   // if (navigator.userAgentData.mobile ) {
   //   $('.pak-table').css('overflow', 'scroll');
   // }
-  if (navigator.userAgentData.mobile && !localStorage.getItem('show_type') ) {
+  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) && !localStorage.getItem('show_type')){
     $('div.can-collapse span.show_grid').click();
   }
 
@@ -3297,3 +3296,92 @@ $('button.offer-slot-link').on('click', function() {
       .append("<div class='alert alert-warning discount-alert' style='font-size: 14px;'><b>Šajā pieraksta laikā tiek piemērota atlaide (-" + discount + "% darbam!!!)</b></div>");
   }
 })
+
+// if ($('.code-dropdown-btn').find('span.code-dropdown').text() == 'keyboard_arrow_up') {
+//   localStorage.setItem('code-dropdown', 'true');
+// }
+$('.code-dropdown-btn').on('click', function() {
+  if ($(this).find('span.code-dropdown').text() == 'keyboard_arrow_up') {
+    localStorage.setItem('code-dropdown', 'true');
+  } else {
+    localStorage.removeItem('code-dropdown');
+  }
+})
+
+$('.fuel-eco-dropdown-btn').on('click', function() {
+  if ($(this).find('span.fuel-efficiency-dropdown').text() == 'keyboard_arrow_up') {
+    localStorage.setItem('fuel-eco-dropdown', 'true');
+  } else {
+    localStorage.removeItem('fuel-eco-dropdown');
+  }
+})
+
+$('.wet-surface-dropdown-btn').on('click', function() {
+  if ($(this).find('span.wet-surface-dropdown').text() == 'keyboard_arrow_up') {
+    localStorage.setItem('wet-surface-dropdown', 'true');
+  } else {
+    localStorage.removeItem('wet-surface-dropdown');
+  }
+})
+
+$('.type-dropdown-btn').on('click', function() {
+  if ($(this).find('span.type-dropdown').text() == 'keyboard_arrow_up') {
+    localStorage.setItem('type-dropdown', 'true');
+  } else {
+    localStorage.removeItem('type-dropdown');
+  }
+})
+
+if (localStorage.getItem('type-dropdown') === 'true') {
+  $('.type-dropdown-btn').click();
+}
+
+if (localStorage.getItem('code-dropdown') === 'true') {
+  $('.code-dropdown-btn').click();
+}
+
+if (localStorage.getItem('fuel-eco-dropdown') === 'true') {
+  $('.fuel-eco-dropdown-btn').click();
+}
+
+if (localStorage.getItem('wet-surface-dropdown') === 'true') {
+  $('.wet-surface-dropdown-btn').click();
+}
+// if ($('.fuel-eco-dropdown-btn').find('span.fuel-efficiency-dropdown').text() == 'keyboard_arrow_up') {
+//   localStorage.setItem('fuel-eco-dropdown', 'true');
+// }
+// if ($('.wet-surface-dropdown-btn').find('span.wet-surface-dropdown').text() == 'keyboard_arrow_up') {
+//   localStorage.setItem('wet-surface-dropdown', 'true');
+// }
+//
+//
+// if (localStorage.getItem('code-dropdown') == 'true') {
+//   $('.code-dropdown-btn').click();
+// }
+//
+//
+// $('.code-dropdown-btn').on('click', function() {
+//   localStorage.setItem('code-dropdown', true);
+// });
+//
+// $('.code-dropdown-btn').on('click', function() {
+//   localStorage.setItem('code-dropdown', true);
+// });
+//
+// $('.code-dropdown-btn').on('click', function() {
+//   localStorage.setItem('code-dropdown', true);
+// });
+//
+// $('.code-dropdown-btn').on('click', function() {
+//   localStorage.setItem('code-dropdown', true);
+// });
+
+$('.popup-code-dropdown').on('click', function() {
+  // console.log();
+  if ($(this).parent().next('ul').is(":visible")){
+    $(this).css('transform', 'rotate(0deg)');
+  } else {
+    $(this).css('transform', 'rotate(180deg)');
+  }
+  $(this).parent().next('ul').slideToggle();
+});
