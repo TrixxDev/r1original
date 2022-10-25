@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\View as View;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,8 +13,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//if (user_ip == '212.3.218.22') {
+  //dd(123);
+  //return View::make('maintenance');
+  //return view('maintenance');
+//}
+
 Auth::routes();
 Route::get('/register', function() { return abort(404); })->name('register');
+
 
 // Administrācijas panelis
 

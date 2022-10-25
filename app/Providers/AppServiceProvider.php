@@ -21,6 +21,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Artisan;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,6 +42,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+
+      if (env('APP_MAINTENANCE') == true) {
+        Artisan::call('down', ['--render' => 'maintenance', '--secret' => 'r1riepas']);
+      } else {
+        Artisan::call('up');
+      }
 
       Builder::macro('whereLike', function($attributes, $terms) {
 	$this->where(function($query) use ($attributes, $terms) {

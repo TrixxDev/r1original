@@ -5,7 +5,7 @@
 <tr style="height: 22.3906px;">
 <td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
 <td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>VIEGLIE AUTO</strong></td>
-<td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>KROSOVERI/SUV/CARGO</strong></td>
+<td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>KROSOVERI/SUV/CARGO*</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>4 riepu nomaiņa</strong></td>
@@ -71,7 +71,7 @@
 </tbody>
 </table>
 </div>
-<p style="text-align: center;"> </p>
+<p style="text-align: left;">* - riepas ar "C" indeksu un riepas ar sekojošiem izmēriem vai lielākas (diametrā) 225/70R16, 225/65R17, 225/60R18, 225/55R19</p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">MOTOCIKLIEM, MOTOROLLERIEM</span></strong></p>
 <div class="pak-table">
 <table dir="ltr" style="width: 100%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 26.0126%;" width="63"><col style="width: 17.1017%;" width="63"><col style="width: 15.3915%;" width="63"><col style="width: 24.7598%;" width="63"><col style="width: 16.7344%;" width="63"></colgroup>
@@ -216,7 +216,7 @@
 <tbody>
 <tr style="height: 22.3906px;">
 <td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
-<td style="height: 22.3906px; text-align: center;" colspan="4" rowspan="1" data-sheets-value="{"><strong>KROSOVERI/SUV/CARGO</strong></td>
+<td style="height: 22.3906px; text-align: center;" colspan="4" rowspan="1" data-sheets-value="{"><strong>KROSOVERI/SUV/CARGO*</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>Tērauda diski</strong></td>
@@ -262,7 +262,7 @@
 </tbody>
 </table>
 </div>
-<p> </p>
+<p>* - riepas ar "C" indeksu un riepas ar sekojošiem izmēriem vai lielākas (diametrā) 225/70R16, 225/65R17, 225/60R18, 225/55R19</p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">RITEŅU BALANSĒŠANA</span></strong></p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:none;font-family:'Times New Roman';font-style:normal;text-decoration-skip-ink:none;">RITEŅU BALANSĒŠANA VIEGLAJIEM AUTO </span><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:underline;font-family:''Times New Roman'';font-style:normal;text-decoration-skip-ink:none;">AR NOMAIŅU UZ AUTO</span></span></strong></p>
 <table dir="ltr" style="width: 100%; height: 111.953px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 17.3442%;" width="63"><col style="width: 40.7485%;" width="63"><col style="width: 41.9073%;" width="63"></colgroup>
