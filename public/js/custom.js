@@ -2229,7 +2229,7 @@ $(document).ready(function() {
     // throw '';
 
     if ($('.last-info').length) {
-	$('.last-info').remove();
+	    $('.last-info').remove();
     }
 
     let __date = $(this).data('date');
