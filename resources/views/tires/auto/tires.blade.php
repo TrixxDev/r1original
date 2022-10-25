@@ -1350,7 +1350,7 @@
                                   <span style="margin-top: -5px; transform: rotate(180deg);" class="material-icons popup-code-dropdown">keyboard_arrow_down</span>
                                 </div>
 
-                                <ul id="facet_code" class="collapse" style="display: block;">
+                                <ul id="facet_code" class="collapse" style="display: block; border: 1px solid transparent;">
                                   <li data-label="XL">
                                     <label class="facet-label" for="facet_for_xl">
                           <span class="custom-checkbox">
@@ -1415,7 +1415,7 @@
                                   <span style="margin-top: -5px; transform: rotate(180deg);" class="material-icons popup-code-dropdown">keyboard_arrow_down</span>
                                 </div>
 
-                                <ul id="facet_code" class="collapse" style="display: block;">
+                                <ul id="facet_code" class="collapse" style="display: block; border: 1px solid transparent;">
                                   <li data-label="M+S">
                                     <label class="facet-label" for="facet_for_ms">
                           <span class="custom-checkbox">
@@ -1479,7 +1479,7 @@
                                   <h1 class="h6 facet-title">Degvielas ekonomija</h1>
                                   <span style="margin-top: -5px;" class="material-icons popup-code-dropdown">keyboard_arrow_down</span>
                                 </div>
-                                <ul id="facet_fuel_eco" class="collapse" style="display: none;">
+                                <ul id="facet_fuel_eco" class="collapse" style="display: none; border: 1px solid transparent;">
                                   <li data-label="F">
                                     <label class="facet-label" for="facet_fuel_eco_f">
                           <span class="custom-checkbox">
@@ -1558,7 +1558,7 @@
                                 </div>
 
 
-                                <ul id="facet_wet" class="collapse" style="display: none;">
+                                <ul id="facet_wet" class="collapse" style="display: none; border: 1px solid transparent;">
                                   <li data-label="F">
                                     <label class="facet-label" for="facet_wet_f">
                           <span class="custom-checkbox">

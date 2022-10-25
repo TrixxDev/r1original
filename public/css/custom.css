@@ -4985,3 +4985,11 @@ input#show-selected-checkbox {
   top: 10px;
   position: absolute;
 }
+
+.popup-code-dropdown {
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+}
