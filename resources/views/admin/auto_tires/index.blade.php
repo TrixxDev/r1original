@@ -40,11 +40,8 @@
                         <div class="row">
                             <div class="col-md-6 preview-image">
                                 @if (isset($tread))
-                                  @if ($tread->image !== false)
-                                      <img style="width: 300px; height: 300px; margin-bottom: 10px" src="{{ $tread->image }}">
-                                  @else
-                                      <img style="width: 300px; height: 300px; margin-bottom: 10px" src="{{ asset('img/p/r1-logo.svg') }}">
-                                  @endif
+{{--                                  {{ dd($tread) }}--}}
+                                  {!! App\Helper\Image::showGrid('auto', $tread->tread_id, 'width: 300px; margin-bottom: 20px;') !!}
 
                                   @if (isset($tread->image))
                                   <form action="{{ route('admin.auto.tires.image', $tread->tread_id) }}" method="post" enctype="multipart/form-data">

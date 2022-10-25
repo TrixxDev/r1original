@@ -37,6 +37,8 @@ class Queue extends Model
         $day->timestamps = false;
         $day->queue_id = $this->queue_id;
         $day->date = $date;
+	      $day->secondaryAvailable = 0;
+	      $day->slotSize = 2;
 
         if (!$day->fillWorkingHours()){
           $day->openTime = $this->opentime;
@@ -93,7 +95,7 @@ class Queue extends Model
       $_queues = array_reverse($_queues);
       $list = Slot::where('date', $date)->where('status', 0)->whereIn('queue_id', $_queues)->orderBy('queue_id', 'DESC')->get();
 
-      
+
 
       foreach ($list as $object){
         $this->_slots[$date][$object->slot_id] = $object;
@@ -237,15 +239,16 @@ class Queue extends Model
       $list2 = Slot::where('queue_id', $this->queue_id)->where('date', $date)->orderBy('iorder', 'ASC')->take(15)->get();
       $workingDay = Workingday::where('queue_id', $this->queue_id)->where('date', $date)->first();
 
-      if ($delta == 1) {
-        if ($workingDay->secondaryAvailable == 0 && $workingDay->slotSize == 2) {
-          echo json_encode(['status' => 0, 'status_text' => 'Pilnā rinda jau ir ieslēgta!']);
-        }
-      } else {
-        if ($workingDay->secondaryAvailable == 1 && $workingDay->slotSize == 4) {
-          echo json_encode(['status' => 0, 'status_text' => 'Pusrinda jau ir ieslēgta!']);
-        }
-      }
+
+      //if ($delta == 1) {
+      //  if ($workingDay->secondaryAvailable == 0 && $workingDay->slotSize == 2) {
+      //    echo json_encode(['status' => 0, 'status_text' => 'Pilnā rinda jau ir ieslēgta!']);
+      //  }
+      //} else {
+      //  if ($workingDay->secondaryAvailable == 1 && $workingDay->slotSize == 4) {
+      //    echo json_encode(['status' => 0, 'status_text' => 'Pusrinda jau ir ieslēgta!']);
+      //  }
+      //}
 
 
       if ($delta == 1) {
@@ -302,8 +305,8 @@ class Queue extends Model
         foreach ($list as $object) {
           if ($object->iorder % 2 == 0) {
             $slot1 = Slot::where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $object->iorder + 1)->first();
-            $object->takenby2 = $slot1->takenby;
-            if ($object->takenby2 != '') {
+	          if ($slot1->takenby != '') $object->takenby2 = (!empty($slot1->takenby)) ? $slot1->takenby : '';
+            if (!empty($object->takenby2)) {
               $object->status2 = 1;
             }
             $arr = [

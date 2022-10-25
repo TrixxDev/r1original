@@ -15,7 +15,7 @@
                             <div class="col-md-4">
                                 <section class="page-content" id="content">
                                   <div class="images-container">
-                                    {!! \Image::treadZoom('moto', $currTire->make_id) !!}
+                                    {!! App\Helper\Image::treadZoom('moto', $currTire->make_id) !!}
                                     <div class="js-qv-mask mask">
                                       <ul class="product-images js-qv-product-images">
                                       </ul>

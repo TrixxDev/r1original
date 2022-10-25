@@ -98,7 +98,7 @@
 
     }
 
-    public static function showGrid($type, $image) {
+    public static function showGrid($type, $image, $style = '') {
 
       $img = str_replace(dirname(__DIR__, 2), '', Self::image($type, $image));
 
@@ -106,9 +106,17 @@
         if (file_exists(str_replace('.jpg', '.png', Self::image($type, $image)))) {
           $img = str_replace('.jpg', '.png', $img);
         }
-        return '<img class="grid-tire-image" src=' . $img . '>';
+        if (empty($style)) {
+          return '<img class="grid-tire-image" src=' . $img . '>';
+        } else {
+          return '<img class="grid-tire-image" style="' . $style . '" src=' . $img . '>';
+        }
       } else {
-        return '<img class="grid-tire-image" src=' . asset('img/p/r1-logo.svg') . '>';
+        if (empty($style)) {
+          return '<img class="grid-tire-image" src=' . asset('img/p/r1-logo.svg') . '>';
+        } else {
+          return '<img class="grid-tire-image" style="' . $style . '" src=' . asset('img/p/r1-logo.svg') . '>';
+        }
       }
 
     }

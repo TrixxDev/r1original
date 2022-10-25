@@ -308,7 +308,7 @@
                                                     </div>
 
                                                     <div class="form-group">
-                                                      <label for="mobile-reg_nr">Reģistrācijas numurs:</label>
+                                                      <label for="mobile-reg_nr"><span class="validate">Reģistrācijas numurs:</label>
                                                       <input type="text" class="form-control" id="mobile-reg_nr">
                                                     </div>
 

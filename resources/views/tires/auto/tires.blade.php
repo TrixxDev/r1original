@@ -653,7 +653,7 @@
                         data-article="{{ $tire->article }}">
                         <div class="tire-image-card sort-order">
                           <div class="text-center image-grid-overflow">
-                            {!! \Image::showGrid('auto', $tire->make_id) !!}
+                            {!! App\Helper\Image::showGrid('auto', $tire->make_id) !!}
                           </div>
 
                           <div class="tire-list-caption">
@@ -880,7 +880,7 @@
 
                           <td class="table-tire-name-cell">
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                               title='{!! \Image::show('auto', $tire->make_id) !!}'
+                               title='{!! App\Helper\Image::show('auto', $tire->make_id) !!}'
                                href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"
                                data-content="{{ $tire->title . ' ' . $tire->fullSize }}"
                                data-article="{{ $tire->article }}">
