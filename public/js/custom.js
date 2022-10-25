@@ -234,6 +234,7 @@ $(document).ready(function() {
         if (data.error) {
           if (data.error.brand) $('#mobile-brand').attr('placeholder', data.error.brand);
           if (data.error.model) $('#mobile-model').attr('placeholder', data.error.model);
+          if (data.error.reg_nr) $('#mobile-reg_nr').attr('placeholder', data.error.reg_nr);
           if (data.error.phone) $('#mobile-phone').attr('placeholder', data.error.phone);
           if (data.error.wrongPhone) {
             if ($('.phone-error').length == 0) {
@@ -2029,6 +2030,7 @@ $(document).ready(function() {
         if (data.error) {
           if (data.error.brand) $('#brand').attr('placeholder', data.error.brand);
           if (data.error.model) $('#model').attr('placeholder', data.error.model);
+          if (data.error.reg_nr) $('#reg_nr').attr('placeholder', data.error.reg_nr);
           if (data.error.purpose) {
             if ($('.purpose-error').length == 0) {
               $('<div class="alert alert-danger purpose-error">' + data.error.purpose + '</div>').insertAfter('#reservation .form-group:last');

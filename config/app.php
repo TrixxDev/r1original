@@ -173,7 +173,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        //Intervention\Image\ImageServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -247,10 +247,10 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Tires' => App\Helper\Tires::class,
-        'Image' => App\Helper\Image::class,
         'Env' => App\Helper\Env::class,
         'Cart' => Gloudemans\Shoppingcart\Facades\Cart::class,
-        //'Images' => Intervention\Image\Facades\Image::class
+        'Image' => App\Helper\Image::class,
+        'Images' => Intervention\Image\Facades\Image::class,
 
     ],
 

@@ -278,6 +278,7 @@ class RecordController extends Controller
         $errorText = [];
         if (!$car) $errorText['brand'] = "Jābūt aizpildītam!\n";
         if (!$carModel) $errorText['model'] = "Jābūt aizpildītam!\n";
+        if (!$licPlate) $errorText['reg_nr'] = "Jābūt aizpildītam!\n";
 
         if (!$purpose) $errorText['purpose'] = "Laukam \"Es vēlos\" jābūt aizpildītam!\n";
         if (!Auth::check()) {
@@ -423,6 +424,7 @@ class RecordController extends Controller
         $errorText = [];
         if (!$car) $errorText['brand'] = "Jābūt aizpildītam!\n";
         if (!$carModel) $errorText['model'] = "Jābūt aizpildītam!\n";
+        if (!$licPlate) $errorText['reg_nr'] = "Jābūt aizpildītam!\n";
 
         if ($filiale === NULL) $errorText['filiale'] = "Izvēlieties filiāli!\n";
         if ($date === NULL) $errorText['reservationDate'] = "Izvēlieties pieraksta datumu!\n";

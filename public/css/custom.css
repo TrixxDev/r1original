@@ -3355,12 +3355,12 @@ form textarea {
 
 
 
-#reservation #brand::placeholder, #reservation #model::placeholder, #reservation #phone::placeholder, #reservation #email::placeholder {
+#reservation #brand::placeholder, #reservation #model::placeholder, #reservation #phone::placeholder, #reservation #email::placeholder, #reservation #reg_nr::placeholder {
   color: red;
   opacity: 0.5;
 }
 
-.mobile-body #mobile-brand::placeholder, .mobile-body #mobile-model::placeholder, .mobile-body #mobile-phone::placeholder, .mobile-body #mobile-email::placeholder {
+.mobile-body #mobile-brand::placeholder, .mobile-body #mobile-model::placeholder, .mobile-body #mobile-phone::placeholder, .mobile-body #mobile-email::placeholder, .mobile-body #mobile-reg_nr {
   color: red;
   opacity: 0.5;
 }

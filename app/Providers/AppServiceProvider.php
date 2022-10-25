@@ -11,6 +11,7 @@ use Gloudemans\Shoppingcart\Cart;
 use Gloudemans\Shoppingcart\CartItem;
 use Gloudemans\Shoppingcart\CartItemOptions;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+      if (env('APP_MAINTENANCE') == true) {
+        Artisan::call('down', ['--render' => 'maintenance', '--allow' => '212.3.218.22']);
+      } else {
+        Artisan::call('up');
+      }
 
       Builder::macro('whereLike', function($attributes, $terms) {
 	$this->where(function($query) use ($attributes, $terms) {
