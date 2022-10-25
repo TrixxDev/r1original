@@ -278,6 +278,7 @@ class RecordController extends Controller
         $errorText = [];
         if (!$car) $errorText['brand'] = "Jābūt aizpildītam!\n";
         if (!$carModel) $errorText['model'] = "Jābūt aizpildītam!\n";
+        if (!$licPlate) $errorText['reg_nr'] = "Jābūt aizpildītam!\n";
 
         if (!$purpose) $errorText['purpose'] = "Laukam \"Es vēlos\" jābūt aizpildītam!\n";
         if (!Auth::check()) {
@@ -331,6 +332,7 @@ class RecordController extends Controller
 
         $slot->createTime = $slot->editTime = NOW();
         $slot->createUser = $slot->editUser = $userID;
+        $slot->is_mobile = 0;
 
         $slot->save();
 
@@ -423,6 +425,7 @@ class RecordController extends Controller
         $errorText = [];
         if (!$car) $errorText['brand'] = "Jābūt aizpildītam!\n";
         if (!$carModel) $errorText['model'] = "Jābūt aizpildītam!\n";
+        if (!$licPlate) $errorText['reg_nr'] = "Jābūt aizpildītam!\n";
 
         if ($filiale === NULL) $errorText['filiale'] = "Izvēlieties filiāli!\n";
         if ($date === NULL) $errorText['reservationDate'] = "Izvēlieties pieraksta datumu!\n";
@@ -466,6 +469,7 @@ class RecordController extends Controller
         $slot->createUser = $userID;
         $slot->editTime = date('Y-m-d H:i:s');
         $slot->editUser = $userID;
+        $slot->is_mobile = 1;
 
         $queue = Queue::where('queue_id', $slot->queue_id)->first();
         $office = Office::where('office_id', $queue->office_id)->first();
@@ -638,27 +642,35 @@ class RecordController extends Controller
                 switch ($slot->status) {
                   case SLOT_STATUS_FREE:
                   {
+                    $slotDevice = '';
                     $slotText = $slot->comment . '';
                     break;
                   }
                   case SLOT_STATUS_TAKEN:
                   {
                     $takenBy = json_decode($slot->takenby);
-		    if (!$takenBy->purpose) {
-		      $slotText = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-		    } else {
+                    if ($slot->is_mobile == 1) {
+                      $slotDevice = 'Mobīlā ierīce';
+                    } else {
+                      $slotDevice = 'Dators';
+                    }
+                    if (!$takenBy->purpose) {
+                      $slotText = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                    } else {
                       $service = Service::where('service_id', $takenBy->purpose)->first();
-		      $slotText = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $service->pdf_title . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-		    }
-		    break;
+                      $slotText = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $service->pdf_title . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                    }
+                    break;
                   }
                   case SLOT_STATUS_OFFER:
                   {
+                    $slotDevice = '';
                     $slotText = $slot->comment;
                     break;
                   }
                   case SLOT_STATUS_CLOSED:
                   {
+                    $slotDevice = '';
                     if (trim($slot->comment) == '') {
                       $slotCaption = 'Slēgts!';
                     } else {
@@ -672,69 +684,75 @@ class RecordController extends Controller
 
                 $sheet->setCellValue('A1', 'Laiks');
                 $sheet->setCellValue('B1', 'Rinda');
-                $sheet->setCellValue('C1', 'Pieraksta info');
+                $sheet->setCellValue('C1', 'Iekārta');
+                $sheet->setCellValue('D1', 'Pieraksta info');
 
 
-		switch ($slot->queue_id) {
-		  case(1):
-		    $queue_id = 1;
-		    break;
-		  case(2):
-		    $queue_id = 2;
-		    break;
-		  case(3):
-		    $queue_id = 1;
-		    break;
-		  case(4):
-		    $queue_id = 2;
-		    break;
-		  case(5):
-		    $queue_id = 3;
-		    break;
-		}
+                switch ($slot->queue_id) {
+                  case (3):
+                  case(1):
+                    $queue_id = 1;
+                    break;
+                  case (4):
+                  case(2):
+                    $queue_id = 2;
+                    break;
+                  case(5):
+                    $queue_id = 3;
+                    break;
+                }
 
-                /*if (isset($lastRowI)) {
+                            /*if (isset($lastRowI)) {
 
-                  //$sheet->setCellValue('A' . $, Office::timeByInterval($i));
-		  //$sheet->setCellValue('B' . $b, $slot->queue_id);
-		  $sheet->setCellValue('E' . ($lastRowI), $queue_id);
-		  //$sheet->setCellValue('C' . $b, $slotText);
-		  $sheet->setCellValue('F' . ($lastRowI), $slotText2);
-		  $lastRowI++;
+                              //$sheet->setCellValue('A' . $, Office::timeByInterval($i));
+                  //$sheet->setCellValue('B' . $b, $slot->queue_id);
+                  $sheet->setCellValue('E' . ($lastRowI), $queue_id);
+                  //$sheet->setCellValue('C' . $b, $slotText);
+                  $sheet->setCellValue('F' . ($lastRowI), $slotText2);
+                  $lastRowI++;
                 }*/
 
                 $sheet->setCellValue('A' . $b, Office::timeByInterval($i));
                 $sheet->setCellValue('B' . $b, $queue_id);
-                $sheet->setCellValue('C' . $b, $slotText);
+                $sheet->setCellValue('C' . $b, $slotDevice);
+                $sheet->setCellValue('D' . $b, $slotText);
 
                 $b++;
 
-		if ($queue->_workingDays[$date]->secondaryAvailable) {
+		            if ($queue->_workingDays[$date]->secondaryAvailable) {
                   $slotTime = Office::timeByInterval($queue->getSlotTime($date, $slot->iorder) + $queue->_workingDays[$date]->slotSize / 2);
                   switch ($slot->status2) {
                     case SLOT_STATUS_FREE:
                     {
+                      $slotDevice2 = '';
                       $slotText2 = $slot->comment . '';
                       break;
                     }
                     case SLOT_STATUS_TAKEN:
                     {
                       $takenBy = json_decode($slot->takenby2);
-		      if (!$takenBy->purpose) {
-  		        $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-		      } else {
+                      if ($slot->is_mobile == 1) {
+                        $slotDevice2 = 'Mobīlā ierīce';
+                      } else {
+                        $slotDevice2 = 'Dators';
+                      }
+                      if (!$takenBy->purpose) {
+                          $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                      } else {
                         $service = Service::where('service_id', $takenBy->purpose)->first();
-			$slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $service->pdf_title . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-		      }
+			                  $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $service->pdf_title . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		                  }
                       break;
                     }
                     case SLOT_STATUS_OFFER:
                     {
+                      $slotDevice2 = '';
                       $slotText2 = $slot->comment;
                       break;
                     }
                     case SLOT_STATUS_CLOSED:
                     {
+                      $slotDevice2 = '';
                       if (trim($slot->comment) == '') {
                         $slotCaption = 'Sl ^sgts!';
                       } else {
@@ -748,10 +766,11 @@ class RecordController extends Controller
 
                   $sheet->setCellValue('A' . ($b), $slotTime);
                   $sheet->setCellValue('B' . ($b), $queue_id);
-                  $sheet->setCellValue('C' . ($b), $slotText2);
+                  $sheet->setCellValue('C' . ($b), $slotDevice2);
+                  $sheet->setCellValue('D' . ($b), $slotText2);
                 }
 
-		$b++;
+		            $b++;
               }
 
             }
@@ -765,9 +784,10 @@ class RecordController extends Controller
       // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); //
     //$pdf->Cell($w[0],10,Office::timeByInterval($slotTime),1); // $pdf->Cell($w[1],10,$row['takenby'],1,0,'L'); // $pdf->ln(); // }
     // Closing line // $pdf->Cell(array_sum($w),0,'','T');
-    $sheet->setAutoFilter('A:C');
+    $sheet->setAutoFilter('A:D');
     $lastRow = $sheet->getHighestRow();
-    $sheet->getStyle('A2:B' . $lastRow)->getAlignment()->setHorizontal('center');
+    $sheet->getStyle('A2:C' . $lastRow)->getAlignment()->setHorizontal('center');
+    $sheet->getColumnDimension('C')->setWidth(14);
     $writer = new Xlsx($spreadsheet);
     $filename = 'pieraksts.xlsx';
 

@@ -10,6 +10,6 @@
   </style> </head> <body> <article>
   <div class="container">
     <div class="row"><h1>Drīz būsim atpakaļ!</h1></div>
-    <div class="row"><h4>Patreiz notiek labošanas darbi!</h4></div>
+    <div class="row"><h4>Pašreiz notiek labošanas darbi!</h4></div>
   </div> </article> </body>
 </html>

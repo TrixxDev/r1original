@@ -30,6 +30,7 @@
                                             <option value="{{ $brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $brand->brand_id) {{ 'selected' }} @endif >{{ $brand->title }}</option>
                                         @endforeach
                                     </select>
+                                    <input type="text" class="form-control">
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-md-2 col-form-label" for="tread_select">Modelis: </label>
