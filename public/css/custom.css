@@ -2885,8 +2885,8 @@ th.cth_availability.quadr {
                                   supported by Chrome and Opera */
 }
 .dot.red {
-  background-color: #FF0000;
-  color: #FF0000;
+  background-color: lightgrey;
+  color: lightgrey;
 }
 .dot.green {
   background-color: #4cbb6c;
@@ -4856,8 +4856,8 @@ ul#order-type-info li.list-style {
 }
 
 .grid-dot.red {
-  background-color: #FF0000;
-  color: #FF0000;
+  background-color: lightgrey;
+  color: lightgrey;
 }
 
 .grid-dot.green {
