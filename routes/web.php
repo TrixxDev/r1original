@@ -29,7 +29,7 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::get('/', [App\Http\Controllers\Admin\MainController::class, 'home'])->name('home');
 
   // Auto riepas
-  Route::get('/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'index'])->name('auto.tires');
+  Route::match(['GET', 'POST'], '/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'index'])->name('auto.tires');
   Route::get('/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_edit'])->name('auto.tire.edit');
   Route::post('/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_update'])->name('auto.tire.update');
   Route::get('/auto/delete/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_destroy'])->name('auto.tire.destroy');

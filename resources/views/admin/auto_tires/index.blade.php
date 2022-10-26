@@ -23,18 +23,29 @@
                     <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap4 no-footer">
                         <div class="row">
                             <div class="col-sm-12 col-md-6">
-                                <div class="form-group row">
+                                <div class="form-group row brand-settings">
                                     <label class="col-md-2 col-form-label" for="brand_select">Brends: </label>
                                     <select name="brand" class="form-control col-md-3" data-model="auto" id="brand_select">
                                         @foreach ($brands as $brand)
-                                            <option value="{{ $brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $brand->brand_id) {{ 'selected' }} @endif >{{ $brand->title }}</option>
+                                            <option value="{{ $brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $brand->brand_id) {{ 'selected' }} @endif >{{ ucwords(strtolower($brand->title)) }}</option>
                                         @endforeach
                                     </select>
-                                    <input type="text" class="form-control">
+                                    <form method="post" style="display: flex;">
+                                      @csrf
+                                      <input type="text" name="brand-name" style="width: 200px; margin-left: 10px;" disabled class="form-control brand-input">
+                                      <button class="btn btn-success new-brand" style="margin-left: 10px; color: white;">Izveidot</button>
+                                      <button class="btn btn-warning edit-brand" style="margin-left: 10px; color: white;">Labot</button>
+                                    </form>
                                 </div>
-                                <div class="form-group row">
+                                <div class="form-group row make-settings">
                                     <label class="col-md-2 col-form-label" for="tread_select">Modelis: </label>
                                     <select name="tread" class="form-control col-md-3" id="tread_select"></select>
+                                    <form method="post" style="display: flex;">
+                                      @csrf
+                                      <input type="text" style="width: 200px; margin-left: 10px;" disabled class="form-control make-input">
+                                      <button class="btn btn-success new-make" style="margin-left: 10px;">Izveidot</button>
+                                      <button class="btn btn-warning edit-make" style="margin-left: 10px; color: white;">Labot</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
