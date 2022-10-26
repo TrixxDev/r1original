@@ -397,6 +397,8 @@ class RecordController extends Controller
     $return['d'] = $date;
     $return['s'] = $s;
 
+    $return['is_mobile'] = $slot->is_mobile;
+    $return['is_mobile2'] = $slot->is_mobile2;
     $return['f_date'] = date('d.m.Y',strtotime($date));
     $return['f_time'] = Queue::timeByInterval($queue->getSlotStartInterval($date, $s));
     $return['f_status'] = $slot->status;
@@ -659,10 +661,10 @@ class RecordController extends Controller
           $formData = json_encode($form);
         } else {
           if ($p=='a'){
-	    $canDiscount = 1;
+	          $canDiscount = 1;
             $formData = $slot->takenby = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
           } else {
-	    $canDiscount = 1;
+            $canDiscount = 1;
             $formData = $slot->takenby2 = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
           }
         }
@@ -682,19 +684,21 @@ class RecordController extends Controller
           if ($f_part=='a'){
             $targetSlot->status = $f_status;
             $targetSlot->takenby = $formData;
-	    $targetSlot->createtime = $slot->createTime;
+	          $targetSlot->createtime = $slot->createTime;
             $targetSlot->createuser = $slot->createUser;
             $targetSlot->edittime = NOW();
             $targetSlot->edituser = $userId;
+            $targetSlot->is_mobile = $slot->is_mobile;
           } else {
             $bQueue = true;
             $targetSlot->status2 = $f_status;
             $targetSlot->takenby2 = $formData;
-            $targetSlot->createtime2 = $slot->createTime;
-            $targetSlot->createuser2 = $slot->createUser;
+            $targetSlot->createtime2 = $slot->createTime2;
+            $targetSlot->createuser2 = $slot->createUser2;
             $targetSlot->edittime2 = NOW();
             $targetSlot->edituser2 = $userId;
-	  }
+            $targetSlot->is_mobile2 = $slot->is_mobile2;
+          }
           $targetSlot->comment = $f_slotcomment;
 
           $targetSlot->timestamps = false;
@@ -740,9 +744,9 @@ class RecordController extends Controller
 
           if ($f_part=='a'){
             //dd($f_status);
-	    $slot->status = $f_status;
+            $slot->status = $f_status;
             $slot->takenby = $formData;
-	    if ($slot->createtime=='') {
+	          if ($slot->createtime=='') {
               $slot->createtime = NOW();
               $slot->createuser = $userId;
             }
@@ -762,17 +766,17 @@ class RecordController extends Controller
           if ($f_slotcomment) {
             $slot->comment = $f_slotcomment;
             if ($p=='a'){
-	      //dd((array) $formData);
-	      $slot->status = $f_status;
+	          //dd((array) $formData);
+	            $slot->status = $f_status;
               $slot->takenby = $formData;
-	      if ($slot->createtime=='') {
+	            if ($slot->createtime=='') {
                 $slot->createtime = NOW();
                 $slot->createuser = $userId;
               }
               $slot->edittime = NOW();
               $slot->edituser = $userId;
             } else {
-	      $slot->status = $f_status;
+	          $slot->status = $f_status;
               $slot->takenby2 = $formData;
               if ($slot->createtime2=='') {
                 $slot->createtime2 = NOW();
@@ -780,7 +784,7 @@ class RecordController extends Controller
               }
               $slot->edittime2 = NOW();
               $slot->edituser2 = $userId;
-	    }
+	          }
           }
 
           $slot->timestamps = false;
