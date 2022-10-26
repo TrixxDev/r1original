@@ -312,8 +312,8 @@ Route::middleware('checksession')->group(function() {
 
   Route::get('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);
   Route::post('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);
-  Route::get('/testing2', [App\Http\Controllers\HomeController::class, 'login']);
-  Route::post('/testing2', [App\Http\Controllers\HomeController::class, 'login']);
+  Route::get('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
+  Route::post('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
   Route::get('/testing3', [App\Http\Controllers\HomeController::class, 'fastOrder']);
 
   Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);
