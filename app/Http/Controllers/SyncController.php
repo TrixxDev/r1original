@@ -10,10 +10,12 @@ use App\Models\Bigtread;
 use App\Models\Motostock;
 use App\Models\Quadr;
 use App\Models\Quadrstock;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Autostock;
 use Illuminate\Support\Facades\Session;
+use mysql_xdevapi\Exception;
 use PDO;
 use Illuminate\Support\Str;
 
@@ -382,52 +384,174 @@ class SyncController extends Controller
 
     public function i3auto()
     {
-        $url = "https://gd-middleware-test.barnstenit.se/api/Tyres?username=XmL_r1&password=M20h:2|5";
 
-        $opts = ['http' =>
-            [
-                'method'  => 'GET',
-                'timeout'  => 600,
-            ]
-        ];
+        set_time_limit(0);
+        $sync = DB::table('sync_times')->where('name', 'i3-auto')->get();
+        $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+        $time_now = \Carbon\Carbon::now();
+//        if ($time_now->diff($sync_time)->invert == 1) {
+//          $token_url = "api.latakko.eu/Token";
+//
+//          $curl = curl_init();
+//          curl_setopt_array($curl, array(
+//            CURLOPT_URL => $token_url,
+//            CURLOPT_RETURNTRANSFER => true,
+//            CURLOPT_ENCODING => "",
+//            CURLOPT_MAXREDIRS => 10,
+//            CURLOPT_TIMEOUT => 30,
+//            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//            CURLOPT_CUSTOMREQUEST => "POST",
+//            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+//            CURLOPT_HTTPHEADER => array(
+//              "cache-control: no-cache",
+//              "content-type: application/x-www-form-urlencoded"
+//            ),
+//          ));
+//          $response = curl_exec($curl);
+//          $err = curl_error($curl);
+//
+//          curl_close($curl);
+//
+//          if (!$err)
+//          {
+//            $token = json_decode($response);
+//          } else {
+//            throw new \Exception($err);
+//          }
+//
+//          $token_bearer = $token->access_token;
+//
+//          $curl = curl_init();
+//          curl_setopt_array($curl, array(
+//            CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
+//            CURLOPT_RETURNTRANSFER => true,
+//            CURLOPT_ENCODING => "",
+//            CURLOPT_MAXREDIRS => 10,
+//            CURLOPT_TIMEOUT => 30,
+//            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//            CURLOPT_CUSTOMREQUEST => "GET",
+//            CURLOPT_HTTPHEADER => array(
+//              "cache-control: no-cache",
+//              "authorization: Bearer " . $token_bearer,
+//            ),
+//          ));
+//          $response = curl_exec($curl);
+//
+//          file_put_contents('xml/i3-auto.txt', $response);
+//
+//          $err = curl_error($curl);
+//
+//          if ($err) throw new \Exception($err);
+//
+//          curl_close($curl);
+//        }
 
-        set_time_limit(800);
+        $counted = 0;
+        $updated = 0;
 
-        $context  = stream_context_create($opts);
-        $xmlString = file_get_contents($url, false, $context);
-
-        file_put_contents('i3.auto.xml',$xmlString);
-
-        $xml = simplexml_load_string($xmlString);
-
-        unset($context);
-
-        echo "Auto riepas<br>";
         Autostock::where('itype', 'i3')->update(['quantity' => 0]);
 
-        $updated = 0;
-        $counted = 0;
-        foreach ($xml->Item as $item){
-            $article = $item->stockcode;
-            $quantity = intval($item->qty_available);
+        $content = file_get_contents('xml/i3-auto.txt');
+        $content = json_decode($content);
 
-            $metadata = '';
-            $price = @$item->price; if ($price!='') $metadata.='price: '.$price.'; ';
-            $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
-            $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
+        foreach ($content as $item) {
 
-            $list = Autostock::where('article', $article)->where('itype', 'i3')->get();
+          $counted++;
 
-            foreach ($list as $itam){
-                $itam->quantity = $quantity;
-                $itam->metadata = $metadata;
-                $itam->save();
-                $updated++;
-            }
-            $counted++;
+          $stock = Autostock::where('itype', 'i3')->where('article', $item->ArticleId)->first();
+          if (!$stock) continue;
+
+          $quantity = intval($item->QuantityAvailable);
+          $metadata = 'price: ' . $item->Price . '; pkpcena: ' . $item->NetPrice . '; Baseprice: ' . $item->NetPrice . ';';
+          $stock->quantity = $quantity;
+          $stock->metadata = $metadata;
+          if ($stock->save()) {
+            $updated++;
+          }
+
         }
-        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => NOW()]);
+
+        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
         echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+
+
+//        $stocks = Autostock::where('itype', 'i3')->get();
+//        foreach ($stocks as $stock) {
+//
+//          $counted++;
+//
+//          if (!$err) {
+//            $metadata = '';
+//            $response = json_decode($response);
+//            $metadata = '';
+//            $response = (object) $response;
+//            if (empty(get_object_vars($response)) || isset($response->Message)) continue;
+//            echo '<br><pre>';
+//            var_dump($response);
+//            echo '</pre><br>';
+//            var_dump(get_object_vars($response));
+//            $stock->quantity = intval($response->QuantityAvailable);
+//            $stock->metadata = $metadata;
+//            if ($stock->save()) {
+//              $updated++;
+//            }
+
+//            if (is_null($response)) {
+//              var_dump($stock->);
+//            }
+//          } else {
+//            throw new \Exception($err);
+//          }
+//
+//
+//        }
+
+//        $url = "https://api.gummigrossen.se/api/Tyres?username=XmL_r1&password=M20h:2|5";
+//
+//        $opts = ['http' =>
+//            [
+//                'method'  => 'GET',
+//                'timeout'  => 600,
+//            ]
+//        ];
+//
+//        set_time_limit(800);
+//
+//        $context  = stream_context_create($opts);
+//        $xmlString = file_get_contents($url, false, $context);
+//
+//        file_put_contents('i3.auto.xml',$xmlString);
+//
+//        $xml = simplexml_load_string($xmlString);
+//
+//        unset($context);
+//
+//        echo "Auto riepas<br>";
+//        Autostock::where('itype', 'i3')->update(['quantity' => 0]);
+//
+//        $updated = 0;
+//        $counted = 0;
+//        foreach ($xml->Item as $item){
+//            $article = $item->stockcode;
+//            $quantity = intval($item->qty_available);
+//
+//            $metadata = '';
+//            $price = @$item->price; if ($price!='') $metadata.='price: '.$price.'; ';
+//            $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
+//            $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
+//
+//            $list = Autostock::where('article', $article)->where('itype', 'i3')->get();
+//
+//            foreach ($list as $itam){
+//                $itam->quantity = $quantity;
+//                $itam->metadata = $metadata;
+//                $itam->save();
+//                $updated++;
+//            }
+//            $counted++;
+//        }
+//        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => NOW()]);
+//        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
     }
 

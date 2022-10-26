@@ -29,7 +29,7 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::get('/', [App\Http\Controllers\Admin\MainController::class, 'home'])->name('home');
 
   // Auto riepas
-  Route::get('/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'index'])->name('auto.tires');
+  Route::match(['GET', 'POST'], '/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'index'])->name('auto.tires');
   Route::get('/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_edit'])->name('auto.tire.edit');
   Route::post('/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_update'])->name('auto.tire.update');
   Route::get('/auto/delete/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_destroy'])->name('auto.tire.destroy');
@@ -312,8 +312,8 @@ Route::middleware('checksession')->group(function() {
 
   Route::get('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);
   Route::post('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);
-  Route::get('/testing2', [App\Http\Controllers\HomeController::class, 'login']);
-  Route::post('/testing2', [App\Http\Controllers\HomeController::class, 'login']);
+  Route::get('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
+  Route::post('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
   Route::get('/testing3', [App\Http\Controllers\HomeController::class, 'fastOrder']);
 
   Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);
