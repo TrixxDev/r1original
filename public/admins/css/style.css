@@ -19299,3 +19299,16 @@ table.queueTable:nth-child(2) {
 .no-codes-icon {
   font-size: 30px;
 }
+
+.tread_comment {
+  margin: 00px 15px 50px 0px;
+}
+
+.tread_comment .card {
+  margin-bottom: 0px!important;
+  min-height: 295px;
+}
+
+.tread_comment .comment-edit {
+  margin-top: 10px;
+}

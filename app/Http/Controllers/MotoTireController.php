@@ -59,7 +59,7 @@ class MotoTireController extends Controller
           $this->d3 = 17;
         }
 
-	$codes = Code::all();
+	      $codes = Code::all();
 
         foreach ($codes as $code) {
             $this->code_array[$code->name] = $code->explanation;
@@ -75,7 +75,7 @@ class MotoTireController extends Controller
         View::share('d3', $this->d3);
         View::share('type', $this->type);
         View::share('types', (new Moto)->types());
-	View::share('code_array', $this->code_array);
+	      View::share('code_array', $this->code_array);
     }
 
     public function index()

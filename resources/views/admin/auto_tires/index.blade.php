@@ -75,6 +75,15 @@
                                   @endif
                                 @endif
                             </div>
+{{--                            <textarea name="" id="" cols="80" rows="10"></textarea>--}}
+                            <div class="tread_comment">
+                              <div class="card">
+                                <div class="card-body">
+                                  <span class="comment-text">{!! $tread->t_comment !!}</span>
+                                </div>
+                              </div>
+                              <button class="btn btn-warning comment-edit">Labot</button>
+                            </div>
                         </div>
                         @if (isset($tread))
                         <div class="row justify-content-end tires-header">
