@@ -276,7 +276,7 @@ class AutoTireController extends Controller
                                               ->orderBy('price2', 'DESC')
                                               ->get();
 
-      dd(DB::getQueryLog());
+      //dd(DB::getQueryLog());
 
       $tires_array = [];
 
