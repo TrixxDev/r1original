@@ -685,7 +685,9 @@ class RecordController extends Controller
                 $sheet->setCellValue('A1', 'Laiks');
                 $sheet->setCellValue('B1', 'Rinda');
                 $sheet->setCellValue('C1', 'Iekārta');
-                $sheet->setCellValue('D1', 'Pieraksta info');
+                $sheet->setCellValue('D1', 'Numurs');
+                $sheet->setCellValue('E1', 'Pakalpojums');
+                $sheet->setCellValue('F1', 'Pieraksta info');
 
 
                 switch ($slot->queue_id) {
@@ -714,8 +716,8 @@ class RecordController extends Controller
 
                 $sheet->setCellValue('A' . $b, Office::timeByInterval($i));
                 $sheet->setCellValue('B' . $b, $queue_id);
-                $sheet->setCellValue('C' . $b, $slotDevice);
-                $sheet->setCellValue('D' . $b, $slotText);
+                $sheet->setCellValue('E' . $b, $slotDevice);
+                $sheet->setCellValue('F' . $b, $slotText);
 
                 $b++;
 

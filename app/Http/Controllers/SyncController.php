@@ -389,62 +389,62 @@ class SyncController extends Controller
         $sync = DB::table('sync_times')->where('name', 'i3-auto')->get();
         $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
         $time_now = \Carbon\Carbon::now();
-//        if ($time_now->diff($sync_time)->invert == 1) {
-//          $token_url = "api.latakko.eu/Token";
-//
-//          $curl = curl_init();
-//          curl_setopt_array($curl, array(
-//            CURLOPT_URL => $token_url,
-//            CURLOPT_RETURNTRANSFER => true,
-//            CURLOPT_ENCODING => "",
-//            CURLOPT_MAXREDIRS => 10,
-//            CURLOPT_TIMEOUT => 30,
-//            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-//            CURLOPT_CUSTOMREQUEST => "POST",
-//            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-//            CURLOPT_HTTPHEADER => array(
-//              "cache-control: no-cache",
-//              "content-type: application/x-www-form-urlencoded"
-//            ),
-//          ));
-//          $response = curl_exec($curl);
-//          $err = curl_error($curl);
-//
-//          curl_close($curl);
-//
-//          if (!$err)
-//          {
-//            $token = json_decode($response);
-//          } else {
-//            throw new \Exception($err);
-//          }
-//
-//          $token_bearer = $token->access_token;
-//
-//          $curl = curl_init();
-//          curl_setopt_array($curl, array(
-//            CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
-//            CURLOPT_RETURNTRANSFER => true,
-//            CURLOPT_ENCODING => "",
-//            CURLOPT_MAXREDIRS => 10,
-//            CURLOPT_TIMEOUT => 30,
-//            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-//            CURLOPT_CUSTOMREQUEST => "GET",
-//            CURLOPT_HTTPHEADER => array(
-//              "cache-control: no-cache",
-//              "authorization: Bearer " . $token_bearer,
-//            ),
-//          ));
-//          $response = curl_exec($curl);
-//
-//          file_put_contents('xml/i3-auto.txt', $response);
-//
-//          $err = curl_error($curl);
-//
-//          if ($err) throw new \Exception($err);
-//
-//          curl_close($curl);
-//        }
+        if ($time_now->diff($sync_time)->invert == 1) {
+          $token_url = "api.latakko.eu/Token";
+
+          $curl = curl_init();
+          curl_setopt_array($curl, array(
+            CURLOPT_URL => $token_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+            CURLOPT_HTTPHEADER => array(
+              "cache-control: no-cache",
+              "content-type: application/x-www-form-urlencoded"
+            ),
+          ));
+          $response = curl_exec($curl);
+          $err = curl_error($curl);
+
+          curl_close($curl);
+
+          if (!$err)
+          {
+            $token = json_decode($response);
+          } else {
+            throw new \Exception($err);
+          }
+
+          $token_bearer = $token->access_token;
+
+          $curl = curl_init();
+          curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+              "cache-control: no-cache",
+              "authorization: Bearer " . $token_bearer,
+            ),
+          ));
+          $response = curl_exec($curl);
+
+          file_put_contents('xml/i3-auto.txt', $response);
+
+          $err = curl_error($curl);
+
+          if ($err) throw new \Exception($err);
+
+          curl_close($curl);
+        }
 
         $counted = 0;
         $updated = 0;
@@ -454,12 +454,18 @@ class SyncController extends Controller
         $content = file_get_contents('xml/i3-auto.txt');
         $content = json_decode($content);
 
+        $out = '';
+
         foreach ($content as $item) {
 
           $counted++;
 
+          if ($item->ArticleId == '16421') dd($item);
           $stock = Autostock::where('itype', 'i3')->where('article', $item->ArticleId)->first();
-          if (!$stock) continue;
+          if (!$stock) {
+            $out .= 'Nav atrasts artikuls - ' . $item->ArticleId . '<br>';
+            continue;
+          }
 
           $quantity = intval($item->QuantityAvailable);
           $metadata = 'price: ' . $item->Price . '; pkpcena: ' . $item->NetPrice . '; Baseprice: ' . $item->NetPrice . ';';
@@ -472,7 +478,7 @@ class SyncController extends Controller
         }
 
         DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
-        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n" . $out;
 
 
 //        $stocks = Autostock::where('itype', 'i3')->get();

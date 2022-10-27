@@ -370,6 +370,26 @@ class Autotire extends Model
 
     }
 
+    public function addSecondaryArticle($article, $type, $quantity = 0)
+    {
+
+      $list = Self::where('tire_id', $this->tire_id)->where('article', $article)->get();
+
+      if (count($list) == 0) {
+        $item = new Autostock;
+        $item->tire_id = $this->tire_id;
+        $item->article = $article;
+        $item->quantity = $quantity;
+        $item->itype = $type;
+        $item->save();
+      } else {
+        foreach ($list as $item) {
+          $item->update(['quantity' => $quantity]);
+        }
+      }
+
+    }
+
     public function tread()
     {
         return $this->hasOne('App\Models\Autotread', 'tread_id', 'make_id');

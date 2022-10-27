@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Autostock;
+use App\Models\Autotire;
 use App\Models\User;
 use DOMDocument;
 use Illuminate\Http\Request;
@@ -75,6 +77,49 @@ class HomeController extends Controller
 
       }
       return view('testings');
+    }
+
+    public function changeArticles(Request $request)
+    {
+
+      if ($request->post()){
+
+        $out = '';
+        $count = 0;
+
+        $data = $request->articles;
+        $rows = explode("\n", trim($data));
+
+        foreach ($rows as $idx=>$row){
+          $row = trim($row);
+          if (($idx>-1)&&($row!='')) {
+            $fields = explode("\t", $row);
+
+            $article = $fields[0];
+            $i3Article = $fields[1];
+
+            $itype = 'i3';
+
+            $tire = Autotire::where('article', $article)->first();
+            if (!$tire) continue;
+            $stock = Autostock::where('tire_id', $tire->tire_id)->where('itype', $itype)->first();
+            if (!$stock) {
+              $tire->addSecondaryArticle($i3Article, 'i3');
+              $out .= 'Nav atrasts ieraksts ar ID - ' . $tire->tire_id . '<br>';
+              $count++;
+              continue;
+            }
+            $stock->article = $i3Article;
+            $stock->save();
+          }
+        }
+
+        return $out . 'Nav atrasti - ' . $count . ' ieraksti';
+
+      }
+
+      return '<form method="post">' . @csrf_field() . '<textarea name="articles" id="" cols="30" rows="10"></textarea><button type="submit">Aiziet</button></form>';
+
     }
 
     /**

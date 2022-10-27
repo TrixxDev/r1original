@@ -851,6 +851,8 @@ class RecordController extends Controller
 
     $slot = $queue->_slots[$date][$s];
 
+    $return['is_mobile'] = $slot->is_mobile;
+    $return['is_mobile2'] = $slot->is_mobile2;
     $return['options'] = $options;
     $return['q'] = $q;
     $return['p'] = strtolower($p);

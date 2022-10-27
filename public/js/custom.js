@@ -2283,17 +2283,33 @@ $(document).ready(function() {
         }
         $('.modal#slotModal #f_slotcomment').html(data.f_slotcomment);
          if (data.p == 'a') {
-          if (data.f_edittime == '') {
-            $('<div class="last-info">Izveidots: ' + data.f_createtime + ' (' + data.f_createuser + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
-          } else {
-            $('<div class="last-info">Izveidots: ' + data.f_createtime + ' (' + data.f_createuser + ')<br>Labots: ' + data.f_edittime + ' (' + data.f_edituser + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
-          }
+           if (data.is_mobile == 1) {
+             if (data.f_edittime == '') {
+               $('<div class="last-info">Pieraksts izveidots no mobīlās ierīces<br>Izveidots: ' + data.f_createtime + ' (' + data.f_createuser + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
+             } else {
+               $('<div class="last-info">Pieraksts izveidots no mobīlās ierīces<br>Izveidots: ' + data.f_createtime + ' (' + data.f_createuser + ')<br>Labots: ' + data.f_edittime + ' (' + data.f_edituser + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
+             }
+           } else {
+             if (data.f_edittime == '') {
+               $('<div class="last-info">Pieraksts izveidots no datora<br>Izveidots: ' + data.f_createtime + ' (' + data.f_createuser + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
+             } else {
+               $('<div class="last-info">Pieraksts izveidots no datora<br>Izveidots: ' + data.f_createtime + ' (' + data.f_createuser + ')<br>Labots: ' + data.f_edittime + ' (' + data.f_edituser + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
+             }
+           }
         } else {
-          if (data.f_edittime2 == '') {
-            $('<div class="last-info">Izveidots: ' + data.f_createtime2 + ' (' + data.f_createuser2 + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
-          } else {
-            $('<div class="last-info">Izveidots: ' + data.f_createtime2 + ' (' + data.f_createuser2 + ')<br>Labots: ' + data.f_edittime2 + ' (' + data.f_edituser2 + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
-          }
+           if (data.is_mobile2 == 1) {
+             if (data.f_edittime2 == '') {
+               $('<div class="last-info">Pieraksts izveidots no mobīlās ierīces<br>Izveidots: ' + data.f_createtime2 + ' (' + data.f_createuser2 + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
+             } else {
+               $('<div class="last-info">Pieraksts izveidots no mobīlās ierīces<br>Izveidots: ' + data.f_createtime2 + ' (' + data.f_createuser2 + ')<br>Labots: ' + data.f_edittime2 + ' (' + data.f_edituser2 + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
+             }
+           } else {
+             if (data.f_edittime2 == '') {
+               $('<div class="last-info">Pieraksts izveidots no datora<br>Izveidots: ' + data.f_createtime2 + ' (' + data.f_createuser2 + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
+             } else {
+               $('<div class="last-info">Pieraksts izveidots no datora<br>Izveidots: ' + data.f_createtime2 + ' (' + data.f_createuser2 + ')<br>Labots: ' + data.f_edittime2 + ' (' + data.f_edituser2 + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
+             }
+           }
         }
       }
     })

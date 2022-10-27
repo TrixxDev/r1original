@@ -28,10 +28,15 @@ class AutoTireController extends Controller
     {
     }
 
-    public function index($perPage = 10)
+    public function index(Request $request)
     {
+
+        if ($request->post()) {
+          dd($request->input());
+        }
+
 //        $tires = Autotire::with('tread')->groupBy('make_id')->paginate($perPage);
-        $brands = Autobrand::all();
+        $brands = Autobrand::orderBy('title', 'ASC')->get();
         $treads = Autotread::all();
 
         return view('admin.auto_tires.index', compact('brands', 'treads'));
