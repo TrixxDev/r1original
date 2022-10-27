@@ -818,8 +818,8 @@ class RecordController extends Controller
     $lastRow = $sheet->getHighestRow();
     $sheet->getStyle('A2:E' . $lastRow)->getAlignment()->setHorizontal('center');
     $sheet->getColumnDimension('C')->setWidth(14);
-    $sheet->getColumnDimension('D')->setWidth(10);
-    $sheet->getColumnDimension('E')->setWidth(13);
+    $sheet->getColumnDimension('D')->setWidth(15);
+    $sheet->getColumnDimension('E')->setWidth(15);
     $writer = new Xlsx($spreadsheet);
     $filename = 'pieraksts.xlsx';
 
