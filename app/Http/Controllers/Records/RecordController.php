@@ -716,7 +716,9 @@ class RecordController extends Controller
 
                 $sheet->setCellValue('A' . $b, Office::timeByInterval($i));
                 $sheet->setCellValue('B' . $b, $queue_id);
-                $sheet->setCellValue('E' . $b, $slotDevice);
+                $sheet->setCellValue('C' . $b, $slotDevice);
+                $sheet->setCellValue('D' . $b, '');
+                $sheet->setCellValue('E' . $b, '');
                 $sheet->setCellValue('F' . $b, $slotText);
 
                 $b++;
@@ -769,6 +771,8 @@ class RecordController extends Controller
                   $sheet->setCellValue('A' . ($b), $slotTime);
                   $sheet->setCellValue('B' . ($b), $queue_id);
                   $sheet->setCellValue('C' . ($b), $slotDevice2);
+                  $sheet->setCellValue('D' . ($b), '');
+                  $sheet->setCellValue('D' . ($b), '');
                   $sheet->setCellValue('D' . ($b), $slotText2);
                 }
 
