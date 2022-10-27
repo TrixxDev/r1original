@@ -1092,6 +1092,6 @@ $('.brand-settings').on('click', '.delete-brand', function (e) {
   if (!confirm('Vai tiešām dzēst?')) e.preventDefault();
 });
 
-$('.brand-settings').on('click', '.delete-make', function (e) {
+$('.make-settings').on('click', '.delete-make', function (e) {
   if (!confirm('Vai tiešām dzēst?')) e.preventDefault();
 });
