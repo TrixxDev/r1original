@@ -62,7 +62,7 @@ class AutoTireController extends Controller
             }
           } else if ($request->input('delete-brand') == 'true') {
             $brand = Autobrand::where('brand_id', $request->input('brand-id'))->first();
-            if (!$brand) redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
+            if (!$brand) return redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
             if ($brand->delete()) {
               redirect($request->url())->with('success', 'Brends veiksmīgi izdzēsts!');
             } else {
@@ -72,7 +72,7 @@ class AutoTireController extends Controller
 
           if ($request->input('new-make') == 'true') {
             if (empty($request->input('make-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada modeļa nosaukums!');
-            $make = Autotread::where('t_title', $request->input('make-name'))->first();
+            $make = Autotread::where('t_title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
             if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
             $make = new Autotread;
             $make->timestamps = false;
@@ -127,17 +127,21 @@ class AutoTireController extends Controller
 //            }
           } else if ($request->input('delete-brand') == 'true') {
             $brand = Autobrand::where('brand_id', $request->input('brand-id'))->first();
-            if (!$brand) redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
-            if ($brand->delete()) {
-              redirect($request->url())->with('success', 'Brends veiksmīgi izdzēsts!');
+            if (!$brand) return redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
+            if ($brand) {
+              if ($brand->delete()) {
+                redirect($request->url())->with('success', 'Brends veiksmīgi izdzēsts!');
+              } else {
+                redirect($request->url())->with('danger', 'Notika kļūda, brends nav izdzēsts!');
+              }
             } else {
-              redirect($request->url())->with('danger', 'Notika kļūda, brends nav izdzēsts!');
+              redirect($request->url());
             }
           }
 
           if ($request->input('new-make') == 'true') {
             if (empty($request->input('make-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada modeļa nosaukums!');
-            $make = Autotread::where('t_title', $request->input('make-name'))->first();
+            $make = Autotread::where('t_title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
             if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
             $make = new Autotread;
             $make->timestamps = false;
@@ -165,7 +169,7 @@ class AutoTireController extends Controller
 //            }
           } else if ($request->input('delete-make') == 'true') {
             $make = Autotread::where('tread_id', $request->tread_id)->first();
-            if (!$make) redirect($request->url())->with('danger', 'Tāds modelis neeksistē, nevaru izdzēst!');
+            if (!$make) return redirect($request->url())->with('danger', 'Tāds modelis neeksistē, nevaru izdzēst!');
             if ($make->delete()) {
               redirect($request->url())->with('success', 'Modelis veiksmīgi izdzēsts!');
             } else {
