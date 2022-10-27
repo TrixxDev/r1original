@@ -1031,9 +1031,10 @@ $('.make-settings').on('click', '.new-make[type=button]', function(e) {
   if ($(this).attr('type') != 'submit') e.preventDefault();
   $('.make-input').attr('disabled', false);
   $(this).attr('disabled', true).css('cursor', 'default').attr('type', 'submit').attr('name', 'new-make').attr('value', 'true');
-  $('.edit-make').addClass('btn-danger').addClass('stop-new-make').removeClass('btn-warning').removeClass('edit-make').text('Atcelt');
+  $('.edit-make').addClass('btn-danger').addClass('stop-new-make').removeClass('btn-warning').removeClass('edit-make').removeAttr('disabled').text('Atcelt');
   $('.delete-make').hide();
   $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').attr('disabled', 'true').css('cursor', 'default');
+  $('.make-season').show();
 });
 
 $('.make-settings').on('click', '.stop-new-make', function(e) {
@@ -1044,6 +1045,7 @@ $('.make-settings').on('click', '.stop-new-make', function(e) {
   $('.delete-make').show();
   $('.edit-make').attr('disabled', false).css('cursor', 'pointer');
   $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').removeAttr('disabled').css('cursor', 'pointer');
+  $('.make-season').hide();
 });
 
 $('.make-settings').on('click', '.edit-make[type=button]', function(e) {
@@ -1054,6 +1056,7 @@ $('.make-settings').on('click', '.edit-make[type=button]', function(e) {
   $('.delete-make').hide();
   $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').attr('disabled', true).css('cursor', 'default');
   if ($('.make-input').val().length == 0) $('.edit-make[type=submit]').attr('disabled', true).css('cursor', 'default');
+  $('.make-season').show();
 });
 
 $('.make-settings').on('click', '.stop-edit-make', function(e) {
@@ -1064,6 +1067,7 @@ $('.make-settings').on('click', '.stop-edit-make', function(e) {
   $('.delete-make').show();
   $('.new-make').attr('disabled', false).css('cursor', 'pointer');
   $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').removeAttr('disabled').css('cursor', 'pointer');
+  $('.make-season').hide();
 });
 
 // Inputu iestatījumi

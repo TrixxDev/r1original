@@ -44,6 +44,10 @@
                                     <form method="post" style="display: flex;">
                                       @csrf
                                       <input type="text" name="make-name" style="width: 200px; margin-left: 10px;" disabled class="form-control make-input">
+                                      <select name="make-season" style="width: 200px; margin-left: 10px; display: none;" class="form-control make-season">
+                                        <option value="1" @if (isset($tread) && $tread->season == 1) selected @endif>Vasaras</option>
+                                        <option value="2" @if (isset($tread) && $tread->season == 2) selected @endif>Ziemas</option>
+                                      </select>
                                       <button type="button" class="btn btn-success new-make" style="margin-left: 10px; color: white;">Izveidot</button>
                                       <button type="button" class="btn btn-warning edit-make" style="margin-left: 10px; color: white;">Labot</button>
                                       <button class="btn btn-danger delete-make" name="delete-make" value="true" style="margin-left: 10px; color: white;">Dzēst</button>
@@ -76,14 +80,16 @@
                                 @endif
                             </div>
 {{--                            <textarea name="" id="" cols="80" rows="10"></textarea>--}}
-{{--                            <div class="tread_comment">--}}
-{{--                              <div class="card">--}}
-{{--                                <div class="card-body">--}}
-{{--                                  <span class="comment-text">{!! $tread->t_comment !!}</span>--}}
-{{--                                </div>--}}
-{{--                              </div>--}}
-{{--                              <button class="btn btn-warning comment-edit">Labot</button>--}}
-{{--                            </div>--}}
+                            <div class="tread_comment">
+                              <div class="card">
+                                <div class="card-body">
+                                  @if (isset($tread) && $tread->t_comment != '')
+                                    <span class="comment-text">{!! $tread->t_comment !!}</span>
+                                  @endif
+                                </div>
+                              </div>
+                              <button class="btn btn-warning comment-edit">Labot</button>
+                            </div>
                         </div>
                         @if (isset($tread))
                         <div class="row justify-content-end tires-header">

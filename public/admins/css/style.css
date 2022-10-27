@@ -19301,7 +19301,8 @@ table.queueTable:nth-child(2) {
 }
 
 .tread_comment {
-  margin: 00px 15px 50px 0px;
+  margin: 0px 15px 50px 0px;
+  min-width: 770px;
 }
 
 .tread_comment .card {

@@ -76,6 +76,7 @@ class AutoTireController extends Controller
             if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
             $make = new Autotread;
             $make->timestamps = false;
+            $make->season = $request->input('make-season');
             $make->brand_id = $request->input('brand-id');
             $make->t_title = $request->input('make-name');
             $make->slug = Str::slug($make->t_title);
@@ -145,6 +146,7 @@ class AutoTireController extends Controller
             if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
             $make = new Autotread;
             $make->timestamps = false;
+            $make->season = $request->input('make-season');
             $make->brand_id = $request->input('brand-id');
             $make->t_title = $request->input('make-name');
             $make->slug = Str::slug($make->t_title);
@@ -159,6 +161,7 @@ class AutoTireController extends Controller
 //            if ($make && $make->t_title == $request->input('make-name')) {
 //              return redirect($request->url())->with('danger', 'Modeļa nosaukums nav mainīts, ievadīts tāds pats!');
 //            } else {
+            $make->season = $request->input('make-season');
             $make->t_title = $request->input('make-name');
             $make->slug = Str::slug($make->t_title);
             if ($make->save()) {
