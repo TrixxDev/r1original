@@ -34,7 +34,7 @@
                                         <label>Meklēt:<input type="search" class="form-control form-control-sm" placeholder="" name="search" aria-controls="DataTables_Table_0"></label>
                                     </div>
                                 </form>
-                                <a style="float: right; height: 28.38px; line-height: 13px; margin-left: 10px;" class="btn btn-md btn-primary" href="{{ route('admin.auto.brands.add') }}"> Pievienot brendu</a>
+                                <a style="float: right; height: 28.38px; line-height: 13px; margin-left: 10px;" class="btn btn-md btn-primary" href="{{ route('admin.auto.treads.add') }}"> Pievienot modeli</a>
                             </div>
                         </div>
                         <div class="row">
@@ -50,7 +50,7 @@
                                     <tbody>
                                     @foreach ($treads as $tread)
                                         <tr role="row" class="odd">
-                                            <td class="sorting_1">{{ strtoupper($tread->title) }}</td>
+                                            <td class="sorting_1">{{ strtoupper($tread->t_title) }}</td>
                                             {{--                                            <td>{{ $tire->d1 }}</td>--}}
                                             <td style="width: 7.3%!important;">
                                                 <a class="btn btn-success" href="{{ route('admin.auto.treads.edit', $tread->tread_id) }}">

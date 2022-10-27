@@ -113,7 +113,7 @@ class AutoTireController extends Controller
             }
           } else if ($request->input('edit-brand') == 'true') {
             $brand = Autobrand::where('brand_id', $request->input('brand-id'))->first();
-            $brand->timestamps = false; 
+            $brand->timestamps = false;
 //            if ($brand && $brand->title == $request->input('brand-name')) {
 //              return redirect(route('admin.auto.tires'))->with('danger', 'Brenda nosaukums nav mainīts, ievadīts tāds pats!');
 //            } else {
@@ -414,7 +414,7 @@ class AutoTireController extends Controller
 
         if (is_numeric($paginate)) {
             if (\Session::has('search')) {
-                $treads = Autotread::orderBy('tread_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
+                $treads = Autotread::orderBy('tread_id', 'DESC')->where('t_title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
             } else {
                 $treads = Autotread::orderBy('tread_id', 'DESC')->groupBy('tread_id')->paginate($paginate);
             }
@@ -430,7 +430,7 @@ class AutoTireController extends Controller
     {
         if ($request->search) {
             \Session::put('search', $request->search);
-            $treads = Autotread::orderBy('tread_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
+            $treads = Autotread::orderBy('tread_id', 'DESC')->where('t_title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
         } else {
             if (\Session::has('search')) {
                 $treads = Autotread::orderBy('tread_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
@@ -451,7 +451,7 @@ class AutoTireController extends Controller
     {
         $tread = new Autotread();
         $tread->timestamps = false;
-        $tread->title = $request->tread_title;
+        $tread->t_title = $request->tread_title;
         $tread->slug = \Str::slug($request->tread_title, '-');
         $tread->save();
 
