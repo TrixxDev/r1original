@@ -37,6 +37,19 @@
                                 <input class="form-control" id="d3" type="number" @if ($tire->d3) value="{{ $tire->d3 }}" @endif name="d3" placeholder="Riepas radiuss">
                             </div>
                         </div>
+                        @if ($tire->tread->season == 2)
+                        <div class="form-group row">
+                          <label class="col-md-3 col-form-label" for="tyre_type">Tips</label>
+                          <div class="col-md-9">
+                            <select name="tire_type" id="tyre_type" class="form-control">
+                              <option @if ($tire->type == 1) selected @endif value="1">Centrāleiropas tipa ziemas riepa</option>
+                              <option @if ($tire->type == 2) selected @endif value="2">Radžojama</option>
+                              <option @if ($tire->type == 3) selected @endif value="3">Ar radzēm</option>
+                              <option @if ($tire->type == 4) selected @endif value="4">Skandināvijas tipa ziemas riepa</option>
+                            </select>
+                          </div>
+                        </div>
+                        @endif
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="shop_price">Veikala cena</label>
                             <div class="col-md-9">
@@ -70,7 +83,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="eco">Degvielas ekonomija</label>
                             <div class="col-md-9">
-                                <input class="form-control" id="eco" type="text" @if ($tire->code) value="{{ $tire->code }}" @endif name="eco" placeholder="Degvielas ekonomija">
+                                <input class="form-control" id="eco" type="text" @if ($tire->eco) value="{{ $tire->eco }}" @endif name="eco" placeholder="Degvielas ekonomija">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -100,19 +113,19 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="quantity">Atlikums</label>
                             <div class="col-md-9">
-                                <input class="form-control" id="quantity" type="number" @if ($tire->quantity) value="{{ $tire->quantity }}" @endif name="quantity" placeholder="Atlikums">
+                                <input class="form-control" id="quantity" type="number" value="{{ $tire->quantity }}" name="quantity" placeholder="Atlikums">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="urs_quantity">Ulbrokā</label>
                             <div class="col-md-9">
-                                <input class="form-control" id="urs_quantity" type="number" @if ($tire->urs_quantity) value="{{ $tire->urs_quantity }}" @endif name="urs_quantity" placeholder="Atlikums ulbrokā">
+                                <input class="form-control" id="urs_quantity" type="number" value="{{ $tire->urs_quantity }}" name="urs_quantity" placeholder="Atlikums ulbrokā">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="krs_quantity">Kalnciema ielā</label>
                             <div class="col-md-9">
-                                <input class="form-control" id="krs_quantity" type="number" @if ($tire->krs_quantity) value="{{ $tire->krs_quantity }}" @endif name="krs_quantity" placeholder="Atlikums kalnciema ielā">
+                                <input class="form-control" id="krs_quantity" type="number" value="{{ $tire->krs_quantity }}" name="krs_quantity" placeholder="Atlikums kalnciema ielā">
                             </div>
                         </div>
                     </div>

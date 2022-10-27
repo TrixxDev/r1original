@@ -205,6 +205,7 @@ class AutoTireController extends Controller
         $tire->d1 = ($request->d1 === null) ? '' : $request->d1;
         $tire->d2 = ($request->d2 === null) ? '' : $request->d2;
         $tire->d3 = ($request->d3 === null) ? '' : $request->d3;
+        $tire->type = ($request->tire_type === null) ? 0 : $request->tire_type;
         $tire->li = ($request->li === null) ? '' : $request->li;
         $tire->si = ($request->si === null) ? '' : $request->si;
         $tire->price1 = ($request->price1 === null) ? '' : $request->price1;
@@ -236,11 +237,13 @@ class AutoTireController extends Controller
 
     public function tire_update(Request $request, $id)
     {
+
         $tire = Autotire::findOrFail($id);
 
         $tire->d1 = $request->d1;
         $tire->d2 = $request->d2;
         $tire->d3 = $request->d3;
+        $tire->type = ($request->tire_type) ? $request->tire_type : 0;
         $tire->li = $request->li;
         $tire->si = $request->si;
         $tire->price1 = $request->price1;
