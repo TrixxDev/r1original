@@ -34,25 +34,62 @@ class AutoTireController extends Controller
 
         if ($request->post()) {
           if ($request->input('new-brand') == 'true') {
+            if (empty($request->input('brand-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada brenda nosaukums!');
             $brand = Autobrand::where('title', $request->input('brand-name'))->first();
-            if ($brand) return redirect()->back()->with('danger', 'Brends ar šādu nosaukumu jau eksistē!');
+            if ($brand) return redirect($request->url())->with('danger', 'Brends ar šādu nosaukumu jau eksistē!');
             $brand = new Autobrand;
             $brand->timestamps = false;
             $brand->title = $request->input('brand-name');
             $brand->slug = Str::slug($brand->title);
             if ($brand->save()) {
-              return redirect()->back()->with('success', 'Brends ir pievienots!');
+              return redirect($request->url())->with('success', 'Brends ir pievienots!');
             } else {
-              return redirect()->back()->with('danger', 'Notika kļūda, brends nav pievienots!');
+              return redirect($request->url())->with('danger', 'Notika kļūda, brends nav pievienots!');
             }
           } else if ($request->input('edit-brand') == 'true') {
-            dd($request->input('brand-name'));
+            $brand = Autobrand::where('brand_id', $request->input('brand-id'))->first();
+            $brand->timestamps = false;
+            if ($brand && $brand->title == $request->input('brand-name')) {
+              return redirect($request->url())->with('danger', 'Brenda nosaukums nav mainīts, ievadīts tāds pats!');
+            } else {
+              $brand->title = $request->input('brand-name');
+              $brand->slug = Str::slug($brand->title);
+              if ($brand->save()) {
+                return redirect($request->url())->with('success', 'Brenda nosaukums nomainīts!');
+              } else {
+                return redirect($request->url())->with('danger', 'Notika kļūda, brends nav mainīts!');
+              }
+            }
+          } else if ($request->input('delete-brand') == 'true') {
+            $brand = Autobrand::where('brand_id', $request->input('brand-id'))->first();
+            if (!$brand) redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
+            if ($brand->delete()) {
+              redirect($request->url())->with('success', 'Brends veiksmīgi izdzēsts!');
+            } else {
+              redirect($request->url())->with('danger', 'Notika kļūda, brends nav izdzēsts!');
+            }
+          }
+
+          if ($request->input('new-make') == 'true') {
+            if (empty($request->input('make-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada modeļa nosaukums!');
+            $make = Autotread::where('t_title', $request->input('make-name'))->first();
+            if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
+            $make = new Autotread;
+            $make->timestamps = false;
+            $make->brand_id = $request->input('brand-id');
+            $make->t_title = $request->input('make-name');
+            $make->slug = Str::slug($make->t_title);
+            if ($make->save()) {
+              return redirect($request->url())->with('success', 'Modelis ir pievienots!');
+            } else {
+              return redirect($request->url())->with('danger', 'Notika kļūda, modelis nav pievienots!');
+            }
           }
         }
 
-//        $tires = Autotire::with('tread')->groupBy('make_id')->paginate($perPage);
+//        $tires = Autotire::with(ctread')->groupBy('make_id')->paginate($perPage);
         $brands = Autobrand::orderBy('title', 'ASC')->get();
-        $treads = Autotread::all();
+        $treads = Autotread::orderBy('t_title', 'ASC')->get();
 
         return view('admin.auto_tires.index', compact('brands', 'treads'));
     }
@@ -60,10 +97,87 @@ class AutoTireController extends Controller
     public function tires_search(Request $request)
     {
 
+        if ($request->post()) {
+          if ($request->input('new-brand') == 'true') {
+            if (empty($request->input('brand-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada brenda nosaukums!');
+            $brand = Autobrand::where('title', $request->input('brand-name'))->first();
+            if ($brand) return redirect($request->url())->with('danger', 'Brends ar šādu nosaukumu jau eksistē!');
+            $brand = new Autobrand;
+            $brand->timestamps = false;
+            $brand->title = $request->input('brand-name');
+            $brand->slug = Str::slug($brand->title);
+            if ($brand->save()) {
+              return redirect($request->url())->with('success', 'Brends ir pievienots!');
+            } else {
+              return redirect($request->url())->with('danger', 'Notika kļūda, brends nav pievienots!');
+            }
+          } else if ($request->input('edit-brand') == 'true') {
+            $brand = Autobrand::where('brand_id', $request->input('brand-id'))->first();
+            $brand->timestamps = false;
+//            if ($brand && $brand->title == $request->input('brand-name')) {
+//              return redirect(route('admin.auto.tires'))->with('danger', 'Brenda nosaukums nav mainīts, ievadīts tāds pats!');
+//            } else {
+              $brand->title = $request->input('brand-name');
+              $brand->slug = Str::slug($brand->title);
+              if ($brand->save()) {
+                return redirect($request->url())->with('success', 'Brenda nosaukums nomainīts!');
+              } else {
+                return redirect($request->url())->with('danger', 'Notika kļūda, brends nav mainīts!');
+              }
+//            }
+          } else if ($request->input('delete-brand') == 'true') {
+            $brand = Autobrand::where('brand_id', $request->input('brand-id'))->first();
+            if (!$brand) redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
+            if ($brand->delete()) {
+              redirect($request->url())->with('success', 'Brends veiksmīgi izdzēsts!');
+            } else {
+              redirect($request->url())->with('danger', 'Notika kļūda, brends nav izdzēsts!');
+            }
+          }
+
+          if ($request->input('new-make') == 'true') {
+            if (empty($request->input('make-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada modeļa nosaukums!');
+            $make = Autotread::where('t_title', $request->input('make-name'))->first();
+            if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
+            $make = new Autotread;
+            $make->timestamps = false;
+            $make->brand_id = $request->input('brand-id');
+            $make->t_title = $request->input('make-name');
+            $make->slug = Str::slug($make->t_title);
+            if ($make->save()) {
+              return redirect($request->url())->with('success', 'Modelis ir pievienots!');
+            } else {
+              return redirect($request->url())->with('danger', 'Notika kļūda, modelis nav pievienots!');
+            }
+          } else if ($request->input('edit-make') == 'true') {
+            $make = Autotread::where('brand_id', $request->input('brand-id'))->where('tread_id', $request->tread_id)->first();
+            $make->timestamps = false;
+//            if ($make && $make->t_title == $request->input('make-name')) {
+//              return redirect($request->url())->with('danger', 'Modeļa nosaukums nav mainīts, ievadīts tāds pats!');
+//            } else {
+            $make->t_title = $request->input('make-name');
+            $make->slug = Str::slug($make->t_title);
+            if ($make->save()) {
+              return redirect($request->url())->with('success', 'Modeļa nosaukums nomainīts!');
+            } else {
+              return redirect($request->url())->with('danger', 'Notika kļūda, modeļis nav mainīts!');
+            }
+//            }
+          } else if ($request->input('delete-make') == 'true') {
+            $make = Autotread::where('tread_id', $request->tread_id)->first();
+            if (!$make) redirect($request->url())->with('danger', 'Tāds modelis neeksistē, nevaru izdzēst!');
+            if ($make->delete()) {
+              redirect($request->url())->with('success', 'Modelis veiksmīgi izdzēsts!');
+            } else {
+              redirect($request->url())->with('danger', 'Notika kļūda, modelis nav izdzēsts!');
+            }
+          }
+        }
+
         $tires = Autotire::with('tread')->where('make_id', $request->tread_id)->get();
         $tread = Autotread::where('tread_id', $request->tread_id)->first();
-        $brands = Autobrand::all();
-        $treads = Autotread::all();
+        $brands = Autobrand::orderBy('title', 'ASC')->get();
+        $treads = Autotread::orderBy('t_title', 'ASC')->get();
 
         return view('admin.auto_tires.index', compact('tires', 'tread', 'brands', 'treads'));
     }
@@ -91,6 +205,7 @@ class AutoTireController extends Controller
         $tire->d1 = ($request->d1 === null) ? '' : $request->d1;
         $tire->d2 = ($request->d2 === null) ? '' : $request->d2;
         $tire->d3 = ($request->d3 === null) ? '' : $request->d3;
+        $tire->type = ($request->tire_type === null) ? 0 : $request->tire_type;
         $tire->li = ($request->li === null) ? '' : $request->li;
         $tire->si = ($request->si === null) ? '' : $request->si;
         $tire->price1 = ($request->price1 === null) ? '' : $request->price1;
@@ -122,11 +237,13 @@ class AutoTireController extends Controller
 
     public function tire_update(Request $request, $id)
     {
+
         $tire = Autotire::findOrFail($id);
 
         $tire->d1 = $request->d1;
         $tire->d2 = $request->d2;
         $tire->d3 = $request->d3;
+        $tire->type = ($request->tire_type) ? $request->tire_type : 0;
         $tire->li = $request->li;
         $tire->si = $request->si;
         $tire->price1 = $request->price1;
@@ -403,7 +520,7 @@ class AutoTireController extends Controller
 
     public function ajaxUpdateTreads(Request $request)
     {
-        $treads = Autotread::where('brand_id', $request->brand_id)->get();
+        $treads = Autotread::where('brand_id', $request->brand_id)->orderBy('t_title', 'ASC')->get();
         return json_encode($treads);
     }
 

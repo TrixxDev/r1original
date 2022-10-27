@@ -35,7 +35,7 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::get('/auto/delete/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_destroy'])->name('auto.tire.destroy');
   Route::post('/auto/ajaxUpdateTreads', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTreads'])->name('auto.tires.ajaxUpdateTreads');
   Route::post('/auto/ajaxUpdateTires', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTires'])->name('auto.tires.ajaxUpdateTires');
-  Route::get('/auto/tread/{tread_id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tires_search'])->name('auto.tires.search');
+  Route::match(['GET', 'POST'], '/auto/tread/{tread_id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tires_search'])->name('auto.tires.search');
   Route::get('/auto/tread/{tread_id}/create', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_create'])->name('auto.tires.create');
   Route::post('/auto/tread/{tread_id}/store', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_store'])->name('auto.tires.store');
   Route::post('/auto/tread/{tread_id}/image', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_image'])->name('auto.tires.image');

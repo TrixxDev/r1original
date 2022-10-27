@@ -42,6 +42,20 @@
                 <input class="form-control" id="d3" type="number" name="d3" placeholder="Riepas radiuss">
               </div>
             </div>
+            @if ($tread->season == 2)
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="tire_type">Tips</label>
+              <div class="col-md-9">
+                <select name="tire_type" id="tyre_type" class="form-control">
+                  <option value="">Izvēlies tipu</option>
+                  <option value="1">Centrāleiropas tipa ziemas riepa</option>
+                  <option value="2">Radžojama</option>
+                  <option value="3">Ar radzēm</option>
+                  <option value="4">Skandināvijas tipa ziemas riepa</option>
+                </select>
+              </div>
+            </div>
+            @endif
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="shop_price">Veikala cena</label>
               <div class="col-md-9">
