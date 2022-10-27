@@ -17,6 +17,7 @@ $(document).ready(function() {
 
   function changeBrands() {
     $('#tread_select').attr('disabled', true);
+    $('.brand-settings input[name=brand-id], .make-settings input[name=brand-id]').val(brand_id);
     $.ajax({
       url: main_url + '/admin/' + model + '/tread/' + brand_id + '/ajaxUpdateTreads',
       method: 'POST',

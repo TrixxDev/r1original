@@ -87,7 +87,7 @@
                                     <thead>
                                     <tr role="row">
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="3" aria-label="Date registered: activate to sort column ascending" style="width: 320.609px;">Izmērs</th>
-                                        @if ($tread->season == 2)
+                                        @if (isset($tread) && $tread->season == 2)
                                         <th rowspan="1" colspan="1" style="width: 151.953px;">Tips</th>
                                         @endif
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Role: activate to sort column ascending" style="width: 151.953px;">Veikala cena</th>

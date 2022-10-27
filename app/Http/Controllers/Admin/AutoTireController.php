@@ -113,7 +113,7 @@ class AutoTireController extends Controller
             }
           } else if ($request->input('edit-brand') == 'true') {
             $brand = Autobrand::where('brand_id', $request->input('brand-id'))->first();
-            $brand->timestamps = false;
+            $brand->timestamps = false; 
 //            if ($brand && $brand->title == $request->input('brand-name')) {
 //              return redirect(route('admin.auto.tires'))->with('danger', 'Brenda nosaukums nav mainīts, ievadīts tāds pats!');
 //            } else {
