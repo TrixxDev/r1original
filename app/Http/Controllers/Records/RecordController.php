@@ -754,7 +754,10 @@ class RecordController extends Controller
                       } else {
                         $slotDevice2 = 'Dators';
                       }
-                      $phone2 = $takenBy->ownerPhone;
+                      $phone2 = '';
+                      if ($takenBy->ownerPhone) {
+                        $phone2 = $takenBy->ownerPhone;
+                      }
                       if (!$takenBy->purpose) {
                         $purpose2 = '';
                         $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
