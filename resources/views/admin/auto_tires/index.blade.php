@@ -33,18 +33,20 @@
                                     <form method="post" style="display: flex;">
                                       @csrf
                                       <input type="text" name="brand-name" style="width: 200px; margin-left: 10px;" disabled class="form-control brand-input">
-                                      <button class="btn btn-success new-brand" style="margin-left: 10px; color: white;">Izveidot</button>
-                                      <button class="btn btn-warning edit-brand" style="margin-left: 10px; color: white;">Labot</button>
+                                      <button type="button" class="btn btn-success new-brand" style="margin-left: 10px; color: white;">Izveidot</button>
+                                      <button type="button" class="btn btn-warning edit-brand" style="margin-left: 10px; color: white;">Labot</button>
+                                      <button class="btn btn-danger delete-brand" name="delete-brand" value="true" style="margin-left: 10px; color: white;">Dzēst</button>
                                     </form>
                                 </div>
                                 <div class="form-group row make-settings">
                                     <label class="col-md-2 col-form-label" for="tread_select">Modelis: </label>
-                                    <select name="tread" class="form-control col-md-3" id="tread_select"></select>
+                                    <select name="tread" class="form-control col-md-3" id="tread_select" disabled></select>
                                     <form method="post" style="display: flex;">
                                       @csrf
-                                      <input type="text" style="width: 200px; margin-left: 10px;" disabled class="form-control make-input">
-                                      <button class="btn btn-success new-make" style="margin-left: 10px;">Izveidot</button>
-                                      <button class="btn btn-warning edit-make" style="margin-left: 10px; color: white;">Labot</button>
+                                      <input type="text" name="make-name" style="width: 200px; margin-left: 10px;" disabled class="form-control make-input">
+                                      <button type="button" class="btn btn-success new-make" style="margin-left: 10px; color: white;">Izveidot</button>
+                                      <button type="button" class="btn btn-warning edit-make" style="margin-left: 10px; color: white;">Labot</button>
+                                      <button class="btn btn-danger delete-make" name="delete-make" value="true" style="margin-left: 10px; color: white;">Dzēst</button>
                                     </form>
                                 </div>
                             </div>

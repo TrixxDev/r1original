@@ -16,12 +16,14 @@ $(document).ready(function() {
   let current_tread = pathParts[4];
 
   function changeBrands() {
+    $('#tread_select').attr('disabled', true);
     $.ajax({
       url: main_url + '/admin/' + model + '/tread/' + brand_id + '/ajaxUpdateTreads',
       method: 'POST',
       dataType: 'JSON',
       data: { brand_id: brand_id },
       success: function(data) {
+        $('#tread_select').attr('disabled', false);
         data.sort();
         let html = '<select name="tread" class="form-control col-md-3" id="tread_select"><option></option>';
         data.forEach(function(value, key) {
@@ -33,6 +35,10 @@ $(document).ready(function() {
         });
         html += '</select>';
         $('#tread_select').html(html);
+        if ($('.make-settings #tread_select option:selected').val() != '') {
+          $('.make-settings .edit-make[type=button]').attr('disabled', false);
+          $('.make-settings .delete-make').attr('disabled', false);
+        }
       }
     });
   }
@@ -970,30 +976,121 @@ $('.price-alert button.close').on('click', function(e) {
 	$(this).parent().hide();
 });
 
-$('.brand-settings').on('click', '.new-brand', function(e) {
+$('.make-settings .edit-make').attr('disabled', true);
+$('.make-settings .delete-make').attr('disabled', true);
+
+$(document).ready(function() {
+  $('<input type="hidden" name="brand-id" value="' + $('.brand-settings #brand_select option:selected').val() + '">').insertBefore($('.brand-input'));
+  $('<input type="hidden" name="brand-id" value="' + $('.brand-settings #brand_select option:selected').val() + '">').insertBefore($('.make-input'));
+});
+
+// Brendu iestatījumi
+
+$('.brand-settings').on('click', '.new-brand[type=button]', function(e) {
   if ($(this).attr('type') != 'submit') e.preventDefault();
   $('.brand-input').attr('disabled', false);
-  $(this).attr('type', 'submit').attr('name', 'new-brand').attr('value', 'true');
+  $(this).attr('disabled', true).css('cursor', 'default').attr('type', 'submit').attr('name', 'new-brand').attr('value', 'true');
   $('.edit-brand').addClass('btn-danger').addClass('stop-new-brand').removeClass('btn-warning').removeClass('edit-brand').text('Atcelt');
+  $('.delete-brand').hide();
+  $('#brand_select, #tread_select, .new-make, .edit-make, .delete-make').attr('disabled', 'true').css('cursor', 'default');
 });
 
 $('.brand-settings').on('click', '.stop-new-brand', function(e) {
   if ($(this).attr('type') != 'submit') e.preventDefault();
   $('.brand-input').attr('disabled', true).val('');
-  $('.new-brand').removeAttr('type').removeAttr('name').removeAttr('value');
-  $('.stop-new-brand').addClass('btn-warning').addClass('edit-brand').removeClass('btn-danger').removeClass('stop-edit-brand').text('Labot');
+  $('.new-brand').attr('disabled', false).css('cursor', 'pointer').attr('type', 'button').removeAttr('name').removeAttr('value');
+  $('.stop-new-brand').addClass('btn-warning').addClass('edit-brand').removeClass('btn-danger').removeClass('stop-new-brand').text('Labot');
+  $('.delete-brand').show();
+  $('.edit-brand').attr('disabled', false).css('cursor', 'pointer');
+  $('#brand_select, #tread_select, .new-make, .edit-make, .delete-make').removeAttr('disabled').css('cursor', 'pointer');
 });
 
-$('.brand-settings').on('click', '.edit-brand:last-child', function(e) {
+$('.brand-settings').on('click', '.edit-brand[type=button]', function(e) {
   if ($(this).attr('type') != 'submit') e.preventDefault();
   $('.brand-input').attr('disabled', false).val($('.brand-settings #brand_select option:selected').text());
   $('.new-brand').addClass('btn-warning').addClass('edit-brand').removeClass('btn-success').removeClass('new-brand').attr('type', 'submit').attr('name', 'edit-brand').attr('value', 'true').text('Labot');
   $('.edit-brand').last().addClass('btn-danger').addClass('stop-edit-brand').removeClass('btn-warning').removeClass('edit-brand').text('Atcelt');
+  $('.delete-brand').hide();
+  $('#brand_select, #tread_select, .new-make, .edit-make, .delete-make').attr('disabled', true).css('cursor', 'default');
 });
 
 $('.brand-settings').on('click', '.stop-edit-brand', function(e) {
   if ($(this).attr('type') != 'submit') e.preventDefault();
   $('.brand-input').attr('disabled', true).val('');
   $('.stop-edit-brand').addClass('btn-warning').addClass('edit-brand').removeClass('btn-danger').removeClass('stop-edit-brand').text('Labot');
-  $('.edit-brand').first().addClass('btn-success').addClass('new-brand').removeClass('btn-warning').removeClass('edit-brand').removeAttr('type').removeAttr('name').removeAttr('value').text('Izveidot');
+  $('.edit-brand').first().addClass('btn-success').addClass('new-brand').removeClass('btn-warning').removeClass('edit-brand').attr('type', 'button').removeAttr('name').removeAttr('value').text('Izveidot');
+  $('.delete-brand').show();
+  $('.new-brand').attr('disabled', false).css('cursor', 'pointer');
+  $('#brand_select, #tread_select, .new-make, .edit-make, .delete-make').removeAttr('disabled').css('cursor', 'pointer');
+});
+
+// Modeļu iestatījumi
+
+$('.make-settings').on('click', '.new-make[type=button]', function(e) {
+  if ($(this).attr('type') != 'submit') e.preventDefault();
+  $('.make-input').attr('disabled', false);
+  $(this).attr('disabled', true).css('cursor', 'default').attr('type', 'submit').attr('name', 'new-make').attr('value', 'true');
+  $('.edit-make').addClass('btn-danger').addClass('stop-new-make').removeClass('btn-warning').removeClass('edit-make').text('Atcelt');
+  $('.delete-make').hide();
+  $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').attr('disabled', 'true').css('cursor', 'default');
+});
+
+$('.make-settings').on('click', '.stop-new-make', function(e) {
+  if ($(this).attr('type') != 'submit') e.preventDefault();
+  $('.make-input').attr('disabled', true).val('');
+  $('.new-make').attr('disabled', false).css('cursor', 'pointer').attr('type', 'button').removeAttr('name').removeAttr('value');
+  $('.stop-new-make').addClass('btn-warning').addClass('edit-make').removeClass('btn-danger').removeClass('stop-new-make').text('Labot');
+  $('.delete-make').show();
+  $('.edit-make').attr('disabled', false).css('cursor', 'pointer');
+  $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').removeAttr('disabled').css('cursor', 'pointer');
+});
+
+$('.make-settings').on('click', '.edit-make[type=button]', function(e) {
+  if ($(this).attr('type') != 'submit') e.preventDefault();
+  $('.make-input').attr('disabled', false).val($('.make-settings #tread_select option:selected').text());
+  $('.new-make').addClass('btn-warning').addClass('edit-make').removeClass('btn-success').removeClass('new-make').attr('type', 'submit').attr('name', 'edit-make').attr('value', 'true').text('Labot');
+  $('.edit-make').last().addClass('btn-danger').addClass('stop-edit-make').removeClass('btn-warning').removeClass('edit-make').text('Atcelt');
+  $('.delete-make').hide();
+  $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').attr('disabled', true).css('cursor', 'default');
+  if ($('.make-input').val().length == 0) $('.edit-make[type=submit]').attr('disabled', true).css('cursor', 'default');
+});
+
+$('.make-settings').on('click', '.stop-edit-make', function(e) {
+  if ($(this).attr('type') != 'submit') e.preventDefault();
+  $('.make-input').attr('disabled', true).val('');
+  $('.stop-edit-make').addClass('btn-warning').addClass('edit-make').removeClass('btn-danger').removeClass('stop-edit-make').text('Labot');
+  $('.edit-make').first().addClass('btn-success').addClass('new-make').removeClass('btn-warning').removeClass('edit-make').attr('type', 'button').removeAttr('name').removeAttr('value').text('Izveidot');
+  $('.delete-make').show();
+  $('.new-make').attr('disabled', false).css('cursor', 'pointer');
+  $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').removeAttr('disabled').css('cursor', 'pointer');
+});
+
+// Inputu iestatījumi
+
+$('.brand-settings').on('keyup', '.brand-input', function() {
+  if ($(this).val().length >= 1) {
+    $('.edit-brand').attr('disabled', false).css('cursor', 'pointer');
+    $('.new-brand').attr('disabled', false).css('cursor', 'pointer');
+  } else {
+    $('.edit-brand').attr('disabled', true).css('cursor', 'default');
+    $('.new-brand').attr('disabled', true).css('cursor', 'default');
+  }
+});
+
+$('.make-settings').on('keyup', '.make-input', function() {
+  if ($(this).val().length >= 1) {
+    $('.edit-make').attr('disabled', false).css('cursor', 'pointer');
+    $('.new-make').attr('disabled', false).css('cursor', 'pointer');
+  } else {
+    $('.edit-make').attr('disabled', true).css('cursor', 'default');
+    $('.new-make').attr('disabled', true).css('cursor', 'default');
+  }
+});
+
+$('.brand-settings').on('click', '.delete-brand', function (e) {
+  if (!confirm('Vai tiešām dzēst?')) e.preventDefault();
+});
+
+$('.brand-settings').on('click', '.delete-make', function (e) {
+  if (!confirm('Vai tiešām dzēst?')) e.preventDefault();
 });
