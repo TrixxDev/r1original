@@ -643,6 +643,8 @@ class RecordController extends Controller
                   case SLOT_STATUS_FREE:
                   {
                     $slotDevice = '';
+                    $phone = '';
+                    $purpose = '';
                     $slotText = $slot->comment . '';
                     break;
                   }
@@ -654,23 +656,33 @@ class RecordController extends Controller
                     } else {
                       $slotDevice = 'Dators';
                     }
+                    $phone = '';
+                    if ($takenBy->ownerPhone) {
+                      $phone = $takenBy->ownerPhone;
+                    }
                     if (!$takenBy->purpose) {
-                      $slotText = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                      $purpose = '';
+                      $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                     } else {
                       $service = Service::where('service_id', $takenBy->purpose)->first();
-                      $slotText = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $service->pdf_title . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                      $purpose = $service->pdf_title;
+                      $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                     }
                     break;
                   }
                   case SLOT_STATUS_OFFER:
                   {
                     $slotDevice = '';
+                    $phone = '';
+                    $purpose = '';
                     $slotText = $slot->comment;
                     break;
                   }
                   case SLOT_STATUS_CLOSED:
                   {
                     $slotDevice = '';
+                    $phone = '';
+                    $purpose = '';
                     if (trim($slot->comment) == '') {
                       $slotCaption = 'Slēgts!';
                     } else {
@@ -717,8 +729,8 @@ class RecordController extends Controller
                 $sheet->setCellValue('A' . $b, Office::timeByInterval($i));
                 $sheet->setCellValue('B' . $b, $queue_id);
                 $sheet->setCellValue('C' . $b, $slotDevice);
-                $sheet->setCellValue('D' . $b, '');
-                $sheet->setCellValue('E' . $b, '');
+                $sheet->setCellValue('D' . $b, $phone);
+                $sheet->setCellValue('E' . $b, $purpose);
                 $sheet->setCellValue('F' . $b, $slotText);
 
                 $b++;
@@ -729,6 +741,8 @@ class RecordController extends Controller
                     case SLOT_STATUS_FREE:
                     {
                       $slotDevice2 = '';
+                      $phone2 = '';
+                      $purpose2 = '';
                       $slotText2 = $slot->comment . '';
                       break;
                     }
@@ -740,23 +754,30 @@ class RecordController extends Controller
                       } else {
                         $slotDevice2 = 'Dators';
                       }
+                      $phone2 = $takenBy->ownerPhone;
                       if (!$takenBy->purpose) {
-                          $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                        $purpose2 = '';
+                        $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                       } else {
                         $service = Service::where('service_id', $takenBy->purpose)->first();
-			                  $slotText2 = $takenBy->ownerPhone . ' ' . $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $service->pdf_title . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                        $purpose2 = $service->pdf_title;
+			                  $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
 		                  }
                       break;
                     }
                     case SLOT_STATUS_OFFER:
                     {
                       $slotDevice2 = '';
+                      $phone2 = '';
+                      $purpose2 = '';
                       $slotText2 = $slot->comment;
                       break;
                     }
                     case SLOT_STATUS_CLOSED:
                     {
                       $slotDevice2 = '';
+                      $phone2 = '';
+                      $purpose2 = '';
                       if (trim($slot->comment) == '') {
                         $slotCaption = 'Sl ^sgts!';
                       } else {
@@ -771,9 +792,9 @@ class RecordController extends Controller
                   $sheet->setCellValue('A' . ($b), $slotTime);
                   $sheet->setCellValue('B' . ($b), $queue_id);
                   $sheet->setCellValue('C' . ($b), $slotDevice2);
-                  $sheet->setCellValue('D' . ($b), '');
-                  $sheet->setCellValue('D' . ($b), '');
-                  $sheet->setCellValue('D' . ($b), $slotText2);
+                  $sheet->setCellValue('D' . ($b), $phone2);
+                  $sheet->setCellValue('E' . ($b), $purpose2);
+                  $sheet->setCellValue('F' . ($b), $slotText2);
                 }
 
 		            $b++;
@@ -790,10 +811,12 @@ class RecordController extends Controller
       // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); //
     //$pdf->Cell($w[0],10,Office::timeByInterval($slotTime),1); // $pdf->Cell($w[1],10,$row['takenby'],1,0,'L'); // $pdf->ln(); // }
     // Closing line // $pdf->Cell(array_sum($w),0,'','T');
-    $sheet->setAutoFilter('A:D');
+    $sheet->setAutoFilter('A:E');
     $lastRow = $sheet->getHighestRow();
-    $sheet->getStyle('A2:C' . $lastRow)->getAlignment()->setHorizontal('center');
+    $sheet->getStyle('A2:E' . $lastRow)->getAlignment()->setHorizontal('center');
     $sheet->getColumnDimension('C')->setWidth(14);
+    $sheet->getColumnDimension('D')->setWidth(10);
+    $sheet->getColumnDimension('E')->setWidth(13);
     $writer = new Xlsx($spreadsheet);
     $filename = 'pieraksts.xlsx';
 
