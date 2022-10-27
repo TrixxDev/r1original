@@ -814,7 +814,7 @@ class RecordController extends Controller
       // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); //
     //$pdf->Cell($w[0],10,Office::timeByInterval($slotTime),1); // $pdf->Cell($w[1],10,$row['takenby'],1,0,'L'); // $pdf->ln(); // }
     // Closing line // $pdf->Cell(array_sum($w),0,'','T');
-    $sheet->setAutoFilter('A:E');
+    $sheet->setAutoFilter('A:F');
     $lastRow = $sheet->getHighestRow();
     $sheet->getStyle('A2:E' . $lastRow)->getAlignment()->setHorizontal('center');
     $sheet->getColumnDimension('C')->setWidth(14);

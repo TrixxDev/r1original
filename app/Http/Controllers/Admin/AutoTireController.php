@@ -7,6 +7,7 @@ use App\Models\Autobrand;
 use App\Models\Autotire;
 use App\Models\Autotread;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Intervention\Image\ImageManagerStatic as Image;
 use Storage;
 
@@ -32,7 +33,21 @@ class AutoTireController extends Controller
     {
 
         if ($request->post()) {
-          dd($request->input());
+          if ($request->input('new-brand') == 'true') {
+            $brand = Autobrand::where('title', $request->input('brand-name'))->first();
+            if ($brand) return redirect()->back()->with('danger', 'Brends ar šādu nosaukumu jau eksistē!');
+            $brand = new Autobrand;
+            $brand->timestamps = false;
+            $brand->title = $request->input('brand-name');
+            $brand->slug = Str::slug($brand->title);
+            if ($brand->save()) {
+              return redirect()->back()->with('success', 'Brends ir pievienots!');
+            } else {
+              return redirect()->back()->with('danger', 'Notika kļūda, brends nav pievienots!');
+            }
+          } else if ($request->input('edit-brand') == 'true') {
+            dd($request->input('brand-name'));
+          }
         }
 
 //        $tires = Autotire::with('tread')->groupBy('make_id')->paginate($perPage);

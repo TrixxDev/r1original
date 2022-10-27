@@ -973,21 +973,21 @@ $('.price-alert button.close').on('click', function(e) {
 $('.brand-settings').on('click', '.new-brand', function(e) {
   if ($(this).attr('type') != 'submit') e.preventDefault();
   $('.brand-input').attr('disabled', false);
-  $(this).attr('type', 'submit').attr('name', 'new-brand');
+  $(this).attr('type', 'submit').attr('name', 'new-brand').attr('value', 'true');
   $('.edit-brand').addClass('btn-danger').addClass('stop-new-brand').removeClass('btn-warning').removeClass('edit-brand').text('Atcelt');
 });
 
 $('.brand-settings').on('click', '.stop-new-brand', function(e) {
   if ($(this).attr('type') != 'submit') e.preventDefault();
   $('.brand-input').attr('disabled', true).val('');
-  $('.new-brand').removeAttr('type').removeAttr('name');
+  $('.new-brand').removeAttr('type').removeAttr('name').removeAttr('value');
   $('.stop-new-brand').addClass('btn-warning').addClass('edit-brand').removeClass('btn-danger').removeClass('stop-edit-brand').text('Labot');
 });
 
 $('.brand-settings').on('click', '.edit-brand:last-child', function(e) {
   if ($(this).attr('type') != 'submit') e.preventDefault();
-  $('.brand-input').attr('disabled', false);
-  $('.new-brand').addClass('btn-warning').addClass('edit-brand').removeClass('btn-success').removeClass('new-brand').attr('type', 'submit').attr('name', 'edit-brand').text('Labot');
+  $('.brand-input').attr('disabled', false).val($('.brand-settings #brand_select option:selected').text());
+  $('.new-brand').addClass('btn-warning').addClass('edit-brand').removeClass('btn-success').removeClass('new-brand').attr('type', 'submit').attr('name', 'edit-brand').attr('value', 'true').text('Labot');
   $('.edit-brand').last().addClass('btn-danger').addClass('stop-edit-brand').removeClass('btn-warning').removeClass('edit-brand').text('Atcelt');
 });
 
@@ -995,5 +995,5 @@ $('.brand-settings').on('click', '.stop-edit-brand', function(e) {
   if ($(this).attr('type') != 'submit') e.preventDefault();
   $('.brand-input').attr('disabled', true).val('');
   $('.stop-edit-brand').addClass('btn-warning').addClass('edit-brand').removeClass('btn-danger').removeClass('stop-edit-brand').text('Labot');
-  $('.edit-brand').first().addClass('btn-success').addClass('new-brand').removeClass('btn-warning').removeClass('edit-brand').removeAttr('type').removeAttr('name').text('Izveidot');
+  $('.edit-brand').first().addClass('btn-success').addClass('new-brand').removeClass('btn-warning').removeClass('edit-brand').removeAttr('type').removeAttr('name').removeAttr('value').text('Izveidot');
 });
