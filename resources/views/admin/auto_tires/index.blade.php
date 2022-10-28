@@ -26,8 +26,8 @@
                                 <div class="form-group row brand-settings">
                                     <label class="col-md-2 col-form-label" for="brand_select">Brends: </label>
                                     <select name="brand" class="form-control col-md-3" data-model="auto" id="brand_select">
-                                        @foreach ($brands as $brand)
-                                            <option value="{{ $brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $brand->brand_id) {{ 'selected' }} @endif >{{ ucwords(strtolower($brand->title)) }}</option>
+                                        @foreach ($brands as $curr_brand)
+                                            <option value="{{ $curr_brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $brand->brand_id) {{ 'selected' }} @endif >{{ ucwords(strtolower($curr_brand->title)) }}</option>
                                         @endforeach
                                     </select>
                                     <form method="post" style="display: flex;">
@@ -79,17 +79,46 @@
                                   @endif
                                 @endif
                             </div>
-{{--                            <textarea name="" id="" cols="80" rows="10"></textarea>--}}
+                            @if (isset($tread))
                             <div class="tread_comment">
-                              <div class="card">
-                                <div class="card-body">
-                                  @if (isset($tread) && $tread->t_comment != '')
-                                    <span class="comment-text">{!! $tread->t_comment !!}</span>
-                                  @endif
+                              <form method="POST">
+                                @csrf
+{{--                                <textarea style="display: none;" class="form-control comment-text" name="comment-text" cols="80" rows="13">{!! $tread->t_comment !!}</textarea>--}}
+{{--                                <textarea disabled class="form-control comment-text-disabled" cols="80" rows="13">{!! $tread->t_comment !!}</textarea>--}}
+  {{--                              <div class="card">--}}
+  {{--                                <div class="card-body">--}}
+  {{--                                  @if ($tread->t_comment != '')--}}
+  {{--                                    <span class="comment-text">{{ $tread->t_comment }}</span>--}}
+  {{--                                  @endif--}}
+  {{--                                </div>--}}
+  {{--                              </div>--}}
+
+                                <div class="container" style="margin-top: 10px;">
+                                  <!-- Nav tabs -->
+                                  <ul class="nav nav-tabs">
+                                    <li class="nav-item">
+                                      <a class="nav-link active" data-bs-toggle="tab" href="#brand">Brends</a>
+                                    </li>
+                                    <li class="nav-item">
+                                      <a class="nav-link" data-bs-toggle="tab" href="#tread">Modelis</a>
+                                    </li>
+                                  </ul>
+
+                                  <!-- Tab panes -->
+                                  <div class="tab-content">
+                                    <div class="tab-pane container fade show active" id="brand">
+                                      <textarea disabled class="form-control brand-comment-text" cols="80" rows="13">{!! $brand->b_comment !!}</textarea>
+                                    </div>
+                                    <div class="tab-pane container fade" id="tread">
+                                      <textarea disabled class="form-control tread-comment-text" cols="80" rows="13">{!! $tread->t_comment !!}</textarea>
+                                    </div>
+                                  </div>
+                                  <button type="button" style="color: white;" class="btn btn-warning brand-comment-edit">Labot</button>
+                                  <button style="display: none;" type="button" style="color: white;" class="btn btn-danger brand-comment-edit-cancel">Atcelt</button>
                                 </div>
-                              </div>
-                              <button class="btn btn-warning comment-edit">Labot</button>
+                              </form>
                             </div>
+                          @endif
                         </div>
                         @if (isset($tread))
                         <div class="row justify-content-end tires-header">

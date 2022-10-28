@@ -179,14 +179,27 @@ class AutoTireController extends Controller
               redirect($request->url())->with('danger', 'Notika kļūda, modelis nav izdzēsts!');
             }
           }
+
+          // Komentāra edits
+          if ($request->input('comment-edit') == 'true') {
+            $tread = Autotread::where('tread_id', $request->tread_id)->first();
+            $tread->timestamps = false;
+            $tread->t_comment = $request->input('comment-text');
+            if ($tread->save()) {
+              return redirect($request->url())->with('success', 'Modeļa apraksts atjaunots!');
+            } else {
+              return redirect($request->url())->with('danger', 'Notika kļūda, modeļa apraksts nav atjaunots!');
+            }
+          }
         }
 
         $tires = Autotire::with('tread')->where('make_id', $request->tread_id)->get();
         $tread = Autotread::where('tread_id', $request->tread_id)->first();
+        $brand = Autobrand::where('brand_id', $tread->brand_id)->first();
         $brands = Autobrand::orderBy('title', 'ASC')->get();
         $treads = Autotread::orderBy('t_title', 'ASC')->get();
 
-        return view('admin.auto_tires.index', compact('tires', 'tread', 'brands', 'treads'));
+        return view('admin.auto_tires.index', compact('tires', 'tread', 'brands', 'brand', 'treads'));
     }
 
     public function tire_create($id)

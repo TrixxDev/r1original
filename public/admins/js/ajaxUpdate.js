@@ -1099,3 +1099,45 @@ $('.brand-settings').on('click', '.delete-brand', function (e) {
 $('.make-settings').on('click', '.delete-make', function (e) {
   if (!confirm('Vai tiešām dzēst?')) e.preventDefault();
 });
+
+let $tab = $('.tread_comment .nav-link.active').attr('href').replace('#', '');
+
+// Brenda apraksta iestatījumi
+
+$('.tread_comment .nav-link').each(function() {
+  $(this).on('click', function() {
+    if ($(this).hasClass('active')) {
+      $tab = $(this).attr('href').replace('#', '');
+      if ($('.tread_comment .tread-comment-edit').length > 0) {
+        $('.tread_comment .tread-comment-edit').addClass($tab + '-comment-edit').removeClass('tread-comment-edit');
+        $('.tread_comment .tread-comment-edit-cancel').addClass($tab + '-comment-edit-cancel').removeClass('tread-comment-edit-cancel');
+      } else if ($('.tread_comment .brand-comment-edit').length > 0) {
+        $('.tread_comment .brand-comment-edit').addClass('' + $tab + '-comment-edit').removeClass('brand-comment-edit');
+        $('.tread_comment .brand-comment-edit-cancel').addClass('' + $tab + '-comment-edit-cancel').removeClass('brand-comment-edit-cancel');
+      }
+    }
+  });
+});
+
+// Modeļa apraksta iestatījumi
+
+
+$('.tread_comment').on('click', '.' + $tab + '-comment-edit[type=button]', function(e) {
+  if ($(this).attr('type') != 'submit') e.preventDefault();
+  $('.tread_comment').attr('disabled', '.' + $tab + '-comment-text', function(index, attr) {
+    return attr != 'disabled';
+  });
+  $('.tread_comment .' + $tab + '-comment-edit-cancel').show();
+  $('.tread_comment .' + $tab + '-comment-edit').attr('type', 'submit').attr('name', $tab + '-comment-edit').attr('value', 'true');
+  $('.nav.nav-tabs .nav-item').last().children('.nav-link').addClass('disabled');
+});
+
+$('.tread_comment').on('click', '.' + $tab + '-comment-edit-cancel[type=button]', function() {
+  $('.tread_comment .' + $tab + '-comment-text').attr('disabled', function(index, attr) {
+    return attr != 'disabled';
+  });
+  $('.tread_comment .' + $tab + '-comment-edit-cancel').hide();
+  $('.tread_comment .' + $tab + '-comment-edit').attr('type', 'button').removeAttr('name').removeAttr('value');
+  $('.nav.nav-tabs .nav-item').last().children('.nav-link').removeClass('disabled');
+});
+

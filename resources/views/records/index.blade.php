@@ -11,6 +11,8 @@
                     @include('components.calendar')
                     @php
                       $iteration = 0;
+                      $timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 7, 30);
+                      $now = \Carbon\Carbon::now();
                     @endphp
                       @for ($day = 0; $day < $visibleDays; $day++)
 
@@ -24,9 +26,12 @@
                           $closeTime = -1;
                         @endphp
 
+
                         @if ($iteration == 0)
+                          @if ($timeToClose < $now)
                             <h1>{{ $dayOfWeek . ", " . $dateFmt }}</h1>
                             <div class="alert alert-warning">Tekošajā dienā E-pierakstīties nav iespējams, ja redzat brīvus laikus un vēlaties šodien nomainīt riepas, tad lūdzu zvaniet!</div>
+                          @endif
                         @else
                           <h1>{{ $dayOfWeek . ", " . $dateFmt  }}</h1>
                         @endif
@@ -84,7 +89,7 @@
 
                                                   @switch ($slot->status)
                                                     @case (SLOT_STATUS_FREE)
-                                                    @if ($date == $today)
+                                                    @if ($date == $today && $timeToClose < $now)
                                                       @php
                                                         $slotClass = 'slot-gray';
                                                         $slotCaption = '';
@@ -111,7 +116,7 @@
                                                     @break;
 
                                                     @case (SLOT_STATUS_TAKEN)
-                                                    @if ($date == $today)
+                                                    @if ($date == $today && $timeToClose < $now)
                                                       @php $slotClass = 'slot-gray'; @endphp
                                                     @else
                                                       @php $slotClass = 'taken-slot'; @endphp
@@ -127,7 +132,7 @@
                                                     @break
 
                                                     @case (SLOT_STATUS_OFFER)
-                                                    @if ($date == $today)
+                                                    @if ($date == $today && $timeToClose < $now)
                                                       @php
                                                         $slotClass = 'slot-gray';
                                                         $slotText = '';
@@ -147,7 +152,7 @@
                                                     @else
                                                       @php $slotCaption = $slot->comment; @endphp
                                                     @endif
-                                                    @if ($date == $today)
+                                                    @if ($date == $today && $timeToClose < $now)
                                                       @php
                                                         $slotClass = 'slot-gray';
                                                         $slotText = '';
@@ -175,7 +180,7 @@
                                                       @case (SLOT_STATUS_OFFER)
                                                       @case (SLOT_STATUS_CLOSED)
                                                       @case (SLOT_STATUS_FREE)
-                                                      @if ($date == $today)
+                                                      @if ($date == $today && $timeToClose < $now)
                                                         @php
                                                           $slotClass = 'slot-gray';
                                                           $slotText = '';
@@ -189,7 +194,7 @@
                                                       @break
 
                                                       @case (SLOT_STATUS_TAKEN)
-                                                      @if ($date == $today)
+                                                      @if ($date == $today && $timeToClose < $now)
                                                         @php $slotClass = 'slot-gray'; @endphp
                                                       @else
                                                         @php $slotClass = 'slot-taken'; @endphp

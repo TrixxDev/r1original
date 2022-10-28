@@ -177,7 +177,7 @@ $(document).ready(function() {
           $('#mobile-time select[name="reservation-time"] option').not(':first').remove();
           $('#mobile-time select[name="reservation-time"] option').first().prop('selected', true);
         }
-        $.each(data, function (key, value) {
+        $.each(data.times, function (key, value) {
           $('<option value="' + value.slot_id + '" data-time="' + value.time + '">' + value.time + '</option>').insertAfter($('#mobile-time select[name="reservation-time"] option').first());
         });
         selected_date = 1;
