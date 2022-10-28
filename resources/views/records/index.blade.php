@@ -11,7 +11,7 @@
                     @include('components.calendar')
                     @php
                       $iteration = 0;
-                      $timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 7, 30);
+                      $timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 20, 30);
                       $now = \Carbon\Carbon::now();
                     @endphp
                       @for ($day = 0; $day < $visibleDays; $day++)
@@ -28,8 +28,8 @@
 
 
                         @if ($iteration == 0)
+                          <h1>{{ $dayOfWeek . ", " . $dateFmt }}</h1>
                           @if ($timeToClose < $now)
-                            <h1>{{ $dayOfWeek . ", " . $dateFmt }}</h1>
                             <div class="alert alert-warning">Tekošajā dienā E-pierakstīties nav iespējams, ja redzat brīvus laikus un vēlaties šodien nomainīt riepas, tad lūdzu zvaniet!</div>
                           @endif
                         @else
