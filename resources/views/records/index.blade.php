@@ -11,7 +11,7 @@
                     @include('components.calendar')
                     @php
                       $iteration = 0;
-                      $timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 20, 30);
+                      $timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 7, 30);
                       $now = \Carbon\Carbon::now();
                     @endphp
                       @for ($day = 0; $day < $visibleDays; $day++)
