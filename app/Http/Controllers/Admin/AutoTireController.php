@@ -181,14 +181,24 @@ class AutoTireController extends Controller
           }
 
           // Komentāra edits
-          if ($request->input('comment-edit') == 'true') {
+          if ($request->input('tread-comment-edit') == 'true') {
             $tread = Autotread::where('tread_id', $request->tread_id)->first();
             $tread->timestamps = false;
-            $tread->t_comment = $request->input('comment-text');
+            $tread->t_comment = $request->input('tread-comment-text');
             if ($tread->save()) {
               return redirect($request->url())->with('success', 'Modeļa apraksts atjaunots!');
             } else {
               return redirect($request->url())->with('danger', 'Notika kļūda, modeļa apraksts nav atjaunots!');
+            }
+          } else if ($request->input('brand-comment-edit') == 'true') {
+            $tread = Autotread::where('tread_id', $request->tread_id)->first();
+            $brand = Autobrand::where('brand_id', $tread->brand_id)->first();
+            $brand->timestamps = false;
+            $brand->b_comment = $request->input('brand-comment-text');
+            if ($brand->save()) {
+              return redirect($request->url())->with('success', 'Brenda apraksts atjaunots!');
+            } else {
+              return redirect($request->url())->with('danger', 'Notika kļūda, brenda apraksts nav atjaunots!');
             }
           }
         }
@@ -326,9 +336,9 @@ class AutoTireController extends Controller
     {
         if (is_numeric($paginate)) {
             if (\Session::has('search')) {
-                $brands = Autobrand::orderBy('brand_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
+                $brands = Autobrand::orderBy('title', 'ASC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
             } else {
-                $brands = Autobrand::orderBy('brand_id', 'DESC')->paginate($paginate);
+                $brands = Autobrand::orderBy('title', 'ASC')->paginate($paginate);
             }
         } else {
             \Session::remove('search');

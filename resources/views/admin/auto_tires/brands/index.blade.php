@@ -52,7 +52,7 @@
                                         <tr role="row" class="odd">
                                             <td class="sorting_1">{{ strtoupper($brand->title) }}</td>
 {{--                                            <td>{{ $tire->d1 }}</td>--}}
-                                            <td style="width: 7.3%!important;">
+                                            <td style="width: 8.3%!important;">
                                                 <a class="btn btn-success" href="{{ route('admin.auto.brands.edit', $brand->brand_id) }}">
                                                     <svg class="c-icon">
                                                         <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>

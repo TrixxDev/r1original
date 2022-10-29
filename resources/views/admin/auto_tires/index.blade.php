@@ -27,7 +27,7 @@
                                     <label class="col-md-2 col-form-label" for="brand_select">Brends: </label>
                                     <select name="brand" class="form-control col-md-3" data-model="auto" id="brand_select">
                                         @foreach ($brands as $curr_brand)
-                                            <option value="{{ $curr_brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $brand->brand_id) {{ 'selected' }} @endif >{{ ucwords(strtolower($curr_brand->title)) }}</option>
+                                            <option value="{{ $curr_brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $curr_brand->brand_id) {{ 'selected' }} @endif >{{ ucwords(strtolower($curr_brand->title)) }}</option>
                                         @endforeach
                                     </select>
                                     <form method="post" style="display: flex;">
@@ -97,24 +97,24 @@
                                   <!-- Nav tabs -->
                                   <ul class="nav nav-tabs">
                                     <li class="nav-item">
-                                      <a class="nav-link active" data-bs-toggle="tab" href="#brand">Brends</a>
+                                      <a class="nav-link active" data-bs-toggle="tab" href="#tread">Modelis</a>
                                     </li>
                                     <li class="nav-item">
-                                      <a class="nav-link" data-bs-toggle="tab" href="#tread">Modelis</a>
+                                      <a class="nav-link" data-bs-toggle="tab" href="#brand">Brends</a>
                                     </li>
                                   </ul>
 
                                   <!-- Tab panes -->
                                   <div class="tab-content">
-                                    <div class="tab-pane container fade show active" id="brand">
-                                      <textarea disabled class="form-control brand-comment-text" cols="80" rows="13">{!! $brand->b_comment !!}</textarea>
+                                    <div class="tab-pane container fade show active" id="tread">
+                                      <textarea disabled class="form-control tread-comment-text" name="tread-comment-text" cols="80" rows="13">{!! $tread->t_comment !!}</textarea>
                                     </div>
-                                    <div class="tab-pane container fade" id="tread">
-                                      <textarea disabled class="form-control tread-comment-text" cols="80" rows="13">{!! $tread->t_comment !!}</textarea>
+                                    <div class="tab-pane container fade" id="brand">
+                                      <textarea disabled class="form-control brand-comment-text" name="brand-comment-text" cols="80" rows="13">{!! $brand->b_comment !!}</textarea>
                                     </div>
                                   </div>
-                                  <button type="button" style="color: white;" class="btn btn-warning brand-comment-edit">Labot</button>
-                                  <button style="display: none;" type="button" style="color: white;" class="btn btn-danger brand-comment-edit-cancel">Atcelt</button>
+                                  <button type="button" style="color: white;" class="btn btn-warning tread-comment-edit">Labot</button>
+                                  <button style="display: none;" type="button" style="color: white;" class="btn btn-danger tread-comment-edit-cancel">Atcelt</button>
                                 </div>
                               </form>
                             </div>

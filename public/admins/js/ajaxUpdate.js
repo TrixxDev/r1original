@@ -24,14 +24,20 @@ $(document).ready(function() {
       dataType: 'JSON',
       data: { brand_id: brand_id },
       success: function(data) {
+        let season = '';
         $('#tread_select').attr('disabled', false);
         data.sort();
         let html = '<select name="tread" class="form-control col-md-3" id="tread_select"><option></option>';
         data.forEach(function(value, key) {
+          if (value.season !== null && value.season == 1) {
+            season = 'Vasaras';
+          } else if (value.season !== null && value.season == 2) {
+            season = 'Ziemas';
+          }
           if (current_tread == value.tread_id) {
-            html += '<option value="' + value.tread_id + '" selected>' + value.t_title + '</option>';
+            html += '<option value="' + value.tread_id + '" selected>' + value.t_title + ' (' + season + ')</option>';
           } else {
-            html += '<option value="' + value.tread_id + '">' + value.t_title + '</option>';
+            html += '<option value="' + value.tread_id + '">' + value.t_title + ' (' + season + ')</option>';
           }
         });
         html += '</select>';
@@ -1108,12 +1114,12 @@ $('.tread_comment .nav-link').each(function() {
   $(this).on('click', function() {
     if ($(this).hasClass('active')) {
       $tab = $(this).attr('href').replace('#', '');
-      if ($('.tread_comment .tread-comment-edit').length > 0) {
-        $('.tread_comment .tread-comment-edit').addClass($tab + '-comment-edit').removeClass('tread-comment-edit');
-        $('.tread_comment .tread-comment-edit-cancel').addClass($tab + '-comment-edit-cancel').removeClass('tread-comment-edit-cancel');
-      } else if ($('.tread_comment .brand-comment-edit').length > 0) {
-        $('.tread_comment .brand-comment-edit').addClass('' + $tab + '-comment-edit').removeClass('brand-comment-edit');
-        $('.tread_comment .brand-comment-edit-cancel').addClass('' + $tab + '-comment-edit-cancel').removeClass('brand-comment-edit-cancel');
+      if ($('.tread_comment .brand-comment-edit').length > 0) {
+        $('.tread_comment .brand-comment-edit').addClass($tab + '-comment-edit').removeClass('brand-comment-edit');
+        $('.tread_comment .brand-comment-edit-cancel').addClass($tab + '-comment-edit-cancel').removeClass('brand-comment-edit-cancel');
+      } else if ($('.tread_comment .tread-comment-edit').length > 0) {
+        $('.tread_comment .tread-comment-edit').addClass('' + $tab + '-comment-edit').removeClass('tread-comment-edit');
+        $('.tread_comment .tread-comment-edit-cancel').addClass('' + $tab + '-comment-edit-cancel').removeClass('tread-comment-edit-cancel');
       }
     }
   });
@@ -1121,23 +1127,42 @@ $('.tread_comment .nav-link').each(function() {
 
 // Modeļa apraksta iestatījumi
 
-
-$('.tread_comment').on('click', '.' + $tab + '-comment-edit[type=button]', function(e) {
+$('.tread_comment').on('click', '.tread-comment-edit[type=button]', function(e) {
   if ($(this).attr('type') != 'submit') e.preventDefault();
-  $('.tread_comment').attr('disabled', '.' + $tab + '-comment-text', function(index, attr) {
+  $('.tread_comment .tread-comment-text').attr('disabled', function(index, attr) {
     return attr != 'disabled';
   });
-  $('.tread_comment .' + $tab + '-comment-edit-cancel').show();
-  $('.tread_comment .' + $tab + '-comment-edit').attr('type', 'submit').attr('name', $tab + '-comment-edit').attr('value', 'true');
+  $('.tread_comment .tread-comment-edit-cancel').show();
+  $('.tread_comment .tread-comment-edit').attr('type', 'submit').attr('name', 'tread-comment-edit').attr('value', 'true');
   $('.nav.nav-tabs .nav-item').last().children('.nav-link').addClass('disabled');
 });
 
-$('.tread_comment').on('click', '.' + $tab + '-comment-edit-cancel[type=button]', function() {
-  $('.tread_comment .' + $tab + '-comment-text').attr('disabled', function(index, attr) {
+$('.tread_comment').on('click', '.tread-comment-edit-cancel[type=button]', function() {
+  $('.tread_comment .tread-comment-text').attr('disabled', function(index, attr) {
     return attr != 'disabled';
   });
-  $('.tread_comment .' + $tab + '-comment-edit-cancel').hide();
-  $('.tread_comment .' + $tab + '-comment-edit').attr('type', 'button').removeAttr('name').removeAttr('value');
+  $('.tread_comment .tread-comment-edit-cancel').hide();
+  $('.tread_comment .tread-comment-edit').attr('type', 'button').removeAttr('name').removeAttr('value');
   $('.nav.nav-tabs .nav-item').last().children('.nav-link').removeClass('disabled');
 });
 
+// Brenda apraksta iestatījumi
+
+$('.tread_comment').on('click', '.brand-comment-edit[type=button]', function(e) {
+  if ($(this).attr('type') != 'submit') e.preventDefault();
+  $('.tread_comment .brand-comment-text').attr('disabled', function(index, attr) {
+    return attr != 'disabled';
+  });
+  $('.tread_comment .brand-comment-edit-cancel').show();
+  $('.tread_comment .brand-comment-edit').attr('type', 'submit').attr('name', 'brand-comment-edit').attr('value', 'true');
+  $('.nav.nav-tabs .nav-item').first().children('.nav-link').addClass('disabled');
+});
+
+$('.tread_comment').on('click', '.brand-comment-edit-cancel[type=button]', function() {
+  $('.tread_comment .brand-comment-text').attr('disabled', function(index, attr) {
+    return attr != 'disabled';
+  });
+  $('.tread_comment .brand-comment-edit-cancel').hide();
+  $('.tread_comment .brand-comment-edit').attr('type', 'button').removeAttr('name').removeAttr('value');
+  $('.nav.nav-tabs .nav-item').first().children('.nav-link').removeClass('disabled');
+});
