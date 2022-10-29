@@ -504,7 +504,7 @@
                                             <a class="dropdown-item dropdown-submenu"
                                                href="/kontakti"
                                                data-depth="1">
-                                                Kontakti
+                                                Kontakti un darba laiks
                                             </a>
                                         </li>
                                         <li class="cms-page" id="cms-page-11">

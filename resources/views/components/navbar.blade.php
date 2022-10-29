@@ -318,7 +318,7 @@
     <div class="dropdown-options info">
       <div class="dropdown-options">
         <div class="nav-dropdown-link">
-          <a class="dropdown-item" href="{{ url('/kontakti') }}">Kontakti</a>
+          <a class="dropdown-item" href="{{ url('/kontakti') }}">Kontakti un darba laiks</a>
         </div>
 
         <div class="nav-dropdown-link">
