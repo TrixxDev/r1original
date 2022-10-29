@@ -502,7 +502,7 @@
                                     <ul class="top-menu" data-depth="1">
                                         <li class="cms-page" id="cms-page-6">
                                             <a class="dropdown-item dropdown-submenu"
-                                               href="{{ route('contacts') }}"
+                                               href="/kontakti"
                                                data-depth="1">
                                                 Kontakti
                                             </a>
@@ -627,7 +627,7 @@
                                 <ul id="footer_sub_menu_58482" class="collapse">
                                     <li>
                                         <a id="link-cms-page-6-1" class="cms-page-link"
-                                           href="{{ route('contacts') }}"
+                                           href="/kontakti"
                                            title="">
                                             Kontakti
                                         </a>
@@ -749,7 +749,8 @@
 <script type="text/javascript" src="{{ asset('js/homeslider.js?rev=' . time()) }}"></script>
 <script type="text/javascript" src="{{ asset('js/custom.js?rev=' . time()) }}"></script>
 <script type="text/javascript" src="{{ asset('js/cart.js?rev=' . time()) }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>
+{{--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>--}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-76Y13VND83"></script>
 <script>
