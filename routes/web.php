@@ -227,7 +227,7 @@ Route::middleware('checksession')->group(function() {
   //Route::get('/pakalpojumi', [App\Http\Controllers\HomeController::class, 'services'])->name('pakalpojumi');
   Route::get('/kondicionieris', [App\Http\Controllers\HomeController::class, 'conditioner'])->name('kondicionieris');
 
-  Route::get('/kontakti', [App\Http\Controllers\HomeController::class, 'contacts'])->name('contacts');
+//  Route::get('/kontakti', [App\Http\Controllers\HomeController::class, 'contacts'])->name('contacts');
   Route::get('/paskaidrojumi', [App\Http\Controllers\HomeController::class, 'terms'])->name('terms');
   Route::get('/internet-veikals', [App\Http\Controllers\HomeController::class, 'about'])->name('about');
 //Route::get('/moto_trans', [App\Http\Controllers\HomeController::class, 'moto_terms'])->name('moto_trans');

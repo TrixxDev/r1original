@@ -4993,3 +4993,45 @@ input#show-selected-checkbox {
   -webkit-user-select: none;
   -o-user-select: none;
 }
+
+.contacts.table td, .contacts.table th{
+  border-top: 0px !important;
+  border-bottom: 0px !important;
+}
+
+.contactsRow {
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(var(--bs-gutter-y) * -1);
+  margin-right: calc(var(--bs-gutter-x) * -.5);
+  margin-left: calc(var(--bs-gutter-x) * -.5);
+  margin-left: 20px;
+}
+
+/*.contactsCol {*/
+/*  flex: 1 0 0%;*/
+/*}*/
+
+.contactsContainer {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.contactsCol-6 {
+  flex: 0 0 auto;
+  width: 50%;
+}
+
+.contactsCol-12 {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+@media (min-width: 500px) {
+  .contactsCol-sm-6 {
+    flex: 0 0 auto;
+    width: 50%;
+  }
+}
