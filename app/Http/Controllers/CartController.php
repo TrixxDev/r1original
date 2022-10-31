@@ -612,9 +612,9 @@ class CartController extends Controller
 
       $data->cart = Cart::content();
 
-      //if (user_ip == '212.3.218.22') {
-      //    Mail::to($data->info['email'])->cc('info@r1riepas.lv')->send(new \App\Mail\CartMail($data));
-      //}
+      if (user_ip == '212.3.218.22') {
+          Mail::to($data->info['email'])->cc('info@r1riepas.lv')->send(new \App\Mail\CartMail($data));
+      }
 
       Session::remove('cart');
       Session::remove('cartOptions');
