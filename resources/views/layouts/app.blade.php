@@ -521,6 +521,13 @@
                                                 Par i-veikalu
                                             </a>
                                         </li>
+                                        <li class="cms-page" id="cms-page-13">
+                                            <a class="dropdown-item dropdown-submenu sizeCalc"
+                                               href="{{ url('/kalkulators') }}"
+                                               data-depth="1">
+                                                Riepu izmēru kalkulators
+                                            </a>
+                                        </li>
 {{--                                        <li class="cms-page" id="cms-page-13">--}}
 {{--                                            <a class="dropdown-item dropdown-submenu"--}}
 {{--                                               href="{{ route('moto_trans') }}"--}}
