@@ -329,6 +329,10 @@
           <a class="dropdown-item" href="{{ url('/internet-veikals')  }}">Par I-Veikalu</a>
         </div>
       </div>
+
+      <div class="nav-dropdown-link">
+        <a class="dropdown-item sizeCalc" href="{{ url('/kalkulators')  }}">Riepu izmēru kalkulators</a>
+      </div>
     </div>
 
     <a class="nav-dropdown-button navbar-item navbar-link-btn" href="{{ route('pieraksts') }}">E-Pieraksts</a>

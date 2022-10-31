@@ -3288,6 +3288,12 @@ document.addEventListener("DOMContentLoaded", function() {
 //   min: jQuery.validator.format("Please enter a value greater than or equal to {0}.")
 // });
 
+$('.dropdown-item.sizeCalc').on('click', function(e) {
+  e.preventDefault();
+  let url = $(this).attr('href');
+  popCalc(url,470,280);
+});
+
 function popCalc(url,popW,popH, data){
 
   w = screen.width;
@@ -3299,7 +3305,11 @@ function popCalc(url,popW,popH, data){
   let id=Math.floor(Math.random()*10000);
   let strWindowFeatures = "toolbar=no,scrollbars=no,location=no,resizable=yes,width=" + popW + ",height=" + popH + ",top=" + topPos + ",left=" + leftPos;
 
-  pops=window.open(url + '?' +  data, id, strWindowFeatures);
+  if (data) {
+    pops=window.open(url + '?' +  data, id, strWindowFeatures);
+  } else {
+    pops=window.open(url, id, strWindowFeatures);
+  }
 
   if (pops.opener == null)
     pops.opener = self;

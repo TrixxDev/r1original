@@ -108,6 +108,7 @@ class MotoTireController extends Controller
     {
         $brand = Motobrand::where('title', $brand)->first();
 
+        $tread = str_replace('_', '/', $tread);
         $tread = Mototread::where('title', $tread)->first();
 
         $tires = Moto::selectRaw('moto_tires.*, moto_treads.*, moto_brands.*,
@@ -116,7 +117,7 @@ class MotoTireController extends Controller
                                   ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
                                   ->where('moto_tires.visible_users', '<>', 0)
                                   ->where('moto_brands.title', $brand->title)
-                                  ->where('moto_treads.title', str_replace('_', '/', $tread->title))
+                                  ->where('moto_treads.title',  $tread->title)
                                   ->get();
 
         $currTire = Moto::selectRaw('moto_tires.*, moto_treads.*, moto_brands.*,
@@ -125,7 +126,7 @@ class MotoTireController extends Controller
                                  ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
                                  ->where('moto_tires.visible_users', '<>', 0)
                                  ->where('moto_brands.title', $brand->title)
-                                 ->where('moto_treads.title', str_replace('_', '/', $tread->title))
+                                 ->where('moto_treads.title', $tread->title)
                                  ->where('moto_tires.tire_id', $tire)
                                  ->first();
 
