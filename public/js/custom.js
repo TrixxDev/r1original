@@ -3291,7 +3291,7 @@ document.addEventListener("DOMContentLoaded", function() {
 $('.dropdown-item.sizeCalc').on('click', function(e) {
   e.preventDefault();
   let url = $(this).attr('href');
-  popCalc(url,470,280);
+  popCalc(url,480,330);
 });
 
 function popCalc(url,popW,popH, data){
@@ -3375,34 +3375,6 @@ if (localStorage.getItem('fuel-eco-dropdown') === 'true') {
 if (localStorage.getItem('wet-surface-dropdown') === 'true') {
   $('.wet-surface-dropdown-btn').click();
 }
-// if ($('.fuel-eco-dropdown-btn').find('span.fuel-efficiency-dropdown').text() == 'keyboard_arrow_up') {
-//   localStorage.setItem('fuel-eco-dropdown', 'true');
-// }
-// if ($('.wet-surface-dropdown-btn').find('span.wet-surface-dropdown').text() == 'keyboard_arrow_up') {
-//   localStorage.setItem('wet-surface-dropdown', 'true');
-// }
-//
-//
-// if (localStorage.getItem('code-dropdown') == 'true') {
-//   $('.code-dropdown-btn').click();
-// }
-//
-//
-// $('.code-dropdown-btn').on('click', function() {
-//   localStorage.setItem('code-dropdown', true);
-// });
-//
-// $('.code-dropdown-btn').on('click', function() {
-//   localStorage.setItem('code-dropdown', true);
-// });
-//
-// $('.code-dropdown-btn').on('click', function() {
-//   localStorage.setItem('code-dropdown', true);
-// });
-//
-// $('.code-dropdown-btn').on('click', function() {
-//   localStorage.setItem('code-dropdown', true);
-// });
 
 $('.popup-code-dropdown').on('click', function() {
   // console.log();
