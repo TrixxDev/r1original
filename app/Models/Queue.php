@@ -11,6 +11,7 @@ class Queue extends Model
     protected $primaryKey = 'queue_id';
 
     public $_slots;		// ielādētie sloti, Slots tipa objektu saraksts
+    public $_takenSlots;
     public $_workingDays;
     public $notificationEmail;
 
@@ -86,22 +87,25 @@ class Queue extends Model
 
     }
 
-    public function getSlots($date){
-      $_queues = [];
-      $queues = Queue::select('queue_id')->where('office_id', $this->office_id)->get();
-      foreach ($queues as $queue) {
-        $_queues[] = $queue->queue_id;
+    public function getSlots($date, $first = false){
+      if (empty($first)) {
+        $_queues = [];
+        $queues = Queue::select('queue_id')->where('office_id', $this->office_id)->get();
+        foreach ($queues as $queue) {
+          $_queues[] = $queue->queue_id;
+        }
+        $_queues = array_reverse($_queues);
+        $list = Slot::where('date', $date)->where('status', 0)->whereIn('queue_id', $_queues)->orderBy('queue_id', 'DESC')->get();
+      } else {
+        $list = Slot::where('date', $date)->where('status', 1)->where('queue_id', $first)->get();
       }
-      $_queues = array_reverse($_queues);
-      $list = Slot::where('date', $date)->where('status', 0)->whereIn('queue_id', $_queues)->orderBy('queue_id', 'DESC')->get();
-
-
 
       foreach ($list as $object){
         $this->_slots[$date][$object->slot_id] = $object;
       }
 
       $takenBy = '';
+
       foreach ($this->_slots[$date] as $key => $i) {
         if(!isset($this->_slots[$date][$i->slot_id])) {
           $slot = new Slot();

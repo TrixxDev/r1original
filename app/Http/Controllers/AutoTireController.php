@@ -276,7 +276,7 @@ class AutoTireController extends Controller
                                               ->orderBy('price2', 'DESC')
                                               ->get();
 
-      dd(DB::getQueryLog());
+      //dd(DB::getQueryLog());
 
       $tires_array = [];
 
@@ -353,10 +353,12 @@ class AutoTireController extends Controller
                                                    ->where('auto_tires.tire_id', $tire)
                                                    ->first();
 
+        $currBrand = Autobrand::where('brand_id', $currTire->brand_id)->first();
+
         $currTire->includeStock = true;
 
         return view('tires.auto.autotread',
-            compact('tires', 'currTire')
+            compact('tires', 'currTire', 'currBrand')
         );
     }
 

@@ -312,6 +312,7 @@
                   @endphp
                   @foreach($tires as $tire)
                     @php
+                      if (!$tire->tread) continue;
                       $brand = $tire->fullSize;
                       $tire->includeStock = true;
                       if ($cbrand!=$brand){
@@ -377,6 +378,7 @@
                     @endphp
                     @foreach ($tires as $tire)
                       @php
+                        if (!$tire->tread) continue;
                         $brand = $tire->fullSize;
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){

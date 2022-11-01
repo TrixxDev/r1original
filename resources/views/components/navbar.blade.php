@@ -318,7 +318,7 @@
     <div class="dropdown-options info">
       <div class="dropdown-options">
         <div class="nav-dropdown-link">
-          <a class="dropdown-item" href="{{ url('/kontakti') }}">Kontakti</a>
+          <a class="dropdown-item" href="{{ url('/kontakti') }}">Kontakti un darba laiks</a>
         </div>
 
         <div class="nav-dropdown-link">
@@ -328,6 +328,10 @@
         <div class="nav-dropdown-link">
           <a class="dropdown-item" href="{{ url('/internet-veikals')  }}">Par I-Veikalu</a>
         </div>
+      </div>
+
+      <div class="nav-dropdown-link">
+        <a class="dropdown-item sizeCalc" href="{{ url('/kalkulators')  }}">Riepu izmēru kalkulators</a>
       </div>
     </div>
 

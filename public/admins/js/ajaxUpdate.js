@@ -17,21 +17,41 @@ $(document).ready(function() {
 
   function changeBrands() {
     $('#tread_select').attr('disabled', true);
+    $('.brand-settings input[name=brand-id], .make-settings input[name=brand-id]').val(brand_id);
     $.ajax({
       url: main_url + '/admin/' + model + '/tread/' + brand_id + '/ajaxUpdateTreads',
       method: 'POST',
       dataType: 'JSON',
       data: { brand_id: brand_id },
       success: function(data) {
-        $('#tread_select').attr('disabled', false);
+        let season = '';
+        if (!$('.brand-settings .brand-input').attr('disabled') || !$('.make-settings .make-input').attr('disabled')) {
+          $('#tread_select').attr('disabled', true);
+        } else {
+          $('#tread_select').attr('disabled', false);
+        }
         data.sort();
         let html = '<select name="tread" class="form-control col-md-3" id="tread_select"><option></option>';
         data.forEach(function(value, key) {
-          if (current_tread == value.tread_id) {
-            html += '<option value="' + value.tread_id + '" selected>' + value.t_title + '</option>';
-          } else {
-            html += '<option value="' + value.tread_id + '">' + value.t_title + '</option>';
+          if (value.season !== null && value.season == 1) {
+            season = 'Vasaras';
+          } else if (value.season !== null && value.season == 2) {
+            season = 'Ziemas';
           }
+          if (value.season) {
+            if (current_tread == value.tread_id) {
+              html += '<option value="' + value.tread_id + '" selected>' + value.t_title + ' (' + season + ')</option>';
+            } else {
+              html += '<option value="' + value.tread_id + '">' + value.t_title + ' (' + season + ')</option>';
+            }
+          } else {
+            if (current_tread == value.tread_id) {
+              html += '<option value="' + value.tread_id + '" selected>' + value.t_title + '</option>';
+            } else {
+              html += '<option value="' + value.tread_id + '">' + value.t_title + '</option>';
+            }
+          }
+
         });
         html += '</select>';
         $('#tread_select').html(html);
@@ -1030,9 +1050,10 @@ $('.make-settings').on('click', '.new-make[type=button]', function(e) {
   if ($(this).attr('type') != 'submit') e.preventDefault();
   $('.make-input').attr('disabled', false);
   $(this).attr('disabled', true).css('cursor', 'default').attr('type', 'submit').attr('name', 'new-make').attr('value', 'true');
-  $('.edit-make').addClass('btn-danger').addClass('stop-new-make').removeClass('btn-warning').removeClass('edit-make').text('Atcelt');
+  $('.edit-make').addClass('btn-danger').addClass('stop-new-make').removeClass('btn-warning').removeClass('edit-make').removeAttr('disabled').text('Atcelt');
   $('.delete-make').hide();
   $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').attr('disabled', 'true').css('cursor', 'default');
+  $('.make-season').show();
 });
 
 $('.make-settings').on('click', '.stop-new-make', function(e) {
@@ -1043,6 +1064,7 @@ $('.make-settings').on('click', '.stop-new-make', function(e) {
   $('.delete-make').show();
   $('.edit-make').attr('disabled', false).css('cursor', 'pointer');
   $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').removeAttr('disabled').css('cursor', 'pointer');
+  $('.make-season').hide();
 });
 
 $('.make-settings').on('click', '.edit-make[type=button]', function(e) {
@@ -1053,6 +1075,7 @@ $('.make-settings').on('click', '.edit-make[type=button]', function(e) {
   $('.delete-make').hide();
   $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').attr('disabled', true).css('cursor', 'default');
   if ($('.make-input').val().length == 0) $('.edit-make[type=submit]').attr('disabled', true).css('cursor', 'default');
+  $('.make-season').show();
 });
 
 $('.make-settings').on('click', '.stop-edit-make', function(e) {
@@ -1063,6 +1086,7 @@ $('.make-settings').on('click', '.stop-edit-make', function(e) {
   $('.delete-make').show();
   $('.new-make').attr('disabled', false).css('cursor', 'pointer');
   $('#brand_select, #tread_select, .new-brand, .edit-brand, .delete-brand').removeAttr('disabled').css('cursor', 'pointer');
+  $('.make-season').hide();
 });
 
 // Inputu iestatījumi
@@ -1091,6 +1115,67 @@ $('.brand-settings').on('click', '.delete-brand', function (e) {
   if (!confirm('Vai tiešām dzēst?')) e.preventDefault();
 });
 
-$('.brand-settings').on('click', '.delete-make', function (e) {
+$('.make-settings').on('click', '.delete-make', function (e) {
   if (!confirm('Vai tiešām dzēst?')) e.preventDefault();
+});
+
+let $tab = $('.tread_comment .nav-link.active').attr('href').replace('#', '');
+
+// Brenda apraksta iestatījumi
+
+$('.tread_comment .nav-link').each(function() {
+  $(this).on('click', function() {
+    if ($(this).hasClass('active')) {
+      $tab = $(this).attr('href').replace('#', '');
+      if ($('.tread_comment .brand-comment-edit').length > 0) {
+        $('.tread_comment .brand-comment-edit').addClass($tab + '-comment-edit').removeClass('brand-comment-edit');
+        $('.tread_comment .brand-comment-edit-cancel').addClass($tab + '-comment-edit-cancel').removeClass('brand-comment-edit-cancel');
+      } else if ($('.tread_comment .tread-comment-edit').length > 0) {
+        $('.tread_comment .tread-comment-edit').addClass('' + $tab + '-comment-edit').removeClass('tread-comment-edit');
+        $('.tread_comment .tread-comment-edit-cancel').addClass('' + $tab + '-comment-edit-cancel').removeClass('tread-comment-edit-cancel');
+      }
+    }
+  });
+});
+
+// Modeļa apraksta iestatījumi
+
+$('.tread_comment').on('click', '.tread-comment-edit[type=button]', function(e) {
+  if ($(this).attr('type') != 'submit') e.preventDefault();
+  $('.tread_comment .tread-comment-text').attr('disabled', function(index, attr) {
+    return attr != 'disabled';
+  });
+  $('.tread_comment .tread-comment-edit-cancel').show();
+  $('.tread_comment .tread-comment-edit').attr('type', 'submit').attr('name', 'tread-comment-edit').attr('value', 'true');
+  $('.nav.nav-tabs .nav-item').last().children('.nav-link').addClass('disabled');
+});
+
+$('.tread_comment').on('click', '.tread-comment-edit-cancel[type=button]', function() {
+  $('.tread_comment .tread-comment-text').attr('disabled', function(index, attr) {
+    return attr != 'disabled';
+  });
+  $('.tread_comment .tread-comment-edit-cancel').hide();
+  $('.tread_comment .tread-comment-edit').attr('type', 'button').removeAttr('name').removeAttr('value');
+  $('.nav.nav-tabs .nav-item').last().children('.nav-link').removeClass('disabled');
+});
+
+// Brenda apraksta iestatījumi
+
+$('.tread_comment').on('click', '.brand-comment-edit[type=button]', function(e) {
+  if ($(this).attr('type') != 'submit') e.preventDefault();
+  $('.tread_comment .brand-comment-text').attr('disabled', function(index, attr) {
+    return attr != 'disabled';
+  });
+  $('.tread_comment .brand-comment-edit-cancel').show();
+  $('.tread_comment .brand-comment-edit').attr('type', 'submit').attr('name', 'brand-comment-edit').attr('value', 'true');
+  $('.nav.nav-tabs .nav-item').first().children('.nav-link').addClass('disabled');
+});
+
+$('.tread_comment').on('click', '.brand-comment-edit-cancel[type=button]', function() {
+  $('.tread_comment .brand-comment-text').attr('disabled', function(index, attr) {
+    return attr != 'disabled';
+  });
+  $('.tread_comment .brand-comment-edit-cancel').hide();
+  $('.tread_comment .brand-comment-edit').attr('type', 'button').removeAttr('name').removeAttr('value');
+  $('.nav.nav-tabs .nav-item').first().children('.nav-link').removeClass('disabled');
 });

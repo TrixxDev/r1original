@@ -92,8 +92,17 @@ class RecordController extends Controller
     public function fillDates()
     {
         $date = date('Y-m-d');
-        $visibleDays = 7;
+        $visibleDays = 8;
         $currentDate = strtotime($date);
+
+        $f = 0;
+
+        $timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 7, 30);
+        $now = \Carbon\Carbon::now();
+
+        if ($timeToClose < $now) {
+          $f = 1;
+        }
 
         $_weekDays = [
             1=>'Pirmdiena',
@@ -102,12 +111,12 @@ class RecordController extends Controller
             4=>'Ceturtdiena',
             5=>'Piektdiena',
             6=>'Sestdiena',
-            7=>'Svētdiena',
         ];
 
-        for ($i=1;$i<$visibleDays;$i++){
+        for ($i=$f;$i<$visibleDays;$i++){
             $ndate = date('Y-m-d',strtotime("+{$i} days",$currentDate));
             $day = Workingday::where('date', $ndate)->first();
+            if (!isset($_weekDays[$day->weekday])) continue;
             $day = $_weekDays[$day->weekday];
             $workingDays[] = ['date_id' => $i, 'date' => $ndate, 'day' => $day];
         }
@@ -165,26 +174,40 @@ class RecordController extends Controller
         }
 
         $times = [];
+        $takenTimes = [];
 
         for ($i = $openTime; $i < $closeTime; $i += $timeStep) {
             foreach ($offices as $office) {
+                $queue_id = ($office->office_id == 1) ? 1 : 3;
                 foreach ($office->_queues as $queue) {
                     $queue->getSlots($request->date); // Šī funkcija neeksistē lol
                     $slotNumber = $queue->getSlotNumberByInterval($request->date,$i);
                     if (($slotNumber!==false)&&($queue->isVisible($request->date))) {
-                        if ($queue->isIntervalBeginning($request->date,$i)) {
-                            $slot = $queue->_slots[$request->date][$slotNumber];
-                            //$times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => true];
-                            if ($slot->status == 0) {
-                              $times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id];
-                            }
+                      if ($queue->isIntervalBeginning($request->date,$i)) {
+                        $slot = $queue->_slots[$request->date][$slotNumber];
+
+                        //$times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => true];
+                        if ($slot->status == 0) {
+                          $times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id];
                         }
+                      }
+                    }
+                    $queue->getSlots($request->date, $queue_id); // Šī funkcija neeksistē lol
+                    $slotNumber1 = $queue->getSlotNumberByInterval($request->date,$i);
+                    if (($slotNumber1!==false)&&($queue->isVisible($request->date))) {
+                      if ($queue->isIntervalBeginning($request->date,$i)) {
+                        $slot1 = $queue->_slots[$request->date][$slotNumber1];
+                        //$times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => true];
+                        if ($slot1->status == 1) {
+                          $takenTimes[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot1->slot_id];
+                        }
+                      }
                     }
                 }
             }
         }
 
-        return array_reverse($times);
+        return json_encode(['times' => array_reverse($times), 'takenTimes' => $takenTimes]);
 
     }
 

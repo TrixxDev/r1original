@@ -62,7 +62,7 @@ class AutoTireController extends Controller
             }
           } else if ($request->input('delete-brand') == 'true') {
             $brand = Autobrand::where('brand_id', $request->input('brand-id'))->first();
-            if (!$brand) redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
+            if (!$brand) return redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
             if ($brand->delete()) {
               redirect($request->url())->with('success', 'Brends veiksmīgi izdzēsts!');
             } else {
@@ -72,10 +72,11 @@ class AutoTireController extends Controller
 
           if ($request->input('new-make') == 'true') {
             if (empty($request->input('make-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada modeļa nosaukums!');
-            $make = Autotread::where('t_title', $request->input('make-name'))->first();
+            $make = Autotread::where('t_title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
             if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
             $make = new Autotread;
             $make->timestamps = false;
+            $make->season = $request->input('make-season');
             $make->brand_id = $request->input('brand-id');
             $make->t_title = $request->input('make-name');
             $make->slug = Str::slug($make->t_title);
@@ -127,20 +128,25 @@ class AutoTireController extends Controller
 //            }
           } else if ($request->input('delete-brand') == 'true') {
             $brand = Autobrand::where('brand_id', $request->input('brand-id'))->first();
-            if (!$brand) redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
-            if ($brand->delete()) {
-              redirect($request->url())->with('success', 'Brends veiksmīgi izdzēsts!');
+            if (!$brand) return redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
+            if ($brand) {
+              if ($brand->delete()) {
+                redirect($request->url())->with('success', 'Brends veiksmīgi izdzēsts!');
+              } else {
+                redirect($request->url())->with('danger', 'Notika kļūda, brends nav izdzēsts!');
+              }
             } else {
-              redirect($request->url())->with('danger', 'Notika kļūda, brends nav izdzēsts!');
+              redirect($request->url());
             }
           }
 
           if ($request->input('new-make') == 'true') {
             if (empty($request->input('make-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada modeļa nosaukums!');
-            $make = Autotread::where('t_title', $request->input('make-name'))->first();
+            $make = Autotread::where('t_title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
             if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
             $make = new Autotread;
             $make->timestamps = false;
+            $make->season = $request->input('make-season');
             $make->brand_id = $request->input('brand-id');
             $make->t_title = $request->input('make-name');
             $make->slug = Str::slug($make->t_title);
@@ -155,6 +161,7 @@ class AutoTireController extends Controller
 //            if ($make && $make->t_title == $request->input('make-name')) {
 //              return redirect($request->url())->with('danger', 'Modeļa nosaukums nav mainīts, ievadīts tāds pats!');
 //            } else {
+            $make->season = $request->input('make-season');
             $make->t_title = $request->input('make-name');
             $make->slug = Str::slug($make->t_title);
             if ($make->save()) {
@@ -165,21 +172,51 @@ class AutoTireController extends Controller
 //            }
           } else if ($request->input('delete-make') == 'true') {
             $make = Autotread::where('tread_id', $request->tread_id)->first();
-            if (!$make) redirect($request->url())->with('danger', 'Tāds modelis neeksistē, nevaru izdzēst!');
+            if (!$make) return redirect($request->url())->with('danger', 'Tāds modelis neeksistē, nevaru izdzēst!');
             if ($make->delete()) {
               redirect($request->url())->with('success', 'Modelis veiksmīgi izdzēsts!');
             } else {
               redirect($request->url())->with('danger', 'Notika kļūda, modelis nav izdzēsts!');
             }
           }
+
+          // Komentāra edits
+          if ($request->input('tread-comment-edit') == 'true') {
+            $tread = Autotread::where('tread_id', $request->tread_id)->first();
+            $tread->timestamps = false;
+            $tread->t_comment = $request->input('tread-comment-text');
+            if ($tread->save()) {
+              return redirect($request->url())->with('success', 'Modeļa apraksts atjaunots!');
+            } else {
+              return redirect($request->url())->with('danger', 'Notika kļūda, modeļa apraksts nav atjaunots!');
+            }
+          } else if ($request->input('brand-comment-edit') == 'true') {
+            $tread = Autotread::where('tread_id', $request->tread_id)->first();
+            $brand = Autobrand::where('brand_id', $tread->brand_id)->first();
+            $brand->timestamps = false;
+            $brand->b_comment = $request->input('brand-comment-text');
+            if ($brand->save()) {
+              return redirect($request->url())->with('success', 'Brenda apraksts atjaunots!');
+            } else {
+              return redirect($request->url())->with('danger', 'Notika kļūda, brenda apraksts nav atjaunots!');
+            }
+          }
         }
 
-        $tires = Autotire::with('tread')->where('make_id', $request->tread_id)->get();
+        $tires = Autotire::with('tread')
+                  ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+                  ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+                  ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
+                  ->where('make_id', $request->tread_id)
+                  ->get();
         $tread = Autotread::where('tread_id', $request->tread_id)->first();
+        if (!$tread) return redirect(route('admin.auto.tires'));
+        $brand = Autobrand::where('brand_id', $tread->brand_id)->first();
+        if (!$brand) return redirect(route('admin.auto.tires'));
         $brands = Autobrand::orderBy('title', 'ASC')->get();
         $treads = Autotread::orderBy('t_title', 'ASC')->get();
 
-        return view('admin.auto_tires.index', compact('tires', 'tread', 'brands', 'treads'));
+        return view('admin.auto_tires.index', compact('tires', 'tread', 'brands', 'brand', 'treads'));
     }
 
     public function tire_create($id)
@@ -304,14 +341,10 @@ class AutoTireController extends Controller
 
     public function brands_list($paginate = 10)
     {
+        \Session::remove('search');
         if (is_numeric($paginate)) {
-            if (\Session::has('search')) {
-                $brands = Autobrand::orderBy('brand_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
-            } else {
-                $brands = Autobrand::orderBy('brand_id', 'DESC')->paginate($paginate);
-            }
+            $brands = Autobrand::orderBy('title', 'ASC')->paginate($paginate);
         } else {
-            \Session::remove('search');
             return redirect(route('admin.auto.brands'));
         }
 
@@ -341,26 +374,33 @@ class AutoTireController extends Controller
 
     public function brand_store(Request $request)
     {
+
+        $breaks = array("<br />","<br>","<br/>");
+        $request->brand_desc = str_ireplace($breaks, "", $request->brand_desc);
+
         $brand = new Autobrand();
         $brand->timestamps = false;
         $brand->title = $request->brand_title;
         $brand->slug = \Str::slug($request->brand_title, '-');
-        $brand->save();
-
-        if ($request->hasFile('brand_image')) {
-            $brand_edit = Autobrand::findOrFail($brand->brand_id);
-            $brand_edit->timestamps = false;
-
-            $image      = $request->file('brand_image');
-            $fileName   = 'auto_' . $brand->brand_id . '.' . $image->getClientOriginalExtension();
-
-
-            Storage::disk('public')->putFileAs('brands', $image, $fileName);
-            $brand_edit->image = $fileName;
-            $brand_edit->save();
+        $brand->b_comment = nl2br($request->brand_desc);
+        if ($brand->save()) {
+          return redirect(route('admin.auto.brands'))->with('success', 'Brends veiksmīgi pievienots!');
+        } else {
+          return redirect(route('admin.auto.brands'))->with('danger', 'Notika kļūda, brends nav pievienots!');
         }
 
-        return redirect(route('admin.auto.brands'));
+//        if ($request->hasFile('brand_image')) {
+//            $brand_edit = Autobrand::findOrFail($brand->brand_id);
+//            $brand_edit->timestamps = false;
+//
+//            $image      = $request->file('brand_image');
+//            $fileName   = 'auto_' . $brand->brand_id . '.' . $image->getClientOriginalExtension();
+//
+//
+//            Storage::disk('public')->putFileAs('brands', $image, $fileName);
+//            $brand_edit->image = $fileName;
+//            $brand_edit->save();
+//        }
     }
 
     public function brand_edit($id)
@@ -372,20 +412,25 @@ class AutoTireController extends Controller
 
     public function brand_update(Request $request, $id)
     {
+
+        $breaks = array("<br />","<br>","<br/>");
+        $request->brand_desc = str_ireplace($breaks, "", $request->brand_desc);
+
         $brand = Autobrand::findOrFail($id);
         $brand->timestamps = false;
         $brand->title = $request->brand_title;
         $brand->slug = \Str::slug($request->brand_title, '-');
+        $brand->b_comment = nl2br($request->brand_desc);
 
-        if ($request->hasFile('brand_image')) {
-
-            $image      = $request->file('brand_image');
-            $fileName   = 'auto_' . $id . '.' . $image->getClientOriginalExtension();
-
-
-            Storage::disk('public')->putFileAs('brands', $image, $fileName);
-            $brand->image = $fileName;
-        }
+//        if ($request->hasFile('brand_image')) {
+//
+//            $image      = $request->file('brand_image');
+//            $fileName   = 'auto_' . $id . '.' . $image->getClientOriginalExtension();
+//
+//
+//            Storage::disk('public')->putFileAs('brands', $image, $fileName);
+//            $brand->image = $fileName;
+//        }
 
         $brand->save();
 
@@ -395,9 +440,12 @@ class AutoTireController extends Controller
     public function brand_delete(Request $request, $id)
     {
         $brand = Autobrand::findOrFail($id);
-        Storage::disk('public')->delete('brands/' . $brand->image);
-        $brand->delete();
-        return redirect()->back();
+//        Storage::disk('public')->delete('brands/' . $brand->image);
+        if ($brand->delete()) {
+          return redirect()->back()->with('success', 'Brends veiksmīgi izdzēsts!');
+        } else {
+          return redirect()->back()->with('danger', 'Notika kļūda, brends nav izdzēsts!');
+        }
     }
 
     /*
@@ -411,15 +459,10 @@ class AutoTireController extends Controller
     public function treads_list($paginate = 10)
     {
 
-
+        \Session::remove('search');
         if (is_numeric($paginate)) {
-            if (\Session::has('search')) {
-                $treads = Autotread::orderBy('tread_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
-            } else {
-                $treads = Autotread::orderBy('tread_id', 'DESC')->groupBy('tread_id')->paginate($paginate);
-            }
+            $treads = Autotread::orderBy('tread_id', 'DESC')->paginate($paginate);
         } else {
-            \Session::remove('search');
             return redirect(route('admin.auto.treads'));
         }
 
@@ -430,7 +473,7 @@ class AutoTireController extends Controller
     {
         if ($request->search) {
             \Session::put('search', $request->search);
-            $treads = Autotread::orderBy('tread_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
+            $treads = Autotread::orderBy('tread_id', 'DESC')->where('t_title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
         } else {
             if (\Session::has('search')) {
                 $treads = Autotread::orderBy('tread_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
@@ -451,7 +494,7 @@ class AutoTireController extends Controller
     {
         $tread = new Autotread();
         $tread->timestamps = false;
-        $tread->title = $request->tread_title;
+        $tread->t_title = $request->tread_title;
         $tread->slug = \Str::slug($request->tread_title, '-');
         $tread->save();
 
@@ -474,20 +517,24 @@ class AutoTireController extends Controller
     public function tread_edit($id)
     {
         $tread = Autotread::findOrFail($id);
-        $brands = Autobrand::all();
+        $brands = Autobrand::orderby('title', 'ASC')->get();
 
         return view('admin.auto_tires.treads.edit', compact('tread', 'brands'));
     }
 
     public function tread_update(Request $request, $id)
     {
+
+        $breaks = array("<br />","<br>","<br/>");
+        $request->tread_desc = str_ireplace($breaks, "", $request->tread_desc);
+
         $tread = Autotread::findOrFail($id);
         $tread->timestamps = false;
-        $tread->title = $request->tread_title;
+        $tread->t_title = $request->tread_title;
         $tread->slug = \Str::slug($request->tread_title, '-');
         $tread->season = $request->tread_season;
         $tread->brand_id = $request->tread_brand;
-        $tread->comment = $request->tread_desc;
+        $tread->t_comment = nl2br($request->tread_desc);
 
         if ($request->hasFile('tread_image')) {
 
@@ -499,15 +546,22 @@ class AutoTireController extends Controller
             $tread->image = $fileName;
         }
 
-        $tread->save();
-        $brands = Autobrand::all();
-
-        return view('admin.auto_tires.treads.edit', compact('tread', 'brands'));
+        if ($tread->save()) {
+          return redirect(route('admin.auto.treads'))->with('success', 'Riepas modelis veiksmīgi labots!');
+        } else {
+          return redirect(route('admin.auto.treads.edit', $tread->tread_id))->with('danger', 'Notika kļūda, nevaru atjaunot modeli!');
+        }
     }
 
-    public function tread_delete()
+    public function tread_delete($id)
     {
-        return 'tread_delete()';
+      $tread = Autotread::findOrFail($id);
+//        Storage::disk('public')->delete('brands/' . $brand->image);
+      if ($tread->delete()) {
+        return redirect()->back()->with('success', 'Brends veiksmīgi izdzēsts!');
+      } else {
+        return redirect()->back()->with('danger', 'Notika kļūda, modelis nav izdzēsts!');
+      }
     }
 
     /*

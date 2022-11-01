@@ -94,17 +94,17 @@
                       <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-bike"></use>
                   </svg> Moto riepas</a>
               <ul class="c-sidebar-nav-dropdown-items">
-                  <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#" target="_top">
+                  <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.moto.tires') }}" target="_top">
                           <svg class="c-sidebar-nav-icon">
                               <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
                           </svg> Visas riepas</a>
                   </li>
-                  <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#" target="_top">
+                  <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.moto.brands') }}" target="_top">
                           <svg class="c-sidebar-nav-icon">
                               <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
                           </svg> Riepu brendi</a>
                   </li>
-                  <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="#" target="_top">
+                  <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.moto.treads') }}" target="_top">
                           <svg class="c-sidebar-nav-icon">
                               <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
                           </svg> Riepu modeļi</a>

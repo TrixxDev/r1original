@@ -3,6 +3,16 @@
 @section('content')
 
     <div class="container-fluid">
+        @if (session('success'))
+          <div class="alert alert-success">
+            {{ session('success') }}
+          </div>
+        @endif
+        @if (session('danger'))
+          <div class="alert alert-danger">
+            {{ session('danger') }}
+          </div>
+        @endif
         <div class="fade-in">
             <div class="card">
                 <div class="card-header"> Auto riepu brendi
@@ -42,23 +52,23 @@
                                 <table class="table table-striped table-bordered datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info" style="border-collapse: collapse !important">
                                     <thead>
                                     <tr role="row">
-                                        <th class="sorting_desc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Username: activate to sort column ascending" style="width: 372.5px;" aria-sort="descending">Brends</th>
+                                        <th>Brends</th>
 {{--                                        <th class="sorting" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="3" aria-label="Date registered: activate to sort column ascending" style="width: 320.609px;">Izmērs</th>--}}
-                                        <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 322.391px;"></th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
                                     @foreach ($brands as $brand)
                                         <tr role="row" class="odd">
-                                            <td class="sorting_1">{{ strtoupper($brand->title) }}</td>
+                                            <td>{{ ucwords($brand->title) }}</td>
 {{--                                            <td>{{ $tire->d1 }}</td>--}}
-                                            <td style="width: 7.3%!important;">
+                                            <td style="width: 8.3%!important;">
                                                 <a class="btn btn-success" href="{{ route('admin.auto.brands.edit', $brand->brand_id) }}">
                                                     <svg class="c-icon">
                                                         <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
                                                     </svg>
                                                 </a>
-                                                <a class="btn btn-danger brand_delete" id="{{ $brand->brand_id }}" href="javascript:;">
+                                                <a class="btn btn-danger brand_delete" id="{{ $brand->brand_id }}" href="{{ route('admin.auto.brands.delete', $brand->brand_id) }}">
                                                     <svg class="c-icon">
                                                         <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
                                                     </svg>

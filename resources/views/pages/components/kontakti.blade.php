@@ -46,7 +46,7 @@
 <table class="contacts table" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" border="0">
 <thead>
 <tr>
-<th>Darba laiks Kalnciemā</th>
+<th>Darba laiks Kalnciema ielā</th>
 </tr>
 </thead>
 <tbody>
@@ -66,7 +66,7 @@
 <table class="contacts table" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" border="0">
 <thead>
 <tr>
-<th>Darba laiki Ulbrokā</th>
+<th>Darba laiks Ulbrokā</th>
 </tr>
 </thead>
 <tbody>

@@ -19299,3 +19299,28 @@ table.queueTable:nth-child(2) {
 .no-codes-icon {
   font-size: 30px;
 }
+
+.tread_comment {
+  margin: 0px 15px 50px 0px;
+  min-width: 770px;
+}
+
+.tread_comment .brand-comment-edit, .tread_comment .brand-comment-edit-cancel, .tread_comment .tread-comment-edit, .tread_comment .tread-comment-edit-cancel {
+  margin-top: 10px;
+}
+
+.tread_comment .container {
+  padding-right: 0px;
+  padding-left: 0px;
+}
+
+.tread_comment textarea.brand-comment-text, .tread_comment textarea.brand-comment-text, .tread_comment textarea.tread-comment-text, .tread_comment textarea.tread-comment-text {
+  height: 250px;
+  overflow: auto;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+.tread_comment .nav-tabs {
+  border-bottom: none;
+}

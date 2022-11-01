@@ -419,6 +419,7 @@ class SyncController extends Controller
             throw new \Exception($err);
           }
 
+
           $token_bearer = $token->access_token;
 
           $curl = curl_init();
@@ -437,7 +438,10 @@ class SyncController extends Controller
           ));
           $response = curl_exec($curl);
 
-          file_put_contents('xml/i3-auto.txt', $response);
+	  $filename = 'xml/i3-auto.txt';
+
+          file_put_contents($filename, $response);
+	  chmod($filename, 0775);
 
           $err = curl_error($curl);
 
@@ -460,10 +464,8 @@ class SyncController extends Controller
 
           $counted++;
 
-          if ($item->ArticleId == '16421') dd($item);
           $stock = Autostock::where('itype', 'i3')->where('article', $item->ArticleId)->first();
           if (!$stock) {
-            $out .= 'Nav atrasts artikuls - ' . $item->ArticleId . '<br>';
             continue;
           }
 
@@ -478,7 +480,7 @@ class SyncController extends Controller
         }
 
         DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
-        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n" . $out;
+        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
 
 //        $stocks = Autostock::where('itype', 'i3')->get();
