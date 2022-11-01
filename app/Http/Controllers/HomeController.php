@@ -9,7 +9,6 @@ use DOMDocument;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Redirect;
 
 class HomeController extends Controller
@@ -25,11 +24,6 @@ class HomeController extends Controller
     }
 
     public function checkSession(Request $request) {
-
-      $details = ['car' => 'Vw', 'make' => 'Golf 4', 'purpose' => '1', 'office' => 'Ulbroka', 'day' => '1', 'date' => 1, 'time' => 1, 'longPurpose' => 1];
-      $form = (object) ['ownerEmail' => 'indrikis38@gmail.com'];
-      $mail = Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($details));
-      dd($mail);
 
       if ($request->isMethod('post')) {
         $user = User::findOrFail(Auth::user()->id);

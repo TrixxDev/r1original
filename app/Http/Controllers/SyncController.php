@@ -464,6 +464,7 @@ class SyncController extends Controller
 
           $counted++;
 
+          if ($item->ArticleId == '16421') dd($item);
           $stock = Autostock::where('itype', 'i3')->where('article', $item->ArticleId)->first();
           if (!$stock) {
             continue;
