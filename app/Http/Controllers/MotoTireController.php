@@ -136,10 +136,6 @@ $currTire = Moto::selectRaw('moto_tires.*, moto_treads.*, moto_brands.*,
                                  ->first();
 
         $currBrand = Motobrand::where('brand_id', $currTire->brand_id)->first();
-<<<<<<< HEAD
-=======
-
->>>>>>> 2253477a7772db68925449a23b29269d4ae9f48f
 	//dd($tire);
 	//$stock = DB::table('moto_stock')->where('tire_id', $currTire->tire_id)->first();
         $currTire->includeStock = true;

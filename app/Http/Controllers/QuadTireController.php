@@ -108,11 +108,7 @@ class QuadTireController extends Controller
                                                 ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
                                                 ->get();
 
-<<<<<<< HEAD
-$currTire = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*,
-=======
         $currTire = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*,
->>>>>>> 2253477a7772db68925449a23b29269d4ae9f48f
                                                 quadr_brands.title as brands_title, quadr_treads.title as treads_title, quadr_treads.t_comment as t_comment')
                                                 ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
                                                 ->join('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
@@ -122,10 +118,7 @@ $currTire = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*,
                                                 ->first();
 
         $currBrand = Quadrbrand::where('brand_id', $currTire->brand_id)->first();
-<<<<<<< HEAD
-=======
 
->>>>>>> 2253477a7772db68925449a23b29269d4ae9f48f
         $currTire->includeStock = true;
 
         return view('tires.quadr.quadrtread',

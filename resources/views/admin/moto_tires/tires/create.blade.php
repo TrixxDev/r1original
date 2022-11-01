@@ -19,7 +19,7 @@
           <div class="card-header">Pievienot riepu - {{ $brand->title . ' ' . $tread->title }}
             <div style="float: right; position: relative; top: -7px;">
               <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>
-              <a class="btn btn-md btn-info" href="{{ route('admin.auto.tires.search', $tread->tread_id) }}"> Atpakaļ</a>
+              <a class="btn btn-md btn-info" href="{{ route('admin.moto.tires.search', $tread->tread_id) }}"> Atpakaļ</a>
             </div>
           </div>
           <div class="card-body">
