@@ -120,7 +120,7 @@ class MotoTireController extends Controller
                                   ->where('moto_treads.title',  $tread->title)
                                   ->get();
 
-        $currTire = Moto::selectRaw('moto_tires.*, moto_treads.*, moto_brands.*,
+$currTire = Moto::selectRaw('moto_tires.*, moto_treads.*, moto_brands.*,
                                  moto_brands.title as brands_title, moto_treads.title as treads_title')
                                  ->join('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
                                  ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
@@ -130,12 +130,13 @@ class MotoTireController extends Controller
                                  ->where('moto_tires.tire_id', $tire)
                                  ->first();
 
+        $currBrand = Motobrand::where('brand_id', $currTire->brand_id)->first();
 	//dd($tire);
 	//$stock = DB::table('moto_stock')->where('tire_id', $currTire->tire_id)->first();
         $currTire->includeStock = true;
 
         return view('tires.moto.mototread',
-            compact('tires', 'currTire')
+            compact('tires', 'currTire', 'currBrand')
         );
     }
 
