@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="fade-in">
             <div class="card">
-                <form class="form-horizontal" action="{{ route('admin.auto.brands.update', $brand->brand_id) }}" method="post" enctype="multipart/form-data">
+                <form class="form-horizontal" action="{{ route('admin.moto.brands.update', $brand->brand_id) }}" method="post" enctype="multipart/form-data">
                     <div class="card-header">{{ 'Labot brendu - ' . $brand->title }}</div>
                     <div class="card-body">
                         @csrf
@@ -19,7 +19,7 @@
                         <div class="form-group row">
                           <label class="col-md-3 col-form-label" for="description-input">Brenda apraksts</label>
                           <div class="col-md-9">
-                            <textarea name="brand_desc" class="form-control" id="description-input" cols="30" rows="10">@if ($brand->b_comment){!! str_ireplace(['</br>', '<br>', '<br />'], '', $brand->b_comment) !!}@endif</textarea>
+                            <textarea name="brand_desc" class="form-control" id="description-input" cols="30" rows="10">@if ($brand->b_comment) {!! $brand->b_comment !!} @endif</textarea>
                           </div>
                         </div>
 {{--                        <div class="form-group row">--}}
@@ -41,7 +41,7 @@
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>
-                        <a class="btn btn-md btn-info" href="{{ route('admin.auto.brands') }}"> Atpakaļ</a>
+                        <a class="btn btn-md btn-info" href="{{ route('admin.moto.brands') }}"> Atpakaļ</a>
                     </div>
                 </form>
             </div>

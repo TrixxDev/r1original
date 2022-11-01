@@ -5,9 +5,9 @@
     <div class="container-fluid">
         <div class="fade-in">
             <div class="card">
-                <form class="form-horizontal" action="{{ route('admin.auto.treads.update', $tread->tread_id) }}" method="post" enctype="multipart/form-data">
+                <form class="form-horizontal" action="{{ route('admin.moto.treads.update', $tread->tread_id) }}" method="post" enctype="multipart/form-data">
                     <div class="card-header">
-                        {{ 'Labot modeli - ' . $tread->t_title }}
+                        {{ 'Labot modeli - ' . $tread->title }}
                         <div style="float: right; "></div>
                     </div>
                     <div class="card-body">
@@ -16,16 +16,7 @@
                             <label class="col-md-3 col-form-label" for="text-input">Modeļa nosaukums</label>
                             <div class="col-md-9">
                                 <input class="form-control" id="text-input" type="text" name="tread_title" placeholder="Modeļa nosaukums"
-                                @if ($tread->t_title) value="{{ $tread->t_title }}" @endif>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="season-input">Sezona</label>
-                            <div class="col-md-9">
-                                <select name="tread_season" class="form-control" id="season-input">
-                                    <option value="1" @if ($tread->season == 1) {{ 'selected' }} @endif>Vasara</option>
-                                    <option value="2" @if ($tread->season == 2) {{ 'selected' }} @endif>Ziema</option>
-                                </select>
+                                       @if ($tread->title) value="{{ $tread->title }}" @endif>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -41,7 +32,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="description-input">Modeļa apraksts</label>
                             <div class="col-md-9">
-                                <textarea name="tread_desc" class="form-control" id="description-input" cols="30" rows="10">@if ($tread->t_comment){!! str_ireplace(['<br>', '</br>', '<br />'], '', $tread->t_comment) !!}@endif</textarea>
+                                <textarea name="tread_desc" class="form-control" id="description-input" cols="30" rows="10">@if ($tread->t_comment) {!! $tread->t_comment !!} @endif</textarea>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -53,13 +44,13 @@
                         <div class="form-group row">
                             <div class="col-md-3"></div>
                             <div class="preview-image col-md-9">
-                              {!! \App\Helper\Image::showGrid('auto', $tread->tread_id, 'width: 300px; height: 300px;') !!}
+                                {!! \App\Helper\Image::showGrid('moto', $tread->tread_id, 'width: 300px; height: 300px;') !!}
                             </div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>
-                        <a class="btn btn-md btn-info" href="{{ route('admin.auto.treads') }}"> Atpakaļ</a>
+                        <a class="btn btn-md btn-info" href="{{ route('admin.moto.treads') }}"> Atpakaļ</a>
                     </div>
                 </form>
             </div>

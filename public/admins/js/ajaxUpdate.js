@@ -25,7 +25,11 @@ $(document).ready(function() {
       data: { brand_id: brand_id },
       success: function(data) {
         let season = '';
-        $('#tread_select').attr('disabled', false);
+        if (!$('.brand-settings .brand-input').attr('disabled') || !$('.make-settings .make-input').attr('disabled')) {
+          $('#tread_select').attr('disabled', true);
+        } else {
+          $('#tread_select').attr('disabled', false);
+        }
         data.sort();
         let html = '<select name="tread" class="form-control col-md-3" id="tread_select"><option></option>';
         data.forEach(function(value, key) {
@@ -34,11 +38,20 @@ $(document).ready(function() {
           } else if (value.season !== null && value.season == 2) {
             season = 'Ziemas';
           }
-          if (current_tread == value.tread_id) {
-            html += '<option value="' + value.tread_id + '" selected>' + value.t_title + ' (' + season + ')</option>';
+          if (value.season) {
+            if (current_tread == value.tread_id) {
+              html += '<option value="' + value.tread_id + '" selected>' + value.t_title + ' (' + season + ')</option>';
+            } else {
+              html += '<option value="' + value.tread_id + '">' + value.t_title + ' (' + season + ')</option>';
+            }
           } else {
-            html += '<option value="' + value.tread_id + '">' + value.t_title + ' (' + season + ')</option>';
+            if (current_tread == value.tread_id) {
+              html += '<option value="' + value.tread_id + '" selected>' + value.t_title + '</option>';
+            } else {
+              html += '<option value="' + value.tread_id + '">' + value.t_title + '</option>';
+            }
           }
+
         });
         html += '</select>';
         $('#tread_select').html(html);

@@ -122,12 +122,31 @@
                                 </tbody>
                               </table>
                             </div>
-                            <div id="product-comments" class="col-sm-12 col-md-8">
-                              @if($currTire->comment)
-                                <div class="alert" style="border: 1px solid #68c0a8">
-                                  {{ $currTire->comment }}
-                                </div>
-                              @endif
+                            <div class="col-sm-12 col-md-8">
+                              <ul class="nav nav-tabs" style="border-bottom: none!important;">
+                                @if ($currTire->t_comment)
+                                  <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#tread" style="border-color: #68c0a8 #68c0a8 transparent">Apraksts</a>
+                                  </li>
+                                @endif
+                                @if ($currBrand->b_comment)
+                                  <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#brand" style="border-color: #68c0a8 #68c0a8 transparent">Par zīmolu</a>
+                                  </li>
+                                @endif
+                              </ul>
+                              <div class="tab-content">
+                                @if ($currTire->t_comment)
+                                  <div id="tread" class="container alert tab-pane active" style="border: 1px solid #68c0a8">
+                                    {!! $currTire->t_comment !!}
+                                  </div>
+                                @endif
+                                @if ($currBrand->b_comment)
+                                  <div id="brand" class="container alert tab-pane" style="border: 1px solid #68c0a8">
+                                    {!! $currBrand->b_comment !!}
+                                  </div>
+                                @endif
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -192,7 +211,7 @@
 
                                 <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
                                 <td id="sale-price" class="text-center tire-price-red sale-price">€ {{ $tire->price2 }}</td>
-                                <td class="hidden-sm-down text-center tread-comment-cell-size">{{$tire->t_comment}}</td>
+                                <td class="hidden-sm-down text-center tread-comment-cell-size">{{$tire->comment}}</td>
                                 <td class="shopping-cart-col">
                                   <div class="clearfix atc_div text-right">
                                     <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"

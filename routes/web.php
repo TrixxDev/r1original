@@ -56,25 +56,97 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
 
   // Auto riepu brendi
   Route::get('/brands/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'brands_list'])->name('auto.brands');
-  Route::get('/brands/auto/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'brands_list'])->name('auto.brands.per_page');
-  Route::match(['get', 'post'],'/brands/auto/search', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_search'])->name('auto.brands.search');
-  Route::match(['get', 'post'],'/brands/auto/search/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_search'])->name('auto.brands.search.per_page');
   Route::get('/brands/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_add'])->name('auto.brands.add');
   Route::post('/brands/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_store'])->name('auto.brands.store');
   Route::get('/brands/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_edit'])->name('auto.brands.edit');
   Route::post('/brands/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_update'])->name('auto.brands.update');
   Route::get('/brands/auto/{id}/delete', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_delete'])->name('auto.brands.delete');
+  Route::get('/brands/auto/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'brands_list'])->name('auto.brands.per_page');
+  Route::match(['get', 'post'],'/brands/auto/search', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_search'])->name('auto.brands.search');
+  Route::match(['get', 'post'],'/brands/auto/search/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_search'])->name('auto.brands.search.per_page');
 
   // Auto riepu modeļi
+  Route::get('/treads/moto', [App\Http\Controllers\Admin\MotoTireController::class, 'treads_list'])->name('moto.treads');
+  Route::get('/treads/moto/add', [App\Http\Controllers\Admin\MotoTireController::class, 'tread_add'])->name('moto.treads.add');
+  Route::post('/treads/moto/add', [App\Http\Controllers\Admin\MotoTireController::class, 'tread_store'])->name('moto.treads.store');
+  Route::get('/treads/moto/edit/{id}', [App\Http\Controllers\Admin\MotoTireController::class, 'tread_edit'])->name('moto.treads.edit');
+  Route::post('/treads/moto/edit/{id}', [App\Http\Controllers\Admin\MotoTireController::class, 'tread_update'])->name('moto.treads.update');
+  Route::get('/treads/moto/{id}/delete', [App\Http\Controllers\Admin\MotoTireController::class, 'tread_delete'])->name('moto.treads.delete');
+  Route::get('/treads/moto/{per_page}', [App\Http\Controllers\Admin\MotoTireController::class, 'treads_list'])->name('moto.treads.per_page');
+  Route::match(['get', 'post'],'/treads/moto/search', [App\Http\Controllers\Admin\MotoTireController::class, 'treads_search'])->name('moto.treads.search');
+  Route::match(['get', 'post'],'/treads/moto/search/{per_page}', [App\Http\Controllers\Admin\MotoTireController::class, 'treads_search'])->name('moto.treads.search.per_page');
+
+  // Moto riepas
+  Route::match(['GET', 'POST'], '/moto', [App\Http\Controllers\Admin\MotoTireController::class, 'index'])->name('moto.tires');
+  Route::get('/moto/edit/{id}', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_edit'])->name('moto.tire.edit');
+  Route::post('/moto/edit/{id}', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_update'])->name('moto.tire.update');
+  Route::get('/moto/delete/{id}', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_destroy'])->name('moto.tire.destroy');
+  Route::post('/moto/ajaxUpdateTreads', [App\Http\Controllers\Admin\MotoTireController::class, 'ajaxUpdateTreads'])->name('moto.tires.ajaxUpdateTreads');
+  Route::post('/moto/ajaxUpdateTires', [App\Http\Controllers\Admin\MotoTireController::class, 'ajaxUpdateTires'])->name('moto.tires.ajaxUpdateTires');
+  Route::match(['GET', 'POST'], '/moto/tread/{tread_id}', [App\Http\Controllers\Admin\MotoTireController::class, 'tires_search'])->name('moto.tires.search');
+  Route::get('/moto/tread/{tread_id}/create', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_create'])->name('moto.tires.create');
+  Route::post('/moto/tread/{tread_id}/store', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_store'])->name('moto.tires.store');
+  Route::post('/moto/tread/{tread_id}/image', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_image'])->name('moto.tires.image');
+  Route::post('/moto/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\MotoTireController::class, 'ajaxUpdateTreads'])->name('moto.tires.ajaxUpdateTreads');
+  Route::post('/moto/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\MotoTireController::class, 'ajaxUpdateTires'])->name('moto.tires.ajaxUpdateTires');
+
+  // Moto riepu brendi
+  Route::get('/brands/moto', [App\Http\Controllers\Admin\MotoTireController::class, 'brands_list'])->name('moto.brands');
+  Route::get('/brands/moto/add', [App\Http\Controllers\Admin\MotoTireController::class, 'brand_add'])->name('moto.brands.add');
+  Route::post('/brands/moto/add', [App\Http\Controllers\Admin\MotoTireController::class, 'brand_store'])->name('moto.brands.store');
+  Route::get('/brands/moto/edit/{id}', [App\Http\Controllers\Admin\MotoTireController::class, 'brand_edit'])->name('moto.brands.edit');
+  Route::post('/brands/moto/edit/{id}', [App\Http\Controllers\Admin\MotoTireController::class, 'brand_update'])->name('moto.brands.update');
+  Route::get('/brands/moto/{id}/delete', [App\Http\Controllers\Admin\MotoTireController::class, 'brand_delete'])->name('moto.brands.delete');
+  Route::get('/brands/moto/{per_page}', [App\Http\Controllers\Admin\MotoTireController::class, 'brands_list'])->name('moto.brands.per_page');
+  Route::match(['get', 'post'],'/brands/moto/search', [App\Http\Controllers\Admin\MotoTireController::class, 'brand_search'])->name('moto.brands.search');
+  Route::match(['get', 'post'],'/brands/moto/search/{per_page}', [App\Http\Controllers\Admin\MotoTireController::class, 'brand_search'])->name('moto.brands.search.per_page');
+
+  // Moto riepu modeļi
   Route::get('/treads/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_list'])->name('auto.treads');
-  Route::get('/treads/auto/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_list'])->name('auto.treads.per_page');
-  Route::match(['get', 'post'],'/treads/auto/search', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_search'])->name('auto.treads.search');
-  Route::match(['get', 'post'],'/treads/auto/search/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_search'])->name('auto.treads.search.per_page');
   Route::get('/treads/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_add'])->name('auto.treads.add');
   Route::post('/treads/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_store'])->name('auto.treads.store');
   Route::get('/treads/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_edit'])->name('auto.treads.edit');
   Route::post('/treads/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_update'])->name('auto.treads.update');
   Route::get('/treads/auto/{id}/delete', [App\Http\Controllers\Admin\AutoTireController::class, 'tread_delete'])->name('auto.treads.delete');
+  Route::get('/treads/auto/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_list'])->name('auto.treads.per_page');
+  Route::match(['get', 'post'],'/treads/auto/search', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_search'])->name('auto.treads.search');
+  Route::match(['get', 'post'],'/treads/auto/search/{per_page}', [App\Http\Controllers\Admin\AutoTireController::class, 'treads_search'])->name('auto.treads.search.per_page');
+
+  // Kvadraciklu riepas
+  Route::match(['GET', 'POST'], '/quadr', [App\Http\Controllers\Admin\QuadrTireController::class, 'index'])->name('quadr.tires');
+  Route::get('/quadr/edit/{id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_edit'])->name('quadr.tire.edit');
+  Route::post('/quadr/edit/{id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_update'])->name('quadr.tire.update');
+  Route::get('/quadr/delete/{id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_destroy'])->name('quadr.tire.destroy');
+  Route::post('/quadr/ajaxUpdateTreads', [App\Http\Controllers\Admin\QuadrTireController::class, 'ajaxUpdateTreads'])->name('quadr.tires.ajaxUpdateTreads');
+  Route::post('/quadr/ajaxUpdateTires', [App\Http\Controllers\Admin\QuadrTireController::class, 'ajaxUpdateTires'])->name('quadr.tires.ajaxUpdateTires');
+  Route::match(['GET', 'POST'], '/quadr/tread/{tread_id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'tires_search'])->name('quadr.tires.search');
+  Route::get('/quadr/tread/{tread_id}/create', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_create'])->name('quadr.tires.create');
+  Route::post('/quadr/tread/{tread_id}/store', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_store'])->name('quadr.tires.store');
+  Route::post('/quadr/tread/{tread_id}/image', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_image'])->name('quadr.tires.image');
+  Route::post('/quadr/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\QuadrTireController::class, 'ajaxUpdateTreads'])->name('quadr.tires.ajaxUpdateTreads');
+  Route::post('/quadr/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\QuadrTireController::class, 'ajaxUpdateTires'])->name('quadr.tires.ajaxUpdateTires');
+
+  // Moto riepu brendi
+  Route::get('/brands/quadr', [App\Http\Controllers\Admin\QuadrTireController::class, 'brands_list'])->name('quadr.brands');
+  Route::get('/brands/quadr/add', [App\Http\Controllers\Admin\QuadrTireController::class, 'brand_add'])->name('quadr.brands.add');
+  Route::post('/brands/quadr/add', [App\Http\Controllers\Admin\QuadrTireController::class, 'brand_store'])->name('quadr.brands.store');
+  Route::get('/brands/quadr/edit/{id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'brand_edit'])->name('quadr.brands.edit');
+  Route::post('/brands/quadr/edit/{id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'brand_update'])->name('quadr.brands.update');
+  Route::get('/brands/quadr/{id}/delete', [App\Http\Controllers\Admin\QuadrTireController::class, 'brand_delete'])->name('quadr.brands.delete');
+  Route::get('/brands/quadr/{per_page}', [App\Http\Controllers\Admin\QuadrTireController::class, 'brands_list'])->name('quadr.brands.per_page');
+  Route::match(['get', 'post'],'/brands/quadr/search', [App\Http\Controllers\Admin\QuadrTireController::class, 'brand_search'])->name('quadr.brands.search');
+  Route::match(['get', 'post'],'/brands/quadr/search/{per_page}', [App\Http\Controllers\Admin\QuadrTireController::class, 'brand_search'])->name('quadr.brands.search.per_page');
+
+  // Moto riepu modeļi
+  Route::get('/treads/quadr', [App\Http\Controllers\Admin\QuadrTireController::class, 'treads_list'])->name('quadr.treads');
+  Route::get('/treads/quadr/add', [App\Http\Controllers\Admin\QuadrTireController::class, 'tread_add'])->name('quadr.treads.add');
+  Route::post('/treads/quadr/add', [App\Http\Controllers\Admin\QuadrTireController::class, 'tread_store'])->name('quadr.treads.store');
+  Route::get('/treads/quadr/edit/{id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'tread_edit'])->name('quadr.treads.edit');
+  Route::post('/treads/quadr/edit/{id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'tread_update'])->name('quadr.treads.update');
+  Route::get('/treads/quadr/{id}/delete', [App\Http\Controllers\Admin\QuadrTireController::class, 'tread_delete'])->name('quadr.treads.delete');
+  Route::get('/treads/quadr/{per_page}', [App\Http\Controllers\Admin\QuadrTireController::class, 'treads_list'])->name('quadr.treads.per_page');
+  Route::match(['get', 'post'],'/treads/quadr/search', [App\Http\Controllers\Admin\QuadrTireController::class, 'treads_search'])->name('quadr.treads.search');
+  Route::match(['get', 'post'],'/treads/quadr/search/{per_page}', [App\Http\Controllers\Admin\QuadrTireController::class, 'treads_search'])->name('quadr.treads.search.per_page');
 
   // Diski
   Route::get('/rims', [App\Http\Controllers\Admin\RimsController::class, 'index'])->name('rims.index');
