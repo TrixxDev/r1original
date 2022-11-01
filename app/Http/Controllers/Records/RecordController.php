@@ -398,7 +398,7 @@ class RecordController extends Controller
           'longPurpose' => $purposeLong
         ];
 
-        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($details));
+        //Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($details));
 //        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
 //        $mailer = new CMailer();
 //        $mailer->addRecipient($form->ownerEmail);
