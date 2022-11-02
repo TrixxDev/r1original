@@ -42,7 +42,7 @@ class Quadr extends Model
       if (!isset($sql->brand_title) || !isset($sql->tread_title)) {
         return false;
       } else {
-        return $sql->brand_title . ' ' . $sql->tread_title . ' ' . $this->d1 . $this->sep . $this->d2 . $this->sep2 . $this->d3;
+        return $sql->brand_title . ' ' . $sql->tread_title . ' ' . $this->getFullSizeAttribute() . ' ' . $this->code . ' ' . $this->getLiSiAttribute();
       }
     }
 

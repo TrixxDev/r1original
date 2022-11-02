@@ -381,9 +381,7 @@ Route::middleware('checksession')->group(function() {
     return view('testing');
   });
 
-  Route::get('/testing4', function() {
-    dd(App\Helper\Tires::getAllMotoBrands());
-  });
+  Route::get('/testing4', [App\Http\Controllers\HomeController::class, 'login']);
 
   Route::get('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);
   Route::post('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);

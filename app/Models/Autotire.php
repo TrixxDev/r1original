@@ -161,6 +161,11 @@ class Autotire extends Model
         }
     }
 
+    public function getFullNameAttribute()
+    {
+	return $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->code . ' ' . $this->getLiSiAttribute();
+    }
+
     public function getLiSiAttribute()
     {
         return $this->li . $this->si;

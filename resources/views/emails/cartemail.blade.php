@@ -64,7 +64,7 @@
         </tr>
 	@foreach ($details->cart as $item)
         <tr>
-          <td>{{ $item->options->tireObj->title . ' ' . $item->options->tireObj->fullSize }}</td>
+          <td>{{ $item->options->tireObj->fullName }}</td>
           <td style="text-align: center;">{{ $item->qty }}</td>
           <td style="text-align: center;">€ {{ $item->price }}</td>
           <td style="text-align: center;">€ {{ ($item->price * $item->qty) }}</td>
