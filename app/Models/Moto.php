@@ -42,7 +42,7 @@ class Moto extends Model
       if (!isset($tire->brand_title) || !isset($tire->tread_title)) {
         return false;
       } else {
-        return $tire->brand_title . ' ' . $tire->tread_title . ' ' . $this->d1 . '/' . $this->d2 . 'R' . $this->d3;
+        return $tire->brand_title . ' ' . $tire->tread_title . ' ' . $this->getFullSizeAttribute() . ' ' . $this->code . ' ' . $this->getLiSiAttribute();
       }
     }
 
