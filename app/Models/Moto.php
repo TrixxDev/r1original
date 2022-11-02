@@ -100,7 +100,7 @@ class Moto extends Model
             case -1:
             case 0: {
                 if ($this->_includeStock) {
-		    	
+
                     $count = $this->getStockCount();
                     switch ($count){
                         case 1: {
@@ -282,9 +282,9 @@ class Moto extends Model
           case 'custom':
             $tipi[$type->type] = 'Custom';
             break;
-	  case 'scooter':
-	    $tipi[$type->type] = 'Scooter';
-	    break;
+          case 'scooter':
+            $tipi[$type->type] = 'Scooter';
+            break;
           case 'harley davidson':
             $tipi[$type->type] = 'Harley Davidson';
             break;
@@ -322,7 +322,7 @@ class Moto extends Model
           'sport' => 'Sp',
           'sport touring' => 'St',
           'trail' => 'Tr',
-	  'scooter' => 'Sc',
+          'scooter' => 'Sc',
         ];
 
         return $arr[$type];
@@ -343,7 +343,7 @@ class Moto extends Model
           'sport' => ['Sp', 'Sport'],
           'sport touring' => ['St', 'Sport Touring'],
           'trail' => ['Tr', 'Trail'],
-	  'scooter' => ['Sc', 'Scooter'],
+	        'scooter' => ['Sc', 'Scooter'],
         ];
 
         return $arr[$type];

@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="fade-in">
             <div class="card">
-                <form class="form-horizontal" action="{{ route('admin.moto.brands.update', $brand->brand_id) }}" method="post" enctype="multipart/form-data">
+                <form class="form-horizontal" action="{{ route('admin.quadr.brands.update', $brand->brand_id) }}" method="post" enctype="multipart/form-data">
                     <div class="card-header">{{ 'Labot brendu - ' . $brand->title }}</div>
                     <div class="card-body">
                         @csrf
@@ -41,7 +41,7 @@
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>
-                        <a class="btn btn-md btn-info" href="{{ route('admin.moto.brands') }}"> Atpakaļ</a>
+                        <a class="btn btn-md btn-info" href="{{ route('admin.quadr.brands') }}"> Atpakaļ</a>
                     </div>
                 </form>
             </div>

@@ -15,6 +15,12 @@
                                 <input class="form-control" id="text-input" type="text" name="brand_title" placeholder="Brenda nosaukums">
                             </div>
                         </div>
+                        <div class="form-group row">
+                          <label class="col-md-3 col-form-label" for="description-input">Brenda apraksts</label>
+                          <div class="col-md-9">
+                            <textarea name="brand_desc" class="form-control" id="description-input" cols="30" rows="10" placeholder="Brenda apraksts">@if ($brand->b_comment) {!! $brand->b_comment !!} @endif</textarea>
+                          </div>
+                        </div>
 {{--                        <div class="form-group row">--}}
 {{--                            <label class="col-md-3 col-form-label" for="file-input">Brenda bilde</label>--}}
 {{--                            <div class="col-md-9">--}}

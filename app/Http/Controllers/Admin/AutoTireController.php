@@ -313,28 +313,24 @@ class AutoTireController extends Controller
     {
         if ($request->hasFile('tread_image')) {
             $image      = $request->file('tread_image');
-            $fileName   = $id . '.' . $image->getClientOriginalExtension();
-            $fileNameSmall   = $id . '-s.' . $image->getClientOriginalExtension();
-            $fileNameMed   = $id . '-n.' . $image->getClientOriginalExtension();
-            $fileNameLarge   = $id . '-o.' . $image->getClientOriginalExtension();
+            $fileName   = $id;
+            $fileNameSmall   = $id . '-s';
+            $fileNameMed   = $id . '-n';
+            $fileNameLarge   = $id . '-o';
 //            dd($image);
-            Image::make($image->getRealPath())->save('public/storage/auto/tread/' . $fileName);
+            Image::make($image->getRealPath())->save('public/storage/auto/tread/' . $fileName . '.jpg');
             Image::make($image->getRealPath())
               ->resize(100, 100, function($constraint) {
                 $constraint->aspectRatio();
-              })->save('public/storage/auto/tread/' . $fileNameSmall);
+              })->save('public/storage/auto/tread/' . $fileNameSmall . '.jpg');
             Image::make($image->getRealPath())
               ->resize(200, 200, function($constraint) {
                 $constraint->aspectRatio();
-              })->save('public/storage/auto/tread/' . $fileNameMed);
+              })->save('public/storage/auto/tread/' . $fileNameMed . '.jpg');
             Image::make($image->getRealPath())
               ->resize(1500, 1500, function($constraint) {
                 $constraint->aspectRatio();
-              })->save('public/storage/auto/tread/' . $fileNameLarge);
-//            Storage::putFileAs('public/auto/tread/' . $fileName, (string)$image->encode('png', 95), $fileName);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameSmall, (string)$imageSmall->encode('png', 95), $fileNameSmall);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameMed, (string)$imageMed->encode('png', 95), $fileNameMed);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameLarge, (string)$imageLarge->encode('png', 95), $fileNameLarge);
+              })->save('public/storage/auto/tread/' . $fileNameLarge . '.jpg');
         }
         return redirect()->back();
     }
@@ -487,7 +483,9 @@ class AutoTireController extends Controller
 
     public function tread_add()
     {
-        return view('admin.auto_tires.treads.add');
+        $brands = Autobrand::orderBy('title', 'ASC')->get();
+
+        return view('admin.auto_tires.treads.add', compact('brands'));
     }
 
     public function tread_store(Request $request)
@@ -499,16 +497,25 @@ class AutoTireController extends Controller
         $tread->save();
 
         if ($request->hasFile('tread_image')) {
-            $tread_edit = Autotread::findOrFail($tread->brand_id);
-            $tread_edit->timestamps = false;
-
-            $image      = $request->file('tread_image');
-            $fileName   = 'auto_' . $tread->brand_id . '.' . $image->getClientOriginalExtension();
-
-
-            Storage::disk('public')->putFileAs('tread', $image, $fileName);
-            $tread_edit->image = $fileName;
-            $tread_edit->save();
+          $image      = $request->file('tread_image');
+          $fileName   = $tread->tread_id;
+          $fileNameSmall   = $tread->tread_id . '-s';
+          $fileNameMed   = $tread->tread_id . '-n';
+          $fileNameLarge   = $tread->tread_id . '-o';
+//            dd($image);
+          Image::make($image->getRealPath())->save('public/storage/auto/tread/' . $fileName . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(100, 100, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameSmall . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(200, 200, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameMed . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(1500, 1500, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameLarge . '.jpg');
         }
 
         return redirect(route('admin.auto.treads'));
@@ -537,13 +544,25 @@ class AutoTireController extends Controller
         $tread->t_comment = nl2br($request->tread_desc);
 
         if ($request->hasFile('tread_image')) {
-
-            $image      = $request->file('tread_image');
-            $fileName   = 'auto_' . $id . '.' . $image->getClientOriginalExtension();
-
-
-            Storage::disk('public')->putFileAs('tread', $image, $fileName);
-            $tread->image = $fileName;
+          $image      = $request->file('tread_image');
+          $fileName   = $tread->tread_id;
+          $fileNameSmall   = $tread->tread_id . '-s';
+          $fileNameMed   = $tread->tread_id . '-n';
+          $fileNameLarge   = $tread->tread_id . '-o';
+//            dd($image);
+          Image::make($image->getRealPath())->save('public/storage/auto/tread/' . $fileName . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(100, 100, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameSmall . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(200, 200, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameMed . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(1500, 1500, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameLarge . '.jpg');
         }
 
         if ($tread->save()) {

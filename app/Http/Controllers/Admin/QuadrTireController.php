@@ -3,9 +3,7 @@
   namespace App\Http\Controllers\Admin;
 
   use App\Http\Controllers\Controller;
-  use App\Models\Motobrand;
-  use App\Models\Moto;
-  use App\Models\Mototread;
+  use App\Models\Quadr;
   use App\Models\Quadrbrand;
   use App\Models\Quadrtread;
   use Illuminate\Http\Request;
@@ -14,7 +12,7 @@
   use Intervention\Image\ImageManagerStatic as Image;
   use Storage;
 
-  class MotoTireController extends Controller
+  class QuadrTireController extends Controller
   {
 
     public $search;
@@ -75,38 +73,36 @@
 
         if ($request->input('new-make') == 'true') {
           if (empty($request->input('make-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada modeļa nosaukums!');
-          $make = Mototread::where('title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
+          $make = Quadrtread::where('title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
           if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
-          $make = new Mototread;
+          $make = new Quadrtread;
           $make->timestamps = false;
-          $make->season = $request->input('make-season');
           $make->brand_id = $request->input('brand-id');
           $make->title = $request->input('make-name');
           $make->slug = Str::slug($make->t_title);
           if ($make->save()) {
-            return redirect($request->url())->with('success', 'Modelis ir pievienots!');
+            return redirect(route('admin.quadr.tires.search', $make->tread_id))->with('success', 'Modelis ir pievienots!');
           } else {
             return redirect($request->url())->with('danger', 'Notika kļūda, modelis nav pievienots!');
           }
         }
       }
 
-//        $tires = Autotire::with(ctread')->groupBy('make_id')->paginate($perPage);
-      $brands = Motobrand::orderBy('title', 'ASC')->get();
-      $treads = Mototread::orderBy('title', 'ASC')->get();
+      $brands = Quadrbrand::orderBy('title', 'ASC')->get();
+      $treads = Quadrtread::orderBy('title', 'ASC')->get();
 
-      return view('admin.moto_tires.index', compact('brands', 'treads'));
+      return view('admin.quadr_tires.index', compact('brands', 'treads'));
     }
 
-    public function tires_search(Request $request)
+    public function tires_search(Request $request, $id)
     {
 
       if ($request->post()) {
         if ($request->input('new-brand') == 'true') {
           if (empty($request->input('brand-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada brenda nosaukums!');
-          $brand = Motobrand::where('title', $request->input('brand-name'))->first();
+          $brand = Quadrbrand::where('title', $request->input('brand-name'))->first();
           if ($brand) return redirect($request->url())->with('danger', 'Brends ar šādu nosaukumu jau eksistē!');
-          $brand = new Motobrand;
+          $brand = new Quadrbrand;
           $brand->timestamps = false;
           $brand->title = $request->input('brand-name');
           $brand->slug = Str::slug($brand->title);
@@ -116,7 +112,7 @@
             return redirect($request->url())->with('danger', 'Notika kļūda, brends nav pievienots!');
           }
         } else if ($request->input('edit-brand') == 'true') {
-          $brand = Motobrand::where('brand_id', $request->input('brand-id'))->first();
+          $brand = Quadrbrand::where('brand_id', $request->input('brand-id'))->first();
           $brand->timestamps = false;
 //            if ($brand && $brand->title == $request->input('brand-name')) {
 //              return redirect(route('admin.auto.tires'))->with('danger', 'Brenda nosaukums nav mainīts, ievadīts tāds pats!');
@@ -130,7 +126,7 @@
           }
 //            }
         } else if ($request->input('delete-brand') == 'true') {
-          $brand = Motobrand::where('brand_id', $request->input('brand-id'))->first();
+          $brand = Quadrbrand::where('brand_id', $request->input('brand-id'))->first();
           if (!$brand) return redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
           if ($brand) {
             if ($brand->delete()) {
@@ -145,15 +141,15 @@
 
         if ($request->input('new-make') == 'true') {
           if (empty($request->input('make-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada modeļa nosaukums!');
-          $make = Mototread::where('title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
+          $make = Quadrtread::where('title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
           if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
-          $make = new Mototread();
+          $make = new Quadrtread();
           $make->timestamps = false;
           $make->brand_id = $request->input('brand-id');
           $make->title = $request->input('make-name');
           $make->slug = Str::slug($make->title);
           if ($make->save()) {
-            return redirect($request->url())->with('success', 'Modelis ir pievienots!');
+            return redirect(route('admin.quadr.tires.search', $make->tread_id))->with('success', 'Modelis ir pievienots!');
           } else {
             return redirect($request->url())->with('danger', 'Notika kļūda, modelis nav pievienots!');
           }
@@ -241,19 +237,19 @@
 
       $tire->make_id = $id;
       $tire->d1 = ($request->d1 === null) ? '' : $request->d1;
+      $tire->sep = ($request->sep === null) ? '' : $request->sep;
       $tire->d2 = ($request->d2 === null) ? '' : $request->d2;
-      $tire->d4 = ($request->d4 === null) ? '' : $request->d4;
+      $tire->sep2 = ($request->sep2 === null) ? '' : $request->sep2;
       $tire->d3 = ($request->d3 === null) ? '' : $request->d3;
-      $tire->type = ($request->tire_type === null) ? 'trail' : $request->tire_type;
       $tire->li = ($request->li === null) ? '' : $request->li;
       $tire->si = ($request->si === null) ? '' : $request->si;
       $tire->price1 = ($request->price1 === null) ? '' : $request->price1;
       $tire->price2 = ($request->price2 === null) ? '' : $request->price2;
       $tire->comment = ($request->comment === null) ? '' : $request->comment;
-//      $tire->code = ($request->code === null) ? '' : $request->code;
+      $tire->is_camera = ($request->is_camera === null) ? 'off' : $request->is_camera;
 //      $tire->eco = ($request->eco === null) ? '' : $request->eco;
 //      $tire->wet = ($request->wet === null) ? '' : $request->wet;
-      $tire->noise = ($request->noise === null) ? '' : $request->noise;
+//      $tire->noise = ($request->noise === null) ? '' : $request->noise;
       $tire->article = ($request->article === null) ? '' : $request->article;
       $tire->quantity = ($request->quantity === null) ? '' : $request->quantity;
       $tire->visible_list = 1;
@@ -277,19 +273,19 @@
     public function tire_update(Request $request, $id)
     {
 
-      $tire = Moto::findOrFail($id);
+      $tire = Quadr::findOrFail($id);
 
       $tire->d1 = $request->d1;
+      $tire->sep = $request->sep;
       $tire->d2 = $request->d2;
-      $tire->d4 = $request->d4;
+      $tire->sep2 = $request->sep2;
       $tire->d3 = $request->d3;
-      $tire->type = ($request->tire_type) ? $request->tire_type : 1;
       $tire->li = $request->li;
       $tire->si = $request->si;
       $tire->price1 = $request->price1;
       $tire->price2 = $request->price2;
       $tire->comment = $request->comment;
-      $tire->code = $request->code;
+      $tire->is_camera = $request->is_camera;
 //      $tire->eco = $request->eco;
 //      $tire->wet = $request->wet;
 //      $tire->noise = $request->noise;
@@ -316,42 +312,34 @@
     {
       if ($request->hasFile('tread_image')) {
         $image      = $request->file('tread_image');
-        $fileName   = $id . '.' . $image->getClientOriginalExtension();
-        $fileNameSmall   = $id . '-s.' . $image->getClientOriginalExtension();
-        $fileNameMed   = $id . '-n.' . $image->getClientOriginalExtension();
-        $fileNameLarge   = $id . '-o.' . $image->getClientOriginalExtension();
+        $fileName   = $id;
+        $fileNameSmall   = $id . '-s';
+        $fileNameMed   = $id . '-n';
+        $fileNameLarge   = $id . '-o';
 //            dd($image);
-        Image::make($image->getRealPath())->save('public/storage/quadr/tread/' . $fileName);
+        Image::make($image->getRealPath())->save('public/storage/quadr/tread/' . $fileName . '.jpg');
         Image::make($image->getRealPath())
           ->resize(100, 100, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/quadr/tread/' . $fileNameSmall);
+          })->save('public/storage/quadr/tread/' . $fileNameSmall . '.jpg');
         Image::make($image->getRealPath())
           ->resize(200, 200, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/quadr/tread/' . $fileNameMed);
+          })->save('public/storage/quadr/tread/' . $fileNameMed . '.jpg');
         Image::make($image->getRealPath())
           ->resize(1500, 1500, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/quadr/tread/' . $fileNameLarge);
-//            Storage::putFileAs('public/auto/tread/' . $fileName, (string)$image->encode('png', 95), $fileName);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameSmall, (string)$imageSmall->encode('png', 95), $fileNameSmall);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameMed, (string)$imageMed->encode('png', 95), $fileNameMed);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameLarge, (string)$imageLarge->encode('png', 95), $fileNameLarge);
+          })->save('public/storage/quadr/tread/' . $fileNameLarge . '.jpg');
       }
       return redirect()->back();
     }
 
     public function brands_list($paginate = 10)
     {
+      \Session::remove('search');
       if (is_numeric($paginate)) {
-        if (\Session::has('search')) {
-          $brands = Quadrbrand::orderBy('title', 'ASC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
-        } else {
-          $brands = Quadrbrand::orderBy('title', 'ASC')->paginate($paginate);
-        }
+        $brands = Quadrbrand::orderBy('title', 'ASC')->paginate($paginate);
       } else {
-        \Session::remove('search');
         return redirect(route('admin.quadr.brands'));
       }
 
@@ -371,38 +359,30 @@
         }
       }
 
-      return view('admin.moto_tires.brands.index', compact('brands', 'paginate'));
+      return view('admin.quadr_tires.brands.index', compact('brands', 'paginate'));
     }
 
     public function brand_add()
     {
-      return view('admin.moto_tires.brands.add');
+      return view('admin.quadr_tires.brands.add');
     }
 
     public function brand_store(Request $request)
     {
-      $brand = new Motobrand();
+
+      $brand = Quadrbrand::where('title', $request->brand_title)->first();
+      if ($brand) return redirect($request->url())->with('danger', 'Brends ar šādu nosaukumu jau eksistē!');
+
+      $brand = new Quadrbrand();
       $brand->timestamps = false;
       $brand->title = $request->brand_title;
       $brand->slug = \Str::slug($request->brand_title, '-');
       if ($brand->save()) {
-        return redirect(route('moto.quadr.brands'))->with('success', 'Brends veiksmīgi pievienots!');
+        return redirect(route('admin.quadr.brands'))->with('success', 'Brends veiksmīgi pievienots!');
       } else {
-        return redirect(route('moto.quadr.brands'))->with('danger', 'Notika kļūda, brends nav pievienots!');
+        return redirect(route('admin.quadr.brands'))->with('danger', 'Notika kļūda, brends nav pievienots!');
       }
 
-//        if ($request->hasFile('brand_image')) {
-//            $brand_edit = Autobrand::findOrFail($brand->brand_id);
-//            $brand_edit->timestamps = false;
-//
-//            $image      = $request->file('brand_image');
-//            $fileName   = 'auto_' . $brand->brand_id . '.' . $image->getClientOriginalExtension();
-//
-//
-//            Storage::disk('public')->putFileAs('brands', $image, $fileName);
-//            $brand_edit->image = $fileName;
-//            $brand_edit->save();
-//        }
     }
 
     public function brand_edit($id)
@@ -418,16 +398,6 @@
       $brand->timestamps = false;
       $brand->title = $request->brand_title;
       $brand->slug = \Str::slug($request->brand_title, '-');
-
-//        if ($request->hasFile('brand_image')) {
-//
-//            $image      = $request->file('brand_image');
-//            $fileName   = 'auto_' . $id . '.' . $image->getClientOriginalExtension();
-//
-//
-//            Storage::disk('public')->putFileAs('brands', $image, $fileName);
-//            $brand->image = $fileName;
-//        }
 
       $brand->save();
 
@@ -456,15 +426,11 @@
     public function treads_list($paginate = 10)
     {
 
+      \Session::remove('search');
 
       if (is_numeric($paginate)) {
-        if (\Session::has('search')) {
-          $treads = Quadrtread::orderBy('tread_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
-        } else {
-          $treads = Quadrtread::orderBy('tread_id', 'DESC')->groupBy('tread_id')->paginate($paginate);
-        }
+        $treads = Quadrtread::orderBy('tread_id', 'DESC')->groupBy('tread_id')->paginate($paginate);
       } else {
-        \Session::remove('search');
         return redirect(route('admin.quadr.treads'));
       }
 
@@ -489,7 +455,9 @@
 
     public function tread_add()
     {
-      return view('admin.quadr_tires.treads.add');
+      $brands = Quadrbrand::orderBy('title', 'ASC')->get();
+
+      return view('admin.quadr_tires.treads.add', compact('brands'));
     }
 
     public function tread_store(Request $request)
@@ -500,18 +468,27 @@
       $tread->slug = \Str::slug($request->tread_title, '-');
       $tread->save();
 
-//      if ($request->hasFile('tread_image')) {
-//        $tread_edit = Autotread::findOrFail($tread->brand_id);
-//        $tread_edit->timestamps = false;
-//
-//        $image      = $request->file('tread_image');
-//        $fileName   = 'auto_' . $tread->brand_id . '.' . $image->getClientOriginalExtension();
-//
-//
-//        Storage::disk('public')->putFileAs('tread', $image, $fileName);
-//        $tread_edit->image = $fileName;
-//        $tread_edit->save();
-//      }
+      if ($request->hasFile('tread_image')) {
+        $image      = $request->file('tread_image');
+        $fileName   = $tread->tread_id;
+        $fileNameSmall   = $tread->tread_id . '-s';
+        $fileNameMed   = $tread->tread_id . '-n';
+        $fileNameLarge   = $tread->tread_id . '-o';
+//            dd($image);
+        Image::make($image->getRealPath())->save('public/storage/quadr/tread/' . $fileName . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(100, 100, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/quadr/tread/' . $fileNameSmall . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(200, 200, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/quadr/tread/' . $fileNameMed . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(1500, 1500, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/quadr/tread/' . $fileNameLarge . '.jpg');
+      }
 
       return redirect(route('admin.quadr.treads'));
     }
@@ -533,15 +510,27 @@
       $tread->brand_id = $request->tread_brand;
       $tread->t_comment = $request->tread_desc;
 
-//      if ($request->hasFile('tread_image')) {
-//
-//        $image      = $request->file('tread_image');
-//        $fileName   = 'auto_' . $id . '.' . $image->getClientOriginalExtension();
-//
-//
-//        Storage::disk('public')->putFileAs('tread', $image, $fileName);
-//        $tread->image = $fileName;
-//      }
+      if ($request->hasFile('tread_image')) {
+        $image      = $request->file('tread_image');
+        $fileName   = $tread->tread_id;
+        $fileNameSmall   = $tread->tread_id . '-s';
+        $fileNameMed   = $tread->tread_id . '-n';
+        $fileNameLarge   = $tread->tread_id . '-o';
+//            dd($image);
+        Image::make($image->getRealPath())->save('public/storage/quadr/tread/' . $fileName . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(100, 100, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/quadr/tread/' . $fileNameSmall . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(200, 200, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/quadr/tread/' . $fileNameMed . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(1500, 1500, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/quadr/tread/' . $fileNameLarge . '.jpg');
+      }
 
       $tread->save();
       $brands = Quadrbrand::all();
@@ -563,7 +552,7 @@
     /*
      *
      *
-     * Auto riepu atjaunošana (Ajax)
+     * Kvadru riepu atjaunošana (Ajax)
      *
      *
      */

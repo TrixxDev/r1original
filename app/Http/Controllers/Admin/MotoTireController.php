@@ -314,28 +314,24 @@
     {
       if ($request->hasFile('tread_image')) {
         $image      = $request->file('tread_image');
-        $fileName   = $id . '.' . $image->getClientOriginalExtension();
-        $fileNameSmall   = $id . '-s.' . $image->getClientOriginalExtension();
-        $fileNameMed   = $id . '-n.' . $image->getClientOriginalExtension();
-        $fileNameLarge   = $id . '-o.' . $image->getClientOriginalExtension();
+        $fileName   = $id;
+        $fileNameSmall   = $id . '-s';
+        $fileNameMed   = $id . '-n';
+        $fileNameLarge   = $id . '-o';
 //            dd($image);
-        Image::make($image->getRealPath())->save('public/storage/moto/tread/' . $fileName);
+        Image::make($image->getRealPath())->save('public/storage/moto/tread/' . $fileName . '.jpg');
         Image::make($image->getRealPath())
           ->resize(100, 100, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/moto/tread/' . $fileNameSmall);
+          })->save('public/storage/moto/tread/' . $fileNameSmall . '.jpg');
         Image::make($image->getRealPath())
           ->resize(200, 200, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/moto/tread/' . $fileNameMed);
+          })->save('public/storage/moto/tread/' . $fileNameMed . '.jpg');
         Image::make($image->getRealPath())
           ->resize(1500, 1500, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/moto/tread/' . $fileNameLarge);
-//            Storage::putFileAs('public/auto/tread/' . $fileName, (string)$image->encode('png', 95), $fileName);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameSmall, (string)$imageSmall->encode('png', 95), $fileNameSmall);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameMed, (string)$imageMed->encode('png', 95), $fileNameMed);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameLarge, (string)$imageLarge->encode('png', 95), $fileNameLarge);
+          })->save('public/storage/moto/tread/' . $fileNameLarge . '.jpg');
       }
       return redirect()->back();
     }
@@ -479,7 +475,9 @@
 
     public function tread_add()
     {
-      return view('admin.moto_tires.treads.add');
+      $brands = Motobrand::orderBy('title', 'ASC')->get();
+
+      return view('admin.moto_tires.treads.add', compact('brands'));
     }
 
     public function tread_store(Request $request)
@@ -490,18 +488,27 @@
       $tread->slug = \Str::slug($request->tread_title, '-');
       $tread->save();
 
-//      if ($request->hasFile('tread_image')) {
-//        $tread_edit = Autotread::findOrFail($tread->brand_id);
-//        $tread_edit->timestamps = false;
-//
-//        $image      = $request->file('tread_image');
-//        $fileName   = 'auto_' . $tread->brand_id . '.' . $image->getClientOriginalExtension();
-//
-//
-//        Storage::disk('public')->putFileAs('tread', $image, $fileName);
-//        $tread_edit->image = $fileName;
-//        $tread_edit->save();
-//      }
+      if ($request->hasFile('tread_image')) {
+        $image      = $request->file('tread_image');
+        $fileName   = $tread->tread_id;
+        $fileNameSmall   = $tread->tread_id . '-s';
+        $fileNameMed   = $tread->tread_id . '-n';
+        $fileNameLarge   = $tread->tread_id . '-o';
+//            dd($image);
+        Image::make($image->getRealPath())->save('public/storage/moto/tread/' . $fileName . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(100, 100, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/moto/tread/' . $fileNameSmall . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(200, 200, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/moto/tread/' . $fileNameMed . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(1500, 1500, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/moto/tread/' . $fileNameLarge . '.jpg');
+      }
 
       return redirect(route('admin.auto.treads'));
     }
@@ -523,18 +530,30 @@
       $tread->brand_id = $request->tread_brand;
       $tread->t_comment = $request->tread_desc;
 
-//      if ($request->hasFile('tread_image')) {
-//
-//        $image      = $request->file('tread_image');
-//        $fileName   = 'auto_' . $id . '.' . $image->getClientOriginalExtension();
-//
-//
-//        Storage::disk('public')->putFileAs('tread', $image, $fileName);
-//        $tread->image = $fileName;
-//      }
+      if ($request->hasFile('tread_image')) {
+        $image      = $request->file('tread_image');
+        $fileName   = $tread->tread_id;
+        $fileNameSmall   = $tread->tread_id . '-s';
+        $fileNameMed   = $tread->tread_id . '-n';
+        $fileNameLarge   = $tread->tread_id . '-o';
+//            dd($image);
+        Image::make($image->getRealPath())->save('public/storage/moto/tread/' . $fileName . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(100, 100, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/moto/tread/' . $fileNameSmall . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(200, 200, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/moto/tread/' . $fileNameMed . '.jpg');
+        Image::make($image->getRealPath())
+          ->resize(1500, 1500, function($constraint) {
+            $constraint->aspectRatio();
+          })->save('public/storage/moto/tread/' . $fileNameLarge . '.jpg');
+      }
 
       $tread->save();
-      $brands = Autobrand::all();
+      $brands = Motobrand::all();
 
       return view('admin.moto_tires.treads.edit', compact('tread', 'brands'));
     }
@@ -542,6 +561,8 @@
     public function tread_delete($id)
     {
       $tread = Mototread::findOrFail($id);
+
+
 //        Storage::disk('public')->delete('brands/' . $brand->image);
       if ($tread->delete()) {
         return redirect()->back()->with('success', 'Brends veiksmīgi izdzēsts!');
