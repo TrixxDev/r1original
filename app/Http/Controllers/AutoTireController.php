@@ -154,7 +154,7 @@ class AutoTireController extends Controller
                                                ->where('auto_tires.tire_id', $request->tire_id)
                                                ->where('auto_tires.visible_users', '<>', 0)
                                                ->first();
-
+//
         if ($request->quantity) {
             $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
         } else {
