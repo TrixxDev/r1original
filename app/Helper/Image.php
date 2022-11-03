@@ -78,7 +78,9 @@
         if (file_exists(str_replace('.jpg', '.png', Self::image($type, $image)))) {
           $img = str_replace('.jpg', '.png', $img);
         }
-        return $_SERVER['APP_URL'] . $img;
+        return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['APP_URL'] . $img;
+      } else {
+        return asset('img/p/r1-logo.svg');
       }
 
     }
