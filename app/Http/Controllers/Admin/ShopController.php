@@ -48,17 +48,24 @@ class ShopController extends Controller
 
     $data = (object) unserialize($order->info);
 
-    if (strpos($request->name_suraname, ',') !== false) {
-        $names = explode(', ', $request->name_suraname);
+//    if (strpos($request->name_suraname, ',') !== false) {
+//      $names = explode(', ', $request->name_suraname);
+//    } else {
+//      $names = explode(' ', $request->name_suraname);
+//    }
+
+//    $data->name = $names[0];
+//    $data->surname = $names[1];
+//    $data->email = $request->email;
+
+    $order->status = $request->order_status;
+
+    if ($order->save()) {
+      return redirect()->back()->with('success', 'Pasūtījums informācija veiksmīgi labota!');
     } else {
-	$names = explode(' ', $request->name_suraname);
+      return redirect()->back()->with('danger', 'Notika kļūda labojot pasūtījuma informāciju!');
     }
 
-    $data->name = $names[0];
-    $data->surname = $names[1];
-    $data->email = $request->email;
-
-    dd($request, $names, $data, $order);
   }
 
   public function delete($id) {
@@ -66,10 +73,10 @@ class ShopController extends Controller
     $order = Order::findOrFail($id);
 
     if ($order->delete()) {
-	return redirect()->route('admin.orders')
+	    return redirect()->route('admin.orders')
           ->with('success','Pasūtījums veiksmīgi dzēsts');
     } else {
-	return redirect()->route('admin.shop.orders')->with('danger', 'Kļūda pasūtījuma dzēšanā');
+	    return redirect()->route('admin.shop.orders')->with('danger', 'Kļūda pasūtījuma dzēšanā');
     }
 
   }
