@@ -2,6 +2,7 @@
 
   namespace App\Http\Controllers\Admin;
 
+  use App\Helper\Image;
   use App\Http\Controllers\Controller;
   use App\Models\Autotire;
   use App\Models\Code;
@@ -297,13 +298,13 @@
           continue;
         }
         $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', $tire->title . ' ' . $tire->fullSize);
+        $child_node_title = $dom->createElement('name', $tire->fullName);
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('price', $tire->offerPrice);
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('link', $tire->link);
         $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', 'https://' . $tire->image);
+        $child_node_title = $dom->createElement('image', Image::showAd('auto', $tire->make_id));
         $item->appendChild($child_node_title);
         if ($tire->tread->season === 1) {
           $child_node_title = $dom->createElement('category', 'Vasaras riepas >> R' . $tire->d3);
@@ -333,7 +334,7 @@
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('link', $tire->link);
         $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', 'https://' . $tire->image);
+        $child_node_title = $dom->createElement('image', Image::showAd('moto', $tire->make_id));
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('category', 'Motociklu riepas');
         $item->appendChild($child_node_title);
@@ -354,7 +355,7 @@
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('link', $tire->link);
         $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', 'https://' . $tire->image);
+        $child_node_title = $dom->createElement('image', Image::showAd('quadr', $tire->make_id));
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('category', 'Kvadraciklu riepas');
         $item->appendChild($child_node_title);
@@ -388,7 +389,7 @@
         $category = 'Auto piederumi > ' . (@$tire->tread->season == 1) ? 'Vasaras riepas' : 'Ziemas riepas';
         $category .= ' > ' . $tire->d3;
         $link = $tire->link;
-        $image = $tire->image;
+        $image = Image::showAd('auto', $tire->make_id);
         $xml .= "{$name} || {$price} || {$link} || {$image} || {$category}\n";
       }
       foreach ($moto as $tire) {
@@ -396,7 +397,7 @@
         $price = $tire->offerPrice;
         $category = 'Auto piederumi > Motociklu riepas';
         $link = $tire->link;
-        $image = $tire->image;
+        $image = Image::showAd('moto', $tire->make_id);
         $xml .= "{$name} || {$price} || {$link} || {$image} || {$category}\n";
       }
       foreach ($quadr as $tire) {
@@ -404,7 +405,7 @@
         $price = $tire->offerPrice;
         $category = 'Auto piederumi > Kvadraciklu riepas';
         $link = $tire->link;
-        $image = $tire->image;
+        $image = Image::showAd('quadr', $tire->make_id);
         $xml .= "{$name} || {$price} || {$link} || {$image} || {$category}\n";
       }
       $xml .= '</root>';

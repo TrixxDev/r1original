@@ -114,8 +114,7 @@ class QuadTireController extends Controller
             ->where('quadr_tires.tire_id', $tire)
             ->first();
 
-	$currBrand = Quadrbrand::where('brand_id', $tread->brand_id)->first();
-	//dd(\App\Helper\Image::showAd('quadr', $currTire->tread_id));
+        $currBrand = Quadrbrand::where('brand_id', $tread->brand_id)->first();
 
         $currTire->includeStock = true;
 
