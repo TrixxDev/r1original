@@ -189,14 +189,18 @@ class RecordController extends Controller
             $workingDay->opentime = $f_opentime;
             $workingDay->closetime = $f_closetime;
 
-            $queue->moveSlots($date, $f_rows);
-
             if ($f_rows == 1) {
-              $workingDay->secondaryAvailable = 0;
-              $workingDay->slotSize = 2;
+              if ($workingDay->secondaryAvailable != 0) {
+                $workingDay->secondaryAvailable = 0;
+                $workingDay->slotSize = 2;
+                $queue->moveSlots($date, $f_rows);
+              }
             } else {
-              $workingDay->secondaryAvailable = 1;
-              $workingDay->slotSize = 4;
+              if ($workingDay->secondaryAvailable != 1) {
+                $workingDay->secondaryAvailable = 1;
+                $workingDay->slotSize = 4;
+                $queue->moveSlots($date, $f_rows);
+              }
             }
             $workingDay->is_visible = ($f_visible)?1:0;
             $workingDay->save();
@@ -217,14 +221,18 @@ class RecordController extends Controller
                 $workingDay->opentime = $f_opentime;
                 $workingDay->closetime = $f_closetime;
 
-                $queue->moveSlots($date, $f_rows);
-
                 if ($f_rows == 1) {
-                  $workingDay->secondaryAvailable = 0;
-                  $workingDay->slotSize = 2;
+                  if ($workingDay->secondaryAvailable != 0) {
+                    $workingDay->secondaryAvailable = 0;
+                    $workingDay->slotSize = 2;
+                    $queue->moveSlots($date, $f_rows);
+                  }
                 } else {
-                  $workingDay->secondaryAvailable = 1;
-                  $workingDay->slotSize = 4;
+                  if ($workingDay->secondaryAvailable != 1) {
+                    $workingDay->secondaryAvailable = 1;
+                    $workingDay->slotSize = 4;
+                    $queue->moveSlots($date, $f_rows);
+                  }
                 }
                 $workingDay->is_visible = ($f_visible)?1:0;
                 $workingDay->save();
@@ -245,11 +253,17 @@ class RecordController extends Controller
                 $queue->moveSlots($date, $f_rows);
 
                 if ($f_rows == 1) {
-                  $workingDay->secondaryAvailable = 0;
-                  $workingDay->slotSize = 2;
+                  if ($workingDay->secondaryAvailable != 0) {
+                    $workingDay->secondaryAvailable = 0;
+                    $workingDay->slotSize = 2;
+                    $queue->moveSlots($date, $f_rows);
+                  }
                 } else {
-                  $workingDay->secondaryAvailable = 1;
-                  $workingDay->slotSize = 4;
+                  if ($workingDay->secondaryAvailable != 1) {
+                    $workingDay->secondaryAvailable = 1;
+                    $workingDay->slotSize = 4;
+                    $queue->moveSlots($date, $f_rows);
+                  }
                 }
                 $workingDay->is_visible = ($f_visible)?1:0;
                 $workingDay->save();
