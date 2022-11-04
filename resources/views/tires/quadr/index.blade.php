@@ -306,7 +306,7 @@
                       }
                     @endphp
                     @if($tire->price1)
-                      <a href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}" class="grid-view-link">
+                      <a href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}" class="grid-view-link">
                         <div class="tire-image-card sort-order">
                           <div class="text-center image-grid-overflow">
                             {!! App\Helper\Image::showGrid('quadr', $tire->make_id) !!}
@@ -498,7 +498,7 @@
                           <td class="table-tire-name-cell">
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                                title='{!! App\Helper\Image::show('quadr', $tire->make_id) !!}'
-                               href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"
+                               href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
                                data-content="{{ $tire->title . ' ' . $tire->fullSize }}" data-article="{{ $tire->article }}">
                               {{ $tire->title }}
                             </a>
