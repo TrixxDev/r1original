@@ -500,10 +500,52 @@ class RecordController extends Controller
         $queue->loadWorkingDay($slot->date);
         $queue->loadSlots($slot->date, true);
 
+        $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slot->iorder),true);
         $fmtDate = date('d.m.Y',strtotime($slot->date));
         $dayOfWeek2 = $_weekDays2[date('N', strtotime($slot->date.' 00:00:00'))];
 
         $slot->save();
+
+        switch ($form->purpose){
+          case 0:{
+            $purpose = '';
+            $purposeLong = '';
+            break;
+          }
+          case 1:{
+            $purpose = 'riepu nomaiņa';
+            $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri Jums būs līdzi';
+            break;
+          }
+          case 2:{
+            $purpose = 'riepu nomaiņa';
+            $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri glabājas pie mums';
+            break;
+          }
+          case 3:{
+            $purpose = 'riepu nomaiņa';
+            $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
+            break;
+          }
+          case 4:{
+            $purpose = 'kondicioniera uzpilde';
+            $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
+            break;
+          }
+        }
+
+        $details = [
+          'car' => $form->vehicleMake,
+          'make' => $form->vehicleModel,
+          'purpose' => $purpose,
+          'office' => $office->title,
+          'day' => $dayOfWeek2,
+          'date' => $fmtDate,
+          'time' => $time,
+          'longPurpose' => $purposeLong
+        ];
+
+        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($details));
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
 
