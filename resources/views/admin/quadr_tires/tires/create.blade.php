@@ -27,7 +27,7 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="d1">Platums</label>
               <div class="col-md-9">
-                <input class="form-control" id="d1" type="number" name="d1" placeholder="Riepas platums">
+                <input class="form-control" id="d1" type="text" name="d1" placeholder="Riepas platums">
               </div>
             </div>
             <div class="form-group row">
@@ -39,7 +39,7 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="d2">Augstums</label>
               <div class="col-md-9">
-                <input class="form-control" id="d2" type="number" name="d2" placeholder="Riepas augstums">
+                <input class="form-control" id="d2" type="text" name="d2" placeholder="Riepas augstums">
               </div>
             </div>
             <div class="form-group row">
@@ -51,7 +51,7 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="d3">Radiuss</label>
               <div class="col-md-9">
-                <input class="form-control" id="d3" type="number" name="d3" placeholder="Riepas radiuss">
+                <input class="form-control" id="d3" type="text" name="d3" placeholder="Riepas radiuss">
               </div>
             </div>
             <div class="form-group row">

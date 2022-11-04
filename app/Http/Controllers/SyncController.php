@@ -65,7 +65,6 @@ class SyncController extends Controller
 
 //          $this->updateStock($stock[1]);
 
-                //DB::table($tire_table)->update(['quantity' => 0, 'krs_quantity' => 0, 'urs_quantity' => 0]);
 	    $this->updateStock($stock[2]);
 	    $this->updatePrices($tires_map);
 	    DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
@@ -105,12 +104,12 @@ class SyncController extends Controller
   public function updatePrices($stock)
   {
     foreach ($stock as $value) {
-    $id = $value->tire_id;
+      $id = $value->tire_id;
       foreach ($this->tire_tables as $tire_table => $tire_stock) {
         $product = DB::table($tire_table)->where('article', $value->article)->first();
 
         if ($product) {
-	  $article = '';
+	        $article = '';
 
           $sql = "SELECT ArticleId as ArtikulaId, Deleted FROM katdetal WHERE Deleted = 0 AND Artikuls = '" . $product->article . "'";
           //$sql = "SELECT ArticleId as ArtikulaId FROM katdetal WHERE Artikuls = '16205/55NHKPL1094TXL'";
@@ -140,7 +139,7 @@ class SyncController extends Controller
               'updated_at' => date('Y-m-d H:i:s')
             ]);
           } else {
-	    $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
+	          $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
             //$sql = "SELECT * FROM katalogs k WHERE k.ArticleId = '141309'";
             $result = $this->accrual->query($sql);
             //dd($result->rowCount());
@@ -156,8 +155,10 @@ class SyncController extends Controller
                   'updated_at' => date('Y-m-d H:i:s')
                 ]);
             }
-	  }
-	}
+	        }
+	      } else {
+          DB::table($tire_table)->where('tire_id', $id)->update(['quantity' => 0, 'krs_quantity' => 0, 'urs_quantity' => 0]);
+        }
       }
     }
   }

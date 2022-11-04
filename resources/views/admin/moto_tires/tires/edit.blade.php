@@ -22,13 +22,13 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="d1">Platums</label>
                             <div class="col-md-9">
-                                <input class="form-control" id="d1" type="number" @if ($tire->d1) value="{{ $tire->d1 }}" @endif name="d1" placeholder="Riepas platums">
+                                <input class="form-control" id="d1" type="text" @if ($tire->d1) value="{{ $tire->d1 }}" @endif name="d1" placeholder="Riepas platums">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="d2">Augstums</label>
                             <div class="col-md-9">
-                                <input class="form-control" id="d2" type="number" @if ($tire->d2) value="{{ $tire->d2 }}" @endif name="d2" placeholder="Riepas augstums">
+                                <input class="form-control" id="d2" type="text" @if ($tire->d2) value="{{ $tire->d2 }}" @endif name="d2" placeholder="Riepas augstums">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -40,7 +40,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="d3">Radiuss</label>
                             <div class="col-md-9">
-                                <input class="form-control" id="d3" type="number" @if ($tire->d3) value="{{ $tire->d3 }}" @endif name="d3" placeholder="Riepas radiuss">
+                                <input class="form-control" id="d3" type="text" @if ($tire->d3) value="{{ $tire->d3 }}" @endif name="d3" placeholder="Riepas radiuss">
                             </div>
                         </div>
                         <div class="form-group row">
