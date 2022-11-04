@@ -65,8 +65,8 @@
                                   Visi
                                 </a>
                                 @foreach ($brands as $brand_id => $brand_title)
-                                  <a rel="nofollow" class="select-list" id="{{ $brand_title->brand_title }}">
-                                    {{ ucwords(strtolower($brand_title->brand_title)) }}
+                                  <a rel="nofollow" class="select-list" id="{{ $brand_title }}">
+                                    {{ ucwords(strtolower($brand_title)) }}
                                   </a>
                                 @endforeach
                               </div>
@@ -1159,8 +1159,8 @@
                                                   </a>
                                                   @foreach ($brands as $brand_id => $brand_title)
                                                     <a rel="nofollow" class="select-list"
-                                                       id="{{ $brand_title->brand_title }}">
-                                                      {{ ucwords(strtolower($brand_title->brand_title)) }}
+                                                       id="{{ $brand_title }}">
+                                                      {{ ucwords(strtolower($brand_title)) }}
                                                     </a>
                                                   @endforeach
                                                 </div>
