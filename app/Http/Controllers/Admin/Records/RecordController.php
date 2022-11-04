@@ -355,6 +355,17 @@ class RecordController extends Controller
       $slot = $queue->_slots[$date][$s];
       $slot->timestamps = false;
 
+      if ($request->f_editTime == 1) {
+        $slot->comment = $request->f_slotcomment;
+        $slot->save();
+
+        $return['status'] = 1;
+
+        $json = json_encode($return);
+        echo $json;
+        die;
+      }
+
       $f_status = $request->f_status;
       $f_slotcomment = $request->f_slotcomment;
       $userId = Auth::user()->id;

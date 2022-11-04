@@ -710,6 +710,7 @@ $(document).ready(function () {
          'slot_id': $('.modal#slotModal input[name="slot"]').val(),
          //'f_status': $('.modal#slotModal #f_status').val(),
          'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+         'f_editTime': $('.modal#slotModal #f_editTime').val()
        },
        dataType: 'JSON',
        success: function (data) {
@@ -824,40 +825,42 @@ $(document).ready(function () {
     }
   });
 
-  $('.modal#slotModal .submit').on('click', function(e) {
-    e.preventDefault();
+  if (!$('.modal#slotModal #f_editTime').length) {
+    $('.modal#slotModal .submit').on('click', function(e) {
+      e.preventDefault();
 
-    $.ajax({
-      method: 'POST',
-      url: '/admin/rezervacijas/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val() + '/' + $('.modal#slotModal input[name="part"]').val(),
-      data: {
-        'f_office': $('.modal#slotModal #f_office').val(),
-        'f_date': $('.modal#slotModal #f_date').val(),
-        'f_time': $('.modal#slotModal #f_time').val(),
-        'f_status': $('.modal#slotModal #f_status').val(),
-        'f_car': $('.modal#slotModal #f_car').val(),
-        'f_model': $('.modal#slotModal #f_model').val(),
-        'f_plate': $('.modal#slotModal #f_plate').val(),
-        'f_purpose': $('.modal#slotModal input[name="serviceOption"]:checked').val(),
-        'f_storagebin': $('.modal#slotModal #f_storagebin').val(),
-        'f_comment': $('.modal#slotModal #f_comment').val(),
-        'f_name': $('.modal#slotModal #f_name').val(),
-        'f_phone': $('.modal#slotModal #f_phone').val(),
-        'f_email': $('.modal#slotModal #f_email').val(),
-        'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
-      },
-      dataType: 'JSON',
-      success: function (data) {
-        if (data.status === 0) {
-          this.error(data);
+      $.ajax({
+        method: 'POST',
+        url: '/admin/rezervacijas/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal input[name="date"]').val() + '/' + $('.modal#slotModal input[name="slot"]').val() + '/' + $('.modal#slotModal input[name="part"]').val(),
+        data: {
+          'f_office': $('.modal#slotModal #f_office').val(),
+          'f_date': $('.modal#slotModal #f_date').val(),
+          'f_time': $('.modal#slotModal #f_time').val(),
+          'f_status': $('.modal#slotModal #f_status').val(),
+          'f_car': $('.modal#slotModal #f_car').val(),
+          'f_model': $('.modal#slotModal #f_model').val(),
+          'f_plate': $('.modal#slotModal #f_plate').val(),
+          'f_purpose': $('.modal#slotModal input[name="serviceOption"]:checked').val(),
+          'f_storagebin': $('.modal#slotModal #f_storagebin').val(),
+          'f_comment': $('.modal#slotModal #f_comment').val(),
+          'f_name': $('.modal#slotModal #f_name').val(),
+          'f_phone': $('.modal#slotModal #f_phone').val(),
+          'f_email': $('.modal#slotModal #f_email').val(),
+          'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+        },
+        dataType: 'JSON',
+        success: function (data) {
+          if (data.status === 0) {
+            this.error(data);
+          }
+          location.reload();
+        },
+        error: function(data) {
+          console.log(data);
         }
-        location.reload();
-      },
-      error: function(data) {
-        console.log(data);
-      }
+      });
     });
-  });
+  }
 
   $('.modal#queueModal .decline').on('click', function() {
     $('.modal#queueModal input[name="gridRadios"]').first().attr('checked', true).prop('checked', true);

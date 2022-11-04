@@ -67,6 +67,12 @@
               </div>
             </div>
             <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="code">Kodi</label>
+              <div class="col-md-9">
+                <input class="form-control" id="li" type="text" name="code" placeholder="Kodi">
+              </div>
+            </div>
+            <div class="form-group row">
               <label class="col-md-3 col-form-label" for="li">Li</label>
               <div class="col-md-9">
                 <input class="form-control" id="li" type="number" name="li" placeholder="Kravnesības indeks">

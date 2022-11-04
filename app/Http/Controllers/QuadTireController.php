@@ -93,8 +93,8 @@ class QuadTireController extends Controller
     {
         $brand = Quadrbrand::where('title', $brand)->first();
 
+        $tread = str_replace('_', '/', $tread);
         $tread = Quadrtread::where('slug', $tread)->first();
-
 
         $tires = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*,
                                                 quadr_brands.title as brands_title, quadr_treads.title as treads_title')
@@ -114,10 +114,12 @@ class QuadTireController extends Controller
             ->where('quadr_tires.tire_id', $tire)
             ->first();
 
+        $currBrand = Quadrbrand::where('brand_id', $tread->brand_id)->first();
+
         $currTire->includeStock = true;
 
         return view('tires.quadr.quadrtread',
-            compact('tires', 'currTire')
+            compact('tires', 'currTire', 'currBrand')
         );
     }
 
