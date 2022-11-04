@@ -218,6 +218,7 @@ Route::middleware('checksession')->group(function() {
 
   // Sākumlapa/Iziešana no konta
 
+
   Route::get('/', function() {
    return redirect('/pieraksts');
   })->name('home');
@@ -245,6 +246,7 @@ Route::middleware('checksession')->group(function() {
   Route::post('/ziemas-riepas/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('ziemas-riepas-ajax');
   Route::post('/ziemas-riepas/search/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('ziemas-riepas-ajax');
   Route::get('/ziemas-riepas/search', [App\Http\Controllers\AutoTireController::class, 'tires_find'])->name('ziemas-riepas-meklet');
+  Route::get('/ziemas-riepas/getBrandList', [App\Http\Controllers\AutoTireController::class, 'tires_getBrands']);
 
 // Vasaras riepas
   Route::get('/vasaras-riepas', [App\Http\Controllers\AutoTireController::class, 'tires'])->name('vasaras-riepas');
@@ -253,6 +255,7 @@ Route::middleware('checksession')->group(function() {
   Route::post('/vasaras-riepas/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('vasaras-riepas-ajax');
   Route::post('/vasaras-riepas/search/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('vasaras-riepas-ajax');
   Route::get('/vasaras-riepas/search', [App\Http\Controllers\AutoTireController::class, 'tires_find'])->name('vasaras-riepas-meklet');
+  Route::get('/vasaras-riepas/getBrandList', [App\Http\Controllers\AutoTireController::class, 'tires_getBrands']);
 
 // Kvadraciklu riepas
   Route::get('/kvadru-riepas', [App\Http\Controllers\QuadTireController::class, 'index'])->name('kvadraciklu-riepas');
@@ -376,7 +379,7 @@ Route::middleware('checksession')->group(function() {
     return view('analytics');
   });
 
-  //  ROUTE FOR TESTING PURPOSES
+  //  ROUTES FOR TESTING PURPOSES
   Route::get('/testing', function() {
     return view('testing');
   });
@@ -390,5 +393,6 @@ Route::middleware('checksession')->group(function() {
   Route::get('/testing3', [App\Http\Controllers\HomeController::class, 'fastOrder']);
 
   Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);
+  // END ROUTES FOR TESTING PURPOSES
 
 });
