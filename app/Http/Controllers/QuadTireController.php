@@ -93,34 +93,31 @@ class QuadTireController extends Controller
     {
         $brand = Quadrbrand::where('title', $brand)->first();
 
-        $tread = str_replace('_', '/', $tread);
-        $tread = Quadrbrand::where('title', $tread)->first();
+        $tread = Quadrtread::where('slug', $tread)->first();
 
 
         $tires = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*,
                                                 quadr_brands.title as brands_title, quadr_treads.title as treads_title')
-                                                ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
-                                                ->join('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
-                                                ->where('quadr_tires.visible_users', '<>', 0)
-                                                ->where('quadr_brands.title', $brand->title)
-                                                ->where('quadr_treads.title', $tread->title)
-                                                ->get();
+            ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
+            ->join('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
+            ->where('quadr_tires.visible_users', '<>', 0)
+            ->where('quadr_brands.title', $brand->title)
+            ->where('quadr_treads.title', $tread->title)
+            ->get();
 
         $currTire = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*,
                                                 quadr_brands.title as brands_title, quadr_treads.title as treads_title')
-                                                ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
-                                                ->join('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
-                                                ->where('quadr_brands.title', $brand->title)
-                                                ->where('quadr_treads.title', $tread->title)
-                                                ->where('quadr_tires.tire_id', $tire)
-                                                ->first();
-
-        $currBrand = Quadrbrand::where('brand_id', $tread->brand_id)->first();
+            ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
+            ->join('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
+            ->where('quadr_brands.title', $brand->title)
+            ->where('quadr_treads.title', $tread->title)
+            ->where('quadr_tires.tire_id', $tire)
+            ->first();
 
         $currTire->includeStock = true;
 
         return view('tires.quadr.quadrtread',
-            compact('tires', 'currTire', 'currBrand')
+            compact('tires', 'currTire')
         );
     }
 
