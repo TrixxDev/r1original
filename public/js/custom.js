@@ -2222,7 +2222,7 @@ $(document).ready(function() {
     let selected_time = $('option:selected', this);
     $('option', this).each(function() { $(this).removeAttr('selected'); });
     selected_time.attr('selected', 'selected').prop('selected', 'selected');
-  });
+  }).change();
 
   $('.queueTable.reservation .buttonbar svg').on('click', function() {
     // console.log($(this).data('date'));
