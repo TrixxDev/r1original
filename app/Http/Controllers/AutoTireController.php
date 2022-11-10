@@ -108,7 +108,7 @@ class AutoTireController extends Controller
         View::share('code', $this->code);
         View::share('fuel', $this->fuel);
         View::share('wet', $this->wet);
-	View::share('code_array', $this->code_array);
+	      View::share('code_array', $this->code_array);
     }
 
     public function tires() {
@@ -178,6 +178,7 @@ class AutoTireController extends Controller
 
         ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
         ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
+        ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
 
         if ($request->types) {
           $this->types = $request->types;

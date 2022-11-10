@@ -152,6 +152,7 @@ class QuadTireController extends Controller
 
     ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
     ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
+    ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
 
     $tires = Quadr::select('quadr_tires.*', 'quadr_treads.*', 'quadr_treads.slug as tread_slug', 'quadr_brands.slug as brand_slug')
                     ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
@@ -162,8 +163,9 @@ class QuadTireController extends Controller
                       $query->where('d1', $this->d1);
                     })->when($this->d2, function($query) {
                       $query->where('d2', $this->d2);
-                    })->where('d3', $this->d3)
-                      ->where('quadr_tires.visible_users', '<>', 0)
+                    })->when($this->d3, function($query) {
+                      $query->where('d3', $this->d3);
+                    })->where('quadr_tires.visible_users', '<>', 0)
                       ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
                       ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
                       ->orderByRaw('cast(d2 as decimal(7,2)) ASC')

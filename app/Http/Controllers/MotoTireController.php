@@ -171,6 +171,7 @@ class MotoTireController extends Controller
 
       ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
       ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
+      ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
 
       if ($request->type) {
         $this->type = $request->type;
@@ -189,8 +190,9 @@ class MotoTireController extends Controller
                       $query->where('d2', $this->d2);
                     })->when($this->type, function($query) {
                       $query->whereIn('moto_tires.type', $this->type);
-                    })->where('d3', $this->d3)
-                      ->where('moto_tires.visible_users', '<>', 0)
+                    })->when($this->d3, function($query) {
+                      $query->where('d3', $this->d3);
+                    })->where('moto_tires.visible_users', '<>', 0)
                       ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
                       ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
                       ->orderByRaw('cast(d2 as decimal(7,2)) ASC')

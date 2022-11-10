@@ -61,24 +61,32 @@
                         <ul id="facet_20294" class="collapse">
                           <li>
                             <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <input type="text" readonly class="select-title tire-brand" name="brand" value="{{ $currBrand }}">
-                              <i class="material-icons float-xs-right"></i>
-                              <div class="dropdown-menu">
-                                <a rel="nofollow" id="Visi" class="select-list">
-                                  Visi
-                                </a>
-                                {{--@foreach ($brands as $brand)
-                                  <a rel="nofollow" class="select-list" id="{{ $brand->title }}">
-                                    {{ $brand->title }}
-                                  </a>
-                                @endforeach--}}
-				@foreach ($brands as $brand_id => $brand_title)
-				  <a rel="nofollow" class="select-list" id="{{ $brand_title }}">
-                                    {{ $brand_title }}
-                                  </a>
-				@endforeach
 
-                              </div>
+                              <select name="brand" class="select-title tire-brand">
+                                <option class="select-list" id="Visi">Visi</option>
+                                @foreach ($brands as $brand_id => $brand_title)
+                                  <option class="select-list" id="{{ $brand_title }}" @if ($brand_title == $currBrand) selected @endif>{{ ucwords(strtolower($brand_title)) }}</option>
+                                @endforeach
+                              </select>
+
+{{--                              <input type="text" readonly class="select-title tire-brand" name="brand" value="{{ $currBrand }}">--}}
+{{--                              <i class="material-icons float-xs-right"></i>--}}
+{{--                              <div class="dropdown-menu">--}}
+{{--                                <a rel="nofollow" id="Visi" class="select-list">--}}
+{{--                                  Visi--}}
+{{--                                </a>--}}
+{{--                                --}}{{--@foreach ($brands as $brand)--}}
+{{--                                  <a rel="nofollow" class="select-list" id="{{ $brand->title }}">--}}
+{{--                                    {{ $brand->title }}--}}
+{{--                                  </a>--}}
+{{--                                @endforeach--}}
+{{--                                @foreach ($brands as $brand_id => $brand_title)--}}
+{{--                                  <a rel="nofollow" class="select-list" id="{{ $brand_title }}">--}}
+{{--                                    {{ $brand_title }}--}}
+{{--                                  </a>--}}
+{{--                                @endforeach--}}
+
+{{--                              </div>--}}
                             </div>
                           </li>
                         </ul>
@@ -104,19 +112,27 @@
                         <ul id="facet_78843" class="collapse in">
                           <li>
                             <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <input type="text" readonly class="select-title tire-width" name="d1" value="{{ $d1 }}">
-                              <i class="material-icons float-xs-right"></i>
-                              <div class="dropdown-menu width">
 
-                                <a rel="nofollow" id="Visi" class="select-list">
-                                  Visi
-                                </a>
+                              <select name="d1" class="select-title tire-width">
+                                <option class="select-list" id="Visi">Visi</option>
                                 @foreach ($motoTiresD1 as $tire)
-                                  <a rel="nofollow" class="select-list" id="{{ $tire->d1 }}">
-                                    {{ $tire->d1 }}
-                                  </a>
+                                  <option class="select-list" id="{{ $tire->d1 }}" @if ($tire->d1 == $d1) selected @endif>{{ $tire->d1 }}</option>
                                 @endforeach
-                              </div>
+                              </select>
+
+{{--                              <input type="text" readonly class="select-title tire-width" name="d1" value="{{ $d1 }}">--}}
+{{--                              <i class="material-icons float-xs-right"></i>--}}
+{{--                              <div class="dropdown-menu width">--}}
+
+{{--                                <a rel="nofollow" id="Visi" class="select-list">--}}
+{{--                                  Visi--}}
+{{--                                </a>--}}
+{{--                                @foreach ($motoTiresD1 as $tire)--}}
+{{--                                  <a rel="nofollow" class="select-list" id="{{ $tire->d1 }}">--}}
+{{--                                    {{ $tire->d1 }}--}}
+{{--                                  </a>--}}
+{{--                                @endforeach--}}
+{{--                              </div>--}}
                             </div>
                           </li>
                         </ul>
@@ -142,19 +158,27 @@
                         <ul id="facet_15402" class="collapse in">
                           <li>
                             <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <input type="text" class="select-title tire-height" readonly name="d2" value="{{ $d2 }}">
-                              <i class="material-icons float-xs-right"></i>
-                              <div class="dropdown-menu height">
 
-                                <a rel="nofollow" id="Visi" class="select-list">
-                                  Visi
-                                </a>
+                              <select name="d2" class="select-title tire-height">
+                                <option class="select-list" id="Visi">Visi</option>
                                 @foreach ($motoTiresD2 as $tire)
-                                  <a rel="nofollow" class="select-list" id="{{ $tire->d2 }}">
-                                    {{ $tire->d2 }}
-                                  </a>
+                                  <option class="select-list" id="{{ $tire->d2 }}" @if ($tire->d2 == $d2) selected @endif>{{ $tire->d2 }}</option>
                                 @endforeach
-                              </div>
+                              </select>
+
+{{--                              <input type="text" class="select-title tire-height" readonly name="d2" value="{{ $d2 }}">--}}
+{{--                              <i class="material-icons float-xs-right"></i>--}}
+{{--                              <div class="dropdown-menu height">--}}
+
+{{--                                <a rel="nofollow" id="Visi" class="select-list">--}}
+{{--                                  Visi--}}
+{{--                                </a>--}}
+{{--                                @foreach ($motoTiresD2 as $tire)--}}
+{{--                                  <a rel="nofollow" class="select-list" id="{{ $tire->d2 }}">--}}
+{{--                                    {{ $tire->d2 }}--}}
+{{--                                  </a>--}}
+{{--                                @endforeach--}}
+{{--                              </div>--}}
                             </div>
                           </li>
                         </ul>
@@ -180,16 +204,24 @@
                         <ul id="facet_24954" class="collapse in">
                           <li>
                             <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <input type="text" class="select-title tire-radius" readonly name="d3" value="{{ $d3 }}">
-                              <i class="material-icons float-xs-right"></i>
-                              <div class="dropdown-menu radius">
 
+                              <select name="d3" class="select-title tire-radius">
+                                <option class="select-list" id="Visi">Visi</option>
                                 @foreach ($motoTiresD3 as $tire)
-                                  <a rel="nofollow" class="select-list" id="{{ $tire->d3 }}">
-                                    {{ $tire->d3 }}
-                                  </a>
+                                  <option class="select-list" id="{{ $tire->d3 }}" @if ($tire->d3 == $d3) selected @endif>{{ $tire->d3 }}</option>
                                 @endforeach
-                              </div>
+                              </select>
+
+{{--                              <input type="text" class="select-title tire-radius" readonly name="d3" value="{{ $d3 }}">--}}
+{{--                              <i class="material-icons float-xs-right"></i>--}}
+{{--                              <div class="dropdown-menu radius">--}}
+
+{{--                                @foreach ($motoTiresD3 as $tire)--}}
+{{--                                  <a rel="nofollow" class="select-list" id="{{ $tire->d3 }}">--}}
+{{--                                    {{ $tire->d3 }}--}}
+{{--                                  </a>--}}
+{{--                                @endforeach--}}
+{{--                              </div>--}}
                             </div>
                           </li>
                         </ul>
