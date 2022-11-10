@@ -714,6 +714,7 @@ class RecordController extends Controller
                     $slotDevice = '';
                     $phone = '';
                     $purpose = '';
+                    $storageBin = '';
                     $slotText = $slot->comment . '';
                     break;
                   }
@@ -729,6 +730,8 @@ class RecordController extends Controller
                     if ($takenBy->ownerPhone) {
                       $phone = $takenBy->ownerPhone;
                     }
+                    $storageBin = '';
+                    if (isset($takenBy->storageBin) && !empty($takenBy->storageBin)) $storageBin = ' - ' . $takenBy->storageBin;
                     if (!$takenBy->purpose) {
                       $purpose = '';
                       $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
@@ -744,6 +747,7 @@ class RecordController extends Controller
                     $slotDevice = '';
                     $phone = '';
                     $purpose = '';
+                    $storageBin = '';
                     $slotText = $slot->comment;
                     break;
                   }
@@ -752,6 +756,7 @@ class RecordController extends Controller
                     $slotDevice = '';
                     $phone = '';
                     $purpose = '';
+                    $storageBin = '';
                     if (trim($slot->comment) == '') {
                       $slotCaption = 'Slēgts!';
                     } else {
@@ -799,7 +804,7 @@ class RecordController extends Controller
                 $sheet->setCellValue('B' . $b, $queue_id);
                 $sheet->setCellValue('C' . $b, $slotDevice);
                 $sheet->setCellValue('D' . $b, $phone);
-                $sheet->setCellValue('E' . $b, $purpose);
+                $sheet->setCellValue('E' . $b, $purpose . $storageBin);
                 $sheet->setCellValue('F' . $b, $slotText);
 
                 $b++;
@@ -812,6 +817,7 @@ class RecordController extends Controller
                       $slotDevice2 = '';
                       $phone2 = '';
                       $purpose2 = '';
+                      $storageBin2 = '';
                       $slotText2 = $slot->comment . '';
                       break;
                     }
@@ -827,6 +833,8 @@ class RecordController extends Controller
                       if ($takenBy->ownerPhone) {
                         $phone2 = $takenBy->ownerPhone;
                       }
+                      $storageBin2 = '';
+                      if (isset($takenBy->storageBin) && !empty($takenBy->storageBin)) $storageBin2 = ' - ' . $takenBy->storageBin;
                       if (!$takenBy->purpose) {
                         $purpose2 = '';
                         $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
@@ -842,6 +850,7 @@ class RecordController extends Controller
                       $slotDevice2 = '';
                       $phone2 = '';
                       $purpose2 = '';
+                      $storageBin2 = '';
                       $slotText2 = $slot->comment;
                       break;
                     }
@@ -850,6 +859,7 @@ class RecordController extends Controller
                       $slotDevice2 = '';
                       $phone2 = '';
                       $purpose2 = '';
+                      $storageBin2 = '';
                       if (trim($slot->comment) == '') {
                         $slotCaption = 'Sl ^sgts!';
                       } else {
@@ -865,7 +875,7 @@ class RecordController extends Controller
                   $sheet->setCellValue('B' . ($b), $queue_id);
                   $sheet->setCellValue('C' . ($b), $slotDevice2);
                   $sheet->setCellValue('D' . ($b), $phone2);
-                  $sheet->setCellValue('E' . ($b), $purpose2);
+                  $sheet->setCellValue('E' . ($b), $purpose2 . $storageBin2);
                   $sheet->setCellValue('F' . ($b), $slotText2);
                 }
 
@@ -888,7 +898,7 @@ class RecordController extends Controller
     $sheet->getStyle('A2:E' . $lastRow)->getAlignment()->setHorizontal('center');
     $sheet->getColumnDimension('C')->setWidth(14);
     $sheet->getColumnDimension('D')->setWidth(15);
-    $sheet->getColumnDimension('E')->setWidth(15);
+    $sheet->getColumnDimension('E')->setWidth(17);
     $writer = new Xlsx($spreadsheet);
     $filename = 'pieraksts.xlsx';
 
