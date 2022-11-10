@@ -3176,6 +3176,12 @@ td.slot.slot-gray {
   text-align: center;
 }
 
+td.slot.slot-gray-free {
+  background: #E0E0E0;
+  text-align: center;
+  color: grey;
+}
+
 /*td.slot.slot-free {*/
 /*    background: #e0ffe0;*/
 /*    text-align: center;*/
