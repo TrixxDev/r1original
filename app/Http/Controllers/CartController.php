@@ -612,7 +612,7 @@ class CartController extends Controller
 
       $data->cart = Cart::content();
 
-      Mail::to($data->info['email'])->cc('info@r1.com.lv')->send(new \App\Mail\CartMail($data));
+      if (!Mail::to($data->info['email'])->bcc('info@r1.com.lv')->send(new \App\Mail\CartMail($data))) {  }
 
       Session::remove('cart');
       Session::remove('cartOptions');

@@ -398,7 +398,9 @@ class RecordController extends Controller
           'longPurpose' => $purposeLong
         ];
 
-        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($details));
+        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+        return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
+	}
 //        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
 //        $mailer = new CMailer();
 //        $mailer->addRecipient($form->ownerEmail);
@@ -545,7 +547,9 @@ class RecordController extends Controller
           'longPurpose' => $purposeLong
         ];
 
-        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($details));
+        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+        return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
+	}
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
 

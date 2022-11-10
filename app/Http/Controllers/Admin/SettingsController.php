@@ -293,6 +293,7 @@
       $dom->formatOutput = true;
       $xml_file_name = $_SERVER['DOCUMENT_ROOT'] . '/xml/salidzini.xml';
       $root = $dom->createElement('root');
+      $file = file_get_contents('xml/salidzini.xml');
       foreach ($tires as $tire) {
         if (!isset($tire->tread->season)) {
           continue;
@@ -368,7 +369,8 @@
         $root->appendChild($item);
         $dom->appendChild($root);
       }
-      $dom->save($xml_file_name);
+      file_put_contents($xml_file_name, $dom->saveXML());
+      //$dom->save($xml_file_name);
       return $dom->saveXML();
 
     }
@@ -380,6 +382,7 @@
       $quadr = Quadr::with('tread')->where('visible_users', 0)->get();
       $xml = '';
       $xml_file_name = $_SERVER['DOCUMENT_ROOT'] . '/xml/kurpirkt.xml';
+      $file = file_get_contents('xml/kurpirkt.xml');
       foreach ($tires as $tire) {
         if (!isset($tire->tread->season)) {
           continue;
