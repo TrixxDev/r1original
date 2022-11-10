@@ -155,7 +155,7 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   // Interneta-veikals
   Route::get('/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
   Route::match(['GET', 'POST'], '/order/{id}/update', [App\Http\Controllers\Admin\ShopController::class, 'order_update'])->name('order.update');
-  Route::post('/order/{id}/delete', [App\Http\Controllers\Admin\ShopController::class, 'delete'])->name('order.delete');
+  Route::match(['GET', 'POST'], '/order/{id}/delete', [App\Http\Controllers\Admin\ShopController::class, 'delete'])->name('order.delete');
   Route::get('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'order'])->name('order');
 
   // Pieraksts
