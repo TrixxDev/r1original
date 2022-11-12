@@ -728,7 +728,7 @@ class RecordController extends Controller
                     $takenBy = json_decode($slot->takenby);
                     $slotDevice = ($slot->is_mobile == 1) ? 'Mobīlā ierīce' : 'Dators';
                     $phone = ($takenBy->ownerPhone) ? $takenBy->ownerPhone : '';
-                    $storageBin = (isset($takenBy->storageBin) && !empty($takenBy->storageBin)) ? ' - ' . $takenBy->storageBin : '';
+                    $storageBin = (isset($takenBy->storageBin) && !empty($takenBy->storageBin)) ? $takenBy->storageBin : '';
                     $createduser = User::where('id', $slot->createuser)->first();
                     $editeduser = User::where('id', $slot->edituser)->first();
                     $created = ($createduser) ? $createduser->fullName : 'Apmeklētājs';
@@ -784,10 +784,11 @@ class RecordController extends Controller
                 $sheet->setCellValue('C1', 'Iekārta');
                 $sheet->setCellValue('D1', 'Numurs');
                 $sheet->setCellValue('E1', 'Pakalpojums');
-                $sheet->setCellValue('F1', 'Pieraksta info');
-                $sheet->setCellValue('G1', 'Izveidots');
-                $sheet->setCellValue('H1', 'Labots');
-                $sheet->setCellValue('I1', 'Pēdējā darbība');
+                $sheet->setCellValue('F1', 'Talona nr.');
+                $sheet->setCellValue('G1', 'Pieraksta info');
+                $sheet->setCellValue('H1', 'Izveidots');
+                $sheet->setCellValue('I1', 'Labots');
+                $sheet->setCellValue('J1', 'Pēdējā darbība');
 
 
                 switch ($slot->queue_id) {
@@ -818,11 +819,12 @@ class RecordController extends Controller
                 $sheet->setCellValue('B' . $b, $queue_id);
                 $sheet->setCellValue('C' . $b, $slotDevice);
                 $sheet->setCellValue('D' . $b, $phone);
-                $sheet->setCellValue('E' . $b, $purpose . $storageBin);
-                $sheet->setCellValue('F' . $b, $slotText);
-                $sheet->setCellValue('G' . $b, $created);
-                $sheet->setCellValue('H' . $b, $edited);
-                $sheet->setCellValue('I' . $b, $lastAction);
+                $sheet->setCellValue('E' . $b, $purpose);
+                $sheet->setCellValue('F' . $b, $storageBin);
+                $sheet->setCellValue('G' . $b, $slotText);
+                $sheet->setCellValue('H' . $b, $created);
+                $sheet->setCellValue('I' . $b, $edited);
+                $sheet->setCellValue('J' . $b, $lastAction);
 
                 $b++;
 
@@ -847,7 +849,7 @@ class RecordController extends Controller
                       $takenBy = json_decode($slot->takenby2);
                       $slotDevice2 = ($slot->is_mobile == 1) ? 'Mobīlā ierīce' : 'Dators';
                       $phone2 = ($takenBy->ownerPhone) ? $takenBy->ownerPhone : '';
-                      $storageBin2 = (isset($takenBy->storageBin) && !empty($takenBy->storageBin)) ? ' - ' . $takenBy->storageBin : '';
+                      $storageBin2 = (isset($takenBy->storageBin) && !empty($takenBy->storageBin)) ? $takenBy->storageBin : '';
                       $createduser2 = User::where('id', $slot->createuser2)->first();
                       $editeduser2 = User::where('id', $slot->edituser2)->first();
                       $created2 = ($createduser2) ? $createduser2->fullName : 'Apmeklētājs';
@@ -902,11 +904,12 @@ class RecordController extends Controller
                   $sheet->setCellValue('B' . ($b), $queue_id);
                   $sheet->setCellValue('C' . ($b), $slotDevice2);
                   $sheet->setCellValue('D' . ($b), $phone2);
-                  $sheet->setCellValue('E' . ($b), $purpose2 . $storageBin2);
-                  $sheet->setCellValue('F' . ($b), $slotText2);
-                  $sheet->setCellValue('G' . ($b), $created2);
-                  $sheet->setCellValue('H' . ($b), $edited2);
-                  $sheet->setCellValue('I' . ($b), $lastAction2);
+                  $sheet->setCellValue('E' . ($b), $purpose2);
+                  $sheet->setCellValue('F' . ($b), $storageBin2);
+                  $sheet->setCellValue('G' . ($b), $slotText2);
+                  $sheet->setCellValue('H' . ($b), $created2);
+                  $sheet->setCellValue('I' . ($b), $edited2);
+                  $sheet->setCellValue('J' . ($b), $lastAction2);
                 }
 
 		            $b++;
@@ -923,16 +926,17 @@ class RecordController extends Controller
       // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); //
     //$pdf->Cell($w[0],10,Office::timeByInterval($slotTime),1); // $pdf->Cell($w[1],10,$row['takenby'],1,0,'L'); // $pdf->ln(); // }
     // Closing line // $pdf->Cell(array_sum($w),0,'','T');
-    $sheet->setAutoFilter('A:I');
+    $sheet->setAutoFilter('A:J');
     $lastRow = $sheet->getHighestRow();
-    $sheet->getStyle('A2:E' . $lastRow)->getAlignment()->setHorizontal('center');
+    $sheet->getStyle('A2:F' . $lastRow)->getAlignment()->setHorizontal('center');
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
     $cellIterator->setIterateOnlyExistingCells(true);
     foreach ($cellIterator as $cell) {
-      if ($cell->getColumn() == 'E') continue;
+      if ($cell->getColumn() == 'F') continue;
       $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
     }
-    $sheet->getColumnDimension('E')->setWidth(17);
+//    $sheet->getColumnDimension('E')->setWidth(15);
+    $sheet->getColumnDimension('F')->setWidth(12);
 //    $sheet->getColumnDimension('C')->setWidth(14);
 //    $sheet->getColumnDimension('D')->setWidth(15);
     $writer = new Xlsx($spreadsheet);
