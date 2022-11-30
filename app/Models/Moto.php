@@ -132,6 +132,27 @@ class Moto extends Model
 
     public function getDotAvailableAttribute()
     {
+      if ($this->quantity < 0 && $this->getStockCount() > 0) {
+        if ($this->_includeStock) {
+          $count = $this->getStockCount();
+          switch ($count){
+            case -1:
+            case 0: {
+              return 'red';
+            }
+            case 1:
+            case 2:
+            case 3: {
+              return 'half-yellow';
+            }
+            default:{
+              return 'yellow';
+            }
+          }
+        } else {
+          return 'red';
+        }
+      }
         switch ($this->quantity) {
             case 1:
             case 2:
@@ -202,7 +223,7 @@ class Moto extends Model
 
     public function getLinkAttribute()
     {
-        $tire = Mototread::selectRaw('moto_treads.*, moto_treads.slug as tread_title')
+        $tire = Mototread::selectRaw('moto_treads.*, moto_treads.title as tread_title')
             ->selectRaw('moto_brands.*, moto_brands.slug as brand_title')
             ->leftJoin('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
             ->where('moto_treads.tread_id', $this->make_id)
@@ -210,7 +231,7 @@ class Moto extends Model
         if (!isset($tire->brand_title) || !isset($tire->tread_title)) {
             return false;
         } else {
-            return route('motociklu-riepa', [$tire->brand_title, $tire->tread_title, $this->tire_id]);
+            return route('motociklu-riepa', [$tire->brand_title, str_replace('/', '_', $tire->tread_title), $this->tire_id]);
         }
     }
 

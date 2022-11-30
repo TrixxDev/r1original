@@ -13,7 +13,7 @@ class ShopController extends Controller
   public function orders()
   {
 
-    $orders = Order::whereIn('status', [1,2,3,4,5])->orderBy('id', 'desc')->paginate(30);
+    $orders = Order::whereIn('status', [1,2,3,4,5])->orderBy('id', 'desc')->get();
 
     return view('admin.shop.index', compact('orders'));
 

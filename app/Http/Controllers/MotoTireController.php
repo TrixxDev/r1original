@@ -118,6 +118,10 @@ class MotoTireController extends Controller
                                   ->where('moto_tires.visible_users', '<>', 0)
                                   ->where('moto_brands.title', $brand->title)
                                   ->where('moto_treads.title',  $tread->title)
+                                  ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+                                  ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+                                  ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
+                                  ->orderBy('d4', 'ASC')
                                   ->get();
 
         $currTire = Moto::selectRaw('moto_tires.*, moto_treads.*, moto_brands.*,

@@ -113,7 +113,7 @@
           E-pasts
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="email" type="email" value="{{$userData->email}}">
+          <a href="mailto:{{$userData->email}}" class="form-control" style="color: #321fdb">{{$userData->email}}</a>
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
@@ -353,12 +353,11 @@
 	    }
 
 
-
 	    @endphp
             <tr id="confirm-table">
               <th style="border-color: #c6c6c6;" scope="row">{{$tire->tire_id}}</th>
 	      @if (isset($tireObj))
-                <td style="border-color: #c6c6c6;">{!! $tireObj->fullName!!}</td>
+                <td style="border-color: #c6c6c6;"><a target="_blank" href="{{ $tireObj->link }}">{!! $tireObj->fullName!!}</a></td>
               @else
                 <td style="border-color: #c6c6c6;">{!! $tire->title!!}</td>
 	      @endif

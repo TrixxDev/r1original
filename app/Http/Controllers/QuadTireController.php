@@ -104,6 +104,9 @@ class QuadTireController extends Controller
             ->where('quadr_tires.visible_users', '<>', 0)
             ->where('quadr_brands.title', $brand->title)
             ->where('quadr_treads.title', $tread->title)
+            ->orderBy('d3', 'ASC')
+            ->orderBy('d1', 'ASC')
+            ->orderBy('d2', 'ASC')
             ->get();
 
         $currTire = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*,

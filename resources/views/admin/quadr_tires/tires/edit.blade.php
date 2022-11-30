@@ -40,7 +40,7 @@
                         <div class="form-group row">
                           <label class="col-md-3 col-form-label" for="sep2"></label>
                           <div class="col-md-9">
-                            <input class="form-control" id="sep2" type="text" @if ($tire->sep2) value="{{ $tire->sep2 }}" @endif name="d4">
+                            <input class="form-control" id="sep2" type="text" @if ($tire->sep2) value="{{ $tire->sep2 }}" @endif name="sep2">
                           </div>
                         </div>
                         <div class="form-group row">

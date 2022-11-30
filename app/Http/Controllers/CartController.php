@@ -398,7 +398,11 @@ class CartController extends Controller
               }
 
               if ($cat == 'Autotire') {
-                Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$size][$data->total_items]);
+                if ($size <= 16) {
+                  Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][16][$data->total_items]);
+                } else {
+                  Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$size][$data->total_items]);
+                }
 //                dd($cat, $size, $data->total_items, Self::options()[$cat]['fitting'][$size][$data->total_items]);
               } else {
                 Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$data->total_items]);
