@@ -80,7 +80,15 @@
           Kopsumma
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="total" type="text" value="{{$order->price}}">
+          @php
+            $pay_enum = [
+              0 => '',
+              1 => 'Apmaksa saņemšanas brīdī',
+              2 => 'Bankas pārskaitījums',
+              3 => 'Tiešsaistes apmaksa',
+            ];
+          @endphp
+          <input class="form-control" name="total" type="text" disabled value="{{$order->price + (($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2)) }} &euro; - {{ $pay_enum[$order->payment] }}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>

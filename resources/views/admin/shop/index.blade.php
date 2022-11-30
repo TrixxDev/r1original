@@ -64,9 +64,9 @@
                             5 => 'Pabeigts',
                           ];
 
-			  $pay_enum = [
+			                    $pay_enum = [
                             0 => '',
-			    1 => 'Apmaksa saņemšanas brīdī',
+			                      1 => 'Apmaksa saņemšanas brīdī',
                             2 => 'Bankas pārskaitījums',
                             3 => 'Tiešsaistes apmaksa',
                           ];
