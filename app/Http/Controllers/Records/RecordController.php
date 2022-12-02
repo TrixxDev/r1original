@@ -735,13 +735,18 @@ class RecordController extends Controller
                     $edited = ($editeduser) ? $editeduser->fullName : '';
                     $lastAction = (is_null($slot->edittime)) ? $slot->createtime : $slot->edittime;
                     $lastAction = (is_null($lastAction)) ? '' : $lastAction;
-                    if (!$takenBy->purpose) {
-                      $purpose = '';
-                      $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-                    } else {
-                      $service = Service::where('service_id', $takenBy->purpose)->first();
-                      $purpose = $service->pdf_title;
-                      $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		    if (!$takenBy->vehicleMake && !$takenBy->vehicleModel) {
+		      $purpose = '';
+		      $slotText = '';
+		    } else {
+		      if (!isset($takenBy->purpose)) {
+		        $purpose = '';
+                        $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                      } else {
+                        $service = Service::where('service_id', $takenBy->purpose)->first();
+                        $purpose = $service->pdf_title;
+                        $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		      }
                     }
                     break;
                   }
@@ -856,14 +861,19 @@ class RecordController extends Controller
                       $edited2 = ($editeduser2) ? $editeduser2->fullName : '';
                       $lastAction2 = (is_null($slot->edittime2)) ? $slot->createtime2 : $slot->edittime2;
                       $lastAction2 = (is_null($lastAction2)) ? '' : $lastAction2;
-                      if (!$takenBy->purpose) {
-                        $purpose2 = '';
-                        $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-                      } else {
-                        $service = Service::where('service_id', $takenBy->purpose)->first();
-                        $purpose2 = $service->pdf_title;
-			                  $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-		                  }
+                      if (!$takenBy->vehicleMake && !$takenBy->vehicleModel) {
+			$purpose2 = '';
+			$slotText2 = '';
+		      } else {
+  		        if (!$takenBy->purpose) {
+                          $purpose2 = '';
+                          $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                        } else {
+                          $service = Service::where('service_id', $takenBy->purpose)->first();
+                          $purpose2 = $service->pdf_title;
+			  $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		        }
+		      }
                       break;
                     }
                     case SLOT_STATUS_OFFER:
