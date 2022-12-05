@@ -40,6 +40,7 @@ class AutoTireController extends Controller
     public $wet;
     public $availability;
     public $code_array = [];
+    public $filterCount = 0;
 
     public function __construct(Request $request)
     {
@@ -108,7 +109,8 @@ class AutoTireController extends Controller
         View::share('code', $this->code);
         View::share('fuel', $this->fuel);
         View::share('wet', $this->wet);
-	View::share('code_array', $this->code_array);
+	      View::share('code_array', $this->code_array);
+	      View::share('filterCount', $this->filterCount);
     }
 
     public function tires() {
@@ -171,73 +173,94 @@ class AutoTireController extends Controller
 
     public function tires_find(Request $request) {
 
-        DB::enableQueryLog();
+    DB::enableQueryLog();
 
-        ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
+    $this->filterCount = 0;
+
+    ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
 
 
-        ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
-        ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
+    ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
+    ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
+    ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
 
-        if ($request->types) {
-          $this->types = $request->types;
-        } else {
-          $this->types = '';
-        }
-
-        ($request->code) ? $this->code = $request->code : $this->code = '';
-        ($request->fuel) ? $this->fuel = $request->fuel : $this->fuel = '';
-        ($request->wet) ? $this->wet = $request->wet : $this->wet = '';
-
-        $tires = Autotire::select('auto_tires.*', 'auto_treads.*', 'auto_treads.slug as tread_slug', 'auto_brands.slug as brand_slug')
-                          ->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-                          ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
-                          ->when($this->currBrand, function($query) {
-                              $query->where('auto_brands.slug', \Str::slug($this->currBrand));
-                          })->when($this->d1, function($query) {
-                              $query->where('d1', $this->d1);
-                          })->when($this->d2, function($query) {
-                              $query->where('d2', $this->d2);
-                          })->when($this->d3, function($query) {
-                              $query->where('d3', $this->d3);
-                          })->when($this->types, function($query) {
-			      $query->whereIn('auto_tires.type', $this->types);
-                          })->when($this->code, function($query) {
-			//	if (in_array('CURRYEAR', $this->code)) {
-			//		$query->where('code', 'like', 'DOT%' . substr(date('Y'), -2));
-			//		if (($key = array_search('CURRYEAR', $this->code)) !== false) {
-			//			unset($this->code[$key]);
-			//		}
-			//	}
-			  })->when($this->code, function($query) {
-				//foreach ($this->code as $key => $code) {
-					//if ($key == 0) {
-					//	$query->where('code', 'like', '%' . $code . '%');
-					//}
-					//$query->whereRaw("code LIKE ('%" . implode("%' OR '%", $this->code) . "%')");
-				//}
-                              //$query->orWhere('code', $this->code);
-			      //if (in_array('CURRYEAR', $this->code)) {
-				//$this->code[array_search('CURRYEAR', $this->code)] = 'DOT%' . substr(date('Y'), -2);
-			      //}
-			      $query->whereLike('code', $this->code);
-			  })->when($this->fuel, function($query) {
-                              $query->whereIn('eco', $this->fuel);
-                          })->when($this->wet, function($query) {
-                              $query->whereIn('wet', $this->wet);
-                          })->where('auto_treads.season', $this->season)
-                          ->where('auto_tires.visible_users', '<>', 0)
-                          ->orderBy('d3', 'ASC')
-                          ->orderBy('d1', 'ASC')
-                          ->orderBy('d2', 'ASC')
-                          ->orderBy('price2', 'DESC')->paginate()->appends($request->query());
-
-	//dd(DB::getQueryLog());
-
-        return view('tires.auto.tires',
-            compact('tires')
-        );
+    if ($request->types) {
+      $this->filterCount += 1;
+      $this->types = $request->types;
+    } else {
+      $this->types = '';
     }
+
+    if ($request->code) {
+      $this->code = $request->code;
+      $this->filterCount += 1;
+    } else {
+      $this->code = '';
+    }
+    if ($request->fuel) {
+      $this->fuel = $request->fuel;
+      $this->filterCount += 1;
+    } else {
+      $this->fuel = '';
+    }
+    if ($request->wet) {
+      $this->wet = $request->wet;
+      $this->filterCount += 1;
+    } else {
+      $this->wet = '';
+    }
+
+    $tires = Autotire::select('auto_tires.*', 'auto_treads.*', 'auto_treads.slug as tread_slug', 'auto_brands.slug as brand_slug')
+      ->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+      ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
+      ->when($this->currBrand, function($query) {
+        $query->where('auto_brands.slug', \Str::slug($this->currBrand));
+      })->when($this->d1, function($query) {
+        $query->where('d1', $this->d1);
+      })->when($this->d2, function($query) {
+        $query->where('d2', $this->d2);
+      })->when($this->d3, function($query) {
+        $query->where('d3', $this->d3);
+      })->when($this->types, function($query) {
+        $query->whereIn('auto_tires.type', $this->types);
+      })->when($this->code, function($query) {
+        //	if (in_array('CURRYEAR', $this->code)) {
+        //		$query->where('code', 'like', 'DOT%' . substr(date('Y'), -2));
+        //		if (($key = array_search('CURRYEAR', $this->code)) !== false) {
+        //			unset($this->code[$key]);
+        //		}
+        //	}
+      })->when($this->code, function($query) {
+        //foreach ($this->code as $key => $code) {
+        //if ($key == 0) {
+        //	$query->where('code', 'like', '%' . $code . '%');
+        //}
+        //$query->whereRaw("code LIKE ('%" . implode("%' OR '%", $this->code) . "%')");
+        //}
+        //$query->orWhere('code', $this->code);
+        //if (in_array('CURRYEAR', $this->code)) {
+        //$this->code[array_search('CURRYEAR', $this->code)] = 'DOT%' . substr(date('Y'), -2);
+        //}
+        $query->whereLike('code', $this->code);
+      })->when($this->fuel, function($query) {
+        $query->whereIn('eco', $this->fuel);
+      })->when($this->wet, function($query) {
+        $query->whereIn('wet', $this->wet);
+      })->where('auto_treads.season', $this->season)
+      ->where('auto_tires.visible_users', '<>', 0)
+      ->orderBy('d3', 'ASC')
+      ->orderBy('d1', 'ASC')
+      ->orderBy('d2', 'ASC')
+      ->orderBy('price2', 'DESC')->paginate()->appends($request->query());
+
+    //dd(DB::getQueryLog());
+
+
+
+    return view('tires.auto.tires',
+      ['tires' => $tires, 'filterCount' => $this->filterCount]
+    );
+  }
 
     public function tires_filter(Request $request) {
       DB::enableQueryLog();

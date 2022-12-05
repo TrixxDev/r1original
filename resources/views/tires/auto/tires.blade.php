@@ -8,9 +8,6 @@
     <div class="row">
       <div class="main-content clearfix col-md-12 col-xl-12">
         <div id="left-column" class="col-md-12 col-lg-3">
-          <button style="z-index: 999;" type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-            Filtrs
-          </button>
           <!-- begin D:\OpenServer\domains\r1old/themes/classic/modules/ps_facetedsearch/ps_facetedsearch.tpl -->
           <div id="search_filters_wrapper" class="hidden-sm-down">
             <div id="search_filter_controls" class="hidden-md-up">
@@ -20,596 +17,7 @@
                 Labi
               </button>
             </div>
-            <div id="search_filters" class="params">
-              <input type="hidden" id="facet_all_val" value="Visi">
-
-              <div class="wrap">
-                <div class="search-filter-loader">
-                  <div class="search-filter-loader-spinner">
-                    <div class="search-filter-loader-spinner"></div>
-                  </div>
-                </div>
-                <h4 class="text-uppercase h6 hidden-sm-down">
-                  <span id="search_filters_auto" class="params auto">Auto</span>
-                  <span id="search_filters_params" class="params active">Parametri</span>
-                </h4>
-
-                <div class="can-collapse">
-
-                  <span class="show_list"><i class="material-icons "></i>Saraksts</span>
-                  <span class="show_grid"><i class="material-icons "></i>Bildes</span>
-
-                  <form method="get" action="/{{ $season_title }}/search">
-                    <div class="sidebar-top">
-
-                      <section class="facet clearfix facet--0 facet-ind-0">
-                        <h1 class="h6 facet-title hidden-sm-down">Ražotājs</h1>
-                        <div class="title hidden-md-up" data-target="#facet_20294"
-                             data-toggle="collapse">
-                          <h1 class="h6 facet-title">Ražotājs</h1>
-                          <span class="float-xs-right">
-                            <span class="navbar-toggler collapse-icons">
-                                <i class="material-icons add"></i>
-                                <i class="material-icons remove"></i>
-                            </span>
-                          </span>
-                        </div>
-                        <ul id="facet_20294" class="collapse">
-                          <li>
-                            <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <input type="text" readonly class="select-title tire-brand" name="brand"
-                                     value="{{ $currBrand }}">
-                              <i class="material-icons float-xs-right"></i>
-                              <div class="dropdown-menu">
-                                <a rel="nofollow" id="Visi" class="select-list">
-                                  Visi
-                                </a>
-                                @foreach ($brands as $brand_id => $brand_title)
-                                  <a rel="nofollow" class="select-list" id="{{ $brand_title->brand_title }}">
-                                    {{ ucwords(strtolower($brand_title->brand_title)) }}
-                                  </a>
-                                @endforeach
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </section>
-
-
-                      <section class="facet clearfix facet--1 facet-ind-1">
-                        <h1 class="h6 facet-title hidden-sm-down">Platums</h1>
-                        <div class="title hidden-md-up" data-target="#facet_78843"
-                             data-toggle="collapse" aria-expanded="true">
-                          <h1 class="h6 facet-title">Platums</h1>
-                          <span class="float-xs-right">
-                            <span class="navbar-toggler collapse-icons">
-                              <i class="material-icons add"></i>
-                              <i class="material-icons remove"></i>
-                            </span>
-                          </span>
-                        </div>
-
-
-                        <ul id="facet_78843" class="collapse in">
-                          <li>
-                            <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <!-- pattern="/^\d+$/" maxlength="3" -->
-                              <input type="text" readonly class="select-title tire-width" name="d1" value="{{ $d1 }}">
-                              <i class="material-icons float-xs-right"></i>
-                              <div class="dropdown-menu width">
-
-                                <a rel="nofollow" id="Visi" class="select-list">
-                                  Visi
-                                </a>
-                                @foreach ($autoTiresD1 as $tire)
-                                  <a rel="nofollow" class="select-list" id="{{ $tire->d1 }}">
-                                    {{ $tire->d1 }}
-                                  </a>
-                                @endforeach
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </section>
-
-
-                      <section class="facet clearfix facet--2 facet-ind-2">
-                        <h1 class="h6 facet-title hidden-sm-down">Augstums</h1>
-                        <div class="title hidden-md-up" data-target="#facet_15402"
-                             data-toggle="collapse" aria-expanded="true">
-                          <h1 class="h6 facet-title">Augstums</h1>
-                          <span class="float-xs-right">
-                            <span class="navbar-toggler collapse-icons">
-                              <i class="material-icons add"></i>
-                              <i class="material-icons remove"></i>
-                            </span>
-                          </span>
-                        </div>
-
-
-                        <ul id="facet_15402" class="collapse in">
-                          <li>
-                            <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <input type="text" class="select-title tire-height" readonly maxlength="2"
-                                     pattern="/^\d+$/" name="d2" value="{{ $d2 }}">
-                              <i class="material-icons float-xs-right"></i>
-                              <div class="dropdown-menu height">
-
-                                <a rel="nofollow" id="Visi" class="select-list">
-                                  Visi
-                                </a>
-                                @foreach ($autoTiresD2 as $tire)
-                                  <a rel="nofollow" class="select-list" id="{{ $tire->d2 }}">
-                                    {{ $tire->d2 }}
-                                  </a>
-                                @endforeach
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-                      </section>
-
-
-                      <section class="facet clearfix facet--3 facet-ind-3">
-                        <h1 class="h6 facet-title hidden-sm-down">Diametrs</h1>
-                        <div class="title hidden-md-up" data-target="#facet_24954"
-                             data-toggle="collapse" aria-expanded="true">
-                          <h1 class="h6 facet-title">Diametrs</h1>
-                          <span class="float-xs-right">
-                            <span class="navbar-toggler collapse-icons">
-                              <i class="material-icons add"></i>
-                              <i class="material-icons remove"></i>
-                            </span>
-                          </span>
-                        </div>
-
-
-                        <ul id="facet_24954" class="collapse in">
-                          <li>
-                            <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                              <input type="text" class="select-title tire-radius" readonly name="d3" maxlength="2"
-                                     pattern="/^\d+$/" value="{{ $d3 }}">
-                              <i class="material-icons float-xs-right"></i>
-                              <div class="dropdown-menu radius">
-                                @foreach ($autoTiresD3 as $tire)
-                                  <a rel="nofollow" class="select-list" id="{{ $tire->d3 }}">
-                                    {{ $tire->d3 }}
-                                  </a>
-                                @endforeach
-                              </div>
-                            </div>
-                          </li>
-                        </ul>
-
-                      </section>
-                      <section class="facet clearfix">
-                        <button id="autofind_sub" type="submit">
-                          Meklēt <i class="material-icons search"></i>
-                        </button>
-                      </section>
-
-                    </div>
-                </div>
-              </div>
-              <div class="wrap">
-                <div class="sidebar-bottom">
-                  <h3 class="text-uppercase h6 hidden-sm-down">Filtrs</h3>
-                  <section class="facet clearfix facet--availability">
-                    <h1 class="h6 facet-title hidden-sm-down">Atlase</h1>
-                    <ul class="collapse">
-                      <li class="show-selected-checkbox-li">
-                        <label class="facet-label" for="show-selected-checkbox"
-                               style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
-                          <span class="custom-checkbox">
-                            <input type="checkbox" class="tire-table-checkbox" id="show-selected-checkbox"
-                                   title="Rādīt tikai atzīmētās preces" disabled>
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          <span>Rādīt izvēlētos</span>
-                        </label>
-                      </li>
-                    </ul>
-                    <h1 class="h6 facet-title hidden-sm-down">Pieejamība</h1>
-                    <ul id="facet_availability" class="collapse">
-                      <li>
-                        <label class="facet-label" for="facet_availability_0"
-                               style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
-                          <span class="custom-checkbox">
-                            <input id="facet_availability_0" class="green" type="checkbox"
-                                   data-search-url="#" value="green"
-                                   data-for="dot" data-value="green" data-color="green">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          Pieejams
-                          <span class="dot green" style="float:right;margin-top: 3px;"></span>
-                        </label>
-                      </li>
-                      <li>
-                        <label class="facet-label" for="facet_availability_1"
-                               style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
-                          <span class="custom-checkbox">
-                            <input id="facet_availability_1" class="yellow" type="checkbox"
-                                   data-search-url="#" value="yellow"
-                                   data-for="dot" data-value="yellow" data-color="yellow">
-                            <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
-                          </span>
-                          Pasūtāms
-                          <span class="dot yellow" style="float:right;margin-top: 3px;"></span>
-                        </label>
-                      </li>
-                      <li>
-                        <label class="facet-label" for="facet_availability_2"
-                               style="width: 100%;text-align: left;cursor: pointer">
-                          <span class="custom-checkbox">
-                            <input id="facet_availability_2" class="red" type="checkbox"
-                                   data-search-url="#" value="red"
-                                   data-for="dot" data-value="red" data-color="red">
-                            <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
-                          </span>
-                          Zvaniet!
-                          <span class="dot red" style="float:right;margin-top: 3px;"></span>
-                        </label>
-                      </li>
-                    </ul>
-                  </section>
-
-                  {{--                                    <section class="facet clearfix facet--27">--}}
-                  {{--                                        <h1 class="h6 facet-title hidden-sm-down">TOP40</h1>--}}
-                  {{--                                        <div class="title hidden-md-up" data-target="#facet_39112"--}}
-                  {{--                                             data-toggle="collapse">--}}
-                  {{--                                          <h1 class="h6 facet-title">TOP40</h1>--}}
-                  {{--                                          <span class="float-xs-right">--}}
-                  {{--                                          <span class="navbar-toggler collapse-icons">--}}
-                  {{--                                            <i class="material-icons add"></i>--}}
-                  {{--                                            <i class="material-icons remove"></i>--}}
-                  {{--                                          </span>--}}
-                  {{--                                        </span>--}}
-                  {{--                                        </div>--}}
-
-
-                  {{--                                        <ul id="facet_39112" class="collapse">--}}
-                  {{--                                          <li data-label="Top-40">--}}
-                  {{--                                            <label class="facet-label" for="facet_input_39112_0">--}}
-                  {{--                                              <span class="custom-checkbox">--}}
-                  {{--                                                <input id="facet_input_39112_0" data-search-url="" type="checkbox">--}}
-                  {{--                                                <span class="ps-shown-by-js">--}}
-                  {{--                                                  <i class="material-icons checkbox-checked"></i>--}}
-                  {{--                                                </span>--}}
-                  {{--                                              </span>--}}
-                  {{--                                              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">--}}
-                  {{--                                                Top 40--}}
-                  {{--                                              </a>--}}
-                  {{--                                            </label>--}}
-                  {{--                                          </li>--}}
-                  {{--                                        </ul>--}}
-                  {{--                                    </section>--}}
-
-                  <section class="facet clearfix facet--4">
-                    <h1 class="h6 facet-title hidden-sm-down facet-hover code-dropdown-btn">Kods<span
-                        class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
-                    <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
-                      <h1 class="h6 facet-title">Kods</h1>
-                      <span class="float-xs-right">
-                        <span class="navbar-toggler collapse-icons">
-                          <i class="material-icons add"></i>
-                          <i class="material-icons remove"></i>
-                        </span>
-                      </span>
-                    </div>
-
-                    <ul id="facet_code" class="collapse" style="display: none">
-                      <li data-label="XL">
-                        <label class="facet-label" for="facet_for_xl">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_xl" data-search-url="" name="code[]"
-                                   @if (in_array('XL', $code)) checked="" @endif value="XL"
-                                   data-for="prod-code" data-value="XL" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">XL</a>
-                        </label>
-                      </li>
-                      <li data-label="RSC">
-                        <label class="facet-label" for="facet_for_rsc">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_rsc" data-search-url="" name="code[]"
-                                   @if (in_array('RSC', $code)) checked="" @endif value="RSC"
-                                   data-for="prod-code" data-value="RSC" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">RSC</a>
-                        </label>
-                      </li>
-                      <li data-label="MFS">
-                        <label class="facet-label" for="facet_for_mfs">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_mfs" data-search-url="" name="code[]"
-                                   @if (in_array('MFS', $code)) checked="" @endif value="MFS"
-                                   data-for="prod-code" data-value="MFS" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">MFS</a>
-                        </label>
-                      </li>
-                      <li data-label="CURRYEAR">
-                        <label class="facet-label" for="facet_for_curryear">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_curryear" data-search-url="" name="code[]"
-                                   @if (in_array('CURRYEAR', $code)) checked="" @endif value="CURRYEAR"
-                                   data-for="prod-code" data-value="CURRYEAR"
-                                   type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Šī
-                            gada</a>
-                        </label>
-                      </li>
-                    </ul>
-                  </section>
-
-                  @if ($season_title == 'ziemas-riepas')
-
-                    <section class="facet clearfix facet--4">
-                      <h1 class="h6 facet-title hidden-sm-down facet-hover type-dropdown-btn">Tips<span
-                          class="material-icons type-dropdown">keyboard_arrow_down</span></h1>
-                      <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
-                        <h1 class="h6 facet-title">Tips</h1>
-                        <span class="float-xs-right">
-                        <span class="navbar-toggler collapse-icons">
-                          <i class="material-icons add"></i>
-                          <i class="material-icons remove"></i>
-                        </span>
-                      </span>
-                      </div>
-
-                      <ul id="facet_code" class="collapse" style="display: none">
-                        <li data-label="M+S">
-                          <label class="facet-label" for="facet_for_ms">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_ms" data-search-url="" name="types[]"
-                                   @if (in_array(1, $types)) checked="" @endif value="1"
-                                   data-for="prod-code" data-value="M+S" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                            <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                               rel="nofollow">M+S</a>
-                          </label>
-                        </li>
-                        <li data-label="Studdable">
-                          <label class="facet-label" for="facet_for_studdable">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_studdable" data-search-url="" name="types[]"
-                                   @if (in_array(2, $types)) checked="" @endif value="2"
-                                   data-for="prod-code" data-value="Studdable" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Radžojama</a>
-                          </label>
-                        </li>
-                        <li data-label="Studs">
-                          <label class="facet-label" for="facet_for_studs">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_studs" data-search-url="" name="types[]"
-                                   @if (in_array(3, $types)) checked="" @endif value="3"
-                                   data-for="prod-code" data-value="Studs" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ar
-                              radzēm</a>
-                          </label>
-                        </li>
-                        <li data-label="Winter">
-                          <label class="facet-label" for="facet_for_winter">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_winter" data-search-url="" name="types[]"
-                                   @if (in_array(4, $types)) checked="" @endif value="4"
-                                   data-for="prod-code" data-value="Winter" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                            <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                               rel="nofollow">Ziemas</a>
-                          </label>
-                        </li>
-                      </ul>
-                    </section>
-
-                  @endif
-
-                  <section class="facet clearfix facet--8">
-                    <h1 class="h6 facet-title hidden-sm-down facet-hover fuel-eco-dropdown-btn">Degvielas ekonomija <span
-                        class="material-icons fuel-efficiency-dropdown">keyboard_arrow_down</span></h1>
-                    <div class="title hidden-md-up" data-target="#facet_70638" data-toggle="collapse">
-                      <h1 class="h6 facet-title">Degvielas ekonomija</h1>
-                      <span class="float-xs-right">
-                        <span class="navbar-toggler collapse-icons">
-                          <i class="material-icons add"></i>
-                          <i class="material-icons remove"></i>
-                        </span>
-                      </span>
-                    </div>
-                    <ul id="facet_fuel_eco" class="collapse" style="display: none;">
-                      <li data-label="F">
-                        <label class="facet-label" for="facet_fuel_eco_f">
-                          <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_f" data-search-url="" name="fuel[]"
-                                   @if (in_array('F', $fuel)) checked="" @endif value="F"
-                                   data-for="fuel_efficiency" data-value="F" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
-                        </label>
-                      </li>
-                      <li data-label="E">
-                        <label class="facet-label" for="facet_fuel_eco_e">
-                          <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_e" data-search-url="" name="fuel[]"
-                                   @if (in_array('E', $fuel)) checked="" @endif value="E"
-                                   data-for="fuel_efficiency" data-value="E" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
-                        </label>
-                      </li>
-                      <li data-label="B">
-                        <label class="facet-label" for="facet_fuel_eco_b">
-                          <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_b" data-search-url="" name="fuel[]"
-                                   @if (in_array('B', $fuel)) checked="" @endif value="B"
-                                   data-for="fuel_efficiency" data-value="B" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
-                        </label>
-                      </li>
-                      <li data-label="C">
-                        <label class="facet-label" for="facet_fuel_eco_c">
-                          <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_c" data-search-url="" name="fuel[]"
-                                   @if (in_array('C', $fuel)) checked="" @endif value="C"
-                                   data-for="fuel_efficiency" data-value="C" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
-                        </label>
-                      </li>
-                      <li data-label="A">
-                        <label class="facet-label" for="facet_fuel_eco_a">
-                          <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_a" data-search-url="" name="fuel[]"
-                                   @if (in_array('A', $fuel)) checked="" @endif value="A"
-                                   data-for="fuel_efficiency" data-value="A" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
-                        </label>
-                      </li>
-                    </ul>
-                  </section>
-
-
-                  <section class="facet clearfix facet--9">
-                    <h1 class="h6 facet-title hidden-sm-down facet-hover wet-surface-dropdown-btn">Slapjš segums <span
-                        class="material-icons wet-surface-dropdown">keyboard_arrow_down</span></h1>
-                    <div class="title hidden-md-up" data-target="#facet_8079"
-                         data-toggle="collapse">
-                      <h1 class="h6 facet-title">Slapjš segums</h1>
-                      <span class="float-xs-right">
-                        <span class="navbar-toggler collapse-icons">
-                          <i class="material-icons add"></i>
-                          <i class="material-icons remove"></i>
-                        </span>
-                      </span>
-                    </div>
-
-
-                    <ul id="facet_wet" class="collapse" style="display: none;">
-                      <li data-label="F">
-                        <label class="facet-label" for="facet_wet_f">
-                          <span class="custom-checkbox">
-                            <input id="facet_wet_f" data-search-url="" name="wet[]"
-                                   @if (in_array('F', $wet)) checked="" @endif value="F"
-                                   data-for="wet_grip" data-value="F" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
-                        </label>
-                      </li>
-                      <li data-label="E">
-                        <label class="facet-label" for="facet_wet_e">
-                          <span class="custom-checkbox">
-                            <input id="facet_wet_e" data-search-url="" name="wet[]"
-                                   @if (in_array('E', $wet)) checked="" @endif value="E"
-                                   data-for="wet_grip" data-value="E" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
-                        </label>
-                      </li>
-                      <li data-label="B">
-                        <label class="facet-label" for="facet_wet_b">
-                          <span class="custom-checkbox">
-                            <input id="facet_wet_b" data-search-url="" name="wet[]"
-                                   @if (in_array('B', $wet)) checked="" @endif value="B"
-                                   data-for="wet_grip" data-value="B" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
-                        </label>
-                      </li>
-                      <li data-label="C">
-                        <label class="facet-label" for="facet_wet_c">
-                          <span class="custom-checkbox">
-                            <input id="facet_wet_c" data-search-url="" name="wet[]"
-                                   @if (in_array('C', $wet)) checked="" @endif value="C"
-                                   data-for="wet_grip" data-value="C" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
-                        </label>
-                      </li>
-                      <li data-label="A">
-                        <label class="facet-label" for="facet_wet_a">
-                          <span class="custom-checkbox">
-                            <input id="facet_wet_a" data-search-url="" name="wet[]"
-                                   @if (in_array('A', $wet)) checked="" @endif value="A"
-                                   data-for="wet_grip" data-value="A" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-
-                          <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
-                        </label>
-                      </li>
-                    </ul>
-                  </section>
-                  <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i></button>
-                  </form>
-                </div>
-              </div>
-            </div>
+            @include('components.autotirefilter')
           </div>
         </div>
         <div id="content-wrapper" class="col-md-12 col-lg-9">
@@ -632,14 +40,18 @@
                         if ($index == 0){
                           switch ($season_id){
                           case 1:
-                            echo ' <span class="text-uppercase" style="color:black;">Vasaras riepas</span>';
+                            echo ' <span class="text-uppercase tire-type-title" style="color:black;">Vasaras riepas</span>';
                             break;
                           case 2:
-                            echo ' <span class="text-uppercase" style="color:black;">Ziemas riepas</span>';
+                            echo ' <span class="text-uppercase tire-type-title" style="color:black;">Ziemas riepas</span>';
                             break;
                           }
                         }
-                        echo '</h4><div class="row grid-ex pr-1">';
+                        echo '<span style="margin: 0 auto;"></span>';
+                        echo '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
+                                    Filtrs (' . $filterCount . ')
+                                  </button></h4>
+                        <div class="row grid-ex pr-1">';
                         $cbrand = $brand;
                         $stripe = 1;
                       } else {
@@ -731,7 +143,7 @@
               {{-- LIST VIEW--}}
               <div id="">
                 <div id="js-product-list">
-                  <div class="products row hide-price title-flip">
+                    <div class="products row hide-price title-flip">
 
                     @php
                       $cbrand = '';
@@ -743,18 +155,26 @@
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){
 
-                        echo '<h4 class="tire-brand-name">' . $cbrand;
+                        if ($cbrand) {
+                           echo '<h4 class="tire-brand-name">' . $cbrand;
+                        }
                         if ($index == 0){
+                          //<h4 style="display: inline-block;">Izvēlētie filtri: </h4>
+                          echo '<button style="z-index: 999;" type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
+                                    Filtrs ('. $filterCount .')
+                                  </button><div class="filters" style="margin: 0 auto;"></div>';
                           switch ($season_id){
                           case 1:
-                            echo ' <span class="text-uppercase flipped-title" style="color:black;">Vasaras riepas</span>';
+                            echo '<span class="text-uppercase flipped-title tire-brand-name" style="color:black;">Vasaras riepas</span>';
                             break;
                           case 2:
-                            echo ' <span class="text-uppercase flipped-title" style="color:black;">Ziemas riepas</span>';
+                            echo '<span class="text-uppercase flipped-title tire-brand-name" style="color:black;">Ziemas riepas</span>';
                             break;
                           }
+                          echo '</h4>';
                         }
-                        echo '</h4>';
+                        echo '';
+
                         $cbrand = $brand;
                         $stripe = 1;
                       @endphp
@@ -871,7 +291,6 @@
                         {{--                                                    </div>--}}
                         {{--                                                </div>--}}
                         {{--                                            </article>--}}
-
                         <tr class="tire-table-row">
                           <th scope="row" class="tire-table-checkbox">
                             <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
@@ -884,7 +303,7 @@
                                href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"
                                data-content="{{ $tire->title . ' ' . $tire->fullSize }}"
                                data-article="{{ $tire->article }}">
-                              {{ $tire->title }}
+                              <div class="table-link-title">{{ $tire->title }}</div>
                             </a>
                           </td>
 
@@ -936,10 +355,10 @@
 
                           <td class="hidden-sm-down text-center">
                             <span data-toggle="tooltip" title="<span style='color: black'>
-				@php $codes = explode(' ', $tire->code); @endphp
-                            @foreach ($codes as $code)
-                            @if (isset($code_array[$code]))
-                            {!! $code_array[$code] . '<br>' !!}
+				                    @php $codes = explode(' ', $tire->code); @endphp
+                            @foreach ($codes as $code1)
+                            @if (isset($code_array[$code1]))
+                            {!! $code_array[$code1] . '<br>' !!}
                             @endif
                             @endforeach
                             @if (strpos($tire->code, 'DOT') !== false)
@@ -970,9 +389,7 @@
                           <td class="shopping-cart-col">
                             <div class="clearfix atc_div text-right">
                               <button class="cart-shopping-button" data-toggle="modal"
-                                      @hasrole(
-                              'administrators') data-target="#" @else data-target="#blockcart-modal"
-                              @endhasrole data-info="{{ $tire->tire_id }}"><i
+                                @hasrole('administrators') data-target="#" @else data-target="#blockcart-modal" @endhasrole data-info="{{ $tire->tire_id }}"><i
                                 class="material-icons">add_shopping_cart</i>
                               </button>
                             </div>
@@ -994,7 +411,7 @@
                         </tbody>
                       </table>
 
-                  </div>
+                  </h4>
 
                   {{--                                  <div class="table-top product_show_list">--}}
                   {{--                                    <table id="tires-table" class="table tires-table table-striped table-hover tablesorter">--}}
@@ -1107,541 +524,8 @@
 {{--                      <i class="material-icons"></i>--}}
 {{--                    </a>--}}
 {{--                  </div>--}}
-                </div>
+                </h4>
                 {{ $tires->links() }}
-                <div class="modal fade" id="mobileFilterModal" tabindex="-1" role="dialog"
-                     aria-labelledby="mobileFilterModalTitle" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <div id="search_filters" class="params">
-                          <input type="hidden" id="facet_all_val" value="Visi" title="">
-                          <form method="get" action="/{{$season_title}}/search">
-                          <div class="wrap">
-                            <div class="search-filter-loader">
-                              <div class="search-filter-loader-spinner">
-                                <div class="search-filter-loader-spinner"></div>
-                              </div>
-                            </div>
-                            <h4 class="text-uppercase h6 hidden-sm-down">
-                              <span id="search_filters_auto" class="params auto">Auto</span>
-                              <span id="search_filters_params" class="params active">Parametri</span>
-                            </h4>
-
-                            <div class="can-collapse">
-
-                              <span class="show_list active"><i class="material-icons "></i>Saraksts</span>
-                              <span class="show_grid"><i class="material-icons "></i>Bildes</span>
-                                      <div class="sidebar-top">
-
-                                        <section class="facet clearfix facet--0 facet-ind-0">
-                                          <h1 class="h6 facet-title hidden-sm-down">Ražotājs</h1>
-                                          <div class="title hidden-md-up" data-target="#facet_20294"
-                                               data-toggle="collapse">
-                                            <h1 class="h6 facet-title">Ražotājs</h1>
-
-                                          </div>
-                                          <ul id="facet_20294" class="collapse">
-                                            <li>
-                                              <div
-                                                class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                                                <input type="text" readonly="" class="select-title tire-brand"
-                                                       name="brand" value="Visi" title="">
-                                                <i class="material-icons float-xs-right"></i>
-                                                <div class="dropdown-menu">
-                                                  <a rel="nofollow" id="Visi" class="select-list">
-                                                    Visi
-                                                  </a>
-                                                  @foreach ($brands as $brand_id => $brand_title)
-                                                    <a rel="nofollow" class="select-list"
-                                                       id="{{ $brand_title->brand_title }}">
-                                                      {{ ucwords(strtolower($brand_title->brand_title)) }}
-                                                    </a>
-                                                  @endforeach
-                                                </div>
-                                              </div>
-                                            </li>
-                                          </ul>
-                                        </section>
-
-
-                                        <section class="facet clearfix facet--1 facet-ind-1">
-                                          <h1 class="h6 facet-title hidden-sm-down">Platums</h1>
-                                          <div class="title hidden-md-up" data-target="#facet_78843"
-                                               data-toggle="collapse" aria-expanded="true">
-                                            <h1 class="h6 facet-title">Platums</h1>
-
-                                          </div>
-
-
-                                          <ul id="facet_78843" class="collapse in">
-                                            <li>
-                                              <div
-                                                class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                                                <!-- pattern="/^\d+$/" maxlength="3" -->
-                                                <input type="text" readonly="readonly" class="select-title tire-width"
-                                                       name="d1" value="205" title="" autocomplete="true">
-                                                <i class="material-icons float-xs-right"></i>
-                                                <div class="dropdown-menu width">
-
-                                                  <a rel="nofollow" id="Visi" class="select-list">
-                                                    Visi
-                                                  </a>
-                                                  @foreach ($autoTiresD1 as $tire)
-                                                    <a rel="nofollow" class="select-list" id="{{ $tire->d1 }}">
-                                                      {{ $tire->d1 }}
-                                                    </a>
-                                                  @endforeach
-                                                </div>
-                                              </div>
-                                            </li>
-                                          </ul>
-                                        </section>
-
-
-                                        <section class="facet clearfix facet--2 facet-ind-2">
-                                          <h1 class="h6 facet-title hidden-sm-down">Augstums</h1>
-                                          <div class="title hidden-md-up" data-target="#facet_15402"
-                                               data-toggle="collapse" aria-expanded="true">
-                                            <h1 class="h6 facet-title">Augstums</h1>
-
-                                          </div>
-
-
-                                          <ul id="facet_15402" class="collapse in">
-                                            <li>
-                                              <div
-                                                class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                                                <input type="text" class="select-title tire-height" readonly="readonly"
-                                                       maxlength="2" pattern="/^\d+$/" name="d2" value="55" title=""
-                                                       autocomplete="false">
-                                                <i class="material-icons float-xs-right"></i>
-                                                <div class="dropdown-menu height">
-
-                                                  <a rel="nofollow" id="Visi" class="select-list">
-                                                    Visi
-                                                  </a>
-                                                  @foreach ($autoTiresD2 as $tire)
-                                                    <a rel="nofollow" class="select-list" id="{{ $tire->d2 }}">
-                                                      {{ $tire->d2 }}
-                                                    </a>
-                                                  @endforeach
-                                                </div>
-                                              </div>
-                                            </li>
-                                          </ul>
-                                        </section>
-
-
-                                        <section class="facet clearfix facet--3 facet-ind-3">
-                                          <h1 class="h6 facet-title hidden-sm-down">Diametrs</h1>
-                                          <div class="title hidden-md-up" data-target="#facet_24954"
-                                               data-toggle="collapse" aria-expanded="true">
-                                            <h1 class="h6 facet-title">Diametrs</h1>
-
-                                          </div>
-
-
-                                          <ul id="facet_24954" class="collapse in">
-                                            <li>
-                                              <div
-                                                class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                                                <input type="text" class="select-title tire-radius" readonly="readonly"
-                                                       name="d3" maxlength="2" pattern="/^\d+$/" value="16" title=""
-                                                       autocomplete="false">
-                                                <i class="material-icons float-xs-right"></i>
-                                                <div class="dropdown-menu radius">
-                                                  @foreach ($autoTiresD3 as $tire)
-                                                    <a rel="nofollow" class="select-list" id="{{ $tire->d3 }}">
-                                                      {{ $tire->d3 }}
-                                                    </a>
-                                                  @endforeach
-                                                </div>
-                                              </div>
-                                            </li>
-                                          </ul>
-
-                                        </section>
-                                        <section class="facet clearfix">
-                                          <button id="autofind_sub" type="submit">
-                                            Meklēt <i class="material-icons search"></i>
-                                          </button>
-                                        </section>
-
-                                      </div>
-                            </div>
-                          </div>
-                          <div class="wrap">
-                            <div class="sidebar-bottom">
-                              <h3 class="text-uppercase h6 hidden-sm-down">Filtrs</h3>
-{{--                              <section class="facet clearfix facet--availability">--}}
-{{--                                <h1 class="h6 facet-title hidden-sm-down">Atlase</h1>--}}
-{{--                                <ul class="collapse">--}}
-{{--                                  <li class="show-selected-checkbox-li">--}}
-{{--                                    <label class="facet-label" for="show-selected-checkbox"--}}
-{{--                                           style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">--}}
-{{--                                    <span class="custom-checkbox">--}}
-{{--                                      <input type="checkbox" value="only_selected" class="tire-table-checkbox"--}}
-{{--                                             id="show-selected-checkbox" name="product_ids[]" title="" disabled="">--}}
-{{--                                      <span class="ps-shown-by-js">--}}
-{{--                                        <i class="material-icons checkbox-checked"></i>--}}
-{{--                                      </span>--}}
-{{--                                    </span>--}}
-{{--                                      <span>Rādīt izvēlētos</span>--}}
-{{--                                    </label>--}}
-{{--                                  </li>--}}
-{{--                                </ul>--}}
-{{--                                <h1 class="h6 facet-title hidden-sm-down">Pieejamība</h1>--}}
-{{--                                <ul id="facet_availability" class="collapse">--}}
-{{--                                  <li>--}}
-{{--                                    <label class="facet-label" for="facet_availability_0"--}}
-{{--                                           style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">--}}
-{{--                                    <span class="custom-checkbox">--}}
-{{--                                      <input id="facet_availability_0" class="green" type="checkbox" data-search-url="#"--}}
-{{--                                             value="green" data-for="dot" data-value="green" data-color="green"--}}
-{{--                                             title="">--}}
-{{--                                      <span class="ps-shown-by-js">--}}
-{{--                                        <i class="material-icons checkbox-checked"></i>--}}
-{{--                                      </span>--}}
-{{--                                    </span>--}}
-{{--                                      Pieejams--}}
-{{--                                      <span class="dot green" style="float:right;margin-top: 3px;"></span>--}}
-{{--                                    </label>--}}
-{{--                                  </li>--}}
-{{--                                  <li>--}}
-{{--                                    <label class="facet-label" for="facet_availability_1"--}}
-{{--                                           style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">--}}
-{{--                                      <span class="custom-checkbox">--}}
-{{--                                        <input id="facet_availability_1" class="yellow" type="checkbox"--}}
-{{--                                               data-search-url="#" value="yellow" data-for="dot" data-value="yellow"--}}
-{{--                                               data-color="yellow" title="">--}}
-{{--                                        <span class="ps-shown-by-js"><i--}}
-{{--                                            class="material-icons checkbox-checked"></i></span>--}}
-{{--                                      </span>--}}
-{{--                                      Pasūtāms--}}
-{{--                                      <span class="dot yellow" style="float:right;margin-top: 3px;"></span>--}}
-{{--                                    </label>--}}
-{{--                                  </li>--}}
-{{--                                  <li>--}}
-{{--                                    <label class="facet-label" for="facet_availability_2"--}}
-{{--                                           style="width: 100%;text-align: left;cursor: pointer">--}}
-{{--                                      <span class="custom-checkbox">--}}
-{{--                                        <input id="facet_availability_2" class="red" type="checkbox" data-search-url="#"--}}
-{{--                                               value="red" data-for="dot" data-value="red" data-color="red" title="">--}}
-{{--                                        <span class="ps-shown-by-js"><i--}}
-{{--                                            class="material-icons checkbox-checked"></i></span>--}}
-{{--                                      </span>--}}
-{{--                                      Zvaniet!--}}
-{{--                                      <span class="dot red" style="float:right;margin-top: 3px;"></span>--}}
-{{--                                    </label>--}}
-{{--                                  </li>--}}
-{{--                                </ul>--}}
-{{--                              </section>--}}
-                              <section class="facet clearfix facet--4">
-                                <h1 class="h6 facet-title hidden-sm-down facet-hover">Kods<span
-                                    class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
-                                <div style="display: flex;" class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
-                                  <h1 class="h6 facet-title">Kods</h1>
-                                  <span style="margin-top: -5px; transform: rotate(180deg);" class="material-icons popup-code-dropdown">keyboard_arrow_down</span>
-                                </div>
-
-                                <ul id="facet_code" class="collapse" style="display: block; border: 1px solid transparent;">
-                                  <li data-label="XL">
-                                    <label class="facet-label" for="facet_for_xl">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_xl" data-search-url="" name="code[]" value="XL" data-for="prod-code"
-                                   data-value="XL" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">XL</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="RSC">
-                                    <label class="facet-label" for="facet_for_rsc">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_rsc" data-search-url="" name="code[]" value="RSC" data-for="prod-code"
-                                   data-value="RSC" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">RSC</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="MFS">
-                                    <label class="facet-label" for="facet_for_mfs">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_mfs" data-search-url="" name="code[]" value="MFS" data-for="prod-code"
-                                   data-value="MFS" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">MFS</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="CURRYEAR">
-                                    <label class="facet-label" for="facet_for_curryear">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_curryear" data-search-url="" name="code[]" value="CURRYEAR"
-                                   data-for="prod-code" data-value="CURRYEAR" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">Šī gada</a>
-                                    </label>
-                                  </li>
-                                </ul>
-                              </section>
-
-
-                              <section class="facet clearfix facet--4">
-                                <h1 class="h6 facet-title hidden-sm-down facet-hover">Tips<span
-                                    class="material-icons code-dropdown">keyboard_arrow_down</span></h1>
-                                <div style="display: flex;" class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
-                                  <h1 class="h6 facet-title">Tips</h1>
-                                  <span style="margin-top: -5px; transform: rotate(180deg);" class="material-icons popup-code-dropdown">keyboard_arrow_down</span>
-                                </div>
-
-                                <ul id="facet_code" class="collapse" style="display: block; border: 1px solid transparent;">
-                                  <li data-label="M+S">
-                                    <label class="facet-label" for="facet_for_ms">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_ms" data-search-url="" name="types[]" value="1" data-for="prod-code"
-                                   data-value="M+S" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">M+S</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="Studdable">
-                                    <label class="facet-label" for="facet_for_studdable">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_studdable" data-search-url="" name="types[]" value="2"
-                                   data-for="prod-code" data-value="Studdable" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">Radžojama</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="Studs">
-                                    <label class="facet-label" for="facet_for_studs">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_studs" data-search-url="" name="types[]" value="3" data-for="prod-code"
-                                   data-value="Studs" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">Ar radzēm</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="Winter">
-                                    <label class="facet-label" for="facet_for_winter">
-                          <span class="custom-checkbox">
-                            <input id="facet_for_winter" data-search-url="" name="types[]" value="4"
-                                   data-for="prod-code" data-value="Winter" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">Ziemas</a>
-                                    </label>
-                                  </li>
-                                </ul>
-                              </section>
-
-
-                              <section class="facet clearfix facet--8">
-                                <h1 class="h6 facet-title hidden-sm-down facet-hover">Degvielas ekonomija <span
-                                    class="material-icons fuel-efficiency-dropdown">keyboard_arrow_down</span></h1>
-                                <div style="display: flex;" class="title hidden-md-up" data-target="#facet_70638" data-toggle="collapse">
-                                  <h1 class="h6 facet-title">Degvielas ekonomija</h1>
-                                  <span style="margin-top: -5px;" class="material-icons popup-code-dropdown">keyboard_arrow_down</span>
-                                </div>
-                                <ul id="facet_fuel_eco" class="collapse" style="display: none; border: 1px solid transparent;">
-                                  <li data-label="F">
-                                    <label class="facet-label" for="facet_fuel_eco_f">
-                          <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_f" data-search-url="" name="fuel[]" value="F"
-                                   data-for="fuel_efficiency" data-value="F" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">F</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="E">
-                                    <label class="facet-label" for="facet_fuel_eco_e">
-                          <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_e" data-search-url="" name="fuel[]" value="E"
-                                   data-for="fuel_efficiency" data-value="E" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">E</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="B">
-                                    <label class="facet-label" for="facet_fuel_eco_b">
-                          <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_b" data-search-url="" name="fuel[]" value="B"
-                                   data-for="fuel_efficiency" data-value="B" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">B</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="C">
-                                    <label class="facet-label" for="facet_fuel_eco_c">
-                          <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_c" data-search-url="" name="fuel[]" value="C"
-                                   data-for="fuel_efficiency" data-value="C" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">C</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="A">
-                                    <label class="facet-label" for="facet_fuel_eco_a">
-                          <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_a" data-search-url="" name="fuel[]" value="A"
-                                   data-for="fuel_efficiency" data-value="A" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">A</a>
-                                    </label>
-                                  </li>
-                                </ul>
-                              </section>
-
-
-                              <section class="facet clearfix facet--9">
-                                <h1 class="h6 facet-title hidden-sm-down facet-hover">Slapjš segums <span
-                                    class="material-icons wet-surface-dropdown">keyboard_arrow_down</span></h1>
-                                <div style="display: flex;" class="title hidden-md-up" data-target="#facet_8079" data-toggle="collapse">
-                                  <h1 class="h6 facet-title">Slapjš segums</h1>
-                                  <span style="margin-top: -5px;" class="material-icons popup-code-dropdown">keyboard_arrow_down</span>
-                                </div>
-
-
-                                <ul id="facet_wet" class="collapse" style="display: none; border: 1px solid transparent;">
-                                  <li data-label="F">
-                                    <label class="facet-label" for="facet_wet_f">
-                          <span class="custom-checkbox">
-                            <input id="facet_wet_f" data-search-url="" name="wet[]" value="F" data-for="wet_grip"
-                                   data-value="F" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">F</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="E">
-                                    <label class="facet-label" for="facet_wet_e">
-                          <span class="custom-checkbox">
-                            <input id="facet_wet_e" data-search-url="" name="wet[]" value="E" data-for="wet_grip"
-                                   data-value="E" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">E</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="B">
-                                    <label class="facet-label" for="facet_wet_b">
-                          <span class="custom-checkbox">
-                            <input id="facet_wet_b" data-search-url="" name="wet[]" value="B" data-for="wet_grip"
-                                   data-value="B" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">B</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="C">
-                                    <label class="facet-label" for="facet_wet_c">
-                          <span class="custom-checkbox">
-                            <input id="facet_wet_c" data-search-url="" name="wet[]" value="C" data-for="wet_grip"
-                                   data-value="C" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">C</a>
-                                    </label>
-                                  </li>
-                                  <li data-label="A">
-                                    <label class="facet-label" for="facet_wet_a">
-                          <span class="custom-checkbox">
-                            <input id="facet_wet_a" data-search-url="" name="wet[]" value="A" data-for="wet_grip"
-                                   data-value="A" type="checkbox" title="">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-
-                                      <a href="javascript:;" class="_gray-darker search-link js-search-link"
-                                         rel="nofollow">A</a>
-                                    </label>
-                                  </li>
-                                </ul>
-                              </section>
-                              <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i>
-                              </button>
-
-                            </div>
-                          </div>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
               </div>
               <div id="js-product-list-bottom">
@@ -1649,6 +533,21 @@
               </div>
             </section>
           </section>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="mobileFilterModal" tabindex="-1" role="dialog"
+       aria-labelledby="mobileFilterModalTitle" aria-hidden="true">
+    <div class="modal-dialog mobile-filter-modal" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          @include('components.autotirefilter')
         </div>
       </div>
     </div>
