@@ -15,7 +15,16 @@
 {{--  </pre>--}}
 
     <div class="container">
-
+      @if (session('success'))
+        <div class="alert alert-success">
+          {{ session('success') }}
+        </div>
+      @endif
+      @if (session('danger'))
+        <div class="alert alert-danger">
+          {{ session('danger') }}
+        </div>
+      @endif
       <div class="form-group row">
         <label class="col-md-3 form-control-label text-left text-md-right">
           <h3>Pasūtījuma informācija</h3>
@@ -44,7 +53,7 @@
           Pasūtīšanas datums
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="order_date" type="text" value="{{$order->created_at}}">
+          <input class="form-control" name="order_date" type="text" disabled value="{{$order->created_at}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
@@ -71,7 +80,15 @@
           Kopsumma
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="total" type="text" value="{{$order->price}}">
+          @php
+            $pay_enum = [
+              0 => '',
+              1 => 'Apmaksa saņemšanas brīdī',
+              2 => 'Bankas pārskaitījums',
+              3 => 'Tiešsaistes apmaksa',
+            ];
+          @endphp
+          <input class="form-control" name="total" type="text" disabled value="{{$order->price + (($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2)) }} &euro; - {{ $pay_enum[$order->payment] }}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
@@ -104,7 +121,7 @@
           E-pasts
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="email" type="email" value="{{$userData->email}}">
+          <a href="mailto:{{$userData->email}}" class="form-control" style="color: #321fdb">{{$userData->email}}</a>
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
@@ -131,15 +148,15 @@
             <option value="{{ $office->office_id }}" @if (isset($userData->fitting_address) && $userData->fitting_address == $office->office_id) selected="" @endif>{{ $office->shipping }}</option>
 	    @endforeach
 	    @if (isset($userData->shipping_city))
-		@switch($userData->shipping_city)
-			@case(1)
-			@case(2)
-			@case(3)
-	                  <option value="3" selected="">Piegāde</option>
-			@break
-			@default
-			  <option value="3">Piegāde</option>
-		@endswitch
+        @switch($userData->shipping_city)
+          @case(1)
+          @case(2)
+          @case(3)
+            <option value="3" selected="">Piegāde</option>
+          @break
+          @default
+            <option value="3">Piegāde</option>
+        @endswitch
 	    @else
 	    	<option value="3">Piegāde</option>
 	    @endif
@@ -156,16 +173,16 @@
                 Piegādes adrese
            </label>
 	   <div class="col-md-2 col-sm">
-		<select id="select" class="custom-select" name="shipping_city">
-	   	<option value="1" @if (isset($userData->shipping_city) && $userData->shipping_city == 1) selected="" @endif>Rīga</option>
-	   	<option value="2" @if (isset($userData->shipping_city) && $userData->shipping_city == 2) selected="" @endif>Salaspils</option>
-	   	<option value="3" @if (isset($userData->shipping_city) && $userData->shipping_city == 3) selected="" @endif>Cits</option>
-		</select>
+      <select id="select" class="custom-select" name="shipping_city">
+        <option value="1" @if (isset($userData->shipping_city) && $userData->shipping_city == 1) selected="" @endif>Rīga</option>
+        <option value="2" @if (isset($userData->shipping_city) && $userData->shipping_city == 2) selected="" @endif>Salaspils</option>
+        <option value="3" @if (isset($userData->shipping_city) && $userData->shipping_city == 3) selected="" @endif>Cits</option>
+      </select>
 	   </div>
 	   <div class="col-md-4">
-		<input class="form-control" name="shipping_address" type="text" @if (isset($userData->shipping_address)) value="{{ $userData->shipping_address }}" @endif>
+		  <input class="form-control" name="shipping_address" type="text" @if (isset($userData->shipping_address)) value="{{ $userData->shipping_address }}" @endif>
 	   </div>
-        </div>
+    </div>
 
 
 {{--      @php echo $order @endphp--}}
@@ -338,18 +355,17 @@
           @foreach ($tires as $tire)
     	    @php
 	    if (isset($tire->article)) {
-		$tireObj = App\Models\Autotire::where('article', $tire->article)->first();
+		  $tireObj = App\Models\Autotire::where('article', $tire->article)->first();
                 if (!$tireObj) $tireObj = App\Models\Moto::where('article', $tire->article)->first();
                 if (!$tireObj) $tireObj = App\Models\Quadr::where('article', $tire->article)->first();
 	    }
-
 
 
 	    @endphp
             <tr id="confirm-table">
               <th style="border-color: #c6c6c6;" scope="row">{{$tire->tire_id}}</th>
 	      @if (isset($tireObj))
-                <td style="border-color: #c6c6c6;">{!! '<b>' . $tireObj->fullSize . '</b> ' . $tire->title!!}</td>
+                <td style="border-color: #c6c6c6;"><a target="_blank" href="{{ $tireObj->link }}">{!! $tireObj->fullName!!}</a></td>
               @else
                 <td style="border-color: #c6c6c6;">{!! $tire->title!!}</td>
 	      @endif

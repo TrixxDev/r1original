@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Records;
 
 use App\Helper\CMailer;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -398,7 +399,9 @@ class RecordController extends Controller
           'longPurpose' => $purposeLong
         ];
 
-        //Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($details));
+        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+        return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
+	}
 //        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
 //        $mailer = new CMailer();
 //        $mailer->addRecipient($form->ownerEmail);
@@ -500,10 +503,54 @@ class RecordController extends Controller
         $queue->loadWorkingDay($slot->date);
         $queue->loadSlots($slot->date, true);
 
+        $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slot->iorder),true);
         $fmtDate = date('d.m.Y',strtotime($slot->date));
         $dayOfWeek2 = $_weekDays2[date('N', strtotime($slot->date.' 00:00:00'))];
 
         $slot->save();
+
+        switch ($form->purpose){
+          case 0:{
+            $purpose = '';
+            $purposeLong = '';
+            break;
+          }
+          case 1:{
+            $purpose = 'riepu nomaiņa';
+            $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri Jums būs līdzi';
+            break;
+          }
+          case 2:{
+            $purpose = 'riepu nomaiņa';
+            $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri glabājas pie mums';
+            break;
+          }
+          case 3:{
+            $purpose = 'riepu nomaiņa';
+            $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
+            break;
+          }
+          case 4:{
+            $purpose = 'kondicioniera uzpilde';
+            $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
+            break;
+          }
+        }
+
+        $details = [
+          'car' => $form->vehicleMake,
+          'make' => $form->vehicleModel,
+          'purpose' => $purpose,
+          'office' => $office->title,
+          'day' => $dayOfWeek2,
+          'date' => $fmtDate,
+          'time' => $time,
+          'longPurpose' => $purposeLong
+        ];
+
+        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+        return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
+	}
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
 
@@ -668,28 +715,38 @@ class RecordController extends Controller
                     $slotDevice = '';
                     $phone = '';
                     $purpose = '';
+                    $storageBin = '';
                     $slotText = $slot->comment . '';
+                    $created = 'Apmeklētājs';
+                    $edited = '';
+                    $lastAction = (is_null($slot->edittime)) ? $slot->createtime : $slot->edittime;
+                    $lastAction = (is_null($lastAction)) ? '' : $lastAction;
                     break;
                   }
                   case SLOT_STATUS_TAKEN:
                   {
                     $takenBy = json_decode($slot->takenby);
-                    if ($slot->is_mobile == 1) {
-                      $slotDevice = 'Mobīlā ierīce';
-                    } else {
-                      $slotDevice = 'Dators';
-                    }
-                    $phone = '';
-                    if ($takenBy->ownerPhone) {
-                      $phone = $takenBy->ownerPhone;
-                    }
-                    if (!$takenBy->purpose) {
-                      $purpose = '';
-                      $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-                    } else {
-                      $service = Service::where('service_id', $takenBy->purpose)->first();
-                      $purpose = $service->pdf_title;
-                      $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                    $slotDevice = ($slot->is_mobile == 1) ? 'Mobīlā ierīce' : 'Dators';
+                    $phone = ($takenBy->ownerPhone) ? $takenBy->ownerPhone : '';
+                    $storageBin = (isset($takenBy->storageBin) && !empty($takenBy->storageBin)) ? $takenBy->storageBin : '';
+                    $createduser = User::where('id', $slot->createuser)->first();
+                    $editeduser = User::where('id', $slot->edituser)->first();
+                    $created = ($createduser) ? $createduser->fullName : 'Apmeklētājs';
+                    $edited = ($editeduser) ? $editeduser->fullName : '';
+                    $lastAction = (is_null($slot->edittime)) ? $slot->createtime : $slot->edittime;
+                    $lastAction = (is_null($lastAction)) ? '' : $lastAction;
+		    if (!$takenBy->vehicleMake && !$takenBy->vehicleModel) {
+		      $purpose = '';
+		      $slotText = '';
+		    } else {
+		      if (!isset($takenBy->purpose)) {
+		        $purpose = '';
+                        $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                      } else {
+                        $service = Service::where('service_id', $takenBy->purpose)->first();
+                        $purpose = $service->pdf_title;
+                        $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		      }
                     }
                     break;
                   }
@@ -698,7 +755,12 @@ class RecordController extends Controller
                     $slotDevice = '';
                     $phone = '';
                     $purpose = '';
+                    $storageBin = '';
                     $slotText = $slot->comment;
+                    $created = 'Apmeklētājs';
+                    $edited = '';
+                    $lastAction = (is_null($slot->edittime)) ? $slot->createtime : $slot->edittime;
+                    $lastAction = (is_null($lastAction)) ? '' : $lastAction;
                     break;
                   }
                   case SLOT_STATUS_CLOSED:
@@ -706,12 +768,17 @@ class RecordController extends Controller
                     $slotDevice = '';
                     $phone = '';
                     $purpose = '';
+                    $storageBin = '';
                     if (trim($slot->comment) == '') {
                       $slotCaption = 'Slēgts!';
                     } else {
                       $slotCaption = $slot->comment;
                     }
                     $slotText = $slotCaption;
+                    $created = 'Apmeklētājs';
+                    $edited = '';
+                    $lastAction = (is_null($slot->edittime)) ? $slot->createtime : $slot->edittime;
+                    $lastAction = (is_null($lastAction)) ? '' : $lastAction;
                     break;
                   }
                 }
@@ -722,7 +789,11 @@ class RecordController extends Controller
                 $sheet->setCellValue('C1', 'Iekārta');
                 $sheet->setCellValue('D1', 'Numurs');
                 $sheet->setCellValue('E1', 'Pakalpojums');
-                $sheet->setCellValue('F1', 'Pieraksta info');
+                $sheet->setCellValue('F1', 'Talona nr.');
+                $sheet->setCellValue('G1', 'Pieraksta info');
+                $sheet->setCellValue('H1', 'Izveidots');
+                $sheet->setCellValue('I1', 'Labots');
+                $sheet->setCellValue('J1', 'Pēdējā darbība');
 
 
                 switch ($slot->queue_id) {
@@ -754,7 +825,11 @@ class RecordController extends Controller
                 $sheet->setCellValue('C' . $b, $slotDevice);
                 $sheet->setCellValue('D' . $b, $phone);
                 $sheet->setCellValue('E' . $b, $purpose);
-                $sheet->setCellValue('F' . $b, $slotText);
+                $sheet->setCellValue('F' . $b, $storageBin);
+                $sheet->setCellValue('G' . $b, $slotText);
+                $sheet->setCellValue('H' . $b, $created);
+                $sheet->setCellValue('I' . $b, $edited);
+                $sheet->setCellValue('J' . $b, $lastAction);
 
                 $b++;
 
@@ -766,29 +841,39 @@ class RecordController extends Controller
                       $slotDevice2 = '';
                       $phone2 = '';
                       $purpose2 = '';
+                      $storageBin2 = '';
                       $slotText2 = $slot->comment . '';
+                      $created2 = 'Apmeklētājs';
+                      $edited2 = '';
+                      $lastAction2 = (is_null($slot->edittime2)) ? $slot->createtime2 : $slot->edittime2;
+                      $lastAction2 = (is_null($lastAction2)) ? '' : $lastAction2;
                       break;
                     }
                     case SLOT_STATUS_TAKEN:
                     {
                       $takenBy = json_decode($slot->takenby2);
-                      if ($slot->is_mobile == 1) {
-                        $slotDevice2 = 'Mobīlā ierīce';
-                      } else {
-                        $slotDevice2 = 'Dators';
-                      }
-                      $phone2 = '';
-                      if ($takenBy->ownerPhone) {
-                        $phone2 = $takenBy->ownerPhone;
-                      }
-                      if (!$takenBy->purpose) {
-                        $purpose2 = '';
-                        $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-                      } else {
-                        $service = Service::where('service_id', $takenBy->purpose)->first();
-                        $purpose2 = $service->pdf_title;
-			                  $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-		                  }
+                      $slotDevice2 = ($slot->is_mobile == 1) ? 'Mobīlā ierīce' : 'Dators';
+                      $phone2 = ($takenBy->ownerPhone) ? $takenBy->ownerPhone : '';
+                      $storageBin2 = (isset($takenBy->storageBin) && !empty($takenBy->storageBin)) ? $takenBy->storageBin : '';
+                      $createduser2 = User::where('id', $slot->createuser2)->first();
+                      $editeduser2 = User::where('id', $slot->edituser2)->first();
+                      $created2 = ($createduser2) ? $createduser2->fullName : 'Apmeklētājs';
+                      $edited2 = ($editeduser2) ? $editeduser2->fullName : '';
+                      $lastAction2 = (is_null($slot->edittime2)) ? $slot->createtime2 : $slot->edittime2;
+                      $lastAction2 = (is_null($lastAction2)) ? '' : $lastAction2;
+                      if (!$takenBy->vehicleMake && !$takenBy->vehicleModel) {
+			$purpose2 = '';
+			$slotText2 = '';
+		      } else {
+  		        if (!$takenBy->purpose) {
+                          $purpose2 = '';
+                          $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+                        } else {
+                          $service = Service::where('service_id', $takenBy->purpose)->first();
+                          $purpose2 = $service->pdf_title;
+			  $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		        }
+		      }
                       break;
                     }
                     case SLOT_STATUS_OFFER:
@@ -796,7 +881,12 @@ class RecordController extends Controller
                       $slotDevice2 = '';
                       $phone2 = '';
                       $purpose2 = '';
+                      $storageBin2 = '';
                       $slotText2 = $slot->comment;
+                      $created2 = 'Apmeklētājs';
+                      $edited2 = '';
+                      $lastAction2 = (is_null($slot->edittime2)) ? $slot->createtime2 : $slot->edittime2;
+                      $lastAction2 = (is_null($lastAction2)) ? '' : $lastAction2;
                       break;
                     }
                     case SLOT_STATUS_CLOSED:
@@ -804,12 +894,17 @@ class RecordController extends Controller
                       $slotDevice2 = '';
                       $phone2 = '';
                       $purpose2 = '';
+                      $storageBin2 = '';
                       if (trim($slot->comment) == '') {
                         $slotCaption = 'Sl ^sgts!';
                       } else {
                         $slotCaption = $slot->comment;
                       }
                       $slotText2 = $slotCaption;
+                      $created2 = 'Apmeklētājs';
+                      $edited2 = '';
+                      $lastAction2 = (is_null($slot->edittime2)) ? $slot->createtime2 : $slot->edittime2;
+                      $lastAction2 = (is_null($lastAction2)) ? '' : $lastAction2;
                       break;
                     }
 
@@ -820,7 +915,11 @@ class RecordController extends Controller
                   $sheet->setCellValue('C' . ($b), $slotDevice2);
                   $sheet->setCellValue('D' . ($b), $phone2);
                   $sheet->setCellValue('E' . ($b), $purpose2);
-                  $sheet->setCellValue('F' . ($b), $slotText2);
+                  $sheet->setCellValue('F' . ($b), $storageBin2);
+                  $sheet->setCellValue('G' . ($b), $slotText2);
+                  $sheet->setCellValue('H' . ($b), $created2);
+                  $sheet->setCellValue('I' . ($b), $edited2);
+                  $sheet->setCellValue('J' . ($b), $lastAction2);
                 }
 
 		            $b++;
@@ -837,12 +936,19 @@ class RecordController extends Controller
       // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); //
     //$pdf->Cell($w[0],10,Office::timeByInterval($slotTime),1); // $pdf->Cell($w[1],10,$row['takenby'],1,0,'L'); // $pdf->ln(); // }
     // Closing line // $pdf->Cell(array_sum($w),0,'','T');
-    $sheet->setAutoFilter('A:F');
+    $sheet->setAutoFilter('A:J');
     $lastRow = $sheet->getHighestRow();
-    $sheet->getStyle('A2:E' . $lastRow)->getAlignment()->setHorizontal('center');
-    $sheet->getColumnDimension('C')->setWidth(14);
-    $sheet->getColumnDimension('D')->setWidth(15);
-    $sheet->getColumnDimension('E')->setWidth(15);
+    $sheet->getStyle('A2:F' . $lastRow)->getAlignment()->setHorizontal('center');
+    $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
+    $cellIterator->setIterateOnlyExistingCells(true);
+    foreach ($cellIterator as $cell) {
+      if ($cell->getColumn() == 'F') continue;
+      $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+    }
+//    $sheet->getColumnDimension('E')->setWidth(15);
+    $sheet->getColumnDimension('F')->setWidth(12);
+//    $sheet->getColumnDimension('C')->setWidth(14);
+//    $sheet->getColumnDimension('D')->setWidth(15);
     $writer = new Xlsx($spreadsheet);
     $filename = 'pieraksts.xlsx';
 

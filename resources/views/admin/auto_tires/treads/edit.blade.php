@@ -7,7 +7,7 @@
             <div class="card">
                 <form class="form-horizontal" action="{{ route('admin.auto.treads.update', $tread->tread_id) }}" method="post" enctype="multipart/form-data">
                     <div class="card-header">
-                        {{ 'Labot modeli - ' . $tread->title }}
+                        {{ 'Labot modeli - ' . $tread->t_title }}
                         <div style="float: right; "></div>
                     </div>
                     <div class="card-body">
@@ -16,7 +16,7 @@
                             <label class="col-md-3 col-form-label" for="text-input">Modeļa nosaukums</label>
                             <div class="col-md-9">
                                 <input class="form-control" id="text-input" type="text" name="tread_title" placeholder="Modeļa nosaukums"
-                                       @if ($tread->title) value="{{ $tread->title }}" @endif>
+                                @if ($tread->t_title) value="{{ $tread->t_title }}" @endif>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -41,7 +41,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="description-input">Modeļa apraksts</label>
                             <div class="col-md-9">
-                                <textarea name="tread_desc" class="form-control" id="description-input" cols="30" rows="10">@if ($tread->comment) {!! $tread->comment !!} @endif</textarea>
+                                <textarea name="tread_desc" class="form-control" id="description-input" cols="30" rows="10">@if ($tread->t_comment){!! str_ireplace(['<br>', '</br>', '<br />'], '', $tread->t_comment) !!}@endif</textarea>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -53,11 +53,7 @@
                         <div class="form-group row">
                             <div class="col-md-3"></div>
                             <div class="preview-image col-md-9">
-                                @if ($tread->image)
-                                    <img style="width: 300px; height: 300px;" src="{{ $tread->image }}">
-                                @else
-                                    <img style="width: 300px; height: 300px;" src="/storage/app/public/no_image.png">
-                                @endif
+                              {!! \App\Helper\Image::showGrid('auto', $tread->tread_id, 'width: 300px; height: 300px;') !!}
                             </div>
                         </div>
                     </div>

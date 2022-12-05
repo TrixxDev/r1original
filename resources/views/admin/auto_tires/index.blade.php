@@ -61,7 +61,6 @@
 {{--                                  {{ dd($tread) }}--}}
                                   {!! App\Helper\Image::showGrid('auto', $tread->tread_id, 'width: 300px; margin-bottom: 20px;') !!}
 
-                                  @if (isset($tread->image))
                                   <form action="{{ route('admin.auto.tires.image', $tread->tread_id) }}" method="post" enctype="multipart/form-data">
                                       @csrf
                                       <div class="row">
@@ -76,7 +75,6 @@
                                           </div>
                                       </div>
                                   </form>
-                                  @endif
                                 @endif
                             </div>
                             @if (isset($tread))

@@ -2,6 +2,7 @@
 
   namespace App\Http\Controllers\Admin;
 
+  use App\Helper\Image;
   use App\Http\Controllers\Controller;
   use App\Models\Autotire;
   use App\Models\Code;
@@ -292,18 +293,19 @@
       $dom->formatOutput = true;
       $xml_file_name = $_SERVER['DOCUMENT_ROOT'] . '/xml/salidzini.xml';
       $root = $dom->createElement('root');
+      $file = file_get_contents('xml/salidzini.xml');
       foreach ($tires as $tire) {
         if (!isset($tire->tread->season)) {
           continue;
         }
         $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', $tire->title . ' ' . $tire->fullSize);
+        $child_node_title = $dom->createElement('name', $tire->fullName);
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('price', $tire->offerPrice);
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('link', $tire->link);
         $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', 'https://' . $tire->image);
+        $child_node_title = $dom->createElement('image', Image::showAd('auto', $tire->make_id));
         $item->appendChild($child_node_title);
         if ($tire->tread->season === 1) {
           $child_node_title = $dom->createElement('category', 'Vasaras riepas >> R' . $tire->d3);
@@ -333,7 +335,7 @@
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('link', $tire->link);
         $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', 'https://' . $tire->image);
+        $child_node_title = $dom->createElement('image', Image::showAd('moto', $tire->make_id));
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('category', 'Motociklu riepas');
         $item->appendChild($child_node_title);
@@ -354,7 +356,7 @@
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('link', $tire->link);
         $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', 'https://' . $tire->image);
+        $child_node_title = $dom->createElement('image', Image::showAd('quadr', $tire->make_id));
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('category', 'Kvadraciklu riepas');
         $item->appendChild($child_node_title);
@@ -367,7 +369,8 @@
         $root->appendChild($item);
         $dom->appendChild($root);
       }
-      $dom->save($xml_file_name);
+      file_put_contents($xml_file_name, $dom->saveXML());
+      //$dom->save($xml_file_name);
       return $dom->saveXML();
 
     }
@@ -379,6 +382,7 @@
       $quadr = Quadr::with('tread')->where('visible_users', 0)->get();
       $xml = '';
       $xml_file_name = $_SERVER['DOCUMENT_ROOT'] . '/xml/kurpirkt.xml';
+      $file = file_get_contents('xml/kurpirkt.xml');
       foreach ($tires as $tire) {
         if (!isset($tire->tread->season)) {
           continue;
@@ -388,7 +392,7 @@
         $category = 'Auto piederumi > ' . (@$tire->tread->season == 1) ? 'Vasaras riepas' : 'Ziemas riepas';
         $category .= ' > ' . $tire->d3;
         $link = $tire->link;
-        $image = $tire->image;
+        $image = Image::showAd('auto', $tire->make_id);
         $xml .= "{$name} || {$price} || {$link} || {$image} || {$category}\n";
       }
       foreach ($moto as $tire) {
@@ -396,7 +400,7 @@
         $price = $tire->offerPrice;
         $category = 'Auto piederumi > Motociklu riepas';
         $link = $tire->link;
-        $image = $tire->image;
+        $image = Image::showAd('moto', $tire->make_id);
         $xml .= "{$name} || {$price} || {$link} || {$image} || {$category}\n";
       }
       foreach ($quadr as $tire) {
@@ -404,7 +408,7 @@
         $price = $tire->offerPrice;
         $category = 'Auto piederumi > Kvadraciklu riepas';
         $link = $tire->link;
-        $image = $tire->image;
+        $image = Image::showAd('quadr', $tire->make_id);
         $xml .= "{$name} || {$price} || {$link} || {$image} || {$category}\n";
       }
       $xml .= '</root>';

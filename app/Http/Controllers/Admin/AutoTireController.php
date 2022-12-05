@@ -203,9 +203,16 @@ class AutoTireController extends Controller
           }
         }
 
-        $tires = Autotire::with('tread')->where('make_id', $request->tread_id)->get();
+        $tires = Autotire::with('tread')
+                  ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+                  ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+                  ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
+                  ->where('make_id', $request->tread_id)
+                  ->get();
         $tread = Autotread::where('tread_id', $request->tread_id)->first();
+        if (!$tread) return redirect(route('admin.auto.tires'));
         $brand = Autobrand::where('brand_id', $tread->brand_id)->first();
+        if (!$brand) return redirect(route('admin.auto.tires'));
         $brands = Autobrand::orderBy('title', 'ASC')->get();
         $treads = Autotread::orderBy('t_title', 'ASC')->get();
 
@@ -306,42 +313,34 @@ class AutoTireController extends Controller
     {
         if ($request->hasFile('tread_image')) {
             $image      = $request->file('tread_image');
-            $fileName   = $id . '.' . $image->getClientOriginalExtension();
-            $fileNameSmall   = $id . '-s.' . $image->getClientOriginalExtension();
-            $fileNameMed   = $id . '-n.' . $image->getClientOriginalExtension();
-            $fileNameLarge   = $id . '-o.' . $image->getClientOriginalExtension();
+            $fileName   = $id;
+            $fileNameSmall   = $id . '-s';
+            $fileNameMed   = $id . '-n';
+            $fileNameLarge   = $id . '-o';
 //            dd($image);
-            Image::make($image->getRealPath())->save('public/storage/auto/tread/' . $fileName);
+            Image::make($image->getRealPath())->save('public/storage/auto/tread/' . $fileName . '.jpg');
             Image::make($image->getRealPath())
               ->resize(100, 100, function($constraint) {
                 $constraint->aspectRatio();
-              })->save('public/storage/auto/tread/' . $fileNameSmall);
+              })->save('public/storage/auto/tread/' . $fileNameSmall . '.jpg');
             Image::make($image->getRealPath())
               ->resize(200, 200, function($constraint) {
                 $constraint->aspectRatio();
-              })->save('public/storage/auto/tread/' . $fileNameMed);
+              })->save('public/storage/auto/tread/' . $fileNameMed . '.jpg');
             Image::make($image->getRealPath())
               ->resize(1500, 1500, function($constraint) {
                 $constraint->aspectRatio();
-              })->save('public/storage/auto/tread/' . $fileNameLarge);
-//            Storage::putFileAs('public/auto/tread/' . $fileName, (string)$image->encode('png', 95), $fileName);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameSmall, (string)$imageSmall->encode('png', 95), $fileNameSmall);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameMed, (string)$imageMed->encode('png', 95), $fileNameMed);
-//            Storage::putFileAs('public/auto/tread/' . $fileNameLarge, (string)$imageLarge->encode('png', 95), $fileNameLarge);
+              })->save('public/storage/auto/tread/' . $fileNameLarge . '.jpg');
         }
         return redirect()->back();
     }
 
     public function brands_list($paginate = 10)
     {
+        \Session::remove('search');
         if (is_numeric($paginate)) {
-            if (\Session::has('search')) {
-                $brands = Autobrand::orderBy('title', 'ASC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
-            } else {
-                $brands = Autobrand::orderBy('title', 'ASC')->paginate($paginate);
-            }
+            $brands = Autobrand::orderBy('title', 'ASC')->paginate($paginate);
         } else {
-            \Session::remove('search');
             return redirect(route('admin.auto.brands'));
         }
 
@@ -371,26 +370,33 @@ class AutoTireController extends Controller
 
     public function brand_store(Request $request)
     {
+
+        $breaks = array("<br />","<br>","<br/>");
+        $request->brand_desc = str_ireplace($breaks, "", $request->brand_desc);
+
         $brand = new Autobrand();
         $brand->timestamps = false;
         $brand->title = $request->brand_title;
         $brand->slug = \Str::slug($request->brand_title, '-');
-        $brand->save();
-
-        if ($request->hasFile('brand_image')) {
-            $brand_edit = Autobrand::findOrFail($brand->brand_id);
-            $brand_edit->timestamps = false;
-
-            $image      = $request->file('brand_image');
-            $fileName   = 'auto_' . $brand->brand_id . '.' . $image->getClientOriginalExtension();
-
-
-            Storage::disk('public')->putFileAs('brands', $image, $fileName);
-            $brand_edit->image = $fileName;
-            $brand_edit->save();
+        $brand->b_comment = nl2br($request->brand_desc);
+        if ($brand->save()) {
+          return redirect(route('admin.auto.brands'))->with('success', 'Brends veiksmīgi pievienots!');
+        } else {
+          return redirect(route('admin.auto.brands'))->with('danger', 'Notika kļūda, brends nav pievienots!');
         }
 
-        return redirect(route('admin.auto.brands'));
+//        if ($request->hasFile('brand_image')) {
+//            $brand_edit = Autobrand::findOrFail($brand->brand_id);
+//            $brand_edit->timestamps = false;
+//
+//            $image      = $request->file('brand_image');
+//            $fileName   = 'auto_' . $brand->brand_id . '.' . $image->getClientOriginalExtension();
+//
+//
+//            Storage::disk('public')->putFileAs('brands', $image, $fileName);
+//            $brand_edit->image = $fileName;
+//            $brand_edit->save();
+//        }
     }
 
     public function brand_edit($id)
@@ -402,20 +408,25 @@ class AutoTireController extends Controller
 
     public function brand_update(Request $request, $id)
     {
+
+        $breaks = array("<br />","<br>","<br/>");
+        $request->brand_desc = str_ireplace($breaks, "", $request->brand_desc);
+
         $brand = Autobrand::findOrFail($id);
         $brand->timestamps = false;
         $brand->title = $request->brand_title;
         $brand->slug = \Str::slug($request->brand_title, '-');
+        $brand->b_comment = nl2br($request->brand_desc);
 
-        if ($request->hasFile('brand_image')) {
-
-            $image      = $request->file('brand_image');
-            $fileName   = 'auto_' . $id . '.' . $image->getClientOriginalExtension();
-
-
-            Storage::disk('public')->putFileAs('brands', $image, $fileName);
-            $brand->image = $fileName;
-        }
+//        if ($request->hasFile('brand_image')) {
+//
+//            $image      = $request->file('brand_image');
+//            $fileName   = 'auto_' . $id . '.' . $image->getClientOriginalExtension();
+//
+//
+//            Storage::disk('public')->putFileAs('brands', $image, $fileName);
+//            $brand->image = $fileName;
+//        }
 
         $brand->save();
 
@@ -425,9 +436,12 @@ class AutoTireController extends Controller
     public function brand_delete(Request $request, $id)
     {
         $brand = Autobrand::findOrFail($id);
-        Storage::disk('public')->delete('brands/' . $brand->image);
-        $brand->delete();
-        return redirect()->back();
+//        Storage::disk('public')->delete('brands/' . $brand->image);
+        if ($brand->delete()) {
+          return redirect()->back()->with('success', 'Brends veiksmīgi izdzēsts!');
+        } else {
+          return redirect()->back()->with('danger', 'Notika kļūda, brends nav izdzēsts!');
+        }
     }
 
     /*
@@ -441,15 +455,10 @@ class AutoTireController extends Controller
     public function treads_list($paginate = 10)
     {
 
-
+        \Session::remove('search');
         if (is_numeric($paginate)) {
-            if (\Session::has('search')) {
-                $treads = Autotread::orderBy('tread_id', 'DESC')->where('t_title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
-            } else {
-                $treads = Autotread::orderBy('tread_id', 'DESC')->groupBy('tread_id')->paginate($paginate);
-            }
+            $treads = Autotread::orderBy('tread_id', 'DESC')->paginate($paginate);
         } else {
-            \Session::remove('search');
             return redirect(route('admin.auto.treads'));
         }
 
@@ -474,7 +483,9 @@ class AutoTireController extends Controller
 
     public function tread_add()
     {
-        return view('admin.auto_tires.treads.add');
+        $brands = Autobrand::orderBy('title', 'ASC')->get();
+
+        return view('admin.auto_tires.treads.add', compact('brands'));
     }
 
     public function tread_store(Request $request)
@@ -486,16 +497,25 @@ class AutoTireController extends Controller
         $tread->save();
 
         if ($request->hasFile('tread_image')) {
-            $tread_edit = Autotread::findOrFail($tread->brand_id);
-            $tread_edit->timestamps = false;
-
-            $image      = $request->file('tread_image');
-            $fileName   = 'auto_' . $tread->brand_id . '.' . $image->getClientOriginalExtension();
-
-
-            Storage::disk('public')->putFileAs('tread', $image, $fileName);
-            $tread_edit->image = $fileName;
-            $tread_edit->save();
+          $image      = $request->file('tread_image');
+          $fileName   = $tread->tread_id;
+          $fileNameSmall   = $tread->tread_id . '-s';
+          $fileNameMed   = $tread->tread_id . '-n';
+          $fileNameLarge   = $tread->tread_id . '-o';
+//            dd($image);
+          Image::make($image->getRealPath())->save('public/storage/auto/tread/' . $fileName . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(100, 100, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameSmall . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(200, 200, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameMed . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(1500, 1500, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameLarge . '.jpg');
         }
 
         return redirect(route('admin.auto.treads'));
@@ -504,40 +524,63 @@ class AutoTireController extends Controller
     public function tread_edit($id)
     {
         $tread = Autotread::findOrFail($id);
-        $brands = Autobrand::all();
+        $brands = Autobrand::orderby('title', 'ASC')->get();
 
         return view('admin.auto_tires.treads.edit', compact('tread', 'brands'));
     }
 
     public function tread_update(Request $request, $id)
     {
+
+        $breaks = array("<br />","<br>","<br/>");
+        $request->tread_desc = str_ireplace($breaks, "", $request->tread_desc);
+
         $tread = Autotread::findOrFail($id);
         $tread->timestamps = false;
-        $tread->title = $request->tread_title;
+        $tread->t_title = $request->tread_title;
         $tread->slug = \Str::slug($request->tread_title, '-');
         $tread->season = $request->tread_season;
         $tread->brand_id = $request->tread_brand;
-        $tread->comment = $request->tread_desc;
+        $tread->t_comment = nl2br($request->tread_desc);
 
         if ($request->hasFile('tread_image')) {
-
-            $image      = $request->file('tread_image');
-            $fileName   = 'auto_' . $id . '.' . $image->getClientOriginalExtension();
-
-
-            Storage::disk('public')->putFileAs('tread', $image, $fileName);
-            $tread->image = $fileName;
+          $image      = $request->file('tread_image');
+          $fileName   = $tread->tread_id;
+          $fileNameSmall   = $tread->tread_id . '-s';
+          $fileNameMed   = $tread->tread_id . '-n';
+          $fileNameLarge   = $tread->tread_id . '-o';
+//            dd($image);
+          Image::make($image->getRealPath())->save('public/storage/auto/tread/' . $fileName . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(100, 100, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameSmall . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(200, 200, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameMed . '.jpg');
+          Image::make($image->getRealPath())
+            ->resize(1500, 1500, function($constraint) {
+              $constraint->aspectRatio();
+            })->save('public/storage/auto/tread/' . $fileNameLarge . '.jpg');
         }
 
-        $tread->save();
-        $brands = Autobrand::all();
-
-        return view('admin.auto_tires.treads.edit', compact('tread', 'brands'));
+        if ($tread->save()) {
+          return redirect(route('admin.auto.treads'))->with('success', 'Riepas modelis veiksmīgi labots!');
+        } else {
+          return redirect(route('admin.auto.treads.edit', $tread->tread_id))->with('danger', 'Notika kļūda, nevaru atjaunot modeli!');
+        }
     }
 
-    public function tread_delete()
+    public function tread_delete($id)
     {
-        return 'tread_delete()';
+      $tread = Autotread::findOrFail($id);
+//        Storage::disk('public')->delete('brands/' . $brand->image);
+      if ($tread->delete()) {
+        return redirect()->back()->with('success', 'Brends veiksmīgi izdzēsts!');
+      } else {
+        return redirect()->back()->with('danger', 'Notika kļūda, modelis nav izdzēsts!');
+      }
     }
 
     /*

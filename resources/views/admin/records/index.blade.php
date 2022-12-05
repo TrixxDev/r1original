@@ -264,8 +264,9 @@
         </div>
         <div class="modal-body">
           <form method="post">
+            <input type="hidden" id="f_editTime" name="f_editTime" value="1">
             <input type="hidden" name="queue_id">
-            <input type="hidden" name="date">
+            <input type="hidden" id="f_date" name="date">
             <input type="hidden" name="slot">
             <input type="hidden" name="part" value="a">
             <div class="form-group row">

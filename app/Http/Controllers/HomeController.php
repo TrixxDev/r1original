@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Redirect;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -54,6 +55,22 @@ class HomeController extends Controller
     }
 
     public function login(Request $request) {
+
+	$form = (object) ['ownerEmail' => 'indrikis38@gmail.com'];
+
+      $details = [
+          'car' => 1,
+          'make' => 1,
+          'purpose' => 1,
+          'office' => 1,
+          'day' => 1,
+          'date' => 1,
+          'time' => 1,
+          'longPurpose' => 1
+        ];
+
+      Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($details));
+
       if ($request->post()) {
 
         $field = (str_contains($request->username, '@') || !$request->username) ? 'email' : 'username';

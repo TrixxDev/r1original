@@ -93,7 +93,8 @@ class QuadTireController extends Controller
     {
         $brand = Quadrbrand::where('title', $brand)->first();
 
-        $tread = Quadrtread::where('slug', $tread)->first();
+        $tread = str_replace('_', '/', $tread);
+        $tread = Quadrtread::where('title', $tread)->first();
 
 
         $tires = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*,
@@ -103,6 +104,9 @@ class QuadTireController extends Controller
             ->where('quadr_tires.visible_users', '<>', 0)
             ->where('quadr_brands.title', $brand->title)
             ->where('quadr_treads.title', $tread->title)
+            ->orderBy('d3', 'ASC')
+            ->orderBy('d1', 'ASC')
+            ->orderBy('d2', 'ASC')
             ->get();
 
         $currTire = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*,
@@ -114,10 +118,12 @@ class QuadTireController extends Controller
             ->where('quadr_tires.tire_id', $tire)
             ->first();
 
+        $currBrand = Quadrbrand::where('brand_id', $tread->brand_id)->first();
+
         $currTire->includeStock = true;
 
         return view('tires.quadr.quadrtread',
-            compact('tires', 'currTire')
+            compact('tires', 'currTire', 'currBrand')
         );
     }
 
@@ -149,6 +155,7 @@ class QuadTireController extends Controller
 
     ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
     ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
+    ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
 
     $tires = Quadr::select('quadr_tires.*', 'quadr_treads.*', 'quadr_treads.slug as tread_slug', 'quadr_brands.slug as brand_slug')
                     ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
@@ -159,8 +166,9 @@ class QuadTireController extends Controller
                       $query->where('d1', $this->d1);
                     })->when($this->d2, function($query) {
                       $query->where('d2', $this->d2);
-                    })->where('d3', $this->d3)
-                      ->where('quadr_tires.visible_users', '<>', 0)
+                    })->when($this->d3, function($query) {
+                      $query->where('d3', $this->d3);
+                    })->where('quadr_tires.visible_users', '<>', 0)
                       ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
                       ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
                       ->orderByRaw('cast(d2 as decimal(7,2)) ASC')

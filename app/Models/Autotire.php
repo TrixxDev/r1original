@@ -109,8 +109,26 @@ class Autotire extends Model
 
     public function getDotAvailableAttribute()
     {
-        if ($this->quantity < 0) {
-          return 'red';
+        if ($this->quantity < 0 && $this->getStockCount() > 0) {
+          if ($this->_includeStock) {
+            $count = $this->getStockCount();
+            switch ($count){
+              case -1:
+              case 0: {
+                return 'red';
+              }
+              case 1:
+              case 2:
+              case 3: {
+                return 'half-yellow';
+              }
+              default:{
+                return 'yellow';
+              }
+            }
+          } else {
+            return 'red';
+          }
         }
         switch ($this->quantity) {
             case 1:
@@ -141,7 +159,7 @@ class Autotire extends Model
                 }
             }
             default: {
-                return 'green';
+              return 'green';
             }
         }
 
@@ -159,6 +177,11 @@ class Autotire extends Model
         } else {
             return $sql->brand_title . ' ' . $sql->tread_title;
         }
+    }
+
+    public function getFullNameAttribute()
+    {
+	return $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->code . ' ' . $this->getLiSiAttribute();
     }
 
     public function getLiSiAttribute()
@@ -190,11 +213,11 @@ class Autotire extends Model
         if (!isset($tire->brand_title) || !isset($tire->tread_title)) {
             return false;
         } else {
-	    if ($tire->season == 1) {
+	        if ($tire->season == 1) {
                 return route('vasaras-riepa', [$tire->brand_title, str_replace('/', '_', $tire->tread_title), $this->tire_id]);
-	    } else {
+	        } else {
                 return route('ziemas-riepa', [$tire->brand_title, str_replace('/', '_', $tire->tread_title), $this->tire_id]);
-	    }
+	        }
         }
     }
 

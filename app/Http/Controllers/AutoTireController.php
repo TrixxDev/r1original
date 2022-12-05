@@ -60,7 +60,7 @@ class AutoTireController extends Controller
         }
         View::share('season_id', $this->season);
 
-        $this->brands = Tires::getAllAutoBrands($this->season);
+        $this->brands = $this->tires_getBrands();
 
         $this->autoTiresD1 = Tires::getAutoTiresD1($this->season);
         $this->autoTiresD2 = Tires::getAutoTiresD2($this->season);
@@ -86,7 +86,7 @@ class AutoTireController extends Controller
             $this->d2 = 55;
         }
 
-	$codes = Code::all();
+        $codes = Code::all();
 
         foreach ($codes as $code) {
             $this->code_array[$code->name] = $code->explanation;
@@ -156,7 +156,7 @@ class AutoTireController extends Controller
                                                ->where('auto_tires.tire_id', $request->tire_id)
                                                ->where('auto_tires.visible_users', '<>', 0)
                                                ->first();
-
+//
         if ($request->quantity) {
             $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
         } else {
@@ -376,11 +376,41 @@ class AutoTireController extends Controller
                                                    ->where('auto_tires.tire_id', $tire)
                                                    ->first();
 
+        $currBrand = Autobrand::where('brand_id', $currTire->brand_id)->first();
+
         $currTire->includeStock = true;
 
         return view('tires.auto.autotread',
-            compact('tires', 'currTire')
+            compact('tires', 'currTire', 'currBrand')
         );
+    }
+
+    public function tires_getBrands()
+    {
+      $brands = [];
+
+      foreach (Autobrand::all() as $brand) {
+        $treads = Autotread::where('brand_id', $brand->brand_id)->where('season', $this->season)->get();
+        foreach ($treads as $tread) {
+          $tire = Autotire::where('make_id', $tread->tread_id)->first();
+          if (!$tire) continue;
+          $brand_id = $tread->brand_id;
+          array_push($brands, $brand_id);
+        }
+      }
+
+      $brands = array_unique($brands);
+      $brands = array_values($brands);
+      $brand_list = [];
+      foreach ($brands as $brand) {
+        $brand = Autobrand::where('brand_id', $brand)->first();
+        $brand_list[$brand->brand_id] = ucwords(strtolower($brand->title));
+      }
+
+//      asort($brand_list);
+      asort($brand_list, SORT_NATURAL | SORT_FLAG_CASE);
+
+      return $brand_list;
     }
 
 }

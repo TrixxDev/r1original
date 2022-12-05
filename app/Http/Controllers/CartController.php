@@ -398,7 +398,11 @@ class CartController extends Controller
               }
 
               if ($cat == 'Autotire') {
-                Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$size][$data->total_items]);
+                if ($size <= 16) {
+                  Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][16][$data->total_items]);
+                } else {
+                  Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$size][$data->total_items]);
+                }
 //                dd($cat, $size, $data->total_items, Self::options()[$cat]['fitting'][$size][$data->total_items]);
               } else {
                 Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$data->total_items]);
@@ -612,9 +616,7 @@ class CartController extends Controller
 
       $data->cart = Cart::content();
 
-      //if (user_ip == '212.3.218.22') {
-      //    Mail::to($data->info['email'])->cc('info@r1riepas.lv')->send(new \App\Mail\CartMail($data));
-      //}
+      if (!Mail::to($data->info['email'])->bcc('info@r1.com.lv')->send(new \App\Mail\CartMail($data))) {  }
 
       Session::remove('cart');
       Session::remove('cartOptions');
