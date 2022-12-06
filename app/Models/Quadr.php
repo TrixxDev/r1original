@@ -212,7 +212,9 @@ class Quadr extends Model
         if (!isset($tire->brand_title) || !isset($tire->tread_title)) {
             return false;
         } else {
-            return route('kvadraciklu-riepa', [$tire->brand_title, str_replace('/', '_', $tire->tread_title), $this->tire_id]);
+            $url = route('kvadraciklu-riepa', [$tire->brand_title, str_replace('/', '_', $tire->tread_title), $this->tire_id]);
+            $url = str_replace('&', '$1', $url);
+            return $url;
         }
     }
 

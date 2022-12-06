@@ -94,6 +94,7 @@ class QuadTireController extends Controller
         $brand = Quadrbrand::where('title', $brand)->first();
 
         $tread = str_replace('_', '/', $tread);
+        $tread = str_replace('$1', '&', $tread);
         $tread = Quadrtread::where('title', $tread)->first();
 
 
