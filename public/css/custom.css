@@ -747,9 +747,9 @@ body#category .main-content {
 #search_filters .wrap:first-child {
   margin-bottom: 15px;
 }
-#search_filters .facet:last-child {
-  padding-bottom: 15px;
-}
+/*#search_filters .facet:last-child {*/
+/*  padding-bottom: 15px;*/
+/*}*/
 #search_filters>div>h4:first-child {
   background: #65c2a5;
   color: #fff;
@@ -2502,6 +2502,8 @@ h4.tire-brand-name.grid-t {
 
 .tire-type-title {
   margin-left: 6px;
+  color: black;
+  text-transform: uppercase;
 }
 
 @media (max-width: 767px) {
@@ -2642,9 +2644,9 @@ h4.tire-brand-name.grid-t {
     width: 100%;
   }
 
-  .facet--availability {
-    display: none;
-  }
+  /*.facet--availability {*/
+  /*  display: none;*/
+  /*}*/
 
 
   /* WINTER TYRES */
@@ -4465,7 +4467,7 @@ table.queueTable:nth-child(2) {
 .modal.show .modal-dialog {
   /*-webkit-transform: none;*/
   /*transform: none;*/
-  padding-right: 20px;
+  /*padding-right: 20px;*/
 }
 
 .modal-content {
@@ -4978,11 +4980,6 @@ ul#order-type-info li.list-style {
   color: #FFFF00;
 }
 
-.top-product-title {
-  text-transform: uppercase;
-  color: black;
-}
-
 .quad-tread-name-cell-size {
   width: 55%;
 }
@@ -5230,4 +5227,18 @@ select.select-title.tire-brand option:before {
 
 select.select-title.tire-brand option:hover:before {
   display: inline;
+}
+
+.r1-select-params {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+}
+
+.r1-select {
+  width: 100%;
+  padding: 6px 2px;
+  font-size: 12px;
+  font-weight: 300;
+  border-color: #65c2a5;
 }

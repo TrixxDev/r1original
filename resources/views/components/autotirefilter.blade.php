@@ -59,135 +59,169 @@
             </ul>
           </section>
 
-
-          <section class="facet clearfix facet--1 facet-ind-1">
-            <h1 class="h6 facet-title hidden-sm-down">Platums</h1>
-            <div class="title hidden-md-up" data-target="#facet_78843"
-                 data-toggle="collapse" aria-expanded="true">
-              <h1 class="h6 facet-title">Platums</h1>
-              <span class="float-xs-right">
-                            <span class="navbar-toggler collapse-icons">
-                              <i class="material-icons add"></i>
-                              <i class="material-icons remove"></i>
-                            </span>
-                          </span>
+          <div class="r1-select-params">
+            <div style="width: 100%">
+              <div class="form-group facet">
+                <h1 class="h6 facet-title">Platums</h1>
+                <select class="r1-select select-title tire-width" name="d1">
+                  <option>Visi</option>
+                  @foreach ($autoTiresD1 as $tire)
+                    <option id="{{ $tire->d1 }}" @if ($tire->d1 == $d1) selected @endif>{{ $tire->d1 }}</option>
+                  @endforeach
+                </select>
+              </div>
             </div>
-
-
-            <ul id="facet_78843" class="collapse in">
-              <li>
-                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                  <select name="d1" class="select-title tire-width">
-                    <option class="select-list" id="Visi">Visi</option>
-                    @foreach ($autoTiresD1 as $tire)
-                      <option class="select-list" id="{{ $tire->d1 }}" @if ($tire->d1 == $d1) selected @endif>{{ $tire->d1 }}</option>
-                    @endforeach
-                  </select>
-                  <!-- pattern="/^\d+$/" maxlength="3" -->
-                  {{--                              <input type="text" readonly class="select-title tire-width" name="d1" value="{{ $d1 }}">--}}
-                  {{--                              <i class="material-icons float-xs-right"></i>--}}
-                  {{--                              <div class="dropdown-menu width">--}}
-
-                  {{--                                <a rel="nofollow" id="Visi" class="select-list">--}}
-                  {{--                                  Visi--}}
-                  {{--                                </a>--}}
-                  {{--                                @foreach ($autoTiresD1 as $tire)--}}
-                  {{--                                  <a rel="nofollow" class="select-list" id="{{ $tire->d1 }}">--}}
-                  {{--                                    {{ $tire->d1 }}--}}
-                  {{--                                  </a>--}}
-                  {{--                                @endforeach--}}
-                  {{--                              </div>--}}
-                </div>
-              </li>
-            </ul>
-          </section>
-
-
-          <section class="facet clearfix facet--2 facet-ind-2">
-            <h1 class="h6 facet-title hidden-sm-down">Augstums</h1>
-            <div class="title hidden-md-up" data-target="#facet_15402"
-                 data-toggle="collapse" aria-expanded="true">
-              <h1 class="h6 facet-title">Augstums</h1>
-              <span class="float-xs-right">
-                            <span class="navbar-toggler collapse-icons">
-                              <i class="material-icons add"></i>
-                              <i class="material-icons remove"></i>
-                            </span>
-                          </span>
+            <div style="width: 100%">
+              <div class="form-group facet">
+                <h1 class="h6 facet-title">Augstums</h1>
+                <select name="d2" class="r1-select select-title tire-width">
+                  <option class="select-list" id="Visi">Visi</option>
+                  @foreach ($autoTiresD2 as $tire)
+                    <option class="select-list" id="{{ $tire->d2 }}" @if ($tire->d2 == $d2) selected @endif>{{ $tire->d2 }}</option>
+                  @endforeach
+                </select>
+              </div>
             </div>
-
-
-            <ul id="facet_15402" class="collapse in">
-              <li>
-                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-
-                  <select name="d2" class="select-title tire-height">
-                    <option class="select-list" id="Visi">Visi</option>
-                    @foreach ($autoTiresD2 as $tire)
-                      <option class="select-list" id="{{ $tire->d2 }}" @if ($tire->d2 == $d2) selected @endif>{{ $tire->d2 }}</option>
-                    @endforeach
-                  </select>
-
-                  {{--                              <input type="text" class="select-title tire-height" readonly maxlength="2"--}}
-                  {{--                                     pattern="/^\d+$/" name="d2" value="{{ $d2 }}">--}}
-                  {{--                              <i class="material-icons float-xs-right"></i>--}}
-                  {{--                              <div class="dropdown-menu height">--}}
-
-                  {{--                                <a rel="nofollow" id="Visi" class="select-list">--}}
-                  {{--                                  Visi--}}
-                  {{--                                </a>--}}
-                  {{--                                @foreach ($autoTiresD2 as $tire)--}}
-                  {{--                                  <a rel="nofollow" class="select-list" id="{{ $tire->d2 }}">--}}
-                  {{--                                    {{ $tire->d2 }}--}}
-                  {{--                                  </a>--}}
-                  {{--                                @endforeach--}}
-                  {{--                              </div>--}}
-                </div>
-              </li>
-            </ul>
-          </section>
-
-
-          <section class="facet clearfix facet--3 facet-ind-3">
-            <h1 class="h6 facet-title hidden-sm-down">Diametrs</h1>
-            <div class="title hidden-md-up" data-target="#facet_24954"
-                 data-toggle="collapse" aria-expanded="true">
-              <h1 class="h6 facet-title">Diametrs</h1>
-              <span class="float-xs-right">
-                            <span class="navbar-toggler collapse-icons">
-                              <i class="material-icons add"></i>
-                              <i class="material-icons remove"></i>
-                            </span>
-                          </span>
+            <div style="width: 100%">
+              <div class="form-group facet">
+                <h1 class="h6 facet-title facet-select">Diametrs</h1>
+                <select name="d3" class="r1-select select-title tire-width">
+                  <option class="select-list" id="Visi">Visi</option>
+                  @foreach ($autoTiresD3 as $tire)
+                    <option class="select-list" id="{{ $tire->d3 }}" @if ($tire->d3 == $d3) selected @endif>{{ $tire->d3 }}</option>
+                  @endforeach
+                </select>
+              </div>
             </div>
+          </div>
+{{--          <section class="facet clearfix facet--1 facet-ind-1">--}}
+{{--            <h1 class="h6 facet-title hidden-sm-down">Platums</h1>--}}
+{{--            <div class="title hidden-md-up" data-target="#facet_78843"--}}
+{{--                 data-toggle="collapse" aria-expanded="true">--}}
+{{--              <h1 class="h6 facet-title">Platums</h1>--}}
+{{--              <span class="float-xs-right">--}}
+{{--                            <span class="navbar-toggler collapse-icons">--}}
+{{--                              <i class="material-icons add"></i>--}}
+{{--                              <i class="material-icons remove"></i>--}}
+{{--                            </span>--}}
+{{--                          </span>--}}
+{{--            </div>--}}
 
 
-            <ul id="facet_24954" class="collapse in">
-              <li>
-                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
+{{--            <ul id="facet_78843" class="collapse in">--}}
+{{--              <li>--}}
+{{--                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">--}}
+{{--                  <select name="d1" class="select-title tire-width">--}}
+{{--                    <option class="select-list" id="Visi">Visi</option>--}}
+{{--                    @foreach ($autoTiresD1 as $tire)--}}
+{{--                      <option class="select-list" id="{{ $tire->d1 }}" @if ($tire->d1 == $d1) selected @endif>{{ $tire->d1 }}</option>--}}
+{{--                    @endforeach--}}
+{{--                  </select>--}}
+{{--                  <!-- pattern="/^\d+$/" maxlength="3" -->--}}
+{{--                                                <input type="text" readonly class="select-title tire-width" name="d1" value="{{ $d1 }}">--}}
+{{--                                                <i class="material-icons float-xs-right"></i>--}}
+{{--                                                <div class="dropdown-menu width">--}}
 
-                  <select name="d3" class="select-title tire-radius">
-                    <option class="select-list" id="Visi">Visi</option>
-                    @foreach ($autoTiresD3 as $tire)
-                      <option class="select-list" id="{{ $tire->d3 }}" @if ($tire->d3 == $d3) selected @endif>{{ $tire->d3 }}</option>
-                    @endforeach
-                  </select>
+{{--                                                  <a rel="nofollow" id="Visi" class="select-list">--}}
+{{--                                                    Visi--}}
+{{--                                                  </a>--}}
+{{--                                                  @foreach ($autoTiresD1 as $tire)--}}
+{{--                                                    <a rel="nofollow" class="select-list" id="{{ $tire->d1 }}">--}}
+{{--                                                      {{ $tire->d1 }}--}}
+{{--                                                    </a>--}}
+{{--                                                  @endforeach--}}
+{{--                                                </div>--}}
+{{--                </div>--}}
+{{--              </li>--}}
+{{--            </ul>--}}
+{{--          </section>--}}
 
-                  {{--                              <input type="text" class="select-title tire-radius" readonly name="d3" maxlength="2"--}}
-                  {{--                                     pattern="/^\d+$/" value="{{ $d3 }}">--}}
-                  {{--                              <i class="material-icons float-xs-right"></i>--}}
-                  {{--                              <div class="dropdown-menu radius">--}}
-                  {{--                                @foreach ($autoTiresD3 as $tire)--}}
-                  {{--                                  <a rel="nofollow" class="select-list" id="{{ $tire->d3 }}">--}}
-                  {{--                                    {{ $tire->d3 }}--}}
-                  {{--                                  </a>--}}
-                  {{--                                @endforeach--}}
-                  {{--                              </div>--}}
-                </div>
-              </li>
-            </ul>
 
-          </section>
+{{--          <section class="facet clearfix facet--2 facet-ind-2">--}}
+{{--            <h1 class="h6 facet-title hidden-sm-down">Augstums</h1>--}}
+{{--            <div class="title hidden-md-up" data-target="#facet_15402"--}}
+{{--                 data-toggle="collapse" aria-expanded="true">--}}
+{{--              <h1 class="h6 facet-title">Augstums</h1>--}}
+{{--              <span class="float-xs-right">--}}
+{{--                            <span class="navbar-toggler collapse-icons">--}}
+{{--                              <i class="material-icons add"></i>--}}
+{{--                              <i class="material-icons remove"></i>--}}
+{{--                            </span>--}}
+{{--                          </span>--}}
+{{--            </div>--}}
+
+
+{{--            <ul id="facet_15402" class="collapse in">--}}
+{{--              <li>--}}
+{{--                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">--}}
+
+{{--                  <select name="d2" class="select-title tire-height">--}}
+{{--                    <option class="select-list" id="Visi">Visi</option>--}}
+{{--                    @foreach ($autoTiresD2 as $tire)--}}
+{{--                      <option class="select-list" id="{{ $tire->d2 }}" @if ($tire->d2 == $d2) selected @endif>{{ $tire->d2 }}</option>--}}
+{{--                    @endforeach--}}
+{{--                  </select>--}}
+
+{{--                                                <input type="text" class="select-title tire-height" readonly maxlength="2"--}}
+{{--                                                       pattern="/^\d+$/" name="d2" value="{{ $d2 }}">--}}
+{{--                                                <i class="material-icons float-xs-right"></i>--}}
+{{--                                                <div class="dropdown-menu height">--}}
+
+{{--                                                  <a rel="nofollow" id="Visi" class="select-list">--}}
+{{--                                                    Visi--}}
+{{--                                                  </a>--}}
+{{--                                                  @foreach ($autoTiresD2 as $tire)--}}
+{{--                                                    <a rel="nofollow" class="select-list" id="{{ $tire->d2 }}">--}}
+{{--                                                      {{ $tire->d2 }}--}}
+{{--                                                    </a>--}}
+{{--                                                  @endforeach--}}
+{{--                                                </div>--}}
+{{--                </div>--}}
+{{--              </li>--}}
+{{--            </ul>--}}
+{{--          </section>--}}
+
+
+{{--          <section class="facet clearfix facet--3 facet-ind-3">--}}
+{{--            <h1 class="h6 facet-title hidden-sm-down">Diametrs</h1>--}}
+{{--            <div class="title hidden-md-up" data-target="#facet_24954"--}}
+{{--                 data-toggle="collapse" aria-expanded="true">--}}
+{{--              <h1 class="h6 facet-title">Diametrs</h1>--}}
+{{--              <span class="float-xs-right">--}}
+{{--                            <span class="navbar-toggler collapse-icons">--}}
+{{--                              <i class="material-icons add"></i>--}}
+{{--                              <i class="material-icons remove"></i>--}}
+{{--                            </span>--}}
+{{--                          </span>--}}
+{{--            </div>--}}
+
+
+{{--            <ul id="facet_24954" class="collapse in">--}}
+{{--              <li>--}}
+{{--                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">--}}
+
+{{--                  <select name="d3" class="select-title tire-radius">--}}
+{{--                    <option class="select-list" id="Visi">Visi</option>--}}
+{{--                    @foreach ($autoTiresD3 as $tire)--}}
+{{--                      <option class="select-list" id="{{ $tire->d3 }}" @if ($tire->d3 == $d3) selected @endif>{{ $tire->d3 }}</option>--}}
+{{--                    @endforeach--}}
+{{--                  </select>--}}
+
+{{--                                                <input type="text" class="select-title tire-radius" readonly name="d3" maxlength="2"--}}
+{{--                                                       pattern="/^\d+$/" value="{{ $d3 }}">--}}
+{{--                                                <i class="material-icons float-xs-right"></i>--}}
+{{--                                                <div class="dropdown-menu radius">--}}
+{{--                                                  @foreach ($autoTiresD3 as $tire)--}}
+{{--                                                    <a rel="nofollow" class="select-list" id="{{ $tire->d3 }}">--}}
+{{--                                                      {{ $tire->d3 }}--}}
+{{--                                                    </a>--}}
+{{--                                                  @endforeach--}}
+{{--                                                </div>--}}
+{{--                </div>--}}
+{{--              </li>--}}
+{{--            </ul>--}}
+
+{{--          </section>--}}
           <section class="facet clearfix">
             <button id="autofind_sub" type="submit">
               Meklēt <i class="material-icons search"></i>

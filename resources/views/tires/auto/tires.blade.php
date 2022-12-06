@@ -40,10 +40,10 @@
                         if ($index == 0){
                           switch ($season_id){
                           case 1:
-                            echo ' <span class="text-uppercase tire-type-title" style="color:black;">Vasaras riepas</span>';
+                            echo ' <span class="tire-type-title">Vasaras riepas</span>';
                             break;
                           case 2:
-                            echo ' <span class="text-uppercase tire-type-title" style="color:black;">Ziemas riepas</span>';
+                            echo ' <span class="tire-type-title">Ziemas riepas</span>';
                             break;
                           }
                         }
@@ -122,6 +122,7 @@
                               <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}"
                                     data-toggle="tooltip"
                                     data-html="true"
+                                    onclick="event.preventDefault()"
                                     title="{{ $tire->stockAvailability }}">
                               <span class="sort-order" style="display: none;">{{ $tire->dotAvailable }}</span>
                             </span>

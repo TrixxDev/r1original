@@ -29,6 +29,7 @@ class MotoTireController extends Controller
     public $type;
     public $availability;
     public $code_array = [];
+    public $filterCount = 0;
 
     public function __construct(Request $request)
     {
@@ -76,6 +77,7 @@ class MotoTireController extends Controller
         View::share('type', $this->type);
         View::share('types', (new Moto)->types());
 	      View::share('code_array', $this->code_array);
+        View::share('filterCount', $this->filterCount);
     }
 
     public function index()
@@ -169,6 +171,8 @@ class MotoTireController extends Controller
 
       DB::enableQueryLog();
 
+      $this->filterCount = 0;
+
       ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
 
       $types = (new Moto)->types();
@@ -176,6 +180,32 @@ class MotoTireController extends Controller
       ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
       ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
       ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
+
+    if ($request->types) {
+      $this->filterCount += 1;
+      $this->types = $request->types;
+    } else {
+      $this->types = '';
+    }
+
+    if ($request->code) {
+      $this->code = $request->code;
+      $this->filterCount += 1;
+    } else {
+      $this->code = '';
+    }
+    if ($request->fuel) {
+      $this->fuel = $request->fuel;
+      $this->filterCount += 1;
+    } else {
+      $this->fuel = '';
+    }
+    if ($request->wet) {
+      $this->wet = $request->wet;
+      $this->filterCount += 1;
+    } else {
+      $this->wet = '';
+    }
 
       if ($request->type) {
         $this->type = $request->type;
@@ -208,7 +238,7 @@ class MotoTireController extends Controller
 //      dd(DB::getQueryLog());
 
       return view('tires.moto.index',
-        compact('tires')
+        ['tires' => $tires, 'filterCount' => $this->filterCount]
       );
   }
 

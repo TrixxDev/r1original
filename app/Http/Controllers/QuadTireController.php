@@ -25,6 +25,7 @@ class QuadTireController extends Controller
     public $quadrTiresD3;
     public $model = 'Quadr';
     public $availability;
+    public $filterCount = 0;
 
     public function __construct(Request $request)
     {
@@ -61,6 +62,7 @@ class QuadTireController extends Controller
         View::share('d1', $this->d1);
         View::share('d2', $this->d2);
         View::share('d3', $this->d3);
+        View::share('filterCount', $this->filterCount);
     }
 
     public function index()
@@ -151,11 +153,39 @@ class QuadTireController extends Controller
 
     DB::enableQueryLog();
 
+    $this->filterCount = 0;
+
     ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
 
     ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
     ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
     ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
+
+    if ($request->types) {
+      $this->filterCount += 1;
+      $this->types = $request->types;
+    } else {
+      $this->types = '';
+    }
+
+    if ($request->code) {
+      $this->code = $request->code;
+      $this->filterCount += 1;
+    } else {
+      $this->code = '';
+    }
+    if ($request->fuel) {
+      $this->fuel = $request->fuel;
+      $this->filterCount += 1;
+    } else {
+      $this->fuel = '';
+    }
+    if ($request->wet) {
+      $this->wet = $request->wet;
+      $this->filterCount += 1;
+    } else {
+      $this->wet = '';
+    }
 
     $tires = Quadr::select('quadr_tires.*', 'quadr_treads.*', 'quadr_treads.slug as tread_slug', 'quadr_brands.slug as brand_slug')
                     ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
@@ -178,7 +208,7 @@ class QuadTireController extends Controller
 //    dd(DB::getQueryLog());
 
     return view('tires.quadr.index',
-      compact('tires')
+      ['tires' => $tires, 'filterCount' => $this->filterCount]
     );
   }
 
