@@ -223,10 +223,10 @@
                                                   @if ($office->_openQueues==0)
                                                     <td class="header-time">&nbsp;</td><td class="slot slot-closed">Slēgts</td>
                                                   @else
-                                                    <td class="header-empty"></td><td class="slot-empty"></td>
+                                                    <td class="header-time"></td><td class="slot-empty slot"></td>
                                                   @endif
                                                 @else
-                                                  <td class="header-empty"></td><td class="slot-empty"></td>
+                                                  <td class="header-time"></td><td class="slot-empty slot"></td>
                                                 @endif
                                               @endif
                                             @endforeach
