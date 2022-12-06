@@ -1654,24 +1654,24 @@ if ($('.custom_atv_name').length === 1) {
 //     }
 // });
 //
-$('#autofind_sub').on('click', function(e) {
-  // e.preventDefault();
-  // var q = 'q=';
-  // $('#search_filters [data-q]').filter(function() {
-  //     return $(this).data('selected') === true;
-  // }).each(function() {
-  //     q += $(this).data('q') + '/';
-  // });
-  // if(q === 'q=') return;
-  // var query = q.slice(0, q.lastIndexOf('/'));
-  // var href = window.location.href.split('?');
-  // var hrefQ = (href[1]) ? href[1].split('&').filter(function(el) {
-  //     return el.indexOf('q') !== 0;
-  // }) : [];
-  // hrefQ.push(query);
-  // window.location.href = href[0] + '?' + hrefQ.join('&');
-
-});
+// $('#autofind_sub').on('click', function(e) {
+//   // e.preventDefault();
+//   // var q = 'q=';
+//   // $('#search_filters [data-q]').filter(function() {
+//   //     return $(this).data('selected') === true;
+//   // }).each(function() {
+//   //     q += $(this).data('q') + '/';
+//   // });
+//   // if(q === 'q=') return;
+//   // var query = q.slice(0, q.lastIndexOf('/'));
+//   // var href = window.location.href.split('?');
+//   // var hrefQ = (href[1]) ? href[1].split('&').filter(function(el) {
+//   //     return el.indexOf('q') !== 0;
+//   // }) : [];
+//   // hrefQ.push(query);
+//   // window.location.href = href[0] + '?' + hrefQ.join('&');
+//
+// });
 $.fn.reverse = [].reverse;
 $('.table-top .table-cell[data-filter]').on('click', function() {
   $('.table-top .table-cell[data-filter]').removeClass('sorted');
@@ -3291,7 +3291,7 @@ document.addEventListener("DOMContentLoaded", function() {
 $('.dropdown-item.sizeCalc').on('click', function(e) {
   e.preventDefault();
   let url = $(this).attr('href');
-  popCalc(url,470,280);
+  popCalc(url,480,330);
 });
 
 function popCalc(url,popW,popH, data){
@@ -3375,34 +3375,6 @@ if (localStorage.getItem('fuel-eco-dropdown') === 'true') {
 if (localStorage.getItem('wet-surface-dropdown') === 'true') {
   $('.wet-surface-dropdown-btn').click();
 }
-// if ($('.fuel-eco-dropdown-btn').find('span.fuel-efficiency-dropdown').text() == 'keyboard_arrow_up') {
-//   localStorage.setItem('fuel-eco-dropdown', 'true');
-// }
-// if ($('.wet-surface-dropdown-btn').find('span.wet-surface-dropdown').text() == 'keyboard_arrow_up') {
-//   localStorage.setItem('wet-surface-dropdown', 'true');
-// }
-//
-//
-// if (localStorage.getItem('code-dropdown') == 'true') {
-//   $('.code-dropdown-btn').click();
-// }
-//
-//
-// $('.code-dropdown-btn').on('click', function() {
-//   localStorage.setItem('code-dropdown', true);
-// });
-//
-// $('.code-dropdown-btn').on('click', function() {
-//   localStorage.setItem('code-dropdown', true);
-// });
-//
-// $('.code-dropdown-btn').on('click', function() {
-//   localStorage.setItem('code-dropdown', true);
-// });
-//
-// $('.code-dropdown-btn').on('click', function() {
-//   localStorage.setItem('code-dropdown', true);
-// });
 
 $('.popup-code-dropdown').on('click', function() {
   // console.log();

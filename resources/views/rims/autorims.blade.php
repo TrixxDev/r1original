@@ -294,7 +294,7 @@
 {{--                            $rim->includeStock = true;--}}
 {{--                            if ($cbrand!=$brand){--}}
 {{--                              if ($index == 0) {--}}
-{{--                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand . ' <span class="top-product-title">Lietie Diski</span></h4><div class="row grid-ex pr-1">';--}}
+{{--                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand . ' <span class="tire-type-title">Lietie Diski</span></h4><div class="row grid-ex pr-1">';--}}
 {{--                              } else {--}}
 {{--                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand . '</h4><div class="row grid-ex pr-1">';--}}
 {{--                              }--}}
@@ -357,7 +357,7 @@
                             $rim->includeStock = true;
                             if ($cbrand!=$brand){
                               if ($index == 0) {
-                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand . ' <span class="top-product-title">Lietie diski</span></h4><div class="row grid-ex pr-1">';
+                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand . ' <span class="tire-type-title">Lietie diski</span></h4><div class="row grid-ex pr-1">';
                               } else {
                                 echo '</div><h4 class="tire-brand-name grid-t">' . $brand . '</h4><div class="row grid-ex pr-1">';
                               }
@@ -433,7 +433,7 @@
                               $rim->includeStock = true;
                               if ($cbrand!=$brand){
                               if ($index == 0) {
-                                echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="top-product-title flipped-title">Lietie diski</span></h4>';
+                                echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="tire-type-title flipped-title">Lietie diski</span></h4>';
                               } else {
                                 '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
                               }

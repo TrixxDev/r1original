@@ -10,16 +10,16 @@
                       <div class="stepper-wrapper">
                         <ol class="stepper">
                           <li class="stepper-item stepper-active">
-                            <h3 class="stepper-title">Grozs</h3>
+                            <h3 class="stepper-title hidden-md-down">Grozs</h3>
                           </li>
                           <li class="stepper-item">
-                            <h3 class="stepper-title">Dati</h3>
+                            <h3 class="stepper-title hidden-md-down">Dati</h3>
                           </li>
                           <li class="stepper-item">
-                            <h3 class="stepper-title">Maksājums</h3>
+                            <h3 class="stepper-title hidden-md-down">Maksājums</h3>
                           </li>
                           <li class="stepper-item stepper-last">
-                            <h3 class="stepper-title">Pabeigts</h3>
+                            <h3 class="stepper-title hidden-md-down">Pabeigts</h3>
                           </li>
                         </ol>
                       </div>

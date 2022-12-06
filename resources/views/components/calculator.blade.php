@@ -1,9 +1,11 @@
 <head>
   <title>Riepu izmēra kalkulators</title>
+  <link rel="icon" type="image/png" href="{{ asset('images/logo_big.png') }}">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link rel="stylesheet" href="template/common/calc.css" type="text/css" media="screen">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<body>
+<body style="font-family: 'Arimo', Arial, sans-serif; margin-left: 10px;">
 <script language="JavaScript" type="text/javascript">
 
   function insert(textEl,text){
@@ -80,7 +82,7 @@
       <form method="POST" action="#" name="kalkulators">
         <div align="center">
           <center>
-            <table border="1" cellpadding="2" cellspacing="0" class="table">
+            <table border="1" cellpadding="2" cellspacing="0" class="table table-sm" style="margin-top: 10px;">
               <tr>
                 <td>&nbsp;</td>
                 <td><B class="small">platums/augstums/disks =Radiuss mm </b>
@@ -110,7 +112,7 @@
                     <option  value="305">305</option>
                     <option  value="315">315</option>
                     <option  value="325">325</option>
-                  </select><B class="small">/</b>
+                  </select><B class="small"> /</b>
 
                   <select size="1" name="org_augstums">
                     <option  value="25">25</option>
@@ -125,7 +127,7 @@
                     <option  value="70">70</option>
                     <option  value="75">75</option>
                     <option  value="80">80</option>
-                  </select><B class="small">R</b>
+                  </select><B class="small"> R</b>
 
                   <select size="1" name="org_disks">
                     <option  value="13">13</option>
@@ -173,7 +175,7 @@
                     <option  value="305">305</option>
                     <option  value="315">315</option>
                     <option  value="325">325</option>
-                  </select><B class="small">/</b>
+                  </select><B class="small"> /</b>
                   <select size="1" name="augstums1">
                     <option  value="25">25</option>
                     <option  value="30">30</option>
@@ -187,7 +189,7 @@
                     <option  value="70">70</option>
                     <option  value="75">75</option>
                     <option  value="80">80</option>
-                  </select><B class="small">R</b>
+                  </select><B class="small"> R</b>
                   <select size="1" name="disks1">
                     <option  value="13">13</option>
                     <option  value="14">14</option>
@@ -227,7 +229,7 @@
                     <option  value="305">305</option>
                     <option  value="315">315</option>
                     <option  value="325">325</option>
-                  </select><B class="small">/</b>
+                  </select><B class="small"> /</b>
                   <select size="1" name="augstums2">
                     <option  value="25">25</option>
                     <option  value="30">30</option>
@@ -241,7 +243,7 @@
                     <option  value="70">70</option>
                     <option  value="75">75</option>
                     <option  value="80">80</option>
-                  </select><B class="small">R</b>
+                  </select><B class="small"> R</b>
                   <select size="1" name="disks2">
                     <option  value="13">13</option>
                     <option  value="14">14</option>
@@ -282,10 +284,10 @@
                     <option  value="305">305</option>
                     <option  value="315">315</option>
                     <option  value="325">325</option>
-                  </select><B class="small">/</b>
+                  </select><B class="small"> /</b>
                   <select size="1" name="augstums3">
                     <option  value="25">25</option><option  value="30">30</option><option  value="35">35</option><option selected value="40">40</option><option  value="45">45</option><option  value="50">50</option><option  value="55">55</option><option  value="60">60</option><option  value="65">65</option><option  value="70">70</option><option  value="75">75</option><option  value="80">80</option>
-                  </select><B class="small">R</b>
+                  </select><B class="small"> R</b>
 
                   <select size="1" name="disks3">
                     <option  value="13">13</option>
@@ -306,16 +308,12 @@
 
               </tr>
               <tr><td colspan="3"><B class="small">* starpība rādiusā mm</b></td><tr>
-            </table><table border="0">
-              <tr>
-                <td align="center"><input type="button" value="Aprēķināt" name="aprekinat"  onclick="javascript:insert2(':p')"></td>
-                <td align="center"><input type="reset" value="&nbsp;&nbsp;&nbsp;Notīrīt&nbsp;&nbsp;&nbsp;" name="notirit"></td>
-                <td align="center"><input type="button" value="&nbsp;&nbsp;&nbsp; Drukāt &nbsp;&nbsp;&nbsp;" name="notirit" onClick="print()"></td>
-              </tr>
             </table>
-
           </center>
         </div>
+        <input class="btn btn-primary" type="button" value="Aprēķināt" name="aprekinat"  onclick="javascript:insert2(':p')">
+        <input class="btn btn-info float-right ml-1" type="button" value="&nbsp;&nbsp;&nbsp; Drukāt &nbsp;&nbsp;&nbsp;" name="notirit" onClick="print()">
+        <input class="btn btn-secondary float-right" type="reset" value="&nbsp;&nbsp;&nbsp;Notīrīt&nbsp;&nbsp;&nbsp;" name="notirit">
       </form>
     </td>
   </tr>

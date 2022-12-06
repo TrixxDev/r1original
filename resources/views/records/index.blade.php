@@ -367,7 +367,7 @@
                 <input type="hidden" name="slotNumber">
                 <input type="hidden" name="grecaptcha">
                 <input type="hidden" name="grecaptcha_app">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog reservation-modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="modalTitle">
@@ -379,19 +379,25 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-row row">
-                                            <div class="form-group col-md-3">
+                                            <div class="form-group col-md-3 col-sm-12 hidden-sm-down">
                                                 <label for="brand"><span class="validate" style="color: red;">*</span>Auto marka un modelis:</label>
                                             </div>
-                                            <div class="form-group col-md-5">
-                                                <input type="text" class="form-control" id="brand">
+                                            <div class="col-md-3 col-sm-12 hidden-md-up">
+                                              <label for="brand"><span class="validate" style="color: red;">*</span>Auto marka:</label>
                                             </div>
-                                            <div class="form-group col-md-4">
-                                                <input type="text" class="form-control" id="model">
+                                            <div class="form-group col-md-5 col-sm-12">
+                                              <input type="text" class="form-control" id="brand" title="">
+                                            </div>
+                                            <div class="col-md-3 col-sm-12 hidden-md-up">
+                                              <label for="model"><span class="validate" style="color: red;">*</span>Auto modelis:</label>
+                                            </div>
+                                            <div class="form-group col-md-4 col-sm-12">
+                                              <input type="text" class="form-control" id="model" title="">
                                             </div>
                                         </div>
                                         <div class="form-group row">
-                                            <label for="reg_nr" class="col-sm-3" style="text-align: left;"><span class="validate">*</span>Reģistrācijas numurs:</label>
-                                            <div class="col-sm-9">
+                                            <label for="reg_nr" class="col-sm-12 col-md-3" style="text-align: left;"><span class="validate">*</span>Reģistrācijas numurs:</label>
+                                            <div class="col-sm-12 col-md-9">
                                                 <input type="text" class="form-control" id="reg_nr">
                                             </div>
                                         </div>
@@ -441,8 +447,9 @@
                             </div>
                         </div>
                         <div class="modal-footer reservation-modal-footer">
-                            <button type="button" class="btn btn-secondary" id="close-modal" data-dismiss="modal" style="margin-right: 10px;">Atcelt</button>
-                            <button type="button" class="btn btn-primary" id="submit-reservation">Pierakstīties</button>
+                            <button type="button" class="btn btn-secondary col-xs-12 col-md-6 mb-1" id="close-modal" data-dismiss="modal">Atcelt</button>
+                            <span style="margin: 0 auto;" class="hidden-md-down"></span>
+                            <button type="button" class="btn btn-primary col-xs-12 col-md-6 mb-1" id="submit-reservation">Pierakstīties</button>
                         </div>
                     </div>
                 </div>

@@ -6229,6 +6229,10 @@ a.text-gray-dark:focus, a.text-gray-dark:hover {
   .hidden-sm-down {
     display: none !important
   }
+
+  #mobileFilterModal .hidden-sm-down {
+    display: block !important;
+  }
 }
 
 @media (min-width: 768px) {
