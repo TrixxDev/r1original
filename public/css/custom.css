@@ -5063,3 +5063,11 @@ select.select-title.tire-brand option:before {
 select.select-title.tire-brand option:hover:before {
   display: inline;
 }
+
+.table.table-kalnciema td.header-time {
+  width: 39px;
+}
+
+.table.table-kalnciema td.slot.slot-empty {
+  width: 42%;
+}
