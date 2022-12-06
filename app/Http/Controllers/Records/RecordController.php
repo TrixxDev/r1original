@@ -188,7 +188,7 @@ class RecordController extends Controller
                         $slot = $queue->_slots[$request->date][$slotNumber];
 
                         //$times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => true];
-                        if ($slot->status == 0) {
+                        if ($slot->status == 0 || $slot->status == 2) {
                           $times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id];
                         }
                       }
@@ -199,7 +199,7 @@ class RecordController extends Controller
                       if ($queue->isIntervalBeginning($request->date,$i)) {
                         $slot1 = $queue->_slots[$request->date][$slotNumber1];
                         //$times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => true];
-                        if ($slot1->status == 1) {
+                        if ($slot1->status == 1 || $slot1->status == 2) {
                           $takenTimes[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot1->slot_id];
                         }
                       }
