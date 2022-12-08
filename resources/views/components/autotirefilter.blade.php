@@ -14,50 +14,62 @@
 
     <div class="can-collapse">
 
-      <span class="show_list"><i class="material-icons "></i>Saraksts</span>
-      <span class="show_grid"><i class="material-icons "></i>Bildes</span>
+      <span class="show_list active" data-dismiss="modal"><i class="material-icons "></i>Saraksts</span>
+      <span class="show_grid" data-dismiss="modal"><i class="material-icons "></i>Bildes</span>
 
       <form method="get" action="/{{ $season_title }}/search">
         <div class="sidebar-top">
 
-          <section class="facet clearfix facet--0 facet-ind-0">
-            <h1 class="h6 facet-title hidden-sm-down">Ražotājs</h1>
-            <div class="title hidden-md-up" data-target="#facet_20294"
-                 data-toggle="collapse">
+{{--          <section class="facet clearfix facet--0 facet-ind-0">--}}
+{{--            <h1 class="h6 facet-title hidden-sm-down">Ražotājs</h1>--}}
+{{--            <div class="title hidden-md-up" data-target="#facet_20294"--}}
+{{--                 data-toggle="collapse">--}}
+{{--              <h1 class="h6 facet-title">Ražotājs</h1>--}}
+{{--              <span class="float-xs-right">--}}
+{{--                            <span class="navbar-toggler collapse-icons">--}}
+{{--                                <i class="material-icons add"></i>--}}
+{{--                                <i class="material-icons remove"></i>--}}
+{{--                            </span>--}}
+{{--                          </span>--}}
+{{--            </div>--}}
+{{--            <ul id="facet_20294" class="collapse">--}}
+{{--              <li>--}}
+{{--                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">--}}
+{{--                  <select name="brand" class="select-title tire-brand">--}}
+{{--                    <option class="select-list" id="Visi">Visi</option>--}}
+{{--                    @foreach ($brands as $brand_id => $brand_title)--}}
+{{--                      <option class="select-list" id="{{ $brand_title->brand_id }}" @if ($brand_title->brand_title == $currBrand) selected @endif>{{ ucwords(strtolower($brand_title->brand_title)) }}</option>--}}
+{{--                    @endforeach--}}
+{{--                  </select>--}}
+{{--                  --}}{{--                              <input type="text" readonly class="select-title tire-brand" name="brand"--}}
+{{--                  --}}{{--                                     value="{{ $currBrand }}">--}}
+{{--                  --}}{{--                              <i class="material-icons float-xs-right"></i>--}}
+{{--                  --}}{{--                              <div class="dropdown-menu">--}}
+{{--                  --}}{{--                                <a rel="nofollow" id="Visi" class="select-list">--}}
+{{--                  --}}{{--                                  Visi--}}
+{{--                  --}}{{--                                </a>--}}
+{{--                  --}}{{--                                @foreach ($brands as $brand_id => $brand_title)--}}
+{{--                  --}}{{--                                  <a rel="nofollow" class="select-list" id="{{ $brand_title }}">--}}
+{{--                  --}}{{--                                    {{ ucwords(strtolower($brand_title)) }}--}}
+{{--                  --}}{{--                                  </a>--}}
+{{--                  --}}{{--                                @endforeach--}}
+{{--                  --}}{{--                              </div>--}}
+{{--                </div>--}}
+{{--              </li>--}}
+{{--            </ul>--}}
+{{--          </section>--}}
+
+          <div style="width: 100%">
+            <div class="form-group facet mb-0">
               <h1 class="h6 facet-title">Ražotājs</h1>
-              <span class="float-xs-right">
-                            <span class="navbar-toggler collapse-icons">
-                                <i class="material-icons add"></i>
-                                <i class="material-icons remove"></i>
-                            </span>
-                          </span>
+              <select name="brand" class="r1-select select-title tire-brand">
+                <option class="select-list" id="Visi">Visi</option>
+                @foreach ($brands as $brand_id => $brand_title)
+                  <option class="select-list" id="{{ $brand_title->brand_id }}" @if ($brand_title->brand_title == $currBrand) selected @endif>{{ ucwords(strtolower($brand_title->brand_title)) }}</option>
+                @endforeach
+              </select>
             </div>
-            <ul id="facet_20294" class="collapse">
-              <li>
-                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">
-                  <select name="brand" class="select-title tire-brand">
-                    <option class="select-list" id="Visi">Visi</option>
-                    @foreach ($brands as $brand_id => $brand_title)
-                      <option class="select-list" id="{{ $brand_title->brand_id }}" @if ($brand_title->brand_title == $currBrand) selected @endif>{{ ucwords(strtolower($brand_title->brand_title)) }}</option>
-                    @endforeach
-                  </select>
-                  {{--                              <input type="text" readonly class="select-title tire-brand" name="brand"--}}
-                  {{--                                     value="{{ $currBrand }}">--}}
-                  {{--                              <i class="material-icons float-xs-right"></i>--}}
-                  {{--                              <div class="dropdown-menu">--}}
-                  {{--                                <a rel="nofollow" id="Visi" class="select-list">--}}
-                  {{--                                  Visi--}}
-                  {{--                                </a>--}}
-                  {{--                                @foreach ($brands as $brand_id => $brand_title)--}}
-                  {{--                                  <a rel="nofollow" class="select-list" id="{{ $brand_title }}">--}}
-                  {{--                                    {{ ucwords(strtolower($brand_title)) }}--}}
-                  {{--                                  </a>--}}
-                  {{--                                @endforeach--}}
-                  {{--                              </div>--}}
-                </div>
-              </li>
-            </ul>
-          </section>
+          </div>
 
           <div class="r1-select-params">
             <div style="width: 100%">

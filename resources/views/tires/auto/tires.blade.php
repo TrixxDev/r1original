@@ -161,7 +161,7 @@
                         }
                         if ($index == 0){
                           //<h4 style="display: inline-block;">Izvēlētie filtri: </h4>
-                          echo '<button style="z-index: 999;" type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
+                          echo '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
                                     Filtrs ('. $filterCount .')
                                   </button><div class="filters" style="margin: 0 auto;"></div>';
                           switch ($season_id){
