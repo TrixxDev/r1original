@@ -2,6 +2,7 @@
   <div id="search_filter_controls" class="hidden-md-up"></div>
   <div id="search_filters" class="params">
     <input type="hidden" id="facet_all_val" value="Visi">
+    <form method="get" action="{{ route('kvadraciklu-riepas-meklet') }}">
     <div class="wrap">
 
       <h4 class="text-uppercase h6 hidden-sm-down">
@@ -22,9 +23,7 @@
             </button>
           </section>
         </template>
-
-        <form method="get" action="{{ route('kvadraciklu-riepas-meklet') }}">
-          <div class="sidebar-top">
+        <div class="sidebar-top">
 
 
             {{--            <section class="facet clearfix facet--0 facet-ind-0">--}}
@@ -269,16 +268,17 @@
               </button>
             </section>
           </div>
+      </div>
+    </div>
+    <div class="wrap">
+      <div class="sidebar-bottom">
 
-          <div class="wrap">
-            <div class="sidebar-bottom">
-
-              <section class="facet clearfix facet--availability">
-                <h1 class="h6 facet-title hidden-sm-down">Atlase</h1>
-                <ul class="collapse">
-                  <li class="show-selected-checkbox-li">
-                    <label class="facet-label" for="show-selected-checkbox"
-                           style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+        <section class="facet clearfix facet--availability">
+          <h1 class="h6 facet-title hidden-sm-down">Atlase</h1>
+          <ul class="collapse">
+            <li class="show-selected-checkbox-li">
+              <label class="facet-label" for="show-selected-checkbox"
+                     style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                           <span class="custom-checkbox">
                             <input type="checkbox" value="only_selected" class="tire-table-checkbox"
                                    id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces"
@@ -287,15 +287,15 @@
                               <i class="material-icons checkbox-checked"></i>
                             </span>
                           </span>
-                      <span>Rādīt izvēlētos</span>
-                    </label>
-                  </li>
-                </ul>
-                <h1 class="h6 facet-title hidden-sm-down">Pieejamība</h1>
-                <ul id="facet_availability" class="collapse">
-                  <li>
-                    <label class="facet-label" for="facet_availability_0"
-                           style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+                <span>Rādīt izvēlētos</span>
+              </label>
+            </li>
+          </ul>
+          <h1 class="h6 facet-title hidden-sm-down">Pieejamība</h1>
+          <ul id="facet_availability" class="collapse">
+            <li>
+              <label class="facet-label" for="facet_availability_0"
+                     style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                                       <span class="custom-checkbox">
                                         <input id="facet_availability_0" class="green" type="checkbox"
                                                data-search-url="#" name="availability[]" value="green" data-for="dot"
@@ -304,13 +304,13 @@
                                           <i class="material-icons checkbox-checked"></i>
                                         </span>
                                       </span>
-                      Pieejams
-                      <span class="dot green" style="float:right;margin-top: 3px;"></span>
-                    </label>
-                  </li>
-                  <li>
-                    <label class="facet-label" for="facet_availability_1"
-                           style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+                Pieejams
+                <span class="dot green" style="float:right;margin-top: 3px;"></span>
+              </label>
+            </li>
+            <li>
+              <label class="facet-label" for="facet_availability_1"
+                     style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                                       <span class="custom-checkbox">
                                         <input id="facet_availability_1" class="yellow" type="checkbox"
                                                data-search-url="#" name="availability[]" value="yellow" data-for="dot"
@@ -318,13 +318,13 @@
                                         <span class="ps-shown-by-js"><i
                                             class="material-icons checkbox-checked"></i></span>
                                       </span>
-                      Pasūtāms
-                      <span class="dot yellow" style="float:right;margin-top: 3px;"></span>
-                    </label>
-                  </li>
-                  <li>
-                    <label class="facet-label" for="facet_availability_2"
-                           style="width: 100%;text-align: left;cursor: pointer">
+                Pasūtāms
+                <span class="dot yellow" style="float:right;margin-top: 3px;"></span>
+              </label>
+            </li>
+            <li>
+              <label class="facet-label" for="facet_availability_2"
+                     style="width: 100%;text-align: left;cursor: pointer">
                                       <span class="custom-checkbox">
                                         <input id="facet_availability_2" class="red" type="checkbox" data-search-url="#"
                                                name="availability[]" value="red" data-for="dot" data-value="red"
@@ -332,18 +332,16 @@
                                         <span class="ps-shown-by-js"><i
                                             class="material-icons checkbox-checked"></i></span>
                                       </span>
-                      Zvaniet!
-                      <span class="dot red" style="float:right;margin-top: 3px;"></span>
-                    </label>
-                  </li>
-                </ul>
-              </section>
-              <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i></button>
+                Zvaniet!
+                <span class="dot red" style="float:right;margin-top: 3px;"></span>
+              </label>
+            </li>
+          </ul>
+        </section>
+        <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i></button>
 
-            </div>
-          </div>
-        </form>
       </div>
     </div>
+    </form>
   </div>
 </div>
