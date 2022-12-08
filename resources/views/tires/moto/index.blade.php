@@ -113,7 +113,7 @@
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){
                           if($index == 0) {
-                            echo '<button style="z-index: 999;" type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
+                            echo '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
                                     Filtrs ('. $filterCount .')
                                   </button><div class="filters" style="margin: 0 auto;"></div>';
                             echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="tire-type-title flipped-title">Motociklu riepas</span></h4>';
@@ -137,7 +137,7 @@
                           </th>
 
                           <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
-                          <th scope="col" class="">Piezīmes</th>
+                          <th scope="col" class="hidden-sm-down">Piezīmes</th>
                           <th scope="col"></th>
                           <th scope="col">
                             <div class="tire-table-icon icon-question"></div>
@@ -164,7 +164,7 @@
                              title='{!! App\Helper\Image::show('moto', $tire->make_id) !!}'
                              href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
                              data-content="{{ $tire->title . ' ' . $tire->fullSize }}" data-article="{{ $tire->article }}">
-                            {{ $tire->title }}
+                            <div class="table-link-title">{{ $tire->title }}</div>
                           </a>
                         </td>
 
@@ -198,7 +198,7 @@
 
                         <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
                         <td id="sale-price" class="text-center tire-price-red">€ {{ $tire->price2 }}</td>
-                        <td>{{ $tire->comment }}</td>
+                        <td class="hidden-sm-down">{{ $tire->comment }}</td>
 
                         <td class="shopping-cart-col">
                           <div class="clearfix atc_div text-right">

@@ -4465,9 +4465,13 @@ table.queueTable:nth-child(2) {
 }
 
 .modal.show .modal-dialog {
-  /*-webkit-transform: none;*/
-  /*transform: none;*/
-  /*padding-right: 20px;*/
+  -webkit-transform: none;
+  transform: none;
+  padding-right: 20px;
+}
+
+#mobileFilterModal .modal-dialog.mobile-filter-modal {
+  padding: 0;
 }
 
 .modal-content {
@@ -5237,8 +5241,12 @@ select.select-title.tire-brand option:hover:before {
 
 .r1-select {
   width: 100%;
-  padding: 6px 2px;
+  padding: 6px;
   font-size: 12px;
   font-weight: 300;
   border-color: #65c2a5;
+  background-color: transparent;
+  color: black;
+  -webkit-appearance: none;
+  background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23636f83' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.75rem center/8px 10px;
 }
