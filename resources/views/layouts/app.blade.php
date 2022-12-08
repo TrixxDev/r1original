@@ -162,11 +162,26 @@
                                                         icon: '{{ asset('images/kartei_k.png') }}'
                                                     }
                                                 ];
+                                              if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
                                                 map = new google.maps.Map(document.getElementById('map'), {
-                                                    zoom: 11,
-                                                    center: centerMap(),
-                                                    gestureHandling: 'greedy',
+                                                  zoom: 10,
+                                                  center: centerMap(),
+                                                  gestureHandling: 'greedy',
+                                                  panControl: false,
+                                                  zoomControl: false,
+                                                  mapTypeControl: false,
+                                                  scaleControl: false,
+                                                  streetViewControl: false,
+                                                  overviewMapControl: false,
+                                                  rotateControl: false
                                                 });
+                                              } else {
+                                                map = new google.maps.Map(document.getElementById('map'), {
+                                                  zoom: 11,
+                                                  center: centerMap(),
+                                                  gestureHandling: 'greedy',
+                                                });
+                                              }
                                                 letlongs.forEach(function(item) {
                                                     const icon = new google.maps.MarkerImage(
                                                         item.icon,

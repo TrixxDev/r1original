@@ -19,11 +19,27 @@
         icon: '{{ asset('images/kartei_k.png') }}'
       },
     ];
-    map2 = new google.maps.Map(document.getElementById('map_contacts'), {
-      zoom: 11,
-      center: centerMap(letlongs),
-      gestureHandling: 'greedy'
-    });
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
+      map2 = new google.maps.Map(document.getElementById('map_contacts'), {
+        zoom: 10,
+        center: centerMap(letlongs),
+        gestureHandling: 'greedy',
+        panControl: false,
+        zoomControl: false,
+        mapTypeControl: false,
+        scaleControl: false,
+        streetViewControl: false,
+        overviewMapControl: false,
+        rotateControl: false
+      });
+    } else {
+      map2 = new google.maps.Map(document.getElementById('map_contacts'), {
+        zoom: 11,
+        center: centerMap(letlongs),
+        gestureHandling: 'greedy'
+      });
+    }
+
     letlongs.forEach(function(item) {
       const icon = new google.maps.MarkerImage(
         item.icon,
