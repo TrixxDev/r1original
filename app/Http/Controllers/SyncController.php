@@ -563,19 +563,6 @@ class SyncController extends Controller
 
     }
 
-    public function i3autoshow()
-    {
-      echo 'Auto riepas:<br>';
-      $stocks = Autostock::where('itype', 'i3')->get();
-      foreach ($stocks as $stock) {
-        $tire = Autotire::where('tire_id', $stock->tire_id)->first();
-        if (!$tire) continue;
-        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
-        //dd($text);
-        echo $text;
-      }
-    }
-
     public function i3moto()
     {
 
@@ -1155,15 +1142,16 @@ class SyncController extends Controller
 
     public function rzautoshow()
     {
-      echo 'Auto riepas:<br>';
-      $stocks = Autostock::where('itype', 'rz')->get();
-      foreach ($stocks as $stock) {
-        $tire = Autotire::where('tire_id', $stock->tire_id)->first();
-        if (!$tire) continue;
-        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
-        //dd($text);
-        echo $text;
-      }
+	echo 'Auto riepas:<br>';
+	$stocks = Autostock::where('itype', 'rz')->get();
+	foreach ($stocks as $stock) {
+	  $tire = Autotire::where('tire_id', $stock->tire_id)->first();
+	  if (!$tire) continue;
+	  $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
+	  //dd($text);
+	  echo $text;
+	}
+
     }
 
     private static function multiexplode($delimiters, $string) {
