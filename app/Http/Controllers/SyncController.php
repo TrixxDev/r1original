@@ -7,6 +7,7 @@ use App\Models\Bigbrand;
 use App\Models\Bigstock;
 use App\Models\Bigtire;
 use App\Models\Bigtread;
+use App\Models\Moto;
 use App\Models\Motostock;
 use App\Models\Quadr;
 use App\Models\Quadrstock;
@@ -40,6 +41,7 @@ class SyncController extends Controller
     public function accrual(Request $request)
     {
 
+        parse_str(substr(strrchr($_SERVER['HTTP_REFERER'], '?'), 1), $inputs);
         try {
           $this->accrual = new PDO("sqlsrv:Server=212.3.218.22,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
@@ -49,47 +51,45 @@ class SyncController extends Controller
 
         //echo 'Go Stock!' . PHP_EOL;
 
-	(isset($request->article)) ? $article = $request->article : $article = '';
+	      (isset($request->article)) ? $article = $request->article : $article = '';
 
-	if (!$article)
-        foreach ($this->tire_tables as $tire_table => $tire_stock) {
+	      if (!$article) {
+          foreach ($this->tire_tables as $tire_table => $tire_stock) {
             $stock = $this->getInventory($tire_table);
-	    //$tires_map = $this->getAccrualIdToEntityIdMap($tire_table);
-	    $tires_map = DB::table($tire_table)->get();
-	    //dd($tires_map);
+            //$tires_map = $this->getAccrualIdToEntityIdMap($tire_table);
+            $tires_map = DB::table($tire_table)->get();
+            //dd($tires_map);
 
-            if($stock === FALSE) {
-                echo 'Accrual sync failed!';
-                return false;
+            if ($stock === FALSE) {
+              echo 'Accrual sync failed!';
+              return false;
             }
 
-//          $this->updateStock($stock[1]);
+            // $this->updateStock($stock[1]);
 
-	    $this->updateStock($stock[2]);
-	    $this->updatePrices($tires_map);
-	    DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
-	    echo 'Done';
-
+            $this->updateStock($stock[2]);
+            $this->updatePrices($tires_map);
+            DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
+            echo 'Done';
+          }
         } else {
-	  $stock = $this->getInventory('auto_tires', $article);
-	  if (empty($stock[2])) {
-	    $stock = $this->getInventory('moto_tires', $article);
-	  }
-	  if (empty($stock[2])) {
-	    $stock = $this->getInventory('quadr_tires', $article);
-	  }
-	  if (empty($stock[2])) {
-	    return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
-	  }
-	  //dd($stock);
-	  $this->updateStock($stock[2]);
-	  $tire = DB::table('auto_tires')->where('article', $request->article)->first();
+          $stock = $this->getInventory('auto_tires', $article);
+          if (empty($stock[2])) {
+            $stock = $this->getInventory('moto_tires', $article);
+          }
+          if (empty($stock[2])) {
+            $stock = $this->getInventory('quadr_tires', $article);
+          }
+          if (empty($stock[2])) {
+            return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
+          }
+          //dd($stock);
+          $this->updateStock($stock[2]);
+          $tire = DB::table('auto_tires')->where('article', $request->article)->first();
           if ($tire === null) {
-	    $stock = $this->getInventory('moto_tires', $article);
             $tire = DB::table('moto_tires')->where('article', $request->article)->first();
           }
           if ($tire === null) {
-	    $stock = $this->getInventory('quadr_tires', $article);
             $tire = DB::table('quadr_tires')->where('article', $request->article)->first();
           }
           if ($tire === null) {
@@ -97,8 +97,6 @@ class SyncController extends Controller
           }
           echo json_encode(['urs_quantity' => $tire->urs_quantity, 'krs_quantity' => $tire->krs_quantity]);
         }
-
-
     }
 
   public function updatePrices($stock)
@@ -204,17 +202,8 @@ class SyncController extends Controller
           $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
           //$sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.ArticleId = '141309'";
           $result = $this->accrual->query($sql);
-	  if ($result->rowCount()) {
-            foreach ($result as $rows) {
-	      set_time_limit(0);
-              $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-              if ($rows['Deleted'] == 1) {
-                $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-              } else {
-                $akcijas_cena = (int) 	round(round($rows['Cena'], 5) * 1.21);
-              }
-            }
-	    //var_dump(count($stockCount));
+	        if ($result->rowCount()) {
+            //var_dump(count($stockCount));
             DB::table($tire_table)->where('tire_id', $id)->update([
               'quantity' => $total,
               'urs_quantity' => @$urs_quantity,
@@ -224,28 +213,23 @@ class SyncController extends Controller
           } else {
             $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
             //$sql = "SELECT * FROM katalogs k WHERE k.ArticleId = '141309'";
-	    $result = $this->accrual->query($sql);
-	    //dd($result->rowCount());
+	          $result = $this->accrual->query($sql);
+            //dd($result->rowCount());
             if ($result->rowCount()) {
-		foreach ($result as $rows) {
-                  set_time_limit(0);
-                  $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-		  $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-                }
-	        DB::table($tire_table)->where('tire_id', $id)->update([
-                  'quantity' => $total,
-                  'urs_quantity' => @$urs_quantity,
-                  'krs_quantity' => @$krs_quantity,
-                  'updated_at' => date('Y-m-d H:i:s')
-                ]);
-	    } else {
-	      DB::table($tire_table)->where('tire_id', $id)->update([
+	            DB::table($tire_table)->where('tire_id', $id)->update([
                 'quantity' => $total,
                 'urs_quantity' => @$urs_quantity,
                 'krs_quantity' => @$krs_quantity,
                 'updated_at' => date('Y-m-d H:i:s')
               ]);
-	    }
+	          } else {
+	            DB::table($tire_table)->where('tire_id', $id)->update([
+                'quantity' => $total,
+                'urs_quantity' => @$urs_quantity,
+                'krs_quantity' => @$krs_quantity,
+                'updated_at' => date('Y-m-d H:i:s')
+              ]);
+	          }
           }
 
         }
@@ -561,6 +545,42 @@ class SyncController extends Controller
 //        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => NOW()]);
 //        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
+    }
+
+    public function i3show()
+    {
+      echo 'Auto riepas:<br>';
+      $stocks = Autostock::where('itype', 'i3')->get();
+      foreach ($stocks as $stock) {
+        $tire = Autotire::where('tire_id', $stock->tire_id)->first();
+        if (!$tire) continue;
+        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
+        //dd($text);
+        echo $text;
+      }
+      echo '<br>';
+
+      echo 'Moto riepas:<br>';
+      $stocks = Motostock::where('itype', 'i3')->get();
+      foreach ($stocks as $stock) {
+        $tire = Moto::where('tire_id', $stock->tire_id)->first();
+        if (!$tire) continue;
+        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
+        //dd($text);
+        echo $text;
+      }
+      echo '<br>';
+
+      echo 'Kvadru riepas:<br>';
+      $stocks = Quadrstock::where('itype', 'i3')->get();
+      foreach ($stocks as $stock) {
+        $tire = Quadr::where('tire_id', $stock->tire_id)->first();
+        if (!$tire) continue;
+        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
+        //dd($text);
+        echo $text;
+      }
+      echo '<br>';
     }
 
     public function i3moto()
@@ -1142,16 +1162,15 @@ class SyncController extends Controller
 
     public function rzautoshow()
     {
-	echo 'Auto riepas:<br>';
-	$stocks = Autostock::where('itype', 'rz')->get();
-	foreach ($stocks as $stock) {
-	  $tire = Autotire::where('tire_id', $stock->tire_id)->first();
-	  if (!$tire) continue;
-	  $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
-	  //dd($text);
-	  echo $text;
-	}
-
+      echo 'Auto riepas:<br>';
+      $stocks = Autostock::where('itype', 'rz')->get();
+      foreach ($stocks as $stock) {
+        $tire = Autotire::where('tire_id', $stock->tire_id)->first();
+        if (!$tire) continue;
+        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
+        //dd($text);
+        echo $text;
+      }
     }
 
     private static function multiexplode($delimiters, $string) {
