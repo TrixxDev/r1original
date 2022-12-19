@@ -10,11 +10,7 @@ input:focus, textarea:focus, select:focus, button:focus{
 }
 
 body {
-  background-image: url(../images/cover.png);
-  background-size: cover;
-  background-position: top center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
+  background: url(../images/cover.png) no-repeat fixed top center;
   font-family: 'Arimo', Arial, sans-serif;
 }
 
@@ -29,7 +25,7 @@ main {
   background:none;
 }
 #header .header-nav {
-  border-bottom: 0px;
+  border-bottom: 0;
   /*background-color: #fff;*/
   margin-left: 185px;
   border-radius: 0 0 10px 0;
@@ -47,8 +43,8 @@ main {
   background: #68c0a8;
   width: 100%;
   height: 100%;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   z-index: -1;
   /*transform: skew(-20deg);*/
   border-radius: 5px;
@@ -99,13 +95,13 @@ main {
 
 .top-banner-info table {
   width: 100%;
-  margin: 5px 0px 5px 30px;
+  margin: 5px 0 5px 30px;
   max-width: 240px;
   float: left;
 
 }
 .top-banner-info th {
-  padding: 0px 10px 0px 25px;
+  padding: 0 10px 0 25px;
 }
 .top-banner-info th:nth-child(1) {
   background: url(../images/tel_u.png) no-repeat;
@@ -129,7 +125,7 @@ main {
   /*border-left: 1px solid #ccc;*/
 }
 .top-banner-info table strong {
-  text-shadow: rgb(255, 255, 255) 2px 1px 0px;
+  text-shadow: rgb(255, 255, 255) 2px 1px 0;
   font-size: 15pt;
 }
 
@@ -175,7 +171,7 @@ footer .address {
   background-color: #fff;
   padding:40px 0;
   position: relative;
-  margin-top: 0px;
+  margin-top: 0;
   font-size: 14px;
   line-height: 22px;
 
@@ -187,7 +183,7 @@ footer .address {
   border-right: 4px solid transparent;
   border-left: 4px solid #ccc;
   position: absolute;
-  left: 0px;
+  left: 0;
   margin-top: 7px;
 }
 #top-menu{
@@ -225,7 +221,7 @@ ul#top-menu li .sub-menu a.dropdown-item:hover {
   background-color: #f5f5f5;
 }
 .top-menu[data-depth="1"] {
-  margin: 0px;
+  margin: 0;
   padding: 5px 0;
   text-align: center;
 }
@@ -236,7 +232,7 @@ ul#top-menu li .sub-menu a.dropdown-item:before{
   display:none;
 }
 .top-menu .sub-menu ul[data-depth="1"]>li {
-  margin: 0 0px;
+  margin: 0;
 }
 
 .header-top .search-widget {
@@ -245,7 +241,7 @@ ul#top-menu li .sub-menu a.dropdown-item:before{
 }
 
 #custom-text {
-  padding:0px;
+  padding: 0;
   background:none;
 }
 
@@ -292,8 +288,8 @@ ul#top-menu li .sub-menu a.dropdown-item:before{
   background: #d2291d;
   width: 100%;
   height: 100%;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   z-index: -1;
   transform: skew(-20deg);
   margin-bottom: -50px;
@@ -333,8 +329,8 @@ ul#top-menu li .sub-menu a.dropdown-item:before{
   background: #d2291d;
   width: 100%;
   height: 100%;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   z-index: -1;
   transform: skew(-20deg);
   margin-bottom: -50px;
@@ -343,7 +339,7 @@ ul#top-menu li .sub-menu a.dropdown-item:before{
 
 .wrapper-below{
   background:#c1c1c1;
-  padding:0px 0;
+  padding: 0;
 }
 
 .block-social {
@@ -405,7 +401,7 @@ ul#top-menu li .sub-menu a.dropdown-item:before{
 }
 .header-top .search-widget form button[type=submit] {
   position: absolute;
-  bottom: 0px;
+  bottom: 0;
   right: 15px;
   color: #da5e55;
   height: 100%;
@@ -439,8 +435,8 @@ ul#top-menu li .sub-menu a.dropdown-item:before{
   height:100%;
   display:none;
   position:fixed;
-  top:0px;
-  left:0px;
+  top: 0;
+  left: 0;
   background:rgba(0,0,0,0.75);
   z-index:99999;
 }
@@ -455,7 +451,7 @@ ul#top-menu li .sub-menu a.dropdown-item:before{
   left:50%;
   -webkit-transform:translate(-50%, -50%);
   transform:translate(-50%, -50%);
-  box-shadow:0px 2px 6px rgba(0,0,0,1);
+  box-shadow: 0 2px 6px rgba(0,0,0,1);
   border-radius:3px;
   background:#fff;
 }
@@ -467,8 +463,8 @@ ul#top-menu li .sub-menu a.dropdown-item:before{
   padding-top:4px;
   display:inline-block;
   position:absolute;
-  top:0px;
-  right:0px;
+  top: 0;
+  right: 0;
   /*	transition:ease 0.25s all;
       -webkit-transform:translate(50%, -50%); */
   transform:translate(50%, -50%);
@@ -573,8 +569,8 @@ ul#top-menu>li>a.dropdown-item:after {
   background: #d2291d;
   width: 100%;
   height: 100%;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   z-index: -1;
   transform: skew(-20deg);
   margin-bottom: -50px;
@@ -653,7 +649,7 @@ a.menusearch-icon:hover {
   border-right: 1px solid #65c2a5;
 }
 #ct_matrix.fixed thead tr.ct_matrix_head {
-  top: 0px;
+  top: 0;
   border: 1px solid #65c2a5;
   width: 847.5px;
   background: #fff;
@@ -685,16 +681,16 @@ a.menusearch-icon:hover {
 body#category .main-content {
   background-color: #fff;
   margin-bottom: 15px;
-  padding: 0px 0px 20px 0px;
+  padding-bottom: 20px;
   min-height: 100px;
 }
 #left-column{
   /*padding: 0;*/
 
-  padding: 0 10px 0 0px;
+  padding-right: 10px;
 }
 .breadcrumb{
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 .active_filters {
   margin-top: 10px;
@@ -704,7 +700,7 @@ body#category .main-content {
   width: 22px;
   height: 22px;
   border-radius: 8px;
-  padding: 0px;
+  padding: 0;
   background: #bbb;
   display: inline-block;
   /*vertical-align: middle;*/
@@ -778,7 +774,7 @@ body#category .main-content {
   background-color: #65c2a5;
   background-image: url(../images/bulta_maza_down.png);
   background-repeat: no-repeat;
-  background-position: 0px 4px;
+  background-position: 0 4px;
   display: block;
 }
 #category.category-id-21 #search_filters > div > h4:first-child > span {
@@ -792,7 +788,7 @@ body#category .main-content {
   border: none;
 }
 #search_filters_wrapper {
-  margin: 0px 0px 0px 10px!important;
+  margin-left: 10px!important;
 }
 
 #category:not(.category-id-21) #search_filters_params {
@@ -861,7 +857,7 @@ body#category .main-content {
   color: #232323;
   font-weight: 600;
   width: 99%;
-  padding: 8px 0px;
+  padding: 8px 0;
   background: white;
   box-shadow: none;
   margin-top: 10px;
@@ -908,7 +904,7 @@ body#category .main-content {
   /*padding: 4px;*/
 }
 #search_filters .facet-dropdown .select-list {
-  box-shadow: 0px 1px 1px 2px #f1f1f1;
+  box-shadow: 0 1px 1px 2px #f1f1f1;
 }
 #search_filters .facet-dropdown .select-list {
   background: white;
@@ -958,7 +954,7 @@ body#category .main-content {
   font-size: 20px;;
 }
 #search_filters, #search_filters_brands, #search_filters_suppliers{
-  padding: 5px 0px;
+  padding: 5px 0;
 }
 #search_filters span[class*="show_"] {
   padding-right: 9px;
@@ -1085,7 +1081,7 @@ body.category-id-16 .table-top .table-cell:nth-child(1), body.category-id-17 .ta
 /*    padding-left: 14px;*/
 /*}*/
 .category-id-14 .table-top .table-cell:nth-child(7):lang(ru) {
-  padding-left: 0px;
+  padding-left: 0;
 }
 .products .table-top .sortable[data-filter*=".price"]:lang(ru) {
   padding-left: 10px;
@@ -1604,7 +1600,7 @@ article.product_show_list {
   display: none;
 }
 .product_show_list .thumbnail-container{
-  margin-bottom: 0px !important;
+  margin-bottom: 0 !important;
   height: 100% !important;
   width: 100% !important;
   background: none !important;
@@ -1675,7 +1671,7 @@ h4.custom_brand_name:not(.product_list_view), .category-motociklu-riepas h4.cust
 }
 .table-top + .custom_atv_name,
 h4 + .custom_atv_name {
-  border-top: 0px;
+  border-top: 0;
 }
 .custom_atv_name {
   padding-bottom: 20px;
@@ -1747,7 +1743,7 @@ h4.custom_atv_name:not(.product_show_list) {
 #products article:not(.product_show_list) .product-title {
   margin-top: 6px;
   margin-bottom: 4px;
-  padding: 0px 10px;
+  padding: 0 10px;
 }
 #products article:not(.product_show_list) .product-title-hidden {
   font-weight: 700;
@@ -1755,7 +1751,7 @@ h4.custom_atv_name:not(.product_show_list) {
   font-size: 12px;
 }
 #products article:not(.product_show_list) .product-price-and-shipping {
-  padding: 0px 10px;
+  padding: 0 10px;
 }
 /*product category grid view*/
 /*products category*/
@@ -1803,8 +1799,8 @@ div:not(.product-main-details) .product-variants {
   background: #68c0a8;
   width: 100%;
   height: 100%;
-  top: 0px;
-  left: 0px;
+  top: 0;
+  left: 0;
   z-index: -1;
   transform: skew(-20deg);
   margin-bottom: -50px;
@@ -2029,7 +2025,7 @@ p {
   background: #ccc;
   width: 100%;
   height: 100%;
-  top: 0px;
+  top: 0;
   z-index: -1;
   transform: skew(-20deg);
   border-radius: 5px;
@@ -2182,7 +2178,7 @@ p {
 }
 @media (max-width:1300px) {
   ul#top-menu>li>a.dropdown-item {
-    padding: 0px 21px 0 19px;
+    padding: 0 21px 0 19px;
   }
   ul#top-menu>li>a.dropdown-item:lang(lv) {
     padding: 0 18px 0 19px;
@@ -2210,7 +2206,7 @@ p {
 }
 @media (min-width: 1200px) {
   .row-menu {
-    margin-top: 0px;
+    margin-top: 0;
     /*padding-left: 360px;*/
   }
 }
@@ -2319,7 +2315,7 @@ p {
     margin: 10px -5px 5px;
     border-top-right-radius: 10px;
     padding:7px 0;
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
   .product-add-to-cart {
     margin-top: 24px;
@@ -2350,14 +2346,14 @@ p {
     right: 89px;
   }
   ul#top-menu>li>a.dropdown-item {
-    padding: 0px 30px;
+    padding: 0 30px;
     font-size: 21px;
   }
   ul#top-menu>li>a.dropdown-item:lang(lv) {
     padding: 0 36.5px 0 19px;
   }
   ul#top-menu>li>a.dropdown-item:lang(ru) {
-    padding: 0px 24px;
+    padding: 0 24px;
   }
   ul#top-menu>li#category-12>a.dropdown-item:before, ul#top-menu>li#category-20>a.dropdown-item:before {
     height: 36px;
@@ -2518,7 +2514,7 @@ h4.tire-brand-name.grid-t {
     padding: 0;
   }
   #header .header-nav {
-    margin-left: 0px;
+    margin-left: 0;
     border-radius: 0 0 10px 10px;
     padding: 0 15px;
   }
@@ -2526,7 +2522,7 @@ h4.tire-brand-name.grid-t {
     background:none;
   }
   #top-menu {
-    margin-top: 0px;
+    margin-top: 0;
   }
   #top-menu li a.dropdown-item:before {
     display:none;
@@ -2535,16 +2531,16 @@ h4.tire-brand-name.grid-t {
     text-align: center;
   }
   #mobile_top_menu_wrapper .top-menu a[data-depth="0"] {
-    padding-top:0px;
+    padding-top: 0;
   }
   #mobile_top_menu_wrapper {
-    margin-top: 0px;
+    margin-top: 0;
     padding-bottom: .625rem;
     background: #d22a1e;
     position: absolute;
     width: 100%;
-    left: 0px;
-    margin-left: 0px;
+    left: 0;
+    margin-left: 0;
     z-index:999;
   }
   #mobile_top_menu_wrapper #top-menu li {
@@ -2556,7 +2552,7 @@ h4.tire-brand-name.grid-t {
     margin-bottom: 15px;
   }
   .footer-top-logo {
-    margin-bottom: 0px;
+    margin-bottom: 0;
     text-align: center;
   }
 
@@ -2626,7 +2622,7 @@ h4.tire-brand-name.grid-t {
   #products article:not(.product_show_list) .thumbnail-container {
     width: 100%;
     height: 220px;
-    margin-bottom: 0px;
+    margin-bottom: 0;
   }
   #products .products {
     margin: 0;
@@ -3160,7 +3156,7 @@ th.cth_availability.quadr {
   font-size: 15px;
 }
 .ui-tooltip-content p {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
 /*tooltip*/
 
@@ -3321,12 +3317,12 @@ th.header {
   }
   button#mobile-submit-reservation {
     width: 100%;
-    padding: 5px 0px;
+    padding: 5px 0;
   }
 
   button#mobile-close-modal {
     width: 100%;
-    padding: 5px 0px;
+    padding: 5px 0;
   }
 
 }
@@ -3369,12 +3365,12 @@ th.header {
 
   button#mobile-submit-reservation {
     width: 100%;
-    padding: 5px 0px;
+    padding: 5px 0;
   }
 
   button#mobile-close-modal {
     width: 100%;
-    padding: 5px 0px;
+    padding: 5px 0;
   }
 
   .modal-content {
@@ -3430,7 +3426,7 @@ form textarea {
 }
 
 #service {
-  margin-left: 0px;
+  margin-left: 0;
 }
 
 .required-input {
@@ -4107,7 +4103,7 @@ td.header-empty {
   color: black;
   height: 100%;
   border: 1px solid rgba(0, 0, 0, .125);
-  box-shadow: 2px 2px 8px 0 rgb(0 0 0 / 20%);
+  box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, .2);
 }
 
 .tire-image-card:hover {
@@ -4303,7 +4299,7 @@ td.header-empty {
   position: absolute;
   background-color: #f9f9f9;
   min-width: 242.5px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
   padding: 12px 16px;
   z-index: 1;
 }
@@ -4534,7 +4530,7 @@ table.queueTable:nth-child(2) {
 
 #slotModal .bg-light {
   align-items: center;
-  padding: 5px 0px;
+  padding: 5px 0;
 }
 
 #slotModal .time {
@@ -4611,12 +4607,12 @@ table.queueTable:nth-child(2) {
   background-color: #fff;
   border-color: #958bef;
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgb(50 31 219 / 25%);
+  box-shadow: 0 0 0 0.2rem rgba(50, 31, 219, .25);
 }
 
 .modal-body .form-check-label {
   text-align: start;
-  padding-left: 0px!important;
+  padding-left: 0!important;
 }
 
 .modal-body .form-check {
@@ -4654,7 +4650,7 @@ table.queueTable:nth-child(2) {
 .modal-body .custom-select:focus {
   border-color: #958bef;
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgb(50 31 219 / 25%);
+  box-shadow: 0 0 0 0.2rem rgba(50, 31, 219, .25);
 }
 
 .rims-title {
@@ -4972,7 +4968,7 @@ ul#order-type-info li.list-style {
   background-color: #4cbb6c;
   border-radius: 0 6.5px 6.5px 0;
   width: 8px;
-  margin-left: 0px;
+  margin-left: 0;
   color: #4cbb6c;
 }
 
@@ -4980,7 +4976,7 @@ ul#order-type-info li.list-style {
   background-color: #FFFF00;
   border-radius: 0 6.5px 6.5px 0;
   width: 8px;
-  margin-left: 0px;
+  margin-left: 0;
   color: #FFFF00;
 }
 
@@ -5053,7 +5049,6 @@ input#show-selected-checkbox {
   margin-right: 5px;
   background-color: #65c2a5;
   color: white;
-  border: none;
   cursor: pointer;
   border: 1px solid darkcyan;
   margin-bottom: 3px;
@@ -5127,8 +5122,8 @@ input#show-selected-checkbox {
 }
 
 .contacts.table td, .contacts.table th{
-  border-top: 0px !important;
-  border-bottom: 0px !important;
+  border-top: 0 !important;
+  border-bottom: 0 !important;
 }
 
 .contactsRow {
@@ -5249,4 +5244,8 @@ select.select-title.tire-brand option:hover:before {
   color: black;
   -webkit-appearance: none;
   background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23636f83' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.75rem center/8px 10px;
+}
+.sticky-table {
+  position: sticky;
+  top: -1px;
 }

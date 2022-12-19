@@ -428,7 +428,7 @@
                         <div id="js-product-list">
                           {{--                                  LIST VIEW--}}
                           <table id="tires-table" class="table rims-sorter tires-table table-hover tablesorter">
-                            <thead class="tires-thead">
+                            <thead class="tires-thead sticky-top">
                             <tr>
                               <th scope="col"><input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces"></th>
                               <th scope="col">Nosaukums</th>
