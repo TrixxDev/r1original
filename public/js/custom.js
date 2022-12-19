@@ -3291,7 +3291,7 @@ document.addEventListener("DOMContentLoaded", function() {
 $('.dropdown-item.sizeCalc').on('click', function(e) {
   e.preventDefault();
   let url = $(this).attr('href');
-  popCalc(url,480,330);
+  popCalc(url,600,450);
 });
 
 function popCalc(url,popW,popH, data){
