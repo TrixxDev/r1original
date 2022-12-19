@@ -454,7 +454,7 @@ class SyncController extends Controller
           }
 
           $quantity = intval($item->QuantityAvailable);
-          $metadata = 'price: ' . $item->Price . '; pkpcena: ' . $item->NetPrice . '; Baseprice: ' . $item->NetPrice . ';';
+          $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
           $stock->quantity = $quantity;
           $stock->metadata = $metadata;
           if ($stock->save()) {
