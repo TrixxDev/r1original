@@ -250,8 +250,6 @@ class RecordController extends Controller
                 $workingDay->opentime = $f_opentime;
                 $workingDay->closetime = $f_closetime;
 
-                $queue->moveSlots($date, $f_rows);
-
                 if ($f_rows == 1) {
                   if ($workingDay->secondaryAvailable != 0) {
                     $workingDay->secondaryAvailable = 0;
