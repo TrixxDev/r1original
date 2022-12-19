@@ -342,7 +342,6 @@ Route::middleware('checksession')->group(function() {
   Route::get('/sync/duell-moto', [App\Http\Controllers\SyncController::class, 'duellmoto'])->name('duellmoto');
   Route::get('/sync/duell-quadr', [App\Http\Controllers\SyncController::class, 'duellquadr'])->name('duellquadr');
   Route::get('/sync/rz-auto/show', [App\Http\Controllers\SyncController::class, 'rzautoshow']);
-  Route::get('/sync/i3-auto/show', [App\Http\Controllers\SyncController::class, 'i3autoshow']);
 
 // XML Ģenerēšana (Salidzini.lv/Kurpirkt.lv)
 
