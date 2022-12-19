@@ -158,7 +158,7 @@
                           }
                       @endphp
                       <table id="tires-table" class="table table-striped quadr-sorter tires-table table-hover tablesorter">
-                        <thead class="tires-thead">
+                        <thead class="tires-thead sticky-table">
                         <tr>
                           <th scope="col"></th>
                           <th scope="col" class="table-tire-name-cell" style="width:50%;">Brends / modelis</th>

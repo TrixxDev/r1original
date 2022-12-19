@@ -443,7 +443,7 @@
                                 $stripe = 1;
                               @endphp
                             <table id="tires-table" class="table quadr-sorter tires-table table-hover tablesorter">
-                              <thead class="tires-thead">
+                              <thead class="tires-thead sticky-top">
                               <tr>
                                 <th scope="col"></th>
                                 <th scope="col">Nosaukums</th>

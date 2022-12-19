@@ -193,7 +193,7 @@
                       {{-- TIRES TABLE --}}
                       <table id="tires-table"
                              class="table table-striped summer-sorter tires-table table-hover tablesorter">
-                        <thead class="tires-thead">
+                        <thead class="tires-thead sticky-table">
                         <tr>
                           <th scope="col"></th>
                           <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
