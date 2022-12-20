@@ -668,6 +668,8 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
     } else {
       const tire_data = $(this).parent().parent().parent();
       let product = $('.product-main-details h1').text();
+      let article = tire_data.find('th').data('article');
+      if (article.length == 0) article = 'no_article';
       $('.popup input[name=qty]').val(4);
       $('.popup input[name=total]').val(parseInt($('.popup input[name=price]').val()) * parseInt($('.popup input[name=qty]').val()));
       $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
@@ -676,7 +678,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
       $('.popup input[name=price]').val($('#sale-price', tire_data).html().trim().replace('€ ', ''));
 
       calcData = {
-        'article': tire_data.find('th').data('article'),
+        'article': article,
         'qty': 4,
         'user': user,
         'prod': $('.product-main-details h1').text(),
@@ -684,6 +686,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
       }
 
       const urlData = new URLSearchParams(calcData).toString();
+      // console.log(urlData);
 
       popCalc('/testing3',780,400, urlData);
     }
@@ -761,9 +764,9 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
       calcData = {
           'article': tire_data.parent().parent().data('article'),
           'qty': 4,
-	  'user': user,
-	  'prod': tire_data.find('.card-title-text').text().trim(),
-	  'price': tire_data.find('.rim-price-red').text().trim().replace('€', ''),
+          'user': user,
+          'prod': tire_data.find('.card-title-text').text().trim(),
+          'price': tire_data.find('.rim-price-red').text().trim().replace('€', ''),
       }
 
       const urlData = new URLSearchParams(calcData).toString();
@@ -2762,6 +2765,8 @@ $('.tire-table-checkbox').children().each(function(key, value){
       // IF ADMIN
       const tire_data = $(this).parent().parent().parent();
       // console.log('tire_data: ', tire_data);
+      let article = $('.table-tire-name-cell a', tire_data).data('article');
+      if (article.length == 0) article = 'no_article';
       $('.popup input[name=prod]').val($('.table-tire-name-cell a', tire_data).data('content'));
       $('.popup input[name=price]').val($('.tire-price-red', tire_data).html().replace('€ ', ''));
       $('.popup input[name=qty]').val(4);
@@ -2770,7 +2775,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
       $('.popup input[name=article]').val($('.table-tire-name-cell a', tire_data).data('article'));
 
       calcData = {
-          'article': $('.table-tire-name-cell a', tire_data).data('article'),
+          'article': article,
           'qty': 4,
           'user': user,
           'prod': $('.table-tire-name-cell a', tire_data).data('content'),
@@ -2787,86 +2792,86 @@ $('.tire-table-checkbox').children().each(function(key, value){
   })
 });
 
-$('#facet_availability li label').on('click', function() {
-  let $colors = [];
-  const $checked = $('#facet_availability li label .custom-checkbox input:checked');
-
-  if ($checked.length === 0) {
-    $('.tires-table').each(function() {
-      $(this).children('#tires-table-body').children('tr').each(function() {
-        $(this).show();
-      });
-      $(this).show().prev().show();
-    });
-
-    $('.grid-view-link').each(function() {
-      $(this).show();
-    })
-
-    $('.tire-brand-name.grid-t').each(function(){
-      $(this).show();
-    })
-
-    return true;
-  }
-
-  $checked.each(function() {
-
-    let $id = $(this).attr('class');
-    $colors.push($id);
-    switch ($id) {
-      case 'green':
-      case 'yellow': {
-        $colors.push('half-' + $id);
-        break;
-      }
-    }
-    $colors = [...new Set($colors)];
-
-    $('.tires-table').each(function() {
-      $(this).children('#tires-table-body').children('tr').each(function() {
-        $(this).parent().parent().hide().prev().hide();
-        $(this).hide();
-        if ($colors.includes($(this).find('.dot .sort-order').text().toLowerCase())) {
-          $(this).show();
-        }
-      })
-      let length = $(this).children('#tires-table-body').children().filter(function() {
-        return $(this).css("display") !== "none";
-      }).length;
-      if (length !== 0) {
-        $(this).show().prev().show();
-      }
-    });
-
-
-
-    $('.row.grid-ex.pr-1').each(function(){
-      if($(this).find('a.grid-view-link:visible').length === 0) {
-
-      }
-    })
-
-    $('.grid-view-link').each(function() {
-
-        $(this).hide();
-
-        if ($colors.includes($(this).find('.grid-dot .sort-order').text().toLowerCase())) {
-          $(this).show();
-        }
-
-        let length = $(this).filter(function() {
-          return $(this).css("display") !== "none";
-        }).length;
-
-        if (length !== 0) {
-          $(this).show();
-        }
-
-    });
-  });
-
-});
+// $('#facet_availability li label').on('click', function() {
+//   let $colors = [];
+//   const $checked = $('#facet_availability li label .custom-checkbox input:checked');
+//
+//   if ($checked.length === 0) {
+//     $('.tires-table').each(function() {
+//       $(this).children('#tires-table-body').children('tr').each(function() {
+//         $(this).show();
+//       });
+//       $(this).show().prev().show();
+//     });
+//
+//     $('.grid-view-link').each(function() {
+//       $(this).show();
+//     })
+//
+//     $('.tire-brand-name.grid-t').each(function(){
+//       $(this).show();
+//     })
+//
+//     return true;
+//   }
+//
+//   $checked.each(function() {
+//
+//     let $id = $(this).attr('class');
+//     $colors.push($id);
+//     switch ($id) {
+//       case 'green':
+//       case 'yellow': {
+//         $colors.push('half-' + $id);
+//         break;
+//       }
+//     }
+//     $colors = [...new Set($colors)];
+//
+//     $('.tires-table').each(function() {
+//       $(this).children('#tires-table-body').children('tr').each(function() {
+//         $(this).parent().parent().hide().prev().hide();
+//         $(this).hide();
+//         if ($colors.includes($(this).find('.dot .sort-order').text().toLowerCase())) {
+//           $(this).show();
+//         }
+//       })
+//       let length = $(this).children('#tires-table-body').children().filter(function() {
+//         return $(this).css("display") !== "none";
+//       }).length;
+//       if (length !== 0) {
+//         $(this).show().prev().show();
+//       }
+//     });
+//
+//
+//
+//     $('.row.grid-ex.pr-1').each(function(){
+//       if($(this).find('a.grid-view-link:visible').length === 0) {
+//
+//       }
+//     })
+//
+//     $('.grid-view-link').each(function() {
+//
+//         $(this).hide();
+//
+//         if ($colors.includes($(this).find('.grid-dot .sort-order').text().toLowerCase())) {
+//           $(this).show();
+//         }
+//
+//         let length = $(this).filter(function() {
+//           return $(this).css("display") !== "none";
+//         }).length;
+//
+//         if (length !== 0) {
+//           $(this).show();
+//         }
+//
+//     });
+//   });
+//
+// });
 
 // SHOW LIST VIEW
 $('div.can-collapse span.show_list').on('click', function(){

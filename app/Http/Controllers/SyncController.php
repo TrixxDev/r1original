@@ -36,14 +36,16 @@ class SyncController extends Controller
         ];
     }
 
-    // Accrual Sync
+    // Accrual Sync - (Public) 212.3.218.22 - (Local) 192.168.0.36
 
     public function accrual(Request $request)
     {
 
-        parse_str(substr(strrchr($_SERVER['HTTP_REFERER'], '?'), 1), $inputs);
+        if (strrchr($_SERVER['HTTP_REFERER'], '?') !== false) {
+          parse_str(substr(strrchr($_SERVER['HTTP_REFERER'], '?'), 1), $inputs);
+        }
         try {
-          $this->accrual = new PDO("sqlsrv:Server=212.3.218.22,1444;Database=accrual", "sa", "cenzors");
+          $this->accrual = new PDO("sqlsrv:Server=192.168.0.36,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
           die("Database connection failed: " . $e->getMessage());
           exit;
@@ -52,6 +54,13 @@ class SyncController extends Controller
         //echo 'Go Stock!' . PHP_EOL;
 
 	      (isset($request->article)) ? $article = $request->article : $article = '';
+        if (isset($inputs) && isset($inputs->model_name)) {
+          $model = $inputs['model_name'];
+          $tire_id = $inputs['tire_id'];
+        } else {
+          $model = '';
+          $tire_id = '';
+        }
 
 	      if (!$article) {
           foreach ($this->tire_tables as $tire_table => $tire_stock) {
@@ -74,27 +83,16 @@ class SyncController extends Controller
           }
         } else {
           $stock = $this->getInventory('auto_tires', $article);
-          if (empty($stock[2])) {
-            $stock = $this->getInventory('moto_tires', $article);
-          }
-          if (empty($stock[2])) {
-            $stock = $this->getInventory('quadr_tires', $article);
-          }
-          if (empty($stock[2])) {
-            return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
-          }
+          if (empty($stock[2])) $stock = $this->getInventory('moto_tires', $article);
+          if (empty($stock[2])) $stock = $this->getInventory('quadr_tires', $article);
+          if (empty($stock[2])) return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
           //dd($stock);
           $this->updateStock($stock[2]);
           $tire = DB::table('auto_tires')->where('article', $request->article)->first();
-          if ($tire === null) {
-            $tire = DB::table('moto_tires')->where('article', $request->article)->first();
-          }
-          if ($tire === null) {
-            $tire = DB::table('quadr_tires')->where('article', $request->article)->first();
-          }
-          if ($tire === null) {
-            return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
-          }
+          if ($tire === null) $tire = DB::table('moto_tires')->where('article', $request->article)->first();
+          if ($tire === null) $tire = DB::table('quadr_tires')->where('article', $request->article)->first();
+          if ($tire === null) return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
+//          $this->updatePrices();
           echo json_encode(['urs_quantity' => $tire->urs_quantity, 'krs_quantity' => $tire->krs_quantity]);
         }
     }
