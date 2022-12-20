@@ -152,8 +152,8 @@
                                                 <td>{{ $tire->d1 }}</td>
                                                 <td>{{ $tire->d2 }}</td>
                                                 <td>{{ $tire->d3 }}</td>
+                                              @if (isset($tread) && $tread->season == 2)
                                                 <td>
-
                                                   @switch($tire->type)
                                                     @case(1)
                                                     <span data-toggle="tooltip">
@@ -187,8 +187,8 @@
                                                     @break
 
                                                   @endswitch
-
                                                 </td>
+                                                @endif
                                                 <td>{{ $tire->price1 }}</td>
                                                 <td style="color: red; font-weight: 500;">{{ $tire->price2 }}</td>
                                                 <td>{{ $tire->li }}</td>
