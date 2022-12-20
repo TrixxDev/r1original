@@ -45,7 +45,7 @@ class SyncController extends Controller
           parse_str(substr(strrchr($_SERVER['HTTP_REFERER'], '?'), 1), $inputs);
         }
         try {
-          $this->accrual = new PDO("sqlsrv:Server=192.168.0.36,1444;Database=accrual", "sa", "cenzors");
+          $this->accrual = new PDO("sqlsrv:Server=212.3.218.22,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
           die("Database connection failed: " . $e->getMessage());
           exit;
