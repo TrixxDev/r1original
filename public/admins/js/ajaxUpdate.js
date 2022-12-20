@@ -181,13 +181,13 @@ $(document).ready(function() {
 
     let $date = new Date();
     const $year = $date.getFullYear();
-    const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-    const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+    const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+    const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
     const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
     const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
     const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-    const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+    const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
     $(this).parents().children().first().find('span').html($time);
 
     let $sync = '';
@@ -201,13 +201,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('<p style="border-bottom: 1px solid #d8dbe0;">Accrual - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
             $('.accrual_last_time').html($time);
@@ -216,13 +216,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Accrual<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
             $('.accrual_last_time').html($time);
@@ -241,13 +241,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('<p style="border-bottom: 1px solid #d8dbe0;">Lattako - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
             $('.i3auto_last_time').html($time);
@@ -256,13 +256,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Lattako Auto<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
             $('.i3auto_last_time').html($time);
@@ -281,13 +281,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('<p style="border-bottom: 1px solid #d8dbe0;">Lattako - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
             $('.i3moto_last_time').html($time);
@@ -296,13 +296,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Lattako Moto<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
             $('.i3moto_last_time').html($time);
@@ -321,13 +321,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('<p style="border-bottom: 1px solid #d8dbe0;">Lattako - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
             $('.i3quadr_last_time').html($time);
@@ -336,13 +336,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Lattako Kvadraciklu<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
             $('.i3quadr_last_time').html($time);
@@ -361,13 +361,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('<p style="border-bottom: 1px solid #d8dbe0;">Duell - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
             $('.duellmoto_last_time').html($time);
@@ -376,13 +376,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Duell Moto<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
             $('.duellmoto_last_time').html($time);
@@ -401,13 +401,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('<p style="border-bottom: 1px solid #d8dbe0;">Duell - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
             $('.duellquadr_last_time').html($time);
@@ -416,13 +416,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Duell Kvadraciklu<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
             $('.duellquadr_last_time').html($time);
@@ -441,13 +441,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('<p style="border-bottom: 1px solid #d8dbe0;">Lattako - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
             $('.i3big_last_time').html($time);
@@ -456,13 +456,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Lattako Lielās riepas<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
             $('.i3big_last_time').html($time);
@@ -481,13 +481,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('<p style="border-bottom: 1px solid #d8dbe0;">GoodYear - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
             $('.gy_last_time').html($time);
@@ -496,13 +496,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">GoodYear Auto<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
             $('.gy_last_time').html($time);
@@ -522,13 +522,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('<p style="border-bottom: 1px solid #d8dbe0;">Riepu zona - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
             $('.rz_last_time').html($time);
@@ -537,13 +537,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Riepu zona auto riepas<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
             $('.rz_last_time').html($time);
@@ -563,13 +563,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('<p style="border-bottom: 1px solid #d8dbe0;">Bohnenkamp - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
             $('.starcobig_last_time').html($time);
@@ -578,13 +578,13 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = ($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth();
-            const $day = ($date.getDay() < 10) ? '0' + $date.getDay() : $date.getDay();
+            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
 
-            const $time = '<b>' + $day + '.' + $month + '.' + $year + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
             $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Bohnenkamp lielās riepas<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
             $('.starcobig_last_time').html($time);
