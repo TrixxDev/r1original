@@ -2792,86 +2792,86 @@ $('.tire-table-checkbox').children().each(function(key, value){
   })
 });
 
-// $('#facet_availability li label').on('click', function() {
-//   let $colors = [];
-//   const $checked = $('#facet_availability li label .custom-checkbox input:checked');
-//
-//   if ($checked.length === 0) {
-//     $('.tires-table').each(function() {
-//       $(this).children('#tires-table-body').children('tr').each(function() {
-//         $(this).show();
-//       });
-//       $(this).show().prev().show();
-//     });
-//
-//     $('.grid-view-link').each(function() {
-//       $(this).show();
-//     })
-//
-//     $('.tire-brand-name.grid-t').each(function(){
-//       $(this).show();
-//     })
-//
-//     return true;
-//   }
-//
-//   $checked.each(function() {
-//
-//     let $id = $(this).attr('class');
-//     $colors.push($id);
-//     switch ($id) {
-//       case 'green':
-//       case 'yellow': {
-//         $colors.push('half-' + $id);
-//         break;
-//       }
-//     }
-//     $colors = [...new Set($colors)];
-//
-//     $('.tires-table').each(function() {
-//       $(this).children('#tires-table-body').children('tr').each(function() {
-//         $(this).parent().parent().hide().prev().hide();
-//         $(this).hide();
-//         if ($colors.includes($(this).find('.dot .sort-order').text().toLowerCase())) {
-//           $(this).show();
-//         }
-//       })
-//       let length = $(this).children('#tires-table-body').children().filter(function() {
-//         return $(this).css("display") !== "none";
-//       }).length;
-//       if (length !== 0) {
-//         $(this).show().prev().show();
-//       }
-//     });
-//
-//
-//
-//     $('.row.grid-ex.pr-1').each(function(){
-//       if($(this).find('a.grid-view-link:visible').length === 0) {
-//
-//       }
-//     })
-//
-//     $('.grid-view-link').each(function() {
-//
-//         $(this).hide();
-//
-//         if ($colors.includes($(this).find('.grid-dot .sort-order').text().toLowerCase())) {
-//           $(this).show();
-//         }
-//
-//         let length = $(this).filter(function() {
-//           return $(this).css("display") !== "none";
-//         }).length;
-//
-//         if (length !== 0) {
-//           $(this).show();
-//         }
-//
-//     });
-//   });
-//
-// });
+$('#facet_availability li label').on('click', function() {
+  let $colors = [];
+  const $checked = $('#facet_availability li label .custom-checkbox input:checked');
+
+  if ($checked.length === 0) {
+    $('.tires-table').each(function() {
+      $(this).children('#tires-table-body').children('tr').each(function() {
+        $(this).show();
+      });
+      $(this).show().prev().show();
+    });
+
+    $('.grid-view-link').each(function() {
+      $(this).show();
+    })
+
+    $('.tire-brand-name.grid-t').each(function(){
+      $(this).show();
+    })
+
+    return true;
+  }
+
+  $checked.each(function() {
+
+    let $id = $(this).attr('class');
+    $colors.push($id);
+    switch ($id) {
+      case 'green':
+      case 'yellow': {
+        $colors.push('half-' + $id);
+        break;
+      }
+    }
+    $colors = [...new Set($colors)];
+
+    $('.tires-table').each(function() {
+      $(this).children('#tires-table-body').children('tr').each(function() {
+        $(this).parent().parent().hide().prev().hide();
+        $(this).hide();
+        if ($colors.includes($(this).find('.dot .sort-order').text().toLowerCase())) {
+          $(this).show();
+        }
+      })
+      let length = $(this).children('#tires-table-body').children().filter(function() {
+        return $(this).css("display") !== "none";
+      }).length;
+      if (length !== 0) {
+        $(this).show().prev().show();
+      }
+    });
+
+
+
+    $('.row.grid-ex.pr-1').each(function(){
+      if($(this).find('a.grid-view-link:visible').length === 0) {
+
+      }
+    })
+
+    $('.grid-view-link').each(function() {
+
+        $(this).hide();
+
+        if ($colors.includes($(this).find('.grid-dot .sort-order').text().toLowerCase())) {
+          $(this).show();
+        }
+
+        let length = $(this).filter(function() {
+          return $(this).css("display") !== "none";
+        }).length;
+
+        if (length !== 0) {
+          $(this).show();
+        }
+
+    });
+  });
+
+});
 
 // SHOW LIST VIEW
 $('div.can-collapse span.show_list').on('click', function(){
