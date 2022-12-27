@@ -159,6 +159,7 @@ main {
 #footer {
   background: #c1c1c1;
   padding-top: 0;
+  z-index: -1;
 }
 
 footer .address {
@@ -746,21 +747,21 @@ body#category .main-content {
 /*#search_filters .facet:last-child {*/
 /*  padding-bottom: 15px;*/
 /*}*/
-#search_filters>div>h4:first-child {
-  background: #65c2a5;
-  color: #fff;
-  /*padding: 15px;*/
-  text-align: center;
-  text-transform: capitalize!important;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-  width: calc(100% + 30px );
-  margin-left: -15px;
-  margin-top: -15px;
-}
-#search_filters h4:first-of-type {
-  cursor: pointer;
-}
+/*#search_filters>div>h4:first-child {*/
+/*  background: #65c2a5;*/
+/*  color: #fff;*/
+/*  !*padding: 15px;*!*/
+/*  text-align: center;*/
+/*  text-transform: capitalize!important;*/
+/*  border-top-left-radius: 15px;*/
+/*  border-top-right-radius: 15px;*/
+/*  width: calc(100% + 30px );*/
+/*  margin-left: -15px;*/
+/*  margin-top: -15px;*/
+/*}*/
+/*#search_filters h4:first-of-type {*/
+/*  cursor: pointer;*/
+/*}*/
 #search_filters.collapsed .can-collapse,#search_filters.mcollapsed .can-collapse {
   overflow: hidden;
 }
@@ -772,9 +773,6 @@ body#category .main-content {
 }
 #search_filters > div > h4:first-child > span {
   background-color: #65c2a5;
-  background-image: url(../images/bulta_maza_down.png);
-  background-repeat: no-repeat;
-  background-position: 0px 4px;
   display: block;
 }
 #category.category-id-21 #search_filters > div > h4:first-child > span {
@@ -791,11 +789,11 @@ body#category .main-content {
   margin: 0px 0px 0px 10px!important;
 }
 
-#category:not(.category-id-21) #search_filters_params {
-  padding: 15px;
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
-}
+/*#category:not(.category-id-21) #search_filters_params {*/
+/*  padding: 15px;*/
+/*  border-top-left-radius: 15px;*/
+/*  border-top-right-radius: 15px;*/
+/*}*/
 
 #category:not(.category-id-21) #search_filters_auto {
   display: none;
@@ -804,6 +802,8 @@ body#category .main-content {
   background-position: 12px 18px;
 }
 #category.category-id-21 #search_filters>div>h4:first-child > span {
+  text-align: center;
+  color: white;
   padding: 15px;
   width: 50%;
   display: inline-block;
@@ -813,18 +813,18 @@ body#category .main-content {
 #category.category-id-21 #search_filters>div>h4 > span:not(.active) {
   background-color: #d5d5d5;
 }
-#category.category-id-21 #search_filters>div>h4 > span:nth-of-type(1) {
-  border-top-left-radius: 15px;
-}
+/*#category.category-id-21 #search_filters>div>h4 > span:nth-of-type(1) {*/
+/*  border-top-left-radius: 15px;*/
+/*}*/
 #category.category-id-21 #search_filters>div>h4 > span:nth-of-type(1):not(.active) {
   border-left: 1px solid #d5d5d5;
   border-top: 1px solid #d5d5d5;
   margin-left: -1px;
   margin-top: -1px;
 }
-#category.category-id-21 #search_filters>div>h4 > span:nth-of-type(2) {
-  border-top-right-radius: 15px;
-}
+/*#category.category-id-21 #search_filters>div>h4 > span:nth-of-type(2) {*/
+/*  border-top-right-radius: 15px;*/
+/*}*/
 #category.category-id-21 #search_filters>div>h4 > span:nth-of-type(2):not(.active) {
   border-left: 1px solid #d5d5d5;
   border-top: 1px solid #d5d5d5;
@@ -5258,4 +5258,25 @@ select.select-title.tire-brand option:hover:before {
 
 .table.table-kalnciema td.slot.slot-empty {
   width: 42%;
+}
+
+.back-to-top-button {
+  border: 1px solid black;
+  background: black;
+  padding: 8px;
+  margin-right: 5px;
+  border-radius: 5px;
+  opacity: .6;
+  color: white;
+  right: 10px;
+  bottom: 20px;
+  position: fixed;
+  z-index: 9;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 42px;
+  display: none;
+}
+.back-to-top-button:focus, .back-to-top-button:hover {
+  color: white!important;
 }

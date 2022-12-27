@@ -1185,60 +1185,64 @@ function showQuickBuyForm(id) {
   calcQuickBuyPrice();
 };
 
-let $ids = [];
+$(document).ready(function() {
 
-$('.tire-table-row, .tire-image-card').each(function() {
-  $(this).find('input[type=checkbox]').on('click', function() {
-    let $id = $(this).val();
-    let $product = $('input[type=checkbox][name="product_ids[]"][value="' + $id + '"]');
-    $product.attr('checked', this.checked).prop('checked', this.checked);
-    if ($(this).is(':checked')) {
-      $product.closest('.tire-table-row').addClass('selected');
-      $product.closest('.tire-image-card').addClass('selected');
-    } else {
-      $product.closest('.tire-table-row').removeClass('selected');
-      $product.closest('.tire-image-card').removeClass('selected');
-    }
-    // $(this).closest('.tire-table-row').toggleClass('selected');
-    $ids = $(document).find('input[type=checkbox][name="product_ids[]"]:checked').map(function() {
-      return $(this).val();
-    }).toArray();
-    $ids = $ids.filter(function(item, i, ids) {
-      return i == ids.indexOf(item);
-    });
-    $.each($ids, function(key, value) {
-    });
-    $ids = $ids.join(',');
-    const baseUrl = window.location.href.split('#')[0];
-    if ($ids.length) {
-      window.location.replace(baseUrl + '#|' + $ids);
-      $('input#show-selected-checkbox').prop( "disabled", false );
-    } else {
-      $('input#show-selected-checkbox').prop( "disabled", true );
-      let uri = window.location.toString();
+  let $ids = [];
 
-      if (uri.indexOf("#") > 0) {
-        let clean_uri = uri.substring(0,
-          uri.indexOf("#"));
-
-        window.history.replaceState({},
-          document.title, clean_uri);
+  $('.tire-table-row, .tire-image-card').each(function() {
+    $(this).find('input[type=checkbox]').on('click', function() {
+      let $id = $(this).val();
+      let $product = $('input[type=checkbox][name="product_ids[]"][value="' + $id + '"]');
+      $product.attr('checked', this.checked).prop('checked', this.checked);
+      if ($(this).is(':checked')) {
+        $product.closest('.tire-table-row').addClass('selected');
+        $product.closest('.tire-image-card').addClass('selected');
+      } else {
+        $product.closest('.tire-table-row').removeClass('selected');
+        $product.closest('.tire-image-card').removeClass('selected');
       }
-    }
+      // $(this).closest('.tire-table-row').toggleClass('selected');
+      $ids = $(document).find('input[type=checkbox][name="product_ids[]"]:checked').map(function() {
+        return $(this).val();
+      }).toArray();
+      $ids = $ids.filter(function(item, i, ids) {
+        return i == ids.indexOf(item);
+      });
+      $.each($ids, function(key, value) {
+      });
+      $ids = $ids.join(',');
+      const baseUrl = window.location.href.split('#')[0];
+      if ($ids.length) {
+        window.location.replace(baseUrl + '#|' + $ids);
+        $('input#show-selected-checkbox').prop( "disabled", false );
+      } else {
+        $('input#show-selected-checkbox').prop( "disabled", true );
+        let uri = window.location.toString();
+
+        if (uri.indexOf("#") > 0) {
+          let clean_uri = uri.substring(0,
+            uri.indexOf("#"));
+
+          window.history.replaceState({},
+            document.title, clean_uri);
+        }
+      }
+    });
   });
+
+  let $hash = window.location.hash;
+
+  if ($hash) {
+    $hash = $hash.substring(2).split(',');
+    $.each($hash, function(key, value) {
+      let $product = $('input[type=checkbox][name="product_ids[]"][value="' + value + '"]');
+      $(document).find($product).attr('checked', true).prop('checked', true);
+      $(document).find($product).closest('.tire-table-row').addClass('selected')
+      $(document).find($product).closest('.tire-image-card').addClass('selected');
+    });
+  }
+
 });
-
-let $hash = window.location.hash;
-
-if ($hash) {
-  $hash = $hash.substring(2).split(',');
-  $.each($hash, function(key, value) {
-    let $product = $('input[type=checkbox][name="product_ids[]"][value="' + value + '"]');
-    $(document).find($product).attr('checked', true).prop('checked', true);
-    $(document).find($product).closest('.tire-table-row').addClass('selected')
-    $(document).find($product).closest('.tire-image-card').addClass('selected');
-  });
-}
 
 // $(document).on('change', 'input[type="checkbox"][name="product_ids[]"]', function(){
 //
@@ -1352,9 +1356,9 @@ function renderInput() {
       charCode = event.keyCode || event.which;
       if (charCode != 190 && charCode != 110 && charCode != 46 && charCode > 40 && (charCode < 48 || charCode > 57) && (charCode < 96 || charCode > 105))
         return false;
-      if (event.keyCode === 13) {
-        $('#autofind_sub').click();
-      }
+      // if (event.keyCode === 13) {
+      //   $('#autofind_sub').click();
+      // }
     });
   }
   if(document.cookie.indexOf('show_list=true') !== -1 && $('body').attr('id') !== 'search') {
@@ -1975,6 +1979,15 @@ $(document).ready(function() {
     }
   });
 
+  $('.select-service-option').on('change', function() {
+    console.log($(this).val());
+    if ($(this).val() == 2) {
+      $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+    } else {
+      $('div.temp_save_nr').hide();
+    }
+  });
+
   $(document).on('keypress', function(e) {
     if ($('#reservation').is(':visible')) {
       if (e.key === 'Enter') {
@@ -2267,9 +2280,9 @@ $(document).ready(function() {
         $('.modal#slotModal #f_plate').val(data.f_plate);
         $('.modal#slotModal #f_office').append(data.options);
         $('.modal#slotModal select#f_office option[value="' + data.q + data.f_office + '"]').attr('selected','selected').prop('selected', 'selected');
-        $('.modal#slotModal input[name="serviceOption"]').each(function() {
+        $('.modal#slotModal select.select-service-option option[name="serviceOption"]').each(function() {
           if ($(this).val() == data.f_purpose) {
-            $(this).attr('checked', true).prop('checked', true);
+            $(this).attr('selected', true).prop('selected', true);
             if ($(this).data('save') == 1) {
               $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr" value="' + data.f_storagebin + '"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
             }
@@ -2338,7 +2351,7 @@ $(document).ready(function() {
         'f_car': $('.modal#slotModal #f_car').val(),
         'f_model': $('.modal#slotModal #f_model').val(),
         'f_plate': $('.modal#slotModal #f_plate').val(),
-        'f_purpose': $('.modal#slotModal input[name="serviceOption"]:checked').val(),
+        'f_purpose': $('.modal#slotModal option[name="serviceOption"]:selected').val(),
         'f_storagebin': $('.modal#slotModal .temp_save_nr #save_nr').val(),
         'f_comment': $('.modal#slotModal #f_comment').val(),
         'f_name': $('.modal#slotModal #f_name').val(),
@@ -3067,6 +3080,18 @@ $(document).ready(function() {
   // $('#tires-table tbody tr').change(function() {
   //   $('#show-selected-checkbox').attr('disabled', $('th.tire-table-checkbox input:checked').length == 0);
   // });
+  $(document).scroll(function () {
+    var y = $(this).scrollTop();
+    if (y > 100) {
+      $('.back-to-top-button').fadeIn();
+    } else {
+      $('.back-to-top-button').fadeOut();
+    }
+  });
+
+  if (!$('div.row.grid-ex a').length) {
+    $('section#main').append('<div class="mt-1 alert alert-danger"><b>Atvainojiet,</b> taču šāds izmērs nav pieejams.</div>');
+  }
 
   const rows = $(".tire-table-row");
   const rowsGrid = $("a.grid-view-link");
