@@ -121,13 +121,18 @@
                           <button class="btn btn-md btn-primary new_tire"><a class="text-white" href="{{ route('admin.moto.tires.create', $tread->tread_id) }}">Pievienot</a></button>
                         </div>
                         @endif
+                        @php
+                        $camera = 0;
+                        @endphp
                         <div class="row">
                             <div class="col-sm-12">
                                 <table class="table table-striped table-bordered datatable dataTable no-footer" id="DataTables_Table_0" role="grid" aria-describedby="DataTables_Table_0_info" style="border-collapse: collapse !important">
                                     <thead>
                                     <tr role="row">
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="4" aria-label="Date registered: activate to sort column ascending" style="width: 320.609px;">Izmērs</th>
+                                        @if ($camera == 1)
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Role: activate to sort column ascending" style="width: 151.953px;">Tips</th>
+                                        @endif
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Role: activate to sort column ascending" style="width: 151.953px;">Veikala cena</th>
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 167.547px;">Akcijas cena</th>
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 167.547px;">Li</th>
@@ -144,12 +149,15 @@
                                     <tbody>
                                     @if (isset($tires))
                                         @foreach ($tires as $tire)
+                                            @if ($tire->is_camera == 1) @php $camera = 1 @endphp @else @php $camera = 0 @endphp @endif
                                             <tr role="row" class="odd">
                                                 <td>{{ $tire->d1 }}</td>
                                                 <td>{{ $tire->d2 }}</td>
                                                 <td>{{ $tire->d4 }}</td>
                                                 <td>{{ $tire->d3 }}</td>
+                                                @if ($tire->is_camera == 1)
                                                 <td>{{ $tire->typeDesc[1] }}</td>
+                                                @endif
                                                 <td>{{ $tire->price1 }}</td>
                                                 <td style="color: red; font-weight: 500;">{{ $tire->price2 }}</td>
                                                 <td>{{ $tire->li }}</td>
