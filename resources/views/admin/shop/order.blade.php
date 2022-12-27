@@ -168,24 +168,35 @@
         </div>
 
       </div>
-        <div class="form-group row" style="display: none;">
-           <label class="col-md-3 form-control-label text-left text-md-right">
-                Piegādes adrese
-           </label>
-	   <div class="col-md-2 col-sm">
-      <select id="select" class="custom-select" name="shipping_city">
-        <option value="1" @if (isset($userData->shipping_city) && $userData->shipping_city == 1) selected="" @endif>Rīga</option>
-        <option value="2" @if (isset($userData->shipping_city) && $userData->shipping_city == 2) selected="" @endif>Salaspils</option>
-        <option value="3" @if (isset($userData->shipping_city) && $userData->shipping_city == 3) selected="" @endif>Cits</option>
-      </select>
-	   </div>
-	   <div class="col-md-4">
-		  <input class="form-control" name="shipping_address" type="text" @if (isset($userData->shipping_address)) value="{{ $userData->shipping_address }}" @endif>
-	   </div>
-    </div>
+      <div class="form-group row" style="display: none;">
+       <label class="col-md-3 form-control-label text-left text-md-right">
+            Piegādes adrese
+       </label>
+       <div class="col-md-2 col-sm">
+        <select id="select" class="custom-select" name="shipping_city">
+          <option value="1" @if (isset($userData->shipping_city) && $userData->shipping_city == 1) selected="" @endif>Rīga</option>
+          <option value="2" @if (isset($userData->shipping_city) && $userData->shipping_city == 2) selected="" @endif>Salaspils</option>
+          <option value="3" @if (isset($userData->shipping_city) && $userData->shipping_city == 3) selected="" @endif>Cits</option>
+        </select>
+       </div>
+       <div class="col-md-4">
+        <input class="form-control" name="shipping_address" type="text" @if (isset($userData->shipping_address)) value="{{ $userData->shipping_address }}" @endif>
+       </div>
+      </div>
+
+        @if (!empty($userData->notes))
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label text-left text-md-right">
+            Piezīmes
+          </label>
+          <div class="col-md-6 col-sm">
+            <textarea name="notes" class="form-control" readonly cols="30" rows="5">{{ $userData->notes }}</textarea>
+          </div>
+        </div>
+        @endif
 
 
-{{--      @php echo $order @endphp--}}
+{{--      @php var_dump($userData); @endphp--}}
 
       @php
         if (property_exists($userData,'company_registration_number')){
