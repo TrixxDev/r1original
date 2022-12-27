@@ -132,6 +132,13 @@ class Moto extends Model
 
     public function getDotAvailableAttribute()
     {
+
+      if ($this->urs_quantity > 0 && $this->krs_quantity <= 0) {
+        $this->quantity = $this->urs_quantity;
+      } else if ($this->urs_quantity <= 0 && $this->krs_quantity > 0) {
+        $this->quantity = $this->krs_quantity;
+      }
+
       if ($this->quantity < 0 && $this->getStockCount() > 0) {
         if ($this->_includeStock) {
           $count = $this->getStockCount();
@@ -139,11 +146,6 @@ class Moto extends Model
             case -1:
             case 0: {
               return 'red';
-            }
-            case 1:
-            case 2:
-            case 3: {
-              return 'half-yellow';
             }
             default:{
               return 'yellow';
@@ -154,11 +156,6 @@ class Moto extends Model
         }
       }
         switch ($this->quantity) {
-            case 1:
-            case 2:
-            case 3: {
-                return 'half-green';
-            }
             case -1:
             case 0: {
                 if ($this->_includeStock) {
@@ -167,11 +164,6 @@ class Moto extends Model
                         case -1:
                         case 0: {
                             return 'red';
-                        }
-                        case 1:
-                        case 2:
-                        case 3: {
-                            return 'half-yellow';
                         }
                         default:{
                             return 'yellow';
