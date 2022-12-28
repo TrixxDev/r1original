@@ -3084,8 +3084,10 @@ $(document).ready(function() {
     }
   });
 
-  if (!$('div.row.grid-ex a').length) {
-    $('section#main').append('<div class="mt-1 alert alert-danger"><b>Atvainojiet,</b> taču šāds izmērs nav pieejams.</div>');
+  if ($('section#products').is(':visible')) {
+    if (!$('.tire-table-row').length) {
+      $('section#main').append('<div class="mt-1 alert alert-danger"><b>Atvainojiet,</b> taču šāds izmērs nav pieejams.</div>');
+    }
   }
 
   const rows = $(".tire-table-row");
