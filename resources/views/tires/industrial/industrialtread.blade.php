@@ -15,10 +15,7 @@
               <div class="col-md-4">
                 <section class="page-content" id="content">
                   <div class="images-container">
-{{--                    {{dd($currTire->make_id)} 294 --}}
-{{--                    {{dd($currTire)}}--}}
-                    {!! \Image::treadZoom('big', $currTire->make_id) !!}
-
+                    {!! App\Helper\Image::treadZoom('big', $currTire->make_id) !!}
                     <div class="js-qv-mask mask">
                       <ul class="product-images js-qv-product-images">
                       </ul>
@@ -73,7 +70,7 @@
                           </div>
                         </div>
                         <div class="add">
-                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart" data-info="{{ $currTire->tire_id }}">
+                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart" data-info="{{ $currTire->tire_id }}">
                             <i class="material-icons shopping-cart"></i>
                             Pirkt
                           </button>
@@ -205,7 +202,7 @@
                       <td class="shopping-cart-col">
                         <div class="clearfix atc_div text-right">
                           <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
-                                  @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal"
+                                  @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
                                   @endif data-info="{{ $tire->tire_id }}"><i
                               class="material-icons">add_shopping_cart</i>
                           </button>

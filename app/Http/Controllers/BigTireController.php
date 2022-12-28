@@ -32,6 +32,7 @@ class BigTireController extends Controller
     public $axle;
     public $surface;
     public $availability;
+    public $filterCount = 0;
 
     public function __construct(Request $request)
     {
@@ -75,6 +76,7 @@ class BigTireController extends Controller
       View::share('code', $this->code);
       View::share('axle', $this->axle);
       View::share('surface', $this->surface);
+      View::share('filterCount', $this->filterCount);
     }
 
     public function index()
@@ -140,7 +142,7 @@ class BigTireController extends Controller
       );
     }
 
-    public function big_tires_tread($brand, $tread, $tire) {
+    public function tires_tread($brand, $tread, $tire) {
 
       $brand = Bigbrand::where('slug', $brand)->first();
 
