@@ -411,15 +411,11 @@
                         @endforeach
                         </tbody>
                       </table>
-
-                  {{-- small devices back to top button--}}
-
-{{--                  <div class="hidden-md-up text-xs-right up">--}}
-{{--                    <a href="#header" class="btn btn-secondary back-to-top-button">--}}
-{{--                      Atpakaļ uz augšu--}}
-{{--                      <i class="material-icons"></i>--}}
-{{--                    </a>--}}
-{{--                  </div>--}}
+                      <div class="hidden-md-up text-xs-right up">
+                        <a href="#header" class="back-to-top-button">
+                          <i class="material-icons"></i>
+                        </a>
+                      </div>
                 </div>
                 {{ $tires->links() }}
         </div>

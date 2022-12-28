@@ -9,6 +9,12 @@ input:focus, textarea:focus, select:focus, button:focus{
   outline: none!important;
 }
 
+@media screen and (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 body {
   background: url(../images/cover.png) no-repeat fixed top center;
   font-family: 'Arimo', Arial, sans-serif;

@@ -3,10 +3,7 @@
     <input type="hidden" id="facet_all_val" value="Visi">
     <div class="wrap">
 
-      <h4 class="text-uppercase h6 hidden-sm-down">
-        <span id="search_filters_auto" class="params auto">Auto</span><span
-          id="search_filters_params" class="params active">Parametri</span>
-      </h4>
+      <h6 class="text-uppercase h6 hidden-sm-down">Parametri</h6>
 
       <div class="can-collapse">
 
