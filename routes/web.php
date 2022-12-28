@@ -276,14 +276,18 @@ Route::middleware('checksession')->group(function() {
 //Lielās riepas
   Route::get('/lielas-riepas', [App\Http\Controllers\BigTireController::class, 'index'])->name('lielas-riepas');
   Route::post('/lielas-riepas', [App\Http\Controllers\BigTireController::class, 'tires_search'])->name('lielas-riepas');
-  Route::get('/lielas-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\BigTireController::class, 'big_tires_tread'])->name('lielas-riepa');
+  Route::get('/lielas-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\BigTireController::class, 'tires_tread'])->name('lielas-riepa');
   Route::post('/lielas-riepas/ajax', [App\Http\Controllers\BigTireController::class, 'tires_ajax'])->name('lielas-riepas-ajax');
+  Route::post('/lielas-riepas/search/ajax', [App\Http\Controllers\BigTireController::class, 'tires_ajax'])->name('lielas-riepas-ajax');
+  Route::get('/lielas-riepas/search', [App\Http\Controllers\BigTireController::class, 'tires_search'])->name('lielas-riepas-meklet');
+  Route::get('/lielas-riepas/getBrandList', [App\Http\Controllers\BigTireController::class, 'tires_getBrands']);
 
 //Diski
 
   Route::get('/lietie-diski', [App\Http\Controllers\RimsController::class, 'autorims'])->name('lietie-diski');
   Route::get('/lietie-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\RimsController::class, 'autorims_tread'])->name('lietais-disks');
   Route::post('/lietie-diski/ajax', [App\Http\Controllers\RimsController::class, 'rims_ajax'])->name('lietie-diski-ajax');
+  Route::get('/lietie-diski/search', [App\Http\Controllers\BigTireController::class, 'rims_search'])->name('lietie-diski-meklet');
 
   Route::get('/kvadru-diski', [App\Http\Controllers\RimsController::class, 'quadrim'])->name('kvadraciklu-diski');
 
