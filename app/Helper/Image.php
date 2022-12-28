@@ -40,14 +40,6 @@
         case 'big-rim':
           $dir = $path . '/industrial/rims/rim-' . $image . '.jpg';
           break;
-
-        // AUTO RIMS
-        case 'rim':
-          $dir = $path . '/auto/rim/' . $image . '-o.jpg';
-          break;
-        case 'big-rim':
-          $dir = $path . '/auto/rim/rim-' . $image . '.jpg';
-          break;
       }
 
       return $dir;
