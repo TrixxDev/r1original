@@ -184,16 +184,14 @@
        </div>
       </div>
 
-        @if (!empty($userData->notes))
-        <div class="form-group row">
-          <label class="col-md-3 form-control-label text-left text-md-right">
-            Piezīmes
-          </label>
-          <div class="col-md-6 col-sm">
-            <textarea name="notes" class="form-control" readonly cols="30" rows="5">{{ $userData->notes }}</textarea>
-          </div>
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label text-left text-md-right">
+          Piezīmes
+        </label>
+        <div class="col-md-6 col-sm">
+          <textarea name="notes" class="form-control" cols="30" rows="5">@if (!empty($userData->notes)){{ $userData->notes }}@endif</textarea>
         </div>
-        @endif
+      </div>
 
 
 {{--      @php var_dump($userData); @endphp--}}
