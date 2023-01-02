@@ -759,11 +759,11 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
       // console.log('data-article: ', $('.tire-table-link').data('article'));
 
       calcData = {
-          'article': tire_data.parent().parent().data('article'),
-          'qty': 4,
-	  'user': user,
-	  'prod': tire_data.find('.card-title-text').text().trim(),
-	  'price': tire_data.find('.rim-price-red').text().trim().replace('€', ''),
+        'article': tire_data.parent().parent().data('article'),
+        'qty': 4,
+        'user': user,
+        'prod': tire_data.find('.card-title-text').text().trim(),
+        'price': tire_data.find('.rim-price-red').text().trim().replace('€', ''),
       }
 
       const urlData = new URLSearchParams(calcData).toString();
@@ -3075,6 +3075,17 @@ $(document).ready(function() {
   // $('#tires-table tbody tr').change(function() {
   //   $('#show-selected-checkbox').attr('disabled', $('th.tire-table-checkbox input:checked').length == 0);
   // });
+
+  if (!$('.row.grid-ex.pr-1').find('.green').length){
+    $('input#facet_availability_0').prop('disabled', true);
+  }
+  if (!$('.row.grid-ex.pr-1').find('.yellow').length){
+    $('input#facet_availability_1').prop('disabled', true);
+  }
+  if (!$('.row.grid-ex.pr-1').find('.red').length){
+    $('input#facet_availability_2').prop('disabled', true);
+  }
+
   $(document).scroll(function () {
     var y = $(this).scrollTop();
     if (y > 100) {
