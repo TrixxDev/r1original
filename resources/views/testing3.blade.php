@@ -24,8 +24,26 @@
       @csrf
       <input type="hidden" name="article" value="{{ $param->article }}">
       <div class="location-wraper">
-        <div class="radio-field"><input id="loc_URS" type="radio" name="location" value="URS" checked=""><label for="loc_URS">URS - <span id="urs_quantity"></span></label></div>
-        <div class="radio-field"><input id="loc_KRS" type="radio" name="location" value="KRS"><label for="loc_KRS">KRS - <span id="krs_quantity"></span></label></div>
+        <div class="radio-field">
+          <input id="loc_URS" type="radio" name="location" value="URS" checked="">
+          <label for="loc_URS">
+            URS <span id="urs_quantity">
+              <div class="spinner-border text-dark" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </span>
+          </label>
+        </div>
+        <div class="radio-field">
+          <input id="loc_KRS" type="radio" name="location" value="KRS">
+          <label for="loc_KRS">
+            KRS <span id="krs_quantity">
+              <div class="spinner-border text-dark" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </span>
+          </label>
+        </div>
       </div>
       <div class="top-long-fields">
         <input type="text" placeholder="Prece" name="prod" value="{{ $param->prod }}" readonly="">
@@ -55,16 +73,29 @@
     </form>
 
     <style>
+
+      .spinner-border {
+        display: inline-block;
+        width: 1rem;
+        height: 1rem;
+        vertical-align: -4px;
+        border: 0.25em solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        -webkit-animation: .75s linear infinite spinner-border;
+        animation: .75s linear infinite spinner-border;
+      }
+
       /* POPUPS */
 
       .popup {
-	z-index: 0!important;
+	      z-index: 0!important;
       }
 
       .popup .location-wraper {
         float: left;
         margin: 0 0 15px -13px;
-	width: 80px;
+	      width: 92px;
       }
 
       .popup .location-wraper input {
@@ -84,7 +115,8 @@
       }
 
       .popup .top-long-fields input[name="prod"] {
-        width: 400px;
+        width: 368px;
+        margin-left: 30px;
       }
 
       .popup .top-long-fields input[name="qty"] {
@@ -100,6 +132,7 @@
       .popup .bottom-long-fields {
         height: 50px;
         width: 547px;
+        margin-left: 20px;
       }
 
       .popup .bottom-long-fields span {
@@ -144,7 +177,7 @@
 
       .popup label[for='total'] {
         position: relative;
-        left: 162px;
+        left: 148px;
         top: 5px;
       }
 
@@ -177,9 +210,6 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
 <script>
-  let article = <?php echo "'" . $param->article . "';" ?>
-</script>
-<script>
 function calcQuickBuyPrice(){
   var total = parseFloat($('#quick-buy-form input[name=qty]').val()) * parseFloat($('#quick-buy-form input[name=price]').val());
   $('#quick-buy-form input[name=total]').val(isNaN(total) ? '' : total);
@@ -189,11 +219,10 @@ $.ajax({
   url: '/sync/accrual',
   method: 'GET',
   dataType: 'JSON',
-  data: {'article': article},
+  data: {'article': <?php echo "'" . $param->article . "'" ?>},
   success: function(data) {
-    console.log(data);
-    $('#urs_quantity').html(data.urs_quantity);
-    $('#krs_quantity').html(data.krs_quantity);
+    $('#urs_quantity').html('(' + data.urs_quantity + ')');
+    $('#krs_quantity').html('(' + data.krs_quantity + ')');
   }
 });
 
@@ -228,21 +257,26 @@ function sendData(data){
       $('.popup input[name=price_safe]').attr('disabled', 'disabled');
       $('.popup input[name=price_safe]').val('');
       $('.popup textarea[name=comments]').val('');
-      Swal.fire({
-        title: 'Paziņojums',
-        text: 'Pasūtījums ir pieņemts!',
-        icon: 'success',
-        confirmButtonText: 'OK'
-      }).then((result) => {
-	if (result.isConfirmed) {
-		window.close();
-	}
-      });
-      //$.ajax({
-      //  type: 'GET',
-      //  url: '/sync/accrual',
-      //
-      //})
+      resp = JSON.parse(resp);
+      if (resp.success) {
+        Swal.fire({
+          title: 'Paziņojums',
+          html: resp.success,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.close();
+          }
+        });
+      } else if (resp.danger) {
+        Swal.fire({
+          title: 'Kļūda!',
+          html: resp.danger,
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+      }
     },
     error: function(jqXHR, textStatus){
       if (textStatus === 'timeout') {
@@ -252,7 +286,6 @@ function sendData(data){
           icon: 'error',
           confirmButtonText: 'OK'
         });
-        // toastr.error('Pastūtījums nav pieņemts!', 'Kļūda');
       }
     },
     complete: function(){

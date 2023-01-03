@@ -263,7 +263,7 @@ class HomeController extends Controller
       @$safe_price = $request->info['price_safe'];
       @$safe_price_pvn = $safe_price / 1.21;
 
-      $xml_order = \Illuminate\Support\Facades\DB::table('xml_orders')->insertGetId([
+      $xml_order = DB::table('xml_orders')->insertGetId([
         'created_at' => date("Y-m-d H:i:s"),
         'updated_at' => date("Y-m-d H:i:s"),
       ]);
@@ -322,10 +322,14 @@ class HomeController extends Controller
       $dom = new DOMDocument();
       $dom->preserveWhiteSpace = FALSE;
       $dom->loadXML($xml_string);
+      $dom->formatOutput = TRUE;
+
+      $xml_string = $dom->saveXML();
 
       $xml_file = fopen(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', 'wb');
       fwrite($xml_file, $xml_string);
       fclose($xml_file);
+
       //$dom->save(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml');
 
 //      dd(is_file(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml'));
