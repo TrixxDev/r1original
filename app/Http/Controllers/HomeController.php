@@ -14,14 +14,18 @@ use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
+
+    public static $connection;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
+
     public function __construct()
     {
-
+      Self::$connection = false;
     }
 
     public function checkSession(Request $request) {
@@ -218,16 +222,18 @@ class HomeController extends Controller
 
     public function accrualOrder(Request $request)
     {
-      function uploadFTP($server, $username, $password, $local_file, $remote_file){
-        $connection = ftp_connect($server);
 
-        if (@ftp_login($connection, $username, $password)){
-        }else{
-          return false;
-        }
+      Self::$connection = ftp_connect('212.3.218.22');
 
-        ftp_put($connection, $remote_file, $local_file, FTP_BINARY);
-        ftp_close($connection);
+      if (@ftp_login(Self::$connection, 'r1_web', 'RA5bgdGc')){
+      }else{
+        return 'Nesanāk savienoties ar Accrual serveri';
+      }
+
+      function uploadFTP($local_file, $remote_file){
+
+        ftp_put(HomeController::$connection, $remote_file, $local_file, FTP_BINARY);
+        ftp_close(HomeController::$connection);
         return true;
       }
 
@@ -235,9 +241,11 @@ class HomeController extends Controller
       switch ($location) {
         case 'URS':
           $location = 'Noliktava';
+          $location_prefix = 'U';
           break;
         case 'KRS':
           $location = 'Veikals';
+          $location_prefix = 'K';
           break;
         default:
           break;
@@ -268,56 +276,66 @@ class HomeController extends Controller
         'updated_at' => date("Y-m-d H:i:s"),
       ]);
 
+      $number = str_pad($xml_order, 4, '0', STR_PAD_LEFT);
+      $number = $location_prefix . '-' . $number;
+
       $xml_string = '<?xml version="1.0" encoding="UTF-8"?>';
-      $xml_string .= '<AccrualPZ>&#10;';
-      $xml_string .= '&#009;<PZHeader>&#10;';
-      $xml_string .= '&#009;&#009;<Struktura>' . $location . '</Struktura>&#10;';
-      $xml_string .= '&#009;&#009;<Type>6</Type>&#10;';
-      $xml_string .= '&#009;&#009;<WEB>' . $xml_order . '</WEB>&#10;';
-      $xml_string .= '&#009;&#009;<Datums>' . date('d.m.Y') . '</Datums>&#10;';
-//  $xml_string .= '&#009;&#009;<PartnNosaukums>Klients pasūtītājs</PartnNosaukums>&#10;';
-      $xml_string .= '&#009;&#009;<PVNSumma>' . $summa_pvn . '</PVNSumma>&#10;';
-      $xml_string .= '&#009;&#009;<Valuta>EUR</Valuta>&#10;';
+      $xml_string .= '<AccrualPZ>';
+      $xml_string .= '<PZHeader>';
+      $xml_string .= '<Struktura>' . $location . '</Struktura>';
+      $xml_string .= '<Type>6</Type>';
+      $xml_string .= '<WEB>' . $xml_order . '</WEB>';
+      $xml_string .= '<Datums>' . date('d.m.Y') . '</Datums>';
+//  $xml_string .= '<PartnNosaukums>Klients pasūtītājs</PartnNosaukums>';
+      $xml_string .= '<PVNSumma>' . $summa_pvn . '</PVNSumma>';
+      $xml_string .= '<Valuta>EUR</Valuta>';
       if ($comment != '') {
-        $xml_string .= '&#009;&#009;<Piezimes>' . $comment . '</Piezimes>&#10;';
+        $xml_string .= '<Piezimes>' . $number . ' ' . $comment . '</Piezimes>';
+      } else {
+        $xml_string .= '<Piezimes>' . $number . '</Piezimes>';
       }
-      $xml_string .= '&#009;&#009;<SasPerson>' . $user . '</SasPerson>&#10;';
-      $xml_string .= '&#009;</PZHeader>&#10;';
-      $xml_string .= '&#009;<Ieraksti>&#10;';
-      $xml_string .= '&#009;&#009;<Ieraksts>&#10;';
-      $xml_string .= '&#009;&#009;&#009;<Artikuls>' . $article . '</Artikuls>&#10;';
-//      $xml_string .= '&#009;&#009;&#009;<Nosaukums>' . $prod . '</Nosaukums>&#10;';
-      $xml_string .= '&#009;&#009;&#009;<Mervieniba>gab</Mervieniba>&#10;';
-      $xml_string .= '&#009;&#009;&#009;<Cena>' . $price_pvn . '</Cena>&#10;';
-      $xml_string .= '&#009;&#009;&#009;<Daudzums>' . $quantity . '.000</Daudzums>&#10;';
-      $xml_string .= '&#009;&#009;&#009;<Summa>' . $price . '</Summa>&#10;';
-      $xml_string .= '&#009;&#009;&#009;<Nodoklis>PVN 21%</Nodoklis>&#10;';
-      $xml_string .= '&#009;&#009;&#009;<Likme>21.00</Likme>&#10;';
-      $xml_string .= '&#009;&#009;</Ieraksts>&#10;';
+      $xml_string .= '<SasPerson>' . $user . '</SasPerson>';
+      $xml_string .= '</PZHeader>';
+      $xml_string .= '<Ieraksti>';
+      $xml_string .= '<Ieraksts>';
+      $xml_string .= '<Artikuls>' . $article . '</Artikuls>';
+//      $xml_string .= '<Nosaukums>' . $prod . '</Nosaukums>';
+      $xml_string .= '<Mervieniba>gab</Mervieniba>';
+      $xml_string .= '<Cena>' . $price_pvn . '</Cena>';
+      $xml_string .= '<Daudzums>' . $quantity . '.000</Daudzums>';
+      $xml_string .= '<Summa>' . $price . '</Summa>';
+      $xml_string .= '<Nodoklis>PVN 21%</Nodoklis>';
+      $xml_string .= '<Likme>21.00</Likme>';
+      $xml_string .= '</Ieraksts>';
       if ($montage == 1) {
-        $xml_string .= '&#009;&#009;<Ieraksts>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Artikuls>04</Artikuls>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Mervieniba>kompl.</Mervieniba>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Cena>' . $montage_price_pvn . '</Cena>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Daudzums>1.000</Daudzums>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Summa>' . $montage_price . '</Summa>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Nodoklis>PVN 21%</Nodoklis>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Likme>21.00</Likme>&#10;';
-        $xml_string .= '&#009;&#009;</Ieraksts>&#10;';
+        $xml_string .= '<Ieraksts>';
+        $xml_string .= '<Artikuls>04</Artikuls>';
+        $xml_string .= '<Mervieniba>kompl.</Mervieniba>';
+        $xml_string .= '<Cena>' . $montage_price_pvn . '</Cena>';
+        $xml_string .= '<Daudzums>1.000</Daudzums>';
+        $xml_string .= '<Summa>' . $montage_price . '</Summa>';
+        $xml_string .= '<Nodoklis>PVN 21%</Nodoklis>';
+        $xml_string .= '<Likme>21.00</Likme>';
+        $xml_string .= '</Ieraksts>';
       }
       if ($safe == 1) {
-        $xml_string .= '&#009;&#009;<Ieraksts>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Artikuls>18</Artikuls>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Mervieniba>kompl.</Mervieniba>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Cena>' . $safe_price_pvn . '</Cena>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Daudzums>1.000</Daudzums>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Summa>' . $safe_price . '</Summa>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Nodoklis>PVN 21%</Nodoklis>&#10;';
-        $xml_string .= '&#009;&#009;&#009;<Likme>21.00</Likme>&#10;';
-        $xml_string .= '&#009;&#009;</Ieraksts>&#10;';
+        $xml_string .= '<Ieraksts>';
+        $xml_string .= '<Artikuls>18</Artikuls>';
+        $xml_string .= '<Mervieniba>kompl.</Mervieniba>';
+        $xml_string .= '<Cena>' . $safe_price_pvn . '</Cena>';
+        $xml_string .= '<Daudzums>1.000</Daudzums>';
+        $xml_string .= '<Summa>' . $safe_price . '</Summa>';
+        $xml_string .= '<Nodoklis>PVN 21%</Nodoklis>';
+        $xml_string .= '<Likme>21.00</Likme>';
+        $xml_string .= '</Ieraksts>';
       }
-      $xml_string .= '&#009;</Ieraksti>&#10;';
+      $xml_string .= '</Ieraksti>';
       $xml_string .= '</AccrualPZ>';
+
+      $sync = new SyncController();
+      $request = request()->merge(['article' => $article]);
+      $old_stocks = $sync->accrual($request);
+      $old_stocks = json_decode($old_stocks);
 
       $dom = new DOMDocument();
       $dom->preserveWhiteSpace = FALSE;
@@ -334,10 +352,36 @@ class HomeController extends Controller
 
 //      dd(is_file(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml'));
 //      $ftp = uploadFTP("212.3.218.22", "r1_web", "RA5bgdGc", dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
-      uploadFTP("212.3.218.22", "r1_web", "RA5bgdGc", dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
+      uploadFTP(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
+
+      sleep(3);
+
+      $request = request()->merge(['article' => $article]);
+      $new_stocks = $sync->accrual($request);
+      $new_stocks = json_decode($new_stocks);
+
+      switch ($location_prefix) {
+        case 'U': {
+          if ($new_stocks->urs_quantity != $old_stocks->urs_quantity) {
+            return json_encode(['success' => 'Pasūtījums ir pieņemts!<br><b>' . $number . '</b>']);
+          } else {
+            return json_encode(['danger' => 'Pasūtījums netika izveidots!']);
+          }
+        }
+        case 'K': {
+          if ($new_stocks->krs_quantity != $old_stocks->krs_quantity) {
+            return json_encode(['success' => 'Pasūtījums ir pieņemts!<br><b>' . $number . '</b>']);
+          } else {
+            return json_encode(['danger' => 'Pasūtījums netika izveidots!']);
+          }
+        }
+      }
+
+      return true;
 
     }
-    function fastOrder() {
+
+    public function fastOrder() {
       $param = (object) request()->input();
 
       return view('/testing3', compact('param'));
