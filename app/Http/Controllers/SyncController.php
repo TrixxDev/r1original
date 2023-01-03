@@ -47,8 +47,9 @@ class SyncController extends Controller
         try {
           $this->accrual = new PDO("sqlsrv:Server=212.3.218.22,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
-          die("Database connection failed: " . $e->getMessage());
-          exit;
+          return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
+//          die("Database connection failed: " . $e->getMessage());
+//          exit;
         }
 
         //echo 'Go Stock!' . PHP_EOL;
@@ -82,6 +83,9 @@ class SyncController extends Controller
             echo 'Done';
           }
         } else {
+
+//	        dd($inputs);
+
           $stock = $this->getInventory('auto_tires', $article);
           if (empty($stock[2])) $stock = $this->getInventory('moto_tires', $article);
           if (empty($stock[2])) $stock = $this->getInventory('quadr_tires', $article);
@@ -93,7 +97,7 @@ class SyncController extends Controller
           if ($tire === null) $tire = DB::table('quadr_tires')->where('article', $request->article)->first();
           if ($tire === null) return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
 //          $this->updatePrices();
-          echo json_encode(['urs_quantity' => $tire->urs_quantity, 'krs_quantity' => $tire->krs_quantity]);
+          return json_encode(['urs_quantity' => $tire->urs_quantity, 'krs_quantity' => $tire->krs_quantity]);
         }
     }
 
@@ -332,6 +336,7 @@ class SyncController extends Controller
     $inventory = ['_stores'=>[]];
 
     foreach ($result as $row) {
+
       if($row['StorId'] == 0) {
         $inventory[$row['Artikuls']] = $row['atl_min_rez'];
       }
@@ -343,6 +348,8 @@ class SyncController extends Controller
         if(isset($stores[$storId])) $inventory['_stores'][$row['Artikuls']][(int)$storId] = $stores[$storId] . ': '. $row['atl_min_rez'];
       }
     }
+
+//    dd($inventory);
 
     return $inventory;
   }
