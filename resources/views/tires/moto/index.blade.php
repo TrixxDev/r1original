@@ -232,8 +232,7 @@
                     </div>
                   </nav>
                   <div class="hidden-md-up text-xs-right up">
-                    <a href="#header" class="btn btn-secondary">
-                      Back to top
+                    <a href="#header" class="back-to-top-button">
                       <i class="material-icons"></i>
                     </a>
                   </div>

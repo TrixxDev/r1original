@@ -431,14 +431,21 @@
                                                 Motociklu riepas
                                             </a>
                                         </li>
-                                       <!-- <li class="category" id="category-18">
+{{--                                        <li class="category" id="category-18">--}}
+{{--                                            <a class="dropdown-item dropdown-submenu"--}}
+{{--                                               href="{{ route('lielas-riepas') }}"--}}
+{{--                                               data-depth="1">--}}
+{{--                                                  Lielās riepas--}}
+{{--                                            </a>--}}
+{{--                                        </li>--}}
+                                        <li class="category" id="category-18">
                                           <a class="dropdown-item dropdown-submenu"
-                                             href="{{ route('lielas-riepas') }}"
+                                             href="{{ route('radzes') }}"
                                              data-depth="1">
-                                                Lielās riepas
+                                            Radzes
                                           </a>
-                                        </li>-->
-                                    </ul>
+                                        </li>
+                                  </ul>
 
                                 </div>
                             </li>

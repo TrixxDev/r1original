@@ -116,6 +116,12 @@
                   </li>
               </ul>
           </li>
+          <li class="c-sidebar-nav-title">Radzes</li>
+          <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.studs.index') }}" target="_top">
+              <svg class="c-sidebar-nav-icon">
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-cog"></use>
+              </svg> Radzes</a>
+          </li>
           <li class="c-sidebar-nav-title">Diski</li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.rims.index') }}" target="_top">
               <svg class="c-sidebar-nav-icon">

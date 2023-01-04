@@ -3080,6 +3080,17 @@ $(document).ready(function() {
   // $('#tires-table tbody tr').change(function() {
   //   $('#show-selected-checkbox').attr('disabled', $('th.tire-table-checkbox input:checked').length == 0);
   // });
+
+  if (!$('.row.grid-ex.pr-1').find('.green').length){
+    $('input#facet_availability_0').prop('disabled', true);
+  }
+  if (!$('.row.grid-ex.pr-1').find('.yellow').length){
+    $('input#facet_availability_1').prop('disabled', true);
+  }
+  if (!$('.row.grid-ex.pr-1').find('.red').length){
+    $('input#facet_availability_2').prop('disabled', true);
+  }
+
   $(document).scroll(function () {
     var y = $(this).scrollTop();
     if (y > 100) {
@@ -3091,7 +3102,7 @@ $(document).ready(function() {
 
   if ($('section#products').is(':visible')) {
     if (!$('.tire-table-row').length) {
-      $('section#main').append('<div class="mt-1 alert alert-danger"><b>Atvainojiet,</b> taču šāds izmērs nav pieejams.</div>');
+      $('section#main').prepend('<div class="mt-1 alert alert-danger"><b>Atvainojiet,</b> taču šāds izmērs nav pieejams.</div>');
     }
   }
 

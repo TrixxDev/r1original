@@ -15,7 +15,7 @@
               <div class="col-md-12 col-lg-4">
                 <section class="page-content" id="content">
                   <div class="images-container ">
-                      {!! \Image::treadZoom('auto-rim', $currRim->make_id) !!}
+                      {!! App\Helper\Image::treadZoom('auto-rim', $currRim->make_id) !!}
                   </div>
                   <div class="scroll-box-arrows">
                     <i class="material-icons left"></i>

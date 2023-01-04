@@ -1,6 +1,7 @@
 <div id="search_filters" class="params">
   <input type="hidden" id="facet_all_val" value="Visi">
 
+<form method="get" action="/{{ $season_title }}/search">
   <div class="wrap">
     <div class="search-filter-loader">
       <div class="search-filter-loader-spinner">
@@ -17,48 +18,7 @@
       <span class="show_list active" data-dismiss="modal"><i class="material-icons "></i>Saraksts</span>
       <span class="show_grid" data-dismiss="modal"><i class="material-icons "></i>Bildes</span>
 
-      <form method="get" action="/{{ $season_title }}/search">
         <div class="sidebar-top">
-
-{{--          <section class="facet clearfix facet--0 facet-ind-0">--}}
-{{--            <h1 class="h6 facet-title hidden-sm-down">Ražotājs</h1>--}}
-{{--            <div class="title hidden-md-up" data-target="#facet_20294"--}}
-{{--                 data-toggle="collapse">--}}
-{{--              <h1 class="h6 facet-title">Ražotājs</h1>--}}
-{{--              <span class="float-xs-right">--}}
-{{--                            <span class="navbar-toggler collapse-icons">--}}
-{{--                                <i class="material-icons add"></i>--}}
-{{--                                <i class="material-icons remove"></i>--}}
-{{--                            </span>--}}
-{{--                          </span>--}}
-{{--            </div>--}}
-{{--            <ul id="facet_20294" class="collapse">--}}
-{{--              <li>--}}
-{{--                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">--}}
-{{--                  <select name="brand" class="select-title tire-brand">--}}
-{{--                    <option class="select-list" id="Visi">Visi</option>--}}
-{{--                    @foreach ($brands as $brand_id => $brand_title)--}}
-{{--                      <option class="select-list" id="{{ $brand_title->brand_id }}" @if ($brand_title->brand_title == $currBrand) selected @endif>{{ ucwords(strtolower($brand_title->brand_title)) }}</option>--}}
-{{--                    @endforeach--}}
-{{--                  </select>--}}
-{{--                  --}}{{--                              <input type="text" readonly class="select-title tire-brand" name="brand"--}}
-{{--                  --}}{{--                                     value="{{ $currBrand }}">--}}
-{{--                  --}}{{--                              <i class="material-icons float-xs-right"></i>--}}
-{{--                  --}}{{--                              <div class="dropdown-menu">--}}
-{{--                  --}}{{--                                <a rel="nofollow" id="Visi" class="select-list">--}}
-{{--                  --}}{{--                                  Visi--}}
-{{--                  --}}{{--                                </a>--}}
-{{--                  --}}{{--                                @foreach ($brands as $brand_id => $brand_title)--}}
-{{--                  --}}{{--                                  <a rel="nofollow" class="select-list" id="{{ $brand_title }}">--}}
-{{--                  --}}{{--                                    {{ ucwords(strtolower($brand_title)) }}--}}
-{{--                  --}}{{--                                  </a>--}}
-{{--                  --}}{{--                                @endforeach--}}
-{{--                  --}}{{--                              </div>--}}
-{{--                </div>--}}
-{{--              </li>--}}
-{{--            </ul>--}}
-{{--          </section>--}}
-
           <div style="width: 100%">
             <div class="form-group facet mb-0">
               <h1 class="h6 facet-title">Ražotājs</h1>
@@ -106,134 +66,7 @@
               </div>
             </div>
           </div>
-{{--          <section class="facet clearfix facet--1 facet-ind-1">--}}
-{{--            <h1 class="h6 facet-title hidden-sm-down">Platums</h1>--}}
-{{--            <div class="title hidden-md-up" data-target="#facet_78843"--}}
-{{--                 data-toggle="collapse" aria-expanded="true">--}}
-{{--              <h1 class="h6 facet-title">Platums</h1>--}}
-{{--              <span class="float-xs-right">--}}
-{{--                            <span class="navbar-toggler collapse-icons">--}}
-{{--                              <i class="material-icons add"></i>--}}
-{{--                              <i class="material-icons remove"></i>--}}
-{{--                            </span>--}}
-{{--                          </span>--}}
-{{--            </div>--}}
 
-
-{{--            <ul id="facet_78843" class="collapse in">--}}
-{{--              <li>--}}
-{{--                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">--}}
-{{--                  <select name="d1" class="select-title tire-width">--}}
-{{--                    <option class="select-list" id="Visi">Visi</option>--}}
-{{--                    @foreach ($autoTiresD1 as $tire)--}}
-{{--                      <option class="select-list" id="{{ $tire->d1 }}" @if ($tire->d1 == $d1) selected @endif>{{ $tire->d1 }}</option>--}}
-{{--                    @endforeach--}}
-{{--                  </select>--}}
-{{--                  <!-- pattern="/^\d+$/" maxlength="3" -->--}}
-{{--                                                <input type="text" readonly class="select-title tire-width" name="d1" value="{{ $d1 }}">--}}
-{{--                                                <i class="material-icons float-xs-right"></i>--}}
-{{--                                                <div class="dropdown-menu width">--}}
-
-{{--                                                  <a rel="nofollow" id="Visi" class="select-list">--}}
-{{--                                                    Visi--}}
-{{--                                                  </a>--}}
-{{--                                                  @foreach ($autoTiresD1 as $tire)--}}
-{{--                                                    <a rel="nofollow" class="select-list" id="{{ $tire->d1 }}">--}}
-{{--                                                      {{ $tire->d1 }}--}}
-{{--                                                    </a>--}}
-{{--                                                  @endforeach--}}
-{{--                                                </div>--}}
-{{--                </div>--}}
-{{--              </li>--}}
-{{--            </ul>--}}
-{{--          </section>--}}
-
-
-{{--          <section class="facet clearfix facet--2 facet-ind-2">--}}
-{{--            <h1 class="h6 facet-title hidden-sm-down">Augstums</h1>--}}
-{{--            <div class="title hidden-md-up" data-target="#facet_15402"--}}
-{{--                 data-toggle="collapse" aria-expanded="true">--}}
-{{--              <h1 class="h6 facet-title">Augstums</h1>--}}
-{{--              <span class="float-xs-right">--}}
-{{--                            <span class="navbar-toggler collapse-icons">--}}
-{{--                              <i class="material-icons add"></i>--}}
-{{--                              <i class="material-icons remove"></i>--}}
-{{--                            </span>--}}
-{{--                          </span>--}}
-{{--            </div>--}}
-
-
-{{--            <ul id="facet_15402" class="collapse in">--}}
-{{--              <li>--}}
-{{--                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">--}}
-
-{{--                  <select name="d2" class="select-title tire-height">--}}
-{{--                    <option class="select-list" id="Visi">Visi</option>--}}
-{{--                    @foreach ($autoTiresD2 as $tire)--}}
-{{--                      <option class="select-list" id="{{ $tire->d2 }}" @if ($tire->d2 == $d2) selected @endif>{{ $tire->d2 }}</option>--}}
-{{--                    @endforeach--}}
-{{--                  </select>--}}
-
-{{--                                                <input type="text" class="select-title tire-height" readonly maxlength="2"--}}
-{{--                                                       pattern="/^\d+$/" name="d2" value="{{ $d2 }}">--}}
-{{--                                                <i class="material-icons float-xs-right"></i>--}}
-{{--                                                <div class="dropdown-menu height">--}}
-
-{{--                                                  <a rel="nofollow" id="Visi" class="select-list">--}}
-{{--                                                    Visi--}}
-{{--                                                  </a>--}}
-{{--                                                  @foreach ($autoTiresD2 as $tire)--}}
-{{--                                                    <a rel="nofollow" class="select-list" id="{{ $tire->d2 }}">--}}
-{{--                                                      {{ $tire->d2 }}--}}
-{{--                                                    </a>--}}
-{{--                                                  @endforeach--}}
-{{--                                                </div>--}}
-{{--                </div>--}}
-{{--              </li>--}}
-{{--            </ul>--}}
-{{--          </section>--}}
-
-
-{{--          <section class="facet clearfix facet--3 facet-ind-3">--}}
-{{--            <h1 class="h6 facet-title hidden-sm-down">Diametrs</h1>--}}
-{{--            <div class="title hidden-md-up" data-target="#facet_24954"--}}
-{{--                 data-toggle="collapse" aria-expanded="true">--}}
-{{--              <h1 class="h6 facet-title">Diametrs</h1>--}}
-{{--              <span class="float-xs-right">--}}
-{{--                            <span class="navbar-toggler collapse-icons">--}}
-{{--                              <i class="material-icons add"></i>--}}
-{{--                              <i class="material-icons remove"></i>--}}
-{{--                            </span>--}}
-{{--                          </span>--}}
-{{--            </div>--}}
-
-
-{{--            <ul id="facet_24954" class="collapse in">--}}
-{{--              <li>--}}
-{{--                <div class="col-sm-12 col-xs-12 col-md-12 facet-dropdown dropdown size-dropdown">--}}
-
-{{--                  <select name="d3" class="select-title tire-radius">--}}
-{{--                    <option class="select-list" id="Visi">Visi</option>--}}
-{{--                    @foreach ($autoTiresD3 as $tire)--}}
-{{--                      <option class="select-list" id="{{ $tire->d3 }}" @if ($tire->d3 == $d3) selected @endif>{{ $tire->d3 }}</option>--}}
-{{--                    @endforeach--}}
-{{--                  </select>--}}
-
-{{--                                                <input type="text" class="select-title tire-radius" readonly name="d3" maxlength="2"--}}
-{{--                                                       pattern="/^\d+$/" value="{{ $d3 }}">--}}
-{{--                                                <i class="material-icons float-xs-right"></i>--}}
-{{--                                                <div class="dropdown-menu radius">--}}
-{{--                                                  @foreach ($autoTiresD3 as $tire)--}}
-{{--                                                    <a rel="nofollow" class="select-list" id="{{ $tire->d3 }}">--}}
-{{--                                                      {{ $tire->d3 }}--}}
-{{--                                                    </a>--}}
-{{--                                                  @endforeach--}}
-{{--                                                </div>--}}
-{{--                </div>--}}
-{{--              </li>--}}
-{{--            </ul>--}}
-
-{{--          </section>--}}
           <section class="facet clearfix">
             <button id="autofind_sub" type="submit">
               Meklēt <i class="material-icons search"></i>
@@ -308,37 +141,6 @@
           </li>
         </ul>
       </section>
-
-      {{--                                    <section class="facet clearfix facet--27">--}}
-      {{--                                        <h1 class="h6 facet-title hidden-sm-down">TOP40</h1>--}}
-      {{--                                        <div class="title hidden-md-up" data-target="#facet_39112"--}}
-      {{--                                             data-toggle="collapse">--}}
-      {{--                                          <h1 class="h6 facet-title">TOP40</h1>--}}
-      {{--                                          <span class="float-xs-right">--}}
-      {{--                                          <span class="navbar-toggler collapse-icons">--}}
-      {{--                                            <i class="material-icons add"></i>--}}
-      {{--                                            <i class="material-icons remove"></i>--}}
-      {{--                                          </span>--}}
-      {{--                                        </span>--}}
-      {{--                                        </div>--}}
-
-
-      {{--                                        <ul id="facet_39112" class="collapse">--}}
-      {{--                                          <li data-label="Top-40">--}}
-      {{--                                            <label class="facet-label" for="facet_input_39112_0">--}}
-      {{--                                              <span class="custom-checkbox">--}}
-      {{--                                                <input id="facet_input_39112_0" data-search-url="" type="checkbox">--}}
-      {{--                                                <span class="ps-shown-by-js">--}}
-      {{--                                                  <i class="material-icons checkbox-checked"></i>--}}
-      {{--                                                </span>--}}
-      {{--                                              </span>--}}
-      {{--                                              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">--}}
-      {{--                                                Top 40--}}
-      {{--                                              </a>--}}
-      {{--                                            </label>--}}
-      {{--                                          </li>--}}
-      {{--                                        </ul>--}}
-      {{--                                    </section>--}}
 
       <section class="facet clearfix facet--4">
         <h1 class="h6 facet-title hidden-sm-down facet-hover code-dropdown-btn">Kods<span
@@ -663,7 +465,7 @@
         </ul>
       </section>
       <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i></button>
-      </form>
     </div>
   </div>
+</form>
 </div>

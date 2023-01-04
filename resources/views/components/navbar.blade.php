@@ -285,7 +285,9 @@
         <a class="dropdown-item" href="{{ route('lielas-riepas') }}">Lielās riepas</a>
       </div>-->
 
-    </div>
+      <div class="nav-dropdown-link">
+        <a class="dropdown-item" href="{{ route('radzes') }}">Radzes</a>
+      </div>
 
   <!-- <button class="nav-dropdown-button navbar-item" onclick="showDiskiDropdown()">Diski <span class="material-icons diski">keyboard_arrow_down</span></button>
 
