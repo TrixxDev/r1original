@@ -347,6 +347,8 @@ class Moto extends Model
     {
       $type = strtolower($this->type);
 
+      if ($type == 1) return ['', 'Nav'];
+
       if ($type != '') {
         $arr = [
           'custom' => ['Ct', 'Custom'],
@@ -360,6 +362,8 @@ class Moto extends Model
         ];
 
         return $arr[$type];
+      } else {
+        return ['', ''];
       }
     }
 
