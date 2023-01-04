@@ -152,6 +152,9 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::get('/rims', [App\Http\Controllers\Admin\RimsController::class, 'index'])->name('rims.index');
   Route::get('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'edit'])->name('rims.edit');
 
+  // Radzes
+  Route::get('/studs', [App\Http\Controllers\Admin\StudsController::class, 'index'])->name('studs.index');
+
   // Interneta-veikals
   Route::get('/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
   Route::match(['GET', 'POST'], '/order/{id}/update', [App\Http\Controllers\Admin\ShopController::class, 'order_update'])->name('order.update');

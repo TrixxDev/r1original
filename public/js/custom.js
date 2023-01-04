@@ -3097,7 +3097,7 @@ $(document).ready(function() {
 
   if ($('section#products').is(':visible')) {
     if (!$('.tire-table-row').length) {
-      $('section#main').append('<div class="mt-1 alert alert-danger"><b>Atvainojiet,</b> taču šāds izmērs nav pieejams.</div>');
+      $('section#main').prepend('<div class="mt-1 alert alert-danger"><b>Atvainojiet,</b> taču šāds izmērs nav pieejams.</div>');
     }
   }
 

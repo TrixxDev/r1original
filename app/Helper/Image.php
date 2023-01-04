@@ -40,6 +40,11 @@
         case 'big-rim':
           $dir = $path . '/industrial/rims/rim-' . $image . '.jpg';
           break;
+
+        // STUDS
+        case 'studs':
+          $dir = $path . '/studs/' . $image . '-o.jpg';
+          break;
       }
 
       return $dir;
