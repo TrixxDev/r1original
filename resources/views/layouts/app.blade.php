@@ -449,7 +449,7 @@
 
                                 </div>
                             </li>
-                            <!--<li class="category" id="category-20">
+                            <li class="category" id="category-20">
                                 <a class="dropdown-item" href="#" data-depth="0">
 
                                     <span class="float-xs-right hidden-md-up">
@@ -472,7 +472,7 @@
                                         </li>
                                         <li class="category" id="category-22">
                                             <a class="dropdown-item dropdown-submenu"
-                                               href="{{ route('kvadraciklu-diski') }}"
+                                               href="{{ route('kvadru-diski') }}"
                                                data-depth="1">
                                                 Kvadru diski
                                             </a>
@@ -481,7 +481,7 @@
 
                                 </div>
                             </li>
-                            --><li class="category" id="cms-category-3">
+                            <li class="category" id="cms-category-3">
                                 <a class="dropdown-item" href="#" data-depth="0">
 
                                     <span class="float-xs-right hidden-md-up">
