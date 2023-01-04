@@ -292,8 +292,23 @@ Route::middleware('checksession')->group(function() {
   Route::post('/lietie-diski/ajax', [App\Http\Controllers\RimsController::class, 'rims_ajax'])->name('lietie-diski-ajax');
   Route::get('/lietie-diski/search', [App\Http\Controllers\BigTireController::class, 'rims_search'])->name('lietie-diski-meklet');
 
-  Route::get('/kvadru-diski', [App\Http\Controllers\RimsController::class, 'quadrim'])->name('kvadraciklu-diski');
+  Route::get('/kvadru-diski', [App\Http\Controllers\RimsController::class, 'quadr_rims'])->name('kvadru-diski');
+  Route::post('/kvadru-diski', [App\Http\Controllers\RimsController::class, 'quadr_rims_search'])->name('kvadru-diski');
+  Route::get('/kvadru-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\RimsController::class, 'quadr_rims_tread'])->name('kvadru-disks');
+  Route::post('/kvadru-diski/ajax', [App\Http\Controllers\RimsController::class, 'quadr_rims_ajax'])->name('kvadru-diski-ajax');
+  Route::post('/kvadru-diski/search/ajax', [App\Http\Controllers\RimsController::class, 'quadr_rims_ajax'])->name('kvadru-diski-ajax');
+  Route::get('/kvadru-diski/search', [App\Http\Controllers\RimsController::class, 'quadr_rims_search'])->name('kvadru-diski-meklet');
+  Route::get('/kvadru-diski/getBrandList', [App\Http\Controllers\RimsController::class, 'quadr_rims_getBrands']);
 
+
+  //Radzes
+  Route::get('/radzes', [App\Http\Controllers\StudsController::class, 'studs'])->name('radzes');
+  Route::post('/radzes', [App\Http\Controllers\StudsController::class, 'studs_search'])->name('radzes');
+  Route::get('/radzes/{brand}/{tread}/{rim}', [App\Http\Controllers\StudsController::class, 'studs_tread'])->name('radze');
+  Route::post('/radzes/ajax', [App\Http\Controllers\StudsController::class, 'studs_ajax'])->name('radzes-ajax');
+  Route::post('/radzes/search/ajax', [App\Http\Controllers\StudsController::class, 'studs_ajax'])->name('radzes-ajax');
+  Route::get('/radzes/search', [App\Http\Controllers\StudsController::class, 'studs_search'])->name('radzes-meklet');
+  Route::get('/radzes/getBrandList', [App\Http\Controllers\StudsController::class, 'studs_getBrands']);
 // Noklusējuma lapas
 
 // Pieraksts
