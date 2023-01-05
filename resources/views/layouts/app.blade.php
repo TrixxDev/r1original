@@ -431,49 +431,49 @@
 {{--                                                  Lielās riepas--}}
 {{--                                            </a>--}}
 {{--                                        </li>--}}
-                                        <li class="category" id="category-18">
-                                          <a class="dropdown-item dropdown-submenu"
-                                             href="{{ route('radzes') }}"
-                                             data-depth="1">
-                                            Radzes
-                                          </a>
-                                        </li>
+{{--                                        <li class="category" id="category-18">--}}
+{{--                                          <a class="dropdown-item dropdown-submenu"--}}
+{{--                                             href="{{ route('radzes') }}"--}}
+{{--                                             data-depth="1">--}}
+{{--                                            Radzes--}}
+{{--                                          </a>--}}
+{{--                                        </li>--}}
                                   </ul>
 
                                 </div>
                             </li>
-                            <li class="category" id="category-20">
-                                <a class="dropdown-item" href="#" data-depth="0">
+{{--                            <li class="category" id="category-20">--}}
+{{--                                <a class="dropdown-item" href="#" data-depth="0">--}}
 
-                                    <span class="float-xs-right hidden-md-up">
-                                        <span data-target="#top_sub_menu_6650" data-toggle="collapse" class="navbar-toggler collapse-icons">
-                                          <i class="material-icons add"></i>
-                                          <i class="material-icons remove"></i>
-                                        </span>
-                                    </span>
-                                    Diski
-                                </a>
-                                <div class="popover sub-menu js-sub-menu collapse" id="top_sub_menu_6650"
-                                     style="display: none; top: 130px;">
-                                    <ul class="top-menu" data-depth="1">
-                                        <li class="category" id="category-21">
-                                            <a class="dropdown-item dropdown-submenu"
-                                               href="{{ route('lietie-diski') }}"
-                                               data-depth="1">
-                                                Lietie diski
-                                            </a>
-                                        </li>
-                                        <li class="category" id="category-22">
-                                            <a class="dropdown-item dropdown-submenu"
-                                               href="{{ route('kvadru-diski') }}"
-                                               data-depth="1">
-                                                Kvadru diski
-                                            </a>
-                                        </li>
-                                    </ul>
+{{--                                    <span class="float-xs-right hidden-md-up">--}}
+{{--                                        <span data-target="#top_sub_menu_6650" data-toggle="collapse" class="navbar-toggler collapse-icons">--}}
+{{--                                          <i class="material-icons add"></i>--}}
+{{--                                          <i class="material-icons remove"></i>--}}
+{{--                                        </span>--}}
+{{--                                    </span>--}}
+{{--                                    Diski--}}
+{{--                                </a>--}}
+{{--                                <div class="popover sub-menu js-sub-menu collapse" id="top_sub_menu_6650"--}}
+{{--                                     style="display: none; top: 130px;">--}}
+{{--                                    <ul class="top-menu" data-depth="1">--}}
+{{--                                        <li class="category" id="category-21">--}}
+{{--                                            <a class="dropdown-item dropdown-submenu"--}}
+{{--                                               href="{{ route('lietie-diski') }}"--}}
+{{--                                               data-depth="1">--}}
+{{--                                                Lietie diski--}}
+{{--                                            </a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="category" id="category-22">--}}
+{{--                                            <a class="dropdown-item dropdown-submenu"--}}
+{{--                                               href="{{ route('kvadru-diski') }}"--}}
+{{--                                               data-depth="1">--}}
+{{--                                                Kvadru diski--}}
+{{--                                            </a>--}}
+{{--                                        </li>--}}
+{{--                                    </ul>--}}
 
-                                </div>
-                            </li>
+{{--                                </div>--}}
+{{--                            </li>--}}
                             <li class="category" id="cms-category-3">
                                 <a class="dropdown-item" href="#" data-depth="0">
 

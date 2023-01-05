@@ -285,9 +285,9 @@
 {{--        <a class="dropdown-item" href="{{ route('lielas-riepas') }}">Lielās riepas</a>--}}
 {{--      </div>--}}
 
-      <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ route('radzes') }}">Radzes</a>
-      </div>
+{{--      <div class="nav-dropdown-link">--}}
+{{--        <a class="dropdown-item" href="{{ route('radzes') }}">Radzes</a>--}}
+{{--      </div>--}}
 
     </div>
 
