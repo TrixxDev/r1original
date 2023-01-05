@@ -36,13 +36,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <link type="text/css" rel="stylesheet" href="{{asset('css/magiczoomplus.css')}}"/>
     <script src="{{asset('js/magic.js')}}"></script>
-    <script type="text/javascript">
-       (function(c,l,a,r,i,t,y){
-           c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-           t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-           y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-       })(window, document, "clarity", "script", "efaujuuqsx");
-    </script>
   <script>
       toastr.options = {
         "closeButton": true,
@@ -755,13 +748,6 @@
 
 </main>
 
-
-<!-- Panelbear -->
-<script async src="https://cdn.panelbear.com/analytics.js?site=2KLteTQogNz"></script>
-<script>
-    window.panelbear = window.panelbear || function() { (window.panelbear.q = window.panelbear.q || []).push(arguments); };
-    panelbear('config', { site: '2KLteTQogNz' });
-</script>
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-230419920-1"></script>
 <script>

@@ -153,7 +153,16 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::get('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'edit'])->name('rims.edit');
 
   // Radzes
-  Route::get('/studs', [App\Http\Controllers\Admin\StudsController::class, 'index'])->name('studs.index');
+  Route::match(['GET', 'POST'], '/studs', [App\Http\Controllers\Admin\StudsController::class, 'index'])->name('studs.index');
+  Route::get('/studs/edit/{id}', [App\Http\Controllers\Admin\StudsController::class, 'studs_edit'])->name('studs.edit');
+  Route::post('/studs/edit/{id}', [App\Http\Controllers\Admin\StudsController::class, 'studs_update'])->name('studs.update');
+  Route::get('/studs/delete/{id}', [App\Http\Controllers\Admin\StudsController::class, 'studs_destroy'])->name('studs.destroy');
+  Route::match(['GET', 'POST'], '/studs/tread/{tread_id}', [App\Http\Controllers\Admin\StudsController::class, 'tires_search'])->name('studs.search');
+  Route::get('/studs/tread/{tread_id}/create', [App\Http\Controllers\Admin\StudsController::class, 'studs_create'])->name('studs.create');
+  Route::post('/studs/tread/{tread_id}/store', [App\Http\Controllers\Admin\StudsController::class, 'studs_store'])->name('studs.store');
+  Route::post('/studs/tread/{tread_id}/image', [App\Http\Controllers\Admin\StudsController::class, 'studs_image'])->name('studs.image');
+  Route::post('/studs/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\StudsController::class, 'ajaxUpdateTreads'])->name('studs.ajaxUpdateTreads');
+  Route::post('/studs/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\StudsController::class, 'ajaxUpdateTires'])->name('studs.ajaxUpdateTires');
 
   // Interneta-veikals
   Route::get('/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
@@ -414,9 +423,9 @@ Route::middleware('checksession')->group(function() {
   Route::post('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);
   Route::get('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
   Route::post('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
-  Route::get('/testing3', [App\Http\Controllers\HomeController::class, 'fastOrder']);
+  Route::middleware('auth')->get('/testing3', [App\Http\Controllers\HomeController::class, 'fastOrder']);
 
-  Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);
   // END ROUTES FOR TESTING PURPOSES
+  Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);
 
 });
