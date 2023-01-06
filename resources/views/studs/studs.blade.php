@@ -112,6 +112,7 @@
                     <th scope="col"></th>
                     <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
                     <th scope="col" class="hidden-sm-down text-center">Radzes garums</th>
+                    <th scope="col" class="hidden-sm-down text-center">Daudzums</th>
                     <th id="store-price-button" scope="col" class="text-center">
                       Veikala cena
                     </th>
@@ -153,19 +154,8 @@
                       </a>
                     </td>
 
-                    <td class="hidden-sm-down text-center">
-                            <span data-toggle="tooltip" title="<span style='color: black'>
-{{--				                    @php $codes = explode(' ', $tire->code); @endphp--}}
-{{--                            @foreach ($codes as $code1)--}}
-{{--                            @if (isset($code_array[$code1]))--}}
-{{--                            {!! $code_array[$code1] . '<br>' !!}--}}
-{{--                            @endif--}}
-{{--                            @endforeach--}}
-{{--                            @if (strpos($tire->code, 'DOT') !== false)--}}
-{{--                            {!! $code_array['DOT'] !!}--}}
-{{--                            @endif--}}
-                              </span>" class="hidden-sm-down table-cell prod-code">{{ $stud->stud_length }}</span>
-                    </td>
+                    <td class="hidden-sm-down text-center">{{ $stud->stud_length }}</td>
+                    <td class="hidden-sm-down text-center">{{ $stud->stud_count }}</td>
 
                     <td id="store-price" class="text-center store-price">€ {{ $stud->price1 }}</td>
                     <td id="sale-price" class="text-center tire-price-red sale-price">€ {{ $stud->price2 }}</td>
@@ -174,7 +164,7 @@
                     <td class="shopping-cart-col">
                       <div class="clearfix atc_div text-right">
                         <button class="cart-shopping-button" data-toggle="modal"
-                                @hasrole('administrators') data-target="#" @else data-target="#blockcart-modal" @endhasrole data-info="{{ $stud->tire_id }}"><i
+                                @hasrole('administrators') data-target="#" @else data-target="#blockcart-modal" @endhasrole data-info="{{ $stud->stud_id }}"><i
                           class="material-icons">add_shopping_cart</i>
                         </button>
                       </div>

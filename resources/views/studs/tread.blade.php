@@ -70,7 +70,7 @@
                         <div class="add">
                           {{--                          {{ dd($currRim) }}--}}
                           <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
-                                  data-info=" $currRim->rim_id "
+                                  data-info="{{ $currStud->stud_id }}"
                           >
                             <i class="material-icons shopping-cart"></i>
                             Pirkt

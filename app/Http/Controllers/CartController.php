@@ -9,6 +9,7 @@ use App\Models\Pdf;
 use App\Models\Quadr;
 use App\Models\Bigtire;
 use App\Models\Rim;
+use App\Models\Stud;
 use Cart;
 use Gloudemans\Shoppingcart\CartItem;
 use Gloudemans\Shoppingcart\CartItemOptions;
@@ -482,6 +483,17 @@ class CartController extends Controller
                 $availability = $tire->dotAvailable;
                 break;
             }
+          case 'Stud': {
+            $tire = new Stud;
+
+            $tire = $tire->query()->with('tread')->selectRaw('studs_treads.*, studs.*, studs.comment as stud_comment')
+              ->leftJoin('studs_treads', 'studs.make_id', '=', 'studs_treads.tread_id')
+              ->where('studs.stud_id', $tire_id)
+              ->first();
+            $image = 'stud';
+            $availability = $tire->dotAvailable;
+            break;
+          }
         }
 
 //        if ($cart->content()->isEmpty()) {
@@ -492,7 +504,7 @@ class CartController extends Controller
 //            if ($item->id == $tire_id) {
 //              return $cart->update($item->rowId, $item->qty + $quantity);
 //            } else {
-              return Cart::instance(Session::getId())->add($tire_id, $tire->title, $quantity, $tire->price2, 0, ['tire' => $tire->toArray(), 'tireObj' => $tire, 'link' => $tire->link, 'image' => $image, 'availability' => $availability])
+              return Cart::instance(Session::getId())->add($tire_id, $tire->fullName, $quantity, $tire->price2, 0, ['tire' => $tire->toArray(), 'tireObj' => $tire, 'link' => $tire->link, 'image' => $image, 'availability' => $availability])
                 ->associate('App\Models\\' . ucfirst($model));
 //            }
 //          }

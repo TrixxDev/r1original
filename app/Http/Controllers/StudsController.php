@@ -18,10 +18,7 @@ class StudsController extends Controller
   public $brands;
   public $season;
   public $currBrand;
-  public $autoTiresD1;
-  public $autoTiresD2;
-  public $autoTiresD3;
-  public $model = 'Autotire';
+  public $model = 'Stud';
   public $tiresSize;
   public $availability;
   public $code_array = [];
@@ -56,7 +53,24 @@ class StudsController extends Controller
   }
 
   public function studs_ajax(Request $request) {
+    $stud = Stud::with('tread')->selectRaw('studs.*, studs_treads.*')
+      ->rightJoin('studs_treads', 'studs.make_id', '=', 'studs_treads.tread_id')
+      ->where('studs.stud_id', $request->tire_id)
+      ->where('studs.visible_users', '<>', 0)
+      ->first();
 
+    if ($request->quantity) {
+      $cart = CartController::addProduct($this->model, $stud->stud_id, $request->quantity);
+    } else {
+      $cart = CartController::addProduct($this->model, $stud->stud_id, 1);
+    }
+
+    $quantity = Cart::count();
+    //dd(Cart::subTotal());
+    $total_sum = str_replace([',', '.00'], '', Cart::subTotal());
+    $bought = ($request->quantity) ? $request->quantity : 4;
+
+    echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
   }
 
   public function studs_find(Request $request) {

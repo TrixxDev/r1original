@@ -313,7 +313,7 @@ Route::middleware('checksession')->group(function() {
   //Radzes
   Route::get('/radzes', [App\Http\Controllers\StudsController::class, 'studs'])->name('radzes');
   Route::post('/radzes', [App\Http\Controllers\StudsController::class, 'studs_search'])->name('radzes');
-  Route::get('/radzes/{brand}/{tread}/{rim}', [App\Http\Controllers\StudsController::class, 'studs_tread'])->name('radze');
+  Route::get('/radzes/{brand}/{tread}/{stud}', [App\Http\Controllers\StudsController::class, 'studs_tread'])->name('radze');
   Route::post('/radzes/ajax', [App\Http\Controllers\StudsController::class, 'studs_ajax'])->name('radzes-ajax');
   Route::post('/radzes/search/ajax', [App\Http\Controllers\StudsController::class, 'studs_ajax'])->name('radzes-ajax');
   Route::get('/radzes/search', [App\Http\Controllers\StudsController::class, 'studs_search'])->name('radzes-meklet');

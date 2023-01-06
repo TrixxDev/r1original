@@ -87,6 +87,19 @@ class Stud extends Model
 
   }
 
+  public function getLinkAttribute()
+  {
+    $stud = Studtread::selectRaw('studs_treads.*, studs_treads.t_title as tread_title, studs_brands.*, studs_brands.b_title as brand_title')
+      ->leftJoin('studs_brands', 'studs_treads.brand_id', '=', 'studs_brands.brand_id')
+      ->where('studs_treads.tread_id', $this->make_id)
+      ->first();
+    if (!isset($stud->brand_title) || !isset($stud->tread_title)) {
+      return false;
+    } else {
+      return route('radze', [$stud->brand_title, str_replace('/', '_', $stud->tread_title), $this->stud_id]);
+    }
+  }
+
   public function getStockAvailabilityAttribute()
   {
     $stud = Stud::where('stud_id', $this->stud_id)->first();
@@ -116,5 +129,10 @@ class Stud extends Model
     $availability .= '';
 
     return $availability;
+  }
+
+  public function tread()
+  {
+    return $this->hasOne('App\Models\Studtread', 'tread_id', 'make_id');
   }
 }

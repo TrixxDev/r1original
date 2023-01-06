@@ -811,13 +811,19 @@
                                 <h6 class="h6 product-name"></h6>
                                 <p>€ <span class="product-price"></span></p>
 
-                                <span><strong>Platums</strong>: <span class="product-width"></span></span><br>
-                                <span><strong>Augstums</strong>: <span class="product-height"></span></span><br>
-                                <span><strong>Diametrs</strong>: <span class="product-radius"></span></span><br>
-                                <span><strong>Tips</strong>: <span class="product-type"></span></span><br>
-                                <span><strong>LI</strong>: <span class="product-li"></span></span><br>
-                                <span><strong>SI</strong>: <span class="product-si"></span></span><br>
-                                <p><strong>Daudzums:</strong>&nbsp;<span class="product-qty"></span></p>
+                                @if (strpos(\Request::route()->getName(), 'radze') !== false)
+                                  <span><strong>Radzes garums</strong>: <span class="product-stud-length"></span></span><br>
+                                  <span><strong>Daudzums</strong>: <span class="product-stud-count"></span></span><br>
+                                  <span><strong>Piezīmes</strong>: <span class="product-comment"></span></span><br>
+                                @else
+                                  <span><strong>Platums</strong>: <span class="product-width"></span></span><br>
+                                  <span><strong>Augstums</strong>: <span class="product-height"></span></span><br>
+                                  <span><strong>Diametrs</strong>: <span class="product-radius"></span></span><br>
+                                  <span><strong>Tips</strong>: <span class="product-type"></span></span><br>
+                                  <span><strong>LI</strong>: <span class="product-li"></span></span><br>
+                                  <span><strong>SI</strong>: <span class="product-si"></span></span><br>
+                                  <p><strong>Daudzums:</strong>&nbsp;<span class="product-qty"></span></p>
+                                @endif
                             </div>
                         </div>
                     </div>
