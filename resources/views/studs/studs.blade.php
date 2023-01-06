@@ -113,7 +113,7 @@
                 </div>
 {{--                <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Radzes</h4>--}}
                 <table id="tires-table"
-                       class="table table-striped summer-sorter tires-table table-hover tablesorter">
+                       class="table table-striped studs-sorter tires-table table-hover tablesorter">
                   <thead class="tires-thead sticky-table">
                   <tr>
                     <th scope="col"></th>
