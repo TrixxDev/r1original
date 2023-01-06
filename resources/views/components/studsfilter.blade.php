@@ -83,7 +83,7 @@
               <li>
                 <label class="facet-label" for="facet_availability_0" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                 <span class="custom-checkbox">
-                    <input id="facet_availability_0" type="checkbox" data-search-url="#" data-color="green">
+                    <input id="facet_availability_0" type="checkbox" data-search-url="#" data-color="green" class="green">
                     <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                 </span>
                   Pieejams
@@ -93,7 +93,7 @@
               <li>
                 <label class="facet-label" for="facet_availability_1" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                 <span class="custom-checkbox">
-                    <input id="facet_availability_1" type="checkbox" data-search-url="#" data-color="yellow">
+                    <input id="facet_availability_1" type="checkbox" data-search-url="#" data-color="yellow" class="yellow">
                     <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                 </span>
                   Pasutams
@@ -103,7 +103,7 @@
               <li>
                 <label class="facet-label" for="facet_availability_2" style="width: 100%;text-align: left;cursor: pointer">
                 <span class="custom-checkbox">
-                    <input id="facet_availability_2" type="checkbox" data-search-url="#" data-color="red">
+                    <input id="facet_availability_2" type="checkbox" data-search-url="#" data-color="red" class="red">
                     <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                 </span>
                   Zvaniet!

@@ -3116,7 +3116,7 @@ $(document).ready(function() {
   });
 
   if ($('section#products').is(':visible')) {
-    if (!$('.tire-table-row').length) {
+    if (!$('.tire-table-row').length && !$('.grid-view-link').length) {
       $('section#main').prepend('<div class="mt-1 alert alert-danger"><b>Atvainojiet,</b> taču šāds izmērs nav pieejams.</div>');
     }
   }

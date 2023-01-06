@@ -82,7 +82,7 @@ class StudsController extends Controller
   }
 
   public function studs_search(Request $request) {
-
+    dd('Kanāda vainīgs!');
   }
 
   public function studs_tread($brand, $tread, $stud) {
