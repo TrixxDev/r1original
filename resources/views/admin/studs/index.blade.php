@@ -23,7 +23,7 @@
             <div class="row">
               <div class="col-sm-12 col-md-6">
                 <div class="form-group row brand-settings">
-                  <label class="col-md-2 col-form-label" for="brand_select">Pielietojums: </label>
+                  <label class="col-md-2 col-form-label" for="brand_select">Brends: </label>
                   <select name="brand" class="form-control col-md-3" data-model="auto" id="brand_select">
                     <option value=""></option>
 {{--                    @foreach ($brands as $curr_brand)--}}
@@ -39,7 +39,7 @@
                   </form>
                 </div>
                 <div class="form-group row make-settings">
-                  <label class="col-md-2 col-form-label" for="tread_select">Garums: </label>
+                  <label class="col-md-2 col-form-label" for="tread_select">Modelis: </label>
                   <select name="tread" class="form-control col-md-3" id="tread_select" disabled></select>
                   <form method="post" style="display: flex;">
                     @csrf

@@ -17,6 +17,8 @@ use App\Models\Motobrand;
 use App\Models\Bigtire;
 use App\Models\Bigtread;
 use App\Models\Bigbrand;
+use App\Models\Studbrand;
+use App\Models\Studtread;
 
 class Tires
 {
@@ -209,6 +211,14 @@ class Tires
       sort($sizes);
       $sizes = array_values(array_unique($sizes));
       return $sizes;
+    }
+
+    public static function getStudTread($tread_id) {
+      return Studtread::select('*')->where('tread_id', $tread_id)->first();
+    }
+
+    public static function getStudBrand($brand_id) {
+      return Studbrand::select('*')->where('brand_id', $brand_id)->first();
     }
 
     public static function getAutoTireTread($tread_id) {

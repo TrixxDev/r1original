@@ -16,27 +16,188 @@
             <section id="products" class="">
               <div class="tire-image-container" style="display: none">
                 <div class="tire-image-cards">
+                  <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Radzes</h4>
+                  <span style="margin: 0 auto;"></span>
+                  <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal"></button>
+                  <div class="row grid-ex pr-1" style="padding:0;">
+                  @foreach($studs as $stud)
+                  @if($stud->price1)
+                    <a
+                      href="{{ route($current_url, [\Str::slug(\Tires::getStudBrand($stud->brand_id)->title), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
+                      class="grid-view-link"
+                      data-article="{{ $stud->article }}">
+                      <div class="tire-image-card sort-order">
+                        <div class="text-center image-grid-overflow">
+                          {!! App\Helper\Image::showGrid('studs', $stud->make_id) !!}
+                        </div>
 
+                        <div class="tire-list-caption">
+
+                          <div class="card-title-text" data-toggle="tooltip" title="<div>{{$stud->title}}</div>">
+                            {{$stud->fullName}}
+                          </div>
+
+                          <div class="tire-tread">
+                            <b>{{$stud->stud_length}} {{$stud->application}}</b>
+                            <span data-toggle="tooltip"
+                                  ></span>
+                            <span class="tire-image-code">{{$stud->code}}</span>
+                          </div>
+                          <div style="display: flex;">
+                            <input type="checkbox" name="product_ids[]" value="{{$stud->stud_id}}"
+                                   style="margin-right: 5px;">
+                            <div class="rim-price-old" style="align-self: center;">€{{$stud->price1}}</div>
+                            <div class="rim-price-red" style="align-self: center;">€{{$stud->price2}}</div>
+                            {{--                            <i class="material-icons" style="margin-left: auto;">add_shopping_cart</i>--}}
+                            <span style="margin-left: auto;" data-toggle="tooltip"
+                                  title="<span style='color: black'>Pievienot grozam</span>">
+    {{--                              <button class="grid-buy-btn" data-toggle="modal"--}}
+                              {{--                                      @hasrole('administrators') data-target=""--}}
+                              {{--                                      @else data-target="#blockcart-modal"--}}
+                              {{--                                      @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()">--}}
+                              {{--                                <i class="material-icons">add_shopping_cart</i>--}}
+                              {{--                              </button>--}}
+
+                              <button class="grid-buy-btn cart-shopping-button"
+                                      data-toggle="modal"
+                                      data-info="{{ $stud->tire_id }}"
+                                      {{--                                      data-info="{{ $currTire->tire_id }}--}}
+                                      onclick="event.preventDefault()"
+                                      @hasrole('administrators')
+                                        data-target="#"
+                                      @else
+                                data-target="#blockcart-modal"
+                                @endhasrole>
+                                <i class="material-icons">add_shopping_cart</i>
+                                </button>
+                            </span>
+
+                            {{--                            <div class="clearfix atc_div text-right">--}}
+                            {{--                              <button class="grid-buy-btn" data-toggle="modal"--}}
+                            {{--                                      @hasrole('administrators') data-target=""--}}
+                            {{--                                      @else data-target="#blockcart-modal"--}}
+                            {{--                                      @endhasrole data-info="{{ $tire->tire_id }}" onclick="event.preventDefault()">--}}
+                            {{--                              <i class="material-icons">add_shopping_cart</i>--}}
+                            {{--                              </button>--}}
+                            {{--                            </div>--}}
+
+                            <span class="grid-dot {{ $stud->dotAvailable }}"
+                                  data-toggle="tooltip"
+                                  data-html="true"
+                                  onclick="event.preventDefault()"
+                                  title="{{ $stud->stockAvailability }}">
+                              <span class="sort-order" style="display: none;">{{ $stud->dotAvailable }}</span>
+                            </span>
+                          </div>
+                        </div>
+                        {{--                        <button class="grid-shopping-button grid-cart-btn" data-toggle="modal" data-target="#blockcart-modal" data-info="148204">Pirkt--}}
+                        {{--                        </button>--}}
+
+
+                      </div>
+                    </a>
+                  @endif
+                  @endforeach
+                  </div>
                 </div>
               </div>
+
               {{-- LIST VIEW --}}
               <div id="js-product-list">
-                <div class="products row hide-price title-flip">
+                <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Radzes</h4>
+                <table id="tires-table"
+                       class="table table-striped summer-sorter tires-table table-hover tablesorter">
+                  <thead class="tires-thead sticky-table">
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
+                    <th scope="col" class="hidden-sm-down text-center">Pielietojums</th>
+                    <th scope="col" class="hidden-sm-down text-center">Radzes garums</th>
+                    <th id="store-price-button" scope="col" class="text-center">
+                      Veikala cena
+                    </th>
+                    <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+                    <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
+                    <th scope="col"></th>
+                    <th scope="col">
+                      <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
+                    </th>
 
-                </div>
-                <nav class="pagination">
-                  <div class="col-md-12">
-                  </div>
-                </nav>
-                <div class="hidden-md-up text-xs-right up">
-                  <a href="#header" class="back-to-top-button">
-                    <i class="material-icons"></i>
-                  </a>
-                </div>
-                {{--                      {{ $rims->links() }}--}}
+                  </tr>
+                  </thead>
+                  <tbody id="tires-table-body">
+
+                  @foreach ($studs as $stud)
+                  <tr class="tire-table-row">
+                    <th scope="row" class="tire-table-checkbox">
+                      <input type="checkbox" value="
+{{--                        {{ $stud->stud_id }}--}}
+                        " name="product_ids[]"
+                             class="tire-table-checkbox">
+                    </th>
+
+                    <td class="table-tire-name-cell">
+                      <a data-toggle="tooltip" data-html="true" class="tire-table-link"
+                         title='
+                           {!! App\Helper\Image::show('studs', $stud->make_id) !!}
+                           '
+                         href="
+{{--                           {{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($stud->brand_id)->title), strtolower(str_replace('/', '_', $stud->t_title)), $stud->tire_id]) }}--}}
+                           "
+                         data-content="
+                          {{ $stud->title . ' ' . $stud->fullSize }}
+                           "
+                         data-article="
+                          {{ $stud->article }}
+                           ">
+                        <div class="table-link-title">{{ $stud->fullName }}</div>
+                      </a>
+                    </td>
+
+                    <td class="hidden-sm-down text-center">{{ $stud->application }}</td>
+
+                    <td class="hidden-sm-down text-center">
+                            <span data-toggle="tooltip" title="<span style='color: black'>
+{{--				                    @php $codes = explode(' ', $tire->code); @endphp--}}
+{{--                            @foreach ($codes as $code1)--}}
+{{--                            @if (isset($code_array[$code1]))--}}
+{{--                            {!! $code_array[$code1] . '<br>' !!}--}}
+{{--                            @endif--}}
+{{--                            @endforeach--}}
+{{--                            @if (strpos($tire->code, 'DOT') !== false)--}}
+{{--                            {!! $code_array['DOT'] !!}--}}
+{{--                            @endif--}}
+                              </span>" class="hidden-sm-down table-cell prod-code">{{ $stud->stud_length }}</span>
+                    </td>
+
+                    <td id="store-price" class="text-center store-price">€ {{ $stud->price1 }}</td>
+                    <td id="sale-price" class="text-center tire-price-red sale-price">€ {{ $stud->price2 }}</td>
+                    <td class="hidden-sm-down text-center">{{$stud->comment}}</td>
+
+                    <td class="shopping-cart-col">
+                      <div class="clearfix atc_div text-right">
+                        <button class="cart-shopping-button" data-toggle="modal"
+                                @hasrole('administrators') data-target="#" @else data-target="#blockcart-modal" @endhasrole data-info="{{ $stud->tire_id }}"><i
+                          class="material-icons">add_shopping_cart</i>
+                        </button>
+                      </div>
+                    </td>
+
+                    <td class="dot-availability text-center">
+                            <span class="dot {{ $stud->dotAvailable }} {{ $stud->stockCount }}" data-toggle="tooltip"
+                                  data-html="true"
+                                  title="{{ $stud->stockAvailability }}">
+                              <span class="sort-order">{{ $stud->dotAvailable }}</span>
+                            </span>
+                    </td>
+
+                  </tr>
+                  @endforeach
+                  </tbody>
+                </table>
               </div>
               <div id="js-product-list-bottom">
-                <div id="js-product-list-bottom"></div>
+
               </div>
             </section>
           </section>
