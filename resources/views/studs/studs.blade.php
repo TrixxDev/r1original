@@ -16,14 +16,16 @@
             <section id="products" class="">
               <div class="tire-image-container" style="display: none">
                 <div class="tire-image-cards">
-                  <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Radzes</h4>
-                  <span style="margin: 0 auto;"></span>
-                  <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal"></button>
-                  <div class="row grid-ex pr-1" style="padding:0;">
+                  <div style="display: flex; padding: 5px 0;">
+                    <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Radzes</h4>
+                    <span style="margin: 0 auto;"></span>
+                    <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">Filtrs(0)</button>
+                  </div>
+                  <div class="row grid-ex pr-1" style="padding:0!important;">
                   @foreach($studs as $stud)
                   @if($stud->price1)
                     <a
-                      href="{{ route($current_url, [\Str::slug($stud->brand), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
+                      href="{{ route('radze', [\Str::slug($stud->brand), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
                       class="grid-view-link"
                       data-article="{{ $stud->article }}">
                       <div class="tire-image-card sort-order">
@@ -104,7 +106,12 @@
 
               {{-- LIST VIEW --}}
               <div id="js-product-list">
-                <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Radzes</h4>
+                <div style="display: flex; padding: 5px 0;">
+                  <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Radzes</h4>
+                  <span style="margin: 0 auto;"></span>
+                  <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">Filtrs(0)</button>
+                </div>
+{{--                <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Radzes</h4>--}}
                 <table id="tires-table"
                        class="table table-striped summer-sorter tires-table table-hover tablesorter">
                   <thead class="tires-thead sticky-table">
@@ -129,9 +136,7 @@
                   @foreach ($studs as $stud)
                   <tr class="tire-table-row">
                     <th scope="row" class="tire-table-checkbox">
-                      <input type="checkbox" value="
-{{--                        {{ $stud->stud_id }}--}}
-                        " name="product_ids[]"
+                      <input type="checkbox" value="{{ $stud->stud_id }}" name="product_ids[]"
                              class="tire-table-checkbox">
                     </th>
 
@@ -140,9 +145,7 @@
                          title='
                            {!! App\Helper\Image::show('studs', $stud->make_id) !!}
                            '
-                         href="
-                           {{ route('radze', [\Str::slug($stud->brand), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}
-                           "
+                         href="{{ route('radze', [\Str::slug($stud->brand), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
                          data-content="
                           {{ $stud->title . ' ' . $stud->fullSize }}
                            "
