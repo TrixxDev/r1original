@@ -175,4 +175,19 @@ $(document).ready(function () {
       }
     );
   });
+
+  $('.studs-sorter').each(function() {
+    $(this).tablesorter({
+        headers: {
+          0: {sorter: false},
+          1: {sorter: false},
+          2: {sorter: false},
+          3: {sorter: true},
+          4: {sorter: true},
+          5: {sorter: false},
+          6: {sorter: true}
+        },
+      }
+    );
+  });
 });
