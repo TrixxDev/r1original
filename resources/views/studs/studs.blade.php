@@ -23,7 +23,7 @@
                   @foreach($studs as $stud)
                   @if($stud->price1)
                     <a
-                      href="{{ route($current_url, [\Str::slug(\Tires::getStudBrand($stud->brand_id)->title), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
+                      href="{{ route($current_url, [\Str::slug($stud->brand), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
                       class="grid-view-link"
                       data-article="{{ $stud->article }}">
                       <div class="tire-image-card sort-order">
@@ -111,7 +111,6 @@
                   <tr>
                     <th scope="col"></th>
                     <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
-                    <th scope="col" class="hidden-sm-down text-center">Pielietojums</th>
                     <th scope="col" class="hidden-sm-down text-center">Radzes garums</th>
                     <th id="store-price-button" scope="col" class="text-center">
                       Veikala cena
@@ -142,7 +141,7 @@
                            {!! App\Helper\Image::show('studs', $stud->make_id) !!}
                            '
                          href="
-{{--                           {{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($stud->brand_id)->title), strtolower(str_replace('/', '_', $stud->t_title)), $stud->tire_id]) }}--}}
+                           {{ route('radze', [\Str::slug($stud->brand), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}
                            "
                          data-content="
                           {{ $stud->title . ' ' . $stud->fullSize }}
@@ -153,8 +152,6 @@
                         <div class="table-link-title">{{ $stud->fullName }}</div>
                       </a>
                     </td>
-
-                    <td class="hidden-sm-down text-center">{{ $stud->application }}</td>
 
                     <td class="hidden-sm-down text-center">
                             <span data-toggle="tooltip" title="<span style='color: black'>

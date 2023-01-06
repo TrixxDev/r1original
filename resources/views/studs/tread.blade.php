@@ -15,10 +15,7 @@
               <div class="col-md-12 col-lg-4">
                 <section class="page-content" id="content">
                   <div class="images-container ">
-                    {!! App\Helper\Image::treadZoom('studs',
-                        //$currRim->make_id
-                        0
-                    ) !!}
+                    {!! App\Helper\Image::treadZoom('studs', $currStud->make_id) !!}
                   </div>
                   <div class="scroll-box-arrows">
                     <i class="material-icons left"></i>
@@ -30,14 +27,14 @@
                 <div class="row">
                   <div class="col-sm-12 product-main-details">
                     {{--                    {{ dd($tread, $brand) }}--}}
-                    <h1 class="h1 mt-1" itemprop="name">$brand->title.' '.$tread->title</h1>
+                    <h1 class="h1 mt-1" itemprop="name">{{ $currStud->fullName }}</h1>
                     {{--                    <h1 class="h1 mt-1" itemprop="name">{{ dd($rims[0]) }}</h1>--}}
                   </div>
                   <div class="col-sm-12 col-md-12 col-lg-6">
                     <div class="product-prices">
                       <div class="product-discount">
                         <span>Veikala cena:</span>
-                        <span class="regular-price">€  $currRim->price2 </span>
+                        <span class="regular-price">€ {{ $currStud->price1 }}</span>
                       </div>
                       <div class="product-price h5 has-discount" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
                         <link itemprop="availability" href="https://schema.org/InStock">
@@ -45,7 +42,7 @@
 
                         <div class="current-price">
                           <span>Akcijas cena:</span>
-                          <span itemprop="price" content=" $currRim->price3 ">€  $currRim->price3 </span>
+                          <span itemprop="price" content=" $currRim->price3 ">€ {{ $currStud->price2 }}</span>
                         </div>
                       </div>
                     </div>
@@ -58,7 +55,7 @@
                             <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
                             {{--                            <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">--}}
                             {{--                            <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title }}">--}}
-                            <input type="text" name="qty" id="quantity_wanted" value="4" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
+                            <input type="text" name="qty" id="quantity_wanted" value="1" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                             <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                             <span class="input-group-btn-vertical">
                                             <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
@@ -89,63 +86,26 @@
                 <div class="row">
                   <div class="col-12 col-sm-12 col-md-4">
                     <table class="table">
-                      <thead>
-                      <tr>
-                        <th>Platums</th>
-                        <td> $currRim->d1 </td>
-                      </tr>
-                      </thead>
                       <tbody>
                       <tr>
-                        <th>Augstums</th>
-                        <td> $currRim->d3 </td>
+                        <th>Radzes garums</th>
+                        <td>{{ $currStud->stud_length }}</td>
                       </tr>
                       <tr>
-                        <th>Skrūvju izbīdījums</th>
-                        <td> $currRim->pcd </td>
-                      </tr>
-                      <tr>
-                        <th>Centrālais caurums</th>
-                        <td> $currRim->dc </td>
-                      </tr>
-                      <tr>
-                        <th>Skrūvju skaits</th>
-                        <td> $currRim->skr </td>
-                      </tr>
-                      <tr>
-                        <th>Stāvoklis</th>
-                        <td>
-{{--                          @if( $currRim->used === 0)--}}
-{{--                            {{ 'Jauns' }}--}}
-{{--                          @else--}}
-{{--                            {{ 'Lietots' }}--}}
-{{--                          @endif--}}
-                          Jauns
-                        </td>
-                      </tr>
-                      <tr>
-                        <th>Piezīmes</th>
-                        <td>
-{{--                          @php--}}
-{{--                            if($currRim->autocomment) {--}}
-{{--                                echo $currRim->autocomment;--}}
-{{--                            } else {--}}
-{{--                                echo '-';--}}
-{{--                            }--}}
-{{--                          @endphp--}}
-                        </td>
+                        <th>Daudzums</th>
+                        <td>{{ $currStud->stud_count }}</td>
                       </tr>
                       <tr>
                         <th>Pieejamība</th>
-                        <td> $currRim->available </td>
+                        <td>{{ $currStud->available }}</td>
                       </tr>
                       </tbody>
                     </table>
                   </div>
                   <div class="col-sm-12 col-md-8">
-                    @if($currRim->comment)
+                    @if($currStud->comment)
                       <div class="alert" style="border: 1px solid #68c0a8">
-                        $currRim->comment
+                        {{ $currStud->comment }}
                       </div>
                     @endif
                   </div>
@@ -162,12 +122,8 @@
                   <tr>
                     <th scope="col"></th>
                     <th scope="col" class="">Nosaukums</th>
-                    <th scope="col" class="text-center">Izmērs</th>
-                    <th scope="col" class="hidden-sm-down text-center">Skrūvju skaits</th>
-                    <th scope="col" class="hidden-sm-down text-center">Skrūvju attālums</th>
-                    <th scope="col" class="hidden-sm-down text-center">ET</th>
-                    <th scope="col" class="hidden-sm-down text-center">Centrs</th>
-                    <th scope="col" class="hidden-sm-down text-center">Krāsa</th>
+                    <th scope="col" class="hidden-sm-down text-center">Radzes garums</th>
+                    <th scope="col" class="hidden-sm-down text-center">Daudzums</th>
 
                     <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
                     <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
@@ -182,71 +138,61 @@
                   </thead>
                   <tbody id="tires-table-body">
 
-{{--                  @foreach($rims as $rim)--}}
+                  @foreach($studs as $stud)
 {{--                    --}}{{--                    {{dd($rim->price1, $rim->price2, $rim->price3)}}--}}
-{{--                    @if($rim->price2)--}}
-{{--                      <tr @if($currRim->rim_id == $rim->rim_id) style="font-weight: bold; background-color: #e0e0e0;" @endif class="tire-table-row">--}}
-{{--                        <th scope="row" class="tire-table-checkbox">--}}
-{{--                          <input type="checkbox" value="{{$rim->rim_id}}" name="product_ids[]"--}}
-{{--                                 class="tire-table-checkbox">--}}
-{{--                        </th>--}}
+                    @if($stud->price2)
+                      <tr @if($currStud->stud_id == $stud->stud_id) style="font-weight: bold; background-color: #e0e0e0;" @endif class="tire-table-row">
+                        <th scope="row" class="tire-table-checkbox">
+                          <input type="checkbox" value="{{$stud->stud_id}}" name="product_ids[]"
+                                 class="tire-table-checkbox">
+                        </th>
 
-{{--                        <td>--}}
-{{--                          <a data-toggle="tooltip" data-html="true" class="rim-table-link">--}}
-{{--                            {{ $rim->brand_title . ' ' . $rim->title }}--}}
-{{--                          </a>--}}
-{{--                        </td>--}}
-{{--                        <td class="text-center">--}}
-{{--                          {{$rim->d1}}*{{$rim->d3}}--}}
-{{--                        </td>--}}
+                        <td>
+                          <a data-toggle="tooltip" data-html="true" class="rim-table-link">
+                            {{ $stud->fullName }}
+                          </a>
+                        </td>
+                        <td class="text-center">
+                          {{$stud->stud_length}}
+                        </td>
+                        <td class="text-center">
+                          {{$stud->stud_count}}
+                        </td>
 
-{{--                        <td class="text-center hidden-sm-down">--}}
-{{--                          {{$rim->skr}}--}}
-{{--                        </td>--}}
-
-{{--                        <td class="text-center hidden-sm-down">--}}
-{{--                          {{$rim->pcd}}--}}
-{{--                        </td>--}}
-
-{{--                        <td class="text-center hidden-sm-down">--}}
-{{--                          et{{ $rim->et }}--}}
-{{--                        </td>--}}
 
 {{--                        <td class="text-center hidden-sm-down">--}}
 {{--                          {{$rim->dc}}--}}
 {{--                        </td>--}}
 
-{{--                        <td class="hidden-sm-down text-center">--}}
-{{--                          {{$rim->color}}--}}
-{{--                        </td>--}}
+                        <td id="store-price" class="text-center store-price">€ {{$stud->price1}}</td>
+                        <td id="sale-price" class="text-center tire-price-red sale-price">
+                          @if($stud->price2 != 0)
+                            € {{$stud->price2}}
+                          @endif
+                        </td>
 
+                        <td class="hidden-sm-down text-center">
+                          {{$stud->comment}}
+                        </td>
 
-{{--                        <td id="store-price" class="text-center store-price">€ {{$rim->price2}}</td>--}}
-{{--                        <td id="sale-price" class="text-center tire-price-red sale-price">--}}
-{{--                          @if($rim->price3 != 0)--}}
-{{--                            € {{$rim->price3}}--}}
-{{--                          @endif--}}
-{{--                        </td>--}}
-{{--                        <td class="hidden-sm-down text-center"></td>--}}
+                        <td class="shopping-cart-col">
+                          <div class="clearfix atc_div text-right">
+                            <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">
+                              <i class="material-icons">add_shopping_cart</i>
+                            </button>
+                          </div>
+                        </td>
 
-{{--                        <td class="shopping-cart-col">--}}
-{{--                          <div class="clearfix atc_div text-right">--}}
-{{--                            <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">--}}
-{{--                              <i class="material-icons">add_shopping_cart</i>--}}
-{{--                            </button>--}}
-{{--                          </div>--}}
-{{--                        </td>--}}
-
-{{--                        <td class="dot-availability text-center">--}}
-{{--                              <span class="dot red" data-toggle="tooltip"--}}
-{{--                                    data-html="true"--}}
-{{--                                    title="red">--}}
-{{--                                <span class="sort-order">red</span>--}}
-{{--                              </span>--}}
-{{--                        </td>--}}
-{{--                      </tr>--}}
-{{--                    @endif--}}
-{{--                  @endforeach--}}
+                        <td class="dot-availability text-center">
+                          <span class="dot {{ $stud->dotAvailable }}" data-toggle="tooltip"
+                                data-html="true"
+                                title="{{ $stud->stockAvailability }}">
+                            <span class="sort-order">{{ $stud->dotAvailable }}</span>
+                          </span>
+                        </td>
+                      </tr>
+                    @endif
+                  @endforeach
                   </tbody>
                 </table>
 

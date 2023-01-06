@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Studbrand;
+use Illuminate\Support\Facades\Auth;
 
 class Stud extends Model
 {
@@ -20,8 +21,11 @@ class Stud extends Model
       ->get();
   }
 
-  public static function getStudBrand($brand_id) {
-    return Studbrand::select('*')->where('brand_id', $brand_id)->first();
+  public function getBrandAttribute() {
+    $tread = Studtread::where('tread_id', $this->make_id)->first();
+    $brand = Studbrand::where('brand_id', $tread->brand_id)->first();
+
+    return $brand->b_title;
   }
 
   public function getFullNameAttribute()
@@ -64,75 +68,21 @@ class Stud extends Model
 
   }
 
-  public function getStockCount()
+  public function getAvailableAttribute()
   {
-    $studs = Stud::where('stud_id', $this->stud_id)->get();
-
-    $count=0;
-
-    foreach ($studs as $stud) {
-      if ($stud !== NULL && $stud->quantity >= 1) {
-        $count += $stud->quantity;
-      }
+    if ($this->quantity >= 1) {
+      return 'Pieejams';
+    } else {
+      return 'Zvaniet!';
     }
-
-    return $count;
   }
 
   public function getDotAvailableAttribute()
   {
-    if ($this->quantity < 0 && $this->getStockCount() > 0) {
-      if ($this->_includeStock) {
-        $count = $this->getStockCount();
-        switch ($count){
-          case -1:
-          case 0: {
-            return 'red';
-          }
-          case 1:
-          case 2:
-          case 3: {
-            return 'half-yellow';
-          }
-          default:{
-            return 'yellow';
-          }
-        }
-      } else {
-        return 'red';
-      }
-    }
-    switch ($this->quantity) {
-      case 1:
-      case 2:
-      case 3: {
-        return 'half-green';
-      }
-      case -1:
-      case 0: {
-        if ($this->_includeStock) {
-          $count = $this->getStockCount();
-          switch ($count){
-            case -1:
-            case 0: {
-              return 'red';
-            }
-            case 1:
-            case 2:
-            case 3: {
-              return 'half-yellow';
-            }
-            default:{
-              return 'yellow';
-            }
-          }
-        } else {
-          return 'red';
-        }
-      }
-      default: {
-        return 'green';
-      }
+    if ($this->quantity >= 1) {
+      return 'green';
+    } else {
+      return 'red';
     }
 
   }
@@ -141,18 +91,28 @@ class Stud extends Model
   {
     $stud = Stud::where('stud_id', $this->stud_id)->first();
 
-
-    if ($stud->urs_quantity >= 4) {
-      $availability = '<p>Ulbrokā: 4 un vairāk</p><br>';
+    if ($stud->urs_quantity >= 1) {
+      $availability = '<p>Ulbrokā: 1 un vairāk</p><br>';
     } else {
       $availability = '<p>Ulbrokā: ' . $stud->urs_quantity . '</p><br>';
     }
-    if ($stud->krs_quantity >= 4) {
-      $availability .= '<p>Kalnciema ielā: 4 un vairāk</p>';
+    if ($stud->krs_quantity >= 1) {
+      $availability .= '<p>Kalnciema ielā: 1 un vairāk</p>';
     } else {
       $availability .= '<p>Kalnciema ielā: ' . $stud->krs_quantity . '</p>';
     }
 
+    if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
+      $availability = '<p>Ulbrokā: ' . $stud->urs_quantity . '</p><br>';
+      $availability .= '<p>Kalnciema ielā: ' . $stud->krs_quantity . '</p>';
+    } else {
+      $dot = $this->getDotAvailableAttribute();
+      if ($dot === 'red') {
+        $availability = '<p style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</p>';
+      } else if ($dot === 'yellow' || $dot === 'half-yellow') {
+        $availability = '<p style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
+      }
+    }
     $availability .= '';
 
     return $availability;
