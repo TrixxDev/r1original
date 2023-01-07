@@ -22,16 +22,16 @@
               <div class="title hidden-md-up" data-target="#facet_auto-make" data-toggle="collapse" aria-expanded="true">
                 <h1 class="h6 facet-title">Pielietojums</h1>
                 <span class="float-xs-right">
-                                                      <span class="navbar-toggler collapse-icons">
-                                                          <i class="material-icons add"></i>
-                                                          <i class="material-icons remove"></i>
-                                                      </span>
-                                                </span>
+                  <span class="navbar-toggler collapse-icons">
+                      <i class="material-icons add"></i>
+                      <i class="material-icons remove"></i>
+                  </span>
+                </span>
               </div>
-              <select name="" id="" class="r1-select select-title">
-                <option value="visi">Visi</option>
+              <select name="application" id="" class="r1-select select-title">
+                <option value="Visi">Visi</option>
                 @foreach($applications as $application)
-                  <option value="{{$application}}">{{$application}}</option>
+                  <option @if ($application == $currBrand) selected @endif value="{{$application}}">{{$application}}</option>
                 @endforeach
               </select>
 
@@ -41,14 +41,14 @@
               <div class="title hidden-md-up" data-target="#facet_auto-model" data-toggle="collapse" aria-expanded="true">
                 <h1 class="h6 facet-title">Garums</h1>
                 <span class="float-xs-right">
-                                                      <span class="navbar-toggler collapse-icons">
-                                                          <i class="material-icons add"></i>
-                                                          <i class="material-icons remove"></i>
-                                                      </span>
-                                                  </span>
+                  <span class="navbar-toggler collapse-icons">
+                      <i class="material-icons add"></i>
+                      <i class="material-icons remove"></i>
+                  </span>
+                </span>
               </div>
-              <select name="" id="" class="r1-select select-title">
-                <option value="visi">Visi</option>
+              <select name="stud_length" id="" class="r1-select select-title">
+                <option value="Visi">Visi</option>
                 @foreach($length as $stud_length)
                   <option value="{{$stud_length}}">{{$stud_length}}</option>
                 @endforeach

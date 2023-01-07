@@ -18,6 +18,8 @@ class StudsController extends Controller
   public $brands;
   public $season;
   public $currBrand;
+  public $applications;
+  public $stud_length;
   public $model = 'Stud';
   public $tiresSize;
   public $availability;
@@ -26,17 +28,11 @@ class StudsController extends Controller
 
   public function __construct(Request $request)
   {
-    View::share('current_url', 'radzes');
-  }
 
-  public function studs() {
+    ($request->application == 'Visi') ? $this->currBrand = 'Visi' : $this->currBrand = $request->application;
+    ($this->currBrand === NULL) ? $this->currBrand = 'Visi' : $this->currBrand = $request->application;
 
-    $studs = Stud::leftJoin('studs_treads', 'studs.make_id', '=', 'studs_treads.tread_id')
-      ->where('studs.visible_users', '<>', 0)
-      ->orderBy('price2', 'DESC')
-      ->paginate();
-
-    $applications = [
+    $this->applications = [
       1 => 'Apaviem',
       2 => 'Kvadracikliem',
       3 => 'Motocikliem',
@@ -47,9 +43,21 @@ class StudsController extends Controller
       8 => '4x4 visurgājēji',
     ];
 
+    View::share('currBrand', $this->currBrand);
+    View::share('applications', $this->applications);
+    View::share('current_url', 'radzes');
+  }
+
+  public function studs() {
+
+    $studs = Stud::leftJoin('studs_treads', 'studs.make_id', '=', 'studs_treads.tread_id')
+      ->where('studs.visible_users', '<>', 0)
+      ->orderBy('price2', 'DESC')
+      ->paginate();
+
     $length = [1,2,3,4,5,6,7,8,9];
 
-    return view('studs.studs', compact('applications', 'length', 'studs'));
+    return view('studs.studs', compact('length', 'studs'));
   }
 
   public function studs_ajax(Request $request) {
@@ -82,7 +90,38 @@ class StudsController extends Controller
   }
 
   public function studs_search(Request $request) {
-    dd('Kanāda vainīgs!');
+    DB::enableQueryLog();
+
+    $this->filterCount = 0;
+
+    $length = [1,2,3,4,5,6,7,8,9];
+
+    ($request->application == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->application;
+    ($request->stud_length == 'Visi') ? $this->stud_length = '' : $this->stud_length = $request->stud_length;
+
+    if ($request->availability) {
+      $this->filterCount += 1;
+      $this->availability = $request->availability;
+    } else {
+      $this->availability = [];
+    }
+
+    $studs = Stud::select('studs.*', 'studs_treads.*')
+      ->leftJoin('studs_treads', 'studs.make_id', '=', 'studs_treads.tread_id')
+      ->leftJoin('studs_brands', 'studs_treads.brand_id', '=', 'studs_brands.brand_id')
+      ->when($this->currBrand, function($query) {
+        $query->where('studs.application', 'LIKE', '%' . $this->currBrand . '%');
+      })->when($this->stud_length, function($query) {
+        $query->where('studs.stud_length', 'LIKE', $this->stud_length);
+      })->where('studs.visible_users', '<>', 0)
+      ->orderBy('price2', 'DESC')
+      ->groupBy('studs.stud_id')->paginate()->appends($request->query());
+
+//    dd(DB::getQueryLog());
+
+    return view('studs.studs',
+      ['studs' => $studs, 'filterCount' => $this->filterCount, 'length' => $length, 'availability' => $this->availability]
+    );
   }
 
   public function studs_tread($brand, $tread, $stud) {
