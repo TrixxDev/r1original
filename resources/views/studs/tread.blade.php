@@ -54,7 +54,7 @@
                           <div class="input-group bootstrap-touchspin" style="transform: none;">
                             <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
                             <input type="hidden" name="article" class="tire_article" value="{{ $currStud->article }}">
-                            <input type="hidden" name="title" class="tire_title" value="{{ $currStud->title }}">
+                            <input type="hidden" name="title" class="tire_title" value="{{ $currStud->fullName }}">
                             <input type="text" name="qty" id="quantity_wanted" value="1" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                             <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                             <span class="input-group-btn-vertical">
