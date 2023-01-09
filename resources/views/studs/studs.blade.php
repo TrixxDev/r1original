@@ -17,9 +17,9 @@
               <div class="tire-image-container" style="display: none">
                 <div class="tire-image-cards">
                   <div style="display: flex; padding: 5px 0;">
-                    <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Radzes</h4>
+                    <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Skrūvējamas radzes</h4>
                     <span style="margin: 0 auto;"></span>
-                    <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">Filtrs(0)</button>
+                    <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">Filtrs</button>
                   </div>
                   <div class="row grid-ex pr-1" style="padding:0!important;">
                   @foreach($studs as $stud)
@@ -107,9 +107,9 @@
               {{-- LIST VIEW --}}
               <div id="js-product-list">
                 <div style="display: flex; padding: 5px 0;">
-                  <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Radzes</h4>
+                  <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Skrūvējamas radzes</h4>
                   <span style="margin: 0 auto;"></span>
-                  <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">Filtrs(0)</button>
+                  <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">Filtrs</button>
                 </div>
 {{--                <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Radzes</h4>--}}
                 <table id="tires-table"

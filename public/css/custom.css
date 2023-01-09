@@ -2215,6 +2215,9 @@ p {
     margin-top: 0px;
     /*padding-left: 360px;*/
   }
+  #category.category-id-21 #search_filters>div>h4:first-child > span {
+    width: 50% !important;
+  }
 }
 
 @media (min-width: 767px) and (max-width: 1200px) {
@@ -4464,6 +4467,9 @@ table.queueTable:nth-child(2) {
   .modal-lg, .modal-xl {
     max-width: 800px;
   }
+  #category.category-id-21 #search_filters>div>h4:first-child > span {
+    width: 100%;
+  }
 }
 
 .modal.show .modal-dialog {
@@ -5285,4 +5291,9 @@ select.select-title.tire-brand option:hover:before {
 }
 .back-to-top-button:focus, .back-to-top-button:hover {
   color: white!important;
+}
+
+.params-solo {
+  background: #65c2a5 !important;
+  pointer-events: none;
 }

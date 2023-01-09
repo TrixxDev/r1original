@@ -435,7 +435,7 @@
                                           <a class="dropdown-item dropdown-submenu"
                                              href="{{ route('radzes') }}"
                                              data-depth="1">
-                                            Radzes
+                                            Skrūvējamas radzes
                                           </a>
                                         </li>
                                   </ul>
