@@ -137,7 +137,7 @@
 
         return $html;
       } else {
-        return '<img style="width:350px; padding: 10px;" class="card product-cover" src=' . asset('img/p/r1-logo.svg') . '>';
+        return '<img style="width:100%; padding: 10px;" class="card product-cover" src=' . asset('img/p/r1-logo.svg') . '>';
       }
 
     }

@@ -286,7 +286,7 @@
 {{--      </div>--}}
 
       <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ route('radzes') }}">Radzes</a>
+        <a class="dropdown-item" href="{{ route('radzes') }}">Skrūvējamas radzes</a>
       </div>
 
     </div>
