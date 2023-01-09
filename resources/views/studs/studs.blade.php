@@ -25,7 +25,7 @@
                   @foreach($studs as $stud)
                   @if($stud->price1)
                     <a
-                      href="{{ route('radze', [\Str::slug($stud->brand), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
+                      href="{{ route('radze', [$stud->brand, strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
                       class="grid-view-link"
                       data-article="{{ $stud->article }}">
                       <div class="tire-image-card sort-order">
@@ -146,7 +146,7 @@
                          title='
                            {!! App\Helper\Image::show('studs', $stud->make_id) !!}
                            '
-                         href="{{ route('radze', [\Str::slug($stud->brand), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
+                         href="{{ route('radze', [$stud->brand, strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
                          data-content="
                           {{ $stud->title . ' ' . $stud->fullSize }}
                            "
