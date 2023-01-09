@@ -140,7 +140,9 @@ class StudsController extends Controller
                               ->where('studs_treads.t_title', str_replace('_', '/', $tread))
                               ->get();
 
-    $currStud = Stud::leftJoin('studs_treads', 'studs.make_id', '=', 'studs_treads.tread_id')
+    $currStud = Stud::selectRaw('studs.*, studs_treads.t_comment as t_comment, studs_brands.b_comment as b_comment')
+                      ->leftJoin('studs_treads', 'studs.make_id', '=', 'studs_treads.tread_id')
+                      ->leftJoin('studs_brands', 'studs_treads.brand_id', '=', 'studs_brands.brand_id')
                       ->where('studs_treads.t_title', str_replace('_', '/', $tread))
                       ->where('studs.stud_id', $stud)
                       ->first();
