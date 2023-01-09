@@ -32,7 +32,8 @@ class SyncController extends Controller
         $this->tire_tables = [
             'auto_tires' => 'auto_stock',
             'moto_tires' => 'moto_stock',
-            'quadr_tires' => 'quadr_stock'
+            'quadr_tires' => 'quadr_stock',
+            'studs' => '',
         ];
     }
 
@@ -84,17 +85,19 @@ class SyncController extends Controller
           }
         } else {
 
-//	        dd($inputs);
+//	        dd($article);
 
           $stock = $this->getInventory('auto_tires', $article);
           if (empty($stock[2])) $stock = $this->getInventory('moto_tires', $article);
           if (empty($stock[2])) $stock = $this->getInventory('quadr_tires', $article);
+          if (empty($stock[2])) $stock = $this->getInventory('studs', $article);
           if (empty($stock[2])) return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
           //dd($stock);
           $this->updateStock($stock[2]);
           $tire = DB::table('auto_tires')->where('article', $request->article)->first();
           if ($tire === null) $tire = DB::table('moto_tires')->where('article', $request->article)->first();
           if ($tire === null) $tire = DB::table('quadr_tires')->where('article', $request->article)->first();
+          if ($tire === null) $tire = DB::table('studs')->where('article', $request->article)->first();
           if ($tire === null) return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
 //          $this->updatePrices();
           return json_encode(['urs_quantity' => $tire->urs_quantity, 'krs_quantity' => $tire->krs_quantity]);
@@ -106,6 +109,7 @@ class SyncController extends Controller
     foreach ($stock as $value) {
       $id = $value->tire_id;
       foreach ($this->tire_tables as $tire_table => $tire_stock) {
+        $primary_key = ($tire_table == 'studs') ? 'stud_id' : 'tire_id';
         $product = DB::table($tire_table)->where('article', $value->article)->first();
 
         if ($product) {
@@ -133,7 +137,7 @@ class SyncController extends Controller
               }
             }
             //var_dump(count($stockCount));
-            DB::table($tire_table)->where('tire_id', $id)->update([
+            DB::table($tire_table)->where($primary_key, $id)->update([
               'price1' => $veikala_cena,
               'price2' => $akcijas_cena,
               'updated_at' => date('Y-m-d H:i:s')
@@ -149,7 +153,7 @@ class SyncController extends Controller
                   $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
                   $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
                 }
-                DB::table($tire_table)->where('tire_id', $id)->update([
+                DB::table($tire_table)->where($primary_key, $id)->update([
                   'price1' => $veikala_cena,
                   'price2' => $akcijas_cena,
                   'updated_at' => date('Y-m-d H:i:s')
@@ -157,7 +161,7 @@ class SyncController extends Controller
             }
 	        }
 	      } else {
-          DB::table($tire_table)->where('tire_id', $id)->update(['quantity' => 0, 'krs_quantity' => 0, 'urs_quantity' => 0]);
+          DB::table($tire_table)->where($primary_key, $id)->update(['quantity' => 0, 'krs_quantity' => 0, 'urs_quantity' => 0]);
         }
       }
     }
@@ -187,7 +191,8 @@ class SyncController extends Controller
       $total = $urs_quantity + $krs_quantity;
 
       foreach ($this->tire_tables as $tire_table => $tire_stock) {
-        $product = DB::table($tire_table)->where('tire_id', $id)->first();
+        $primary_key = ($tire_table == 'studs') ? 'stud_id' : 'tire_id';
+        $product = DB::table($tire_table)->where($primary_key, $id)->first();
 
         if ($product) {
 
@@ -206,7 +211,7 @@ class SyncController extends Controller
           $result = $this->accrual->query($sql);
 	        if ($result->rowCount()) {
             //var_dump(count($stockCount));
-            DB::table($tire_table)->where('tire_id', $id)->update([
+            DB::table($tire_table)->where($primary_key, $id)->update([
               'quantity' => $total,
               'urs_quantity' => @$urs_quantity,
               'krs_quantity' => @$krs_quantity,
@@ -218,14 +223,14 @@ class SyncController extends Controller
 	          $result = $this->accrual->query($sql);
             //dd($result->rowCount());
             if ($result->rowCount()) {
-	            DB::table($tire_table)->where('tire_id', $id)->update([
+	            DB::table($tire_table)->where($primary_key, $id)->update([
                 'quantity' => $total,
                 'urs_quantity' => @$urs_quantity,
                 'krs_quantity' => @$krs_quantity,
                 'updated_at' => date('Y-m-d H:i:s')
               ]);
 	          } else {
-	            DB::table($tire_table)->where('tire_id', $id)->update([
+	            DB::table($tire_table)->where($primary_key, $id)->update([
                 'quantity' => $total,
                 'urs_quantity' => @$urs_quantity,
                 'krs_quantity' => @$krs_quantity,
@@ -295,7 +300,11 @@ class SyncController extends Controller
     $result = [];
 
     foreach ($sql as $row) {
-      array_push($result, ['tire_id' => $row->tire_id, 'article' => $row->article]);
+      if (!isset($row->tire_id)) {
+        array_push($result, ['tire_id' => $row->stud_id, 'article' => $row->article]);
+      } else {
+        array_push($result, ['tire_id' => $row->tire_id, 'article' => $row->article]);
+      }
     }
 
 //        Jāuztaisa masīvs - [
