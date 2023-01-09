@@ -42,7 +42,7 @@
 
                         <div class="current-price">
                           <span>Akcijas cena:</span>
-                          <span itemprop="price" content=" $currRim->price3 ">€ {{ $currStud->price2 }}</span>
+                          <span itemprop="price" content="{{ $currStud->price2 }}">€ {{ $currStud->price2 }}</span>
                         </div>
                       </div>
                     </div>
@@ -53,23 +53,23 @@
                         <div class="qty">
                           <div class="input-group bootstrap-touchspin" style="transform: none;">
                             <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
-                            {{--                            <input type="hidden" name="article" class="tire_article" value="{{ $currStud->article }}">--}}
-                            {{--                            <input type="hidden" name="title" class="tire_title" value="{{ $currStud->title }}">--}}
+                            <input type="hidden" name="article" class="tire_article" value="{{ $currStud->article }}">
+                            <input type="hidden" name="title" class="tire_title" value="{{ $currStud->title }}">
                             <input type="text" name="qty" id="quantity_wanted" value="1" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                             <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                             <span class="input-group-btn-vertical">
-                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
-                                              <i class="material-icons touchspin-up"></i>
-                                            </button>
-                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" type="button">
-                                              <i class="material-icons touchspin-down"></i>
-                                            </button>
-                                          </span>
+                              <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
+                                <i class="material-icons touchspin-up"></i>
+                              </button>
+                              <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" type="button">
+                                <i class="material-icons touchspin-down"></i>
+                              </button>
+                            </span>
                           </div>
                         </div>
                         <div class="add">
                           {{--                          {{ dd($currRim) }}--}}
-                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
+                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
                                   data-info="{{ $currStud->stud_id }}"
                           >
                             <i class="material-icons shopping-cart"></i>
