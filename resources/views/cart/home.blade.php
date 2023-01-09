@@ -37,7 +37,11 @@
 {{--                                          {{ dd($item->options) }}--}}
                                         <div class="cart-item-table cart-item-container">
                                           <div class="item-name cart-item-name">
-                                              <a href="{{ $item->options->link }}" data-id_customization="0">{{ strtoupper($item->name) . ' ' . $item->options->tire['d1'] . ' ' . $item->options->tire['d2'] . ' ' . $item->options->tire['d3'] . ' ' . $item->options->tire['li'].$item->options->tire['si'] }}</a>
+                                              @if ($item->options->image == 'stud')
+                                                <a href="{{ $item->options->link }}" data-id_customization="0">{{ strtoupper($item->name) }}</a>
+                                              @else
+                                                <a href="{{ $item->options->link }}" data-id_customization="0">{{ strtoupper($item->name) . ' ' . $item->options->tire['d1'] . ' ' . $item->options->tire['d2'] . ' ' . $item->options->tire['d3'] . ' ' . $item->options->tire['li'].$item->options->tire['si'] }}</a>
+                                              @endif
                                               <br>
                                               <span class="item-price">€ {{ $item->options->tire['price2'] }}</span>
                                             <br>

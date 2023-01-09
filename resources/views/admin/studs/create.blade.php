@@ -46,6 +46,12 @@
               </div>
             </div>
             <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="stud_count">Radžu daudzums</label>
+              <div class="col-md-9">
+                <input class="form-control" id="stud_length" type="number" name="stud_count" placeholder="Radžu daudzums">
+              </div>
+            </div>
+            <div class="form-group row">
               <label class="col-md-3 col-form-label" for="shop_price">Veikala cena</label>
               <div class="col-md-9">
                 <input class="form-control" id="shop_price" type="number" name="price1" placeholder="Veikala cena">

@@ -19324,3 +19324,7 @@ table.queueTable:nth-child(2) {
 .tread_comment .nav-tabs {
   border-bottom: none;
 }
+
+#application option[selected] {
+  background: #bebebe;
+}

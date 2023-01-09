@@ -131,6 +131,25 @@ class Stud extends Model
     return $availability;
   }
 
+  public static function convertToAppId($app)
+  {
+
+    $applications = [
+      1 => 'Apaviem',
+      2 => 'Kvadracikliem',
+      3 => 'Motocikliem',
+      4 => 'Mini traktoriem',
+      5 => 'Iekrāvējiem',
+      6 => 'Būvniecības tehnikai',
+      7 => 'Agro tehnikai',
+      8 => '4x4 visurgājēji',
+    ];
+
+    $key = array_search($app, $applications);
+
+    return $key;
+  }
+
   public function tread()
   {
     return $this->hasOne('App\Models\Studtread', 'tread_id', 'make_id');

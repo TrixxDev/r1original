@@ -134,8 +134,8 @@
                                                     @case (SLOT_STATUS_OFFER)
                                                     @if ($date == $today && $timeToClose < $now)
                                                       @php
-                                                        $slotClass = 'slot-gray';
-                                                        $slotText = '';
+                                                        $slotClass = 'slot-gray-free';
+                                                        $slotText = 'Brīvs';
                                                       @endphp
                                                     @else
                                                       @php

@@ -207,6 +207,7 @@ class StudsController extends Controller {
     $stud->make_id = $id;
     $stud->application = ($request->application === null) ? '' : implode(',', $request->application);
     $stud->stud_length = ($request->stud_length === null) ? '' : $request->stud_length;
+    $stud->stud_count = ($request->stud_count === null) ? '' : $request->stud_count;
     $stud->price1 = ($request->price1 === null) ? '' : $request->price1;
     $stud->price2 = ($request->price2 === null) ? '' : $request->price2;
     $stud->comment = ($request->comment === null) ? '' : $request->comment;
@@ -238,6 +239,7 @@ class StudsController extends Controller {
 
     $stud->application = implode(',', $request->application);
     $stud->stud_length = $request->stud_length;
+    $stud->stud_count = $request->stud_count;
     $stud->price1 = $request->price1;
     $stud->price2 = $request->price2;
     $stud->comment = $request->comment;

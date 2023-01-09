@@ -47,10 +47,11 @@
                   </span>
                 </span>
               </div>
+
               <select name="stud_length" id="" class="r1-select select-title">
                 <option value="Visi">Visi</option>
-                @foreach($length as $stud_length)
-                  <option value="{{$stud_length}}">{{$stud_length}}</option>
+                @foreach($stud_lengths as $stud_length_id => $stud_length)
+                  <option @if ($curr_length == $stud_length) selected @endif value="{{$stud_length}}">{{$stud_length}}</option>
                 @endforeach
               </select>
             </section>

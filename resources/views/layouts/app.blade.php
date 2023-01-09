@@ -431,13 +431,13 @@
 {{--                                                  Lielās riepas--}}
 {{--                                            </a>--}}
 {{--                                        </li>--}}
-{{--                                        <li class="category" id="category-18">--}}
-{{--                                          <a class="dropdown-item dropdown-submenu"--}}
-{{--                                             href="{{ route('radzes') }}"--}}
-{{--                                             data-depth="1">--}}
-{{--                                            Radzes--}}
-{{--                                          </a>--}}
-{{--                                        </li>--}}
+                                        <li class="category" id="category-18">
+                                          <a class="dropdown-item dropdown-submenu"
+                                             href="{{ route('radzes') }}"
+                                             data-depth="1">
+                                            Radzes
+                                          </a>
+                                        </li>
                                   </ul>
 
                                 </div>

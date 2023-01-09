@@ -41,6 +41,12 @@
               </div>
             </div>
             <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="stud_length">Radžu daudzums</label>
+              <div class="col-md-9">
+                <input class="form-control" id="stud_count" type="text" @if ($stud->stud_count) value="{{ $stud->stud_count }}" @endif name="stud_count" placeholder="Radžu daudzums">
+              </div>
+            </div>
+            <div class="form-group row">
               <label class="col-md-3 col-form-label" for="shop_price">Veikala cena</label>
               <div class="col-md-9">
                 <input class="form-control" id="shop_price" type="number" @if ($stud->price1) value="{{ $stud->price1 }}" @endif name="price1" placeholder="Veikala cena">
