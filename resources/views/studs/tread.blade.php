@@ -117,7 +117,7 @@
 
             <div class="row">
               <div class="">
-                <table id="tires-table" class="table rims-tread-sorter tires-table table-hover tablesorter">
+                <table id="tires-table" class="table studs-sorter tires-table table-hover tablesorter">
                   <thead class="tires-thead">
                   <tr>
                     <th scope="col"></th>
