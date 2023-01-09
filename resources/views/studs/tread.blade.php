@@ -14,7 +14,7 @@
             <div class="row">
               <div class="col-md-12 col-lg-4">
                 <section class="page-content" id="content">
-                  <div class="images-container ">
+                  <div class="images-container">
                     {!! App\Helper\Image::treadZoom('studs', $currStud->make_id) !!}
                   </div>
                   <div class="scroll-box-arrows">
@@ -117,7 +117,7 @@
 
             <div class="row">
               <div class="">
-                <table id="tires-table" class="table rims-tread-sorter tires-table table-hover tablesorter">
+                <table id="tires-table" class="table studs-sorter tires-table table-hover tablesorter">
                   <thead class="tires-thead">
                   <tr>
                     <th scope="col"></th>
@@ -152,10 +152,10 @@
                             {{ $stud->fullName }}
                           </a>
                         </td>
-                        <td class="text-center">
+                        <td class="hidden-sm-down text-center">
                           {{$stud->stud_length}}
                         </td>
-                        <td class="text-center">
+                        <td class="hidden-sm-down text-center">
                           {{$stud->stud_count}}
                         </td>
 

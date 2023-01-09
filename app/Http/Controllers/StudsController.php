@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Autobrand;
 use App\Models\Studbrand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
