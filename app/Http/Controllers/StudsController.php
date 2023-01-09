@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Autobrand;
 use App\Models\Studbrand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -46,6 +45,7 @@ class StudsController extends Controller
     View::share('currBrand', $this->currBrand);
     View::share('applications', $this->applications);
     View::share('current_url', 'radzes');
+    View::share('filterCount', $this->filterCount);
   }
 
   public function studs() {
