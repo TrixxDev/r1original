@@ -143,17 +143,10 @@
                     </th>
 
                     <td class="table-tire-name-cell">
-                      <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                         title='
-                           {!! App\Helper\Image::show('studs', $stud->make_id) !!}
-                           '
+                      <a data-toggle="tooltip" data-html="true" class="tire-table-link" title='{!! App\Helper\Image::show('studs', $stud->make_id) !!}'
                          href="{{ route('radze', [$stud->brand, strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
-                         data-content="
-                          {{ $stud->title . ' ' . $stud->fullSize }}
-                           "
-                         data-article="
-                          {{ $stud->article }}
-                           ">
+                         data-content="{{ $stud->title . ' ' . $stud->fullSize }}"
+                         data-article="{{ $stud->article }}">
                         <div class="table-link-title">{{ $stud->fullName }}</div>
                       </a>
                     </td>
