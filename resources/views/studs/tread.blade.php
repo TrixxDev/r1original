@@ -89,7 +89,7 @@
                       <tbody>
                       <tr>
                         <th>Radzes garums</th>
-                        <td>{{ $currStud->stud_length }}</td>
+                        <td>{{ $currStud->stud_length }} mm</td>
                       </tr>
                       <tr>
                         <th>Daudzums</th>
@@ -153,7 +153,7 @@
                           </a>
                         </td>
                         <td class="hidden-sm-down text-center">
-                          {{$stud->stud_length}}
+                          {{$stud->stud_length}} mm
                         </td>
                         <td class="hidden-sm-down text-center">
                           {{$stud->stud_count}}

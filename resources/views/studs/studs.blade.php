@@ -35,7 +35,7 @@
 
                         <div class="tire-list-caption">
 
-                          <div class="card-title-text" data-toggle="tooltip" title="<div>{{$stud->title}}</div>">
+                          <div class="card-title-text" data-toggle="tooltip" title="<div>{{$stud->fullName}}</div>">
                             {{$stud->fullName}}
                           </div>
 
