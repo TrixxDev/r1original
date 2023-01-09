@@ -40,7 +40,8 @@
                           </div>
 
                           <div class="tire-tread">
-                            <b>{{$stud->stud_length}} {{$stud->application}}</b>
+                            <b>{{$stud->stud_length}}mm</b>
+{{--                            <b>{{$stud->application}}</b>--}}
                             <span data-toggle="tooltip"
                                   ></span>
                             <span class="tire-image-code">{{$stud->code}}</span>
@@ -157,7 +158,7 @@
                       </a>
                     </td>
 
-                    <td class="hidden-sm-down text-center">{{ $stud->stud_length }}</td>
+                    <td class="hidden-sm-down text-center">{{ $stud->stud_length }} mm</td>
                     <td class="hidden-sm-down text-center">{{ $stud->stud_count }}</td>
 
                     <td id="store-price" class="text-center store-price">€ {{ $stud->price1 }}</td>

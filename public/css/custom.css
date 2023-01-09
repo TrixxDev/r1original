@@ -692,9 +692,7 @@ body#category .main-content {
   min-height: 100px;
 }
 #left-column{
-  /*padding: 0;*/
-
-  padding: 0 10px 0 0px;
+  padding: 0 10px 0 10px;
 }
 .breadcrumb{
   margin-bottom: 0px;
@@ -791,9 +789,9 @@ body#category .main-content {
   padding-bottom: 0;
   border: none;
 }
-#search_filters_wrapper {
-  margin: 0px 0px 0px 10px!important;
-}
+/*#search_filters_wrapper {*/
+/*  margin: 0px 0px 0px 10px!important;*/
+/*}*/
 
 /*#category:not(.category-id-21) #search_filters_params {*/
 /*  padding: 15px;*/
