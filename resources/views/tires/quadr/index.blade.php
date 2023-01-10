@@ -31,7 +31,7 @@
                         if ($index == 0) {
                           echo '</div><h4 class="tire-brand-name grid-t">' . $brand;
                           echo ' <span class="tire-type-title">kvadraciklu riepas</span><span style="margin: 0 auto;"></span><button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-                                    Filtrs (' . $filterCount . ')
+                                    Filtrs
                                   </button></h4></h4><div class="row grid-ex pr-1">';
                         } else {
                           echo '</div><h4 class="tire-brand-name grid-t">' . $brand . '<span style="margin: 0 auto;"></span><button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">';
@@ -82,23 +82,23 @@
                                             data-target="#blockcart-modal"
                                           @endhasrole>
                                     <i class="material-icons">add_shopping_cart</i>
-                                    </button>
+                                  </button>
                                 </span>
-                              <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}"
-                                    data-toggle="tooltip"
-                                    data-html="true"
-                                    onclick="event.preventDefault()"
-                                    title="{{ $tire->stockAvailability }}">
-                              <span class="sort-order" style="display: none;">{{ $tire->dotAvailable }}</span>
+                                <span class="grid-dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}"
+                                      data-toggle="tooltip"
+                                      data-html="true"
+                                      onclick="event.preventDefault()"
+                                      title="{{ $tire->stockAvailability }}"></span>
+                                <span class="sort-order" style="display: none;">{{ $tire->dotAvailable }}</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </a>
+                        </a>
                     @endif
-                  @php
-                    $index++;
-                  @endphp
-                  @endforeach
+                    @php
+                      $index++;
+                    @endphp
+                    @endforeach
                 </div>
               </div>
               {{-- BREADCRUMBS --}}
@@ -124,6 +124,8 @@
 {{--                  </div>--}}
 {{--                </div>--}}
 {{--              </div>--}}
+
+              {{-- LIST VIEW --}}
               <div id="">
                 <div id="js-product-list">
                   <div class="products row hide-price title-flip">
@@ -150,7 +152,7 @@
                         if ($cbrand!=$brand){
                           if($index == 0) {
                             echo '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-                                    Filtrs ('. $filterCount .')
+                                    Filtrs
                                   </button><div class="filters" style="margin: 0 auto;"></div>';
                             echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="tire-type-title flipped-title">Kvadraciklu riepas</span></h4>';
                           } else {
@@ -158,20 +160,16 @@
                           }
                       @endphp
                       <table id="tires-table" class="table table-striped quadr-sorter tires-table table-hover tablesorter">
-                        <thead class="tires-thead sticky-table">
+                        <thead class="tires-thead sticky-top">
                         <tr>
                           <th scope="col"></th>
                           <th scope="col" class="table-tire-name-cell" style="width:50%;">Brends / modelis</th>
                           <th scope="col" class="text-center">PR</th>
-                          <th id="store-price-button" scope="col" class="text-center">
-                            Veikala cena
-                          </th>
-                          <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+                          <th scope="col" id="store-price-button" class="text-center">Veikala cena</th>
+                          <th scope="col" id="store-sale-button" class="text-center">Akcijas cena</th>
                           <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
                           <th scope="col"></th>
-                          <th scope="col">
-                            <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
-                          </th>
+                          <th scope="col"><div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div></th>
 
                         </tr>
                         </thead>
@@ -256,7 +254,8 @@
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                                title='{!! App\Helper\Image::show('quadr', $tire->make_id) !!}'
                                href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
-                               data-content="{{ $tire->title . ' ' . $tire->fullSize }}" data-article="{{ $tire->article }}">
+                               data-content="{{ $tire->title . ' ' . $tire->fullSize }}"
+                               data-article="{{ $tire->article }}">
                               {{ $tire->title }}
                             </a>
                           </td>

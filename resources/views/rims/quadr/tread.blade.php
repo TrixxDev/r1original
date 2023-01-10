@@ -15,7 +15,7 @@
               <div class="col-md-12 col-lg-4">
                 <section class="page-content" id="content">
                   <div class="images-container ">
-                      {!! App\Helper\Image::treadZoom('auto-rim', $currRim->make_id) !!}
+                    {!! App\Helper\Image::treadZoom('auto-rim', $currRim->make_id) !!}
                   </div>
                   <div class="scroll-box-arrows">
                     <i class="material-icons left"></i>
@@ -26,9 +26,7 @@
               <div class="col-md-12 col-lg-8">
                 <div class="row">
                   <div class="col-sm-12 product-main-details">
-{{--                    {{ dd($tread, $brand) }}--}}
                     <h1 class="h1 mt-1" itemprop="name">{{$brand->title.' '.$tread->title}}</h1>
-{{--                    <h1 class="h1 mt-1" itemprop="name">{{ dd($rims[0]) }}</h1>--}}
                   </div>
                   <div class="col-sm-12 col-md-12 col-lg-6">
                     <div class="product-prices">
@@ -53,8 +51,8 @@
                         <div class="qty">
                           <div class="input-group bootstrap-touchspin" style="transform: none;">
                             <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
-{{--                            <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">--}}
-{{--                            <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title }}">--}}
+                            {{--                            <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">--}}
+                            {{--                            <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title }}">--}}
                             <input type="text" name="qty" id="quantity_wanted" value="4" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                             <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                             <span class="input-group-btn-vertical">
@@ -68,7 +66,6 @@
                           </div>
                         </div>
                         <div class="add">
-{{--                          {{ dd($currRim) }}--}}
                           <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
                                   data-info="{{ $currRim->rim_id }}"
                           >
@@ -77,8 +74,6 @@
                           </button>
                         </div>
                       </div>
-                      {{--                                    <p class="product-minimal-quantity">--}}
-                      {{--                                    </p>--}}
                     </div>
                   </div>
                 </div>
@@ -112,9 +107,9 @@
                       <tr>
                         <th>Stāvoklis</th>
                         <td>
-                         @if( $currRim->used === 0)
-                          {{ 'Jauns' }}
-                         @else
+                          @if( $currRim->used === 0)
+                            {{ 'Jauns' }}
+                          @else
                             {{ 'Lietots' }}
                           @endif
                         </td>
@@ -140,10 +135,10 @@
                   </div>
                   <div class="col-sm-12 col-md-8">
                     @if($currRim->comment)
-                    <div class="alert" style="border: 1px solid #68c0a8">
-                      {{$currRim->comment}}
-                    </div>
-                      @endif
+                      <div class="alert" style="border: 1px solid #68c0a8">
+                        {{$currRim->comment}}
+                      </div>
+                    @endif
                   </div>
                 </div>
               </div>
@@ -192,7 +187,7 @@
                           </a>
                         </td>
                         <td class="text-center">
-                            {{$rim->d1}}*{{$rim->d3}}
+                          {{$rim->d1}}*{{$rim->d3}}
                         </td>
 
                         <td class="text-center hidden-sm-down">
@@ -214,7 +209,6 @@
                         <td class="hidden-sm-down text-center">
                           {{$rim->color}}
                         </td>
-
 
                         <td id="store-price" class="text-center store-price">€ {{$rim->price2}}</td>
                         <td id="sale-price" class="text-center tire-price-red sale-price">
@@ -246,54 +240,6 @@
                 </table>
 
               </div>
-              {{--                            <div class="col-lg-3 col-md-12 float-lg-left">--}}
-              {{--                                <div id="productCommentsBlock">--}}
-
-              {{--                                    <div class="tabs">--}}
-              {{--                                        <div class="clearfix pull-right">--}}
-              {{--                                            <a class="open-comment-form btn btn-primary" href="#new_comment_form">Rakstīt komentāru</a>--}}
-              {{--                                        </div>--}}
-              {{--                                        <div id="new_comment_form_ok" class="alert alert-success" style="display:none;padding:15px 25px"></div>--}}
-              {{--                                        <div id="product_comments_block_tab">--}}
-
-
-              {{--                                        </div>--}}
-              {{--                                    </div>--}}
-
-              {{--                                    <!-- Fancybox -->--}}
-              {{--                                    <div style="display:none">--}}
-              {{--                                        <div id="new_comment_form" style="display: none;">--}}
-              {{--                                            <form id="id_new_comment_form" action="#">--}}
-              {{--                                                <div class="new_comment_form_content">--}}
-              {{--                                                    <h2>Rakstīt komentāru</h2>--}}
-              {{--                                                    <div id="new_comment_form_error" class="error" style="display:none;padding:15px 25px">--}}
-              {{--                                                        <ul></ul>--}}
-              {{--                                                    </div>--}}
-              {{--                                                    <label>Vārds<sup class="required">*</sup></label>--}}
-              {{--                                                    <input id="commentCustomerName" name="customer_name" type="text" value="">--}}
-
-              {{--                                                    <label for="comment_title">Nosaukums<sup class="required">*</sup></label>--}}
-              {{--                                                    <input id="comment_title" name="title" type="text" value="">--}}
-
-              {{--                                                    <label for="content">Komentārs<sup class="required">*</sup></label>--}}
-              {{--                                                    <textarea id="content" name="content"></textarea>--}}
-              {{--                                                    <div id="new_comment_form_footer">--}}
-              {{--                                                        <input id="id_product_comment_send" name="id_product" type="hidden" value="351">--}}
-              {{--                                                        <p class="fl required"><sup>*</sup> Obligāts</p>--}}
-              {{--                                                        <p class="fr">--}}
-              {{--                                                            <button class="btn btn-primary" id="submitNewMessage" name="submitMessage" type="submit">Sūtīt</button>&nbsp;--}}
-              {{--                                                            vai&nbsp;<a href="#" onclick="$.fancybox.close();">Aizvert</a>--}}
-              {{--                                                        </p>--}}
-              {{--                                                        <div class="clearfix"></div>--}}
-              {{--                                                    </div>--}}
-              {{--                                                </div>--}}
-              {{--                                            </form><!-- /end new_comment_form_content -->--}}
-              {{--                                        </div>--}}
-              {{--                                    </div>--}}
-              {{--                                    <!-- End fancybox -->--}}
-              {{--                                </div>--}}
-              {{--                            </div>--}}
-              {{--                        </div>--}}
               <div class="modal fade js-product-images-modal" id="product-modal">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
@@ -327,7 +273,6 @@
               </footer>
             </div>
           </section>
-
         </div>
       </div>
     </div>

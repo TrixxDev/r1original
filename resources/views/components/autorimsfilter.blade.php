@@ -1,10 +1,4 @@
 <div id="search_filters_wrapper" class="hidden-sm-down">
-  <div id="search_filter_controls" class="hidden-md-up">
-    <button class="btn btn-secondary ok">
-      <i class="material-icons"></i>
-      Labi
-    </button>
-  </div>
   <form method="get" action="{{ route('lietie-diski-meklet') }}">
   <div id="search_filters" class="auto">
     <input type="hidden" id="facet_all_val" value="Visi">
@@ -13,8 +7,8 @@
         <span id="search_filters_auto" class="params auto active">Auto</span><span id="search_filters_params" class="params">Parametri</span>
       </h4>
       <div class="can-collapse">
-        <span class="show_list active"><i class="material-icons "></i>Saraksts</span>
-        <span class="show_grid"><i class="material-icons "></i>Bilde</span>
+        <span class="show_list active" data-dismiss="modal"><i class="material-icons"></i>Saraksts</span>
+        <span class="show_grid" data-dismiss="modal"><i class="material-icons"></i>Bilde</span>
         <template id="facet-template">
           <section class="facet clearfix">
             <h1 class="h6 facet-title hidden-sm-down">Kods</h1>

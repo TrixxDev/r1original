@@ -4,19 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\FilterCars;
 use App\Models\FilterSizes;
-use App\Models\FilterModels;
 use App\Models\Rim;
 use App\Models\Rimbrand;
 use App\Models\Rimmake;
-use Dflydev\DotAccessData\Data;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 
-class RimsController extends Controller
+class QuadrRimsController extends Controller
 {
-
   public $currentCar;
   public $currentModel;
   public $currentR1;
@@ -84,28 +81,6 @@ class RimsController extends Controller
 
   }
 
-  public function rims()
-  {
-
-    // THESE HARDCODED VALUES SHOULD BE REPLACED WITH DATA FROM API
-    $makes = ['Alfa Romeo', 'Aston Martin', 'Audi', 'Bentley', 'BMW', 'Cadillac', 'Chevrolet (also form.Daewoo)', 'Chrysler', 'Citroen', 'Dacia', 'Daewoo', 'Daihatsu', 'Dodge', 'DR', 'Ferrari', 'Fiat', 'Ford', 'Great Wall Motor', 'Honda', 'Hummer', 'Hyundai', 'Infiniti', 'Isuzu', 'Iveco', 'Jaguar', 'Jeep', 'Kia', 'Lada', 'Lamborghini', 'Lancia', 'Land Rover', 'Lexus', 'Lincoln', 'Martin Motors', 'Maserati', 'Mazda', 'Mercedes Benz', 'MG', 'Mini', 'Mitsubishi', 'Nissan', 'Opel', 'Peugeot', 'Pontiac', 'Porsche', 'Renault', 'Rover', 'Saab', 'Seat', 'Shuanghuan', 'Skoda', 'Smart', 'SsangYong', 'Subaru', 'Suzuki', 'Toyota', 'Volkswagen', 'Volvo'];
-    $models = ['Acura', 'Aiways', 'Aixam', 'Alfa Romeo', 'Alpine', 'ARO', 'Aston Martin', 'Audi', 'BAIC', 'Bentley', 'BMW', 'BMW Alpina', 'Borgward', 'Brilliance', 'Bugatti', 'Buick', 'BYD', 'Cadillac', 'Changan', 'Chery', 'Chevrolet', 'Chrysler', 'Citroën', 'Cupra', 'Dacia', 'Daewoo', 'Daihatsu', 'Datsun', 'Dodge', 'Dongfeng', 'DS', 'e.GO', 'Eagle', 'Exeed', 'FAW', 'Ferrari', 'Fiat', 'Fisker', 'Force', 'Ford', 'Foton', 'GAC', 'GAZ', 'Geely', 'Genesis', 'GEO', 'GMC', 'Great Wall (GWM)', 'Haval', 'Hindustan', 'Holden', 'Honda', 'Hummer', 'Hyundai', 'Infiniti', 'Isuzu', 'Iveco', 'JAC', 'Jaguar', 'Jeep', 'Jetour', 'Jinbei', 'JMC', 'Keyton', 'Kia', 'King Long', 'LADA', 'Lamborghini', 'Lancia', 'Land Rover', 'Landwind', 'LDV', 'LEVC', 'Lexus', 'Lifan', 'Ligier', 'Lincoln', 'Lotus', 'Luxgen', 'Mahindra', 'MAN', 'Maruti', 'Maserati', 'Maxus', 'Maybach', 'Mazda', 'McLaren', 'Mercedes-Benz', 'Mercedes-Maybach', 'Mercury', 'MG', 'Microcar', 'MINI', 'Mitsubishi', 'Mosler', 'Nio', 'Nissan', 'Oldsmobile', 'Opel', 'Ora', 'Panoz', 'Perodua', 'Peugeot', 'Plymouth', 'Polaris', 'Polestar', 'Pontiac', 'Porsche', 'Proton', 'Qiantu', 'Ram', 'Ravon', 'Hongqi', 'Renault', 'Renault Samsung', 'Rivian', 'Roewe', 'Rolls-Royce', 'Rover', 'Saab', 'Saturn', 'Scion', 'Seat', 'Sehol', 'Seres', 'Skoda', 'Smart', 'SsangYong', 'Subaru', 'Sunra', 'Suzuki', 'Tata', 'Tesla', 'Toyota', 'Vauxhall', 'VAZ', 'Venucia', 'VinFast', 'Volkswagen', 'Volvo', 'Weichai', 'Wey', 'Wuling', 'XPeng', 'Zedriv', 'Zeekr', 'Zotye', 'ZX'];
-    $diameters = ['10', '12', '13', '14', '15', '16', '16.5', '17', '17.5', '18', '19', '19.5', '20', '21', '22', '23', '24'];
-    $lug_count = ['3', '4', '5', '6', '8', '12'];
-
-    $brands = Rimbrand::paginate();
-
-    $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
-              ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
-              ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
-              ->orderBy('rim_brands.brand_id', 'ASC')
-              ->where('rims.price1', '<>' , 0)
-              ->where('rims.price2', '<>' , 0)
-              ->where('rims.price3', '<>' , 0)
-              ->paginate();
-    return view('rims.autorims', compact('rims','brands', 'makes', 'models', 'diameters', 'lug_count'));
-  }
-
   public function rims_search(Request $request){
 
     DB::enableQueryLog();
@@ -146,26 +121,6 @@ class RimsController extends Controller
     $tread = Rimmake::where('slug', $tread)->first();
 
     $currRim = Rim::join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
-                     ->where('rim_makes.title', $tread->title)
-                     ->where('rims.rim_id', $rim)
-                     ->first();
-
-    $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
-      ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
-      ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
-      ->where('rims.make_id', $tread->make_id )
-      ->paginate(20);
-
-    return view('rims.auto.tread', compact('rims', 'currRim', 'brand', 'tread'));
-  }
-
-  public function quadr_rims_tread($brand, $tread, $rim)
-  {
-    $brand = Rimbrand::where('slug', $brand)->first();
-
-    $tread = Rimmake::where('slug', $tread)->first();
-
-    $currRim = Rim::join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
       ->where('rim_makes.title', $tread->title)
       ->where('rims.rim_id', $rim)
       ->first();
@@ -198,9 +153,9 @@ class RimsController extends Controller
   public function rims_ajax(Request $request)
   {
     $rim = Rim::selectRaw('rims.*, rim_makes.*')
-                ->rightJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
-                ->where('rims.rim_id', $request->tire_id)
-                ->first();
+      ->rightJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+      ->where('rims.rim_id', $request->tire_id)
+      ->first();
 
     if ($request->quantity) {
       $cart = CartController::addProduct($this->model, $rim->rim_id, $request->quantity);
@@ -235,7 +190,7 @@ class RimsController extends Controller
 //    echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
   }
 
-  public function quadr_rims()
+  public function rims()
   {
     // THESE HARDCODED VALUES SHOULD BE REPLACED WITH DATA FROM API
     $makes = ['Alfa Romeo', 'Aston Martin', 'Audi', 'Bentley', 'BMW', 'Cadillac', 'Chevrolet (also form.Daewoo)', 'Chrysler', 'Citroen', 'Dacia', 'Daewoo', 'Daihatsu', 'Dodge', 'DR', 'Ferrari', 'Fiat', 'Ford', 'Great Wall Motor', 'Honda', 'Hummer', 'Hyundai', 'Infiniti', 'Isuzu', 'Iveco', 'Jaguar', 'Jeep', 'Kia', 'Lada', 'Lamborghini', 'Lancia', 'Land Rover', 'Lexus', 'Lincoln', 'Martin Motors', 'Maserati', 'Mazda', 'Mercedes Benz', 'MG', 'Mini', 'Mitsubishi', 'Nissan', 'Opel', 'Peugeot', 'Pontiac', 'Porsche', 'Renault', 'Rover', 'Saab', 'Seat', 'Shuanghuan', 'Skoda', 'Smart', 'SsangYong', 'Subaru', 'Suzuki', 'Toyota', 'Volkswagen', 'Volvo'];
@@ -256,5 +211,4 @@ class RimsController extends Controller
 //    return view('rims.autorims', compact('rims','brands'));
     return view('rims.quadrim', compact('rims', 'brands', 'makes', 'models', 'diameters', 'lug_count'));
   }
-
 }

@@ -294,20 +294,25 @@ Route::middleware('checksession')->group(function() {
   Route::get('/lielas-riepas/search', [App\Http\Controllers\BigTireController::class, 'tires_search'])->name('lielas-riepas-meklet');
   Route::get('/lielas-riepas/getBrandList', [App\Http\Controllers\BigTireController::class, 'tires_getBrands']);
 
-//Diski
+  // LIETIE DISKI
 
-  Route::get('/lietie-diski', [App\Http\Controllers\RimsController::class, 'autorims'])->name('lietie-diski');
-  Route::get('/lietie-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\RimsController::class, 'autorims_tread'])->name('lietais-disks');
+  Route::get('/lietie-diski', [App\Http\Controllers\RimsController::class, 'rims'])->name('lietie-diski');
+  Route::post('/lietie-diski', [App\Http\Controllers\RimsController::class, 'rims_search'])->name('lietie-diski');
+  Route::get('/lietie-diski/{brand}/{tread}/{tire}', [App\Http\Controllers\RimsController::class, 'auto_rims_tread'])->name('lietais-disks');
   Route::post('/lietie-diski/ajax', [App\Http\Controllers\RimsController::class, 'rims_ajax'])->name('lietie-diski-ajax');
-  Route::get('/lietie-diski/search', [App\Http\Controllers\BigTireController::class, 'rims_search'])->name('lietie-diski-meklet');
+  Route::post('/lietie-diski/search/ajax', [App\Http\Controllers\RimsController::class, 'rims_ajax'])->name('lietie-diski-ajax');
+  Route::get('/lietie-diski/search', [App\Http\Controllers\RimsController::class, 'rims_search'])->name('lietie-diski-meklet');
+  Route::get('/lietie-diski/getBrandList', [App\Http\Controllers\RimsController::class, 'rims_getBrands']);
 
-  Route::get('/kvadru-diski', [App\Http\Controllers\RimsController::class, 'quadr_rims'])->name('kvadru-diski');
-  Route::post('/kvadru-diski', [App\Http\Controllers\RimsController::class, 'quadr_rims_search'])->name('kvadru-diski');
-  Route::get('/kvadru-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\RimsController::class, 'quadr_rims_tread'])->name('kvadru-disks');
-  Route::post('/kvadru-diski/ajax', [App\Http\Controllers\RimsController::class, 'quadr_rims_ajax'])->name('kvadru-diski-ajax');
-  Route::post('/kvadru-diski/search/ajax', [App\Http\Controllers\RimsController::class, 'quadr_rims_ajax'])->name('kvadru-diski-ajax');
-  Route::get('/kvadru-diski/search', [App\Http\Controllers\RimsController::class, 'quadr_rims_search'])->name('kvadru-diski-meklet');
-  Route::get('/kvadru-diski/getBrandList', [App\Http\Controllers\RimsController::class, 'quadr_rims_getBrands']);
+  // KVADRU DISKI
+
+  Route::get('/kvadru-diski', [App\Http\Controllers\QuadrRimsController::class, 'rims'])->name('kvadru-diski');
+  Route::post('/kvadru-diski', [App\Http\Controllers\QuadrRimsController::class, 'rims_search'])->name('kvadru-diski');
+  Route::get('/kvadru-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\QuadrRimsController::class, 'rims_tread'])->name('kvadru-disks');
+  Route::post('/kvadru-diski/ajax', [App\Http\Controllers\QuadrRimsController::class, 'rims_ajax'])->name('kvadru-diski-ajax');
+  Route::post('/kvadru-diski/search/ajax', [App\Http\Controllers\QuadrRimsController::class, 'rims_ajax'])->name('kvadru-diski-ajax');
+  Route::get('/kvadru-diski/search', [App\Http\Controllers\QuadrRimsController::class, 'rims_search'])->name('kvadru-diski-meklet');
+  Route::get('/kvadru-diski/getBrandList', [App\Http\Controllers\QuadrRimsController::class, 'rims_getBrands']);
 
 
   //Radzes

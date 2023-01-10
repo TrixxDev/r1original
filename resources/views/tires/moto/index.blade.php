@@ -24,6 +24,7 @@
                     $index = 0;
                   @endphp
                   @foreach($tires as $tire)
+
                     @php
                       if (!$tire->tread) continue;
                       $brand = $tire->fullSize;
@@ -132,15 +133,12 @@
                           <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
                           <th scope="col" class="hidden-sm-down text-center">Kods</th>
 
-                          <th id="store-price-button" scope="col" class="text-center">
-                            Veikala cena
-                          </th>
-
+                          <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
                           <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
                           <th scope="col" class="hidden-sm-down">Piezīmes</th>
                           <th scope="col"></th>
                           <th scope="col">
-                            <div class="tire-table-icon icon-question"></div>
+                            <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
                           </th>
 
                         </tr>
