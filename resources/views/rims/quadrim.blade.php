@@ -332,7 +332,11 @@
             </div>
         </div>
     </div>
-
+    <div class="hidden-md-up text-xs-right up">
+      <a href="#header" class="back-to-top-button">
+        <i class="material-icons"></i>
+      </a>
+    </div>
     <div class="modal fade" id="mobileFilterModal" tabindex="-1" role="dialog"
          aria-labelledby="mobileFilterModalTitle" aria-hidden="true">
       <div class="modal-dialog mobile-filter-modal" role="document">

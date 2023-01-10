@@ -144,7 +144,7 @@
               {{-- LIST VIEW--}}
               <div id="">
                 <div id="js-product-list">
-                    <div class="products row hide-price title-flip">
+                  <div class="products row hide-price title-flip">
 
                     @php
                       $cbrand = '';
@@ -411,31 +411,33 @@
                         @endforeach
                         </tbody>
                       </table>
-                      <div class="hidden-md-up text-xs-right up">
-                        <a href="#header" class="back-to-top-button">
-                          <i class="material-icons"></i>
-                        </a>
-                      </div>
+                  </div>
+                  {{ $tires->links() }}
                 </div>
-                {{ $tires->links() }}
+              </div>
+            </section>
+          </section>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="modal fade" id="mobileFilterModal" tabindex="-1" role="dialog"
-       aria-labelledby="mobileFilterModalTitle" aria-hidden="true">
-    <div class="modal-dialog mobile-filter-modal" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          @include('components.autotirefilter')
+      <div class="hidden-md-up text-xs-right up">
+        <a href="#header" class="back-to-top-button">
+          <i class="material-icons"></i>
+        </a>
+      </div>
+      <div class="modal fade" id="mobileFilterModal" tabindex="-1" role="dialog"
+           aria-labelledby="mobileFilterModalTitle" aria-hidden="true">
+        <div class="modal-dialog mobile-filter-modal" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              @include('components.autotirefilter')
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
 @endsection
