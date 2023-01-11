@@ -107,7 +107,11 @@ class SyncController extends Controller
   public function updatePrices($stock)
   {
     foreach ($stock as $value) {
-      $id = $value->tire_id;
+      if (!isset($value->tire_id)) {
+        $id = $value->stud_id;
+      } else {
+        $id = $value->tire_id;
+      }
       foreach ($this->tire_tables as $tire_table => $tire_stock) {
         $primary_key = ($tire_table == 'studs') ? 'stud_id' : 'tire_id';
         $product = DB::table($tire_table)->where('article', $value->article)->first();
