@@ -13,75 +13,12 @@
                     <!-- begin D:\OpenServer\domains\r1old/themes/classic/modules/ps_facetedsearch/ps_facetedsearch.tpl -->
                     @include('components.autorimsfilter')
                 </div>
-              <div id="content-wrapper" class="col-md-12 col-lg-9">
-                <section id="main">
-                  <section id="products" class="">
-{{--                    <div class="tire-image-container" style="display: none">--}}
-{{--                      <div class="tire-image-cards">--}}
-{{--                         GRID VIEW--}}
-{{--                        @php--}}
-{{--                          $cbrand = '';--}}
-{{--                          $index = 0;--}}
-{{--                        @endphp--}}
-{{--                        @foreach($rims as $rim)--}}
-{{--                          @php--}}
-{{--                            $brand = $rim->fullSize;--}}
-{{--                            $rim->includeStock = true;--}}
-{{--                            if ($cbrand!=$brand){--}}
-{{--                              if ($index == 0) {--}}
-{{--                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand . ' <span class="tire-type-title">Lietie Diski</span></h4><div class="row grid-ex pr-1">';--}}
-{{--                              } else {--}}
-{{--                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand . '</h4><div class="row grid-ex pr-1">';--}}
-{{--                              }--}}
-{{--                              $cbrand = $brand;--}}
-{{--                              $stripe = 1;--}}
-{{--                            } else {--}}
-{{--                                $brand = str_replace(" ", "", $brand);--}}
-{{--                            }--}}
-{{--                          @endphp--}}
-{{--                          @if($rim->price1)--}}
-{{--                            <a href="--}}
-{{--                              {{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}--}}
-{{--                            " class="grid-view-link">--}}
-{{--                              <div class="tire-image-card sort-order">--}}
-{{--                                <div class="text-center image-grid-overflow">--}}
-{{--                                  {!! \Image::showGrid('quadr', $rim->make_id) !!}--}}
-{{--                                </div>--}}
-
-{{--                                <div class="tire-list-caption">--}}
-
-{{--                                  <div class="card-title-text" data-toggle="tooltip" title="<div>{{$rim->title}}</div>">--}}
-{{--                                    {{$rim->title}}--}}
-{{--                                  </div>--}}
-
-{{--                                  <div class="tire-tread">--}}
-{{--                                    <b>{{$rim->d1}} / {{$rim->d2}} / {{$rim->d3}} </b>--}}
-{{--                                    <span class="tire-image-code">{{$rim->code}}</span>--}}
-{{--                                  </div>--}}
-{{--                                  <div style="display: flex;">--}}
-{{--                                    <input type="checkbox" name="product_ids[]" value="{{$rim->tire_id}}" style="margin-right: 5px;">--}}
-{{--                                    <div class="rim-price-old" style="align-self: center;">€{{$rim->price1}}</div>--}}
-{{--                                    <div class="rim-price-red" style="align-self: center;">€{{$rim->price2}}</div>--}}
-{{--                                    <i class="material-icons" style="margin-left: auto;">add_shopping_cart</i>--}}
-{{--                                    <span class="grid-dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}" data-toggle="tooltip"--}}
-{{--                                          data-html="true"--}}
-{{--                                          title="{{ $rim->stockAvailability }}">--}}
-{{--                              <span class="sort-order" style="display: none;">{{ $rim->dotAvailable }}</span>--}}
-{{--                            </span>--}}
-{{--                                  </div>--}}
-{{--                                </div>--}}
-{{--                              </div>--}}
-{{--                            </a>--}}
-{{--                          @endif--}}
-{{--                          @php--}}
-{{--                            $index++;--}}
-{{--                          @endphp--}}
-{{--                        @endforeach--}}
-{{--                      </div>--}}
-{{--                    </div>--}}
-                    <div class="tire-image-container" style="display: none">
+                <div id="content-wrapper" class="col-md-12 col-lg-9">
+                  <section id="main">
+                    <section id="products" class="">
+                      <div class="tire-image-container" style="display: none">
                       <div class="tire-image-cards">
-                        {{--                <div style="width: auto;">BRAND NAME</div>--}}
+                        {{-- GRID VIEW --}}
                         @php
                           $cbrand = '';
                           $index = 0;
@@ -92,15 +29,19 @@
                             $rim->includeStock = true;
                             if ($cbrand!=$brand){
                               if ($index == 0) {
-                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand . ' <span class="tire-type-title">Lietie diski</span></h4><div class="row grid-ex pr-1">';
+                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand;
+                                echo ' <span class="tire-type-title">Lietie diski</span><span style="margin: 0 auto;"></span><button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
+                                          Filtrs
+                                  </button></h4></h4><div class="row grid-ex pr-1">';
                               } else {
-                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand . '</h4><div class="row grid-ex pr-1">';
+                                echo '</div><h4 class="tire-brand-name grid-t">' . $brand;
+                                echo '</h4><div class="row grid-ex pr-1">';
                               }
-
                               $cbrand = $brand;
                               $stripe = 1;
+                            } else {
+                              $brand = str_replace(" ", "", $brand);
                             }
-
                           @endphp
                           @if($rim->price1)
                             <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}"
@@ -118,14 +59,14 @@
                                   </div>
 
                                   <div class="rim-tread">
-                                    {{ $rim->d1 }}*{{ $rim->d3 }} ({{ $rim->skr }}*{{$rim->pcd}} et{{$rim->et}})
+                                    <b>{{ $rim->d1 }}*{{ $rim->d3 }} ({{ $rim->skr }}*{{$rim->pcd}} et{{$rim->et}})</b>
                                   </div>
                                   <div style="display: flex;">
                                     <input type="checkbox" name="product_ids[]" value="{{$rim->rim_id}}" style="margin-right: 5px;">
                                     <div class="rim-price-old" style="align-self: center;">€{{$rim->price1}}</div>
                                     <div class="rim-price-red" style="align-self: center;">€{{$rim->price2}}</div>
 
-                                    <span style="margin-left: auto;" data-toggle="tooltip"
+                                    <span style="margin-left: auto;" data-toggle="tooltip" data-html="true"
                                           title="<span style='color: black'>Pievienot grozam</span>">
 
                                       <button class="grid-buy-btn cart-shopping-button"
@@ -136,56 +77,51 @@
                                                 data-target="#"
                                               @else
                                                 data-target="#blockcart-modal"
-                                                @endhasrole>
-                                                <i class="material-icons">add_shopping_cart</i>
+                                              @endhasrole>
+                                        <i class="material-icons">add_shopping_cart</i>
                                       </button>
-                                  </span>
-
+                                    </span>
 
                                     <span class="grid-dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}"
                                           data-toggle="tooltip"
                                           data-html="true"
                                           onclick="event.preventDefault()"
-                                          title="{{ $rim->stockAvailability }}">
-                                    <span class="sort-order" style="display: none;">{{ $rim->dotAvailable }}</span>
-
+                                          title="<span>{{ $rim->stockAvailability }}</span>">
+                                      <span class="sort-order" style="display: none;">{{ $rim->dotAvailable }}</span>
+                                    </span>
                                   </div>
                                 </div>
-
                               </div>
                             </a>
                           @endif
                           @php
                             $index++;
                           @endphp
-                        @endforeach
+                          @endforeach
                       </div>
                     </div>
-                    {{-- LIST VIEW --}}
-                    <div id="">
+                      {{-- LIST VIEW --}}
                       <div id="js-product-list">
                         <div class="products row hide-price title-flip">
                           @php
                             $cbrand = '';
                             $index = 0;
                           @endphp
-{{--                          {{dd($rims)}}--}}
                           @foreach ($rims as $rim)
                             @php
                               $brand = $rim->brand_title;
                               $rim->includeStock = true;
                               if ($cbrand!=$brand){
-                              if ($index == 0) {
+                              if($index == 0) {
+                                echo '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
+                                        Filtrs
+                                      </button><div class="filters" style="margin: 0 auto;"></div>';
                                 echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="tire-type-title flipped-title">Lietie diski</span></h4>';
                               } else {
-                                '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
-                              }
-
                                 echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
-                                $cbrand = $brand;
-                                $stripe = 1;
+                              }
                               @endphp
-                            <table id="tires-table" class="table quadr-sorter tires-table table-hover tablesorter">
+                            <table id="tires-table" class="table table-striped rims-sorter tires-table table-hover tablesorter">
                               <thead class="tires-thead sticky-top">
                               <tr>
                                 <th scope="col"></th>
@@ -201,8 +137,11 @@
 
                                 <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
                                 <th scope="col"></th>
-                                <th scope="col">
-                                  <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
+                                <th scope="col"
+                                    data-toggle="tooltip"
+                                    data-html="true"
+                                    title="<span style='color: black'>Pieejamība</span>">
+                                      <span class="tire-table-icon icon-question"></span>
                                 </th>
 
                               </tr>
@@ -229,7 +168,7 @@
                                      href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}"
                                      data-content="{{ $rim->title . ' ' . $rim->fullSize }}"
                                      data-article="{{ $rim->article }}">
-                                    <div class="table-link-title">{{ $rim->brand_title . ' ' . $rim->title }}</div>
+                                    {{ $rim->brand_title . ' ' . $rim->title }}
                                   </a>
                                 </td>
                                 <td class="text-center">
@@ -262,7 +201,7 @@
 {{--                                      <i class="material-icons">add_shopping_cart</i>--}}
 {{--                                    </button>--}}
                                     <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
-                                            @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal"
+                                            @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
                                             @endif data-info="{{ $rim->rim_id }}"><i
                                         class="material-icons">add_shopping_cart</i>
                                     </button>
@@ -270,11 +209,13 @@
                                 </td>
 
                                 <td class="dot-availability text-center">
-                                        <span class="dot red" data-toggle="tooltip"
+                                        <span class="dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}"
+                                              data-toggle="tooltip"
                                               data-html="true"
-                                              title="red">
-                                          <span class="sort-order">red</span>
-                                        </span>
+                                              onclick="event.preventDefault()"
+                                              title="<span>{{ $rim->stockAvailability }}</span>">
+                                      <span class="sort-order" style="display: none;">{{ $rim->dotAvailable }}</span>
+                                    </span>
                                 </td>
                               </tr>
                               @php
@@ -288,19 +229,13 @@
                           <div class="col-md-12">
                           </div>
                         </nav>
-                        <div class="hidden-md-up text-xs-right up">
-                          <a href="#header" class="back-to-top-button">
-                            <i class="material-icons"></i>
-                          </a>
-                        </div>
-                      </div>
 {{--                      {{ $rims->links() }}--}}
                     </div>
-                    <div id="js-product-list-bottom">
-                      <div id="js-product-list-bottom"></div>
-                    </div>
+                      <div id="js-product-list-bottom">
+                        <div id="js-product-list-bottom"></div>
+                      </div>
+                    </section>
                   </section>
-                </section>
               </div>
 
               {{--                <div id="content-wrapper" class="col-md-12 col-lg-9">--}}
@@ -456,5 +391,24 @@
 {{--            @include('components.right-sidebar')--}}
         </div>
     </div>
-
+    <div class="hidden-md-up text-xs-right up">
+      <a href="#header" class="back-to-top-button">
+        <i class="material-icons"></i>
+      </a>
+    </div>
+    <div class="modal fade" id="mobileFilterModal" tabindex="-1" role="dialog"
+         aria-labelledby="mobileFilterModalTitle" aria-hidden="true">
+      <div class="modal-dialog mobile-filter-modal" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            @include('components.autorimsfilter')
+          </div>
+        </div>
+      </div>
+    </div>
 @endsection

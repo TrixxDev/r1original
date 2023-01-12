@@ -185,7 +185,9 @@ $(document).ready(function () {
           3: {sorter: false},
           4: {sorter: true},
           5: {sorter: true},
-          6: {sorter: true}
+          6: {sorter: false},
+          7: {sorter: false},
+          8: {sorter: true}
         },
       }
     );

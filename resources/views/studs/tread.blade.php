@@ -11,7 +11,7 @@
         <div id="content-wrapper" class="right-column col-lg-12">
           <section id="main" itemscope="" itemtype="https://schema.org/Product">
             <meta itemprop="url" content="{{ url()->full() }}">
-            <div class="row">
+            <div class="">
               <div class="col-md-12 col-lg-4">
                 <section class="page-content" id="content">
                   <div class="images-container">
@@ -89,7 +89,7 @@
                       <tbody>
                       <tr>
                         <th>Radzes garums</th>
-                        <td>{{ $currStud->stud_length }}</td>
+                        <td>{{ $currStud->stud_length }} mm</td>
                       </tr>
                       <tr>
                         <th>Daudzums</th>
@@ -134,7 +134,7 @@
             <div class="comments_note">
             </div>
 
-            <div class="row">
+            <div class="">
               <div class="">
                 <table id="tires-table" class="table studs-sorter tires-table table-hover tablesorter">
                   <thead class="tires-thead">
@@ -173,7 +173,7 @@
                           </a>
                         </td>
                         <td class="hidden-sm-down text-center">
-                          {{$stud->stud_length}}
+                          {{$stud->stud_length}} mm
                         </td>
                         <td class="hidden-sm-down text-center">
                           {{$stud->stud_count}}

@@ -1,20 +1,17 @@
 <div id="search_filters_wrapper" class="hidden-sm-down">
-  <div id="search_filter_controls" class="hidden-md-up">
-    <button class="btn btn-secondary ok">
-      <i class="material-icons"></i>
-      Labi
-    </button>
-  </div>
   <form method="get" action="{{ route('lietie-diski-meklet') }}">
   <div id="search_filters" class="auto">
     <input type="hidden" id="facet_all_val" value="Visi">
     <div class="wrap">
       <h4 class="text-uppercase h6 hidden-sm-down">
-        <span id="search_filters_auto" class="params auto active">Auto</span><span id="search_filters_params" class="params">Parametri</span>
+{{--        <span id="search_filters_auto" class="params auto active">Auto</span>--}}
+        <span id="search_filters_params" class="
+        params
+        params-solo" style="width: 100%!important;">Parametri</span>
       </h4>
       <div class="can-collapse">
-        <span class="show_list active"><i class="material-icons "></i>Saraksts</span>
-        <span class="show_grid"><i class="material-icons "></i>Bilde</span>
+        <span class="show_list active" data-dismiss="modal"><i class="material-icons"></i>Saraksts</span>
+        <span class="show_grid" data-dismiss="modal"><i class="material-icons"></i>Bilde</span>
         <template id="facet-template">
           <section class="facet clearfix">
             <h1 class="h6 facet-title hidden-sm-down">Kods</h1>
@@ -22,7 +19,8 @@
             <button id="autofind_sub">Meklēt <i class="material-icons search"></i></button>
           </section>
         </template>
-          <div class="sidebar-auto">
+          {{-- Change from top to auto --}}
+          <div class="sidebar-top">
             <section class="facet clearfix">
               <h1 class="h6 facet-title hidden-sm-down">Marka</h1>
               <div class="title hidden-md-up" data-target="#facet_auto-make" data-toggle="collapse" aria-expanded="true">
@@ -79,92 +77,97 @@
               </select>
             </section>
           </div>
-          <div class="sidebar-top">
-          <section class="facet clearfix">
-            <h1 class="h6 facet-title hidden-sm-down">Skrūvju skaits</h1>
-            <div class="title hidden-md-up" data-target="#facet_53885" data-toggle="collapse">
-              <h1 class="h6 facet-title">Skrūvju skaits</h1>
-              <span class="float-xs-right">
-                                                    <span class="navbar-toggler collapse-icons">
-                                                        <i class="material-icons add"></i>
-                                                        <i class="material-icons remove"></i>
-                                                    </span>
-                                                </span>
-            </div>
-            <select name="" id="" class="r1-select select-title tire-width">
-              <option value="visi">Visi</option>
-              @foreach($lug_count as $lug)
-                <option value="{{$lug}}">{{$lug}}</option>
-              @endforeach
-            </select>
-          </section>
-          <section class="facet clearfix">
-            <h1 class="h6 facet-title hidden-sm-down">Attālums starp skrūvēm</h1>
-            <div class="title hidden-md-up" data-target="#facet_30026" data-toggle="collapse">
-              <h1 class="h6 facet-title">Attālums starp skrūvēm</h1>
-              <span class="float-xs-right">
-                                                    <span class="navbar-toggler collapse-icons">
-                                                        <i class="material-icons add"></i>
-                                                        <i class="material-icons remove"></i>
-                                                    </span>
-                                                </span>
-            </div>
-            <select name="" id="" class="r1-select select-title">
-              <option value="visi">Visi</option>
-              <option value=""></option>
-            </select>
-          </section>
-          <section class="facet clearfix">
-            <h1 class="h6 facet-title hidden-sm-down">Disku diametrs</h1>
-            <div class="title hidden-md-up" data-target="#facet_23486" data-toggle="collapse">
-              <h1 class="h6 facet-title">Disku diametrs</h1>
-              <span class="float-xs-right">
-                                                    <span class="navbar-toggler collapse-icons">
-                                                        <i class="material-icons add"></i>
-                                                        <i class="material-icons remove"></i>
-                                                    </span>
-                                                </span>
-            </div>
-            <select name="" id="" class="r1-select select-title">
-              <option value="visi">Visi</option>
-              @foreach($diameters as $diameter)
-                <option value="{{$diameter}}">{{$diameter}}</option>
-              @endforeach
-            </select>
-          </section>
-          <section class="facet clearfix">
-            <h1 class="h6 facet-title hidden-sm-down">Izbīdījums</h1>
-            <div class="title hidden-md-up" data-target="#facet_37134" data-toggle="collapse">
-              <h1 class="h6 facet-title">Izbīdījums</h1>
-              <span class="float-xs-right">
-                                                    <span class="navbar-toggler collapse-icons">
-                                                        <i class="material-icons add"></i>
-                                                        <i class="material-icons remove"></i>
-                                                    </span>
-                                                </span>
-            </div>
-            <select name="" id="" class="r1-select select-title">
-              <option value="visi">Visi</option>
-              <option value=""></option>
-            </select>
-          </section>
-          <section class="facet clearfix">
-            <h1 class="h6 facet-title hidden-sm-down">Centrs</h1>
-            <div class="title hidden-md-up" data-target="#facet_37134" data-toggle="collapse">
-              <h1 class="h6 facet-title">Centrs</h1>
-              <span class="float-xs-right">
-                                                    <span class="navbar-toggler collapse-icons">
-                                                        <i class="material-icons add"></i>
-                                                        <i class="material-icons remove"></i>
-                                                    </span>
-                                                </span>
-            </div>
-            <select name="" id="" class="r1-select select-title">
-              <option value="visi">Visi</option>
-              <option value=""></option>
-            </select>
-          </section>
-        </div>
+          {{-- Change from auto to top --}}
+          <div class="sidebar-auto">
+            <section class="facet clearfix">
+              <h1 class="h6 facet-title hidden-sm-down">Skrūvju skaits</h1>
+              <div class="title hidden-md-up" data-target="#facet_53885" data-toggle="collapse">
+                <h1 class="h6 facet-title">Skrūvju skaits</h1>
+                <span class="float-xs-right">
+                                                      <span class="navbar-toggler collapse-icons">
+                                                          <i class="material-icons add"></i>
+                                                          <i class="material-icons remove"></i>
+                                                      </span>
+                                                  </span>
+              </div>
+              <select name="" id="" class="r1-select select-title tire-width">
+                <option value="visi">Visi</option>
+                @foreach($lugs as $lug)
+                  <option value="{{$lug}}">{{$lug}}</option>
+                @endforeach
+              </select>
+            </section>
+            <section class="facet clearfix">
+              <h1 class="h6 facet-title hidden-sm-down">Attālums starp skrūvēm</h1>
+              <div class="title hidden-md-up" data-target="#facet_30026" data-toggle="collapse">
+                <h1 class="h6 facet-title">Attālums starp skrūvēm</h1>
+                <span class="float-xs-right">
+                                                      <span class="navbar-toggler collapse-icons">
+                                                          <i class="material-icons add"></i>
+                                                          <i class="material-icons remove"></i>
+                                                      </span>
+                                                  </span>
+              </div>
+              <select name="" id="" class="r1-select select-title">
+                <option value="visi">Visi</option>
+                @foreach($studs_spread as $stud_spread)
+                  <option value="{{$stud_spread}}">{{$stud_spread}}</option>
+                @endforeach
+              </select>
+            </section>
+            <section class="facet clearfix">
+              <h1 class="h6 facet-title hidden-sm-down">Disku diametrs</h1>
+              <div class="title hidden-md-up" data-target="#facet_23486" data-toggle="collapse">
+                <h1 class="h6 facet-title">Disku diametrs</h1>
+                <span class="float-xs-right">
+                                                      <span class="navbar-toggler collapse-icons">
+                                                          <i class="material-icons add"></i>
+                                                          <i class="material-icons remove"></i>
+                                                      </span>
+                                                  </span>
+              </div>
+              <select name="" id="" class="r1-select select-title">
+                <option value="visi">Visi</option>
+                @foreach($diameters as $diameter)
+                  <option value="{{$diameter}}">{{$diameter}}</option>
+                @endforeach
+              </select>
+            </section>
+            <section class="facet clearfix">
+              <h1 class="h6 facet-title hidden-sm-down">Izbīdījums</h1>
+              <div class="title hidden-md-up" data-target="#facet_37134" data-toggle="collapse">
+                <h1 class="h6 facet-title">Izbīdījums</h1>
+                <span class="float-xs-right">
+                                                      <span class="navbar-toggler collapse-icons">
+                                                          <i class="material-icons add"></i>
+                                                          <i class="material-icons remove"></i>
+                                                      </span>
+                                                  </span>
+              </div>
+              <select name="" id="" class="r1-select select-title">
+                <option value="visi">Visi</option>
+                @foreach($offsets as $offset)
+                  <option value="{{$offset}}">{{$offset}}</option>
+                @endforeach
+              </select>
+            </section>
+            <section class="facet clearfix">
+              <h1 class="h6 facet-title hidden-sm-down">Centrs</h1>
+              <div class="title hidden-md-up" data-target="#facet_37134" data-toggle="collapse">
+                <h1 class="h6 facet-title">Centrs</h1>
+                <span class="float-xs-right">
+                                                      <span class="navbar-toggler collapse-icons">
+                                                          <i class="material-icons add"></i>
+                                                          <i class="material-icons remove"></i>
+                                                      </span>
+                                                  </span>
+              </div>
+              <select name="" id="" class="r1-select select-title">
+                <option value="visi">Visi</option>
+                <option value=""></option>
+              </select>
+            </section>
+          </div>
           <section class="facet clearfix">
             <button id="autofind_sub" type="submit">Meklēt <i class="material-icons search"></i>
             </button>
