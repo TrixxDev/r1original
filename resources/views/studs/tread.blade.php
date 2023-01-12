@@ -11,7 +11,7 @@
         <div id="content-wrapper" class="right-column col-lg-12">
           <section id="main" itemscope="" itemtype="https://schema.org/Product">
             <meta itemprop="url" content="{{ url()->full() }}">
-            <div class="row">
+            <div class="">
               <div class="col-md-12 col-lg-4">
                 <section class="page-content" id="content">
                   <div class="images-container">
@@ -115,7 +115,7 @@
             <div class="comments_note">
             </div>
 
-            <div class="row">
+            <div class="">
               <div class="">
                 <table id="tires-table" class="table studs-sorter tires-table table-hover tablesorter">
                   <thead class="tires-thead">

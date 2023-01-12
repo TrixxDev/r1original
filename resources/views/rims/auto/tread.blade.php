@@ -226,7 +226,14 @@
 
                         <td class="shopping-cart-col">
                           <div class="clearfix atc_div text-right">
-                            <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">
+                            <button class="cart-shopping-button grid-cart-btn"
+                                    data-toggle="modal"
+                                    @if (Auth::user())
+                                      data-target="#"
+                                    @else
+                                      data-target="#blockcart-modal"
+                                    @endif data-info="{{ $rim->rim_id }}"
+                            >
                               <i class="material-icons">add_shopping_cart</i>
                             </button>
                           </div>

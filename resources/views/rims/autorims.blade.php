@@ -86,7 +86,7 @@
                                           data-toggle="tooltip"
                                           data-html="true"
                                           onclick="event.preventDefault()"
-                                          title="{{ $rim->stockAvailability }}">
+                                          title="<span>{{ $rim->stockAvailability }}</span>">
                                       <span class="sort-order" style="display: none;">{{ $rim->dotAvailable }}</span>
                                     </span>
                                   </div>
@@ -209,11 +209,13 @@
                                 </td>
 
                                 <td class="dot-availability text-center">
-                                        <span class="dot red" data-toggle="tooltip"
+                                        <span class="dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}"
+                                              data-toggle="tooltip"
                                               data-html="true"
-                                              title="red">
-                                          <span class="sort-order">red</span>
-                                        </span>
+                                              onclick="event.preventDefault()"
+                                              title="<span>{{ $rim->stockAvailability }}</span>">
+                                      <span class="sort-order" style="display: none;">{{ $rim->dotAvailable }}</span>
+                                    </span>
                                 </td>
                               </tr>
                               @php

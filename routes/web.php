@@ -298,7 +298,7 @@ Route::middleware('checksession')->group(function() {
 
   Route::get('/lietie-diski', [App\Http\Controllers\RimsController::class, 'rims'])->name('lietie-diski');
   Route::post('/lietie-diski', [App\Http\Controllers\RimsController::class, 'rims_search'])->name('lietie-diski');
-  Route::get('/lietie-diski/{brand}/{tread}/{tire}', [App\Http\Controllers\RimsController::class, 'auto_rims_tread'])->name('lietais-disks');
+  Route::get('/lietie-diski/{brand}/{tread}/{tire}', [App\Http\Controllers\RimsController::class, 'rims_tread'])->name('lietais-disks');
   Route::post('/lietie-diski/ajax', [App\Http\Controllers\RimsController::class, 'rims_ajax'])->name('lietie-diski-ajax');
   Route::post('/lietie-diski/search/ajax', [App\Http\Controllers\RimsController::class, 'rims_ajax'])->name('lietie-diski-ajax');
   Route::get('/lietie-diski/search', [App\Http\Controllers\RimsController::class, 'rims_search'])->name('lietie-diski-meklet');

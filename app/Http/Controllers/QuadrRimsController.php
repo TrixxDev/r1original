@@ -211,4 +211,100 @@ class QuadrRimsController extends Controller
 //    return view('rims.autorims', compact('rims','brands'));
     return view('rims.quadrim', compact('rims', 'brands', 'makes', 'models', 'diameters', 'lug_count'));
   }
+
+  public function getRimOffset()
+  {
+    $rim_offsets = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_offsets, $rim->offset);
+    }
+
+    $rim_offsets = array_unique($rim_offsets);
+    $rim_offsets = array_values($rim_offsets);
+
+    asort($rim_offsets, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_offsets;
+  }
+
+  public function getRimMakes()
+  {
+    $rim_makes = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_makes, $rim->offset);
+    }
+
+    $rim_makes = array_unique($rim_makes);
+    $rim_makes = array_values($rim_makes);
+
+    asort($rim_makes, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_makes;
+  }
+
+  public function getRimModels()
+  {
+    $rim_models = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_models, $rim->offset);
+    }
+
+    $rim_models = array_unique($rim_models);
+    $rim_models = array_values($rim_models);
+
+    asort($rim_models, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_models;
+  }
+
+  public function getRimDiameters()
+  {
+    $rim_diameters = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_diameters, $rim->d3);
+    }
+
+    $rim_diameters = array_unique($rim_diameters);
+    $rim_diameters = array_values($rim_diameters);
+
+    asort($rim_diameters, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_diameters;
+  }
+
+  public function getRimLugCount()
+  {
+    $rim_lug_count = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_lug_count, $rim->skr);
+    }
+
+    $rim_lug_count = array_unique($rim_lug_count);
+    $rim_lug_count = array_values($rim_lug_count);
+
+    asort($rim_lug_count, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_lug_count;
+  }
+
+  public function getRimStudSpreads()
+  {
+    $rim_stud_spreads = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_stud_spreads, $rim->offset);
+    }
+
+    $rim_stud_spreads = array_unique($rim_stud_spreads);
+    $rim_stud_spreads = array_values($rim_stud_spreads);
+
+    asort($rim_stud_spreads, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_stud_spreads;
+  }
 }
