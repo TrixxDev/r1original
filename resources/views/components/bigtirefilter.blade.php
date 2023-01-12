@@ -1,11 +1,4 @@
 <div id="search_filters_wrapper" class="hidden-sm-down">
-  <div id="search_filter_controls" class="hidden-md-up">
-
-    <button class="btn btn-secondary ok">
-      <i class="material-icons"></i>
-      Labi
-    </button>
-  </div>
   <div id="search_filters" class="params">
     <input type="hidden" id="facet_all_val" value="Visi">
     <div class="wrap">
@@ -16,8 +9,8 @@
 
       <div class="can-collapse">
 
-        <span class="show_list active"><i class="material-icons "></i>Saraksts</span>
-        <span class="show_grid"><i class="material-icons "></i>Bildes</span>
+        <span class="show_list active" data-dismiss="modal"><i class="material-icons "></i>Saraksts</span>
+        <span class="show_grid" data-dismiss="modal"><i class="material-icons "></i>Bildes</span>
 
         <template id="facet-template">
           <section class="facet clearfix">
@@ -230,7 +223,7 @@
 
 
             <section class="facet clearfix">
-              <h1 style="display: none;" class="h6 facet-title hidden-sm-down">Kods</h1>
+              <h1 style="display: none;" class="h6 facet-title">Kods</h1>
               <input style="display: none;" type="text" value="" id="autofind_atr">
               <button id="autofind_sub" type="submit">Meklēt <i class="material-icons search"></i>
               </button>
