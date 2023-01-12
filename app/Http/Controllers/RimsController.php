@@ -81,6 +81,12 @@ class RimsController extends Controller
 
     View::share('brandOpt', $brandOpt);
     View::share('currentCar', $this->currentCar);
+    View::share('offsets', $this->getRimOffset());
+    View::share('makes', $this->getRimMakes());
+    View::share('models', $this->getRimModels());
+    View::share('diameters', $this->getRimDiameters());
+    View::share('lugs', $this->getRimLugCount());
+    View::share('studs_spread', $this->getRimStudSpreads());
 
   }
 
@@ -88,10 +94,6 @@ class RimsController extends Controller
   {
 
     // THESE HARDCODED VALUES SHOULD BE REPLACED WITH DATA FROM API
-    $makes = ['Alfa Romeo', 'Aston Martin', 'Audi', 'Bentley', 'BMW', 'Cadillac', 'Chevrolet (also form.Daewoo)', 'Chrysler', 'Citroen', 'Dacia', 'Daewoo', 'Daihatsu', 'Dodge', 'DR', 'Ferrari', 'Fiat', 'Ford', 'Great Wall Motor', 'Honda', 'Hummer', 'Hyundai', 'Infiniti', 'Isuzu', 'Iveco', 'Jaguar', 'Jeep', 'Kia', 'Lada', 'Lamborghini', 'Lancia', 'Land Rover', 'Lexus', 'Lincoln', 'Martin Motors', 'Maserati', 'Mazda', 'Mercedes Benz', 'MG', 'Mini', 'Mitsubishi', 'Nissan', 'Opel', 'Peugeot', 'Pontiac', 'Porsche', 'Renault', 'Rover', 'Saab', 'Seat', 'Shuanghuan', 'Skoda', 'Smart', 'SsangYong', 'Subaru', 'Suzuki', 'Toyota', 'Volkswagen', 'Volvo'];
-    $models = ['Acura', 'Aiways', 'Aixam', 'Alfa Romeo', 'Alpine', 'ARO', 'Aston Martin', 'Audi', 'BAIC', 'Bentley', 'BMW', 'BMW Alpina', 'Borgward', 'Brilliance', 'Bugatti', 'Buick', 'BYD', 'Cadillac', 'Changan', 'Chery', 'Chevrolet', 'Chrysler', 'Citroën', 'Cupra', 'Dacia', 'Daewoo', 'Daihatsu', 'Datsun', 'Dodge', 'Dongfeng', 'DS', 'e.GO', 'Eagle', 'Exeed', 'FAW', 'Ferrari', 'Fiat', 'Fisker', 'Force', 'Ford', 'Foton', 'GAC', 'GAZ', 'Geely', 'Genesis', 'GEO', 'GMC', 'Great Wall (GWM)', 'Haval', 'Hindustan', 'Holden', 'Honda', 'Hummer', 'Hyundai', 'Infiniti', 'Isuzu', 'Iveco', 'JAC', 'Jaguar', 'Jeep', 'Jetour', 'Jinbei', 'JMC', 'Keyton', 'Kia', 'King Long', 'LADA', 'Lamborghini', 'Lancia', 'Land Rover', 'Landwind', 'LDV', 'LEVC', 'Lexus', 'Lifan', 'Ligier', 'Lincoln', 'Lotus', 'Luxgen', 'Mahindra', 'MAN', 'Maruti', 'Maserati', 'Maxus', 'Maybach', 'Mazda', 'McLaren', 'Mercedes-Benz', 'Mercedes-Maybach', 'Mercury', 'MG', 'Microcar', 'MINI', 'Mitsubishi', 'Mosler', 'Nio', 'Nissan', 'Oldsmobile', 'Opel', 'Ora', 'Panoz', 'Perodua', 'Peugeot', 'Plymouth', 'Polaris', 'Polestar', 'Pontiac', 'Porsche', 'Proton', 'Qiantu', 'Ram', 'Ravon', 'Hongqi', 'Renault', 'Renault Samsung', 'Rivian', 'Roewe', 'Rolls-Royce', 'Rover', 'Saab', 'Saturn', 'Scion', 'Seat', 'Sehol', 'Seres', 'Skoda', 'Smart', 'SsangYong', 'Subaru', 'Sunra', 'Suzuki', 'Tata', 'Tesla', 'Toyota', 'Vauxhall', 'VAZ', 'Venucia', 'VinFast', 'Volkswagen', 'Volvo', 'Weichai', 'Wey', 'Wuling', 'XPeng', 'Zedriv', 'Zeekr', 'Zotye', 'ZX'];
-    $diameters = ['10', '12', '13', '14', '15', '16', '16.5', '17', '17.5', '18', '19', '19.5', '20', '21', '22', '23', '24'];
-    $lug_count = ['3', '4', '5', '6', '8', '12'];
 
     $brands = Rimbrand::paginate();
 
@@ -103,38 +105,83 @@ class RimsController extends Controller
               ->where('rims.price2', '<>' , 0)
               ->where('rims.price3', '<>' , 0)
               ->paginate();
-    return view('rims.autorims', compact('rims','brands', 'makes', 'models', 'diameters', 'lug_count'));
+    return view('rims.autorims', compact('rims','brands'));
   }
 
   public function rims_search(Request $request){
-
+    dd($request);
     DB::enableQueryLog();
 
-    ($request->application == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->application;
-    ($request->stud_length == 'Visi') ? $this->stud_length = '' : $this->stud_length = $request->stud_length;
 
-    if ($request->availability) {
+    ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
+
+    $types = (new Moto)->types();
+
+    ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
+    ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
+    ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
+    ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
+    ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
+
+    if ($request->types) {
       $this->filterCount += 1;
-      $this->availability = $request->availability;
+      $this->types = $request->types;
     } else {
-      $this->availability = [];
+      $this->types = '';
     }
 
-    $studs = Stud::select('studs.*', 'studs_treads.*')
-      ->leftJoin('studs_treads', 'studs.make_id', '=', 'studs_treads.tread_id')
-      ->leftJoin('studs_brands', 'studs_treads.brand_id', '=', 'studs_brands.brand_id')
-      ->when($this->currBrand, function($query) {
-        $query->where('studs.application', 'LIKE', '%' . Stud::convertToAppId($this->currBrand) . '%');
-      })->when($this->stud_length, function($query) {
-        $query->where('studs.stud_length', 'LIKE', $this->stud_length);
-      })->where('studs.visible_users', '<>', 0)
-      ->orderBy('price2', 'DESC')
-      ->groupBy('studs.stud_id')->paginate()->appends($request->query());
+    if ($request->code) {
+      $this->code = $request->code;
+      $this->filterCount += 1;
+    } else {
+      $this->code = '';
+    }
+    if ($request->fuel) {
+      $this->fuel = $request->fuel;
+      $this->filterCount += 1;
+    } else {
+      $this->fuel = '';
+    }
+    if ($request->wet) {
+      $this->wet = $request->wet;
+      $this->filterCount += 1;
+    } else {
+      $this->wet = '';
+    }
 
-    $makes = ['Alfa Romeo', 'Aston Martin', 'Audi', 'Bentley', 'BMW', 'Cadillac', 'Chevrolet (also form.Daewoo)', 'Chrysler', 'Citroen', 'Dacia', 'Daewoo', 'Daihatsu', 'Dodge', 'DR', 'Ferrari', 'Fiat', 'Ford', 'Great Wall Motor', 'Honda', 'Hummer', 'Hyundai', 'Infiniti', 'Isuzu', 'Iveco', 'Jaguar', 'Jeep', 'Kia', 'Lada', 'Lamborghini', 'Lancia', 'Land Rover', 'Lexus', 'Lincoln', 'Martin Motors', 'Maserati', 'Mazda', 'Mercedes Benz', 'MG', 'Mini', 'Mitsubishi', 'Nissan', 'Opel', 'Peugeot', 'Pontiac', 'Porsche', 'Renault', 'Rover', 'Saab', 'Seat', 'Shuanghuan', 'Skoda', 'Smart', 'SsangYong', 'Subaru', 'Suzuki', 'Toyota', 'Volkswagen', 'Volvo'];
-    $models = ['Acura', 'Aiways', 'Aixam', 'Alfa Romeo', 'Alpine', 'ARO', 'Aston Martin', 'Audi', 'BAIC', 'Bentley', 'BMW', 'BMW Alpina', 'Borgward', 'Brilliance', 'Bugatti', 'Buick', 'BYD', 'Cadillac', 'Changan', 'Chery', 'Chevrolet', 'Chrysler', 'Citroën', 'Cupra', 'Dacia', 'Daewoo', 'Daihatsu', 'Datsun', 'Dodge', 'Dongfeng', 'DS', 'e.GO', 'Eagle', 'Exeed', 'FAW', 'Ferrari', 'Fiat', 'Fisker', 'Force', 'Ford', 'Foton', 'GAC', 'GAZ', 'Geely', 'Genesis', 'GEO', 'GMC', 'Great Wall (GWM)', 'Haval', 'Hindustan', 'Holden', 'Honda', 'Hummer', 'Hyundai', 'Infiniti', 'Isuzu', 'Iveco', 'JAC', 'Jaguar', 'Jeep', 'Jetour', 'Jinbei', 'JMC', 'Keyton', 'Kia', 'King Long', 'LADA', 'Lamborghini', 'Lancia', 'Land Rover', 'Landwind', 'LDV', 'LEVC', 'Lexus', 'Lifan', 'Ligier', 'Lincoln', 'Lotus', 'Luxgen', 'Mahindra', 'MAN', 'Maruti', 'Maserati', 'Maxus', 'Maybach', 'Mazda', 'McLaren', 'Mercedes-Benz', 'Mercedes-Maybach', 'Mercury', 'MG', 'Microcar', 'MINI', 'Mitsubishi', 'Mosler', 'Nio', 'Nissan', 'Oldsmobile', 'Opel', 'Ora', 'Panoz', 'Perodua', 'Peugeot', 'Plymouth', 'Polaris', 'Polestar', 'Pontiac', 'Porsche', 'Proton', 'Qiantu', 'Ram', 'Ravon', 'Hongqi', 'Renault', 'Renault Samsung', 'Rivian', 'Roewe', 'Rolls-Royce', 'Rover', 'Saab', 'Saturn', 'Scion', 'Seat', 'Sehol', 'Seres', 'Skoda', 'Smart', 'SsangYong', 'Subaru', 'Sunra', 'Suzuki', 'Tata', 'Tesla', 'Toyota', 'Vauxhall', 'VAZ', 'Venucia', 'VinFast', 'Volkswagen', 'Volvo', 'Weichai', 'Wey', 'Wuling', 'XPeng', 'Zedriv', 'Zeekr', 'Zotye', 'ZX'];
-    $diameters = ['10', '12', '13', '14', '15', '16', '16.5', '17', '17.5', '18', '19', '19.5', '20', '21', '22', '23', '24'];
-    $lug_count = ['3', '4', '5', '6', '8', '12'];
+    if ($request->type) {
+      $this->type = $request->type;
+    } else {
+      $this->type = '';
+    }
+
+    $tires = Moto::select('moto_tires.*', 'moto_treads.*', 'moto_treads.slug as tread_slug', 'moto_brands.slug as brand_slug')
+      ->leftJoin('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
+      ->leftJoin('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
+      ->when($this->currBrand, function($query) {
+        $query->where('moto_brands.slug', \Str::slug($this->currBrand));
+      })->when($this->d1, function($query) {
+        $query->where('d1', $this->d1);
+      })->when($this->d2, function($query) {
+        $query->where('d2', $this->d2);
+      })->when($this->type, function($query) {
+        $query->whereIn('moto_tires.type', $this->type);
+      })->when($this->d3, function($query) {
+        $query->where('d3', $this->d3);
+      })->where('moto_tires.visible_users', '<>', 0)
+      ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+      ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+      ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
+      ->orderBy('d4', 'ASC')
+      ->orderBy('price2', 'DESC')
+      ->paginate()->appends($request->query());
+
+
+//      dd(DB::getQueryLog());
+
+//    return view('tires.moto.index',
+//      ['tires' => $tires, 'filterCount' => $this->filterCount]
+//    );
 
     return view('rims.autorims', compact('rims','brands', 'makes', 'models', 'diameters', 'lug_count'));
   }
@@ -257,4 +304,99 @@ class RimsController extends Controller
     return view('rims.quadrim', compact('rims', 'brands', 'makes', 'models', 'diameters', 'lug_count'));
   }
 
+  public function getRimOffset()
+  {
+    $rim_offsets = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_offsets, $rim->offset);
+    }
+
+    $rim_offsets = array_unique($rim_offsets);
+    $rim_offsets = array_values($rim_offsets);
+
+    asort($rim_offsets, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_offsets;
+  }
+
+  public function getRimMakes()
+  {
+    $rim_makes = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_makes, $rim->offset);
+    }
+
+    $rim_makes = array_unique($rim_makes);
+    $rim_makes = array_values($rim_makes);
+
+    asort($rim_makes, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_makes;
+  }
+
+  public function getRimModels()
+  {
+    $rim_models = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_models, $rim->offset);
+    }
+
+    $rim_models = array_unique($rim_models);
+    $rim_models = array_values($rim_models);
+
+    asort($rim_models, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_models;
+  }
+
+  public function getRimDiameters()
+  {
+    $rim_diameters = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_diameters, $rim->d3);
+    }
+
+    $rim_diameters = array_unique($rim_diameters);
+    $rim_diameters = array_values($rim_diameters);
+
+    asort($rim_diameters, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_diameters;
+  }
+
+  public function getRimLugCount()
+  {
+    $rim_lug_count = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_lug_count, $rim->skr);
+    }
+
+    $rim_lug_count = array_unique($rim_lug_count);
+    $rim_lug_count = array_values($rim_lug_count);
+
+    asort($rim_lug_count, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_lug_count;
+  }
+
+  public function getRimStudSpreads()
+  {
+    $rim_stud_spreads = [];
+
+    foreach (Rim::all() as $rim) {
+      array_push($rim_stud_spreads, $rim->offset);
+    }
+
+    $rim_stud_spreads = array_unique($rim_stud_spreads);
+    $rim_stud_spreads = array_values($rim_stud_spreads);
+
+    asort($rim_stud_spreads, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $rim_stud_spreads;
+  }
 }
