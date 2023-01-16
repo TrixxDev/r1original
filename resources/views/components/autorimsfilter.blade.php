@@ -26,11 +26,11 @@
               <div class="title hidden-md-up" data-target="#facet_auto-make" data-toggle="collapse" aria-expanded="true">
                 <h1 class="h6 facet-title">Marka</h1>
                 <span class="float-xs-right">j
-                                                      <span class="navbar-toggler collapse-icons">
-                                                          <i class="material-icons add"></i>
-                                                          <i class="material-icons remove"></i>
-                                                      </span>
-                                                </span>
+                  <span class="navbar-toggler collapse-icons">
+                    <i class="material-icons add"></i>
+                    <i class="material-icons remove"></i>
+                  </span>
+                </span>
               </div>
               <select name="" id="" class="r1-select select-title">
                 <option value="visi">Visi</option>
@@ -45,11 +45,11 @@
               <div class="title hidden-md-up" data-target="#facet_auto-model" data-toggle="collapse" aria-expanded="true">
                 <h1 class="h6 facet-title">Modelis</h1>
                 <span class="float-xs-right">
-                                                      <span class="navbar-toggler collapse-icons">
-                                                          <i class="material-icons add"></i>
-                                                          <i class="material-icons remove"></i>
-                                                      </span>
-                                                  </span>
+                  <span class="navbar-toggler collapse-icons">
+                    <i class="material-icons add"></i>
+                    <i class="material-icons remove"></i>
+                  </span>
+                </span>
               </div>
               <select name="" id="" class="r1-select select-title">
                 <option value="visi">Visi</option>
@@ -63,14 +63,14 @@
               <div class="title hidden-md-up" data-target="#facet_auto-dia" data-toggle="collapse" aria-expanded="true">
                 <h1 class="h6 facet-title">Disku diametrs</h1>
                 <span class="float-xs-right">
-                                                      <span class="navbar-toggler collapse-icons">
-                                                          <i class="material-icons add"></i>
-                                                          <i class="material-icons remove"></i>
-                                                  </span>
-                                                </span>
+                  <span class="navbar-toggler collapse-icons">
+                    <i class="material-icons add"></i>
+                    <i class="material-icons remove"></i>
+                  </span>
+                </span>
               </div>
               <select name="" id="" class="r1-select select-title">
-                <option value="visi">Visi</option>
+                <option value="Visi">Visi</option>
                 @foreach($diameters as $diameter)
                   <option value="{{$diameter}}">{{$diameter}}</option>
                 @endforeach
@@ -84,16 +84,16 @@
               <div class="title hidden-md-up" data-target="#facet_53885" data-toggle="collapse">
                 <h1 class="h6 facet-title">Skrūvju skaits</h1>
                 <span class="float-xs-right">
-                                                      <span class="navbar-toggler collapse-icons">
-                                                          <i class="material-icons add"></i>
-                                                          <i class="material-icons remove"></i>
-                                                      </span>
-                                                  </span>
+                  <span class="navbar-toggler collapse-icons">
+                    <i class="material-icons add"></i>
+                    <i class="material-icons remove"></i>
+                  </span>
+                </span>
               </div>
-              <select name="" id="" class="r1-select select-title tire-width">
-                <option value="visi">Visi</option>
+              <select name="currentSkr" id="" class="r1-select select-title tire-width">
+                <option value="Visi">Visi</option>
                 @foreach($lugs as $lug)
-                  <option value="{{$lug}}">{{$lug}}</option>
+                  <option @if ($lug == $currentSkr) selected @endif value="{{$lug}}">{{$lug}}</option>
                 @endforeach
               </select>
             </section>
@@ -102,16 +102,16 @@
               <div class="title hidden-md-up" data-target="#facet_30026" data-toggle="collapse">
                 <h1 class="h6 facet-title">Attālums starp skrūvēm</h1>
                 <span class="float-xs-right">
-                                                      <span class="navbar-toggler collapse-icons">
-                                                          <i class="material-icons add"></i>
-                                                          <i class="material-icons remove"></i>
-                                                      </span>
-                                                  </span>
+                  <span class="navbar-toggler collapse-icons">
+                    <i class="material-icons add"></i>
+                    <i class="material-icons remove"></i>
+                  </span>
+                </span>
               </div>
-              <select name="" id="" class="r1-select select-title">
-                <option value="visi">Visi</option>
+              <select name="currentPcd" id="" class="r1-select select-title">
+                <option value="Visi">Visi</option>
                 @foreach($studs_spread as $stud_spread)
-                  <option value="{{$stud_spread}}">{{$stud_spread}}</option>
+                  <option @if ($stud_spread == $currentPcd) selected @endif value="{{$stud_spread}}">{{$stud_spread}}</option>
                 @endforeach
               </select>
             </section>
@@ -120,16 +120,16 @@
               <div class="title hidden-md-up" data-target="#facet_23486" data-toggle="collapse">
                 <h1 class="h6 facet-title">Disku diametrs</h1>
                 <span class="float-xs-right">
-                                                      <span class="navbar-toggler collapse-icons">
-                                                          <i class="material-icons add"></i>
-                                                          <i class="material-icons remove"></i>
-                                                      </span>
-                                                  </span>
+                  <span class="navbar-toggler collapse-icons">
+                    <i class="material-icons add"></i>
+                    <i class="material-icons remove"></i>
+                  </span>
+                </span>
               </div>
-              <select name="" id="" class="r1-select select-title">
-                <option value="visi">Visi</option>
+              <select name="currentDia" id="" class="r1-select select-title">
+                <option value="Visi">Visi</option>
                 @foreach($diameters as $diameter)
-                  <option value="{{$diameter}}">{{$diameter}}</option>
+                  <option @if ($diameter == $currentDia) selected @endif value="{{$diameter}}">{{$diameter}}</option>
                 @endforeach
               </select>
             </section>
@@ -138,16 +138,16 @@
               <div class="title hidden-md-up" data-target="#facet_37134" data-toggle="collapse">
                 <h1 class="h6 facet-title">Izbīdījums</h1>
                 <span class="float-xs-right">
-                                                      <span class="navbar-toggler collapse-icons">
-                                                          <i class="material-icons add"></i>
-                                                          <i class="material-icons remove"></i>
-                                                      </span>
-                                                  </span>
+                  <span class="navbar-toggler collapse-icons">
+                      <i class="material-icons add"></i>
+                      <i class="material-icons remove"></i>
+                  </span>
+                </span>
               </div>
-              <select name="" id="" class="r1-select select-title">
-                <option value="visi">Visi</option>
+              <select name="currentEt" id="" class="r1-select select-title">
+                <option value="Visi">Visi</option>
                 @foreach($offsets as $offset)
-                  <option value="{{$offset}}">{{$offset}}</option>
+                  <option @if ($offset == $currentEt) selected @endif value="{{$offset}}">{{$offset}}</option>
                 @endforeach
               </select>
             </section>
@@ -156,15 +156,17 @@
               <div class="title hidden-md-up" data-target="#facet_37134" data-toggle="collapse">
                 <h1 class="h6 facet-title">Centrs</h1>
                 <span class="float-xs-right">
-                                                      <span class="navbar-toggler collapse-icons">
-                                                          <i class="material-icons add"></i>
-                                                          <i class="material-icons remove"></i>
-                                                      </span>
-                                                  </span>
+                  <span class="navbar-toggler collapse-icons">
+                      <i class="material-icons add"></i>
+                      <i class="material-icons remove"></i>
+                  </span>
+                </span>
               </div>
-              <select name="" id="" class="r1-select select-title">
-                <option value="visi">Visi</option>
-                <option value=""></option>
+              <select name="currentCenter" id="" class="r1-select select-title">
+                <option value="Visi">Visi</option>
+                @foreach($centers as $center)
+                  <option @if ($center == $currentCenter) selected @endif value="{{$center}}">{{$center}}</option>
+                @endforeach
               </select>
             </section>
           </div>

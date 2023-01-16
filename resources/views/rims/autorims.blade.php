@@ -25,9 +25,9 @@
                         @endphp
                         @foreach($rims as $rim)
                           @php
-                            $brand = $rim->brand_title;
+                            $brand = $rim->brandTitle;
                             $rim->includeStock = true;
-                            if ($cbrand!=$brand){
+                            if ($cbrand != $brand){
                               if ($index == 0) {
                                 echo '</div><h4 class="tire-brand-name grid-t">' . $brand;
                                 echo ' <span class="tire-type-title">Lietie diski</span><span style="margin: 0 auto;"></span><button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
@@ -43,8 +43,7 @@
                               $brand = str_replace(" ", "", $brand);
                             }
                           @endphp
-                          @if($rim->price1)
-                            <a href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}"
+                            <a href="{{ route('lietais-disks', [\Str::slug($rim->brandTitle), strtolower(str_replace('/', '_', $rim->treadTitle)), $rim->rim_id]) }}"
                                class="grid-view-link"
                                data-article="{{ $rim->article }}">
                             <div class="tire-image-card sort-order">
@@ -93,7 +92,6 @@
                                 </div>
                               </div>
                             </a>
-                          @endif
                           @php
                             $index++;
                           @endphp
@@ -109,18 +107,15 @@
                           @endphp
                           @foreach ($rims as $rim)
                             @php
-                              $brand = $rim->brand_title;
+                              $brand = $rim->d3;
                               $rim->includeStock = true;
                               if ($cbrand!=$brand){
-                              if($index == 0) {
-                                echo '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-                                        Filtrs
-                                      </button><div class="filters" style="margin: 0 auto;"></div>';
-                                echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="tire-type-title flipped-title">Lietie diski</span></h4>';
-                              } else {
-                                echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
-                              }
-                              @endphp
+
+
+
+                              $cbrand = $brand;
+                              $stripe = 1;
+                            @endphp
                             <table id="tires-table" class="table table-striped rims-sorter tires-table table-hover tablesorter">
                               <thead class="tires-thead sticky-top">
                               <tr>
@@ -141,21 +136,19 @@
                                     data-toggle="tooltip"
                                     data-html="true"
                                     title="<span style='color: black'>Pieejamība</span>">
-                                      <span class="tire-table-icon icon-question"></span>
+                                  <span class="tire-table-icon icon-question"></span>
                                 </th>
 
                               </tr>
                               </thead>
                               <tbody id="tires-table-body">
+                              @if ($loop->first) <h4 class="tire-brand-name"><span class="text-uppercase flipped-title tire-brand-name" style="color:black;">Lietie diski</span> R{{ $brand }} @endif
+                              @if (!$loop->first) <h4 class="tire-brand-name"><span class="text-uppercase flipped-title tire-brand-name" style="color:black;">Lietie diski</span> R{{ $brand }} </h4>@endif
                               @php
                                 $cbrand = $brand;
                                 $stripe = 1;
-                              } else {
-                                  $brand = str_replace(" ", "", $brand);
                               }
                               @endphp
-                              @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif
-
                               <tr class="tire-table-row">
                                 <th scope="row" class="tire-table-checkbox">
                                   <input type="checkbox" value="{{$rim->rim_id}}" name="product_ids[]"
@@ -165,8 +158,8 @@
                                 <td class="table-tire-name-cell">
                                   <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                                      title='{!! App\Helper\Image::show('auto-rim', $rim->make_id) !!}'
-                                     href="{{ route('lietais-disks', [\Str::slug($rim->brand_title), \Str::slug($rim->title), $rim->rim_id]) }}"
-                                     data-content="{{ $rim->title . ' ' . $rim->fullSize }}"
+                                     href="{{ route('lietais-disks', [\Str::slug($rim->brandTitle), strtolower(str_replace('/', '_', $rim->treadTitle)), $rim->rim_id]) }}"
+                                     data-content="{{ $rim->fullName }}"
                                      data-article="{{ $rim->article }}">
                                     {{ $rim->brand_title . ' ' . $rim->title }}
                                   </a>
@@ -180,7 +173,7 @@
                                 </td>
 
                                 <td class="text-center hidden-sm-down">
-                                  et{{ $rim->et }}
+                                  {{ $rim->et }}
                                 </td>
 
                                 <td class="text-center hidden-sm-down">
@@ -200,7 +193,7 @@
 {{--                                    <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">--}}
 {{--                                      <i class="material-icons">add_shopping_cart</i>--}}
 {{--                                    </button>--}}
-                                    <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
+                                    <button class="cart-shopping-button" data-toggle="modal"
                                             @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
                                             @endif data-info="{{ $rim->rim_id }}"><i
                                         class="material-icons">add_shopping_cart</i>
