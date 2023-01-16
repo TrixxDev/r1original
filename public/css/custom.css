@@ -5295,3 +5295,8 @@ select.select-title.tire-brand option:hover:before {
   background: #65c2a5 !important;
   pointer-events: none;
 }
+
+div#service-option-selection {
+  display: flex;
+  justify-content: space-between;
+}

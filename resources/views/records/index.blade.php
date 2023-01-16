@@ -413,6 +413,9 @@
                                                         <label class="form-check-label" for="serviceOption{{ $service->service_id }}">
                                                             {{ $service->title }}
                                                         </label>
+                                                      @if($service->service_id == 1)
+                                                        <div id="service-option-selection"></div>
+                                                      @endif
                                                     </div>
                                                     @endforeach
                                                 </div>
