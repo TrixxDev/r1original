@@ -142,8 +142,8 @@
                               </tr>
                               </thead>
                               <tbody id="tires-table-body">
-                              @if ($loop->first) <h4 class="tire-brand-name"><span class="text-uppercase flipped-title tire-brand-name" style="color:black;">Lietie diski</span> R{{ $brand }} @endif
-                              @if (!$loop->first) <h4 class="tire-brand-name"><span class="text-uppercase flipped-title tire-brand-name" style="color:black;">Lietie diski</span> R{{ $brand }} </h4>@endif
+                              @if ($loop->first) <h4 class="tire-brand-name"><span class="text-uppercase tire-brand-name" style="color:black;">Lietie diski</span> R{{ $brand }} @endif
+                              @if (!$loop->first) <h4 class="tire-brand-name"><span class="text-uppercase tire-brand-name" style="color:black;">Lietie diski</span> R{{ $brand }} </h4>@endif
                               @php
                                 $cbrand = $brand;
                                 $stripe = 1;
