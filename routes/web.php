@@ -308,7 +308,7 @@ Route::middleware('checksession')->group(function() {
 
   Route::get('/kvadru-diski', [App\Http\Controllers\QuadrRimsController::class, 'rims'])->name('kvadru-diski');
   Route::post('/kvadru-diski', [App\Http\Controllers\QuadrRimsController::class, 'rims_search'])->name('kvadru-diski');
-  Route::get('/kvadru-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\QuadrRimsController::class, 'rims_tread'])->name('kvadru-disks');
+  Route::get('/kvadru-diski/{tread}/{rim}', [App\Http\Controllers\QuadrRimsController::class, 'rims_tread'])->name('kvadru-disks');
   Route::post('/kvadru-diski/ajax', [App\Http\Controllers\QuadrRimsController::class, 'rims_ajax'])->name('kvadru-diski-ajax');
   Route::post('/kvadru-diski/search/ajax', [App\Http\Controllers\QuadrRimsController::class, 'rims_ajax'])->name('kvadru-diski-ajax');
   Route::get('/kvadru-diski/search', [App\Http\Controllers\QuadrRimsController::class, 'rims_search'])->name('kvadru-diski-meklet');

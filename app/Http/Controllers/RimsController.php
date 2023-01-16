@@ -28,6 +28,8 @@ class RimsController extends Controller
   public $currentSkr;
   public $currentPcd;
   public $currentEt;
+  public $currentDia;
+  public $currentCenter;
 
   public $model = 'Rim';
 
@@ -35,6 +37,9 @@ class RimsController extends Controller
 
   public function __construct(Request $request)
   {
+
+    $this->d1 = ($request->d1 == 'Visi') ? 'Visi' : $request->d1;
+
     $this->currentCar = ($request->car) ? $request->car : '';
     $this->currentModel = ($request->model) ? $request->model : '';
     $this->currentR1 = ($request->r1) ? $request->r1 : '';
@@ -43,9 +48,11 @@ class RimsController extends Controller
 
     $this->currentForm = ($request->currentForm == 1) ? 1 : 2;
 
-    $this->currentSkr = ($request->skr) ? $request->skr : '';
-    $this->currentPcd = ($request->pcd) ? $request->pcd : '';
-    $this->currentEt = ($request->et) ? $request->et : '';
+    $this->currentSkr = ($request->currentSkr) ? $request->currentSkr : '';
+    $this->currentPcd = ($request->currentPcd) ? $request->currentPcd : '';
+    $this->currentEt = ($request->currentEt) ? $request->currentEt : '';
+    $this->currentDia = ($request->currentDia) ? $request->currentDia : '';
+    $this->currentCenter = ($request->currentCenter) ? $request->currentCenter : '';
 
     if (($this->currentSkr !== false)||($this->currentPcd !== false)||($this->currentEt !== false)) {
       $this->currentCar = -1;
@@ -55,38 +62,20 @@ class RimsController extends Controller
 
     if ($this->currentCar === -1) $this->currentModel = false;
 
-    $pcdQ = FilterSizes::distinct('pcd')->where('pcd', '>', 0)->orderByRaw('cast(pcd as decimal(6,2)) ASC')->get();
-    $pcdOpt = '';
-    foreach ($pcdQ as $item) {
-      $pcdOpt .= '<option value="' . $item->size_id . '"' . (($this->currentR == $item->size_id) ? ' selected="selected"' : '') . '>' . $item->size_id . '';
-    }
-
-    $dQ = FilterSizes::distinct('r')->whereRaw('cast(r as decimal(6,2)) > 0')->orderByRaw('cast(r as decimal(6,2)) ASC')->get();
-    $dOpt = '';
-    foreach ($dQ as $item) {
-      $dOpt .= '<option value="' . $item->size_id . '"' . (($this->currentR == $item->size_id) ? ' selected="selected"' : '') . '>' . $item->size_id . '';
-    }
-
-    $skrQ = FilterSizes::distinct('skr')->whereRaw('cast(skr as decimal(6,2)) > 0')->orderByRaw('cast(skr as decimal(6,2)) ASC')->get();
-    $skrOpt = '';
-    foreach ($skrQ as $item) {
-      $skrOpt .= '<option value="' . $item->size_id . '"' . (($this->currentR == $item->size_id) ? ' selected="selected"' : '') . '>' . $item->size_id . '';
-    }
-
-    $brandQ = FilterCars::orderBy('title', 'asc')->get();
-    $brandOpt = '';
-    foreach ($brandQ as $item) {
-      $brandOpt .= '<a rel="nofollow" class="select-list" data-id="' . $item->car_id . '" id="' . strtoupper($item->title) . '">' . strtoupper($item->title) . '</a>';
-    }
-
-    View::share('brandOpt', $brandOpt);
+    View::share('brandList', $this->getBrandList());
     View::share('currentCar', $this->currentCar);
-    View::share('offsets', $this->getRimOffset());
+    View::share('currentEt', $this->currentEt);
+    View::share('currentPcd', $this->currentPcd);
+    View::share('currentSkr', $this->currentSkr);
+    View::share('currentDia', $this->currentDia);
+    View::share('currentCenter', $this->currentCenter);
+    View::share('offsets', $this->getRimOptions()['offsets']);
+    View::share('centers', $this->getRimOptions()['rim_center']);
+    View::share('diameters', $this->getRimOptions()['diameters']);
+    View::share('lugs', $this->getRimOptions()['lug_counts']);
+    View::share('studs_spread', $this->getRimOptions()['stud_spreads']);
     View::share('makes', $this->getRimMakes());
     View::share('models', $this->getRimModels());
-    View::share('diameters', $this->getRimDiameters());
-    View::share('lugs', $this->getRimLugCount());
-    View::share('studs_spread', $this->getRimStudSpreads());
 
   }
 
@@ -98,83 +87,44 @@ class RimsController extends Controller
     $brands = Rimbrand::paginate();
 
     $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
-              ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
-              ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
-              ->orderBy('rim_brands.brand_id', 'ASC')
-              ->where('rims.price1', '<>' , 0)
-              ->where('rims.price2', '<>' , 0)
-              ->where('rims.price3', '<>' , 0)
-              ->paginate();
+      ->where('rims.visible_users', '<>', 0)
+      ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+      ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+      ->orderBy('price2', 'DESC')
+      ->paginate();
+
     return view('rims.autorims', compact('rims','brands'));
   }
 
   public function rims_search(Request $request){
-    dd($request);
-    DB::enableQueryLog();
 
+    //    DB::enableQueryLog();
 
-    ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
+    $this->currentEt = ($request->currentEt == 'Visi') ? '' : $request->currentEt;
+    $this->currentPcd = ($request->currentPcd == 'Visi') ? '' : $request->currentPcd;
+    $this->currentSkr = ($request->currentSkr == 'Visi') ? '' : $request->currentSkr;
+    $this->currentDia = ($request->currentDia == 'Visi') ? '' : $request->currentDia;
+    $this->currentCenter = ($request->currentCenter == 'Visi') ? '' : $request->currentCenter;
+    $this->d1 = ($this->d1 == 'Visi') ? '' : $request->d1;
 
-    $types = (new Moto)->types();
-
-    ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
-    ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
-    ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
-    ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
-    ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
-
-    if ($request->types) {
-      $this->filterCount += 1;
-      $this->types = $request->types;
-    } else {
-      $this->types = '';
-    }
-
-    if ($request->code) {
-      $this->code = $request->code;
-      $this->filterCount += 1;
-    } else {
-      $this->code = '';
-    }
-    if ($request->fuel) {
-      $this->fuel = $request->fuel;
-      $this->filterCount += 1;
-    } else {
-      $this->fuel = '';
-    }
-    if ($request->wet) {
-      $this->wet = $request->wet;
-      $this->filterCount += 1;
-    } else {
-      $this->wet = '';
-    }
-
-    if ($request->type) {
-      $this->type = $request->type;
-    } else {
-      $this->type = '';
-    }
-
-    $tires = Moto::select('moto_tires.*', 'moto_treads.*', 'moto_treads.slug as tread_slug', 'moto_brands.slug as brand_slug')
-      ->leftJoin('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
-      ->leftJoin('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
-      ->when($this->currBrand, function($query) {
-        $query->where('moto_brands.slug', \Str::slug($this->currBrand));
-      })->when($this->d1, function($query) {
-        $query->where('d1', $this->d1);
-      })->when($this->d2, function($query) {
-        $query->where('d2', $this->d2);
-      })->when($this->type, function($query) {
-        $query->whereIn('moto_tires.type', $this->type);
-      })->when($this->d3, function($query) {
-        $query->where('d3', $this->d3);
-      })->where('moto_tires.visible_users', '<>', 0)
-      ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
-      ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
-      ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
-      ->orderBy('d4', 'ASC')
+    $rims = Rim::select('rims.*')
+      ->leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+      ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
+      ->when($this->currentEt, function($query) {
+        $query->where('rims.et', $this->currentEt);
+      })->when($this->currentPcd, function($query) {
+        $query->where('rims.pcd', $this->currentPcd);
+      })->when($this->currentSkr, function($query) {
+        $query->where('rims.skr', $this->currentSkr);
+      })->when($this->currentDia, function($query) {
+        $query->where('rims.d3', $this->currentDia);
+      })->when($this->currentCenter, function($query) {
+        $query->where('rims.dc', $this->currentCenter);
+      })->where('rims.visible_users', '<>', 0)
+      ->orderBy('d3', 'ASC')
+      ->orderBy('d1', 'ASC')
       ->orderBy('price2', 'DESC')
-      ->paginate()->appends($request->query());
+      ->groupBy('rims.rim_id')->paginate()->appends($request->query());
 
 
 //      dd(DB::getQueryLog());
@@ -183,14 +133,14 @@ class RimsController extends Controller
 //      ['tires' => $tires, 'filterCount' => $this->filterCount]
 //    );
 
-    return view('rims.autorims', compact('rims','brands', 'makes', 'models', 'diameters', 'lug_count'));
+    return view('rims.autorims', compact('rims'));
   }
 
   public function rims_tread($brand, $tread, $rim)
   {
-    $brand = Rimbrand::where('slug', $brand)->first();
+    $brand = Rimbrand::where('title', $brand)->first();
 
-    $tread = Rimmake::where('slug', $tread)->first();
+    $tread = Rimmake::where('title', $tread)->first();
 
     $currRim = Rim::join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
                      ->where('rim_makes.title', $tread->title)
@@ -304,20 +254,56 @@ class RimsController extends Controller
     return view('rims.quadrim', compact('rims', 'brands', 'makes', 'models', 'diameters', 'lug_count'));
   }
 
-  public function getRimOffset()
+  public function getRimOptions()
   {
     $rim_offsets = [];
+    $rim_diameters = [];
+    $rim_lug_count = [];
+    $rim_stud_spreads = [];
+    $rim_center = [];
 
     foreach (Rim::all() as $rim) {
-      array_push($rim_offsets, $rim->offset);
+      array_push($rim_offsets, $rim->et);
+      array_push($rim_diameters, $rim->d3);
+      array_push($rim_lug_count, $rim->skr);
+      array_push($rim_stud_spreads, $rim->pcd);
+      array_push($rim_center, number_format((float) $rim->dc, 1, '.', ' '));
     }
 
     $rim_offsets = array_unique($rim_offsets);
     $rim_offsets = array_values($rim_offsets);
+    $rim_offsets = array_filter($rim_offsets);
+
+    $rim_diameters = array_unique($rim_diameters);
+    $rim_diameters = array_values($rim_diameters);
+    $rim_diameters = array_filter($rim_diameters);
+
+    $rim_lug_count = array_unique($rim_lug_count);
+    $rim_lug_count = array_values($rim_lug_count);
+    $rim_lug_count = array_filter($rim_lug_count);
+
+    $rim_stud_spreads = array_unique($rim_stud_spreads);
+    $rim_stud_spreads = array_values($rim_stud_spreads);
+    $rim_stud_spreads = array_filter($rim_stud_spreads);
+
+    $rim_center = array_unique($rim_center);
+    $rim_center = array_values($rim_center);
+    $rim_center = array_filter($rim_center);
+    unset($rim_center[1]);
 
     asort($rim_offsets, SORT_NATURAL | SORT_FLAG_CASE);
+    asort($rim_diameters, SORT_NATURAL | SORT_FLAG_CASE);
+    asort($rim_lug_count, SORT_NATURAL | SORT_FLAG_CASE);
+    asort($rim_stud_spreads, SORT_NATURAL | SORT_FLAG_CASE);
+    asort($rim_center, SORT_NATURAL | SORT_FLAG_CASE);
 
-    return $rim_offsets;
+    return [
+      'offsets' => $rim_offsets,
+      'diameters' => $rim_diameters,
+      'lug_counts' => $rim_lug_count,
+      'stud_spreads' => $rim_stud_spreads,
+      'rim_center' => $rim_center
+    ];
   }
 
   public function getRimMakes()
@@ -352,51 +338,20 @@ class RimsController extends Controller
     return $rim_models;
   }
 
-  public function getRimDiameters()
+  public function getBrandList()
   {
-    $rim_diameters = [];
+    $rim_brands = [];
 
-    foreach (Rim::all() as $rim) {
-      array_push($rim_diameters, $rim->d3);
+    foreach (Rimbrand::all() as $rim_brand) {
+      array_push($rim_brands, $rim_brand->title);
     }
 
-    $rim_diameters = array_unique($rim_diameters);
-    $rim_diameters = array_values($rim_diameters);
+    $rim_brands = array_unique($rim_brands);
+    $rim_brands = array_values($rim_brands);
 
-    asort($rim_diameters, SORT_NATURAL | SORT_FLAG_CASE);
+    asort($rim_brands, SORT_NATURAL | SORT_FLAG_CASE);
 
-    return $rim_diameters;
+    return $rim_brands;
   }
 
-  public function getRimLugCount()
-  {
-    $rim_lug_count = [];
-
-    foreach (Rim::all() as $rim) {
-      array_push($rim_lug_count, $rim->skr);
-    }
-
-    $rim_lug_count = array_unique($rim_lug_count);
-    $rim_lug_count = array_values($rim_lug_count);
-
-    asort($rim_lug_count, SORT_NATURAL | SORT_FLAG_CASE);
-
-    return $rim_lug_count;
-  }
-
-  public function getRimStudSpreads()
-  {
-    $rim_stud_spreads = [];
-
-    foreach (Rim::all() as $rim) {
-      array_push($rim_stud_spreads, $rim->offset);
-    }
-
-    $rim_stud_spreads = array_unique($rim_stud_spreads);
-    $rim_stud_spreads = array_values($rim_stud_spreads);
-
-    asort($rim_stud_spreads, SORT_NATURAL | SORT_FLAG_CASE);
-
-    return $rim_stud_spreads;
-  }
 }

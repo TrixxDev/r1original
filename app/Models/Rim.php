@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Rim extends Model
 {
@@ -114,29 +115,29 @@ class Rim extends Model
 
   public function getStockAvailabilityAttribute()
   {
-//    $tire = Autotire::where('tire_id', $this->tire_id)->first();
-//    $stocks = Autostock::where('tire_id', $tire->tire_id)->get();
-//
-//    $stock_names = [
-//      'i3' => 'I3',
-//      'gy' => 'GoodYear',
-//      'rz' => 'RiepuZona',
-//    ];
+    $rim = Rim::where('rim_id', $this->rim_id)->first();
+//    $stocks = Rimstock::where('tire_id', $this->tire_id)->get();
 
-//    if ($rim->urs_quantity >= 4) {
-//      $availability = '<p>Ulbrokā: 4 un vairāk</p><br>';
-//    } else {
-//      $availability = '<p>Ulbrokā: ' . $rim->urs_quantity . '</p><br>';
-//    }
-//    if ($rim->krs_quantity >= 4) {
-//      $availability .= '<p>Kalnciema ielā: 4 un vairāk</p>';
-//    } else {
-//      $availability .= '<p>Kalnciema ielā: ' . $rim->krs_quantity . '</p>';
-//    }
-//
-//    if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
-//      $availability = '<p>Ulbrokā: ' . $rim->urs_quantity . '</p><br>';
-//      $availability .= '<p>Kalnciema ielā: ' . $rim->krs_quantity . '</p>';
+    $stock_names = [
+      'i3' => 'I3',
+      'gy' => 'GoodYear',
+      'rz' => 'RiepuZona',
+    ];
+
+    if ($rim->urs_quantity >= 4) {
+      $availability = '<p>Ulbrokā: 4 un vairāk</p><br>';
+    } else {
+      $availability = '<p>Ulbrokā: ' . $rim->urs_quantity . '</p><br>';
+    }
+    if ($rim->krs_quantity >= 4) {
+      $availability .= '<p>Kalnciema ielā: 4 un vairāk</p>';
+    } else {
+      $availability .= '<p>Kalnciema ielā: ' . $rim->krs_quantity . '</p>';
+    }
+
+    if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
+      $availability = '<p>Ulbrokā: ' . $rim->urs_quantity . '</p><br>';
+      $availability .= '<p>Kalnciema ielā: ' . $rim->krs_quantity . '</p>';
 //      foreach ($stock_names as $key => $stock_name) {
 //        $stock = Autostock::where('itype', $key)->where('tire_id', $rim->tire_id)->first();
 //        if ($stock && $stock->quantity > 0) {
@@ -145,17 +146,37 @@ class Rim extends Model
 //          $availability .= '<br><p>' . $stock_name . ': 0</p>';
 //        }
 //      }
-//    } else {
-//      $dot = $this->getDotAvailableAttribute();
-//      if ($dot === 'red') {
-//        $availability = '<p style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</p>';
-//      } else if ($dot === 'yellow' || $dot === 'half-yellow') {
-//        $availability = '<p style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
-//      }
-//    }
-//    $availability .= '';
+    } else {
+      $dot = $this->getDotAvailableAttribute();
+      if ($dot === 'red') {
+        $availability = '<p style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</p>';
+      } else if ($dot === 'yellow' || $dot === 'half-yellow') {
+        $availability = '<p style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
+      }
+    }
+    $availability .= '';
 
-//    return $availability;
-    return '<p style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</p>';
+    return $availability;
   }
+
+  public function getBrandTitleAttribute()
+  {
+    $tread = Rimmake::where('make_id', $this->make_id)->first();
+    $brand = Rimbrand::where('brand_id', $tread->brand_id)->first();
+
+    return $brand->title;
+  }
+
+  public function getTreadTitleAttribute()
+  {
+    $tread = Rimmake::where('make_id', $this->make_id)->first();
+
+    return $tread->title;
+  }
+
+  function getFullNameAttribute()
+  {
+    return $this->getBrandTitleAttribute() . ' ' . $this->getTreadTitleAttribute() . ' ' . $this->skr . 'x' . $this->pcd . ' R' . $this->d3 . ' ' . $this->d1 . 'J et' . $this->et . ' ' . $this->dc . ' ' . $this->color;
+  }
+
 }

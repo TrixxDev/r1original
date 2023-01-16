@@ -53,8 +53,8 @@
                         <div class="qty">
                           <div class="input-group bootstrap-touchspin" style="transform: none;">
                             <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
-{{--                            <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">--}}
-{{--                            <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title }}">--}}
+                            <input type="hidden" name="article" class="tire_article" value="{{ $currRim->article }}">
+                            <input type="hidden" name="title" class="tire_title" value="{{ $currRim->fullName }}">
                             <input type="text" name="qty" id="quantity_wanted" value="4" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                             <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                             <span class="input-group-btn-vertical">
@@ -69,7 +69,7 @@
                         </div>
                         <div class="add">
 {{--                          {{ dd($currRim) }}--}}
-                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
+                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
                                   data-info="{{ $currRim->rim_id }}"
                           >
                             <i class="material-icons shopping-cart"></i>
@@ -181,6 +181,7 @@
                   @foreach($rims as $rim)
                     @if($rim->price2)
                       <tr @if($currRim->rim_id == $rim->rim_id) style="font-weight: bold; background-color: #e0e0e0;" @endif class="tire-table-row">
+                        <th class="tire-info" style="display: none;" data-article="{{ $rim->article }}" data-content="{{ $rim->fullName }}"></th>
                         <th scope="row" class="tire-table-checkbox">
                           <input type="checkbox" value="{{$rim->rim_id}}" name="product_ids[]"
                                  class="tire-table-checkbox">
@@ -240,10 +241,11 @@
                         </td>
 
                         <td class="dot-availability text-center">
-                              <span class="dot red" data-toggle="tooltip"
+                              <span class="dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}"
+                                    data-toggle="tooltip"
                                     data-html="true"
-                                    title="red">
-                                <span class="sort-order">red</span>
+                                    title="<span>{{ $rim->stockAvailability }}</span>">
+                                <span class="sort-order">{{ $rim->dotAvailable }}</span>
                               </span>
                         </td>
                       </tr>
