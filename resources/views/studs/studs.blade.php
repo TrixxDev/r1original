@@ -25,7 +25,7 @@
                   @foreach($studs as $stud)
                   @if($stud->price1)
                     <a
-                      href="{{ route('radze', [\Str::slug($stud->brand), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
+                      href="{{ route('radze', [$stud->brand, strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
                       class="grid-view-link"
                       data-article="{{ $stud->article }}">
                       <div class="tire-image-card sort-order">
@@ -63,7 +63,7 @@
 
                               <button class="grid-buy-btn cart-shopping-button"
                                       data-toggle="modal"
-                                      data-info="{{ $stud->tire_id }}"
+                                      data-info="{{ $stud->stud_id }}"
                                       {{--                                      data-info="{{ $currTire->tire_id }}--}}
                                       onclick="event.preventDefault()"
                                       @hasrole('administrators')
@@ -143,17 +143,10 @@
                     </th>
 
                     <td class="table-tire-name-cell">
-                      <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                         title='
-                           {!! App\Helper\Image::show('studs', $stud->make_id) !!}
-                           '
-                         href="{{ route('radze', [\Str::slug($stud->brand), strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
-                         data-content="
-                          {{ $stud->title . ' ' . $stud->fullSize }}
-                           "
-                         data-article="
-                          {{ $stud->article }}
-                           ">
+                      <a data-toggle="tooltip" data-html="true" class="tire-table-link" title='{!! App\Helper\Image::show('studs', $stud->make_id) !!}'
+                         href="{{ route('radze', [$stud->brand, strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
+                         data-content="{{ $stud->fullName }}"
+                         data-article="{{ $stud->article }}">
                         <div class="table-link-title">{{ $stud->fullName }}</div>
                       </a>
                     </td>

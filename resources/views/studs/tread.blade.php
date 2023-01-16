@@ -42,7 +42,7 @@
 
                         <div class="current-price">
                           <span>Akcijas cena:</span>
-                          <span itemprop="price" content=" $currRim->price3 ">€ {{ $currStud->price2 }}</span>
+                          <span itemprop="price" content="{{ $currStud->price2 }}">€ {{ $currStud->price2 }}</span>
                         </div>
                       </div>
                     </div>
@@ -53,23 +53,23 @@
                         <div class="qty">
                           <div class="input-group bootstrap-touchspin" style="transform: none;">
                             <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
-                            {{--                            <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">--}}
-                            {{--                            <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title }}">--}}
+                            <input type="hidden" name="article" class="tire_article" value="{{ $currStud->article }}">
+                            <input type="hidden" name="title" class="tire_title" value="{{ $currStud->fullName }}">
                             <input type="text" name="qty" id="quantity_wanted" value="1" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                             <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                             <span class="input-group-btn-vertical">
-                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
-                                              <i class="material-icons touchspin-up"></i>
-                                            </button>
-                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" type="button">
-                                              <i class="material-icons touchspin-down"></i>
-                                            </button>
-                                          </span>
+                              <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
+                                <i class="material-icons touchspin-up"></i>
+                              </button>
+                              <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" type="button">
+                                <i class="material-icons touchspin-down"></i>
+                              </button>
+                            </span>
                           </div>
                         </div>
                         <div class="add">
                           {{--                          {{ dd($currRim) }}--}}
-                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
+                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
                                   data-info="{{ $currStud->stud_id }}"
                           >
                             <i class="material-icons shopping-cart"></i>
@@ -103,11 +103,30 @@
                     </table>
                   </div>
                   <div class="col-sm-12 col-md-8">
-                    @if($currStud->comment)
-                      <div class="alert" style="border: 1px solid #68c0a8">
-                        {{ $currStud->comment }}
-                      </div>
-                    @endif
+                    <ul class="nav nav-tabs" style="border-bottom: none!important;">
+                      @if (!empty($currStud->t_comment))
+                        <li class="nav-item">
+                          <a class="nav-link active" data-toggle="tab" href="#tread" style="border-color: #68c0a8 #68c0a8 transparent">Apraksts</a>
+                        </li>
+                      @endif
+                      @if (!empty($currStud->b_comment))
+                        <li class="nav-item">
+                          <a class="nav-link @if (!$currStud->t_comment) active @endif" data-toggle="tab" href="#brand" style="border-color: #68c0a8 #68c0a8 transparent">Par zīmolu</a>
+                        </li>
+                      @endif
+                    </ul>
+                    <div class="tab-content">
+                      @if (!empty($currStud->t_comment))
+                        <div id="tread" class="container alert tab-pane active" style="border: 1px solid #68c0a8">
+                          {!! $currStud->t_comment !!}
+                        </div>
+                      @endif
+                      @if (!empty($currStud->b_comment))
+                        <div id="brand" class="container alert tab-pane @if (!$currStud->t_comment) active @endif" style="border: 1px solid #68c0a8">
+                          {!! $currStud->b_comment !!}
+                        </div>
+                      @endif
+                    </div>
                   </div>
                 </div>
               </div>
@@ -142,6 +161,7 @@
 {{--                    --}}{{--                    {{dd($rim->price1, $rim->price2, $rim->price3)}}--}}
                     @if($stud->price2)
                       <tr @if($currStud->stud_id == $stud->stud_id) style="font-weight: bold; background-color: #e0e0e0;" @endif class="tire-table-row">
+                        <th class="tire-info" style="display: none;" data-article="{{ $stud->article }}" data-content="{{ $stud->fullName }}"></th>
                         <th scope="row" class="tire-table-checkbox">
                           <input type="checkbox" value="{{$stud->stud_id}}" name="product_ids[]"
                                  class="tire-table-checkbox">

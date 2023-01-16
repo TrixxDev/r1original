@@ -43,7 +43,7 @@
 
         // STUDS
         case 'studs':
-          $dir = $path . '/studs/' . $image . '-o.jpg';
+          $dir = $path . '/stud/tread/' . $image . '-o.jpg';
           break;
       }
 
