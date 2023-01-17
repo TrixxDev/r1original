@@ -3448,7 +3448,6 @@ if (localStorage.getItem('wet-surface-dropdown') === 'true') {
 }
 
 $('.popup-code-dropdown').on('click', function() {
-  // console.log();
   if ($(this).parent().next('ul').is(":visible")){
     $(this).css('transform', 'rotate(0deg)');
   } else {
