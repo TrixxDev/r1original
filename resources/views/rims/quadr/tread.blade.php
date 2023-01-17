@@ -26,7 +26,7 @@
               <div class="col-md-12 col-lg-8">
                 <div class="row">
                   <div class="col-sm-12 product-main-details">
-                    <h1 class="h1 mt-1" itemprop="name">{{$brand->title.' '.$tread->title}}</h1>
+                    <h1 class="h1 mt-1" itemprop="name">{{$currRim->brandTitle . ' ' . $currRim->treadTitle}}</h1>
                   </div>
                   <div class="col-sm-12 col-md-12 col-lg-6">
                     <div class="product-prices">
@@ -51,22 +51,22 @@
                         <div class="qty">
                           <div class="input-group bootstrap-touchspin" style="transform: none;">
                             <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
-                            {{--                            <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">--}}
-                            {{--                            <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title }}">--}}
-                            <input type="text" name="qty" id="quantity_wanted" value="4" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
+                            <input type="hidden" name="article" class="tire_article" value="{{ $currRim->article }}">
+                            <input type="hidden" name="title" class="tire_title" value="{{ $currRim->fullName }}">
+                            <input type="text" name="qty" id="quantity_wanted" value="{{ $cartQty }}" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                             <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                             <span class="input-group-btn-vertical">
-                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
-                                              <i class="material-icons touchspin-up"></i>
-                                            </button>
-                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" type="button">
-                                              <i class="material-icons touchspin-down"></i>
-                                            </button>
-                                          </span>
+                              <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
+                                <i class="material-icons touchspin-up"></i>
+                              </button>
+                              <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" type="button">
+                                <i class="material-icons touchspin-down"></i>
+                              </button>
+                            </span>
                           </div>
                         </div>
                         <div class="add">
-                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
+                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
                                   data-info="{{ $currRim->rim_id }}"
                           >
                             <i class="material-icons shopping-cart"></i>
@@ -95,10 +95,6 @@
                       <tr>
                         <th>Skrūvju izbīdījums</th>
                         <td>{{ $currRim->pcd }}</td>
-                      </tr>
-                      <tr>
-                        <th>Centrālais caurums</th>
-                        <td>{{ $currRim->dc }}</td>
                       </tr>
                       <tr>
                         <th>Skrūvju skaits</th>
@@ -157,7 +153,6 @@
                     <th scope="col" class="hidden-sm-down text-center">Skrūvju skaits</th>
                     <th scope="col" class="hidden-sm-down text-center">Skrūvju attālums</th>
                     <th scope="col" class="hidden-sm-down text-center">ET</th>
-                    <th scope="col" class="hidden-sm-down text-center">Centrs</th>
                     <th scope="col" class="hidden-sm-down text-center">Krāsa</th>
 
                     <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
@@ -183,7 +178,7 @@
 
                         <td>
                           <a data-toggle="tooltip" data-html="true" class="rim-table-link">
-                            {{ $rim->brand_title . ' ' . $rim->title }}
+                            {{ $rim->brand_title . ' ' . $rim->treadTitle }}
                           </a>
                         </td>
                         <td class="text-center">
@@ -199,11 +194,7 @@
                         </td>
 
                         <td class="text-center hidden-sm-down">
-                          et{{ $rim->et }}
-                        </td>
-
-                        <td class="text-center hidden-sm-down">
-                          {{$rim->dc}}
+                          {{ $rim->et }}
                         </td>
 
                         <td class="hidden-sm-down text-center">
@@ -227,11 +218,12 @@
                         </td>
 
                         <td class="dot-availability text-center">
-                              <span class="dot red" data-toggle="tooltip"
-                                    data-html="true"
-                                    title="red">
-                                <span class="sort-order">red</span>
-                              </span>
+                          <span class="dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}"
+                                data-toggle="tooltip"
+                                data-html="true"
+                                title="<span>{{ $rim->stockAvailability }}</span>">
+                            <span class="sort-order">{{ $rim->dotAvailable }}</span>
+                          </span>
                         </td>
                       </tr>
                     @endif
