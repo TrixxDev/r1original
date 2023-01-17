@@ -27,14 +27,37 @@ class SyncController extends Controller
     public $tire_tables;
     public $stock_tables;
 
+    public $urs = 0;
+    public $krs = 0;
+
     public function __construct()
     {
-        $this->tire_tables = [
-            'auto_tires' => 'auto_stock',
-            'moto_tires' => 'moto_stock',
-            'quadr_tires' => 'quadr_stock',
-            'studs' => '',
-        ];
+      $this->tire_tables = [
+        'auto_tires' => [
+          'Autotire',
+          'auto_stock'
+        ],
+        'moto_tires' => [
+          'Moto',
+          'moto_stock'
+        ],
+        'quadr_tires' => [
+          'Quadr',
+          'quadr_stock'
+        ],
+        'rims' => [
+          'Rim',
+          ''
+        ],
+        'quadrims' => [
+          'Quadrim',
+          'quadrim_stock'
+        ],
+        'studs' => [
+          'Stud',
+          ''
+        ],
+      ];
     }
 
     // Accrual Sync - (Public) 212.3.218.22 - (Local) 192.168.0.36
@@ -65,66 +88,184 @@ class SyncController extends Controller
         }
 
 	      if (!$article) {
-          foreach ($this->tire_tables as $tire_table => $tire_stock) {
-            $stock = $this->getInventory($tire_table);
-            //$tires_map = $this->getAccrualIdToEntityIdMap($tire_table);
-            $tires_map = DB::table($tire_table)->get();
-            //dd($tires_map);
-
-            if ($stock === FALSE) {
-              echo 'Accrual sync failed!';
-              return false;
-            }
 
             // $this->updateStock($stock[1]);
 
-            $this->updateStock($stock[2]);
-            $this->updatePrices($tires_map);
+//            $this->updateStock($stock[2]);
+            $this->updateArticles();
             DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
             echo 'Done';
-          }
         } else {
 
 //	        dd($article);
+//
+//          $tire = DB::table('auto_tires')->where('article', $article)->first();
+//          if ($tire === null) $tire = DB::table('moto_tires')->where('article', $article)->first();
+//          if ($tire === null) $tire = DB::table('quadr_tires')->where('article', $article)->first();
+//          if ($tire === null) $tire = DB::table('quadrims')->where('article', $article)->first();
+//          if ($tire === null) $tire = DB::table('studs')->where('article', $article)->first();
+//          if ($tire === null) return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
 
-          $stock = $this->getInventory('auto_tires', $article);
-          if (empty($stock[2])) $stock = $this->getInventory('moto_tires', $article);
-          if (empty($stock[2])) $stock = $this->getInventory('quadr_tires', $article);
-          if (empty($stock[2])) $stock = $this->getInventory('studs', $article);
-          if (empty($stock[2])) return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
-          //dd($stock);
-          $this->updateStock($stock[2]);
-          $tire = DB::table('auto_tires')->where('article', $request->article)->first();
-          if ($tire === null) $tire = DB::table('moto_tires')->where('article', $request->article)->first();
-          if ($tire === null) $tire = DB::table('quadr_tires')->where('article', $request->article)->first();
-          if ($tire === null) $tire = DB::table('studs')->where('article', $request->article)->first();
-          if ($tire === null) return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
-//          $this->updatePrices();
-          return json_encode(['urs_quantity' => $tire->urs_quantity, 'krs_quantity' => $tire->krs_quantity]);
+          $productInfo = $this->getAccrualInventory($article);
+          if (isset($productInfo[$article])) {
+            $stores = $productInfo['_stores'][$article];
+
+            if (isset($stores[1])) {
+              $this->urs = $stores[1];
+              $this->urs = str_replace('Noliktava: ', '', $this->urs);
+              $this->urs = intval($this->urs);
+            } else {
+              $this->urs = 0;
+            }
+            if (isset($stores[2])) {
+              $this->krs = $stores[2];
+              $this->krs = str_replace('Veikals: ', '', $this->krs);
+              $this->krs = intval($this->krs);
+            } else {
+              $this->krs = 0;
+            }
+          }
+
+          $this->updateArticle($article);
+          return json_encode(['urs_quantity' => intval($this->urs), 'krs_quantity' => intval($this->krs)]);
         }
     }
 
-  public function updatePrices($stock)
-  {
-    foreach ($stock as $value) {
-      if (!isset($value->tire_id)) {
-        $id = $value->stud_id;
-      } else {
-        $id = $value->tire_id;
-      }
-      foreach ($this->tire_tables as $tire_table => $tire_stock) {
-        $primary_key = ($tire_table == 'studs') ? 'stud_id' : 'tire_id';
-        $product = DB::table($tire_table)->where('article', $value->article)->first();
+    public function updateArticle($article)
+    {
 
-        if ($product) {
-	        $article = '';
+      foreach ($this->tire_tables as $tire_table => $tire_options) {
+
+        $model = "App\\Models\\" . $tire_options[0];
+
+        $product = $model::where('article', $article)->first();
+        if (!$product) {
+          continue;
+        }
+
+        $sql = "SELECT ArticleId as ArtikulaId, Deleted FROM katdetal WHERE Deleted = 0 AND Artikuls = '$article'";
+        $result = $this->accrual->query($sql);
+
+        foreach ($result as $row) {
+          $article = $row['ArtikulaId'];
+        }
+
+        $productInfo = $this->getAccrualInventory($product->article);
+        if (isset($productInfo[$product->article])) {
+          $total = intval($productInfo[$product->article]);
+          $product->quantity = $total;
+
+          $stores = $productInfo['_stores'][$product->article];
+
+          if (isset($stores[1])) {
+            $this->urs = $stores[1];
+            $this->urs = str_replace('Noliktava: ', '', $this->urs);
+            $product->urs_quantity = intval($this->urs);
+          } else {
+            $product->urs_quantity = 0;
+          }
+          if (isset($stores[2])) {
+            $this->krs = $stores[2];
+            $this->krs = str_replace('Veikals: ', '', $this->krs);
+            $product->krs_quantity = intval($this->krs);
+          } else {
+            $product->krs_quantity = 0;
+          }
+
+          $product->updated_at = date('Y-m-d H:i:s');
+          $product->save();
+        } else {
+          $product->quantity = 0;
+          $product->urs_quantity = 0;
+          $product->krs_quantity = 0;
+          $product->updated_at = date('Y-m-d H:i:s');
+          $product->save();
+        }
+
+        $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND k.ArticleId = '" . $article . "'";
+        $result = $this->accrual->query($sql);
+        if ($result->rowCount()) {
+          foreach ($result as $rows) {
+            set_time_limit(0);
+            $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
+            if ($rows['Deleted'] == 1) {
+              $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+            } else {
+              $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
+            }
+          }
+          $product->price1 = $veikala_cena;
+          $product->price2 = $akcijas_cena;
+          $product->updated_at = date('Y-m-d H:i:s');
+          $product->save();
+        } else {
+          $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
+          $result = $this->accrual->query($sql);
+          if ($result->rowCount()) {
+            foreach ($result as $rows) {
+              set_time_limit(0);
+              $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
+              $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+            }
+            $product->price1 = $veikala_cena;
+            $product->price2 = $akcijas_cena;
+            $product->updated_at = date('Y-m-d H:i:s');
+            $product->save();
+          }
+        }
+      }
+    }
+
+    public function updateArticles()
+    {
+
+      foreach ($this->tire_tables as $tire_table => $tire_options) {
+        $primary_key = app("App\\Models\\$tire_options[0]")->getKeyName();
+
+        $products = DB::table($tire_table)->get();
+
+        foreach ($products as $product) {
+//          if ($product->$primary_key != '155300') continue;
+          $product = app("App\\Models\\$tire_options[0]")->where($primary_key, $product->$primary_key)->first();
+          $article = '';
 
           $sql = "SELECT ArticleId as ArtikulaId, Deleted FROM katdetal WHERE Deleted = 0 AND Artikuls = '" . $product->article . "'";
-          //$sql = "SELECT ArticleId as ArtikulaId FROM katdetal WHERE Artikuls = '16205/55NHKPL1094TXL'";
           $result = $this->accrual->query($sql);
 
           foreach ($result as $row) {
             $article = $row['ArtikulaId'];
+          }
+
+          $productInfo = $this->getAccrualInventory($product->article);
+          if (isset($productInfo[$product->article])) {
+            $total = intval($productInfo[$product->article]);
+            $product->quantity = $total;
+
+            $stores = $productInfo['_stores'][$product->article];
+
+            if (isset($stores[1])) {
+              $this->urs = $stores[1];
+              $this->urs = str_replace('Noliktava: ', '', $this->urs);
+              $product->urs_quantity = intval($this->urs);
+            } else {
+              $product->urs_quantity = 0;
+            }
+            if (isset($stores[2])) {
+              $this->krs = $stores[2];
+              $this->krs = str_replace('Veikals: ', '', $this->krs);
+              $product->krs_quantity = intval($this->krs);
+            } else {
+              $product->krs_quantity = 0;
+            }
+
+            $product->updated_at = date('Y-m-d H:i:s');
+            $product->save();
+          } else {
+            $product->quantity = 0;
+            $product->urs_quantity = 0;
+            $product->krs_quantity = 0;
+            $product->updated_at = date('Y-m-d H:i:s');
+            $product->save();
           }
 
           $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND k.ArticleId = '" . $article . "'";
@@ -140,468 +281,517 @@ class SyncController extends Controller
                 $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
               }
             }
-            //var_dump(count($stockCount));
-            DB::table($tire_table)->where($primary_key, $id)->update([
-              'price1' => $veikala_cena,
-              'price2' => $akcijas_cena,
-              'updated_at' => date('Y-m-d H:i:s')
-            ]);
+            $product->price1 = $veikala_cena;
+            $product->price2 = $akcijas_cena;
+            $product->updated_at = date('Y-m-d H:i:s');
+            $product->save();
           } else {
-	          $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
-            //$sql = "SELECT * FROM katalogs k WHERE k.ArticleId = '141309'";
+            $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
             $result = $this->accrual->query($sql);
-            //dd($result->rowCount());
             if ($result->rowCount()) {
                 foreach ($result as $rows) {
                   set_time_limit(0);
                   $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
                   $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
                 }
+                $product->price1 = $veikala_cena;
+                $product->price2 = $akcijas_cena;
+                $product->updated_at = date('Y-m-d H:i:s');
+                $product->save();
+            }
+          }
+        }
+      }
+    }
+
+    public function updateStock($stock)
+    {
+      $stockCount = [];
+
+      foreach ($stock as $id => $value) {
+
+        $noliktavas = explode(';', $value);
+        if (strpos(@$noliktavas[0], 'Noliktava') !== false) {
+          $urs = @$noliktavas[0];
+          $krs = @$noliktavas[1];
+        } else if (strpos(@$noliktavas[0], 'Veikals') !== false) {
+          $urs = @$noliktavas[1];
+          $krs = @$noliktavas[0];
+        }
+
+        @$urs = explode(': ', $urs);
+        @$urs_quantity = ((int) $urs[1] <= 0) ? 0 : (int) $urs[1];
+
+        @$krs = explode(': ', $krs);
+        @$krs_quantity = ((int) $krs[1] <= 0) ? 0 : (int) $krs[1];
+
+        $total = $urs_quantity + $krs_quantity;
+
+        foreach ($this->tire_tables as $tire_table => $tire_options) {
+
+          $primary_key = app("App\\Models\\$tire_options[0]")->getKeyName();
+          $product = DB::table($tire_table)->where($primary_key, $id)->first();
+
+          if ($product) {
+
+            $article = '';
+
+            $sql = "SELECT ArticleId as ArtikulaId, Deleted FROM katdetal WHERE Deleted = 0 AND Artikuls = '" . $product->article . "'";
+            //$sql = "SELECT ArticleId as ArtikulaId FROM katdetal WHERE Artikuls = '16205/55NHKPL1094TXL'";
+            $result = $this->accrual->query($sql);
+
+            foreach ($result as $row) {
+              $article = $row['ArtikulaId'];
+            }
+
+            $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
+            //$sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.ArticleId = '141309'";
+            $result = $this->accrual->query($sql);
+            if ($result->rowCount()) {
+              //var_dump(count($stockCount));
+              DB::table($tire_table)->where($primary_key, $id)->update([
+                'quantity' => $total,
+                'urs_quantity' => @$urs_quantity,
+                'krs_quantity' => @$krs_quantity,
+                'updated_at' => date('Y-m-d H:i:s')
+              ]);
+            } else {
+              $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
+              //$sql = "SELECT * FROM katalogs k WHERE k.ArticleId = '141309'";
+              $result = $this->accrual->query($sql);
+              //dd($result->rowCount());
+              if ($result->rowCount()) {
                 DB::table($tire_table)->where($primary_key, $id)->update([
-                  'price1' => $veikala_cena,
-                  'price2' => $akcijas_cena,
+                  'quantity' => $total,
+                  'urs_quantity' => @$urs_quantity,
+                  'krs_quantity' => @$krs_quantity,
                   'updated_at' => date('Y-m-d H:i:s')
                 ]);
+              } else {
+                DB::table($tire_table)->where($primary_key, $id)->update([
+                  'quantity' => $total,
+                  'urs_quantity' => @$urs_quantity,
+                  'krs_quantity' => @$krs_quantity,
+                  'updated_at' => date('Y-m-d H:i:s')
+                ]);
+              }
             }
-	        }
-	      } else {
-          DB::table($tire_table)->where($primary_key, $id)->update(['quantity' => 0, 'krs_quantity' => 0, 'urs_quantity' => 0]);
+
+          }
         }
       }
     }
-  }
 
-  public function updateStock($stock)
-  {
-    $stockCount = [];
+  //    public function updateStock($stock)
+  //    {
+  //        foreach ($stock as $id => $value) {
+  //
+  //            $noliktavas = explode(';', $value);
+  //            $urs = @$noliktavas[0];
+  //            $krs = @$noliktavas[1];
+  //
+  //            $urs = explode(': ', $urs);
+  //            @$urs_quantity = (int) $urs[1];
+  //
+  //            $krs = explode(': ', $krs);
+  //            @$krs_quantity = (int) $krs[1];
+  //
+  //            $product = Autotire::findOrFail($id);
+  //            if ($product) {
+  //                $product->timestamps = false;
+  //                $product->quantity = $urs_quantity + $krs_quantity;
+  //                $product->save();
+  //            }
+  //        }
+  //    }
 
-    foreach ($stock as $id => $value) {
-
-      $noliktavas = explode(';', $value);
-      if (strpos(@$noliktavas[0], 'Noliktava') !== false) {
-        $urs = @$noliktavas[0];
-        $krs = @$noliktavas[1];
-      } else if (strpos(@$noliktavas[0], 'Veikals') !== false) {
-        $urs = @$noliktavas[1];
-        $krs = @$noliktavas[0];
-      }
-
-      @$urs = explode(': ', $urs);
-      @$urs_quantity = (int) $urs[1];
-
-      @$krs = explode(': ', $krs);
-      @$krs_quantity = (int) $krs[1];
-
-      $total = $urs_quantity + $krs_quantity;
-
-      foreach ($this->tire_tables as $tire_table => $tire_stock) {
-        $primary_key = ($tire_table == 'studs') ? 'stud_id' : 'tire_id';
-        $product = DB::table($tire_table)->where($primary_key, $id)->first();
-
-        if ($product) {
-
-          $article = '';
-
-          $sql = "SELECT ArticleId as ArtikulaId, Deleted FROM katdetal WHERE Deleted = 0 AND Artikuls = '" . $product->article . "'";
-          //$sql = "SELECT ArticleId as ArtikulaId FROM katdetal WHERE Artikuls = '16205/55NHKPL1094TXL'";
-          $result = $this->accrual->query($sql);
-
-          foreach ($result as $row) {
-            $article = $row['ArtikulaId'];
-          }
-
-          $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
-          //$sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.ArticleId = '141309'";
-          $result = $this->accrual->query($sql);
-	        if ($result->rowCount()) {
-            //var_dump(count($stockCount));
-            DB::table($tire_table)->where($primary_key, $id)->update([
-              'quantity' => $total,
-              'urs_quantity' => @$urs_quantity,
-              'krs_quantity' => @$krs_quantity,
-              'updated_at' => date('Y-m-d H:i:s')
-            ]);
-          } else {
-            $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
-            //$sql = "SELECT * FROM katalogs k WHERE k.ArticleId = '141309'";
-	          $result = $this->accrual->query($sql);
-            //dd($result->rowCount());
-            if ($result->rowCount()) {
-	            DB::table($tire_table)->where($primary_key, $id)->update([
-                'quantity' => $total,
-                'urs_quantity' => @$urs_quantity,
-                'krs_quantity' => @$krs_quantity,
-                'updated_at' => date('Y-m-d H:i:s')
-              ]);
-	          } else {
-	            DB::table($tire_table)->where($primary_key, $id)->update([
-                'quantity' => $total,
-                'urs_quantity' => @$urs_quantity,
-                'krs_quantity' => @$krs_quantity,
-                'updated_at' => date('Y-m-d H:i:s')
-              ]);
-	          }
-          }
-
-        }
-      }
-    }
-  }
-
-//    public function updateStock($stock)
-//    {
-//        foreach ($stock as $id => $value) {
-//
-//            $noliktavas = explode(';', $value);
-//            $urs = @$noliktavas[0];
-//            $krs = @$noliktavas[1];
-//
-//            $urs = explode(': ', $urs);
-//            @$urs_quantity = (int) $urs[1];
-//
-//            $krs = explode(': ', $krs);
-//            @$krs_quantity = (int) $krs[1];
-//
-//            $product = Autotire::findOrFail($id);
-//            if ($product) {
-//                $product->timestamps = false;
-//                $product->quantity = $urs_quantity + $krs_quantity;
-//                $product->save();
-//            }
-//        }
-//    }
-
-  public function getInventory($tire_table, $article = null)
-  {
-    $map = $this->getAccrualIdToEntityIdMap($tire_table);
-
-//        dd($map);
-    $inventory = $this->getAccrualInventory($article);
-
-//        dd($inventory);
-
-    if ($article && !isset($inventory[$article])){
-      $inventory = ['_stores' => [$article => ['0']], $article => 0];
-    }
-
-    $stores = $inventory['_stores'];
-    unset($inventory['_stores']);
-    $articles = array_keys($stores);
-    $stores = array_combine($articles, array_map('implode', array_fill(0,count($stores),';'), $stores));
-
-//        dump($map, $inventory, $stores); die;
-
-    $stock = $this->mapInventory($map, $inventory);
-    $storestock = $this->mapInventory($map, $stores);
-
-//        dump($stock, $storestock);die;
-    return [$articles, $stock, $storestock];
-  }
-
-  public function getAccrualIdToEntityIdMap($tire_table)
-  {
-    $sql = DB::table($tire_table)->get();
-    $result = [];
-
-    foreach ($sql as $row) {
-      if (!isset($row->tire_id)) {
-        array_push($result, ['tire_id' => $row->stud_id, 'article' => $row->article]);
-      } else {
-        array_push($result, ['tire_id' => $row->tire_id, 'article' => $row->article]);
-      }
-    }
-
-//        Jāuztaisa masīvs - [
-//        [
-//              'tire_id' => $tire_id,
-//              'accrual_id' => $accrual_id
-//        ]
-
-    $mapped = array_column($result, 'article', 'tire_id');
-
-    return $mapped;
-  }
-
-  public function mapInventory($map, $inventory) {
-    $stock = [];
-
-    foreach($map as $entity_id => $accrual_id) {
-      if(array_key_exists($accrual_id, $inventory)) {
-        $stock[$entity_id] = $inventory[$accrual_id];
-      }
-    }
-
-    return $stock;
-  }
-
-  public function getAccrualInventory($article = null) {
-
-    $stores = $this->getAccrualStores();
-
-//        $article = '15215/70DECONODRIVE109SC';
-    $sql = "SELECT k.Artikuls, a.Atlikums, a.Rezervets, (a.Atlikums - a.Rezervets) AS atl_min_rez, a.StorId
-		FROM atlikumi a INNER JOIN katdetal k ON (k.ArticleId = a.ArticleId) WHERE a.FrFirmId = 1";
-
-    if($article) $sql .= " AND k.Artikuls = '$article'";
-
-    $result = $this->accrual->query($sql);
-
-    $inventory = ['_stores'=>[]];
-
-    foreach ($result as $row) {
-
-      if($row['StorId'] == 0) {
-        $inventory[$row['Artikuls']] = $row['atl_min_rez'];
-      }
-      else {
-        $storId = $row['StorId'];
-
-        if(!isset($inventory['_stores'][$row['Artikuls']])) $inventory['_stores'][$row['Artikuls']] = array();
-
-        if(isset($stores[$storId])) $inventory['_stores'][$row['Artikuls']][(int)$storId] = $stores[$storId] . ': '. $row['atl_min_rez'];
-      }
-    }
-
-//    dd($inventory);
-
-    return $inventory;
-  }
-
-  public function getAccrualStores() {
-
-    $sql = "SELECT StorId, Nosaukums FROM unobjekti WHERE Deleted = 0 AND Veids = 1;";
-
-    $result = $this->accrual->query($sql);
-    $stores = [];
-
-    foreach ($result as $row) {
-      if (strpos($row['Nosaukums'], 'Noliktava') !== false || strpos($row['Nosaukums'], 'Veikals') !== false) {
-        $stores[$row['StorId']] = $row['Nosaukums'];
-      }
-    }
-
-    return $stores;
-  }
-
-    // Lattako sync
-
-    public function i3auto()
+    public function getInventory($tire_tables, $article = null)
     {
+      $map = $this->getAccrualIdToEntityIdMap($tire_tables, $article);
 
-        set_time_limit(0);
-        $sync = DB::table('sync_times')->where('name', 'i3-auto')->get();
-        $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
-        $time_now = \Carbon\Carbon::now();
-        if ($time_now->diff($sync_time)->invert == 1) {
-          $token_url = "api.latakko.eu/Token";
+  //        dd($map);
+      $inventory = $this->getAccrualInventory($article);
 
-          $curl = curl_init();
-          curl_setopt_array($curl, array(
-            CURLOPT_URL => $token_url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-            CURLOPT_HTTPHEADER => array(
-              "cache-control: no-cache",
-              "content-type: application/x-www-form-urlencoded"
-            ),
-          ));
-          $response = curl_exec($curl);
-          $err = curl_error($curl);
+  //        dd($inventory);
 
-          curl_close($curl);
+      if ($article && !isset($inventory[$article])){
+        $inventory = ['_stores' => [$article => ['0']], $article => 0];
+      }
 
-          if (!$err)
-          {
-            $token = json_decode($response);
-          } else {
-            throw new \Exception($err);
-          }
+      $stores = $inventory['_stores'];
+      unset($inventory['_stores']);
+      $articles = array_keys($stores);
+      $stores = array_combine($articles, array_map('implode', array_fill(0,count($stores),';'), $stores));
 
-          $token_bearer = $token->access_token;
+  //        dump($map, $inventory, $stores); die;
 
-          $curl = curl_init();
-          curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-              "cache-control: no-cache",
-              "authorization: Bearer " . $token_bearer,
-            ),
-          ));
-          $response = curl_exec($curl);
+      $stock = $this->mapInventory($map, $inventory);
+      $storestock = $this->mapInventory($map, $stores);
 
-	        $filename = 'xml/i3-auto.txt';
+  //        dump($stock, $storestock);die;
+      return [$articles, $stock, $storestock];
+    }
 
-          file_put_contents($filename, $response);
-	        chmod($filename, 0775);
+    public function getAccrualIdToEntityIdMap($tire_tables, $article = null)
+    {
+      $result = [];
 
-          $err = curl_error($curl);
+      foreach ($tire_tables as $tire_table => $tire_options) {
 
-          if ($err) throw new \Exception($err);
-
-          curl_close($curl);
+        if ($article) {
+          $sql = DB::table($tire_table)->where('article', $article)->get();
+        } else {
+          $sql = DB::table($tire_table)->get();
         }
 
-        $counted = 0;
-        $updated = 0;
+        foreach ($sql as $row) {
+          $key = app("App\\Models\\$tire_options[0]")->getKeyName();
+          array_push($result, ['tire_id' => $row->$key, 'article' => $row->article]);
+        }
 
-        Autostock::where('itype', 'i3')->update(['quantity' => 0]);
+  //        Jāuztaisa masīvs - [
+  //        [
+  //              'tire_id' => $tire_id,
+  //              'accrual_id' => $accrual_id
+  //        ]
 
-        $content = file_get_contents('xml/i3-auto.txt');
-        $content = json_decode($content);
+      }
+      $mapped = array_column($result, 'article', 'tire_id');
 
-        $out = '';
+      return $mapped;
+    }
 
-        foreach ($content as $item) {
+    public function mapInventory($map, $inventory) {
+      $stock = [];
 
-          $counted++;
+      foreach($map as $entity_id => $accrual_id) {
+        if(array_key_exists($accrual_id, $inventory)) {
+          $stock[$entity_id] = $inventory[$accrual_id];
+        }
+      }
 
-          $stock = Autostock::where('itype', 'i3')->where('article', $item->ArticleId)->first();
-          if (!$stock) {
-            continue;
+      return $stock;
+    }
+
+    public function getAccrualInventory($article = null) {
+
+      $stores = $this->getAccrualStores();
+
+  //        $article = '15215/70DECONODRIVE109SC';
+        $sql = "SELECT k.Artikuls, a.Atlikums, a.Rezervets, (a.Atlikums - a.Rezervets) AS atl_min_rez, a.StorId
+        FROM atlikumi a INNER JOIN katdetal k ON (k.ArticleId = a.ArticleId) WHERE a.FrFirmId = 1";
+
+      if($article) $sql .= " AND k.Artikuls = '$article'";
+
+      $result = $this->accrual->query($sql);
+
+      $inventory = ['_stores'=>[]];
+
+      foreach ($result as $row) {
+
+        if($row['StorId'] == 0) {
+          $inventory[$row['Artikuls']] = $row['atl_min_rez'];
+        }
+        else {
+          $storId = $row['StorId'];
+
+          if(!isset($inventory['_stores'][$row['Artikuls']])) $inventory['_stores'][$row['Artikuls']] = array();
+
+          if(isset($stores[$storId])) $inventory['_stores'][$row['Artikuls']][(int)$storId] = $stores[$storId] . ': '. $row['atl_min_rez'];
+        }
+      }
+
+  //    dd($inventory);
+
+      return $inventory;
+    }
+
+    public function getAccrualStores() {
+
+      $sql = "SELECT StorId, Nosaukums FROM unobjekti WHERE Deleted = 0 AND Veids = 1;";
+
+      $result = $this->accrual->query($sql);
+      $stores = [];
+
+      foreach ($result as $row) {
+        if (strpos($row['Nosaukums'], 'Noliktava') !== false || strpos($row['Nosaukums'], 'Veikals') !== false) {
+          $stores[$row['StorId']] = $row['Nosaukums'];
+        }
+      }
+
+      return $stores;
+    }
+
+      // Lattako sync
+
+      public function i3auto()
+      {
+
+          set_time_limit(0);
+          $sync = DB::table('sync_times')->where('name', 'i3-auto')->get();
+          $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+          $time_now = \Carbon\Carbon::now();
+          if ($time_now->diff($sync_time)->invert == 1) {
+            $token_url = "api.latakko.eu/Token";
+
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => $token_url,
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "",
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 30,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+              CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "content-type: application/x-www-form-urlencoded"
+              ),
+            ));
+            $response = curl_exec($curl);
+            $err = curl_error($curl);
+
+            curl_close($curl);
+
+            if (!$err)
+            {
+              $token = json_decode($response);
+            } else {
+              throw new \Exception($err);
+            }
+
+            $token_bearer = $token->access_token;
+
+            $curl = curl_init();
+            curl_setopt_array($curl, array(
+              CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "",
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 30,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "GET",
+              CURLOPT_HTTPHEADER => array(
+                "cache-control: no-cache",
+                "authorization: Bearer " . $token_bearer,
+              ),
+            ));
+            $response = curl_exec($curl);
+
+            $filename = 'xml/i3-auto.txt';
+
+            file_put_contents($filename, $response);
+            chmod($filename, 0775);
+
+            $err = curl_error($curl);
+
+            if ($err) throw new \Exception($err);
+
+            curl_close($curl);
           }
 
-          $quantity = intval($item->QuantityAvailable);
-          $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
-          $stock->quantity = $quantity;
-          $stock->metadata = $metadata;
-          if ($stock->save()) {
+          $counted = 0;
+          $updated = 0;
+
+          Autostock::where('itype', 'i3')->update(['quantity' => 0]);
+
+          $content = file_get_contents('xml/i3-auto.txt');
+          $content = json_decode($content);
+
+          $out = '';
+
+          foreach ($content as $item) {
+
+            $counted++;
+
+            $stock = Autostock::where('itype', 'i3')->where('article', $item->ArticleId)->first();
+            if (!$stock) {
+              continue;
+            }
+
+            $quantity = intval($item->QuantityAvailable);
+            $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+            $stock->quantity = $quantity;
+            $stock->metadata = $metadata;
+            if ($stock->save()) {
+              $updated++;
+            }
+
+          }
+
+          DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+          echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+
+
+  //        $stocks = Autostock::where('itype', 'i3')->get();
+  //        foreach ($stocks as $stock) {
+  //
+  //          $counted++;
+  //
+  //          if (!$err) {
+  //            $metadata = '';
+  //            $response = json_decode($response);
+  //            $metadata = '';
+  //            $response = (object) $response;
+  //            if (empty(get_object_vars($response)) || isset($response->Message)) continue;
+  //            echo '<br><pre>';
+  //            var_dump($response);
+  //            echo '</pre><br>';
+  //            var_dump(get_object_vars($response));
+  //            $stock->quantity = intval($response->QuantityAvailable);
+  //            $stock->metadata = $metadata;
+  //            if ($stock->save()) {
+  //              $updated++;
+  //            }
+
+  //            if (is_null($response)) {
+  //              var_dump($stock->);
+  //            }
+  //          } else {
+  //            throw new \Exception($err);
+  //          }
+  //
+  //
+  //        }
+
+  //        $url = "https://api.gummigrossen.se/api/Tyres?username=XmL_r1&password=M20h:2|5";
+  //
+  //        $opts = ['http' =>
+  //            [
+  //                'method'  => 'GET',
+  //                'timeout'  => 600,
+  //            ]
+  //        ];
+  //
+  //        set_time_limit(800);
+  //
+  //        $context  = stream_context_create($opts);
+  //        $xmlString = file_get_contents($url, false, $context);
+  //
+  //        file_put_contents('i3.auto.xml',$xmlString);
+  //
+  //        $xml = simplexml_load_string($xmlString);
+  //
+  //        unset($context);
+  //
+  //        echo "Auto riepas<br>";
+  //        Autostock::where('itype', 'i3')->update(['quantity' => 0]);
+  //
+  //        $updated = 0;
+  //        $counted = 0;
+  //        foreach ($xml->Item as $item){
+  //            $article = $item->stockcode;
+  //            $quantity = intval($item->qty_available);
+  //
+  //            $metadata = '';
+  //            $price = @$item->price; if ($price!='') $metadata.='price: '.$price.'; ';
+  //            $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
+  //            $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
+  //
+  //            $list = Autostock::where('article', $article)->where('itype', 'i3')->get();
+  //
+  //            foreach ($list as $itam){
+  //                $itam->quantity = $quantity;
+  //                $itam->metadata = $metadata;
+  //                $itam->save();
+  //                $updated++;
+  //            }
+  //            $counted++;
+  //        }
+  //        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => NOW()]);
+  //        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+
+      }
+
+      public function i3show()
+      {
+        echo 'Auto riepas:<br>';
+        $stocks = Autostock::where('itype', 'i3')->get();
+        foreach ($stocks as $stock) {
+          $tire = Autotire::where('tire_id', $stock->tire_id)->first();
+          if (!$tire) continue;
+          $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
+          //dd($text);
+          echo $text;
+        }
+        echo '<br>';
+
+        echo 'Moto riepas:<br>';
+        $stocks = Motostock::where('itype', 'i3')->get();
+        foreach ($stocks as $stock) {
+          $tire = Moto::where('tire_id', $stock->tire_id)->first();
+          if (!$tire) continue;
+          $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
+          //dd($text);
+          echo $text;
+        }
+        echo '<br>';
+
+        echo 'Kvadru riepas:<br>';
+        $stocks = Quadrstock::where('itype', 'i3')->get();
+        foreach ($stocks as $stock) {
+          $tire = Quadr::where('tire_id', $stock->tire_id)->first();
+          if (!$tire) continue;
+          $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
+          //dd($text);
+          echo $text;
+        }
+        echo '<br>';
+      }
+
+      public function i3moto()
+      {
+
+        $url = "https://gd-middleware-test.barnstenit.se/api/Moto?username=XmL_r1&password=M20h:2|5";
+
+        $opts = ['http' =>
+          [
+            'method'  => 'GET',
+            'timeout'  => 600,
+          ]
+        ];
+
+        set_time_limit(800);
+
+        $context  = stream_context_create($opts);
+        $xmlString = file_get_contents($url, false, $context);
+
+        file_put_contents('i3.moto.xml',$xmlString);
+
+        $xml = simplexml_load_string($xmlString);
+
+        unset($context);
+
+        echo "Moto riepas<br>";
+        Motostock::where('itype', 'i3')->update(['quantity' => 0]);
+
+        $updated = 0;
+        $counted = 0;
+        foreach ($xml->Item as $item){
+          $article = $item->stockcode;
+          $quantity = intval($item->qty_available);
+
+          $metadata = '';
+          $price = @$item->price; if ($price!='') $metadata.='price: '.$price.'; ';
+          $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
+          $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
+
+          $list = Motostock::where('article', $article)->where('itype', 'i3')->get();
+
+          foreach ($list as $itam){
+            $itam->quantity = $quantity;
+            $itam->metadata = $metadata;
+            $itam->save();
             $updated++;
           }
-
+          $counted++;
         }
-
-        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+        DB::table('sync_times')->where('name', 'i3-moto')->update(['updated_at' => NOW()]);
         echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-
-
-//        $stocks = Autostock::where('itype', 'i3')->get();
-//        foreach ($stocks as $stock) {
-//
-//          $counted++;
-//
-//          if (!$err) {
-//            $metadata = '';
-//            $response = json_decode($response);
-//            $metadata = '';
-//            $response = (object) $response;
-//            if (empty(get_object_vars($response)) || isset($response->Message)) continue;
-//            echo '<br><pre>';
-//            var_dump($response);
-//            echo '</pre><br>';
-//            var_dump(get_object_vars($response));
-//            $stock->quantity = intval($response->QuantityAvailable);
-//            $stock->metadata = $metadata;
-//            if ($stock->save()) {
-//              $updated++;
-//            }
-
-//            if (is_null($response)) {
-//              var_dump($stock->);
-//            }
-//          } else {
-//            throw new \Exception($err);
-//          }
-//
-//
-//        }
-
-//        $url = "https://api.gummigrossen.se/api/Tyres?username=XmL_r1&password=M20h:2|5";
-//
-//        $opts = ['http' =>
-//            [
-//                'method'  => 'GET',
-//                'timeout'  => 600,
-//            ]
-//        ];
-//
-//        set_time_limit(800);
-//
-//        $context  = stream_context_create($opts);
-//        $xmlString = file_get_contents($url, false, $context);
-//
-//        file_put_contents('i3.auto.xml',$xmlString);
-//
-//        $xml = simplexml_load_string($xmlString);
-//
-//        unset($context);
-//
-//        echo "Auto riepas<br>";
-//        Autostock::where('itype', 'i3')->update(['quantity' => 0]);
-//
-//        $updated = 0;
-//        $counted = 0;
-//        foreach ($xml->Item as $item){
-//            $article = $item->stockcode;
-//            $quantity = intval($item->qty_available);
-//
-//            $metadata = '';
-//            $price = @$item->price; if ($price!='') $metadata.='price: '.$price.'; ';
-//            $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
-//            $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
-//
-//            $list = Autostock::where('article', $article)->where('itype', 'i3')->get();
-//
-//            foreach ($list as $itam){
-//                $itam->quantity = $quantity;
-//                $itam->metadata = $metadata;
-//                $itam->save();
-//                $updated++;
-//            }
-//            $counted++;
-//        }
-//        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => NOW()]);
-//        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-
-    }
-
-    public function i3show()
-    {
-      echo 'Auto riepas:<br>';
-      $stocks = Autostock::where('itype', 'i3')->get();
-      foreach ($stocks as $stock) {
-        $tire = Autotire::where('tire_id', $stock->tire_id)->first();
-        if (!$tire) continue;
-        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
-        //dd($text);
-        echo $text;
       }
-      echo '<br>';
 
-      echo 'Moto riepas:<br>';
-      $stocks = Motostock::where('itype', 'i3')->get();
-      foreach ($stocks as $stock) {
-        $tire = Moto::where('tire_id', $stock->tire_id)->first();
-        if (!$tire) continue;
-        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
-        //dd($text);
-        echo $text;
-      }
-      echo '<br>';
-
-      echo 'Kvadru riepas:<br>';
-      $stocks = Quadrstock::where('itype', 'i3')->get();
-      foreach ($stocks as $stock) {
-        $tire = Quadr::where('tire_id', $stock->tire_id)->first();
-        if (!$tire) continue;
-        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
-        //dd($text);
-        echo $text;
-      }
-      echo '<br>';
-    }
-
-    public function i3moto()
+    public function i3quadr()
     {
 
       $url = "https://gd-middleware-test.barnstenit.se/api/Moto?username=XmL_r1&password=M20h:2|5";
@@ -618,14 +808,14 @@ class SyncController extends Controller
       $context  = stream_context_create($opts);
       $xmlString = file_get_contents($url, false, $context);
 
-      file_put_contents('i3.moto.xml',$xmlString);
+      file_put_contents('i3.quadr.xml',$xmlString);
 
       $xml = simplexml_load_string($xmlString);
 
       unset($context);
 
-      echo "Moto riepas<br>";
-      Motostock::where('itype', 'i3')->update(['quantity' => 0]);
+      echo "Kvadraciklu riepas<br>";
+      Quadrstock::where('itype', 'i3')->update(['quantity' => 0]);
 
       $updated = 0;
       $counted = 0;
@@ -638,7 +828,7 @@ class SyncController extends Controller
         $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
         $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
 
-        $list = Motostock::where('article', $article)->where('itype', 'i3')->get();
+        $list = Quadrstock::where('article', $article)->where('itype', 'i3')->get();
 
         foreach ($list as $itam){
           $itam->quantity = $quantity;
@@ -648,62 +838,61 @@ class SyncController extends Controller
         }
         $counted++;
       }
-      DB::table('sync_times')->where('name', 'i3-moto')->update(['updated_at' => NOW()]);
+      DB::table('sync_times')->where('name', 'i3-quadr')->update(['updated_at' => NOW()]);
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
-  public function i3quadr()
-  {
+      public function duellmoto()
+      {
 
-    $url = "https://gd-middleware-test.barnstenit.se/api/Moto?username=XmL_r1&password=M20h:2|5";
+        $url = 'ftp://duellus:WebUpdate!@updateftp.duell.fi/ic.TXT';
 
-    $opts = ['http' =>
-      [
-        'method'  => 'GET',
-        'timeout'  => 600,
-      ]
-    ];
+        $opts = ['ftp' => []];
 
-    set_time_limit(800);
+        set_time_limit(0);
 
-    $context  = stream_context_create($opts);
-    $xmlString = file_get_contents($url, false, $context);
+        $context = stream_context_create($opts);
 
-    file_put_contents('i3.quadr.xml',$xmlString);
+        $xmlString = file_get_contents($url, false, $context);
 
-    $xml = simplexml_load_string($xmlString);
+        $lines = explode("\r", $xmlString);
+        $articles = [];
+        foreach ($lines as $idx => $line) {
+          if ($idx > 0) {
+            $lineData = explode("\t", trim($line));
+            if ((@$lineData[0] != '') && (is_numeric(@$lineData[3]))) {
+              $articles[trim($lineData[0])] = trim($lineData[3]);
+            }
+          }
+        }
 
-    unset($context);
+        unset($context);
 
-    echo "Kvadraciklu riepas<br>";
-    Quadrstock::where('itype', 'i3')->update(['quantity' => 0]);
+        echo "Moto riepas<br>";
+        Motostock::where('itype', 'duell')->update(['quantity' => 0]);
 
-    $updated = 0;
-    $counted = 0;
-    foreach ($xml->Item as $item){
-      $article = $item->stockcode;
-      $quantity = intval($item->qty_available);
+        $updated = 0;
+        $counted = 0;
 
-      $metadata = '';
-      $price = @$item->price; if ($price!='') $metadata.='price: '.$price.'; ';
-      $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
-      $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
+        foreach ($articles as $item => $amount) {
+          $article = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
+          $quantity = intval($amount);
 
-      $list = Quadrstock::where('article', $article)->where('itype', 'i3')->get();
+          $list = Motostock::where('article', $article)->where('itype', 'duell')->get();
 
-      foreach ($list as $itam){
-        $itam->quantity = $quantity;
-        $itam->metadata = $metadata;
-        $itam->save();
-        $updated++;
+          foreach ($list as $itam){
+            $itam->quantity = $quantity;
+            $itam->save();
+            $updated++;
+          }
+          $counted++;
+        }
+        DB::table('sync_times')->where('name', 'duell_moto')->update(['updated_at' => NOW()]);
+        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+
       }
-      $counted++;
-    }
-    DB::table('sync_times')->where('name', 'i3-quadr')->update(['updated_at' => NOW()]);
-    echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-  }
 
-    public function duellmoto()
+    public function duellquadr()
     {
 
       $url = 'ftp://duellus:WebUpdate!@updateftp.duell.fi/ic.TXT';
@@ -729,8 +918,8 @@ class SyncController extends Controller
 
       unset($context);
 
-      echo "Moto riepas<br>";
-      Motostock::where('itype', 'duell')->update(['quantity' => 0]);
+      echo "Kvadraciklu riepas<br>";
+      Quadrstock::where('itype', 'duell')->update(['quantity' => 0]);
 
       $updated = 0;
       $counted = 0;
@@ -739,7 +928,7 @@ class SyncController extends Controller
         $article = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
         $quantity = intval($amount);
 
-        $list = Motostock::where('article', $article)->where('itype', 'duell')->get();
+        $list = Quadrstock::where('article', $article)->where('itype', 'duell')->get();
 
         foreach ($list as $itam){
           $itam->quantity = $quantity;
@@ -748,60 +937,10 @@ class SyncController extends Controller
         }
         $counted++;
       }
-      DB::table('sync_times')->where('name', 'duell_moto')->update(['updated_at' => NOW()]);
+      DB::table('sync_times')->where('name', 'duell_quadr')->update(['updated_at' => NOW()]);
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
     }
-
-  public function duellquadr()
-  {
-
-    $url = 'ftp://duellus:WebUpdate!@updateftp.duell.fi/ic.TXT';
-
-    $opts = ['ftp' => []];
-
-    set_time_limit(0);
-
-    $context = stream_context_create($opts);
-
-    $xmlString = file_get_contents($url, false, $context);
-
-    $lines = explode("\r", $xmlString);
-    $articles = [];
-    foreach ($lines as $idx => $line) {
-      if ($idx > 0) {
-        $lineData = explode("\t", trim($line));
-        if ((@$lineData[0] != '') && (is_numeric(@$lineData[3]))) {
-          $articles[trim($lineData[0])] = trim($lineData[3]);
-        }
-      }
-    }
-
-    unset($context);
-
-    echo "Kvadraciklu riepas<br>";
-    Quadrstock::where('itype', 'duell')->update(['quantity' => 0]);
-
-    $updated = 0;
-    $counted = 0;
-
-    foreach ($articles as $item => $amount) {
-      $article = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
-      $quantity = intval($amount);
-
-      $list = Quadrstock::where('article', $article)->where('itype', 'duell')->get();
-
-      foreach ($list as $itam){
-        $itam->quantity = $quantity;
-        $itam->save();
-        $updated++;
-      }
-      $counted++;
-    }
-    DB::table('sync_times')->where('name', 'duell_quadr')->update(['updated_at' => NOW()]);
-    echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-
-  }
 
     public function i3big()
     {
