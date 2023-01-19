@@ -188,10 +188,10 @@ class HomeController extends Controller
         return view('main.terms');
     }
 
-    public function about()
-    {
-        return view('pages.internet-veikals');
-    }
+//    public function about()
+//    {
+//        return view('pages.internet-veikals');
+//    }
 
     public function moto_terms()
     {
@@ -203,10 +203,10 @@ class HomeController extends Controller
         return view('main.services');
     }
 
-    public function conditioner()
-    {
-        return view('pages.kondicionieris');
-    }
+//    public function conditioner()
+//    {
+//        return view('pages.kondicionieris');
+//    }
 
     public function pages(Request $request, $page)
     {
