@@ -209,7 +209,6 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::get('/settings/pages/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'pages_destroy'])->name('settings.pages.destroy');
 
   // Riepu kodu paskaidrojumi
-
   Route::get('/settings/codes', [App\Http\Controllers\Admin\SettingsController::class, 'codes'])->name('settings.codes');
   Route::get('/settings/codes/create', [App\Http\Controllers\Admin\SettingsController::class, 'codes_create'])->name('settings.codes.create');
   Route::post('/settings/codes/store', [App\Http\Controllers\Admin\SettingsController::class, 'codes_store'])->name('settings.codes.store');
