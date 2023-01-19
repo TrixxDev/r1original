@@ -205,7 +205,7 @@ class HomeController extends Controller
 
     public function conditioner()
     {
-        return view('main.conditioner');
+        return view('pages.kondicionieris');
     }
 
     public function pages(Request $request, $page)

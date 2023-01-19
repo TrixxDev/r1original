@@ -6,9 +6,6 @@
         <div class='main-content clearfix col-md-12 col-xl-10'>
             <div id='content-wrapper' class='right-column col-lg-12'>
                 <section id='main'>
-                    <header class='page-header'>
-
-                    </header>
                     <section id='content' class='page-content page-cms'>
 
                         @include('pages.components.internet-veikals')
