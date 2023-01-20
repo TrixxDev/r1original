@@ -5300,3 +5300,59 @@ div#service-option-selection {
   display: flex;
   justify-content: space-between;
 }
+
+.contact-card {
+  padding: 10px;
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  border: 1px solid #878787;
+  width: fit-content;
+  text-align: center;
+  background: rgba(163, 163, 163, .7);
+  z-index: 100;
+}
+
+.contact-card-items img {
+  margin-bottom: 10px;
+}
+
+.contact-card:hover {
+  cursor: pointer;
+}
+
+.contact-card img {
+  display: block;
+  width: 45px;
+}
+
+.contact-card-items {
+  display: none;
+}
+
+.contact-card-items img {
+  background-color: slategray;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.marquee {
+  position: sticky;
+  bottom: 0;
+  display: inline-flex;
+  height: 100px;
+  animation: marquee 20s linear infinite;
+  z-index: 1;
+}
+
+.marquee:hover {
+  animation-play-state: paused;
+}
+

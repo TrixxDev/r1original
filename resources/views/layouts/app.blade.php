@@ -595,6 +595,19 @@
         @yield('content')
 
     </section>
+    <div class="contact-card hidden-md-up">
+      <div class="contact-card-items">
+{{--        <img src="{{ asset('images/facebook.svg') }}" alt="facebook" style="background-color: white;">--}}
+        <a aria-label="Chat on WhatsApp" href="https://wa.me/37128336677"><img src="{{ asset('images/whatsapp.svg') }}" alt="whatsapp" style="background-color: #25d366;"></a>
+        <a href="tel:67910555"><img src="{{ asset('images/phone.svg') }}" alt="phone" style="padding: 10px; background-color: #0d86ff; color: white;"></a>
+      </div>
+      <div id="toggle-contacts">
+        <img id="tc-phone" src="{{ asset('images/phone.svg') }}" alt="phone" style="padding: 10px; background-color: #0d86ff; color: white;">
+        <img id="tc-close" src="{{ asset('images/close.svg') }}" alt="phone" style="display: none;">
+      </div>
+    </div>
+
+{{--    <div class="marquee hidden-md-down">--}}
 
 
     <footer id="footer">

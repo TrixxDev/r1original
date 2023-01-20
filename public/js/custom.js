@@ -3105,6 +3105,13 @@ $('input[type=password].password-confirmation').keyup(delay(function(e) {
 }, 500));
 
 $(document).ready(function() {
+
+  $('#toggle-contacts').on('click', function() {
+    $('.contact-card-items').toggle();
+    $('#tc-phone').toggle();
+    $('#tc-close').toggle();
+  });
+
   // $('#tires-table tbody tr').change(function() {
   //   $('#show-selected-checkbox').attr('disabled', $('th.tire-table-checkbox input:checked').length == 0);
   // });
