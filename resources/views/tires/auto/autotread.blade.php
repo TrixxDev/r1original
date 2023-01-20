@@ -116,7 +116,7 @@
                                       <td>{{ $currTire->eco }}</td>
                                     </tr>
                                     <tr>
-                                      <th>Mitrs segums</th>
+                                      <th>Slapjš segums</th>
                                       <td>{{ $currTire->wet }}</td>
                                     </tr>
                                     <tr>
