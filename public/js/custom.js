@@ -3116,10 +3116,10 @@ $(document).ready(function() {
   //   $('#show-selected-checkbox').attr('disabled', $('th.tire-table-checkbox input:checked').length == 0);
   // });
 
-  if (!$('.row.grid-ex.pr-1').find('.green').length){
+  if (!$('.row.grid-ex.pr-1').find('.green').length && !$('.row.grid-ex.pr-1').find('.half-green').length){
     $('input#facet_availability_0').prop('disabled', true);
   }
-  if (!$('.row.grid-ex.pr-1').find('.yellow').length){
+  if (!$('.row.grid-ex.pr-1').find('.yellow').length && !$('.row.grid-ex.pr-1').find('.half-yellow').length){
     $('input#facet_availability_1').prop('disabled', true);
   }
   if (!$('.row.grid-ex.pr-1').find('.red').length){
