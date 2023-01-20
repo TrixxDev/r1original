@@ -232,7 +232,7 @@ class QuadTireController extends Controller
     foreach (Quadrbrand::all() as $brand) {
       $treads = Quadrtread::where('brand_id', $brand->brand_id)->get();
       foreach ($treads as $tread) {
-        $tire = Quadr::where('make_id', $tread->tread_id)->first();
+        $tire = Quadr::where('make_id', $tread->tread_id)->where('visible_users', '<>', 0)->first();
         if (!$tire) continue;
         $brand_id = $tread->brand_id;
         array_push($brands, $brand_id);

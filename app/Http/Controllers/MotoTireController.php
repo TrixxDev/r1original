@@ -242,7 +242,7 @@ class MotoTireController extends Controller
     foreach (Motobrand::all() as $brand) {
       $treads = Mototread::where('brand_id', $brand->brand_id)->get();
       foreach ($treads as $tread) {
-        $tire = Moto::where('make_id', $tread->tread_id)->first();
+        $tire = Moto::where('make_id', $tread->tread_id)->where('visible_users', '<>', 0)->first();
         if (!$tire) continue;
         $brand_id = $tread->brand_id;
         array_push($brands, $brand_id);

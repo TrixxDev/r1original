@@ -203,7 +203,7 @@ class BigTireController extends Controller
       foreach (Bigbrand::all() as $brand) {
         $treads = Bigtread::where('brand_id', $brand->brand_id)->get();
         foreach ($treads as $tread) {
-          $tire = Bigtire::where('make_id', $tread->tread_id)->first();
+          $tire = Bigtire::where('make_id', $tread->tread_id)->where('visible_users', '<>', 0)->first();
           if (!$tire) continue;
           $brand_id = $tread->brand_id;
           array_push($brands, $brand_id);

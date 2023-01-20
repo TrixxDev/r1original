@@ -397,7 +397,7 @@ class AutoTireController extends Controller
     foreach (Autobrand::all() as $brand) {
       $treads = Autotread::where('brand_id', $brand->brand_id)->where('season', $this->season)->get();
       foreach ($treads as $tread) {
-        $tire = Autotire::where('make_id', $tread->tread_id)->first();
+        $tire = Autotire::where('make_id', $tread->tread_id)->where('visible_users', '<>', 0)->first();
         if (!$tire) continue;
         $brand_id = $tread->brand_id;
         array_push($brands, $brand_id);
