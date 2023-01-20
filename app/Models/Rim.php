@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Auth;
 
 class Rim extends Model
 {
-    use HasFactory;
+  use HasFactory;
+
+  protected $primaryKey = 'rim_id';
 
   public $_includeStock = true;
 

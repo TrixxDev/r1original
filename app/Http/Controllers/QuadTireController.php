@@ -24,12 +24,14 @@ class QuadTireController extends Controller
     public $quadrTiresD2;
     public $quadrTiresD3;
     public $model = 'Quadr';
-    public $availability;
+    public $availability = [];
     public $filterCount = 0;
+
+    public $cartQty = 1;
 
     public function __construct(Request $request)
     {
-        $this->brands = Tires::getAllQuadrBrands();
+        $this->brands = $this->tires_getBrands();
 
         $this->quadrTiresD1 = Tires::getQuadrTiresD1();
         $this->quadrTiresD2 = Tires::getQuadrTiresD2();
@@ -63,6 +65,9 @@ class QuadTireController extends Controller
         View::share('d2', $this->d2);
         View::share('d3', $this->d3);
         View::share('filterCount', $this->filterCount);
+        View::share('availability', $this->availability);
+        View::share('cartQty', $this->cartQty);
+
     }
 
     public function index()
@@ -140,12 +145,12 @@ class QuadTireController extends Controller
         if ($request->quantity) {
           $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
         } else {
-          $cart = CartController::addProduct($this->model, $tire->tire_id, 2);
+          $cart = CartController::addProduct($this->model, $tire->tire_id, $this->cartQty);
         }
 
         $quantity = Cart::count();
         $total_sum = str_replace([',', '.00'], '', Cart::subTotal());
-        $bought = ($request->quantity) ? $request->quantity : 2;
+        $bought = ($request->quantity) ? $request->quantity : $this->cartQty;
 
         echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
     }
@@ -161,6 +166,13 @@ class QuadTireController extends Controller
     ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
     ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
     ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
+
+     if ($request->availability) {
+       $this->filterCount += 1;
+       $this->availability = $request->availability;
+     } else {
+       $this->availability = [];
+     }
 
     if ($request->types) {
       $this->filterCount += 1;
@@ -204,13 +216,41 @@ class QuadTireController extends Controller
                       ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
                       ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
                       ->orderBy('price2', 'DESC')
-                      ->paginate()->appends($request->query());
+                      ->groupBy('quadr_tires.tire_id')->paginate()->appends($request->query());
 //
 //    dd(DB::getQueryLog());
 
     return view('tires.quadr.index',
-      ['tires' => $tires, 'filterCount' => $this->filterCount]
+      ['tires' => $tires, 'filterCount' => $this->filterCount, 'availability' => $this->availability]
     );
+  }
+
+  public function tires_getBrands()
+  {
+    $brands = [];
+
+    foreach (Quadrbrand::all() as $brand) {
+      $treads = Quadrtread::where('brand_id', $brand->brand_id)->get();
+      foreach ($treads as $tread) {
+        $tire = Quadr::where('make_id', $tread->tread_id)->where('visible_users', '<>', 0)->first();
+        if (!$tire) continue;
+        $brand_id = $tread->brand_id;
+        array_push($brands, $brand_id);
+      }
+    }
+
+    $brands = array_unique($brands);
+    $brands = array_values($brands);
+    $brand_list = [];
+    foreach ($brands as $brand) {
+      $brand = Quadrbrand::where('brand_id', $brand)->first();
+      $brand_list[$brand->brand_id] = ucwords(strtolower($brand->title));
+    }
+
+    //      asort($brand_list);
+    asort($brand_list, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return $brand_list;
   }
 
 }

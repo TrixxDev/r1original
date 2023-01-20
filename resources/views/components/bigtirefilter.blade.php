@@ -22,7 +22,6 @@
         </template>
 
         <form method="get" action="{{ route('lielas-riepas-meklet') }}">
-          @csrf
           <div class="sidebar-top">
 
 
@@ -66,8 +65,8 @@
                 <h1 class="h6 facet-title">Ražotājs</h1>
                 <select name="brand" class="r1-select select-title tire-brand">
                   <option class="select-list" id="Visi">Visi</option>
-                  @foreach ($brands as $brand)
-                    <option class="select-list" id="{{ $brand->title }}" @if ($brand->title == $currBrand) selected @endif>{{ $brand->title }}</option>
+                  @foreach ($brands as $brand_id => $brand_title)
+                    <option class="select-list" id="{{ $brand_id }}" @if ($brand_title == $currBrand) selected @endif>{{ ucwords(strtolower($brand_title)) }}</option>
                   @endforeach
                 </select>
               </div>

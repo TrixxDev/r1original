@@ -235,8 +235,8 @@
                       <option  value="30">30</option>
                       <option  value="35">35</option>
                       <option  value="40">40</option>
-                      <option  value="45">45</option>
-                      <option selected value="50">50</option>
+                      <option  selected value="45">45</option>
+                      <option  value="50">50</option>
                       <option  value="55">55</option>
                       <option  value="60">60</option>
                       <option  value="65">65</option>
@@ -273,9 +273,9 @@
                       <option  value="195">195</option>
                       <option  value="205">205</option>
                       <option  value="215">215</option>
-                      <option  value="225">225</option>
+                      <option selected value="225">225</option>
                       <option  value="235">235</option>
-                      <option selected value="245">245</option>
+                      <option  value="245">245</option>
                       <option  value="255">255</option>
                       <option  value="265">265</option>
                       <option  value="275">275</option>
@@ -286,7 +286,18 @@
                       <option  value="325">325</option>
                     </select><B class="small"> /</b>
                     <select size="1" name="augstums3">
-                      <option  value="25">25</option><option  value="30">30</option><option  value="35">35</option><option selected value="40">40</option><option  value="45">45</option><option  value="50">50</option><option  value="55">55</option><option  value="60">60</option><option  value="65">65</option><option  value="70">70</option><option  value="75">75</option><option  value="80">80</option>
+                      <option  value="25">25</option>
+                      <option  value="30">30</option>
+                      <option  value="35">35</option>
+                      <option selected value="40">40</option>
+                      <option  value="45">45</option>
+                      <option  value="50">50</option>
+                      <option  value="55">55</option>
+                      <option  value="60">60</option>
+                      <option  value="65">65</option>
+                      <option  value="70">70</option>
+                      <option  value="75">75</option>
+                      <option  value="80">80</option>
                     </select><B class="small"> R</b>
 
                     <select size="1" name="disks3">

@@ -109,6 +109,13 @@ class Autotire extends Model
 
     public function getDotAvailableAttribute()
     {
+
+        if ($this->urs_quantity > 0 && $this->krs_quantity <= 0) {
+          $this->quantity = $this->urs_quantity;
+        } else if ($this->urs_quantity <= 0 && $this->krs_quantity > 0) {
+          $this->quantity = $this->krs_quantity;
+        }
+
         if ($this->quantity < 0 && $this->getStockCount() > 0) {
           if ($this->_includeStock) {
             $count = $this->getStockCount();
@@ -181,7 +188,7 @@ class Autotire extends Model
 
     public function getFullNameAttribute()
     {
-	return $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->code . ' ' . $this->getLiSiAttribute();
+	    return $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->code . ' ' . $this->getLiSiAttribute();
     }
 
     public function getLiSiAttribute()
@@ -245,8 +252,8 @@ class Autotire extends Model
 
         if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
             $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
-	    $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
-	    foreach ($stock_names as $key => $stock_name) {
+            $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
+            foreach ($stock_names as $key => $stock_name) {
                 $stock = Autostock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
                 if ($stock && $stock->quantity > 0) {
                     $availability .= '<br><p>' . $stock_name . ': ' . $stock->quantity . '</p>';

@@ -313,7 +313,7 @@
       </div>
 
       <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ route('kondicionieris') }}">Kondicionieru Uzpilde</a>
+        <a class="dropdown-item" href="{{ url('kondicionieris') }}">Kondicionieru Uzpilde</a>
       </div>
     </div>
 

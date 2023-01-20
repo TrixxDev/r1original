@@ -1964,12 +1964,12 @@ $(document).ready(function() {
   });
 
   $('#reservation #service input[name="serviceOption"]').on('input', function() {
-    if ($(this).val() == 1) {
-      $('#service-option-selection').append('<div class="form-check rim-with"><input class="form-check-input" type="radio" name="rims-with" id="rims-with-1" title="" value="1"><label class="form-check-label" for="rims-with-1">Līdzi būs diski ar riepām<br><img style="width: 150px; height: 150px; object-fit: cover;" alt="diski_ar_riepam" src="https://lrd.lv/oc-content/uploads/3/1382.jpg"></label></div>');
-      $('#service-option-selection').append('<div class="form-check rim-with"><input class="form-check-input" type="radio" name="rims-with" id="rims-with-2" title="" value="2"><label class="form-check-label" for="rims-with-2">Līdzi būs diski bez riepām<br><img style="width: 150px; height: 150px; object-fit: cover;" alt="diski_bez_riepam" src="https://lv3.pigugroup.eu/uploaded/auto%20disks%20melns.jpg"></label></div>');
-    } else {
-      $('.rim-with').remove();
-    }
+    // if ($(this).val() == 1) {
+    //   $('#service-option-selection').append('<div class="form-check rim-with"><input class="form-check-input" type="radio" name="rims-with" id="rims-with-1" title="" value="1"><label class="form-check-label" for="rims-with-1">Līdzi būs diski ar riepām<br><img style="width: 150px; height: 150px; object-fit: cover;" alt="diski_ar_riepam" src="https://lrd.lv/oc-content/uploads/3/1382.jpg"></label></div>');
+    //   $('#service-option-selection').append('<div class="form-check rim-with"><input class="form-check-input" type="radio" name="rims-with" id="rims-with-2" title="" value="2"><label class="form-check-label" for="rims-with-2">Līdzi būs diski bez riepām<br><img style="width: 150px; height: 150px; object-fit: cover;" alt="diski_bez_riepam" src="https://lv3.pigugroup.eu/uploaded/auto%20disks%20melns.jpg"></label></div>');
+    // } else {
+    //   $('.rim-with').remove();
+    // }
     if ($(this).data('save') == 1) {
       $('<div class="form-group row temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:left;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
     } else {
@@ -2025,12 +2025,12 @@ $(document).ready(function() {
     let name = $('#reservation #name').val();
     let phone = $('#reservation #phone').val();
     let email = $('#reservation #email').val();
-    let rimsWith;
-    $('#reservation .rim-with input').each(function() {
-      if($(this).is(':checked') == true){
-        rimsWith = $(this).val();
-      }
-    })
+    // let rimsWith;
+    // $('#reservation .rim-with input').each(function() {
+    //   if($(this).is(':checked') == true){
+    //     rimsWith = $(this).val();
+    //   }
+    // })
 
     $.ajax({
       url: '/pieraksts/fillSlot',
@@ -2045,7 +2045,7 @@ $(document).ready(function() {
         'comment': comment,
         'name': name,
         'phone': phone,
-        'rims-with': rimsWith,
+        // 'rims-with': rimsWith,
         'email': email,
         'date': date,
         'queue_id': queue_id,

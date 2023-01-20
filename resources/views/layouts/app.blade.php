@@ -497,7 +497,7 @@
                                         </li>
                                         <li class="cms-page" id="cms-page-9">
                                             <a class="dropdown-item dropdown-submenu"
-                                               href="{{ route('kondicionieris') }}"
+                                               href="{{ url('kondicionieris') }}"
                                                data-depth="1">
                                                 Kondicionieru uzpilde
                                             </a>
@@ -537,7 +537,7 @@
                                         </li>
                                         <li class="cms-page" id="cms-page-12">
                                             <a class="dropdown-item dropdown-submenu"
-                                               href="{{ route('about') }}"
+                                               href="{{ url('internet-veikals') }}"
                                                data-depth="1">
                                                 Par i-veikalu
                                             </a>
@@ -704,7 +704,7 @@
                                 <ul id="footer_sub_menu_8206" class="collapse">
                                     <li>
                                         <a id="link-cms-page-12-2" class="cms-page-link"
-                                           href="{{ route('about') }}"
+                                           href="internet-veikals"
                                            title="">
                                             Par i-veikalu
                                         </a>
@@ -718,7 +718,7 @@
                                     </li>
                                     <li>
                                         <a id="link-cms-page-9-2" class="cms-page-link"
-                                           href="{{ route('kondicionieris') }}"
+                                           href="kondicionieris"
                                            title="">
                                             Kondicionieru uzpilde
                                         </a>

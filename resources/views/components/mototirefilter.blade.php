@@ -289,7 +289,7 @@
             <li>
               <label class="facet-label" for="facet_availability_0" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                           <span class="custom-checkbox">
-                            <input id="facet_availability_0" class="green" type="checkbox" data-search-url="#" name="availability[]" value="green" data-for="dot" data-value="green" data-color="green">
+                            <input id="facet_availability_0" class="green" @if (in_array('green', $availability)) checked @endif type="checkbox" data-search-url="#" name="availability[]" value="green" data-for="dot" data-value="green" data-color="green">
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>
@@ -301,7 +301,7 @@
             <li>
               <label class="facet-label" for="facet_availability_1" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                           <span class="custom-checkbox">
-                            <input id="facet_availability_1" class="yellow" type="checkbox" data-search-url="#" name="availability[]" value="yellow" data-for="dot" data-value="yellow" data-color="yellow">
+                            <input id="facet_availability_1" class="yellow" @if (in_array('yellow', $availability)) checked @endif type="checkbox" data-search-url="#" name="availability[]" value="yellow" data-for="dot" data-value="yellow" data-color="yellow">
                             <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                           </span>
                 Pasūtāms
@@ -311,7 +311,7 @@
             <li>
               <label class="facet-label" for="facet_availability_2" style="width: 100%;text-align: left;cursor: pointer">
                           <span class="custom-checkbox">
-                            <input id="facet_availability_2" class="red" type="checkbox" data-search-url="#" name="availability[]" value="red" data-for="dot" data-value="red" data-color="red">
+                            <input id="facet_availability_2" class="red" @if (in_array('red', $availability)) checked @endif type="checkbox" data-search-url="#" name="availability[]" value="red" data-for="dot" data-value="red" data-color="red">
                             <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                           </span>
                 Zvaniet!

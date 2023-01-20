@@ -10,8 +10,8 @@ use App\Models\Bigtread;
 use Cart;
 use Illuminate\Http\Request;
 use Auth;
+use Illuminate\Support\Facades\DB;
 use View;
-use DB;
 
 class BigTireController extends Controller
 {
@@ -27,16 +27,17 @@ class BigTireController extends Controller
     public $bigTiresD3;
     public $model = 'Bigtire';
     public $tiresSize;
-    public $itemsPerPage = 50;
     public $code;
     public $axle;
     public $surface;
     public $availability;
     public $filterCount = 0;
 
+    public $cartQty = 1;
+
     public function __construct(Request $request)
     {
-      $this->brands = Tires::getAllBigBrands();
+      $this->brands = $this->tires_getBrands();
 
       $this->bigTiresD1 = Tires::getBigTiresD1();
       $this->bigTiresD2 = Tires::getBigTiresD2();
@@ -47,7 +48,7 @@ class BigTireController extends Controller
 
       ($request->d1 == 'Visi') ? $this->d1 = 'Visi' : $this->d1 = $request->d1;
       ($request->d2 == 'Visi') ? $this->d2 = 'Visi' : $this->d2 = $request->d2;
-      ($request->d3 == NULL) ? $this->d3 = 16.5 : $this->d3 = $request->d3;
+      ($request->d3 == 'Visi') ? $this->d3 = 'Visi' : $this->d3 = $request->d3;
 
       ($request->code) ? $this->code = $request->code : $this->code = [];
       ($request->axle) ? $this->axle = $request->axle : $this->axle = [];
@@ -77,23 +78,25 @@ class BigTireController extends Controller
       View::share('axle', $this->axle);
       View::share('surface', $this->surface);
       View::share('filterCount', $this->filterCount);
+      View::share('cartQty', $this->cartQty);
     }
 
     public function index()
     {
+
       $tires = Bigtire::with('tread')->leftJoin('bigtire_treads', 'big_tires.make_id', '=', 'bigtire_treads.tread_id')
-                                      ->when($this->d1, function($query) {
-                                        $query->where('d1', $this->d1);
-                                      })->when($this->d2, function($query) {
-                                        $query->where('d2', $this->d2);
-                                      })->when($this->d3, function($query) {
-                                        $query->where('d3', $this->d3);
-                                      })->where('visible_users', 1)
-                                      ->where('visible_list', 1)
-                                      ->orderBy('d3', 'ASC')
-                                      ->orderBy('d1', 'ASC')
-                                      ->orderBy('d2', 'ASC')
-                                      ->orderBy('price2', 'DESC')->paginate($this->itemsPerPage);
+        ->when($this->d1, function($query) {
+          $query->where('d1', $this->d1);
+        })->when($this->d2, function($query) {
+          $query->where('d2', $this->d2);
+        })->when($this->d3, function($query) {
+          $query->where('d3', $this->d3);
+        })->where('visible_users', '<>', 0)
+        ->orderBy('d3', 'ASC')
+        ->orderBy('d1', 'ASC')
+        ->orderBy('d2', 'ASC')
+        ->orderBy('price2', 'DESC')
+        ->paginate();
 
       return view('tires.industrial.index',
                   compact('tires')
@@ -102,7 +105,8 @@ class BigTireController extends Controller
 
     public function tires_search(Request $request)
     {
-      ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
+      DB::enableQueryLog();
+      $this->currBrand = ($request->brand == 'Visi') ? '' : $request->brand;
 
       $code = $request->code;
       $sql = Bigtread::selectRaw('bigtire_treads.*, bigtire_treads.title as tread_title')
@@ -115,23 +119,23 @@ class BigTireController extends Controller
         $makes[] = $make->tread_id;
       }
 
-      ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
-      ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
+      $this->d1 = ($this->d1 == 'Visi') ? '' : $request->d1;
+      $this->d2 = ($this->d2 == 'Visi') ? '' : $request->d2;
 
-      $tires = Bigtire::join('bigtire_treads', 'big_tires.make_id', '=', 'bigtire_treads.tread_id')->when($makes, function($query) use ($makes) {
+      $tires = Bigtire::join('bigtire_treads', 'big_tires.make_id', '=', 'bigtire_treads.tread_id')
+      ->when($makes, function($query) use ($makes) {
         $query->whereIn('make_id', $makes);
       })->when($this->d1, function($query) {
         $query->where('d1', $this->d1);
       })->when($this->d2, function($query) {
         $query->where('d2', $this->d2);
       })->where('d3', $this->d3)
-        ->where('visible_users', 1)
-        ->where('visible_list', 1)
         ->orderBy('d3', 'ASC')
         ->orderBy('d1', 'ASC')
         ->orderBy('d2', 'ASC')
         ->orderBy('price2', 'DESC')
-        ->paginate($this->itemsPerPage);
+        ->paginate()->appends($request->query());
+//      dd(DB::getQueryLog());
 
 //      ->when($code, function($query) use ($code){
 //      $query->where('code', 'LIKE', '%' . $code . '%');
@@ -182,14 +186,42 @@ class BigTireController extends Controller
       if ($request->quantity) {
         $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
       } else {
-        $cart = CartController::addProduct($this->model, $tire->tire_id, 4);
+        $cart = CartController::addProduct($this->model, $tire->tire_id, $this->cartQty);
       }
 
       $quantity = Cart::count();
       $total_sum = str_replace([',', '.00'], '', Cart::total());
-      $bought = ($request->quantity) ? $request->quantity : 4;
+      $bought = ($request->quantity) ? $request->quantity : $this->cartQty;
 
       echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
+    }
+
+    public function tires_getBrands()
+    {
+      $brands = [];
+
+      foreach (Bigbrand::all() as $brand) {
+        $treads = Bigtread::where('brand_id', $brand->brand_id)->get();
+        foreach ($treads as $tread) {
+          $tire = Bigtire::where('make_id', $tread->tread_id)->where('visible_users', '<>', 0)->first();
+          if (!$tire) continue;
+          $brand_id = $tread->brand_id;
+          array_push($brands, $brand_id);
+        }
+      }
+
+      $brands = array_unique($brands);
+      $brands = array_values($brands);
+      $brand_list = [];
+      foreach ($brands as $brand) {
+        $brand = Bigbrand::where('brand_id', $brand)->first();
+        $brand_list[$brand->brand_id] = ucwords(strtolower($brand->title));
+      }
+
+  //      asort($brand_list);
+      asort($brand_list, SORT_NATURAL | SORT_FLAG_CASE);
+
+      return $brand_list;
     }
 
 }

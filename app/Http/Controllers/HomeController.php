@@ -188,10 +188,10 @@ class HomeController extends Controller
         return view('main.terms');
     }
 
-    public function about()
-    {
-        return view('pages.internet-veikals');
-    }
+//    public function about()
+//    {
+//        return view('pages.internet-veikals');
+//    }
 
     public function moto_terms()
     {
@@ -203,10 +203,10 @@ class HomeController extends Controller
         return view('main.services');
     }
 
-    public function conditioner()
-    {
-        return view('pages.kondicionieris');
-    }
+//    public function conditioner()
+//    {
+//        return view('pages.kondicionieris');
+//    }
 
     public function pages(Request $request, $page)
     {
@@ -225,8 +225,7 @@ class HomeController extends Controller
 
       Self::$connection = ftp_connect('212.3.218.22');
 
-      if (@ftp_login(Self::$connection, 'r1_web', 'RA5bgdGc')){
-      }else{
+      if (!@ftp_login(Self::$connection, 'r1_web', 'RA5bgdGc')){
         return 'Nesanāk savienoties ar Accrual serveri';
       }
 
@@ -354,7 +353,7 @@ class HomeController extends Controller
 //      $ftp = uploadFTP("212.3.218.22", "r1_web", "RA5bgdGc", dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
       uploadFTP(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
 
-      sleep(3);
+      sleep(4);
 
       $request = request()->merge(['article' => $article]);
       $new_stocks = $sync->accrual($request);
