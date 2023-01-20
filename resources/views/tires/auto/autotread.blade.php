@@ -57,7 +57,7 @@
                                           <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
                                           <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">
                                           <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title . ' ' . $currTire->fullSize }}">
-                                          <input type="text" name="qty" id="quantity_wanted" value="4" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
+                                          <input type="text" name="qty" id="quantity_wanted" value="{{ $cartQty }}" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                                           <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                                           <span class="input-group-btn-vertical">
                                             <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
@@ -151,7 +151,7 @@
                                     @endif
                                     @if ($currBrand->b_comment)
                                     <li class="nav-item">
-                                      <a class="nav-link" data-toggle="tab" href="#brand" style="border-color: #68c0a8 #68c0a8 transparent">Par zīmolu</a>
+                                      <a class="nav-link @if (!$currTire->t_comment) active @endif" data-toggle="tab" href="#brand" style="border-color: #68c0a8 #68c0a8 transparent">Par zīmolu</a>
                                     </li>
                                     @endif
                                   </ul>
@@ -162,7 +162,7 @@
                                     </div>
                                     @endif
                                     @if ($currBrand->b_comment)
-                                    <div id="brand" class="container alert tab-pane" style="border: 1px solid #68c0a8">
+                                    <div id="brand" class="container alert tab-pane @if (!$currTire->t_comment) active @endif" style="border: 1px solid #68c0a8">
                                       {!! $currBrand->b_comment !!}
                                     </div>
                                     @endif
@@ -228,11 +228,8 @@
                                   </td>
 
                                   <td class="hidden-sm-down text-center">
-                                    <span>
-                                      <span data-toggle="tooltip"
-                                            title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>
-                                      <span data-toggle="tooltip"
-                                            title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>
+                                    <span data-toggle="tooltip"
+                                      title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}
                                     </span>
                                   </td>
 
