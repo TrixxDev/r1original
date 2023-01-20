@@ -3105,6 +3105,13 @@ $('input[type=password].password-confirmation').keyup(delay(function(e) {
 }, 500));
 
 $(document).ready(function() {
+
+  $('#toggle-contacts').on('click', function() {
+    $('.contact-card-items').toggle();
+    $('#tc-phone').toggle();
+    $('#tc-close').toggle();
+  });
+
   // $('#tires-table tbody tr').change(function() {
   //   $('#show-selected-checkbox').attr('disabled', $('th.tire-table-checkbox input:checked').length == 0);
   // });
@@ -3130,7 +3137,7 @@ $(document).ready(function() {
 
   if ($('section#products').is(':visible')) {
     if (!$('.tire-table-row').length && !$('.grid-view-link').length) {
-      $('section#main').prepend('<div class="mt-1 alert alert-danger"><b>Atvainojiet,</b> taču šāds izmērs nav pieejams.</div>');
+      $('section#main').prepend('<div class="mt-1 alert alert-danger">Ar šādiem parametriem nav atrasta neviena pozīcija.</div>');
     }
   }
 

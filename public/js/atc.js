@@ -15,7 +15,7 @@ $(document).ready(function () {
       $(this).tablesorter({
           headers: {
             0: {sorter: false},
-            1: {sorter: false},
+            1: {sorter: true},
             2: {sorter: false},
             3: {sorter: false},
             4: {sorter: false},
@@ -33,7 +33,7 @@ $(document).ready(function () {
       $(this).tablesorter({
           headers: {
             0: {sorter: false},
-            1: {sorter: false},
+            1: {sorter: true},
             2: {sorter: false},
             3: {sorter: false},
             4: {sorter: false},
@@ -54,7 +54,7 @@ $(document).ready(function () {
     $(this).tablesorter({
         headers: {
           0: {sorter: false},
-          1: {sorter: false},
+          1: {sorter: true},
           2: {sorter: false},
           3: {sorter: false},
           4: {sorter: false},
@@ -71,7 +71,7 @@ $(document).ready(function () {
     $(this).tablesorter({
         headers: {
           0: {sorter: false},
-          1: {sorter: false},
+          1: {sorter: true},
           2: {sorter: false},
           3: {sorter: false},
           4: {sorter: false},
@@ -106,10 +106,10 @@ $(document).ready(function () {
     $(this).tablesorter({
         headers: {
           0: {sorter: false},
-          1: {sorter: false},
-          2: {sorter: true},
+          1: {sorter: true},
+          2: {sorter: false},
           3: {sorter: true},
-          4: {sorter: false},
+          4: {sorter: true},
           5: {sorter: false},
           6: {sorter: false},
           7: {sorter: false}
@@ -139,7 +139,7 @@ $(document).ready(function () {
     $(this).tablesorter({
         headers: {
           0: {sorter: false},
-          1: {sorter: false},
+          1: {sorter: true},
           2: {sorter: false},
           3: {sorter: false},
           4: {sorter: false},
@@ -180,7 +180,7 @@ $(document).ready(function () {
     $(this).tablesorter({
         headers: {
           0: {sorter: false},
-          1: {sorter: false},
+          1: {sorter: true},
           2: {sorter: false},
           3: {sorter: false},
           4: {sorter: true},

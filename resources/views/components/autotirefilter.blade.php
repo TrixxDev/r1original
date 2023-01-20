@@ -455,7 +455,6 @@
                                    data-for="wet_grip" data-value="A" type="checkbox">
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
-                              <i class="material-icons checkbox-checked"></i>
                             </span>
                           </span>
 
