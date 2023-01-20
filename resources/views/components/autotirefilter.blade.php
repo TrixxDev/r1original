@@ -25,7 +25,7 @@
               <select name="brand" class="r1-select select-title tire-brand">
                 <option class="select-list" id="Visi">Visi</option>
                 @foreach ($brands as $brand_id => $brand_title)
-                  <option class="select-list" id="{{ $brand_title->brand_id }}" @if ($brand_title->brand_title == $currBrand) selected @endif>{{ ucwords(strtolower($brand_title->brand_title)) }}</option>
+                  <option class="select-list" id="{{ $brand_id }}" @if ($brand_title == $currBrand) selected @endif>{{ ucwords(strtolower($brand_title)) }}</option>
                 @endforeach
               </select>
             </div>
@@ -102,7 +102,7 @@
             <label class="facet-label" for="facet_availability_0"
                    style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                           <span class="custom-checkbox">
-                            <input id="facet_availability_0" class="green" type="checkbox"
+                            <input id="facet_availability_0" class="green" @if (in_array('green', $availability)) checked @endif type="checkbox" name="availability[]"
                                    data-search-url="#" value="green"
                                    data-for="dot" data-value="green" data-color="green">
                             <span class="ps-shown-by-js">
@@ -117,7 +117,7 @@
             <label class="facet-label" for="facet_availability_1"
                    style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                           <span class="custom-checkbox">
-                            <input id="facet_availability_1" class="yellow" type="checkbox"
+                            <input id="facet_availability_1" class="yellow" @if (in_array('yellow', $availability)) checked @endif type="checkbox" name="availability[]"
                                    data-search-url="#" value="yellow"
                                    data-for="dot" data-value="yellow" data-color="yellow">
                             <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
@@ -130,7 +130,7 @@
             <label class="facet-label" for="facet_availability_2"
                    style="width: 100%;text-align: left;cursor: pointer">
                           <span class="custom-checkbox">
-                            <input id="facet_availability_2" class="red" type="checkbox"
+                            <input id="facet_availability_2" class="red" @if (in_array('red', $availability)) checked @endif type="checkbox" name="availability[]"
                                    data-search-url="#" value="red"
                                    data-for="dot" data-value="red" data-color="red">
                             <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
