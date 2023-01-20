@@ -306,30 +306,17 @@
                       </span>
         </div>
         <ul id="facet_fuel_eco" class="collapse" style="display: none;">
-          <li data-label="F">
-            <label class="facet-label" for="facet_fuel_eco_f">
+          <li data-label="A">
+            <label class="facet-label" for="facet_fuel_eco_a">
                           <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_f" data-search-url="" name="fuel[]"
-                                   @if (in_array('F', $fuel)) checked="" @endif value="F"
-                                   data-for="fuel_efficiency" data-value="F" type="checkbox">
+                            <input id="facet_fuel_eco_a" data-search-url="" name="fuel[]"
+                                   @if (in_array('A', $fuel)) checked="" @endif value="A"
+                                   data-for="fuel_efficiency" data-value="A" type="checkbox">
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>
                           </span>
-              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
-            </label>
-          </li>
-          <li data-label="E">
-            <label class="facet-label" for="facet_fuel_eco_e">
-                          <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_e" data-search-url="" name="fuel[]"
-                                   @if (in_array('E', $fuel)) checked="" @endif value="E"
-                                   data-for="fuel_efficiency" data-value="E" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
+              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
             </label>
           </li>
           <li data-label="B">
@@ -358,17 +345,59 @@
               <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
             </label>
           </li>
-          <li data-label="A">
-            <label class="facet-label" for="facet_fuel_eco_a">
+          <li data-label="D">
+            <label class="facet-label" for="facet_fuel_eco_d">
                           <span class="custom-checkbox">
-                            <input id="facet_fuel_eco_a" data-search-url="" name="fuel[]"
-                                   @if (in_array('A', $fuel)) checked="" @endif value="A"
-                                   data-for="fuel_efficiency" data-value="A" type="checkbox">
+                            <input id="facet_fuel_eco_d" data-search-url="" name="fuel[]"
+                                   @if (in_array('D', $fuel)) checked="" @endif value="D"
+                                   data-for="fuel_efficiency" data-value="D" type="checkbox">
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>
                           </span>
-              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
+              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">D</a>
+            </label>
+          </li>
+          <li data-label="E">
+            <label class="facet-label" for="facet_fuel_eco_e">
+                          <span class="custom-checkbox">
+                            <input id="facet_fuel_eco_e" data-search-url="" name="fuel[]"
+                                   @if (in_array('E', $fuel)) checked="" @endif value="E"
+                                   data-for="fuel_efficiency" data-value="E" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
+            </label>
+          </li>
+
+
+          <li data-label="F">
+            <label class="facet-label" for="facet_fuel_eco_f">
+                          <span class="custom-checkbox">
+                            <input id="facet_fuel_eco_f" data-search-url="" name="fuel[]"
+                                   @if (in_array('F', $fuel)) checked="" @endif value="F"
+                                   data-for="fuel_efficiency" data-value="F" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
+            </label>
+          </li>
+
+          <li data-label="G">
+            <label class="facet-label" for="facet_fuel_eco_g">
+                          <span class="custom-checkbox">
+                            <input id="facet_fuel_eco_g" data-search-url="" name="fuel[]"
+                                   @if (in_array('G', $fuel)) checked="" @endif value="G"
+                                   data-for="fuel_efficiency" data-value="G" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">G</a>
             </label>
           </li>
         </ul>
@@ -391,32 +420,18 @@
 
 
         <ul id="facet_wet" class="collapse" style="display: none;">
-          <li data-label="F">
-            <label class="facet-label" for="facet_wet_f">
+          <li data-label="A">
+            <label class="facet-label" for="facet_wet_a">
                           <span class="custom-checkbox">
-                            <input id="facet_wet_f" data-search-url="" name="wet[]"
-                                   @if (in_array('F', $wet)) checked="" @endif value="F"
-                                   data-for="wet_grip" data-value="F" type="checkbox">
+                            <input id="facet_wet_a" data-search-url="" name="wet[]"
+                                   @if (in_array('A', $wet)) checked="" @endif value="A"
+                                   data-for="wet_grip" data-value="A" type="checkbox">
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>
                           </span>
 
-              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
-            </label>
-          </li>
-          <li data-label="E">
-            <label class="facet-label" for="facet_wet_e">
-                          <span class="custom-checkbox">
-                            <input id="facet_wet_e" data-search-url="" name="wet[]"
-                                   @if (in_array('E', $wet)) checked="" @endif value="E"
-                                   data-for="wet_grip" data-value="E" type="checkbox">
-                            <span class="ps-shown-by-js">
-                              <i class="material-icons checkbox-checked"></i>
-                            </span>
-                          </span>
-
-              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
+              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
             </label>
           </li>
           <li data-label="B">
@@ -447,18 +462,60 @@
               <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
             </label>
           </li>
-          <li data-label="A">
-            <label class="facet-label" for="facet_wet_a">
+          <li data-label="D">
+            <label class="facet-label" for="facet_wet_d">
                           <span class="custom-checkbox">
-                            <input id="facet_wet_a" data-search-url="" name="wet[]"
-                                   @if (in_array('A', $wet)) checked="" @endif value="A"
-                                   data-for="wet_grip" data-value="A" type="checkbox">
+                            <input id="facet_wet_d" data-search-url="" name="wet[]"
+                                   @if (in_array('D', $wet)) checked="" @endif value="D"
+                                   data-for="wet_grip" data-value="D" type="checkbox">
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>
                           </span>
 
-              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
+              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">D</a>
+            </label>
+          </li>
+          <li data-label="E">
+            <label class="facet-label" for="facet_wet_e">
+                          <span class="custom-checkbox">
+                            <input id="facet_wet_e" data-search-url="" name="wet[]"
+                                   @if (in_array('E', $wet)) checked="" @endif value="E"
+                                   data-for="wet_grip" data-value="E" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+
+              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
+            </label>
+          </li>
+          <li data-label="F">
+            <label class="facet-label" for="facet_wet_f">
+                          <span class="custom-checkbox">
+                            <input id="facet_wet_f" data-search-url="" name="wet[]"
+                                   @if (in_array('F', $wet)) checked="" @endif value="F"
+                                   data-for="wet_grip" data-value="F" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+
+              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
+            </label>
+          </li>
+          <li data-label="G">
+            <label class="facet-label" for="facet_wet_g">
+                          <span class="custom-checkbox">
+                            <input id="facet_wet_g" data-search-url="" name="wet[]"
+                                   @if (in_array('G', $wet)) checked="" @endif value="G"
+                                   data-for="wet_grip" data-value="G" type="checkbox">
+                            <span class="ps-shown-by-js">
+                              <i class="material-icons checkbox-checked"></i>
+                            </span>
+                          </span>
+
+              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">G</a>
             </label>
           </li>
         </ul>
