@@ -50,6 +50,7 @@ class Autotire extends Model
 
     public function getStockCount()
     {
+
         $stocks = Autostock::where('tire_id', $this->tire_id)->get();
 
         $count=0;
@@ -98,7 +99,7 @@ class Autotire extends Model
       foreach ($stocks as $stock) {
         switch ($stock->itype) {
           case 'i3': {
-            $urls['Lattako'] = ['link' => 'https://shop.latakko.eu/product/' . $stock->article, 'remaining' => $stock->quantity];
+            $urls['Latakko'] = ['link' => 'https://shop.latakko.eu/product/' . $stock->article, 'remaining' => $stock->quantity];
             break;
           }
           case 'gy': {

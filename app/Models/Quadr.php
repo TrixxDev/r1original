@@ -34,16 +34,7 @@ class Quadr extends Model
 
     public function getFullNameAttribute()
     {
-      $sql = Quadrtread::selectRaw('quadr_treads.*, quadr_treads.title as tread_title')
-        ->selectRaw('quadr_brands.*, quadr_brands.title as brand_title')
-        ->leftJoin('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
-        ->where('quadr_treads.tread_id', $this->make_id)
-        ->first();
-      if (!isset($sql->brand_title) || !isset($sql->tread_title)) {
-        return false;
-      } else {
-        return $sql->brand_title . ' ' . $sql->tread_title . ' ' . $this->getFullSizeAttribute() . ' ' . $this->comment . ' ' . $this->getLiSiAttribute();
-      }
+      $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->comment . ' ' . $this->getLiSiAttribute();
     }
 
     public function getFullSizeAttribute(): string
@@ -120,7 +111,7 @@ class Quadr extends Model
     foreach ($stocks as $stock) {
       switch ($stock->itype) {
         case 'i3': {
-          $urls['Lattako'] = ['link' => 'https://shop.latakko.eu/product/' . $stock->article, 'remaining' => $stock->quantity];
+          $urls['Latakko'] = ['link' => 'https://shop.latakko.eu/product/' . $stock->article, 'remaining' => $stock->quantity];
           break;
         }
         case 'duell': {
