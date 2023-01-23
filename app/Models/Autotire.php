@@ -63,6 +63,59 @@ class Autotire extends Model
         return $count;
     }
 
+//    public static function RZLink($article)
+//    {
+//      $curl = curl_init();
+//      curl_setopt_array($curl, array(
+//        CURLOPT_URL => 'https://riepuzona.lv/ajax/searchGoods',
+//        CURLOPT_RETURNTRANSFER => true,
+//        CURLOPT_ENCODING => "",
+//        CURLOPT_MAXREDIRS => 10,
+//        CURLOPT_TIMEOUT => 30,
+//        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//        CURLOPT_CUSTOMREQUEST => "POST",
+//        CURLOPT_POSTFIELDS => "term=$article&data%5Bactive%5D=-1",
+//        CURLOPT_HTTPHEADER => array(
+//          "cache-control: no-cache",
+//          "content-type: application/x-www-form-urlencoded"
+//        ),
+//      ));
+//
+//      $response = curl_exec($curl);
+//      $err = curl_error($curl);
+//
+//      curl_close($curl);
+//
+//      return $response;
+//    }
+
+    public static function StockLink($tire)
+    {
+      $stocks = Autostock::where('tire_id', $tire->tire_id)->get();
+
+      $urls = [];
+
+      foreach ($stocks as $stock) {
+        switch ($stock->itype) {
+          case 'i3': {
+            $urls['Lattako'] = ['link' => 'https://shop.latakko.eu/product/' . $stock->article, 'remaining' => $stock->quantity];
+            break;
+          }
+          case 'gy': {
+            $urls['Goodyear'] = ['link' => 'https://myway.goodyear.com/p/' . $stock->article, 'remaining' => $stock->quantity];
+            break;
+          }
+//          case 'rz': {
+//            dd(Self::RZLink($stock->article));
+//            $urls = [$stock->itype => Self::RZLink($stock->article)];
+//            break;
+//          }
+        }
+      }
+
+      return $urls;
+    }
+
     public function getAvailableAttribute()
     {
         switch ($this->quantity) {

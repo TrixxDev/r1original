@@ -131,6 +131,23 @@ class SyncController extends Controller
         }
     }
 
+    public function getStockLinks($article)
+    {
+      foreach ($this->tire_tables as $tire_table => $tire_options) {
+        $model = "App\\Models\\" . $tire_options[0];
+
+        if (class_exists($model)) {
+          $item = $model::where('article', $article)->first();
+          if (!$item) continue;
+          if (method_exists($model, 'StockLink')) {
+            return $model::StockLink($item);
+          }
+        } else {
+          return false;
+        }
+      }
+    }
+
     public function updateArticle($article)
     {
 

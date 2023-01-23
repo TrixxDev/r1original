@@ -86,6 +86,54 @@ class Quadr extends Model
         return $count;
     }
 
+  public static function DuellLink($article)
+  {
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+      CURLOPT_URL => 'https://www.duell.fi/jm/en/search?q=' . $article . '&limit=10&timestamp=1674471998394&ajaxSearch=1&id_lang=3',
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => "",
+      CURLOPT_MAXREDIRS => 10,
+      CURLOPT_TIMEOUT => 30,
+      CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+      CURLOPT_CUSTOMREQUEST => "GET",
+      CURLOPT_HTTPHEADER => array(
+        "cache-control: no-cache",
+        "content-type: application/x-www-form-urlencoded"
+      ),
+    ));
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
+
+    curl_close($curl);
+
+    return json_decode($response)[0]->product_link;
+  }
+
+  public static function StockLink($tire)
+  {
+
+    $stocks = Quadrstock::where('tire_id', $tire->tire_id)->get();
+
+    $urls = [];
+
+    foreach ($stocks as $stock) {
+      switch ($stock->itype) {
+        case 'i3': {
+          $urls['Lattako'] = ['link' => 'https://shop.latakko.eu/product/' . $stock->article, 'remaining' => $stock->quantity];
+          break;
+        }
+        case 'duell': {
+          $urls['Duell'] = ['link' => Self::DuellLink($stock->article), 'remaining' => $stock->quantity];
+          break;
+        }
+      }
+    }
+
+    return $urls;
+
+  }
+
     public function getAvailableAttribute()
     {
         switch ($this->quantity) {

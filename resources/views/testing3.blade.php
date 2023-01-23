@@ -44,6 +44,11 @@
             </span>
           </label>
         </div>
+        @foreach ($links as $name => $opts)
+        <div class="radio-field">
+          <a href="{{ $opts['link'] }}" target="_blank">{{ $name }} ({{ $opts['remaining'] }})</a>
+        </div>
+        @endforeach
       </div>
       <div class="top-long-fields">
         <input type="text" placeholder="Prece" name="prod" value="{{ $param->prod }}" readonly="">
@@ -54,7 +59,7 @@
 
       </div>
       <div class="bottom-long-fields">
-        <span>Montāža</span>
+        <span style="margin-left: 54px;">Montāža</span>
         <input type="checkbox" id="montage" onchange="toggleMontage()" name="montage" value="1"><label for="montage"></label>
         <input type="text" name="total" placeholder="Summa" value="{{ $param->qty * $param->price }}" readonly="">
         <label for="total">Summa:</label>
@@ -95,7 +100,7 @@
       .popup .location-wraper {
         float: left;
         margin: 0 0 15px -13px;
-	      width: 92px;
+        width: 120px;
       }
 
       .popup .location-wraper input {
@@ -120,24 +125,32 @@
       }
 
       .popup .top-long-fields input[name="qty"] {
-        width: 25px;
+        width: 37px !important;
         padding: 0;
         padding-left: 5px;
       }
 
+      .popup .top-long-fields > label[for='price'] {
+        right: 60px;
+      }
+
       .popup .top-long-fields input[name="price"] {
-        width: 100px;
+        width: 85px !important;
       }
 
       .popup .bottom-long-fields {
         height: 50px;
         width: 547px;
-        margin-left: 20px;
+        margin-left: 26px;
+      }
+
+      input#montage {
+        margin-left: 24px;
       }
 
       .popup .bottom-long-fields span {
         float: left;
-        margin: 0 10px;
+        /* margin: 0 0px; */
         font-size: 20px;
         font-weight: bold;
       }
@@ -157,7 +170,7 @@
       }
 
       .popup .bottom-long-fields input[name="total"] {
-        width: 100px;
+        width: 85px;
       }
 
       .popup .top-long-fields > label {
@@ -177,7 +190,7 @@
 
       .popup label[for='total'] {
         position: relative;
-        left: 148px;
+        left: 75px;
         top: 5px;
       }
 
@@ -185,6 +198,10 @@
         display: none;
         font-size: 30px;
         margin-top: 30px;
+      }
+
+      .popup .radio-field {
+        font-size: .875rem;
       }
 
       .popup .user-fields {

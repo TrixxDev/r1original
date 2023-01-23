@@ -383,6 +383,9 @@ class HomeController extends Controller
     public function fastOrder() {
       $param = (object) request()->input();
 
-      return view('/testing3', compact('param'));
+      $model = new SyncController();
+      $links = $model->getStockLinks($param->article);
+
+      return view('/testing3', compact('param', 'links'));
     }
 }
