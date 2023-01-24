@@ -65,6 +65,8 @@ class SyncController extends Controller
     public function accrual(Request $request)
     {
 
+        set_time_limit(0);
+
         if (strrchr($_SERVER['HTTP_REFERER'], '?') !== false) {
           parse_str(substr(strrchr($_SERVER['HTTP_REFERER'], '?'), 1), $inputs);
         }
