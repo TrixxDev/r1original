@@ -307,7 +307,7 @@
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('image', Image::showAd('auto', $tire->make_id));
         $item->appendChild($child_node_title);
-        if ($tire->tread->season === 1) {
+        if ($tire->tread->season == 1) {
           $child_node_title = $dom->createElement('category', 'Vasaras riepas >> R' . $tire->d3);
           $item->appendChild($child_node_title);
           $child_node_title = $dom->createElement('category_full', 'Auto preces >> Vasaras riepas >> R' . $tire->d3);
@@ -369,6 +369,7 @@
         $root->appendChild($item);
         $dom->appendChild($root);
       }
+      dd($dom->saveXML());
       file_put_contents($xml_file_name, $dom->saveXML());
       //$dom->save($xml_file_name);
       return $dom->saveXML();
