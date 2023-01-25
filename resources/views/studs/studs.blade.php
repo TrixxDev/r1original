@@ -14,6 +14,7 @@
         <div id="content-wrapper" class="col-md-12 col-lg-9">
           <section id="main">
             <section id="products" class="">
+              @if(!$studs->isEmpty())
               <div class="tire-image-container" style="display: none">
                 <div class="tire-image-cards">
                   <div style="display: flex; padding: 5px 0;">
@@ -106,6 +107,8 @@
               </div>
 
               {{-- LIST VIEW --}}
+
+
               <div id="js-product-list">
                 <div style="display: flex; padding: 5px 0;">
                   <h4 class="text-uppercase tire-brand-name text-black" style="color: black;">Skrūvējamas radzes</h4>
@@ -180,6 +183,7 @@
                   </tbody>
                 </table>
               </div>
+              @endif
               <div id="js-product-list-bottom">
 
               </div>
