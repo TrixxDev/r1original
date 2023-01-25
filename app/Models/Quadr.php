@@ -34,7 +34,7 @@ class Quadr extends Model
 
     public function getFullNameAttribute()
     {
-      $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->comment . ' ' . $this->getLiSiAttribute();
+      return $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->comment . ' ' . $this->getLiSiAttribute();
     }
 
     public function getFullSizeAttribute(): string
