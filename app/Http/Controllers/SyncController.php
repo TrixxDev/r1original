@@ -26,6 +26,7 @@ class SyncController extends Controller
     public $accrual;
     public $tire_tables;
     public $stock_tables;
+    public $article = '';
 
     public $urs = 0;
     public $krs = 0;
@@ -67,9 +68,6 @@ class SyncController extends Controller
 
         set_time_limit(0);
 
-        if (strrchr($_SERVER['HTTP_REFERER'], '?') !== false) {
-          parse_str(substr(strrchr($_SERVER['HTTP_REFERER'], '?'), 1), $inputs);
-        }
         try {
           $this->accrual = new PDO("sqlsrv:Server=212.3.218.22,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
@@ -78,39 +76,17 @@ class SyncController extends Controller
 //          exit;
         }
 
-        //echo 'Go Stock!' . PHP_EOL;
+	      (isset($request->article)) ? $this->article = $request->article : $this->article = '';
 
-	      (isset($request->article)) ? $article = $request->article : $article = '';
-        if (isset($inputs) && isset($inputs->model_name)) {
-          $model = $inputs['model_name'];
-          $tire_id = $inputs['tire_id'];
-        } else {
-          $model = '';
-          $tire_id = '';
-        }
-
-	      if (!$article) {
-
-            // $this->updateStock($stock[1]);
-
-//            $this->updateStock($stock[2]);
-            $this->updateArticles();
-            DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
-            echo 'Done';
+	      if (!$this->article) {
+          $this->updateArticles();
+          DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
+          echo 'Done';
         } else {
 
-//	        dd($article);
-//
-//          $tire = DB::table('auto_tires')->where('article', $article)->first();
-//          if ($tire === null) $tire = DB::table('moto_tires')->where('article', $article)->first();
-//          if ($tire === null) $tire = DB::table('quadr_tires')->where('article', $article)->first();
-//          if ($tire === null) $tire = DB::table('quadrims')->where('article', $article)->first();
-//          if ($tire === null) $tire = DB::table('studs')->where('article', $article)->first();
-//          if ($tire === null) return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
-
-          $productInfo = $this->getAccrualInventory($article);
-          if (isset($productInfo[$article])) {
-            $stores = $productInfo['_stores'][$article];
+          $productInfo = $this->getAccrualInventory($this->article);
+          if (isset($productInfo[$this->article])) {
+            $stores = $productInfo['_stores'][$this->article];
 
             if (isset($stores[1])) {
               $this->urs = $stores[1];
@@ -128,7 +104,7 @@ class SyncController extends Controller
             }
           }
 
-          $this->updateArticle($article);
+          $this->updateArticle($this->article);
           return json_encode(['urs_quantity' => intval($this->urs), 'krs_quantity' => intval($this->krs)]);
         }
     }
@@ -1384,10 +1360,57 @@ class SyncController extends Controller
       }
     }
 
+    private static function grab_image($url,$saveto){
+      $ch = curl_init ($url);
+      curl_setopt($ch, CURLOPT_HEADER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
+      $raw=curl_exec($ch);
+      curl_close ($ch);
+      if(file_exists($saveto)){
+        unlink($saveto);
+      }
+      $fp = fopen($saveto,'x');
+      fwrite($fp, $raw);
+      fclose($fp);
+    }
+
     public function starco()
     {
-
       set_time_limit(0);
+
+//      $image = file_get_contents('http://194.19.236.7/Pictures/034788.jpg');
+
+//      $curl = curl_init();
+//      curl_setopt_array($curl, array(
+//        CURLOPT_URL => 'http://194.19.236.7/Pictures/15721140.jpg',
+//        CURLOPT_RETURNTRANSFER => true,
+//        CURLOPT_ENCODING => "",
+//        CURLOPT_MAXREDIRS => 10,
+//        CURLOPT_TIMEOUT => 30,
+//        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//        CURLOPT_CUSTOMREQUEST => "GET",
+//        CURLOPT_HTTPHEADER => array(
+//          "cache-control: no-cache",
+//        ),
+//      ));
+//      $response = curl_exec($curl);
+//      $err = curl_error($curl);
+//
+//      if (!$err) {
+//        $info = curl_getinfo($curl);
+//        if ($info['http_code'] == '404') {
+//          dd('Nav tādas bildes');
+//        } else {
+//          dd($response);
+//        }
+//      } else {
+//        throw new \Exception($err);
+//      }
+
+//      curl_close($curl);
+
+
 
       $creditals = [
         'login' => '202562',
@@ -1425,6 +1448,8 @@ class SyncController extends Controller
         $counted = 0;
         $updated = 0;
         foreach ($tires as $item) {
+
+          dd($item);
 
           if (Bigtire::where('article', $item['product_no'])->exists()) continue;
 
@@ -1491,16 +1516,9 @@ class SyncController extends Controller
 
               $position->make_id = $treadId;
 
-              $outPath = dirname(__DIR__, 3) . '/storage/app/public/industrial/tread/';
+              $outPath = dirname(__DIR__, 3) . '/storage/app/public/industrial/tread/' . $treadId . '.jpg';
 
-              @$image = file_get_contents('http://194.19.236.7/Pictures/' . $article . '.jpg');
-              $new_image = $outPath . $treadId . '.jpg';
-
-              if (trim($image) !== false) {
-                file_put_contents($new_image, $image);
-              } else {
-                echo 'Neeksistē - Artikuls (' . $article . ')';
-              }
+              Self::grab_image('http://194.19.236.7/Pictures/' . $article . '.jpg', $outPath);
 
               $exploded[0] = strtr($exploded[0], ['(' => '']);
               $exploded[0] = strtr($exploded[0], [')' => '']);
@@ -1574,7 +1592,7 @@ class SyncController extends Controller
           if ($item['RIG_STOCK'] == 0) {
 
             if (Bigtire::where('article', $item['product_no'])->exists()) {
-              Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0]);
+              Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0, 'updated_at' => date('Y-m-d H:i:s')]);
             } else {
               continue;
             }
@@ -1608,17 +1626,17 @@ class SyncController extends Controller
             if ($item['price'] < 100) {
               $price1 = ($item['price'] + 8) / 70 * 100;
               $price2 = $item['price'] + 10;
-              Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2]);
+              Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
             }
             if ($item['price'] >= 100 && $item['price'] < 200) {
               $price1 = ($item['price'] + 12) / 70 * 100;
               $price2 = $item['price'] + 15;
-              Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2]);
+              Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
             }
             if ($item['price'] > 200) {
               $price1 = ($item['price'] + 15) / 70 * 100;
               $price2 = $item['price'] + 20;
-              Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2]);
+              Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
             }
 
           }
@@ -1626,7 +1644,7 @@ class SyncController extends Controller
           if (Bigstock::where('article', $item['product_no'])->exists()) {
             $stock = Bigstock::where('article', $item['product_no'])->first();
             if (Bigtire::where('article', $item['product_no'])->exists()) {
-              if ($stock->quantity === 0) Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0]);
+              if ($stock->quantity == 0) Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0]);
             }
           } else {
             continue;
