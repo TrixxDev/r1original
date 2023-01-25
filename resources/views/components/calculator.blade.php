@@ -21,16 +21,37 @@
 <body style="font-family: 'Arimo', Arial, sans-serif; margin: 0 10px;">
 <script>
 
-  if (!window.opener && !window.opener !== window) {
+
+
+  if (localStorage.getItem('calc')) {
+    if (!window.opener && !window.opener !== window) {
+      window.onload = function () {
+        document.getElementById('home_button').innerHTML = '<button onclick="getBackHome();" class="btn btn-danger mt-1" style="font-size: 2rem;"><i class="fa-solid fa-house"></i></button>';
+      }
+    }
+
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      window.onload = function () {
+        document.getElementById('home_button').innerHTML = '<button onclick="getBackHome();" class="btn btn-danger mt-1" style="font-size: 2rem;"><i class="fa-solid fa-house"></i></button>';
+      }
+    }
+  } else { // IF NOT OPENED FROM WEBSITE
+    if (!window.opener && !window.opener !== window) {
       window.onload = function () {
         document.getElementById('home_button').innerHTML = '<a href="/" class="btn btn-danger mt-1" style="font-size: 2rem;"><i class="fa-solid fa-house"></i></a>';
       }
+    }
+
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      window.onload = function () {
+        document.getElementById('home_button').innerHTML = '<a href="/" class="btn btn-danger mt-1" style="font-size: 2rem;"><i class="fa-solid fa-house"></i></a>';
+      }
+    }
   }
 
-  if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-    window.onload = function () {
-      document.getElementById('home_button').innerHTML = '<a href="/" class="btn btn-danger mt-1" style="font-size: 2rem;"><i class="fa-solid fa-house"></i></a>';
-    }
+  function getBackHome() {
+    localStorage.removeItem('calc');
+    window.history.back();
   }
 
   function insert(textEl,text){

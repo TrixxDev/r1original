@@ -19328,3 +19328,17 @@ table.queueTable:nth-child(2) {
 #application option[selected] {
   background: #bebebe;
 }
+
+/*.admin-banner-images {*/
+/*  display: grid;*/
+/*}*/
+
+.banner-image{
+  margin: 10px 0;
+  background-size:contain;
+  background-repeat:no-repeat;
+}
+
+label#no-banner-label {
+  width: 100%;
+}

@@ -18,6 +18,8 @@ const products = [];
 // SHOULD BE REMOVED IN PRODUCTION
 const wheel_tires = [];
 
+let pops;
+
 //
 const url = window.location.pathname;
 const pathParts = window.location.pathname.split('/');
@@ -2853,7 +2855,6 @@ $('#facet_availability li label').on('click', function() {
       $(this).show();
     })
 
-    return true;
   }
 
   $checked.each(function() {
@@ -3243,6 +3244,10 @@ $(document).ready(function() {
     $('#show-selected-checkbox').click();
   }
 
+  $('a.dropdown-item.sizeCalc').on('click', function() {
+    localStorage.setItem('calc', 'true');
+  })
+
 });
 
 // var interval;
@@ -3369,7 +3374,7 @@ document.addEventListener("DOMContentLoaded", function() {
 $('.dropdown-item.sizeCalc').on('click', function(e) {
   e.preventDefault();
   let url = $(this).attr('href');
-  popCalc(url,600,450);
+  popCalc(url,1000,550);
 });
 
 function popCalc(url,popW,popH, data){
