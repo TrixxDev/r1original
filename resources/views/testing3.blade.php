@@ -44,11 +44,13 @@
             </span>
           </label>
         </div>
-        @foreach ($links as $name => $opts)
-        <div class="radio-field">
-          <a href="{{ $opts['link'] }}" target="_blank">{{ $name }} ({{ $opts['remaining'] }})</a>
-        </div>
-        @endforeach
+        @if (isset($links) && count($links) > 0)
+          @foreach ($links as $name => $opts)
+          <div class="radio-field">
+            <a href="{{ $opts['link'] }}" target="_blank">{{ $name }} ({{ $opts['remaining'] }})</a>
+          </div>
+          @endforeach
+        @endif
       </div>
       <div class="top-long-fields">
         <input type="text" placeholder="Prece" name="prod" value="{{ $param->prod }}" readonly="">
