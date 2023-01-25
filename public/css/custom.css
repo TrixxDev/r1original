@@ -17,6 +17,7 @@ input:focus, textarea:focus, select:focus, button:focus{
 
 body {
   background: url(../images/cover.png) no-repeat fixed top center;
+  background-size: cover;
   font-family: 'Arimo', Arial, sans-serif;
 }
 
@@ -5356,3 +5357,7 @@ div#service-option-selection {
   animation-play-state: paused;
 }
 
+.sellout {
+  font-weight: bold;
+  color: red;
+}

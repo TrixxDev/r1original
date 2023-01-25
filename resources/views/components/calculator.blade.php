@@ -4,14 +4,60 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link rel="stylesheet" href="template/common/calc.css" type="text/css" media="screen">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    td, input.btn, .hide{
+      font-size: 2rem;
+    }
+
+    select {
+      margin-right: 5px;
+    }
+    .table-sm td, .table-sm th {
+      vertical-align: middle;
+    }
+  </style>
 </head>
 <body style="font-family: 'Arimo', Arial, sans-serif; margin: 0 10px;">
-<script language="JavaScript" type="text/javascript">
+<script>
+
+
+
+  if (localStorage.getItem('calc')) {
+    if (!window.opener && !window.opener !== window) {
+      window.onload = function () {
+        document.getElementById('home_button').innerHTML = '<button onclick="getBackHome();" class="btn btn-danger mt-1" style="font-size: 2rem;"><i class="fa-solid fa-house"></i></button>';
+      }
+    }
+
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      window.onload = function () {
+        document.getElementById('home_button').innerHTML = '<button onclick="getBackHome();" class="btn btn-danger mt-1" style="font-size: 2rem;"><i class="fa-solid fa-house"></i></button>';
+      }
+    }
+  } else { // IF NOT OPENED FROM WEBSITE
+    if (!window.opener && !window.opener !== window) {
+      window.onload = function () {
+        document.getElementById('home_button').innerHTML = '<a href="/" class="btn btn-danger mt-1" style="font-size: 2rem;"><i class="fa-solid fa-house"></i></a>';
+      }
+    }
+
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      window.onload = function () {
+        document.getElementById('home_button').innerHTML = '<a href="/" class="btn btn-danger mt-1" style="font-size: 2rem;"><i class="fa-solid fa-house"></i></a>';
+      }
+    }
+  }
+
+  function getBackHome() {
+    localStorage.removeItem('calc');
+    window.history.back();
+  }
 
   function insert(textEl,text){
     textEl.value = '';
     textEl.value += text;
-    textEl.focus();
+    // textEl.focus();
   }
 
   function round_decimals(orginal_number, decimals){
@@ -76,6 +122,11 @@
   }
 
 </script>
+
+{{--<a href="/" class="btn btn-danger mt-1" style="font-size: 2rem;">Atgriezties uz lapu <i class="fa-solid fa-rotate-left"></i></a>--}}
+<div id="home_button"></div>
+
+
   <table border="0" style="width: 100%;">
     <tr>
       <td>
@@ -84,7 +135,7 @@
             <center>
               <table border="1" cellpadding="2" cellspacing="0" class="table table-sm" style="margin-top: 10px;">
                 <tr>
-                  <td>&nbsp;</td>
+                  <td></td>
                   <td><B class="small">platums/augstums/disks =Radiuss mm </b>
                   </td>
                   <td><B class="small">km/h</b></td>
@@ -143,9 +194,9 @@
                       <option  value="23">23</option>
                       <option  value="24">24</option>
                     </select>
-                    <input type="text" name="org_radiuss" readOnly size="6"></td>
+                    <input type="text" name="org_radiuss" readOnly size="6" style="width: 30%;"></td>
                   <td>
-                    <select size="1" name="org_spidometrs">
+                    <select size="1" name="org_spidometrs" style="width: 100%;">
                       <option  value="40">40</option><option  value="50">50</option><option  value="60">60</option><option  value="70">70</option><option  value="80">80</option><option selected value="90">90</option><option  value="100">100</option><option  value="110">110</option><option  value="120">120</option><option  value="130">130</option><option  value="140">140</option><option  value="150">150</option><option  value="160">160</option><option  value="170">170</option><option  value="180">180</option><option  value="190">190</option><option  value="200">200</option><option  value="210">210</option><option  value="220">220</option><option  value="230">230</option><option  value="240">240</option><option  value="250">250</option><option  value="260">260</option>
                     </select>
                     <!--
@@ -204,8 +255,8 @@
                       <option  value="23">23</option>
                       <option  value="24">24</option>
                     </select>
-                    <input type="text" name="radiuss1" readOnly size="6">&nbsp;<B class="small"><sup>*</sup></b></td>
-                  <td><input type="text" name="spidometrs1" readOnly size="5"></td>
+                    <input type="text" name="radiuss1" readOnly size="6" style="width: 30%;">&nbsp;<B class="small"><sup>*</sup></b></td>
+                  <td><input type="text" name="spidometrs1" readOnly size="5" style="width: 100%;"></td>
                 </tr>
                 <tr>
                   <td><B class="small">Variants 2</b></td>
@@ -258,8 +309,8 @@
                       <option  value="23">23</option>
                       <option  value="24">24</option>
                     </select>
-                    <input type="text" name="radiuss2" readOnly size="6">&nbsp;<B class="small"><sup>*</sup></b></td>
-                  <td><input type="text" name="spidometrs2" readOnly size="5"></td>
+                    <input type="text" name="radiuss2" readOnly size="6" style="width: 30%;">&nbsp;<B class="small"><sup>*</sup></b></td>
+                  <td><input type="text" name="spidometrs2" readOnly size="5" style="width: 100%;"></td>
                 </tr>
                 <tr>
                   <td><B class="small">Variants 3</b></td>
@@ -314,8 +365,8 @@
                       <option  value="23">23</option>
                       <option  value="24">24</option>
                     </select>
-                    <input type="text" name="radiuss3" readonly="readonly" size="6">&nbsp;<B class="small"><sup>*</sup></b></td>
-                  <td><input type="text" name="spidometrs3" readOnly size="5"></td>
+                    <input type="text" name="radiuss3" readonly="readonly" size="6" style="width: 30%;">&nbsp;<B class="small"><sup>*</sup></b></td>
+                  <td><input type="text" name="spidometrs3" readOnly size="5" style="width: 100%;"></td>
 
                 </tr>
                 <tr><td colspan="3"><B class="small">* starpība rādiusā mm</b></td><tr>

@@ -166,6 +166,11 @@
                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-browser"></use>
               </svg> Lapas</a>
           </li>
+          <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.banners') }}" target="_top">
+              <svg class="c-sidebar-nav-icon">
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-bullhorn"></use>
+              </svg> Skrienošā josla</a>
+          </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.codes') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
@@ -261,6 +266,26 @@
     <script src="https://cdn.tiny.cloud/1/3nivlf7ukirc5znzq6r1m68qaf80subltkj10h3an5njfepn/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         $(document).ready(function() {
+
+
+            $('#add-banner-button').on('click', function() {
+              $('#add-image-card').toggle();
+            })
+
+            $('.fdjhifudhfds label').mouseup(function(e) {
+              e.preventDefault();
+              console.log($(this));
+            });
+
+            $('#formFile').change(function(){
+              let reader = new FileReader();
+              reader.onload = (e) => {
+                $('#preview-image').attr('src', e.target.result).css('width', '760px').css('height', '100px');
+              }
+              reader.readAsDataURL(this.files[0]);
+              $('.fdjhifudhfds').submit();
+            });
+
             let pathParts = window.location.pathname.split('/');
             let tread_id = pathParts[4];
 
