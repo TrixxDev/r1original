@@ -160,7 +160,7 @@ class MotoTireController extends Controller
 
         if ($request->quantity) {
           $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
-	} else {
+        } else {
           $cart = CartController::addProduct($this->model, $tire->tire_id, $this->cartQty);
         }
 

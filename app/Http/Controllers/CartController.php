@@ -9,6 +9,7 @@ use App\Models\Pdf;
 use App\Models\Quadr;
 use App\Models\Bigtire;
 use App\Models\Rim;
+use App\Models\Quadrim;
 use App\Models\Stud;
 use Cart;
 use Gloudemans\Shoppingcart\CartItem;
@@ -475,7 +476,7 @@ class CartController extends Controller
             case 'Rim': {
                 $tire = new Rim;
 
-                $tire = $tire->query()->selectRaw('rim_makes.*, rims.*, rims.comment as rim_comment')
+                $tire = $tire->query()->with('tread')->selectRaw('rim_makes.*, rims.*, rims.comment as rim_comment, rim_makes.make_id as tread_id')
                   ->rightJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
                   ->where('rims.rim_id', $tire_id)
                   ->first();
@@ -483,17 +484,28 @@ class CartController extends Controller
                 $availability = $tire->dotAvailable;
                 break;
             }
-          case 'Stud': {
-            $tire = new Stud;
+            case 'Quadrim': {
+              $tire = new Quadrim;
 
-            $tire = $tire->query()->with('tread')->selectRaw('studs_treads.*, studs.*, studs.comment as stud_comment')
-              ->leftJoin('studs_treads', 'studs.make_id', '=', 'studs_treads.tread_id')
-              ->where('studs.stud_id', $tire_id)
-              ->first();
-            $image = 'stud';
-            $availability = $tire->dotAvailable;
-            break;
-          }
+              $tire = $tire->query()->with('tread')->selectRaw('quadrim_makes.*, quadrims.*, quadrims.comment as rim_comment, quadrim_makes.make_id as tread_id')
+                ->rightJoin('quadrim_makes', 'quadrims.make_id', '=', 'quadrim_makes.make_id')
+                ->where('quadrims.rim_id', $tire_id)
+                ->first();
+              $image = 'quadrims';
+              $availability = $tire->dotAvailable;
+              break;
+            }
+            case 'Stud': {
+              $tire = new Stud;
+
+              $tire = $tire->query()->with('tread')->selectRaw('studs_treads.*, studs.*, studs.comment as stud_comment')
+                ->leftJoin('studs_treads', 'studs.make_id', '=', 'studs_treads.tread_id')
+                ->where('studs.stud_id', $tire_id)
+                ->first();
+              $image = 'stud';
+              $availability = $tire->dotAvailable;
+              break;
+            }
         }
 
 //        if ($cart->content()->isEmpty()) {
