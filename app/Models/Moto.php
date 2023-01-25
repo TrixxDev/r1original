@@ -34,7 +34,7 @@ class Moto extends Model
 
     public function getFullNameAttribute()
     {
-      $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->code . ' ' . $this->getLiSiAttribute();
+      return $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->code . ' ' . $this->getLiSiAttribute();
     }
 
     public function getFullSizeAttribute()
@@ -78,10 +78,27 @@ class Moto extends Model
 
     public static function DuellLink($article)
     {
+
       $curl = curl_init();
+
+      $ch = curl_init('https://lv.e-cat.intercars.eu/');
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+      curl_setopt($ch, CURLOPT_HEADER, 1);
+      $result = curl_exec($ch);
+
+
+      preg_match_all('/^Set-Cookie:\s*([^;]*)/mi', $result, $cookies);
+
+
+      $session = (strpos($cookies[1][2], 'JSESSIONID') !== false) ? $cookies[1][1] . ' ' .$cookies[1][2] : $cookies[1][0] . ' ' . $cookies[1][1];
+
+      curl_close($ch);
+
       curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://www.duell.fi/jm/en/search?q=' . $article . '&limit=10&timestamp=1674471998394&ajaxSearch=1&id_lang=3',
+        CURLOPT_URL => 'https://lv.e-cat.intercars.eu/lv/api/products/search/suggest?query=2055516',
         CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HEADER => 1,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
         CURLOPT_TIMEOUT => 30,
@@ -89,13 +106,16 @@ class Moto extends Model
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_HTTPHEADER => array(
           "cache-control: no-cache",
-          "content-type: application/x-www-form-urlencoded"
+          "content-type: application/json;charset=UTF-8",
+          "Cookie: JSESSIONID=Y13-69097244-5439-4c8f-963a-85f59ad6e4b9.app13"
         ),
       ));
+//      JSESSIONID=Y10-7e7cd814-32f3-4a5c-a5fe-ee66f72d2f2d.app10
       $response = curl_exec($curl);
       $err = curl_error($curl);
 
       curl_close($curl);
+      dd($response);
 
       return json_decode($response)[0]->product_link;
     }
@@ -299,10 +319,20 @@ class Moto extends Model
             'duell' => 'Duell',
         ];
 
-        $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
-        $availability .= '<p>Kalnciema iela: ' . $tire->krs_quantity . '</p>';
+        if ($tire->urs_quantity >= 1) {
+          $availability = '<p>Ulbrokā: 1 un vairāk</p><br>';
+        } else {
+          $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
+        }
+        if ($tire->krs_quantity >= 1) {
+          $availability .= '<p>Kalnciema ielā: 1 un vairāk</p>';
+        } else {
+          $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
+        }
 
         if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
+          $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
+          $availability .= '<p>Kalnciema iela: ' . $tire->krs_quantity . '</p>';
           foreach ($stock_names as $key => $stock_name) {
             $stock = Motostock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
             if ($stock && $stock->quantity > 0) {
