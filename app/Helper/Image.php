@@ -45,6 +45,11 @@
         case 'studs':
           $dir = $path . '/stud/tread/' . $image . '-o.jpg';
           break;
+
+        // BANNERS
+        case 'banners':
+          $dir = $path . '/banners/' . $image . '.jpg';
+          break;
       }
 
       return $dir;
@@ -95,6 +100,18 @@
         return '<img src=' . asset('img/p/en-default-home_default.jpg') . '>';
       }
 
+    }
+
+    public static function showBanner($image){
+      $img = str_replace(dirname(__DIR__, 2), '', Self::image('banners', $image));
+      if (Self::exists('banners', $image)) {
+        if (file_exists(str_replace('.jpg', '.png', Self::image('banners', $image)))) {
+          $img = str_replace('.jpg', '.png', $img);
+        }
+        return '<img class="banner-image" src="' . $img . '">';
+      } else {
+        return '<img src=' . asset('img/p/en-default-home_default.jpg') . '>';
+      }
     }
 
     public static function showGrid($type, $image, $style = '') {

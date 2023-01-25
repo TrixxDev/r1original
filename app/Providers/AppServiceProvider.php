@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Helper\Env;
 use App\Http\Controllers\CartController;
+use App\Models\Bannerimage;
 use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -42,7 +44,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+      $banners = Bannerimage::all();
 
+      View::share('banners', $banners);
 
       if (env('APP_MAINTENANCE') == true) {
         Artisan::call('down', ['--render' => 'maintenance', '--secret' => 'r1riepas']);

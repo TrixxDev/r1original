@@ -208,6 +208,11 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::post('/settings/pages/{id}/update', [App\Http\Controllers\Admin\SettingsController::class, 'pages_update'])->name('settings.pages.update');
   Route::get('/settings/pages/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'pages_destroy'])->name('settings.pages.destroy');
 
+  // Skrienošā josla
+  Route::get('/settings/banners', [App\Http\Controllers\Admin\BannerController::class, 'index'])->name('settings.banners');
+  Route::post('/settings/banners', [App\Http\Controllers\Admin\BannerController::class, 'upload'])->name('settings.upload');
+  Route::post('/settings/banners/{id}/delete', [App\Http\Controllers\Admin\BannerController::class, 'delete'])->name('settings.banners.delete');
+
   // Riepu kodu paskaidrojumi
   Route::get('/settings/codes', [App\Http\Controllers\Admin\SettingsController::class, 'codes'])->name('settings.codes');
   Route::get('/settings/codes/create', [App\Http\Controllers\Admin\SettingsController::class, 'codes_create'])->name('settings.codes.create');
