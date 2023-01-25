@@ -369,7 +369,6 @@
         $root->appendChild($item);
         $dom->appendChild($root);
       }
-      dd($dom->saveXML());
       file_put_contents($xml_file_name, $dom->saveXML());
       //$dom->save($xml_file_name);
       return $dom->saveXML();
