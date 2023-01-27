@@ -5,6 +5,11 @@
 //
 // //alert("test");
 //
+
+$.fn.hasId = function(id) {
+  return this.attr('id') == id;
+};
+
 const ct_pagination = 0;
 const ct_pagination_nb = 100000;
 const ctp_fancybox = 0;
@@ -2835,10 +2840,72 @@ $('.tire-table-checkbox').children().each(function(key, value){
   })
 });
 
-$('#facet_availability li label').on('click', function() {
-  let $colors = [];
-  const $checked = $('#facet_availability li label .custom-checkbox input:checked');
+if ($('button[data-target="#mobileFilterModal"]').is(':visible')) {
+  $('#mobileFilterModal #facet_availability').on('click', 'li label span input', function() {
+    if ($(this).is(':checked') == false) {
+      $(this).attr('checked', true).prop('checked', true);
+    } else {
+      $(this).attr('checked', false).prop('checked', false);
+    }
+    $('#mobileFilterModal button.close').click();
+  });
+  $('#mobileFilterModal #facet_availability').on('click', 'li label', function() {
 
+    let $colors = [];
+
+    let $el = $(this).find('input[type=checkbox]');
+
+    if ($el.is(':checked') == false) {
+      $el.attr('checked', true).prop('checked', true);
+    } else {
+      $el.attr('checked', false).prop('checked', false);
+    }
+    $('#mobileFilterModal button.close').click();
+
+    const $checked = $('#mobileFilterModal #facet_availability li label .custom-checkbox input:checked');
+
+    checkAvailabilities($colors, $checked);
+
+  });
+} else {
+  $('#search_filters_wrapper #facet_availability').on('click', 'li label', function() {
+
+    let $colors = [];
+
+    const $checked = $('#search_filters_wrapper #facet_availability li label .custom-checkbox input:checked');
+
+    checkAvailabilities($colors, $checked);
+
+  });
+}
+
+// $('#mobileFilterModal #facet_availability').on('click', 'li label', function() {
+//   let $colors = [];
+//   const $checked = $('#mobileFilterModal #facet_availability li label .custom-checkbox input:checked');
+//
+//   console.log($(this));
+//
+//   let $el = $('#mobileFilterModal #facet_availability li label[for=' + $(this).attr('for') + ']');
+//
+//   $('#mobileFilterModal #facet_availability').on('click', 'li label', function() {
+//     console.log($(this));
+//   });
+//
+//   checkAvailabilities($colors, $checked);
+//
+// });
+// } else {
+//   $('#facet_availability').on('click', 'li label', function() {
+//     let $colors = [];
+//     const $checked = $('#facet_availability li label .custom-checkbox input:checked');
+//
+//     checkAvailabilities($colors, $checked);
+//
+//   });
+// }
+
+function checkAvailabilities($colors, $checked)
+{
   if ($checked.length === 0) {
     $('.tires-table').each(function() {
       $(this).children('#tires-table-body').children('tr').each(function() {
@@ -2896,24 +2963,23 @@ $('#facet_availability li label').on('click', function() {
 
     $('.grid-view-link').each(function() {
 
-        $(this).hide();
+      $(this).hide();
 
-        if ($colors.includes($(this).find('.grid-dot .sort-order').text().toLowerCase())) {
-          $(this).show();
-        }
+      if ($colors.includes($(this).find('.grid-dot .sort-order').text().toLowerCase())) {
+        $(this).show();
+      }
 
-        let length = $(this).filter(function() {
-          return $(this).css("display") !== "none";
-        }).length;
+      let length = $(this).filter(function() {
+        return $(this).css("display") !== "none";
+      }).length;
 
-        if (length !== 0) {
-          $(this).show();
-        }
+      if (length !== 0) {
+        $(this).show();
+      }
 
     });
   });
-
-});
+}
 
 // SHOW LIST VIEW
 $('div.can-collapse span.show_list').on('click', function(){
