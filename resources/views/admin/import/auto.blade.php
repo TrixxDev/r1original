@@ -17,6 +17,9 @@
                                             <textarea class="form-control" id="textarea-input" name="rows" rows="12"></textarea>
                                         </div>
                                     </div>
+                              @if (session('out'))
+                                {!!  session('out') !!}
+                              @endif
                             </div>
                             <div class="card-footer">
                                 <button class="btn btn-sm btn-primary" type="submit"> Importēt</button>
