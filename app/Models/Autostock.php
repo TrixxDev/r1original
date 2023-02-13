@@ -12,4 +12,6 @@ class Autostock extends Model
     protected $table = 'auto_stock';
 
     protected $primaryKey = 'stock_id';
+
+    protected $fillable = ['quantity'];
 }

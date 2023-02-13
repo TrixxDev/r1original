@@ -313,10 +313,20 @@ class Quadr extends Model
         'starco' => 'StarCo',
       ];
 
-      $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
-      $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
+      if ($tire->urs_quantity >= 2) {
+        $availability = '<p>Ulbrokā: 2 un vairāk</p><br>';
+      } else {
+        $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
+      }
+      if ($tire->krs_quantity >= 2) {
+        $availability .= '<p>Kalnciema ielā: 2 un vairāk</p>';
+      } else {
+        $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
+      }
 
       if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
+        $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
+        $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
         foreach ($stock_names as $key => $stock_name) {
           $stock = Quadrstock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
           if ($stock && $stock->quantity > 0) {
@@ -335,6 +345,26 @@ class Quadr extends Model
       }
 
       return $availability;
+    }
+
+    public function addSecondaryArticle($article, $type, $quantity = 0)
+    {
+
+      $list = Quadrstock::where('tire_id', $this->tire_id)->where('article', $article)->get();
+
+      if (count($list) == 0) {
+        $item = new Quadrstock();
+        $item->tire_id = $this->tire_id;
+        $item->article = $article;
+        $item->quantity = $quantity;
+        $item->itype = $type;
+        $item->save();
+      } else {
+        foreach ($list as $item) {
+          $item->update(['quantity' => $quantity]);
+        }
+      }
+
     }
 
     public function tread()

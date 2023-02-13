@@ -293,16 +293,16 @@ class Autotire extends Model
             'rz' => 'RiepuZona',
         ];
 
-	if ($tire->urs_quantity >= 4) {
+	      if ($tire->urs_quantity >= 4) {
             $availability = '<p>Ulbrokā: 4 un vairāk</p><br>';
-	} else {
+	      } else {
             $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
-	}
-	if ($tire->krs_quantity >= 4) {
+	      }
+	      if ($tire->krs_quantity >= 4) {
             $availability .= '<p>Kalnciema ielā: 4 un vairāk</p>';
-	} else {
+	      } else {
             $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
-	}
+        }
 
         if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
             $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
@@ -457,7 +457,7 @@ class Autotire extends Model
     public function addSecondaryArticle($article, $type, $quantity = 0)
     {
 
-      $list = Self::where('tire_id', $this->tire_id)->where('article', $article)->get();
+      $list = Autostock::where('tire_id', $this->tire_id)->where('article', $article)->get();
 
       if (count($list) == 0) {
         $item = new Autostock;

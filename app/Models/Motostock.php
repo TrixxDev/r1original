@@ -12,4 +12,7 @@ class Motostock extends Model
     protected $table = 'moto_stock';
 
     protected $primaryKey = 'stock_id';
+
+    protected $fillable = ['quantity'];
+
 }

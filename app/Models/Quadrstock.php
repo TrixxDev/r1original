@@ -12,4 +12,6 @@ class Quadrstock extends Model
     protected $table = 'quadr_stock';
 
     protected $primaryKey = 'stock_id';
+
+    protected $fillable = ['quantity'];
 }

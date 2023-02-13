@@ -292,7 +292,6 @@ class Moto extends Model
     public function getStockAvailabilityAttribute()
     {
         $tire = Moto::where('tire_id', $this->tire_id)->first();
-        $stocks = Motostock::where('tire_id', $tire->tire_id)->get();
 
         $stock_names = [
             'i3' => 'I3',
@@ -548,6 +547,26 @@ class Moto extends Model
     ];
 
     return @$carryCapacity . @$carryCaps[$weight] . '<br>' . @$speedCapacity . @$speedCaps[$speed];
+
+  }
+
+  public function addSecondaryArticle($article, $type, $quantity = 0)
+  {
+
+    $list = Motostock::where('tire_id', $this->tire_id)->where('article', $article)->get();
+
+    if (count($list) == 0) {
+      $item = new Motostock();
+      $item->tire_id = $this->tire_id;
+      $item->article = $article;
+      $item->quantity = $quantity;
+      $item->itype = $type;
+      $item->save();
+    } else {
+      foreach ($list as $item) {
+        $item->update(['quantity' => $quantity]);
+      }
+    }
 
   }
 }
