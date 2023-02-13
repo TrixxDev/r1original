@@ -32,7 +32,7 @@ class MotoTireImportController extends Controller
 
                 $tire = Moto::where('article', $fields[0])->first();
                 $brand = Motobrand::where('title', $fields[1])->first();
-                $tread = Mototread::where('title', $fields[11])->first();
+                $tread = Mototread::where('title', $fields[10])->first();
 
                 if ($tire === null)
                 {
@@ -55,9 +55,9 @@ class MotoTireImportController extends Controller
                     }
                     $brand_id = $brand->brand_id;
                     $tread->brand_id = $brand_id;
-                    $tread->title = $fields[11];
-                    $tread->slug = Str::slug($fields[11], '-');
-                    $tread->comment = '';
+                    $tread->title = $fields[10];
+                    $tread->slug = Str::slug($fields[10], '-');
+                    $tread->t_comment = '';
                     $tread->save();
                     $tread_id = $tread->id;
                     $out.='<p>Jauns protektora modelis: '.ucfirst($tread->title).'</p>';
@@ -69,9 +69,9 @@ class MotoTireImportController extends Controller
                 $tire->make_id = $tread_id;
 
                 $tire->d1 = @$fields[2];
-                $tire->sep = @$fields[4];
                 $tire->d2 = @$fields[3];
                 $tire->d3 = @$fields[5];
+                $tire->d4 = @$fields[4];
 
                 $tire->type = @$fields[11];
 
@@ -89,41 +89,28 @@ class MotoTireImportController extends Controller
                 $tire->article = @$fields[0];
 
                 $tire->save();
-                $tire_id = $tire->id;
+                $tire_id = $tire->tire_id;
 
+                $i3 = @$fields[18];
                 $duell = @$fields[19];
 
-                if ($brand->title == 0) {
-                    return true;
-                }
-
                 if ($tire_id !== null) {
-                    $out .= "<p>Labojam izmēru: \"{$brand->title} {$tread->title}\" {$fields[4]}/{$fields[5]} R{$fields[6]} (LI:{$fields[8]}, SI:{$fields[9]}, kods: {$fields[16]}) - <strong>{$fields[2]}</strong></p>";
+                    $out .= "<p>Labojam izmēru: \"{$brand->title} {$tread->title}\" {$fields[6]} (LI:{$fields[7]}, SI:{$fields[8]}, kods: {$fields[9]}) - <strong>{$fields[0]}</strong></p>";
                 } else {
-                    $out .= "<p>Pievienojam izmēru: \"{$brand->title} {$tread->title}\" {$fields[4]}/{$fields[5]} R{$fields[6]} (LI:{$fields[8]}, SI:{$fields[9]}, kods: {$fields[16]}) - <strong>{$fields[2]}</strong></p>";
+                    $out .= "<p>Pievienojam izmēru: \"{$brand->title} {$tread->title}\" {$fields[6]} (LI:{$fields[7]}, SI:{$fields[8]}, kods: {$fields[9]}) - <strong>{$fields[0]}</strong></p>";
                 }
 
-                $stock = Motostock::where('itype', 'duell')->where('article', $duell)->first();
+                if (!empty($i3)) {
+                  $tire->addSecondaryArticle($i3, 'i3');
+                }
 
-
-                if ($stock === null)
-                {
-                    $stock = new Motostock();
-                    if ($tire_id === null) {
-                        $stock->tire_id = $tire->tire_id;
-                    } else {
-                        $stock->tire_id = $tire_id;
-                    }
-                    $stock->article = $duell;
-                    $stock->quantity = 0;
-                    $stock->itype = 'duell';
-                    $stock->metadata = '';
-                    $stock->save();
+                if (!empty($duell)) {
+                  $tire->addSecondaryArticle($duell, 'duell');
                 }
 
             }
         }
 
-        return $out;
+        return redirect()->back()->with('out', $out);
     }
 }
