@@ -57,7 +57,7 @@
 {{--                                  {{ dd($tread) }}--}}
                                   {!! App\Helper\Image::showGrid('moto', $tread->tread_id, 'width: 300px; margin-bottom: 20px;') !!}
 
-                                  <form action="{{ route('admin.auto.tires.image', $tread->tread_id) }}" method="post" enctype="multipart/form-data">
+                                  <form action="{{ route('admin.moto.tires.image', $tread->tread_id) }}" method="post" enctype="multipart/form-data">
                                       @csrf
                                       <div class="row">
                                           <div class="col-md-3">
