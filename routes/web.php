@@ -37,6 +37,7 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::post('/auto/ajaxUpdateTires', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTires'])->name('auto.tires.ajaxUpdateTires');
   Route::match(['GET', 'POST'], '/auto/tread/{tread_id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tires_search'])->name('auto.tires.search');
   Route::get('/auto/tread/{tread_id}/create', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_create'])->name('auto.tires.create');
+  Route::post('/auto/tread/{tread_id}/delete', [App\Http\Controllers\Admin\AutoTireController::class, 'tires_destroy'])->name('auto.tires.delete_all');
   Route::post('/auto/tread/{tread_id}/store', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_store'])->name('auto.tires.store');
   Route::post('/auto/tread/{tread_id}/image', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_image'])->name('auto.tires.image');
   Route::post('/auto/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTreads'])->name('auto.tires.ajaxUpdateTreads');
@@ -85,6 +86,7 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::post('/moto/ajaxUpdateTires', [App\Http\Controllers\Admin\MotoTireController::class, 'ajaxUpdateTires'])->name('moto.tires.ajaxUpdateTires');
   Route::match(['GET', 'POST'], '/moto/tread/{tread_id}', [App\Http\Controllers\Admin\MotoTireController::class, 'tires_search'])->name('moto.tires.search');
   Route::get('/moto/tread/{tread_id}/create', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_create'])->name('moto.tires.create');
+  Route::post('/moto/tread/{tread_id}/delete', [App\Http\Controllers\Admin\MotoTireController::class, 'tires_destroy'])->name('moto.tires.delete_all');
   Route::post('/moto/tread/{tread_id}/store', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_store'])->name('moto.tires.store');
   Route::post('/moto/tread/{tread_id}/image', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_image'])->name('moto.tires.image');
   Route::post('/moto/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\MotoTireController::class, 'ajaxUpdateTreads'])->name('moto.tires.ajaxUpdateTreads');
@@ -121,6 +123,7 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::post('/quadr/ajaxUpdateTires', [App\Http\Controllers\Admin\QuadrTireController::class, 'ajaxUpdateTires'])->name('quadr.tires.ajaxUpdateTires');
   Route::match(['GET', 'POST'], '/quadr/tread/{tread_id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'tires_search'])->name('quadr.tires.search');
   Route::get('/quadr/tread/{tread_id}/create', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_create'])->name('quadr.tires.create');
+  Route::post('/quadr/tread/{tread_id}/delete', [App\Http\Controllers\Admin\QuadrTireController::class, 'tires_destroy'])->name('quadr.tires.delete_all');
   Route::post('/quadr/tread/{tread_id}/store', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_store'])->name('quadr.tires.store');
   Route::post('/quadr/tread/{tread_id}/image', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_image'])->name('quadr.tires.image');
   Route::post('/quadr/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\QuadrTireController::class, 'ajaxUpdateTreads'])->name('quadr.tires.ajaxUpdateTreads');
@@ -159,6 +162,7 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::get('/studs/delete/{id}', [App\Http\Controllers\Admin\StudsController::class, 'studs_destroy'])->name('studs.destroy');
   Route::match(['GET', 'POST'], '/studs/tread/{tread_id}', [App\Http\Controllers\Admin\StudsController::class, 'tires_search'])->name('studs.search');
   Route::get('/studs/tread/{tread_id}/create', [App\Http\Controllers\Admin\StudsController::class, 'studs_create'])->name('studs.create');
+  Route::post('/studs/tread/{tread_id}/delete', [App\Http\Controllers\Admin\StudsController::class, 'allstuds_destroy'])->name('studs.delete_all');
   Route::post('/studs/tread/{tread_id}/store', [App\Http\Controllers\Admin\StudsController::class, 'studs_store'])->name('studs.store');
   Route::post('/studs/tread/{tread_id}/image', [App\Http\Controllers\Admin\StudsController::class, 'studs_image'])->name('studs.image');
   Route::post('/studs/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\StudsController::class, 'ajaxUpdateTreads'])->name('studs.ajaxUpdateTreads');

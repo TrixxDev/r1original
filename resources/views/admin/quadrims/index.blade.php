@@ -15,7 +15,7 @@
         </div>
       @endif
       <div class="card">
-        <div class="card-header"> Lietie diski
+        <div class="card-header"> Kvadru diski
           <div class="card-header-actions">
           </div>
         </div>
@@ -25,9 +25,9 @@
               <div class="col-sm-12 col-md-6">
                 <div class="form-group row brand-settings">
                   <label class="col-md-2 col-form-label" for="brand_select">Brends: </label>
-                  <select name="brand" class="form-control col-md-3" data-model="rims" id="brand_select">
+                  <select name="brand" class="form-control col-md-3" data-model="quadrims" id="brand_select">
                     @foreach ($brands as $curr_brand)
-                      <option value="{{ $curr_brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $curr_brand->brand_id) {{ 'selected' }} @endif >{{ ucwords(strtolower($curr_brand->title)) }}</option>
+                      <option value="{{ $curr_brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $curr_brand->brand_id) {{ 'selected' }} @endif >{{ ucwords(strtolower($curr_brand->b_title)) }}</option>
                     @endforeach
                   </select>
                   <form method="post" style="display: flex;">
@@ -55,9 +55,9 @@
               <div class="col-md-6 preview-image">
                 @if (isset($tread))
 {{--                                                    {{ dd($tread) }}--}}
-                  {!! App\Helper\Image::showGrid('auto-rim', $tread->make_id, 'width: 300px; margin-bottom: 20px;') !!}
+                  {!! App\Helper\Image::showGrid('quadr-rim', $tread->make_id, 'width: 300px; margin-bottom: 20px;') !!}
 
-                  <form action="{{ route('admin.rims.image', $tread->make_id) }}" method="post" enctype="multipart/form-data">
+                  <form action="{{ route('admin.quadrims.image', $tread->make_id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                       <div class="col-md-3">
@@ -101,10 +101,10 @@
                       <!-- Tab panes -->
                       <div class="tab-content">
                         <div class="tab-pane container fade show active" id="tread">
-                          <textarea disabled class="form-control tread-comment-text" name="tread-comment-text" cols="80" rows="13">{!! $tread->comment !!}</textarea>
+                          <textarea disabled class="form-control tread-comment-text" name="tread-comment-text" cols="80" rows="13">{!! $tread->t_comment !!}</textarea>
                         </div>
                         <div class="tab-pane container fade" id="brand">
-                          <textarea disabled class="form-control brand-comment-text" name="brand-comment-text" cols="80" rows="13">{!! $brand->comment !!}</textarea>
+                          <textarea disabled class="form-control brand-comment-text" name="brand-comment-text" cols="80" rows="13">{!! $brand->b_comment !!}</textarea>
                         </div>
                       </div>
                       <button type="button" style="color: white;" class="btn btn-warning tread-comment-edit">Labot</button>
@@ -116,7 +116,7 @@
             </div>
             @if (isset($tread))
               <div class="row justify-content-end tires-header">
-                <button class="btn btn-md btn-primary new_tire"><a class="text-white" href="{{ route('admin.rims.create', $tread->make_id) }}">Pievienot</a></button>
+                <button class="btn btn-md btn-primary new_tire"><a class="text-white" href="{{ route('admin.quadrims.create', $tread->make_id) }}">Pievienot</a></button>
               </div>
             @endif
             <div class="row">
@@ -130,7 +130,6 @@
                     <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 167.547px;">Skrūves</th>
                     <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 167.547px;">Skrūvju attālums</th>
                     <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 167.547px;">ET</th>
-                    <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 150.391px;">Centrs</th>
                     <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 67.547px;">Krāsa</th>
                     <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 67.547px;">Piezīmes</th>
                     <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Username: activate to sort column ascending" style="width: 372.5px;">Artikuls</th>
@@ -148,17 +147,16 @@
                         <td>{{ $rim->skr }}</td>
                         <td>{{ $rim->pcd }}</td>
                         <td>{{ $rim->et }}</td>
-                        <td>{{ $rim->dc }}</td>
                         <td>{{ $rim->color }}</td>
                         <td>{{ $rim->comment }}</td>
                         <td>{{ $rim->article }}</td>
                         <td>
-                          <a class="btn btn-success" href="{{ route('admin.rims.edit', $rim->rim_id) }}">
+                          <a class="btn btn-success" href="{{ route('admin.quadrims.edit', $rim->rim_id) }}">
                             <svg class="c-icon">
                               <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
                             </svg>
                           </a>
-                          <a onclick="confirm('Tiešām vēlies dzēst?')" class="btn btn-danger" href="{{ route('admin.rims.destroy', $rim->rim_id) }}">
+                          <a onclick="confirm('Tiešām vēlies dzēst?')" class="btn btn-danger" href="{{ route('admin.quadrims.destroy', $rim->rim_id) }}">
                             <svg class="c-icon">
                               <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
                             </svg>

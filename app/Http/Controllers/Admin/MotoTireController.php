@@ -310,6 +310,16 @@
 
     }
 
+    public function tires_destroy(Request $request)
+    {
+
+      Moto::whereIn('tire_id', $request->tire_id)->delete();
+
+      $response = (count($request->tire_id) > 1) ? 'Riepas veiksmīgi dzēstas!' : 'Riepa veiksmīgi dzēsta!';
+
+      return redirect()->back()->with('success', $response);
+    }
+
     public function tire_image(Request $request, $id)
     {
       if ($request->hasFile('tread_image')) {

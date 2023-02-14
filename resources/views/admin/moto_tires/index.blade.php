@@ -115,7 +115,12 @@
                           @endif
                         </div>
                         @if (isset($tread))
+                        <form method="post" action="{{ route('admin.moto.tires.delete_all', $tread->tread_id) }}">
+                        @csrf
                         <div class="row justify-content-end tires-header">
+                          @if (isset($tires) && count($tires) > 0)
+                          <button class="btn btn-md btn-danger" style="margin-right: 10px;" onclick="confirm('Tiešām vēlies dzēst?')">Dzēst</button>
+                          @endif
                           <button class="btn btn-md btn-primary new_tire"><a class="text-white" href="{{ route('admin.moto.tires.create', $tread->tread_id) }}">Pievienot</a></button>
                         </div>
                         @endif
@@ -131,6 +136,9 @@
                                             @if ($loop->first)
                                                 <thead>
                                                 <tr role="row">
+                                                  <th>
+                                                    <input type="checkbox" onclick="for(c in document.getElementsByName('tire_id[]')) document.getElementsByName('tire_id[]').item(c).checked = this.checked">
+                                                  </th>
                                                   <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="4" aria-label="Date registered: activate to sort column ascending" style="width: 320.609px;">Izmērs</th>
                                                   @if ($camera == 0)
                                                     <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Role: activate to sort column ascending" style="width: 151.953px;">Tips</th>
@@ -151,6 +159,7 @@
                                                 <tbody>
                                             @endif
                                             <tr role="row" class="odd">
+                                                <td><input type="checkbox" name="tire_id[]" value="{{ $tire->tire_id }}" ></td>
                                                 <td>{{ $tire->d1 }}</td>
                                                 <td>{{ $tire->d2 }}</td>
                                                 <td>{{ $tire->d4 }}</td>
@@ -208,6 +217,7 @@
                                 </table>
                             </div>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>

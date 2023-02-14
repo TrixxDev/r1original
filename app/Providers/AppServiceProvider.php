@@ -112,6 +112,18 @@ class AppServiceProvider extends ServiceProvider
         }
       }
 
+      define('TIRE_SEASON_SUMMER',1);
+      define('TIRE_SEASON_WINTER',2);
+
+      define('TREAD_TYPE_CAR',1);
+      define('TREAD_TYPE_BUS',2);
+      define('TREAD_TYPE_OFFROAD',3);
+
+      define('TIRE_TYPE_ALLSEASON',1);
+      define('TIRE_TYPE_STUDDABLE',2);
+      define('TIRE_TYPE_STUDDED',3);
+      define('TIRE_TYPE_NORDIC',4);
+
       define('SLOT_STATUS_FREE', 0);
       define('SLOT_STATUS_TAKEN', 1);
       define('SLOT_STATUS_OFFER', 2);
