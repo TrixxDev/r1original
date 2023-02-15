@@ -74,7 +74,7 @@ class AutoTireController extends Controller
 
     $this->d1 = ($request->d1 == 'Visi') ? 'Visi' : $request->d1;
     $this->d2 = ($request->d2 == 'Visi') ? 'Visi' : $request->d2;
-    $this->d3 = ($request->d3 == NULL) ? 16 : $request->d3;
+    $this->d3 = ($request->d3 == NULL) ? '16' : $request->d3;
 
     $this->types = ($request->types) ? $request->types : [];
     $this->code = ($request->code) ? $request->code : [];
