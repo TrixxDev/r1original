@@ -77,7 +77,7 @@ class AutoTireImportController extends Controller
           $tire->price1 = @$fields[14];
           $tire->price2 = @$fields[15];
 
-          $tire->comment = @$fields[16];
+          $tire->comment = @$fields[18];
           $tire->code = @$fields[10];
 
           $tire->quantity = 0;
