@@ -6,21 +6,44 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Office;
+use Illuminate\Support\Facades\Auth;
 
 class ShopController extends Controller
 {
 
+  public $status_enum = [
+    1 => 'Nav pabeigts/Nav informācijas',
+    2 => 'Jauns',
+    3 => 'Gaidām apmaksu',
+    4 => 'Gaidām preci',
+    6 => 'Prece nav pieejama',
+    7 => 'Klients atteicās',
+    5 => 'Pabeigts'
+];
+
+  public $pay_enum = [
+    0 => '',
+    1 => 'Apmaksa saņemšanas brīdī',
+    2 => 'Bankas pārskaitījums',
+    3 => 'Tiešsaistes apmaksa'
+  ];
+
   public function orders()
   {
 
-    $orders = Order::whereIn('status', [1,2,3,4,5])->orderBy('id', 'desc')->get();
+    $orders = Order::orderBy('id', 'desc')->get();
+    $status_enum = $this->status_enum;
+    $pay_enum = $this->pay_enum;
 
-    return view('admin.shop.index', compact('orders'));
+    return view('admin.shop.index', compact('orders', 'status_enum', 'pay_enum'));
 
   }
 
   public function order($id)
   {
+
+    $status_enum = $this->status_enum;
+    $pay_enum = $this->pay_enum;
 
     $order = Order::findOrFail($id);
 
@@ -38,7 +61,7 @@ class ShopController extends Controller
       $hasCompanyData = false;
     }
 
-    return view('admin.shop.order', compact('order', 'userData', 'tires', 'offices'));
+    return view('admin.shop.order', compact('order', 'userData', 'tires', 'offices', 'status_enum', 'pay_enum'));
 
   }
 
@@ -59,6 +82,7 @@ class ShopController extends Controller
 //    $data->email = $request->email;
 
     $order->status = $request->order_status;
+    $order->edituser = Auth::user()->id;
 
     if ($order->save()) {
       return redirect()->back()->with('success', 'Pasūtījums informācija veiksmīgi labota!');
