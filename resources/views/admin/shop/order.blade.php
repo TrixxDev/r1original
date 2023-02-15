@@ -65,10 +65,10 @@
         <div class="col-md-6">
 {{--          <input class="form-control" name="status" type="text" value="{{$order->status}}" required="">--}}
           <select id="select" name="order_status" class="custom-select">
-            <option value="2" @if ($order->status == 2) selected="" @endif>Jauns</option>
-            <option value="3" @if ($order->status == 3) selected="" @endif>Gaidam samaksu</option>
-            <option value="4" @if ($order->status == 4) selected="" @endif>Gaidam preci</option>
-	    <option value="5" @if ($order->status == 5) selected="" @endif>Pabeigts</option>
+            @foreach ($status_enum as $status_id => $status_name)
+              @if ($loop->first) @continue @endif
+              <option value="{{ $status_id }}" @if ($order->status == $status_id) selected="" @endif>{{ $status_name }}</option>
+            @endforeach
           </select>
         </div>
         <div class="col-md-3 form-control-comment">
@@ -80,14 +80,6 @@
           Kopsumma
         </label>
         <div class="col-md-6">
-          @php
-            $pay_enum = [
-              0 => '',
-              1 => 'Apmaksa saņemšanas brīdī',
-              2 => 'Bankas pārskaitījums',
-              3 => 'Tiešsaistes apmaksa',
-            ];
-          @endphp
           <input class="form-control" name="total" type="text" disabled value="{{$order->price + (($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2)) }} &euro; - {{ $pay_enum[$order->payment] }}">
         </div>
         <div class="col-md-3 form-control-comment">
