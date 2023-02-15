@@ -31,36 +31,38 @@ class MotoTireImportController extends Controller
                 $fields = explode("\t",$row);
 
                 $tire = Moto::where('article', $fields[0])->first();
-                $brand = Motobrand::where('title', $fields[1])->first();
-                $tread = Mototread::where('title', $fields[10])->first();
 
                 if ($tire === null)
                 {
                     $tire = new Moto();
                 }
 
+                $brand = Motobrand::where('title', 'like', '%' . $fields[1] . '%')->first();
+
+                if ($brand === null)
+                {
+                  $brand = new Motobrand();
+                  $brand->timestamps = false;
+                  $brand->title = $fields[1];
+                  $brand->slug = Str::slug($fields[1], '-');
+                  $brand->save();
+                  $brand_id = $brand->brand_id;
+                  $out.='<p>Jauns brends: '.ucfirst($brand->title).'</p>';
+                }
+
+                $tread = Mototread::where('title', $fields[10])->where('brand_id', $brand->brand_id)->first();
+
                 if ($tread === null)
                 {
-                    $tread = new Mototread();
-                    $tread->timestamps = false;
-                    if ($brand === null)
-                    {
-                        $brand = new Motobrand();
-                        $brand->timestamps = false;
-                        $brand->title = $fields[1];
-                        $brand->slug = Str::slug($fields[1], '-');
-                        $brand->save();
-                        $brand_id = $brand->id;
-                        $out.='<p>Jauns brends: '.ucfirst($brand->title).'</p>';
-                    }
-                    $brand_id = $brand->brand_id;
-                    $tread->brand_id = $brand_id;
-                    $tread->title = $fields[10];
-                    $tread->slug = Str::slug($fields[10], '-');
-                    $tread->t_comment = '';
-                    $tread->save();
-                    $tread_id = $tread->id;
-                    $out.='<p>Jauns protektora modelis: '.ucfirst($tread->title).'</p>';
+                  $tread = new Mototread();
+                  $tread->timestamps = false;
+                  $tread->brand_id = ($brand === null) ? $brand_id : $brand->brand_id;
+                  $tread->title = $fields[10];
+                  $tread->slug = Str::slug($fields[10], '-');
+                  $tread->t_comment = '';
+                  $tread->save();
+                  $tread_id = $tread->id;
+                  $out.='<p>Jauns protektora modelis: '.ucfirst($tread->title).'</p>';
                 }
 
                 $tread_id = $tread->tread_id;

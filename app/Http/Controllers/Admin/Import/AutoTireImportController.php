@@ -31,35 +31,37 @@ class AutoTireImportController extends Controller
           $fields = explode("\t", $row);
 
           $tire = Autotire::where('article', $fields[2])->first();
-          $brand = Autobrand::where('title', $fields[3])->first();
-          $tread = Autotread::where('t_title', $fields[11])->first();
 
           if ($tire === null) {
             $tire = new Autotire();
           }
 
+          $brand = Autobrand::where('title', 'like', '%' . $fields[3] . '%')->first();
+
+          if ($brand === null) {
+            $brand = new Autobrand();
+            $brand->timestamps = false;
+            $brand->title = $fields[3];
+            $brand->slug = Str::slug($fields[3], '-');
+            $brand->save();
+            $brand_id = $brand->brand_id;
+            $out .= '<p>Jauns brends: ' . ucfirst($brand->title) . '</p>';
+          }
+
+          $tread = Autotread::where('t_title', $fields[11])->where('brand_id', $brand->brand_id)->first();
+
           if ($tread === null) {
             $tread = new Autotread();
             $tread->timestamps = false;
             $tread->season = ($fields[0] == 'VASARA') ? 1 : 2;
-            if ($brand === null) {
-              $brand = new Autobrand();
-              $brand->timestamps = false;
-              $brand->title = $fields[3];
-              $brand->slug = Str::slug($fields[3], '-');
-              $brand->save();
-              $brand_id = $brand->brand_id;
-              $out .= '<p>Jauns brends: ' . ucfirst($brand->title) . '</p>';
-            }
-            $brand_id = $brand->brand_id;
-            $tread->brand_id = $brand_id;
+            $tread->brand_id = ($brand === null) ? $brand_id : $brand->brand_id;
             $tread->t_title = $fields[11];
             $tread->slug = Str::slug($fields[11], '-');
             $tread->t_comment = '';
             $tread->t_type = 1;
             $tread->save();
             $tread_id = $tread->tread_id;
-            $out .= '<p>Jauns protektora modelis: ' . ucfirst($tread->title) . '</p>';
+            $out .= '<p>Jauns protektora modelis: ' . ucfirst($tread->t_title) . '</p>';
           }
 
           $tread_id = $tread->tread_id;

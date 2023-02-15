@@ -31,36 +31,38 @@ class QuadrTireImportController extends Controller
                 $fields = explode("\t",$row);
 
                 $tire = Quadr::where('article', $fields[2])->first();
-                $brand = Quadrbrand::where('title', $fields[3])->first();
-                $tread = Quadrtread::where('title', $fields[13])->first();
 
                 if ($tire === null)
                 {
                     $tire = new Quadr();
                 }
 
+                $brand = Quadrbrand::where('title', 'like', '%' . $fields[3] . '%')->first();
+
+                if ($brand === null)
+                {
+                  $brand = new Quadrbrand();
+                  $brand->timestamps = false;
+                  $brand->title = $fields[3];
+                  $brand->slug = Str::slug($fields[3], '-');
+                  $brand->save();
+                  $brand_id = $brand->brand_id;
+                  $out.='<p>Jauns brends: '.ucfirst($brand->title).'</p>';
+                }
+
+                $tread = Quadrtread::where('title', $fields[13])->where('brand_id', $brand->brand_id)->first();
+
                 if ($tread === null)
                 {
-                    $tread = new Quadrtread();
-                    $tread->timestamps = false;
-                    if ($brand === null)
-                    {
-                        $brand = new Quadrbrand();
-                        $brand->timestamps = false;
-                        $brand->title = $fields[3];
-                        $brand->slug = Str::slug($fields[3], '-');
-                        $brand->save();
-                        $brand_id = $brand->id;
-                        $out.='<p>Jauns brends: '.ucfirst($brand->title).'</p>';
-                    }
-                    $brand_id = $brand->brand_id;
-                    $tread->brand_id = $brand_id;
-                    $tread->title = $fields[13];
-                    $tread->slug = Str::slug($fields[13], '-');
-                    $tread->comment = '';
-                    $tread->save();
-                    $tread_id = $tread->id;
-                    $out.='<p>Jauns protektora modelis: '.ucfirst($tread->title).'</p>';
+                  $tread = new Quadrtread();
+                  $tread->timestamps = false;
+                  $tread->brand_id = ($brand === null) ? $brand_id : $brand->brand_id;
+                  $tread->title = $fields[13];
+                  $tread->slug = Str::slug($fields[13], '-');
+                  $tread->comment = '';
+                  $tread->save();
+                  $tread_id = $tread->id;
+                  $out.='<p>Jauns protektora modelis: '.ucfirst($tread->title).'</p>';
                 }
 
                 $tread_id = $tread->tread_id;
