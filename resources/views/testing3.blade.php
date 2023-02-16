@@ -268,14 +268,6 @@ function sendData(data){
     data: {info: data, '_token': data._token},
     timeout: 10000,
     success: function(resp){
-      $('#quick-buy-form').parent().find('.popup-close').click();
-      $('.popup input[name=montage]').prop('checked', false);
-      $('.popup input[name=price_montage]').attr('disabled', 'disabled');
-      $('.popup input[name=price_montage]').val('');
-      $('.popup input[name=safe]').prop('checked', false);
-      $('.popup input[name=price_safe]').attr('disabled', 'disabled');
-      $('.popup input[name=price_safe]').val('');
-      $('.popup textarea[name=comments]').val('');
       resp = JSON.parse(resp);
       if (resp.success) {
         Swal.fire({
