@@ -27,7 +27,7 @@ class QuadTireController extends Controller
     public $availability = [];
     public $filterCount = 0;
 
-    public $cartQty = 1;
+    public $cartQty = 2;
 
     public function __construct(Request $request)
     {
