@@ -303,7 +303,8 @@
                                title='{!! App\Helper\Image::show('auto', $tire->make_id) !!}'
                                href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"
                                data-content="{{ $tire->title . ' ' . $tire->fullSize }}"
-                               data-article="{{ $tire->article }}">
+                               data-article="{{ $tire->article }}"
+                               data-quantity="{{ $cartQty }}">
                               <div class="table-link-title">{{ $tire->title }}</div>
                             </a>
                           </td>

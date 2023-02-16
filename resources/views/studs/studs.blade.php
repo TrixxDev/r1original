@@ -149,7 +149,8 @@
                       <a data-toggle="tooltip" data-html="true" class="tire-table-link" title='{!! App\Helper\Image::show('studs', $stud->make_id) !!}'
                          href="{{ route('radze', [$stud->brand, strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
                          data-content="{{ $stud->fullName }}"
-                         data-article="{{ $stud->article }}">
+                         data-article="{{ $stud->article }}"
+                         data-quantity="{{ $cartQty }}">
                         <div class="table-link-title">{{ $stud->fullName }}</div>
                       </a>
                     </td>
