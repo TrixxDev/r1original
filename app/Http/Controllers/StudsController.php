@@ -25,6 +25,8 @@ class StudsController extends Controller
   public $code_array = [];
   public $filterCount = 0;
 
+  public $cartQty = 1;
+
   public function __construct(Request $request)
   {
 
@@ -50,7 +52,8 @@ class StudsController extends Controller
     View::share('current_url', 'radzes');
     View::share('stud_lengths', $this->getStudLengths());
     View::share('curr_length', $this->stud_length);
-  }
+    View::share('cartQty', $this->cartQty);
+}
 
   public function studs() {
 
@@ -74,13 +77,13 @@ class StudsController extends Controller
     if ($request->quantity) {
       $cart = CartController::addProduct($this->model, $stud->stud_id, $request->quantity);
     } else {
-      $cart = CartController::addProduct($this->model, $stud->stud_id, 1);
+      $cart = CartController::addProduct($this->model, $stud->stud_id, $this->cartQty);
     }
 
     $quantity = Cart::count();
     //dd(Cart::subTotal());
     $total_sum = str_replace([',', '.00'], '', Cart::subTotal());
-    $bought = ($request->quantity) ? $request->quantity : 4;
+    $bought = ($request->quantity) ? $request->quantity : $this->cartQty;
 
     echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
   }
