@@ -653,23 +653,50 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
                 });
             }
           }
-          // TIRE IMAGE INSIDE MODAL
 
-          $('.modal-product-info .product-name').html(data.cart.name);
-          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2));
-          $('.modal-product-info .product-price').attr('data-price', parseInt(data.cart.options.tire.price2));
-          $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
-          $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
-          $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
-          $('.modal-product-info .product-type').html(data.cart.options.tire.d3);
-          $('.modal-product-info .product-li').html(data.cart.options.tire.li);
-          $('.modal-product-info .product-si').html(data.cart.options.tire.si);
-          $('.cart-content .cart-products-total').html(total_sum);
-          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html($('.modal-product-info .product-qty').attr('data-qty'));
-          $('span.cart-products-count').html('(' + cart_quantity + ')');
-          $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
-          $('.blockcart.cart-preview .header').empty();
-          $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+          if (data.cart.options.image == 'stud') {
+            // STUD IMAGE INSIDE MODAL
+            $('.modal-product-info .product-name').html(data.cart.name);
+            $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+            $('.modal-product-info .product-stud-length').html(data.cart.options.tire.stud_length);
+            $('.modal-product-info .product-stud-count').html(data.cart.options.tire.stud_count);
+            $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
+            $('.cart-content .cart-products-total').html(total_sum);
+            $('span.cart-products-count').html('(' + cart_quantity + ')');
+            $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+            $('.blockcart.cart-preview .header').empty();
+            $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+          } else if (data.cart.options.image == 'rims' || data.cart.options.image == 'quadrims') {
+            // STUD IMAGE INSIDE MODAL
+            $('.modal-product-info .product-name').html(data.cart.name);
+            $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+            $('.modal-product-info .product-rim-width').html(data.cart.options.tire.d1);
+            $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
+            $('.modal-product-info .product-lug-distance').html(data.cart.options.tire.skr + 'x' + data.cart.options.tire.pcd);
+            $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
+            $('.cart-content .cart-products-total').html(total_sum);
+            $('span.cart-products-count').html('(' + cart_quantity + ')');
+            $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+            $('.blockcart.cart-preview .header').empty();
+            $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+          } else {
+            // TIRE IMAGE INSIDE MODAL
+            $('.modal-product-info .product-name').html(data.cart.name);
+            $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+            $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
+            $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
+            $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
+            $('.modal-product-info .product-type').html(data.cart.options.tire.d3);
+            $('.modal-product-info .product-li').html(data.cart.options.tire.li);
+            $('.modal-product-info .product-si').html(data.cart.options.tire.si);
+            $('.cart-content .cart-products-total').html(total_sum);
+            $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty')).attr('data-qty', parseInt(data.quantity));
+            $('span.cart-products-count').html('(' + cart_quantity + ')');
+            $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+            $('.blockcart.cart-preview .header').empty();
+            $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+          }
+
         }
       });
     } else {
@@ -677,7 +704,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
       let product = $('.product-main-details h1').text();
       let article = tire_data.find('th').data('article');
       if (article.length == 0) article = 'no_article';
-      $('.popup input[name=qty]').val(4);
+      $('.popup input[name=qty]').val($('.tire-info', tire_data).data('quantity'));
       $('.popup input[name=total]').val(parseInt($('.popup input[name=price]').val()) * parseInt($('.popup input[name=qty]').val()));
       $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
       $('.popup input[name=article]').val($('.tire-info', tire_data).data('article'));
@@ -686,7 +713,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
 
       calcData = {
         'article': article,
-        'qty': 4,
+        'qty': $('.tire-info', tire_data).data('quantity'),
         'user': user,
         'prod': $('.product-main-details h1').text(),
         'price': tire_data.find('.tire-price-red').text().trim().replace('€', ''),
@@ -734,22 +761,50 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
                   });
             }
           }
-          // TIRE IMAGE INSIDE MODAL
-          $('.modal-product-info .product-name').html(data.cart.name);
-          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2));
-          $('.modal-product-info .product-price').attr('data-price', parseInt(data.cart.options.tire.price2));
-          $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
-          $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
-          $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
-          $('.modal-product-info .product-type').html(data.cart.options.tire.d3);
-          $('.modal-product-info .product-li').html(data.cart.options.tire.li);
-          $('.modal-product-info .product-si').html(data.cart.options.tire.si);
-          $('.cart-content .cart-products-total').html(total_sum);
-          $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html($('.modal-product-info .product-qty').attr('data-qty'));
-          $('span.cart-products-count').html('(' + cart_quantity + ')');
-          $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
-          $('.blockcart.cart-preview .header').empty();
-          $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+
+          if (data.cart.options.image == 'stud') {
+            // STUD IMAGE INSIDE MODAL
+            $('.modal-product-info .product-name').html(data.cart.name);
+            $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+            $('.modal-product-info .product-stud-length').html(data.cart.options.tire.stud_length);
+            $('.modal-product-info .product-stud-count').html(data.cart.options.tire.stud_count);
+            $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
+            $('.cart-content .cart-products-total').html(total_sum);
+            $('span.cart-products-count').html('(' + cart_quantity + ')');
+            $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+            $('.blockcart.cart-preview .header').empty();
+            $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+          } else if (data.cart.options.image == 'rims' || data.cart.options.image == 'quadrims') {
+            // STUD IMAGE INSIDE MODAL
+            $('.modal-product-info .product-name').html(data.cart.name);
+            $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+            $('.modal-product-info .product-rim-width').html(data.cart.options.tire.d1);
+            $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
+            $('.modal-product-info .product-lug-distance').html(data.cart.options.tire.skr + 'x' + data.cart.options.tire.pcd);
+            $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
+            $('.cart-content .cart-products-total').html(total_sum);
+            $('span.cart-products-count').html('(' + cart_quantity + ')');
+            $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+            $('.blockcart.cart-preview .header').empty();
+            $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+          } else {
+            // TIRE IMAGE INSIDE MODAL
+            $('.modal-product-info .product-name').html(data.cart.name);
+            $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+            $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
+            $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
+            $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
+            $('.modal-product-info .product-type').html(data.cart.options.tire.d3);
+            $('.modal-product-info .product-li').html(data.cart.options.tire.li);
+            $('.modal-product-info .product-si').html(data.cart.options.tire.si);
+            $('.cart-content .cart-products-total').html(total_sum);
+            $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty')).attr('data-qty', parseInt(data.quantity));
+            $('span.cart-products-count').html('(' + cart_quantity + ')');
+            $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+            $('.blockcart.cart-preview .header').empty();
+            $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+          }
+
         }
       });
     } else {
@@ -761,7 +816,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
 
       // $('.popup input[name=prod]').val($('.tire-info', tire_data).data('content'));
       // $('.popup input[name=price]').val($('#sale-price', tire_data).html().trim().replace('€ ', ''));
-      $('.popup input[name=qty]').val(4);
+      $('.popup input[name=qty]').val($('.tire-info', tire_data).data('quantity'));
       $('.popup input[name=total]').val(parseInt($('.popup input[name=price]').val()) * parseInt($('.popup input[name=qty]').val()));
       $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
       $('.popup input[name=article]').val($('.tire-info', tire_data).data('article'));
@@ -770,7 +825,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
 
       calcData = {
           'article': tire_data.parent().parent().data('article'),
-          'qty': 4,
+          'qty': $('.tire-info', tire_data).data('quantity'),
           'user': user,
           'prod': tire_data.find('.card-title-text').text().trim(),
           'price': tire_data.find('.rim-price-red').text().trim().replace('€', ''),
@@ -930,23 +985,48 @@ if (!admin) {
           }
         }
 
-        // TIRE IMAGE INSIDE SPECIFIC TIRE MODAL
-        $('.modal-product-info .product-name').html(data.cart.name);
-        $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2));
-        $('.modal-product-info .product-price').attr('data-price', parseInt(data.cart.options.tire.price2));
-        $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
-        $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
-        $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
-        $('.modal-product-info .product-type').html(data.cart.options.tire.d3);
-        $('.modal-product-info .product-li').html(data.cart.options.tire.li);
-        $('.modal-product-info .product-si').html(data.cart.options.tire.si);
-        $('.cart-content .cart-products-total').html(total_sum);
-        $('.modal-product-info .product-qty').attr('data-qty', parseInt(data.quantity)).html($('.modal-product-info .product-qty').attr('data-qty'));
-        $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
-        $('.blockcart.cart-preview .header').empty();
-        $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + $quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
-        $('.shopping-cart .cart-products-count').html('(' + (parseInt(cart_count) + parseInt(quantity)) + ')');
-        $('span.cart-products-count').html('(' + (parseInt(cart_count) + parseInt(quantity)) + ')');
+        if (data.cart.options.image == 'stud') {
+          // STUD IMAGE INSIDE MODAL
+          $('.modal-product-info .product-name').html(data.cart.name);
+          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+          $('.modal-product-info .product-stud-length').html(data.cart.options.tire.stud_length);
+          $('.modal-product-info .product-stud-count').html(data.cart.options.tire.stud_count);
+          $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
+          $('.cart-content .cart-products-total').html(total_sum);
+          $('span.cart-products-count').html('(' + cart_quantity + ')');
+          $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+          $('.blockcart.cart-preview .header').empty();
+          $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+        } else if (data.cart.options.image == 'rims' || data.cart.options.image == 'quadrims') {
+          // STUD IMAGE INSIDE MODAL
+          $('.modal-product-info .product-name').html(data.cart.name);
+          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+          $('.modal-product-info .product-rim-width').html(data.cart.options.tire.d1);
+          $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
+          $('.modal-product-info .product-lug-distance').html(data.cart.options.tire.skr + 'x' + data.cart.options.tire.pcd);
+          $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
+          $('.cart-content .cart-products-total').html(total_sum);
+          $('span.cart-products-count').html('(' + cart_quantity + ')');
+          $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+          $('.blockcart.cart-preview .header').empty();
+          $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+        } else {
+          // TIRE IMAGE INSIDE MODAL
+          $('.modal-product-info .product-name').html(data.cart.name);
+          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+          $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
+          $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
+          $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
+          $('.modal-product-info .product-type').html(data.cart.options.tire.d3);
+          $('.modal-product-info .product-li').html(data.cart.options.tire.li);
+          $('.modal-product-info .product-si').html(data.cart.options.tire.si);
+          $('.cart-content .cart-products-total').html(total_sum);
+          $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty')).attr('data-qty', parseInt(data.quantity));
+          $('span.cart-products-count').html('(' + cart_quantity + ')');
+          $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+          $('.blockcart.cart-preview .header').empty();
+          $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+        }
       }
     });
 
@@ -1033,7 +1113,8 @@ $('.ct_matrix_row').each(function(key, value) {
       const tire_price = $this.find('td[data-label="Akcijas cena"] .strongprice').attr('data-price');
       const tire_title = $('.tire_title').val();
       const tire_article = $(this).data('article');
-      $('.popup input[name=qty]').val(4);
+      const tire_quantity = $(this).data('quantity');
+      $('.popup input[name=qty]').val(tire_quantity);
       $('.popup input[name=total]').val(parseInt(tire_price) * $('.popup input[name=qty]').val());
       $('.popup input[name=prod]').val(tire_title);
       $('.popup input[name=price]').val(tire_price);
@@ -1042,7 +1123,7 @@ $('.ct_matrix_row').each(function(key, value) {
 
       calcData = {
           'article': tire_article,
-          'qty': 4,
+          'qty': tire_quantity,
           'user': user,
           'prod': tire_title,
           'price': tire_price,
@@ -2761,9 +2842,8 @@ $('.tire-table-checkbox').children().each(function(key, value){
           cart_quantity = parseInt(cart_quantity);
           let total_sum = data.total_sum;
           total_sum = parseInt(total_sum);
-          const image = data.cart.options.tire.tread.tread_id;
 
-          if (typeof image !== "undefined") {
+          if (typeof data.cart.options.tire.tread.tread_id === "undefined") {
             if (data.cart.options.tire.make_id){
               fetch(public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg',
                 { method: 'GET' },)
@@ -2775,6 +2855,16 @@ $('.tire-table-checkbox').children().each(function(key, value){
                   }
                 });
             }
+          } else {
+            fetch(public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.tread.tread_id + '-o.jpg',
+              { method: 'GET' },)
+              .then(res => {
+                if (res.ok) {
+                  $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.tread.tread_id + '-o.jpg');
+                } else {
+                  $('.modal-image-preview img').attr('src', 'https://www.r1-dev.area.lv/public/img/p/en-default-home_default.jpg');
+                }
+              });
           }
 
           if (data.cart.options.image == 'stud') {
@@ -2783,6 +2873,19 @@ $('.tire-table-checkbox').children().each(function(key, value){
             $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
             $('.modal-product-info .product-stud-length').html(data.cart.options.tire.stud_length);
             $('.modal-product-info .product-stud-count').html(data.cart.options.tire.stud_count);
+            $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
+            $('.cart-content .cart-products-total').html(total_sum);
+            $('span.cart-products-count').html('(' + cart_quantity + ')');
+            $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+            $('.blockcart.cart-preview .header').empty();
+            $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+          } else if (data.cart.options.image == 'rims' || data.cart.options.image == 'quadrims') {
+            // STUD IMAGE INSIDE MODAL
+            $('.modal-product-info .product-name').html(data.cart.name);
+            $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+            $('.modal-product-info .product-rim-width').html(data.cart.options.tire.d1);
+            $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
+            $('.modal-product-info .product-lug-distance').html(data.cart.options.tire.skr + 'x' + data.cart.options.tire.pcd);
             $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
             $('.cart-content .cart-products-total').html(total_sum);
             $('span.cart-products-count').html('(' + cart_quantity + ')');
@@ -2817,14 +2920,14 @@ $('.tire-table-checkbox').children().each(function(key, value){
       if (article.length == 0) article = 'no_article';
       $('.popup input[name=prod]').val($('.table-tire-name-cell a', tire_data).data('content'));
       $('.popup input[name=price]').val($('.tire-price-red', tire_data).html().replace('€ ', ''));
-      $('.popup input[name=qty]').val(4);
+      $('.popup input[name=qty]').val($('.table-tire-name-cell a', tire_data).data('quantity'));
       $('.popup input[name=total]').val(parseInt($('.tire-price-red', tire_data).html().replace('€ ', '')) * $('.popup input[name=qty]').val());
       $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
       $('.popup input[name=article]').val($('.table-tire-name-cell a', tire_data).data('article'));
 
       calcData = {
           'article': article,
-          'qty': 4,
+          'qty': $('.table-tire-name-cell a', tire_data).data('quantity'),
           'user': user,
           'prod': $('.table-tire-name-cell a', tire_data).data('content'),
           'price': $('.tire-price-red', tire_data).html().replace('€', ''),
