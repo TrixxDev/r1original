@@ -47,7 +47,7 @@ let selected_date = 0;
 
 let sf_height = 0;
 
-let public_url = '/public/storage/';
+let public_url = '/storage/';
 const grozs_url = $('#_desktop_cart .desktop').data('url');
 
 let user = $('.user-info .account').data('user');
@@ -648,7 +648,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
                   if (res.ok) {
                     $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg');
                   } else {
-                    $('.modal-image-preview img').attr('src', 'https://www.r1-dev.area.lv/public/img/p/en-default-home_default.jpg');
+                    $('.modal-image-preview img').attr('src', '/img/p/en-default-home_default.jpg');
                   }
                 });
             }
@@ -756,7 +756,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
                     if (res.ok) {
                       $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg');
                     } else {
-                      $('.modal-image-preview img').attr('src', 'https://www.r1-dev.area.lv/public/img/p/en-default-home_default.jpg');
+                      $('.modal-image-preview img').attr('src', '/img/p/en-default-home_default.jpg');
                     }
                   });
             }
@@ -979,7 +979,7 @@ if (!admin) {
                 if (res.ok) {
                   $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg');
                 } else {
-                  $('.modal-image-preview img').attr('src', 'https://www.r1-dev.area.lv/public/img/p/en-default-home_default.jpg');
+                  $('.modal-image-preview img').attr('src', '/img/p/en-default-home_default.jpg');
                 }
               });
           }
@@ -1086,7 +1086,7 @@ $('.ct_matrix_row').each(function(key, value) {
           //   if (data.cart.options.tire.image){
           //     $('.modal-image-preview img').attr('src', '/storage/app/public/' + data.cart.options.image + '/tread/' + data.cart.options.tire.tread.image + '.png');
           //   } else {
-          //     $('.modal-image-preview img').attr('src', 'https://www.r1-dev.area.lv/public/img/p/en-default-home_default.jpg');
+          //     $('.modal-image-preview img').attr('src', '/img/p/en-default-home_default.jpg');
           //   }
           // }
           $('.modal-product-info .product-name').html(data.cart.options.tire.title.toUpperCase());
@@ -2851,7 +2851,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
                   if (res.ok) {
                     $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg');
                   } else {
-                    $('.modal-image-preview img').attr('src', 'https://www.r1-dev.area.lv/public/img/p/en-default-home_default.jpg');
+                    $('.modal-image-preview img').attr('src', '/img/p/en-default-home_default.jpg');
                   }
                 });
             }
@@ -2862,7 +2862,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
                 if (res.ok) {
                   $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.tread.tread_id + '-o.jpg');
                 } else {
-                  $('.modal-image-preview img').attr('src', 'https://www.r1-dev.area.lv/public/img/p/en-default-home_default.jpg');
+                  $('.modal-image-preview img').attr('src', '/img/p/en-default-home_default.jpg');
                 }
               });
           }
