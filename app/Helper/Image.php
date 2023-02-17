@@ -6,7 +6,7 @@
 
     public static function image($type, $image) {
 
-      $path = dirname(__DIR__, 2) . '/public/storage';
+      $path = 'storage';
 
       switch ($type) {
         // AUTO TIRES
