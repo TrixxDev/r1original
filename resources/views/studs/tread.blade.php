@@ -161,7 +161,7 @@
 {{--                    --}}{{--                    {{dd($rim->price1, $rim->price2, $rim->price3)}}--}}
                     @if($stud->price2)
                       <tr @if($currStud->stud_id == $stud->stud_id) style="font-weight: bold; background-color: #e0e0e0;" @endif class="tire-table-row">
-                        <th class="tire-info" style="display: none;" data-article="{{ $stud->article }}" data-content="{{ $stud->fullName }}"></th>
+                        <th class="tire-info" style="display: none;" data-article="{{ $stud->article }}" data-content="{{ $stud->fullName }}" data-quantity="{{ $cartQty }}"></th>
                         <th scope="row" class="tire-table-checkbox">
                           <input type="checkbox" value="{{$stud->stud_id}}" name="product_ids[]"
                                  class="tire-table-checkbox">

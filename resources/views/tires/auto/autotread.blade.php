@@ -217,7 +217,10 @@
                                     $tire->includeStock = true;
                                   @endphp
                                   <tr @if($currTire->tire_id == $tire->tire_id) style="font-weight: bold; background-color: #cbcbcb;"@endif class="tire-table-row">
-                                  <th class="tire-info" style="display: none;" data-article="{{ $tire->article }}" data-content="{{ $tire->title . ' ' . $tire->fullSize }}"></th>
+                                  <th class="tire-info" style="display: none;"
+                                      data-article="{{ $tire->article }}"
+                                      data-content="{{ $tire->title . ' ' . $tire->fullSize }}"
+                                      data-quantity="{{ $cartQty }}"></th>
                                   <th scope="row" class="tread-tire-table-checkbox text-center">
                                     <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
                                            class="tire-table-checkbox">
@@ -235,16 +238,16 @@
 
                                   <td class="hidden-sm-down text-center tread-code-cell-size">
                                     <span data-toggle="tooltip" title="<span style='color: black'>
-						@php $codes = explode(' ', $tire->code); @endphp
-                                		@foreach ($codes as $code)
-                                        		@if (isset($code_array[$code]))
-                                                        	{!! $code_array[$code] . '<br>' !!}
-                                                	@endif
-	                                	@endforeach
-						@if (strpos($tire->code, 'DOT') !== false)
-							{!! $code_array['DOT'] !!}
-						@endif
-                                               </span>" class="hidden-sm-down table-cell prod-code">{{ $tire->code }}
+                                      @php $codes = explode(' ', $tire->code); @endphp
+                                      @foreach ($codes as $code)
+                                              @if (isset($code_array[$code]))
+                                                            {!! $code_array[$code] . '<br>' !!}
+                                                    @endif
+                                      @endforeach
+                                      @if (strpos($tire->code, 'DOT') !== false)
+                                        {!! $code_array['DOT'] !!}
+                                      @endif
+                                      </span>" class="hidden-sm-down table-cell prod-code">{{ $tire->code }}
                                     </span>
                                   </td>
 
