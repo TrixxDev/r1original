@@ -38,14 +38,13 @@ class Queue extends Model
         $day->timestamps = false;
         $day->queue_id = $this->queue_id;
         $day->date = $date;
-	      $day->secondaryAvailable = 0;
-	      $day->slotSize = 2;
 
-        if (!$day->fillWorkingHours()){
-          $day->openTime = $this->opentime;
-          $day->closeTime = $this->closetime;
-          $day->visible = $this->is_visible;
-        } else {
+        if (!$day->fillWorkingHours($this)){
+          $day->secondaryAvailable = 0;
+          $day->slotSize = 2;
+          $day->opentime = $this->opentime;
+          $day->closetime = $this->closetime;
+          $day->is_visible = 1;
         }
 
         if ($allowCreate) $day->save();

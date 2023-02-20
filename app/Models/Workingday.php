@@ -14,17 +14,18 @@ class Workingday extends Model
       $this->weekday = date('N', strtotime($this->date.' 00:00:00'));
       $id = $this->queue_id;
       $d = $this->date;
+      $date = date('Y-m-d', strtotime('-7 days', strtotime($d.' 00:00:00')));
 
       $weekday = $this->weekday;
-      $secondaryAvailable = $this->secondaryAvailable;
-      $slotSize = $this->slotSize;
 
-      $workingDayList = Self::where('queue_id', $id)->where('date', '<', $d)->where('weekday', $weekday)->first();
+      $workingDay = Self::where('queue_id', $id)->where('date', $date)->where('weekday', $weekday)->first();
+      //      $workingDay = Self::where('queue_id', $id)->where('date', '<', $d)->where('weekday', $weekday)->first();
 
-      if ($workingDayList !== NULL){
-        $workingDay = $workingDayList;
-        $this->openTime = $workingDay->opentime;
-        $this->closeTime = $workingDay->closetime;
+      if ($workingDay !== NULL){
+        $this->slotSize = $workingDay->slotSize;
+        $this->secondaryAvailable = $workingDay->secondaryAvailable;
+        $this->closetime = $workingDay->closetime;
+        $this->opentime = $workingDay->opentime;
         $this->is_visible = $workingDay->is_visible;
         return true;
       } else {
