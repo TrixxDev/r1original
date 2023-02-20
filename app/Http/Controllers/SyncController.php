@@ -574,7 +574,7 @@ class SyncController extends Controller
             ));
             $response = curl_exec($curl);
 
-            $filename = 'xml/i3-auto.txt';
+            $filename = dirname(__DIR__, 3) . '/xml/i3-auto.txt';
 
             file_put_contents($filename, $response);
             chmod($filename, 0775);
@@ -591,7 +591,7 @@ class SyncController extends Controller
 
           Autostock::where('itype', 'i3')->update(['quantity' => 0]);
 
-          $content = file_get_contents('xml/i3-auto.txt');
+          $content = file_get_contents($filename);
           $content = json_decode($content);
 
           $out = '';
@@ -752,7 +752,7 @@ class SyncController extends Controller
         $context  = stream_context_create($opts);
         $xmlString = file_get_contents($url, false, $context);
 
-        file_put_contents('i3.moto.xml',$xmlString);
+        file_put_contents(dirname(__DIR__, 3) . '/i3.moto.xml',$xmlString);
 
         $xml = simplexml_load_string($xmlString);
 
@@ -803,7 +803,7 @@ class SyncController extends Controller
       $context  = stream_context_create($opts);
       $xmlString = file_get_contents($url, false, $context);
 
-      file_put_contents('i3.quadr.xml',$xmlString);
+      file_put_contents(dirname(__DIR__, 3) . '/i3.quadr.xml',$xmlString);
 
       $xml = simplexml_load_string($xmlString);
 
@@ -953,7 +953,7 @@ class SyncController extends Controller
       $context  = stream_context_create($opts);
       $xmlString = file_get_contents($url, false, $context);
 
-      file_put_contents('i3.industrial.xml',$xmlString);
+      file_put_contents(dirname(__DIR__, 3) . '/i3.industrial.xml',$xmlString);
 
       $xml = simplexml_load_string($xmlString);
 
@@ -1229,7 +1229,7 @@ class SyncController extends Controller
         }
         unlink($path);
 
-        file_put_contents('GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv', $stock);
+        file_put_contents(dirname(__DIR__, 3) . '/GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv', $stock);
 
         echo "Auto riepas<br>";
         Autostock::where('itype', 'gy')->update(['quantity' => 0]);
@@ -1280,7 +1280,7 @@ class SyncController extends Controller
         $context = stream_context_create($opts);
         $xmlString = file_get_contents($url, false, $context);
 
-        file_put_contents('rz.auto.xml', $xmlString);
+        file_put_contents(dirname(__DIR__, 3) . '/rz.auto.xml', $xmlString);
 
         $xml = simplexml_load_string($xmlString);
 
