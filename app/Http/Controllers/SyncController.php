@@ -69,7 +69,7 @@ class SyncController extends Controller
         set_time_limit(0);
 
         try {
-          $this->accrual = new PDO("sqlsrv:Server=212.3.218.22,1444;Database=accrual", "sa", "cenzors");
+          $this->accrual = new PDO("sqlsrv:Server=192.168.0.36,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
           return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
 //          die("Database connection failed: " . $e->getMessage());
@@ -523,6 +523,7 @@ class SyncController extends Controller
       {
 
           set_time_limit(0);
+
           $sync = DB::table('sync_times')->where('name', 'i3-auto')->get();
           $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
           $time_now = \Carbon\Carbon::now();
@@ -591,7 +592,7 @@ class SyncController extends Controller
 
           Autostock::where('itype', 'i3')->update(['quantity' => 0]);
 
-          $content = file_get_contents($filename);
+          $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-auto.txt');
           $content = json_decode($content);
 
           $out = '';
