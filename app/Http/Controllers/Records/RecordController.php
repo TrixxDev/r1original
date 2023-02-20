@@ -52,8 +52,8 @@ class RecordController extends Controller
       foreach ($offices as $office) {
         $office->loadQueues();
         foreach ($office->_queues as $queue){
-          $queue->loadWorkingDay($date,true);
-          $queue->loadSlots($date,true);
+          $queue->loadWorkingDay($date,false);
+          $queue->loadSlots($date,false);
           $slotSizes[] = $queue->_workingDays[$date]->slotSize;
           $workingDays[] = $date;
           for ($i=1;$i<$visibleDays;$i++){

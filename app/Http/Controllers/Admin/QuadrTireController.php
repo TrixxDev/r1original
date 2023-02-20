@@ -321,19 +321,19 @@
         $fileNameMed   = $id . '-n';
         $fileNameLarge   = $id . '-o';
 //            dd($image);
-        Image::make($image->getRealPath())->save('public/storage/quadr/tread/' . $fileName . '.jpg');
+        Image::make($image->getRealPath())->save('storage/quadr/tread/' . $fileName . '.jpg');
         Image::make($image->getRealPath())
           ->resize(100, 100, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/quadr/tread/' . $fileNameSmall . '.jpg');
+          })->save('storage/quadr/tread/' . $fileNameSmall . '.jpg');
         Image::make($image->getRealPath())
           ->resize(200, 200, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/quadr/tread/' . $fileNameMed . '.jpg');
+          })->save('storage/quadr/tread/' . $fileNameMed . '.jpg');
         Image::make($image->getRealPath())
           ->resize(1500, 1500, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/quadr/tread/' . $fileNameLarge . '.jpg');
+          })->save('storage/quadr/tread/' . $fileNameLarge . '.jpg');
       }
       return redirect()->back();
     }

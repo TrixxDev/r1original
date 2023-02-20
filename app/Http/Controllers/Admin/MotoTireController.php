@@ -329,19 +329,19 @@
         $fileNameMed   = $id . '-n';
         $fileNameLarge   = $id . '-o';
 //            dd($image);
-        Image::make($image->getRealPath())->save('public/storage/moto/tread/' . $fileName . '.jpg');
+        Image::make($image->getRealPath())->save('storage/moto/tread/' . $fileName . '.jpg');
         Image::make($image->getRealPath())
           ->resize(100, 100, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/moto/tread/' . $fileNameSmall . '.jpg');
+          })->save('storage/moto/tread/' . $fileNameSmall . '.jpg');
         Image::make($image->getRealPath())
           ->resize(200, 200, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/moto/tread/' . $fileNameMed . '.jpg');
+          })->save('storage/moto/tread/' . $fileNameMed . '.jpg');
         Image::make($image->getRealPath())
           ->resize(1500, 1500, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/moto/tread/' . $fileNameLarge . '.jpg');
+          })->save('storage/moto/tread/' . $fileNameLarge . '.jpg');
       }
       return redirect()->back();
     }
