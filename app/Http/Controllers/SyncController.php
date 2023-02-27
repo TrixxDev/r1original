@@ -739,102 +739,202 @@ class SyncController extends Controller
       public function i3moto()
       {
 
-        $url = "https://gd-middleware-test.barnstenit.se/api/Moto?username=XmL_r1&password=M20h:2|5";
+        set_time_limit(0);
 
-        $opts = ['http' =>
-          [
-            'method'  => 'GET',
-            'timeout'  => 600,
-          ]
-        ];
+        $sync = DB::table('sync_times')->where('name', 'i3-moto')->get();
+        $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+        $time_now = \Carbon\Carbon::now();
+        if ($time_now->diff($sync_time)->invert == 1) {
+          $token_url = "api.latakko.eu/Token";
 
-        set_time_limit(800);
+          $curl = curl_init();
+          curl_setopt_array($curl, array(
+            CURLOPT_URL => $token_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+            CURLOPT_HTTPHEADER => array(
+              "cache-control: no-cache",
+              "content-type: application/x-www-form-urlencoded"
+            ),
+          ));
+          $response = curl_exec($curl);
+          $err = curl_error($curl);
 
-        $context  = stream_context_create($opts);
-        $xmlString = file_get_contents($url, false, $context);
+          curl_close($curl);
 
-        file_put_contents(dirname(__DIR__, 3) . '/i3-articles.xml',$xmlString);
+          if (!$err)
+          {
+            $token = json_decode($response);
+          } else {
+            throw new \Exception($err);
+          }
 
-        $xml = simplexml_load_string($xmlString);
+          $token_bearer = $token->access_token;
 
-        unset($context);
+          $curl = curl_init();
+          curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+              "cache-control: no-cache",
+              "authorization: Bearer " . $token_bearer,
+            ),
+          ));
+          $response = curl_exec($curl);
 
-        echo "Moto riepas<br>";
+          $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
+
+          file_put_contents($filename, $response);
+          chmod($filename, 0775);
+
+          $err = curl_error($curl);
+
+          if ($err) throw new \Exception($err);
+
+          curl_close($curl);
+        }
+
+        $counted = 0;
+        $updated = 0;
+
         Motostock::where('itype', 'i3')->update(['quantity' => 0]);
 
-        $updated = 0;
-        $counted = 0;
-        foreach ($xml->Item as $item){
-          $article = $item->stockcode;
-          $quantity = intval($item->qty_available);
+        $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
+        $content = json_decode($content);
 
-          $metadata = '';
-          $price = @$item->price; if ($price!='') $metadata.='price: '.$price.'; ';
-          $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
-          $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
+        $out = '';
 
-          $list = Motostock::where('article', $article)->where('itype', 'i3')->get();
+        foreach ($content as $item) {
 
-          foreach ($list as $itam){
-            $itam->quantity = $quantity;
-            $itam->metadata = $metadata;
-            $itam->save();
+          $counted++;
+
+          $stock = Motostock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
+          if (!$stock) {
+            continue;
+          }
+
+          $quantity = intval($item->QuantityAvailable);
+          $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+          $stock->quantity = $quantity;
+          $stock->metadata = $metadata;
+          if ($stock->save()) {
             $updated++;
           }
-          $counted++;
+
         }
-        DB::table('sync_times')->where('name', 'i3-moto')->update(['updated_at' => NOW()]);
+
+        DB::table('sync_times')->where('name', 'i3-moto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
         echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
       }
 
     public function i3quadr()
     {
 
-      $url = "https://gd-middleware-test.barnstenit.se/api/Moto?username=XmL_r1&password=M20h:2|5";
+      set_time_limit(0);
 
-      $opts = ['http' =>
-        [
-          'method'  => 'GET',
-          'timeout'  => 600,
-        ]
-      ];
+      $sync = DB::table('sync_times')->where('name', 'i3-quadr')->get();
+      $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+      $time_now = \Carbon\Carbon::now();
+      if ($time_now->diff($sync_time)->invert == 1) {
+        $token_url = "api.latakko.eu/Token";
 
-      set_time_limit(800);
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => $token_url,
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "POST",
+          CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+          CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "content-type: application/x-www-form-urlencoded"
+          ),
+        ));
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
 
-      $context  = stream_context_create($opts);
-      $xmlString = file_get_contents($url, false, $context);
+        curl_close($curl);
 
-      file_put_contents(dirname(__DIR__, 3) . '/i3-articles.xml',$xmlString);
+        if (!$err)
+        {
+          $token = json_decode($response);
+        } else {
+          throw new \Exception($err);
+        }
 
-      $xml = simplexml_load_string($xmlString);
+        $token_bearer = $token->access_token;
 
-      unset($context);
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "GET",
+          CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "authorization: Bearer " . $token_bearer,
+          ),
+        ));
+        $response = curl_exec($curl);
 
-      echo "Kvadraciklu riepas<br>";
+        $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
+
+        file_put_contents($filename, $response);
+        chmod($filename, 0775);
+
+        $err = curl_error($curl);
+
+        if ($err) throw new \Exception($err);
+
+        curl_close($curl);
+      }
+
+      $counted = 0;
+      $updated = 0;
+
       Quadrstock::where('itype', 'i3')->update(['quantity' => 0]);
 
-      $updated = 0;
-      $counted = 0;
-      foreach ($xml->Item as $item){
-        $article = $item->stockcode;
-        $quantity = intval($item->qty_available);
+      $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
+      $content = json_decode($content);
 
-        $metadata = '';
-        $price = @$item->price; if ($price!='') $metadata.='price: '.$price.'; ';
-        $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
-        $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
+      $out = '';
 
-        $list = Quadrstock::where('article', $article)->where('itype', 'i3')->get();
+      foreach ($content as $item) {
 
-        foreach ($list as $itam){
-          $itam->quantity = $quantity;
-          $itam->metadata = $metadata;
-          $itam->save();
+        $counted++;
+
+        $stock = Quadrstock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
+        if (!$stock) {
+          continue;
+        }
+
+        $quantity = intval($item->QuantityAvailable);
+        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+        $stock->quantity = $quantity;
+        $stock->metadata = $metadata;
+        if ($stock->save()) {
           $updated++;
         }
-        $counted++;
+
       }
-      DB::table('sync_times')->where('name', 'i3-quadr')->update(['updated_at' => NOW()]);
+
+      DB::table('sync_times')->where('name', 'i3-quadr')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
