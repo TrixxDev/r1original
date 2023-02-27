@@ -69,7 +69,7 @@ class SyncController extends Controller
         set_time_limit(0);
 
         try {
-          $this->accrual = new PDO("sqlsrv:Server=192.168.0.36,1444;Database=accrual", "sa", "cenzors");
+          $this->accrual = new PDO("sqlsrv:Server=212.3.218.22,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
           return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
 //          die("Database connection failed: " . $e->getMessage());
@@ -575,7 +575,7 @@ class SyncController extends Controller
             ));
             $response = curl_exec($curl);
 
-            $filename = dirname(__DIR__, 3) . '/xml/i3-auto.txt';
+            $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
 
             file_put_contents($filename, $response);
             chmod($filename, 0775);
@@ -592,7 +592,7 @@ class SyncController extends Controller
 
           Autostock::where('itype', 'i3')->update(['quantity' => 0]);
 
-          $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-auto.txt');
+          $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
           $content = json_decode($content);
 
           $out = '';
@@ -601,7 +601,7 @@ class SyncController extends Controller
 
             $counted++;
 
-            $stock = Autostock::where('itype', 'i3')->where('article', $item->ArticleId)->first();
+            $stock = Autostock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
             if (!$stock) {
               continue;
             }
@@ -610,7 +610,7 @@ class SyncController extends Controller
             $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
             $stock->quantity = $quantity;
             $stock->metadata = $metadata;
-            if ($stock->save()) {
+	    if ($stock->save()) {
               $updated++;
             }
 
@@ -753,7 +753,7 @@ class SyncController extends Controller
         $context  = stream_context_create($opts);
         $xmlString = file_get_contents($url, false, $context);
 
-        file_put_contents(dirname(__DIR__, 3) . '/i3.moto.xml',$xmlString);
+        file_put_contents(dirname(__DIR__, 3) . '/i3-articles.xml',$xmlString);
 
         $xml = simplexml_load_string($xmlString);
 
@@ -804,7 +804,7 @@ class SyncController extends Controller
       $context  = stream_context_create($opts);
       $xmlString = file_get_contents($url, false, $context);
 
-      file_put_contents(dirname(__DIR__, 3) . '/i3.quadr.xml',$xmlString);
+      file_put_contents(dirname(__DIR__, 3) . '/i3-articles.xml',$xmlString);
 
       $xml = simplexml_load_string($xmlString);
 
