@@ -14,7 +14,7 @@
           $dir = $path . '/auto/tread/' . $image . '-o.jpg';
           break;
         case 'auto-rim':
-          $dir = $path . '/auto/rims/rim-' . $image . '.jpg';
+          $dir = $path . '/rims/tread/' . $image . '-o.jpg';
           break;
 
         // QUAD TIRES
@@ -22,7 +22,7 @@
           $dir = $path . '/quadr/tread/' . $image . '-o.jpg';
           break;
         case 'quadr-rim':
-          $dir = $path . '/quadr/rims/rim-' . $image . '.jpg';
+          $dir = $path . '/quadrims/tread/' . $image . '-o.jpg';
           break;
 
         // MOTO TIRES
@@ -30,7 +30,7 @@
           $dir = $path . '/moto/tread/' . $image . '-o.jpg';
           break;
         case 'moto-rim':
-          $dir = $path . '/moto/rims/rim-' . $image . 'jpg';
+          $dir = $path . '/motorims/tread/' . $image . 'jpg';
           break;
 
         // INDUSTRIAL TIRES
@@ -38,7 +38,7 @@
           $dir = $path . '/industrial/tread/' . $image . '-o.jpg';
           break;
         case 'big-rim':
-          $dir = $path . '/industrial/rims/rim-' . $image . '.jpg';
+          $dir = $path . '/industrialrims/tread/' . $image . '.jpg';
           break;
 
         // STUDS
@@ -80,7 +80,7 @@
         if (file_exists(str_replace('.jpg', '.png', Self::image($type, $image)))) {
           $img = str_replace('.jpg', '.png', $img);
         }
-        return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['APP_URL'] . $img;
+        return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['APP_URL'] . '/' . $img;
       } else {
         return asset('img/p/r1-logo.svg');
       }
