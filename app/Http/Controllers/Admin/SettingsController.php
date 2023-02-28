@@ -165,8 +165,8 @@
 
 @endsection";
 
-      File::put($_SERVER['DOCUMENT_ROOT'] . '/resources/views/pages/' . $file, $html);
-      File::put($_SERVER['DOCUMENT_ROOT'] . '/resources/views/pages/components/' . $file, '');
+      File::put(dirname(__DIR__, 4) . '/resources/views/pages/' . $file, $html);
+      File::put(dirname(__DIR__, 4) . '/resources/views/pages/components/' . $file, '');
 
       return redirect(route('admin.settings.pages'))->withSuccess('Lapa veiksmīgi izveidota!');
     }
@@ -177,7 +177,7 @@
 
       $file = $page->route . '.blade.php';
 
-      $component_file = $_SERVER['DOCUMENT_ROOT'] . '/resources/views/pages/components/' . $file;
+      $component_file = dirname(__DIR__, 4) . '/resources/views/pages/components/' . $file;
 
       if (File::exists($component_file)) {
         $doc = File::get($component_file);
@@ -201,8 +201,8 @@
           $file = $request->uri . '.blade.php';
           $slug = Str::slug($request->uri);
 
-          File::delete($_SERVER['DOCUMENT_ROOT'] . '/resources/views/pages/' . $page->route . '.blade.php');
-          File::delete($_SERVER['DOCUMENT_ROOT'] . '/resources/views/pages/components/' . $page->route . '.blade.php');
+          File::delete(dirname(__DIR__, 4) . '/resources/views/pages/' . $page->route . '.blade.php');
+          File::delete(dirname(__DIR__, 4) . '/resources/views/pages/components/' . $page->route . '.blade.php');
 
           $html = "@extends('layouts.app')
 
@@ -234,13 +234,13 @@
 
 @endsection";
 
-          File::put($_SERVER['DOCUMENT_ROOT'] . '/resources/views/pages/' . $file, $html);
-          File::put($_SERVER['DOCUMENT_ROOT'] . '/resources/views/pages/components/' . $file, html_entity_decode($request->page_content));
+          File::put(dirname(__DIR__, 4) . '/resources/views/pages/' . $file, $html);
+          File::put(dirname(__DIR__, 4) . '/resources/views/pages/components/' . $file, html_entity_decode($request->page_content));
           DB::table('pages')->where('id', $id)->update(['route' => $request->uri]);
         }
       }
 
-      $component_file = $_SERVER['DOCUMENT_ROOT'] . '/resources/views/pages/components/' . $file;
+      $component_file = dirname(__DIR__, 4) . '/resources/views/pages/components/' . $file;
 
       $content = html_entity_decode($request->page_content);
 
@@ -260,8 +260,8 @@
 
       $file = $page->route . '.blade.php';
 
-      $view_file = $_SERVER['DOCUMENT_ROOT'] . '/resources/views/pages/' . $file;
-      $component_file = $_SERVER['DOCUMENT_ROOT'] . '/resources/views/pages/components/' . $file;
+      $view_file = dirname(__DIR__, 4) . '/resources/views/pages/' . $file;
+      $component_file = dirname(__DIR__, 4) . '/resources/views/pages/components/' . $file;
 
       if (File::exists($view_file)) {
         File::delete($view_file);
@@ -291,10 +291,10 @@
       $dom->encoding = 'utf-8';
       $dom->xmlVersion = '1.0';
       $dom->formatOutput = true;
-      $xml_file_name = $_SERVER['DOCUMENT_ROOT'] . '/xml/salidzini.xml';
+      $xml_file_name = dirname(__DIR__, 4) . '/public/storage/xml/salidzini.xml';
       $root = $dom->createElement('root');
-      $file = file_get_contents('xml/salidzini.xml');
-      foreach ($tires as $tire) {
+      $file = file_get_contents(dirname(__DIR__, 4) . '/public/storage/xml/salidzini.xml');
+foreach ($tires as $tire) {
         if (!isset($tire->tread->season)) {
           continue;
         }
@@ -385,7 +385,7 @@
       $dom->encoding = 'utf-8';
       $dom->xmlVersion = '1.0';
       $dom->formatOutput = true;
-      $xml_file_name = $_SERVER['DOCUMENT_ROOT'] . '/xml/kurpirkt.xml';
+      $xml_file_name = dirname(__DIR__, 4) . '/xml/kurpirkt.xml';
 //      $file = file_get_contents('xml/kurpirkt.xml');
       $root = $dom->createElement('root');
       foreach ($tires as $tire) {

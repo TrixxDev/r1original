@@ -95,7 +95,7 @@
         if (file_exists(str_replace('.jpg', '.png', Self::image($type, $image)))) {
           $img = str_replace('.jpg', '.png', $img);
         }
-        return '<img style="width:280px;" src="' . $img . '">';
+        return '<img style="width:280px;" src="' . asset($img) . '">';
       } else {
         return '<img src=' . asset('img/p/en-default-home_default.jpg') . '>';
       }
@@ -108,7 +108,7 @@
         if (file_exists(str_replace('.jpg', '.png', Self::image('banners', $image)))) {
           $img = str_replace('.jpg', '.png', $img);
         }
-        return '<img class="banner-image" src="' . $img . '">';
+        return '<img class="banner-image" src="' . asset($img) . '">';
       } else {
         return '<img src=' . asset('img/p/en-default-home_default.jpg') . '>';
       }
@@ -123,9 +123,9 @@
           $img = str_replace('.jpg', '.png', $img);
         }
         if (empty($style)) {
-          return '<img class="grid-tire-image" src=' . $img . '>';
+          return '<img class="grid-tire-image" src=' . asset($img) . '>';
         } else {
-          return '<img class="grid-tire-image" style="' . $style . '" src=' . $img . '>';
+          return '<img class="grid-tire-image" style="' . $style . '" src=' . asset($img) . '>';
         }
       } else {
         if (empty($style)) {
@@ -146,8 +146,8 @@
         }
         $html = '<div class="zoom-section product-cover card text-center" style="padding: 10px">';
         $html .= '<div class="zoom-small-image">';
-        $html .= '<a class="MagicZoom" data-options="expand: window;" href="' . $img . '">';
-        $html .= '<img class="magic-image" src="' . $img . '" alt=""/>';
+        $html .= '<a class="MagicZoom" data-options="expand: window;" href="/' . $img . '">';
+        $html .= '<img class="magic-image" src="/' . $img . '" alt=""/>';
         $html .= '</a>';
         $html .= '</div>';
         $html .= '</div>';
