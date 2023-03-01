@@ -283,6 +283,10 @@ class Queue extends Model
             Slot::where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $object->iorder)->update($arr);
             $object->status2 = 0;
             $object->takenby2 = '';
+            $object->createtime2 = null;
+            $object->createuser2 = -1;
+            $object->edittime2 = null;
+            $object->edituser2 = -1;
             $object->save();
           }
         }
@@ -301,6 +305,10 @@ class Queue extends Model
             Slot::where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $object->iorder + 1)->update($arr);
             $slot1->status2 = 0;
             $slot1->takenby2 = '';
+            $slot1->createtime = null;
+            $slot1->createuser = -1;
+            $slot1->edittime = null;
+            $slot1->edituser = -1;
             $slot1->save();
           }
         }
@@ -308,10 +316,14 @@ class Queue extends Model
         foreach ($list as $object) {
           if ($object->iorder % 2 == 0) {
             $slot1 = Slot::where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $object->iorder + 1)->first();
-	          if ($slot1->takenby != '') $object->takenby2 = (!empty($slot1->takenby)) ? $slot1->takenby : '';
             if (!empty($object->takenby2)) {
               $object->status2 = 1;
             }
+            $object->takenby2 = (!empty($slot1->takenby)) ? $slot1->takenby : '';
+            $object->createtime2 = (!empty($slot1->createtime)) ? $slot1->createtime : null;
+            $object->createuser2 = (!empty($slot1->createuser)) ? $slot1->createuser : -1;
+            $object->edittime2 = (!empty($slot1->edittime)) ? $slot1->edittime : null;
+            $object->edituser2 = (!empty($slot1->edituser)) ? $slot1->edituser : -1;
             $arr = [
               'status' => $object->status,
               'status2' => $object->status2,
@@ -329,7 +341,15 @@ class Queue extends Model
               $id = 0;
             }
             $object->where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $id)->update($arr);
-            $slot1->save();
+            if (!empty($slot1->takenby)) {
+              $slot1->status = 0;
+              $slot1->takenby = '';
+              $slot1->createtime = null;
+              $slot1->createuser = -1;
+              $slot1->edittime = null;
+              $slot1->edituser = -1;
+              $slot1->save();
+            }
           }
         }
       }
