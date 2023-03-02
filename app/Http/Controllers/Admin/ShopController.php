@@ -39,13 +39,9 @@ class ShopController extends Controller
   {
     if (!Session::has('admin-order-status-select') && $request->input('admin-order-status-select')) {
       Session::put('admin-order-status-select', $request->input('admin-order-status-select'));
-    } else {
-      Session::put('admin-order-status-select', '');
     }
     if (!Session::has('admin-order-editor-select') && $request->input('admin-order-editor-select')) {
       Session::put('admin-order-editor-select', $request->input('admin-order-editor-select'));
-    } else {
-      Session::put('admin-order-editor-select', '');
     }
     $this->filteredStatus = Session::get('admin-order-status-select');
     $this->filteredEditor = Session::get('admin-order-editor-select');
@@ -60,7 +56,7 @@ class ShopController extends Controller
     $status_enum = $this->status_enum;
     $pay_enum = $this->pay_enum;
 
-    if($request->post() || Session::has('admin-order-status-select') || Session::has('admin-order-editor-select')) {
+    if($request->post() || $this->filteredStatus || $this->filteredEditor) {
 
       $orders = Order::when($this->filteredStatus, function($query) {
         $query->where('status', $this->filteredStatus);
