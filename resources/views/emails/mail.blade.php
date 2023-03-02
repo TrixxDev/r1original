@@ -7,14 +7,11 @@
   R1 riepu servisā {{ $details['office'] }}, {{ $details['day'] }}, {{ $details['date'] }}, pl. {{ $details['time'] }}<br>
   {{ $details['longPurpose'] }}<br>
   <br>
-  !!! Ja netiksiet šajā laikā vai radušies kādi citi jautājumi<br>
-  * Zvaniet uz riepu servisu {{ $details['office'] }} - 67910555<br>
+  Ar pakalpojumu cenām iespējams iepazīties šeit: https://r1riepas.lv/pakalpojumi<br>
   <br>
-  Aktuālie pakalpojumu izcenojums Šeit: https://r1riepas.lv/pakalpojumi<br>
-  <br>
-  Nepieciešamības gadījumā pierakstu iespējams atcelt izmantojot šo saiti - https://r1riepas.lv/pieraksts/cancel={{ $details['cancelId'] }}
-  <br>
-  Lai rediģētu pierakstu vēlāk, zvaniet!
+  Nepieciešamības gadījumā pierakstu iespējams anulēt izmantojot šo saiti - https://r1riepas.lv/pieraksts/cancel={{ $details['cancelId'] }}<br>
+  Pieraksta anulēšana iespējama līdz pieraksta dienas pl. 7:30, ja nepieciešams rediģet pierakstu<br>
+  pēc 7:30, lūdzu, sazinieties ar mums pa tālruni +37167910555 vai +37167615615<br>
   <br>
   Drošu ceļu vēlot,<br>
   R1<br>

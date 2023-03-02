@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Carbon\Carbon;
@@ -32,6 +33,10 @@ class RecordController extends Controller
      */
     public function __construct()
     {
+
+//      $hash = $this->getRandomHash();
+//
+//      dd($this->isHashTaken($hash));
 
     }
 
@@ -299,12 +304,12 @@ class RecordController extends Controller
         $phone = strip_tags($request->phone);
         $email = strip_tags($request->email);
 
-        $randomNumber = $this->getRandomNumber();
-        if ($this->isNumberTaken($randomNumber)) {
+        $randomNumber = $this->getRandomHash();
+        if ($this->isHashTaken($randomNumber)) {
           // generate a new random number until it's not taken
           do {
-            $randomNumber = $this->getRandomNumber();
-          } while ($this->isNumberTaken($randomNumber));
+            $randomNumber = $this->getRandomHash();
+          } while ($this->isHashTaken($randomNumber));
         }
 
         $cancelId = $randomNumber;
@@ -411,9 +416,9 @@ class RecordController extends Controller
           'cancelId' => $cancelId
         ];
 
-        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
-          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
-	      }
+//        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+//          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
+//	      }
 //        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
 //        $mailer = new CMailer();
 //        $mailer->addRecipient($form->ownerEmail);
@@ -459,7 +464,7 @@ class RecordController extends Controller
         $name = $request->name;
         $phone = $request->phone;
         $email = $request->email;
-        $cancelId = $this->getRandomNumber();
+        $cancelId = $this->getRandomHash();
 
         $errorText = [];
         if (!$car) $errorText['brand'] = "Jābūt aizpildītam!\n";
@@ -486,12 +491,12 @@ class RecordController extends Controller
             return json_encode(['error' => $errorText]);
         }
 
-        $randomNumber = $this->getRandomNumber();
-        if ($this->isNumberTaken($randomNumber)) {
+        $randomNumber = $this->getRandomHash();
+        if ($this->isHashTaken($randomNumber)) {
           // generate a new random number until it's not taken
           do {
-            $randomNumber = $this->getRandomNumber();
-          } while ($this->isNumberTaken($randomNumber));
+            $randomNumber = $this->getRandomHash();
+          } while ($this->isHashTaken($randomNumber));
         }
 
         $form = new \stdClass();
@@ -571,9 +576,9 @@ class RecordController extends Controller
           'cancelId' => $cancelId
         ];
 
-        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
-          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
-	      }
+//        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+//          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
+//	      }
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
 
@@ -993,7 +998,7 @@ class RecordController extends Controller
     $timeToClose = Carbon::create(date('Y'), date('m'), date('d'), 7, 30);
     $now = Carbon::now();
 
-    $slot = Slot::where('takenBy', 'like', '%"cancelId":' . $id . '%')->orWhere('takenBy2', 'like', '%"cancelId":' . $id . '%')->first();
+    $slot = Slot::where('takenBy', 'like', '%"cancelId":"' . $id . '"%')->orWhere('takenBy2', 'like', '%"cancelId":"' . $id . '"%')->first();
 
     $date = date('Y-m-d');
     if ($slot->date < $date) return redirect(route('pieraksts'))->with('warning', 'Jūsu pieraksts vairs nav aktuāls');
@@ -1039,33 +1044,29 @@ class RecordController extends Controller
 //    }
   }
 
-  public function getRandomNumber(): int
+  public function getRandomHash(): string
   {
-    static $numbers = []; // static variable to store already generated numbers
-    static $range = 100; // static variable to store the current range
+    $value = Str::random(32);
+    $hash = hash('sha256', $value);
 
-    if (count($numbers) >= $range) {
-      $newRange = $range * 10; // increase the range by a factor of 10
-      while (count($numbers) >= $newRange) {
-        $newRange *= 10; // if the new range is also exhausted, keep increasing it by a factor of 10
+    // check if hash is already taken
+    $isTaken = $this->isHashTaken($hash);
+    if ($isTaken) {
+      // if hash is taken, hash the value again
+      $hash = hash('sha256', $hash . $value);
+
+      // keep hashing until a unique hash is found
+      while ($this->isHashTaken($hash)) {
+        $hash = hash('sha256', $hash . $value);
       }
-      $range = $newRange;
-      return rand($range / 10 + 1, $range); // generate a random number in the new range
     }
 
-    $number = rand(1, $range); // generate a random number in the current range
-
-    while (in_array($number, $numbers)) {
-      $number = rand(1, $range); // if the number has already been generated, generate another random number in the current range
-    }
-
-    $numbers[] = $number; // add the generated number to the list of already generated numbers
-    return $number;
+    return substr($hash, 0, 20);
   }
 
-  public function isNumberTaken($number): bool
+  public function isHashTaken($value): bool
   {
-    static $takenNumbers = []; // static variable to store taken numbers
+    static $takenHashes = []; // static variable to store taken numbers
 
     $slots = Slot::select('takenby', 'takenby2')->where('takenby', 'like', '%"cancelId":%')->orWhere('takenby2', 'like', '%"cancelId"%')->get();
     foreach ($slots as $slot) {
@@ -1073,22 +1074,21 @@ class RecordController extends Controller
       $takenBy2 = json_decode($slot->takenby2);
       if (!empty($takenBy)) {
         if (property_exists($takenBy, 'cancelId')) {
-          $takenNumbers[] = $takenBy->cancelId;
+          $takenHashes[] = $takenBy->cancelId;
         }
       }
 
       if (!empty($takenBy2)) {
         if (property_exists($takenBy2, 'cancelId')) {
-          $takenNumbers[] = $takenBy2->cancelId;
+          $takenHashes[] = $takenBy2->cancelId;
         }
       }
     }
 
-    if (in_array($number, $takenNumbers)) {
+    if (in_array($value, $takenHashes)) {
       return true;
     }
 
-    $takenNumbers[] = $number;
     return false;
   }
 
