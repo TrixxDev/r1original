@@ -60,7 +60,7 @@ class ShopController extends Controller
       return view('admin.shop.index', compact('orders', 'status_enum', 'pay_enum'));
     }
 
-    $orders = Order::orderBy('id', 'desc')->get();
+    $orders = Order::orderBy('id', 'desc')->paginate(100);
 
     return view('admin.shop.index', compact('orders', 'status_enum', 'pay_enum'));
 
