@@ -38,19 +38,8 @@ class ShopController extends Controller
   public function __construct(Request $request)
   {
 
-    if ($request->input('admin-order-status-select')) {
-      $request->session()->put('admin-order-status-select', $request->input('admin-order-status-select'));
-    } else if ($request->input('admin-order-status-select') == '') {
-      $request->session()->remove('admin-order-status-select');
-    }
-    if ($request->input('admin-order-editor-select')) {
-      $request->session()->put('admin-order-editor-select', $request->input('admin-order-editor-select'));
-    } else if ($request->input('admin-order-editor-select') == '') {
-      $request->session()->remove('admin-order-editor-select');
-    }
-
-    $this->filteredStatus = $request->session()->get('admin-order-status-select');
-    $this->filteredEditor = $request->session()->get('admin-order-editor-select');
+    $this->filteredStatus = ($request->input('admin-order-status-select')) ? $request->input('admin-order-status-select') : 0;
+    $this->filteredEditor = ($request->input('admin-order-editor-select')) ? $request->input('admin-order-editor-select') : 0;
     View::share('filteredStatus', $this->filteredStatus);
     View::share('filteredEditor', $this->filteredEditor);
   }
