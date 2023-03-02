@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Office;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 
 class ShopController extends Controller
@@ -36,8 +37,18 @@ class ShopController extends Controller
 
   public function __construct(Request $request)
   {
-    $this->filteredStatus = ($request->input('admin-order-status-select')) ? $request->input('admin-order-status-select') : 0;
-    $this->filteredEditor = ($request->input('admin-order-editor-select')) ? $request->input('admin-order-editor-select') : 0;
+    if (!Session::has('admin-order-status-select') && $request->input('admin-order-status-select')) {
+      Session::put('admin-order-status-select', $request->input('admin-order-status-select'));
+    } else {
+      Session::put('admin-order-status-select', '');
+    }
+    if (!Session::has('admin-order-editor-select') && $request->input('admin-order-editor-select')) {
+      Session::put('admin-order-editor-select', $request->input('admin-order-editor-select'));
+    } else {
+      Session::put('admin-order-editor-select', '');
+    }
+    $this->filteredStatus = Session::get('admin-order-status-select');
+    $this->filteredEditor = Session::get('admin-order-editor-select');
     View::share('filteredStatus', $this->filteredStatus);
     View::share('filteredEditor', $this->filteredEditor);
   }
@@ -49,7 +60,8 @@ class ShopController extends Controller
     $status_enum = $this->status_enum;
     $pay_enum = $this->pay_enum;
 
-    if($request->post()) {
+    if($request->post() || Session::has('admin-order-status-select') || Session::has('admin-order-editor-select')) {
+
       $orders = Order::when($this->filteredStatus, function($query) {
         $query->where('status', $this->filteredStatus);
       })->when($this->filteredEditor, function($query) {
