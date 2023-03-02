@@ -25,7 +25,7 @@ Route::get('/register', function() { return abort(404); })->name('register');
 
 // Administrācijas panelis
 
-Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')->group(function() {
+Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
   Route::get('/', [App\Http\Controllers\Admin\MainController::class, 'home'])->name('home');
 
   // Auto riepas
@@ -154,32 +154,32 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   // Lietie diski
   Route::match(['GET', 'POST'], '/rims', [App\Http\Controllers\Admin\RimsController::class, 'index'])->name('rims');
   Route::get('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_edit'])->name('rims.edit');
-  Route::post('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_update'])->name('rims.update');
-  Route::get('/rims/delete/{id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_destroy'])->name('rims.destroy');
-  Route::post('/rims/ajaxUpdateTreads', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTreads'])->name('rims.ajaxUpdateTreads');
-  Route::post('/rims/ajaxUpdateTires', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTires'])->name('rims.ajaxUpdateTires');
-  Route::match(['GET', 'POST'], '/rims/tread/{tread_id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_search'])->name('rims.search');
-  Route::get('/rims/tread/{tread_id}/create', [App\Http\Controllers\Admin\RimsController::class, 'rims_create'])->name('rims.create');
-  Route::post('/rims/tread/{tread_id}/delete', [App\Http\Controllers\Admin\RimsController::class, 'allrims_destroy'])->name('rims.delete_all');
-  Route::post('/rims/tread/{tread_id}/store', [App\Http\Controllers\Admin\RimsController::class, 'rims_store'])->name('rims.store');
-  Route::post('/rims/tread/{tread_id}/image', [App\Http\Controllers\Admin\RimsController::class, 'rims_image'])->name('rims.image');
-  Route::post('/rims/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTreads'])->name('rims.ajaxUpdateTreads');
-  Route::post('/rims/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTires'])->name('rims.ajaxUpdateTires');
-
-  // Kvadru diski
-  Route::match(['GET', 'POST'], '/quadrims', [App\Http\Controllers\Admin\QuadrRimController::class, 'index'])->name('quadrims');
-  Route::get('/quadrims/edit/{id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_edit'])->name('quadrims.edit');
-  Route::post('/quadrims/edit/{id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_update'])->name('quadrims.update');
-  Route::get('/quadrims/delete/{id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_destroy'])->name('quadrims.destroy');
-  Route::post('/quadrims/ajaxUpdateTreads', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTreads'])->name('quadrims.ajaxUpdateTreads');
-  Route::post('/quadrims/ajaxUpdateTires', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTires'])->name('quadrims.ajaxUpdateTires');
-  Route::match(['GET', 'POST'], '/quadrims/tread/{tread_id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_search'])->name('quadrims.search');
-  Route::get('/quadrims/tread/{tread_id}/create', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_create'])->name('quadrims.create');
-  Route::post('/quadrims/tread/{tread_id}/delete', [App\Http\Controllers\Admin\QuadrRimController::class, 'allquadrims_destroy'])->name('quadrims.delete_all');
-  Route::post('/quadrims/tread/{tread_id}/store', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_store'])->name('quadrims.store');
-  Route::post('/quadrims/tread/{tread_id}/image', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_image'])->name('quadrims.image');
-  Route::post('/quadrims/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTreads'])->name('quadrims.ajaxUpdateTreads');
-  Route::post('/quadrims/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTires'])->name('quadrims.ajaxUpdateTires');
+//  Route::post('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_update'])->name('rims.update');
+//  Route::get('/rims/delete/{id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_destroy'])->name('rims.destroy');
+//  Route::post('/rims/ajaxUpdateTreads', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTreads'])->name('rims.ajaxUpdateTreads');
+//  Route::post('/rims/ajaxUpdateTires', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTires'])->name('rims.ajaxUpdateTires');
+//  Route::match(['GET', 'POST'], '/rims/tread/{tread_id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_search'])->name('rims.search');
+//  Route::get('/rims/tread/{tread_id}/create', [App\Http\Controllers\Admin\RimsController::class, 'rims_create'])->name('rims.create');
+//  Route::post('/rims/tread/{tread_id}/delete', [App\Http\Controllers\Admin\RimsController::class, 'allrims_destroy'])->name('rims.delete_all');
+//  Route::post('/rims/tread/{tread_id}/store', [App\Http\Controllers\Admin\RimsController::class, 'rims_store'])->name('rims.store');
+//  Route::post('/rims/tread/{tread_id}/image', [App\Http\Controllers\Admin\RimsController::class, 'rims_image'])->name('rims.image');
+//  Route::post('/rims/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTreads'])->name('rims.ajaxUpdateTreads');
+//  Route::post('/rims/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTires'])->name('rims.ajaxUpdateTires');
+//
+//  // Kvadru diski
+//  Route::match(['GET', 'POST'], '/quadrims', [App\Http\Controllers\Admin\QuadrRimController::class, 'index'])->name('quadrims');
+//  Route::get('/quadrims/edit/{id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_edit'])->name('quadrims.edit');
+//  Route::post('/quadrims/edit/{id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_update'])->name('quadrims.update');
+//  Route::get('/quadrims/delete/{id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_destroy'])->name('quadrims.destroy');
+//  Route::post('/quadrims/ajaxUpdateTreads', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTreads'])->name('quadrims.ajaxUpdateTreads');
+//  Route::post('/quadrims/ajaxUpdateTires', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTires'])->name('quadrims.ajaxUpdateTires');
+//  Route::match(['GET', 'POST'], '/quadrims/tread/{tread_id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_search'])->name('quadrims.search');
+//  Route::get('/quadrims/tread/{tread_id}/create', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_create'])->name('quadrims.create');
+//  Route::post('/quadrims/tread/{tread_id}/delete', [App\Http\Controllers\Admin\QuadrRimController::class, 'allquadrims_destroy'])->name('quadrims.delete_all');
+//  Route::post('/quadrims/tread/{tread_id}/store', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_store'])->name('quadrims.store');
+//  Route::post('/quadrims/tread/{tread_id}/image', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_image'])->name('quadrims.image');
+//  Route::post('/quadrims/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTreads'])->name('quadrims.ajaxUpdateTreads');
+//  Route::post('/quadrims/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTires'])->name('quadrims.ajaxUpdateTires');
 
   // Radzes
   Route::match(['GET', 'POST'], '/studs', [App\Http\Controllers\Admin\StudsController::class, 'index'])->name('studs.index');
@@ -459,8 +459,8 @@ Route::middleware('checksession')->group(function() {
 
   Route::get('/testing4', [App\Http\Controllers\HomeController::class, 'login']);
 
-  Route::get('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);
-  Route::post('/testing1', [App\Http\Controllers\HomeController::class, 'checkSession']);
+  Route::get('/testing1', [App\Http\Controllers\HomeController::class, 'dragNdrop']);
+  Route::post('/testing1', [App\Http\Controllers\HomeController::class, 'dragNdrop']);
   Route::get('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
   Route::post('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
   Route::middleware('auth')->get('/testing3', [App\Http\Controllers\HomeController::class, 'fastOrder']);
