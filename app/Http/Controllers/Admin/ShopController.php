@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Office;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\View;
 
 class ShopController extends Controller
 {
@@ -28,12 +31,36 @@ class ShopController extends Controller
     3 => 'Tiešsaistes apmaksa'
   ];
 
-  public function orders()
-  {
+  public $filteredStatus;
+  public $filteredEditor;
 
-    $orders = Order::orderBy('id', 'desc')->get();
+  public function __construct(Request $request)
+  {
+    $this->filteredStatus = ($request->input('admin-order-status-select')) ? $request->input('admin-order-status-select') : 0;
+    $this->filteredEditor = ($request->input('admin-order-editor-select')) ? $request->input('admin-order-editor-select') : 0;
+    View::share('filteredStatus', $this->filteredStatus);
+    View::share('filteredEditor', $this->filteredEditor);
+  }
+
+  public function orders(Request $request)
+  {
+    DB::enableQueryLog();
+
     $status_enum = $this->status_enum;
     $pay_enum = $this->pay_enum;
+
+    if($request->post()) {
+      $orders = Order::when($this->filteredStatus, function($query) {
+        $query->where('status', $this->filteredStatus);
+      })->when($this->filteredEditor, function($query) {
+        $query->where('edituser', $this->filteredEditor);
+      })->orderBy('id', 'desc')->paginate(100);
+//      dd(DB::getQueryLog());
+
+      return view('admin.shop.index', compact('orders', 'status_enum', 'pay_enum'));
+    }
+
+    $orders = Order::orderBy('id', 'desc')->get();
 
     return view('admin.shop.index', compact('orders', 'status_enum', 'pay_enum'));
 
