@@ -12,6 +12,10 @@
   <br>
   Aktuālie pakalpojumu izcenojums Šeit: https://r1riepas.lv/pakalpojumi<br>
   <br>
+  Nepieciešamības gadījumā pierakstu iespējams atcelt izmantojot šo saiti - https://r1riepas.lv/pieraksts/cancel={{ $details['cancelId'] }}
+  <br>
+  Lai rediģētu pierakstu vēlāk, zvaniet!
+  <br>
   Drošu ceļu vēlot,<br>
   R1<br>
 </p>

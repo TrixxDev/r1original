@@ -151,9 +151,35 @@ Route::namespace('Admin')->middleware('admin')->prefix('admin')->name('admin.')-
   Route::match(['get', 'post'],'/treads/quadr/search', [App\Http\Controllers\Admin\QuadrTireController::class, 'treads_search'])->name('quadr.treads.search');
   Route::match(['get', 'post'],'/treads/quadr/search/{per_page}', [App\Http\Controllers\Admin\QuadrTireController::class, 'treads_search'])->name('quadr.treads.search.per_page');
 
-  // Diski
-  Route::get('/rims', [App\Http\Controllers\Admin\RimsController::class, 'index'])->name('rims.index');
-  Route::get('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'edit'])->name('rims.edit');
+  // Lietie diski
+  Route::match(['GET', 'POST'], '/rims', [App\Http\Controllers\Admin\RimsController::class, 'index'])->name('rims');
+  Route::get('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_edit'])->name('rims.edit');
+  Route::post('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_update'])->name('rims.update');
+  Route::get('/rims/delete/{id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_destroy'])->name('rims.destroy');
+  Route::post('/rims/ajaxUpdateTreads', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTreads'])->name('rims.ajaxUpdateTreads');
+  Route::post('/rims/ajaxUpdateTires', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTires'])->name('rims.ajaxUpdateTires');
+  Route::match(['GET', 'POST'], '/rims/tread/{tread_id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_search'])->name('rims.search');
+  Route::get('/rims/tread/{tread_id}/create', [App\Http\Controllers\Admin\RimsController::class, 'rims_create'])->name('rims.create');
+  Route::post('/rims/tread/{tread_id}/delete', [App\Http\Controllers\Admin\RimsController::class, 'allrims_destroy'])->name('rims.delete_all');
+  Route::post('/rims/tread/{tread_id}/store', [App\Http\Controllers\Admin\RimsController::class, 'rims_store'])->name('rims.store');
+  Route::post('/rims/tread/{tread_id}/image', [App\Http\Controllers\Admin\RimsController::class, 'rims_image'])->name('rims.image');
+  Route::post('/rims/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTreads'])->name('rims.ajaxUpdateTreads');
+  Route::post('/rims/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\RimsController::class, 'ajaxUpdateTires'])->name('rims.ajaxUpdateTires');
+
+  // Kvadru diski
+  Route::match(['GET', 'POST'], '/quadrims', [App\Http\Controllers\Admin\QuadrRimController::class, 'index'])->name('quadrims');
+  Route::get('/quadrims/edit/{id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_edit'])->name('quadrims.edit');
+  Route::post('/quadrims/edit/{id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_update'])->name('quadrims.update');
+  Route::get('/quadrims/delete/{id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_destroy'])->name('quadrims.destroy');
+  Route::post('/quadrims/ajaxUpdateTreads', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTreads'])->name('quadrims.ajaxUpdateTreads');
+  Route::post('/quadrims/ajaxUpdateTires', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTires'])->name('quadrims.ajaxUpdateTires');
+  Route::match(['GET', 'POST'], '/quadrims/tread/{tread_id}', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_search'])->name('quadrims.search');
+  Route::get('/quadrims/tread/{tread_id}/create', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_create'])->name('quadrims.create');
+  Route::post('/quadrims/tread/{tread_id}/delete', [App\Http\Controllers\Admin\QuadrRimController::class, 'allquadrims_destroy'])->name('quadrims.delete_all');
+  Route::post('/quadrims/tread/{tread_id}/store', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_store'])->name('quadrims.store');
+  Route::post('/quadrims/tread/{tread_id}/image', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_image'])->name('quadrims.image');
+  Route::post('/quadrims/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTreads'])->name('quadrims.ajaxUpdateTreads');
+  Route::post('/quadrims/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTires'])->name('quadrims.ajaxUpdateTires');
 
   // Radzes
   Route::match(['GET', 'POST'], '/studs', [App\Http\Controllers\Admin\StudsController::class, 'index'])->name('studs.index');
@@ -316,7 +342,7 @@ Route::middleware('checksession')->group(function() {
 
   Route::get('/kvadru-diski', [App\Http\Controllers\QuadrRimsController::class, 'rims'])->name('kvadru-diski');
   Route::post('/kvadru-diski', [App\Http\Controllers\QuadrRimsController::class, 'rims_search'])->name('kvadru-diski');
-  Route::get('/kvadru-diski/{tread}/{rim}', [App\Http\Controllers\QuadrRimsController::class, 'rims_tread'])->name('kvadru-disks');
+  Route::get('/kvadru-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\QuadrRimsController::class, 'rims_tread'])->name('kvadru-disks');
   Route::post('/kvadru-diski/ajax', [App\Http\Controllers\QuadrRimsController::class, 'rims_ajax'])->name('kvadru-diski-ajax');
   Route::post('/kvadru-diski/search/ajax', [App\Http\Controllers\QuadrRimsController::class, 'rims_ajax'])->name('kvadru-diski-ajax');
   Route::get('/kvadru-diski/search', [App\Http\Controllers\QuadrRimsController::class, 'rims_search'])->name('kvadru-diski-meklet');
@@ -336,6 +362,7 @@ Route::middleware('checksession')->group(function() {
 // Pieraksts
 
   Route::get('/pieraksts', [App\Http\Controllers\Records\RecordController::class, 'index'])->name('pieraksts');
+  Route::get('/pieraksts/cancel={id}', [App\Http\Controllers\Records\RecordController::class, 'cancelSlot'])->name('cancelSlot');
   Route::post('/pieraksts/getSlotInfo', [App\Http\Controllers\Records\RecordController::class, 'getSlotInfo']);
   Route::post('/pieraksts/fillSlot', [App\Http\Controllers\Records\RecordController::class, 'fillSlot']);
   Route::post('/pieraksts/fillSlotMobile', [App\Http\Controllers\Records\RecordController::class, 'fillSlotMobile']);

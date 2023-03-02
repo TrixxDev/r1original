@@ -299,6 +299,16 @@ class RecordController extends Controller
         $phone = strip_tags($request->phone);
         $email = strip_tags($request->email);
 
+        $randomNumber = $this->getRandomNumber();
+        if ($this->isNumberTaken($randomNumber)) {
+          // generate a new random number until it's not taken
+          do {
+            $randomNumber = $this->getRandomNumber();
+          } while ($this->isNumberTaken($randomNumber));
+        }
+
+        $cancelId = $randomNumber;
+
         $errorText = [];
         if (!$car) $errorText['brand'] = "Jābūt aizpildītam!\n";
         if (!$carModel) $errorText['model'] = "Jābūt aizpildītam!\n";
@@ -333,6 +343,7 @@ class RecordController extends Controller
         $form->ownerName = $name;
         $form->ownerPhone = $phone;
         $form->ownerEmail = $email;
+        $form->cancelId = $cancelId;
 
         $queue = Queue::where('queue_id', $queue_id)->first();
         $office = Office::where('office_id', $queue->office_id)->first();
@@ -396,7 +407,8 @@ class RecordController extends Controller
           'day' => $dayOfWeek2,
           'date' => $fmtDate,
           'time' => $time,
-          'longPurpose' => $purposeLong
+          'longPurpose' => $purposeLong,
+          'cancelId' => $cancelId
         ];
 
         if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
@@ -447,6 +459,7 @@ class RecordController extends Controller
         $name = $request->name;
         $phone = $request->phone;
         $email = $request->email;
+        $cancelId = $this->getRandomNumber();
 
         $errorText = [];
         if (!$car) $errorText['brand'] = "Jābūt aizpildītam!\n";
@@ -473,6 +486,14 @@ class RecordController extends Controller
             return json_encode(['error' => $errorText]);
         }
 
+        $randomNumber = $this->getRandomNumber();
+        if ($this->isNumberTaken($randomNumber)) {
+          // generate a new random number until it's not taken
+          do {
+            $randomNumber = $this->getRandomNumber();
+          } while ($this->isNumberTaken($randomNumber));
+        }
+
         $form = new \stdClass();
         $form->vehicleMake = $car;
         $form->vehicleModel = $carModel;
@@ -483,6 +504,7 @@ class RecordController extends Controller
         $form->ownerName = $name;
         $form->ownerPhone = $phone;
         $form->ownerEmail = $email;
+        $form->cancelId = $cancelId;
 
         $slot = Slot::findOrFail($slot_id);
 
@@ -545,7 +567,8 @@ class RecordController extends Controller
           'day' => $dayOfWeek2,
           'date' => $fmtDate,
           'time' => $time,
-          'longPurpose' => $purposeLong
+          'longPurpose' => $purposeLong,
+          'cancelId' => $cancelId
         ];
 
         if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
@@ -962,6 +985,111 @@ class RecordController extends Controller
     unlink($filename); // delete file
     exit;
 
+  }
+
+  public function cancelSlot($id)
+  {
+
+    $timeToClose = Carbon::create(date('Y'), date('m'), date('d'), 7, 30);
+    $now = Carbon::now();
+
+    $slot = Slot::where('takenBy', 'like', '%"cancelId":' . $id . '%')->orWhere('takenBy2', 'like', '%"cancelId":' . $id . '%')->first();
+
+    $date = date('Y-m-d');
+    if ($slot->date < $date) return redirect(route('pieraksts'))->with('warning', 'Jūsu pieraksts vairs nav aktuāls');
+    if ($slot->date == $date && $timeToClose < $now) return redirect(route('pieraksts'))->with('warning', 'Pierakstu atcelt tiešsaistē iespējams līdz <b>7:30</b>, ja vēlaties mainīt pieraksta laiku vēlāk, zvaniet');
+
+    if (!$slot) return redirect(route('pieraksts'));
+    $takenBy = json_decode($slot->takenby);
+    $takenBy2 = json_decode($slot->takenby2);
+
+    if ($takenBy !== null) {
+      if ($takenBy->cancelId == $id) {
+        $slot->status = 0;
+        $slot->takenBy = '';
+        $slot->createtime = NULL;
+        $slot->createuser = -1;
+        $slot->edittime = NULL;
+        $slot->edituser = -1;
+        $slot->is_mobile = 0;
+      }
+    }
+
+    if ($takenBy2 !== null) {
+      if ($takenBy2->cancelId == $id) {
+        $slot->status2 = 0;
+        $slot->takenBy2 = '';
+        $slot->createtime2 = NULL;
+        $slot->createuser2 = -1;
+        $slot->edittime2 = NULL;
+        $slot->edituser2 = -1;
+        $slot->is_mobile2 = 0;
+      }
+    }
+
+    if ($slot->save()) {
+      return redirect(route('pieraksts'))->with('success', 'Atcelšana ir izdevusies');
+    } else {
+      return redirect(route('pieraksts'))->with('danger', 'Notikusi kļūda');
+    }
+//    if ($slot->save()) {
+//      return redirect(route('pieraksts'))->with('success', 'Jūs veiksmīgi atcēlāt pierakstu, paldies par informāciju!');
+//    } else {
+//      return redirect(route('pieraksts'))->with('danger', 'Notika kļūda, lūgums ar mums sazināties');
+//    }
+  }
+
+  public function getRandomNumber(): int
+  {
+    static $numbers = []; // static variable to store already generated numbers
+    static $range = 100; // static variable to store the current range
+
+    if (count($numbers) >= $range) {
+      $newRange = $range * 10; // increase the range by a factor of 10
+      while (count($numbers) >= $newRange) {
+        $newRange *= 10; // if the new range is also exhausted, keep increasing it by a factor of 10
+      }
+      $range = $newRange;
+      return rand($range / 10 + 1, $range); // generate a random number in the new range
+    }
+
+    $number = rand(1, $range); // generate a random number in the current range
+
+    while (in_array($number, $numbers)) {
+      $number = rand(1, $range); // if the number has already been generated, generate another random number in the current range
+    }
+
+    $numbers[] = $number; // add the generated number to the list of already generated numbers
+    return $number;
+  }
+
+  public function isNumberTaken($number): bool
+  {
+    static $takenNumbers = []; // static variable to store taken numbers
+
+    $slots = Slot::select('takenby', 'takenby2')->where('takenby', 'like', '%"cancelId":%')->orWhere('takenby2', 'like', '%"cancelId"%')->get();
+    foreach ($slots as $slot) {
+      $takenBy = json_decode($slot->takenby);
+      $takenBy2 = json_decode($slot->takenby2);
+      if (!empty($takenBy)) {
+        if (property_exists($takenBy, 'cancelId')) {
+          $takenNumbers[] = $takenBy->cancelId;
+        }
+      }
+
+      if (!empty($takenBy2)) {
+        if (property_exists($takenBy2, 'cancelId')) {
+          $takenNumbers[] = $takenBy2->cancelId;
+        }
+      }
+    }
+
+    if (in_array($number, $takenNumbers)) {
+      return true;
+    }
+
+    $takenNumbers[] = $number;
+    return false;
   }
 
 }
