@@ -29,6 +29,15 @@
 
                         @if ($iteration == 0)
                           <h1>{{ $dayOfWeek . ", " . $dateFmt }}</h1>
+                          @if (session('success'))
+                            <div class="alert alert-success" style="border-color: #75bd59;">{!! session('success') !!}</div>
+                          @endif
+                          @if (session('danger'))
+                            <div class="alert alert-danger" style="border-color: #ee6868;">{!! session('danger') !!}</div>
+                          @endif
+                          @if (session('warning'))
+                            <div class="alert alert-warning">{!! session('warning') !!}</div>
+                          @endif
                           @if ($timeToClose < $now)
                             <div class="alert alert-warning">Tekošajā dienā E-pierakstīties nav iespējams, ja redzat brīvus laikus un vēlaties šodien nomainīt riepas, tad lūdzu zvaniet!</div>
                           @endif
@@ -252,6 +261,15 @@
                             <input type="hidden" name="slotNumber">
                             <input type="hidden" name="filiale">
                             <div class="modal-dialog" role="document">
+                                @if (session('success'))
+                                  <div class="alert alert-success" style="border-color: #75bd59;">{!! session('success') !!}</div>
+                                @endif
+                                @if (session('danger'))
+                                  <div class="alert alert-danger" style="border-color: #ee6868;">{!! session('danger') !!}</div>
+                                @endif
+                                @if (session('warning'))
+                                  <div class="alert alert-warning">{!! session('warning') !!}</div>
+                                @endif
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="mobile-modalTitle">
