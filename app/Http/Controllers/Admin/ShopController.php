@@ -37,11 +37,15 @@ class ShopController extends Controller
 
   public function __construct(Request $request)
   {
-    if (!Session::has('admin-order-status-select') && $request->input('admin-order-status-select')) {
-      Session::put('admin-order-status-select', $request->input('admin-order-status-select'));
+    if (!Session::has('admin-order-status-select')) {
+      if ($request->input('admin-order-status-select')) {
+        Session::put('admin-order-status-select', $request->input('admin-order-status-select'));
+      }
     }
-    if (!Session::has('admin-order-editor-select') && $request->input('admin-order-editor-select')) {
-      Session::put('admin-order-editor-select', $request->input('admin-order-editor-select'));
+    if (!Session::has('admin-order-editor-select')) {
+      if ($request->input('admin-order-editor-select')) {
+        Session::put('admin-order-editor-select', $request->input('admin-order-editor-select'));
+      }
     }
     $this->filteredStatus = Session::get('admin-order-status-select');
     $this->filteredEditor = Session::get('admin-order-editor-select');
