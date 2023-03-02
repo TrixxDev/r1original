@@ -37,18 +37,20 @@ class ShopController extends Controller
 
   public function __construct(Request $request)
   {
-    if (!Session::has('admin-order-status-select')) {
-      if ($request->input('admin-order-status-select')) {
-        Session::put('admin-order-status-select', $request->input('admin-order-status-select'));
-      }
+
+    if ($request->input('admin-order-status-select')) {
+      $request->session()->put('admin-order-status-select', $request->input('admin-order-status-select'));
+    } else if ($request->input('admin-order-status-select') == '') {
+      $request->session()->remove('admin-order-status-select');
     }
-    if (!Session::has('admin-order-editor-select')) {
-      if ($request->input('admin-order-editor-select')) {
-        Session::put('admin-order-editor-select', $request->input('admin-order-editor-select'));
-      }
+    if ($request->input('admin-order-editor-select')) {
+      $request->session()->put('admin-order-editor-select', $request->input('admin-order-editor-select'));
+    } else if ($request->input('admin-order-editor-select') == '') {
+      $request->session()->remove('admin-order-editor-select');
     }
-    $this->filteredStatus = Session::get('admin-order-status-select');
-    $this->filteredEditor = Session::get('admin-order-editor-select');
+
+    $this->filteredStatus = $request->session()->get('admin-order-status-select');
+    $this->filteredEditor = $request->session()->get('admin-order-editor-select');
     View::share('filteredStatus', $this->filteredStatus);
     View::share('filteredEditor', $this->filteredEditor);
   }
