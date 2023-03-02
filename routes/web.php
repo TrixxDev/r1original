@@ -152,7 +152,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
   Route::match(['get', 'post'],'/treads/quadr/search/{per_page}', [App\Http\Controllers\Admin\QuadrTireController::class, 'treads_search'])->name('quadr.treads.search.per_page');
 
   // Lietie diski
-  Route::match(['GET', 'POST'], '/rims', [App\Http\Controllers\Admin\RimsController::class, 'index'])->name('rims');
+  Route::match(['GET', 'POST'], '/rims', [App\Http\Controllers\Admin\RimsController::class, 'index'])->name('rims.index');
   Route::get('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_edit'])->name('rims.edit');
 //  Route::post('/rims/edit/{id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_update'])->name('rims.update');
 //  Route::get('/rims/delete/{id}', [App\Http\Controllers\Admin\RimsController::class, 'rims_destroy'])->name('rims.destroy');
