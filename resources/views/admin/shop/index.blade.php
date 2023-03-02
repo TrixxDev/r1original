@@ -17,7 +17,7 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card">
-            <form class="form-horizontal services_form" method="post">
+            <form class="form-horizontal services_form" id="ordersForm" method="post">
               @csrf
               <input type="hidden" name="service_id">
               <div class="card-header">Pasūtījumi <span style="float: right;"><a class="btn btn-primary" href="#">Izveidot</a></span></div>
@@ -25,14 +25,30 @@
                 <div class="row">
                   <div class="col-md-12">
                     <table class="table table-striped table-bordered">
-                      <thead>
+                        <thead>
                       <tr>
                         <th scope="col">Datums</th>
                         <th scope="col">Preces</th>
                         <th scope="col">Summa</th>
-                        <th scope="col">Status</th>
+                        <th scope="col">
+                          Status
+                          <select name="admin-order-status-select" id="admin-order-status-select" class="custom-select">
+                            <option @if (empty($filteredStatus)) selected @endif value="">Visi</option>
+                            @foreach($status_enum as $id => $title)
+                              <option @if ($filteredStatus == $id) selected @endif value="{{ $id }}">{{$title}}</option>
+                            @endforeach
+                          </select>
+                        </th>
                         <th scope="col">Apmaksas veids</th>
-                        <th scope="col">Pēdējais labojums</th>
+                        <th scope="col">
+                          Pēdējais labojums
+                          <select name="admin-order-editor-select" id="admin-order-editor-select" class="custom-select">
+                            <option @if (empty($filteredEditor)) selected @endif value="">Visi</option>
+                            @foreach(App\Models\User::orderBy('name', 'asc')->get() as $user)
+                              <option @if ($filteredEditor == $user->id) selected @endif value="{{ $user->id }}">{{ $user->fullName }}</option>
+                            @endforeach
+                          </select>
+                        </th>
                         <th scope="col"></th>
                       </tr>
                       </thead>
@@ -92,6 +108,7 @@
                     </table>
                   </div>
                 </div>
+                <div style="margin-left: -15px">{{ $orders->links() }}</div>
               </div>
             </form>
           </div>

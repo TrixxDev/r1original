@@ -609,6 +609,12 @@ $(document).ready(function() {
     $(this).parent().removeAttr('style');
   });
 
+
+  $('#ordersForm select').on('change', function(){
+    $('#ordersForm').submit();
+  });
+
+
 });
 
 $(document).ready(function () {

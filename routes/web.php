@@ -195,7 +195,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
   Route::post('/studs/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\StudsController::class, 'ajaxUpdateTires'])->name('studs.ajaxUpdateTires');
 
   // Interneta-veikals
-  Route::get('/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
+  Route::match(['GET', 'POST'],'/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
   Route::match(['GET', 'POST'], '/order/{id}/update', [App\Http\Controllers\Admin\ShopController::class, 'order_update'])->name('order.update');
   Route::match(['GET', 'POST'], '/order/{id}/delete', [App\Http\Controllers\Admin\ShopController::class, 'delete'])->name('order.delete');
   Route::get('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'order'])->name('order');
