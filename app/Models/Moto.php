@@ -97,7 +97,13 @@ class Moto extends Model
 
       curl_close($curl);
 
-      return json_decode($response)[0]->product_link;
+      $return = json_decode($response);
+      if (isset($return[0])) {
+	return $return[0]->product_link;
+      } else {
+	return '#';
+      }
+      //return json_decode($response)[0]->product_link;
     }
 
     public static function StockLink($tire)
