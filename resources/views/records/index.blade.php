@@ -302,6 +302,22 @@
                                                       </div>
                                                     </div>
 
+                                                    <div class="form-group rims-with-mobile" style="display: none;">
+                                                      <div class="form-check">
+                                                        <input value="1" class="form-check-input" type="radio" name="rims_with_input" id="rimsWith1">
+                                                        <label class="form-check-label" for="rimsWith1">Līzi būs riepas bez diskiem</label>
+                                                      </div>
+                                                      <div class="form-check">
+                                                        <input value="2" class="form-check-input" type="radio" name="rims_with_input" id="rimsWith2">
+                                                        <label class="form-check-label" for="rimsWith2">Līdzi būs riepas ar diskiem</label>
+                                                      </div>
+                                                    </div>
+
+                                                    <div class="form-group rims-storageBin" style="display: none;">
+                                                      <label for="mobile_storage_bin">Glabāšanas talona numurs:</label>
+                                                      <input id="mobile_storage_bin" type="text" class="form-control" title="">
+                                                      <span style="font-size: 11px;line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</span>
+                                                    </div>
                                                     <div class="form-group">
                                                       <label for="mobile-brand"><span class="validate">*</span>Auto marka:</label>
                                                       <input id="mobile-brand" type="text" class="form-control">

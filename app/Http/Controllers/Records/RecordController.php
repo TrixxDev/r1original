@@ -298,6 +298,7 @@ class RecordController extends Controller
         $name = strip_tags($request->name);
         $phone = strip_tags($request->phone);
         $email = strip_tags($request->email);
+        $rimsWith = strip_tags($request->rims_with);
 
         $randomNumber = $this->getRandomNumber();
         if ($this->isNumberTaken($randomNumber)) {
@@ -344,6 +345,7 @@ class RecordController extends Controller
         $form->ownerPhone = $phone;
         $form->ownerEmail = $email;
         $form->cancelId = $cancelId;
+        $form->rimsWith = $rimsWith;
 
         $queue = Queue::where('queue_id', $queue_id)->first();
         $office = Office::where('office_id', $queue->office_id)->first();
@@ -454,11 +456,12 @@ class RecordController extends Controller
         $carModel = $request->carModel;
         $licPlate = $request->licPlate;
         $purpose = $request->purpose;
-        $storageBin = $request->storageBin;
+        $storageBin = $request->storage_bin;
         $comment = $request->comment;
         $name = $request->name;
         $phone = $request->phone;
         $email = $request->email;
+        $rimsWith = $request->rims_with;
         $cancelId = $this->getRandomNumber();
 
         $errorText = [];
@@ -505,6 +508,7 @@ class RecordController extends Controller
         $form->ownerPhone = $phone;
         $form->ownerEmail = $email;
         $form->cancelId = $cancelId;
+        $form->rimsWith = $rimsWith;
 
         $slot = Slot::findOrFail($slot_id);
 
