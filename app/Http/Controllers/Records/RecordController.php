@@ -303,6 +303,7 @@ class RecordController extends Controller
         $name = strip_tags($request->name);
         $phone = strip_tags($request->phone);
         $email = strip_tags($request->email);
+        $rimsWith = strip_tags($request->rims_with);
 
         $randomNumber = $this->getRandomHash();
         if ($this->isHashTaken($randomNumber)) {
@@ -349,6 +350,7 @@ class RecordController extends Controller
         $form->ownerPhone = $phone;
         $form->ownerEmail = $email;
         $form->cancelId = $cancelId;
+        $form->rimsWith = $rimsWith;
 
         $queue = Queue::where('queue_id', $queue_id)->first();
         $office = Office::where('office_id', $queue->office_id)->first();
@@ -416,9 +418,9 @@ class RecordController extends Controller
           'cancelId' => $cancelId
         ];
 
-	if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
           return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
-        }
+	      }
 //        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
 //        $mailer = new CMailer();
 //        $mailer->addRecipient($form->ownerEmail);
@@ -464,6 +466,7 @@ class RecordController extends Controller
         $name = $request->name;
         $phone = $request->phone;
         $email = $request->email;
+        $rimsWith = $request->rims_with;
         $cancelId = $this->getRandomHash();
 
         $errorText = [];
@@ -510,6 +513,7 @@ class RecordController extends Controller
         $form->ownerPhone = $phone;
         $form->ownerEmail = $email;
         $form->cancelId = $cancelId;
+        $form->rimsWith = $rimsWith;
 
         $slot = Slot::findOrFail($slot_id);
 
@@ -578,7 +582,7 @@ class RecordController extends Controller
 
         if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
           return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
-	}
+	      }
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
 

@@ -204,6 +204,16 @@ $(document).ready(function() {
     if ($(this).hasClass('required-input')) {
       $(this).removeClass('required-input');
     }
+    if($('option:selected', this).val() == 1 ) {
+      $('.rims-with-mobile').show();
+      $('.rims-storageBin').hide();
+    } else if ($('option:selected', this).val() == 2) {
+      $('.rims-storageBin').show();
+      $('.rims-with-mobile').hide();
+    } else {
+      $('.rims-with-mobile').hide();
+      $('.rims-storageBin').hide();
+    }
   });
 
   $('#mobile-submit-reservation').on('click', function () {
@@ -217,6 +227,8 @@ $(document).ready(function() {
     let name = $('#mobile-name').val();
     let phone = $('#mobile-phone').val();
     let email = $('#mobile-email').val();
+    let rimsWith = $('.rims-with-mobile input[name="rims_with_input"]:checked').val();
+    let storageBin = $('#mobile_storage_bin').val();
 
 
     $.ajax({
@@ -235,7 +247,9 @@ $(document).ready(function() {
         'email': email,
         'slot_time': slot_time,
         'filiale': filiale,
-        'date': date
+        'date': date,
+        'storageBin': storageBin,
+        'rims_with': rimsWith
       },
       success: function (data) {
         if (data.error) {
@@ -2058,9 +2072,33 @@ $(document).ready(function() {
     // } else {
     //   $('.rim-with').remove();
     // }
-    if ($(this).data('save') == 1) {
+    if ($(this).val() == 2) {
       $('<div class="form-group row temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:left;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+      $('#reservation .rims_with').remove();
+    } else if ($(this).val() == 1) {
+      $('#reservation .temp_save_nr').remove();
+      $('<div class="form-group row rims_with"><label for="save_nr" class="col-sm-3" style="text-align:left;">Izvēle:</label><div class="col-sm-9">' +
+        '       <div class="form-check col-sm-6">\n' +
+        '         <input class="form-check-input" type="radio" name="rims_with_input" id="flexRadioDefault1" value="1">\n' +
+        '         <label class="form-check-label" for="flexRadioDefault1">\n' +
+        '           Riepas bez diskiem\n' +
+        '           \n' +
+        '           <img class="rims-with-img" src="data:image/jpeg;base64,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" alt="riepas_ar_diskiem">\n' +
+        '         </label>\n' +
+        '       </div>\n' +
+        '    \n' +
+        '     <div class="form-check col-sm-6">\n' +
+        '       <input class="form-check-input" type="radio" name="rims_with_input" id="flexRadioDefault2" value="2">\n' +
+        '       <label class="form-check-label" for="flexRadioDefault2">\n' +
+        '         Riepas ar Diskiem\n' +
+        '           \n' +
+        '         <img class="rims-with-img" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSEhUSExMVFRUXFRUTFxUWGRUZGhAYFhUWGRkVGBYeHSgsIRslGxYXITEhJTUrLy4uGB8zODUsNygtLisBCgoKBQwLFQ0FFSsdEx0rKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrK//AABEIAJ8AvQMBIgACEQEDEQH/xAAcAAEAAQUBAQAAAAAAAAAAAAAABAEDBQYHAgj/xAA+EAABAwIDBQUFBgUDBQAAAAABAAIDBBESITEFEyJBUQYHMmFxFCOBkcFCUqGx0fBicoKSoiQzQ3OzwuHx/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAH/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwDuKIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiIgIiICIiAiKiCqKl1TGEHpF5xBVugqi84kxhB6RUDkQVReS4JjCD0ioCl0FUXnGExBB6RUuqoCIiAiIgIiICxXaLbLKWIyOzJOFjBq9x0A/VZQrkneDtfHJM8FuGBjmRtLzeR5towZk4rD+lBr21O19ZUOlkdO+OGIkYYeEOdzGWZsSG+ZWHqKyq4Y3TyiR9y8iSQ7prc34c/s3DPW62Buxt02lpyHEtDqiQOtciFodm0dZXs1zyUJlAN9O4llmPbSgvJaHbsCSX4mRxHwVRCl21UQgYZ5mnkDI/h9QTyWz0XeHVMoy55DnC9pXNscOnhH2ichotN21Tl0rYxrlkXXsD0cdWlZ00G8lpqcC+ZneGHGWNiAwhxPC0YiPkgh1e2K1+HeVU28kBe4BxaIoxa+FrbC+YaPNyiQ1tQ55O+mwxndgB8mbwONxIOjdL9QVnamENFVUnMMLmM54m0rQdfOd4H9KiwbN3UTWHCXMYMVnFsge4Y3kDnm45IItL2sq4ZQI6iTUZOO8DvKzuR8lsXaPtzWSmOCF+5LxxOZ4gB433OmeQAvzWobBpTJOXktsCRiLgxtydc/LkFnKRmFtXW2ybeKIjJrxEAAA45kmRx06IMXU7VqOOR1ROWR4gLyP4i08Z1+8QweZcqQVtTG3E6aYPObuOSwJzwNz5DL4LJ7Q2QI3U1PyBL5D1bStxuJP8AFO/8FB23Hhivw56ua8va46lpB0dmgy3ZDt3VMlwvkdNHYnC7Mt6EP1zPJU2x2wrKiSS87oYYhd4i4c7A4S7Wwba/m5YvYMAihfM/CAA6TjcRisLtAa3M6LI02xi2npoXg4pn76YOyOBoM8pwjkbNbd3VBhJ6+rs338oklNgC+Q7sFocTr9lhBPUutyV12154QMM840sC+S/kSCdVkJKLFUSlxaN22OHiJDS+b30oxeTS0fBYjb8JLmsAsTo3EXa/aY7m23LyQb52A7wXucKepkLy42ZKW2F/uE8/kurwyYhdfO79gSvgMrG2jYCWgXxyYP8Akv0uuv8Ad7tk1NLG9xu7CA7+YZH8QorbUQIgIiICIiCJtWpEUUkhNsLHO+Q/+LjVRGXR08ZwtE9Sx0hDHRhwZeV15nZnNo8K6X3gVOCkeLkYyxgsLnNw0GfRaNIMVbSgb33cM8xfU3sPCwOZH5X6DUaqiXCAauZxGUcdNEOgL3PqZNc/CxmfosRsWNxpYpbTXkbJUvfFuyAaiVz+NrjxcNrgBXa2otBXy2J95WvF9bQ0rIAfm4/NX6hkcUTWudUxujhgjD270RNwxA5/Z1Od0RqVEwSVR8DgDlwvc3M8mNz/AKet1tmyhesqZH6QxxQtbh3dgGmV9oh/M3NywHYkYp5HEy3LyP8ATtJx/EA2ub9FlI5C2i2jKLt3klUGgkmR2G0IxuzyB8+aCksOKjpYiM55KXFfrPM+qkFh5BqdpHFsbnObKzEXuaJN2WOzNsDm5sNtL6rIbRaG1VKyxsySokyxXIp6NkVgBne7ysF2tmY2nwsdOCWjFFUbz3gy4m488vJB47JDBG+ewuxj5LmF0jhha5xz8LfisrsukHstDESCZp4XyEOJ8OKpkF/6PC1QXDDsyVo9pJcwRgcTIgZHBgJOVxnpc66LO7TBbNCzK8NLWSWaOBhEbImtHpvDfzughgGWqlfhe4spoIw1hbjDqmR00li6wHDhWu9qn8YaceK9nCQNEgHIOtk5vRwWzUbWY6subNhNbu7Q73EBBTMZYlhvhutS29KH1UbRI57eKxcCZG21Y64uTe5zQZeaA+yNjFmieaGFxbG5tw54Lrzu/hadFsUkQdV4QDZlM1nxq52svc5+CE5qBUsxTULG711nSzF1TcMtFFa7WWGhcM7D1Upk9pauXNwbKxtzzEFE+W48sT72QQNltc+J0zWzHez1UxdCYyWjebtl8R4uBug5LWJxjqbA3F7XGVr5EkfZPXzBWz7MZHHR04kNSwtpYeOLe4GF7S4uNuG+ed7hanTy3lqHF2JwY/NujrtsHn1xIrAVfamUVm/Y9wja7A1lzh3LThth8xn8V1vunqMJniBybMXsHRkoDwPxK4jXUWD0surd1NVxNP34YyfMsJZ9FB24Kq8RnIL2gIiICoqoUGmd5E+GOEYgy8zeI2IGFpOYNlp1PUCTaOLeCowUrAH8IZE50pOgOdgP4jc8tFsnevLhZTm4Hvjm4AgcDtb2Wh7NrCa2RwcJSIoQHAAMi4nm5AJGX5lVEmsmxUFRmbudVeV97XNGZ8wFO25tMt3jQ+RouW4TF7nJoGHHby1OS1ptTehsSTi5df8AW3sVN2pVPs8Cob4n+5LWCwv1vdA7AVAY1xNQ2C73XuGE5EnhLj9CpFG4HZp4bb2Zt3mxdMH1jbZcm2N9NVheyVXhjPvGR5u8QaSNcmklXqKoPsEAAsDNTXcczKfaAbjPQINm2lU3qmPuTanrnXtcjHOxoLW8zktd7a15ewNLnu4m5Ss3b25jibYWIUmrqbz3D7EU8oxEXwXqTnY2WH7UVLnYbzNmGMcQa0Fhv/Cg2HaVS00sUXtAfinp27lgZicN60kON78vJZeeQe1gWDQKUMDWjwCSqjFr9eHPzutTrqy8cDTIx3v4fdsDQ5wF9SDe6ybao+1uJIbaCnGEfZHtBIF+qCZQ1uBsjg6VpdVVryYoxIT723FcGwsFqk1RvNoMdjaOE3ktbQjxNNrEafBZOhqiI7iYQ3fUG5DDiJlP3j+SwO/PttyW3w+L7LszmRdBvEtS2SugG8FTgp5nWGBrIiXxgF1j5Z3J5ZK1WVP+n2i65Jc6vdlle0McQusbBWXrWHE2UinsAywbGTLqbHy5qPJV/wClqru1dW3tle8rUGwVW0DFHga+VgayNthFiiFom+J9r3PktI2U63tTrAYiGADTPM2+V1sVbVOAcBOxvhtEWsz4G873zWs7K8Ep0vUAWHLgeioFfHdhW391stjT9S2dv9swP/ktVnPAfT9Fsndj/wAP/UqR+Mag+gqY8IV1WKTwhX0BERAQoqIOd98VxDAbXtNof5HeS5fTVNql5dwDdRDALcdnOAbe3PoF1fvjjJog77ssZJHTMfVcQiqbTXaSbxDN98rO1F/LoqJhqiKWw5E38rVfT4q9WzA4xuQRiPGN3c5+Wawcs3uZBfQy/wDca5S5JiS7OXX7PhGQQS+zs5DcmB2btSBbM9QVWCoHssQvciSE8rRATWPxJ6rHbOlABuXDiOlwT629V4NTanI0DTfzOGS+fwQZurqrym4BG5kGHI4rTnqsdtqS9jut3xDQtscxrhVqpn96D/DML9OK+XzVitfdn/LyPFmDogzdTUHBFwtaN/Fx3F73OdrcvNX21YFQXAk3iizP2yJ83fisFWTjCM3Eh0Ztd2HxD4K5UVXvb9YjpoMMjSB8kE+mn4B7oSHFMM8HD7zq5Y+N4FR4LcPhNra/JW4Z9Rd/+7LkzU3IOfzVsvO9aTj0d4tRz1+CDYBVH2hpdaMbm3CQcXvBkSALXUaWp9xUAC3FU5dONjvqoHtIErCC4nA8Xfew0ORKtSzXbM297vmz6l0YP0QZmqnBxe5Dr2u7gv4RpzUXYwGCTI5TA/4OURs5cAby+Fpsy1hwhSNhS2bUDPLC7PXogtVB4T++i2ru1bYwfzVLv82D6LU6x1mE/v8AeS3XuyhPuL8ocfpvJXu/IKDuVJ4R6K+rVOOEK6gIiICoqog1bvIot7QTtGZEZcPVhDvovmuWXiaczk4Z28j9F9a10IewtOhBB9CLL5O7S0Rp6iWEixjkIAtyvw5+hCCKZL4x1Lv8m/qEZNcAm3hbqTyCjOfZ3qPxb/6KMcfPpl63QZGB9r2PO+V/PqrBfk8dS743zVyE3bf63UMv4j5gH5Eqi/vycJ/fEwfoq4wRy06uJuoTZMrdD+R/Qq9G/PU69bIJlQ44CLnQZZDoValmuWnqHj+5t/orlScgse59mjyI/DL8kEtsubtNQ7M9WgK7AQXNtbK4yxc8uagB35fkVLonZ8+WpUF2okOJt7mxIzI5jorTZeJ3nhP+Jafom0TYn5qJI/O/UEfUKiVDLkL2yAGeLkSNAstsHN0gFuKO2V9R6/BYBr/XU6eeazWwZrOab2ztcm9un42UFjbTyWhg8TiAB5k2C633f0eGd7RpGIYB/RGL/iStMZsKJsntzpWujbxsh+02X7h8gbn0XS+7WjIZjd4nkvPq5B0SMZBekCICIiAiIgoQuJ99/ZNxIrYmk2AbMB90aSW8tF21Rq2lEjS0536oPjRzsgf3ovQP0Xedv909NI4uYwxkm5MZIB/pWAk7nm8pJR8Wn6IOZ0UuRafhnzUepYWm5BHLNdVh7ohzklP9o+i2aj7tId3u3MBb/Fnf4oPny9j++ll7a79+i7JXdz0NzgdI0cgDcD5hQXdz4vlLJ8mfog5wTjZlmRrZQJLi4N/MFdj2f3Tsa4FzpH+RIA+Ngs7tHuwglaMTMwMnC4LfQj6oPnxjvwUikkwuvy5rrEvc8y+UkvzaforA7oQD/uyfJv6IOc1kZdoCRmQczccxbyKxjnZDy+i7zsDu0jhN+Jx6v5egXrbXdPTyHEGljtbsNr/DRBwZp/VTNmz2NibD108105/c83lJL/j+iRd0IGssp/tF/wAEGs7IhfUOZEGG+LifbLAed19A9mKHdxjLkFrvZLsSymGQ53JJuT8VvkUYaLBB7REQEREBERAVFVEFLKmAdF6RB5wBVsqog8loVN2Oi9og8hg6KtlVEHksCbsL0iCgahVUQecA6JgHRekQUAVURAREQEREBERAREQEREBERAREQEREBERAREQEREBERAREQEREH//Z" alt="riepas_ar_diskiem">\n' +
+        '       </label>\n' +
+        '     </div>\n' +
+        '    \n' +
+        '</div></div>').insertAfter('.services');
     } else {
+      $('#reservation .rims_with').remove();
       $('#reservation .temp_save_nr').remove();
     }
   });
@@ -2076,9 +2114,14 @@ $(document).ready(function() {
   $('.select-service-option').on('change', function() {
     console.log($(this).val());
     if ($(this).val() == 2) {
+      $('.rims-with-select-row').hide();
       $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+    } else if ($(this).val() == 1) {
+      $('div.temp_save_nr').hide();
+      $('.rims-with-select-row').show();
     } else {
       $('div.temp_save_nr').hide();
+      $('.rims-with-select-row').hide();
     }
   });
 
@@ -2113,6 +2156,7 @@ $(document).ready(function() {
     let name = $('#reservation #name').val();
     let phone = $('#reservation #phone').val();
     let email = $('#reservation #email').val();
+    let rimsWith = $('#reservation input[name="rims_with_input"]:checked').val();
     // let rimsWith;
     // $('#reservation .rim-with input').each(function() {
     //   if($(this).is(':checked') == true){
@@ -2133,7 +2177,7 @@ $(document).ready(function() {
         'comment': comment,
         'name': name,
         'phone': phone,
-        // 'rims-with': rimsWith,
+        'rims_with': rimsWith,
         'email': email,
         'date': date,
         'queue_id': queue_id,
@@ -2386,6 +2430,15 @@ $(document).ready(function() {
             $(this).attr('selected', true).prop('selected', true);
             if ($(this).data('save') == 1) {
               $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr" value="' + data.f_storagebin + '"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+              $('.rims-with-select-row').hide();
+            } else if ($(this).val() == 1) {
+              $('.rims-with-select-row').show();
+
+              $('.rims-with-select-row input[name=flexRadioDefault]').each(function() {
+                if($(this).val() == data.f_rimswith) {
+                  $(this).attr('checked', true);
+                }
+              });
             }
           }
         });
@@ -2459,6 +2512,7 @@ $(document).ready(function() {
         'f_phone': $('.modal#slotModal #f_phone').val(),
         'f_email': $('.modal#slotModal #f_email').val(),
         'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+        'f_rimswith': $('input:checked[name=flexRadioDefault]').val()
       },
       dataType: 'JSON',
       success: function (data) {

@@ -9,6 +9,11 @@
             <div class="main-content clearfix col-md-12 col-xl-10" style="background: white; border-radius: 20px; margin-bottom: 50px;">
                 <div id="content-wrapper" class="right-column col-lg-12">
                     <section id="main">
+                      @if(session('error'))
+                        <div class="alert alert-danger">
+                          {{ session('error')}}
+                        </div>
+                      @endif
                         <header class="page-header">
                             <h1>
                                 Autorizējieties savā kontā

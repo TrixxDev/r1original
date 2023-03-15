@@ -5361,3 +5361,12 @@ div#service-option-selection {
   font-weight: bold;
   color: red;
 }
+
+.rims-with-img {
+  margin-top: 0.75rem;
+}
+
+.rims-with-select-row {
+  display: none;
+  margin-bottom: 0.75rem;
+}
