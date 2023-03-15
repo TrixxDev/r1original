@@ -456,7 +456,7 @@ class RecordController extends Controller
         $carModel = $request->carModel;
         $licPlate = $request->licPlate;
         $purpose = $request->purpose;
-        $storageBin = $request->storage_bin;
+        $storageBin = $request->storageBin;
         $comment = $request->comment;
         $name = $request->name;
         $phone = $request->phone;
