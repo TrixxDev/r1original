@@ -176,7 +176,7 @@
                                                   @endswitch
 
                                                   <td class="time-slot">{{ App\Models\Office::timeByInterval($i) }}</td>
-                                                  <td class="{{ $slotClass }} slot">
+                                                  <td class="{{ $slotClass }} slot{{ $slot->iorder }}-{{ $slot->queue_id }} slot" data-date="{{ $date }}" data-queue="{{ $slot->queue_id }}">
                                                     {!! $slotText !!}
                                                   </td>
 
@@ -361,7 +361,7 @@
                                                         </label>
                                                         <br>
                                                         <input value="1" class="form-check-input" type="radio" name="rims_with_input" id="rimsWith1">
-                                                        Līzi būs riepas bez diskiem
+                                                        Līdzi būs riepas bez diskiem
                                                       </div>
                                                       <div class="form-check">
                                                         <label class="form-check-label" for="rimsWith2">
