@@ -3428,7 +3428,7 @@ form textarea {
   opacity: 0.5;
 }
 
-.mobile-body #mobile-brand::placeholder, .mobile-body #mobile-model::placeholder, .mobile-body #mobile-phone::placeholder, .mobile-body #mobile-email::placeholder, .mobile-body #mobile-reg_nr {
+.mobile-body #mobile-brand::placeholder, .mobile-body #mobile-model::placeholder, .mobile-body #mobile-phone::placeholder, .mobile-body #mobile-email::placeholder {
   color: red;
   opacity: 0.5;
 }
@@ -3811,18 +3811,18 @@ th.tire-price-red {
   background-position: -2px 0;
 }
 
-.cart-shopping-button {
+.cart-shopping-button, .grid-cart-btn {
   background-color: #aeaeae;
   color: #fff;
   border: none;
   cursor: pointer;
 }
 
-.cart-shopping-button:hover {
+.cart-shopping-button:hover, .grid-cart-btn:hover {
   background-color: #56a78d;
 }
 
-.cart-shopping-button:active {
+.cart-shopping-button:active, .grid-cart-btn:active {
   background-color: #407866;
 }
 
