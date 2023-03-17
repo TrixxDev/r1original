@@ -10,6 +10,11 @@ $.fn.hasId = function(id) {
   return this.attr('id') == id;
 };
 
+const pusher = new Pusher('04c358afec27f4ba222f', {
+  cluster: 'eu',
+  encrypted: true
+});
+
 const ct_pagination = 0;
 const ct_pagination_nb = 100000;
 const ctp_fancybox = 0;
