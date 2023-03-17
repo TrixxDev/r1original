@@ -423,9 +423,9 @@ class RecordController extends Controller
           'cancelId' => $cancelId
         ];
 
-        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
-          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
-        }
+        //if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+        //  return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
+        //}
 //        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
 //        $mailer = new CMailer();
 //        $mailer->addRecipient($form->ownerEmail);
@@ -494,8 +494,11 @@ class RecordController extends Controller
             if ($queue->isVisible($date)) $office->_openQueues++;
           }
 
-          if ($office->_openQueues > 0 && $date != $today) {
+          if ($office->_openQueues > 0) {
             $out .= '<h3>' . $office->title . '<br>' . $dayOfWeek . ' ' . $dateFmt . '</h3>';
+            if ($date == $today) {
+              $out .= '<div class="alert alert-warning">Tekošajā dienā E-pierakstīties nav iespējams, ja redzat brīvus laikus un vēlaties šodien nomainīt riepas, tad lūdzu zvaniet!</div>';
+            }
           } else {
             $out .= '';
           }
@@ -529,20 +532,27 @@ class RecordController extends Controller
 
           if (!empty($slots)) {
             foreach ($slots as $slot_iorder => $slot_info){
-              if ($date == $slot_info['date'] && $date != $today) {
+              if ($date == $slot_info['date']) {
                 $freeSlot = $this->getLastNonNullValue($slot_info['slots']);
                 if (!empty($freeSlot)) {
-                  $slot = $freeSlot[array_key_first($freeSlot)];
-                  $slot_id = 'data-slot_id=' . $slot->slot_id;
-                  if (stripos($slot->comment, '% darbam') !== false) {
-                    $slotText = str_replace('!', '', $slot->comment);
-                    $slotText = '<span>' . $slotText . '</span>';
-                    $availability = 'discount available';
-                    $discount = true;
+                  if ($date != $today) {
+                    $slot = $freeSlot[array_key_first($freeSlot)];
+                    $slot_id = 'data-slot_id=' . $slot->slot_id;
+                    if (stripos($slot->comment, '% darbam') !== false) {
+                      $slotText = str_replace('!', '', $slot->comment);
+                      $slotText = '<span>' . $slotText . '</span>';
+                      $availability = 'discount available';
+                      $discount = true;
+                    } else {
+                      $slotText = 'Brīvs';
+                      $slotText = '<span>' . $slotText . '</span>';
+                      $availability = 'available';
+                      $discount = false;
+                    }
                   } else {
                     $slotText = 'Brīvs';
-                    $slotText = '<span>' . $slotText . '</span>';
-                    $availability = 'available';
+                    $slot_id = '';
+                    $availability = 'unavailable';
                     $discount = false;
                   }
                 } else {
@@ -557,18 +567,26 @@ class RecordController extends Controller
                 if (!empty($slot_info['slots'])) {
                   foreach ($slot_info['slots'] as $slot) {
                     if ($slot !== null) {
-                      if (stripos($slot->comment, '% darbam') !== false) {
-                        $out .= '<span class="dot-availability text-center">
-                        <span class="dot orange" data-toggle="tooltip" data-html="true" title="Atlaide">
-                          <span class="sort-order">orange</span>
-                        </span>
-                      </span>';
+                      if ($date != $today) {
+                        if (stripos($slot->comment, '% darbam') !== false) {
+                          $out .= '<span class="dot-availability text-center">
+                          <span class="dot orange" data-toggle="tooltip" data-html="true" title="Atlaide">
+                            <span class="sort-order">orange</span>
+                          </span>
+                        </span>';
+                        } else {
+                          $out .= '<span class="dot-availability text-center">
+                          <span class="dot green" data-toggle="tooltip" data-html="true" title="Brīvs">
+                            <span class="sort-order">green</span>
+                          </span>
+                        </span>';
+                        }
                       } else {
                         $out .= '<span class="dot-availability text-center">
-                        <span class="dot green" data-toggle="tooltip" data-html="true" title="Brīvs">
-                          <span class="sort-order">green</span>
-                        </span>
-                      </span>';
+                          <span class="dot red" data-toggle="tooltip" data-html="true" title="Aizņemts">
+                            <span class="sort-order">red</span>
+                          </span>
+                        </span>';
                       }
                     } else {
                       $out .= '<span class="dot-availability text-center">
@@ -772,9 +790,9 @@ class RecordController extends Controller
           'cancelId' => $cancelId
         ];
 
-        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
-          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
-        }
+        //if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+        //  return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
+        //}
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
 
