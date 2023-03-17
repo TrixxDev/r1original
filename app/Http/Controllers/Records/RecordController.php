@@ -413,9 +413,9 @@ class RecordController extends Controller
           'cancelId' => $cancelId
         ];
 
-        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
-          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
-	      }
+//        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+//          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
+//	      }
 //        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
 //        $mailer = new CMailer();
 //        $mailer->addRecipient($form->ownerEmail);
@@ -428,6 +428,191 @@ class RecordController extends Controller
 //        dd(mail($form->ownerEmail, 'asd', $mailText, 'From: indrikis38@gmail.com'));
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
+    }
+
+    public function showMobileQueues(Request $request) {
+      if ($request->post()) {
+        $office = Office::where('office_id', $request->office_id)->first();
+
+        $days = [];
+
+        $date = date('Y-m-d');
+        $visibleDays = 8;
+        $todayDate = strtotime($date);
+
+        $office->loadMobileQueues();
+        foreach ($office->_queues as $queue) {
+          $queue->loadWorkingDay($date, false);
+          $queue->loadSlots($date, false);
+          $slotSizes[] = $queue->_workingDays[$date]->slotSize;
+          $workingDays[] = $date;
+          for ($i = 1; $i < $visibleDays; $i++) {
+            $ndate = date('Y-m-d', strtotime("+{$i} days", $todayDate));
+            $queue->loadWorkingDay($ndate, true);
+            $queue->loadSlots($ndate, true);
+            $workingDays[] = $ndate;
+          }
+        }
+
+        $workingDays = array_unique($workingDays);
+
+        $_weekDays = array(
+          1 => 'Pirmdiena',
+          2 => 'Otrdiena',
+          3 => 'Trešdiena',
+          4 => 'Ceturtdiena',
+          5 => 'Piektdiena',
+          6 => 'Sestdiena',
+          7 => 'Svētdiena',
+        );
+
+        $tires = new Tires();
+        $timeStep = $tires->arrayGCD($slotSizes);
+
+        $services = Service::orderBy('service_id', 'ASC')->get();
+
+        $out = '<div class="w"><div><div class="reservation">';
+        for ($day = 0; $day < $visibleDays; $day++) {
+
+          $date = $workingDays[$day];
+          $dayOfWeek = $_weekDays[date('N', strtotime($date.' 00:00:00'))];
+          $dateFmt = date('d.m.Y', strtotime($date.' 00:00:00'));
+          $today = date('Y-m-d');
+
+          $office->_openQueues = 0;
+          foreach ($office->_queues as $queue){
+            if ($queue->isVisible($date)) $office->_openQueues++;
+          }
+
+          if ($office->_openQueues > 0) {
+            $out .= '<h3>' . $office->title . ' | ' . $dayOfWeek . ' ' . $dateFmt . '</h3>';
+          } else {
+            $out .= '';
+          }
+
+          $out .= '<div class="time-list" data-date="' . $date . '">';
+
+          $openTime = 0;
+          $closeTime = -1;
+
+          if ($openTime==0){
+            $openTime = $office->getOpenTime($date);
+          } else {
+            $t = $office->getOpenTime($date);
+            if ($t>0){
+              $openTime = min($openTime, $t);
+            }
+          }
+          $closeTime = max($closeTime, $office->getCloseTime($date));
+
+          for ($i=$openTime;$i<$closeTime;$i+=$timeStep) {
+            foreach ($office->_queues as $queue) {
+              if ($queue->isIntervalBeginning($date,$i)) {
+                $office->loadWorkingDays($date);
+                $slots[$queue->getSlotNumberByInterval($date, $i)] = [
+                  'time' => Office::timeByInterval($i),
+                  'slots' => $this->getPrevQueue($office->_workingDays, $queue->getSlotNumberByInterval($date, $i), $date),
+                  'date' => $date];
+              }
+            }
+          }
+
+          foreach ($slots as $slot_iorder => $slot_info){
+            if ($date == $slot_info['date']) {
+              $freeSlot = $this->getLastNonNullValue($slot_info['slots']);
+              if (!empty($freeSlot)) {
+                $slot = $freeSlot[array_key_first($freeSlot)];
+                $slot_id = 'data-slot_id=' . $slot->slot_id;
+                if (stripos($slot->comment, '% darbam') !== false) {
+                  $slotText = str_replace('!', '', $slot->comment);
+                  $slotText = '<span>' . $slotText . '</span>';
+                  $availability = 'discount available';
+                  $discount = true;
+                } else {
+                  $slotText = 'Brīvs';
+                  $slotText = '<span>' . $slotText . '</span>';
+                  $availability = 'available';
+                  $discount = false;
+                }
+              } else {
+                $slotText = 'Aizņemts';
+                $slot_id = '';
+                $availability = 'unavailable';
+                $discount = false;
+              }
+              $out .= '<div class="time-slot">';
+              $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot active">' . $slot_info['time'] . '<br>' . $slotText . '</div>';
+              $out .= '<div class="dots">';
+              if (!empty($slot_info['slots'])) {
+                foreach ($slot_info['slots'] as $slot) {
+                  if ($slot !== null) {
+                    if (stripos($slot->comment, '% darbam') !== false) {
+                      $out .= '<span class="dot-availability text-center">
+                        <span class="dot orange" data-toggle="tooltip" data-html="true" title="Atlaide">
+                          <span class="sort-order">orange</span>
+                        </span>
+                      </span>';
+                    } else {
+                      $out .= '<span class="dot-availability text-center">
+                        <span class="dot green" data-toggle="tooltip" data-html="true" title="Brīvs">
+                          <span class="sort-order">green</span>
+                        </span>
+                      </span>';
+                    }
+                  } else {
+                    $out .= '<span class="dot-availability text-center">
+                      <span class="dot red" data-toggle="tooltip" data-html="true" title="Aizņemts">
+                        <span class="sort-order">red</span>
+                      </span>
+                    </span>';
+                  }
+                }
+              } else {
+                $out .= '<span class="dot-availability text-center">
+                  <span class="dot transparent" style="" data-toggle="tooltip" data-html="true" title="Aizņemts">
+                    <span class="sort-order">transparent</span>
+                  </span>
+                </span>';
+              }
+              $out .= '</div></div>';
+            }
+          }
+          $out .= '</div>';
+
+        }
+        $out .= '</div></div>';
+
+        return $out;
+      }
+    }
+
+    public function getPrevQueue($queueList, $iorder, $date)
+    {
+      $queues = [];
+      foreach ($queueList as $queue) {
+        $slot = Slot::where('date', $date)->where('iorder', $iorder)->where('queue_id', $queue->queue_id)->first();
+        if ($slot) {
+          if ($slot->status == 0) {
+            $queues[$queue->queue_id] = $slot;
+          } else {
+            $queues[$queue->queue_id] = null;
+          }
+        } else {
+          $queues[$queue->queue_id] = null;
+        }
+      }
+      return $queues;
+    }
+
+    public function getLastNonNullValue($array) {
+      $array = array_reverse($array);
+      return array_filter($array, function($slot) {
+        if ($slot) {
+          return $slot->status != 1;
+        } else {
+          return null;
+        }
+      });
     }
 
     public function fillSlotMobile(Request $request)
@@ -575,9 +760,9 @@ class RecordController extends Controller
           'cancelId' => $cancelId
         ];
 
-        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
-          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
-	      }
+//        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+//          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
+//	      }
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$request->slot_time.' riepu servisā '.$office->title.'!</b>']);
 
