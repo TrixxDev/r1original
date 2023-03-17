@@ -494,7 +494,7 @@ class RecordController extends Controller
             if ($queue->isVisible($date)) $office->_openQueues++;
           }
 
-          if ($office->_openQueues > 0) {
+          if ($office->_openQueues > 0 && $date != $today) {
             $out .= '<h3>' . $office->title . '<br>' . $dayOfWeek . ' ' . $dateFmt . '</h3>';
           } else {
             $out .= '';
@@ -529,7 +529,7 @@ class RecordController extends Controller
 
           if (!empty($slots)) {
             foreach ($slots as $slot_iorder => $slot_info){
-              if ($date == $slot_info['date']) {
+              if ($date == $slot_info['date'] && $date != $today) {
                 $freeSlot = $this->getLastNonNullValue($slot_info['slots']);
                 if (!empty($freeSlot)) {
                   $slot = $freeSlot[array_key_first($freeSlot)];
