@@ -605,7 +605,7 @@ class RecordController extends Controller
       foreach ($queueList as $queue) {
         $slot = Slot::where('date', $date)->where('iorder', $iorder)->where('queue_id', $queue->queue_id)->first();
         if ($slot) {
-          if ($slot->status == 0) {
+          if ($slot->status == 0 || $slot->status == 2) {
             $queues[$queue->queue_id] = $slot;
           } else {
             $queues[$queue->queue_id] = null;
