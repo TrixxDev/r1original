@@ -204,19 +204,34 @@ $(document).ready(function() {
     if ($(this).hasClass('required-input')) {
       $(this).removeClass('required-input');
     }
+    if($('option:selected', this).val() == 1 ) {
+      $('.rims-with-mobile').show();
+      $('.rims-storageBin').hide();
+    } else if ($('option:selected', this).val() == 2) {
+      $('.rims-storageBin').show();
+      $('.rims-with-mobile').hide();
+    } else {
+      $('.rims-with-mobile').hide();
+      $('.rims-storageBin').hide();
+    }
   });
 
   $('#mobile-submit-reservation').on('click', function () {
     let car = $('#mobile-brand').val();
     let carModel = $('#mobile-model').val();
     let licPlate = $('#mobile-reg_nr').val();
-    let filiale = $('#mobile-filiale select[name="filiale"]').val();
-    let date = $('#mobile-date select[name="reservation-date"]').val();
+    let filiale = $('#mobile-filiale input[name="filiale"]:checked').val();
+    let date = $('section#mobile-main input[name=date][type=hidden]').val();
     let purpose = $('#mobile-service select[name="serviceOption"]').val();
     let comment = $('#mobile-comment').val();
     let name = $('#mobile-name').val();
     let phone = $('#mobile-phone').val();
     let email = $('#mobile-email').val();
+    let rimsWith = $('.rims-with-mobile input[name="rims_with_input"]:checked').val();
+    let storageBin = $('#mobile_storage_bin').val();
+    let slot_id = $('section#mobile-main input[name=slotNumber][type=hidden]').val();
+
+
 
 
     $.ajax({
@@ -235,7 +250,9 @@ $(document).ready(function() {
         'email': email,
         'slot_time': slot_time,
         'filiale': filiale,
-        'date': date
+        'date': date,
+        'storageBin': storageBin,
+        'rims_with': rimsWith
       },
       success: function (data) {
         if (data.error) {
@@ -2058,9 +2075,33 @@ $(document).ready(function() {
     // } else {
     //   $('.rim-with').remove();
     // }
-    if ($(this).data('save') == 1) {
+    if ($(this).val() == 2) {
       $('<div class="form-group row temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:left;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+      $('#reservation .rims_with').remove();
+    } else if ($(this).val() == 1) {
+      $('#reservation .temp_save_nr').remove();
+      $('<div class="form-group row rims_with"><label for="save_nr" class="col-sm-3" style="text-align:left;">Izvēle:</label><div class="col-sm-9">' +
+        '       <div class="form-check col-sm-6">\n' +
+        '         <input class="form-check-input" type="radio" name="rims_with_input" id="flexRadioDefault1" value="1">\n' +
+        '         <label class="form-check-label" for="flexRadioDefault1">\n' +
+        '           Riepas bez diskiem\n' +
+        '           \n' +
+        '           <img class="rims-with-img" src="/images/bez_diskiem.jpg" alt="riepas_ar_diskiem">\n' +
+        '         </label>\n' +
+        '       </div>\n' +
+        '    \n' +
+        '     <div class="form-check col-sm-6">\n' +
+        '       <input class="form-check-input" type="radio" name="rims_with_input" id="flexRadioDefault2" value="2">\n' +
+        '       <label class="form-check-label" for="flexRadioDefault2">\n' +
+        '         Riepas ar Diskiem\n' +
+        '           \n' +
+        '         <img class="rims-with-img" src="/images/ar_diskiem.png" alt="riepas_ar_diskiem">\n' +
+        '       </label>\n' +
+        '     </div>\n' +
+        '    \n' +
+        '</div></div>').insertAfter('.services');
     } else {
+      $('#reservation .rims_with').remove();
       $('#reservation .temp_save_nr').remove();
     }
   });
@@ -2076,9 +2117,14 @@ $(document).ready(function() {
   $('.select-service-option').on('change', function() {
     console.log($(this).val());
     if ($(this).val() == 2) {
+      $('.rims-with-select-row').hide();
       $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+    } else if ($(this).val() == 1) {
+      $('div.temp_save_nr').hide();
+      $('.rims-with-select-row').show();
     } else {
       $('div.temp_save_nr').hide();
+      $('.rims-with-select-row').hide();
     }
   });
 
@@ -2113,6 +2159,7 @@ $(document).ready(function() {
     let name = $('#reservation #name').val();
     let phone = $('#reservation #phone').val();
     let email = $('#reservation #email').val();
+    let rimsWith = $('#reservation input[name="rims_with_input"]:checked').val();
     // let rimsWith;
     // $('#reservation .rim-with input').each(function() {
     //   if($(this).is(':checked') == true){
@@ -2133,7 +2180,7 @@ $(document).ready(function() {
         'comment': comment,
         'name': name,
         'phone': phone,
-        // 'rims-with': rimsWith,
+        'rims_with': rimsWith,
         'email': email,
         'date': date,
         'queue_id': queue_id,
@@ -2386,6 +2433,15 @@ $(document).ready(function() {
             $(this).attr('selected', true).prop('selected', true);
             if ($(this).data('save') == 1) {
               $('<div class="form-group row bg-light temp_save_nr"><label for="save_nr" class="col-sm-3" style="text-align:right;">Glabāšanas talona numurs:</label><div class="col-sm-9"><input type="text" class="form-control" id="save_nr" value="' + data.f_storagebin + '"></div><div class="col-sm-3"></div><div class="col-sm-9" style="font-size: 11px; line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</div></div>').insertAfter('.services');
+              $('.rims-with-select-row').hide();
+            } else if ($(this).val() == 1) {
+              $('.rims-with-select-row').show();
+
+              $('.rims-with-select-row input[name=flexRadioDefault]').each(function() {
+                if($(this).val() == data.f_rimswith) {
+                  $(this).attr('checked', true);
+                }
+              });
             }
           }
         });
@@ -2459,6 +2515,7 @@ $(document).ready(function() {
         'f_phone': $('.modal#slotModal #f_phone').val(),
         'f_email': $('.modal#slotModal #f_email').val(),
         'f_slotcomment': $('.modal#slotModal #f_slotcomment').val(),
+        'f_rimswith': $('input:checked[name=flexRadioDefault]').val()
       },
       dataType: 'JSON',
       success: function (data) {
@@ -3636,3 +3693,41 @@ $('.popup-code-dropdown').on('click', function() {
   }
   $(this).parent().next('ul').slideToggle();
 });
+
+$('#mobile-filiale input[name=filiale]').on('change', function() {
+  let office_id = $(this).val();
+  $('#mobile-main input[name=filiale][type=hidden]').val(office_id);
+  $('#mobile-main input[name=date][type=hidden]').val();
+  $('#mobile-main input[name=slotNumber][type=hidden]').val();
+  $.ajax({
+    url: '/pieraksts/showMobileQueues',
+    data: {
+      office_id: office_id
+    },
+    method: 'post',
+    beforeSend: function() {
+      $('#mobile-slots-choice').animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
+      $('input[name=filiale].filiale_radio').attr('disabled', true).prop('disabled', true);
+    },
+    success: function (data){
+      $('input[name=filiale].filiale_radio').attr('disabled', false).prop('disabled', false);
+      $('#mobile-slots-choice').html(data).animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
+      $('.available.slot.active').on('click', function() {
+        if ($(this).hasClass('available')) {
+          $('.time-slot .slot').removeClass('selected');
+          $(this).addClass('selected');
+          $('input[type=hidden][name=date]').val($(this).parent().parent().attr('data-date'));
+          $('input[type=hidden][name=slot_id]').val($(this).attr('data-slot_id'));
+        }
+        $('#mobile-main input[name=date][type=hidden]').val($(this).parent().parent().attr('data-date'));
+        $('#mobile-main input[name=slotNumber][type=hidden]').val($(this).attr('data-slot_id'));
+        $('#mobile-reservation-form').show();
+        $([document.documentElement, document.body]).animate({
+          scrollTop: $('#mobile-reservation-form').offset().top});
+      });
+      $('.mobile_reservation_table').html(data).animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
+    }
+  })
+});
+
+

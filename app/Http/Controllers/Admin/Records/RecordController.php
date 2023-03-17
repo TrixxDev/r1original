@@ -435,6 +435,8 @@ class RecordController extends Controller
     //$return['f_statuses'][SLOT_STATUS_OFFER] = 'Īpašais piedāvājums';
     $return['f_statuses'][SLOT_STATUS_CLOSED] = 'Slēgts';
 
+    $return['f_rimswith'] = $slot->rimsWith;
+
     $json = json_encode($return);
     echo $json;
   }
@@ -537,7 +539,8 @@ class RecordController extends Controller
         'f_name'=>'',
         'f_phone'=>'',
         'f_email'=>'',
-        'f_slotcomment'=>''
+        'f_slotcomment'=>'',
+        'f_rimswith'=>''
       ];
       /*$return['error_fields']['f_car'] = "";
       $return['error_fields']['f_car'] = "";
@@ -629,6 +632,7 @@ class RecordController extends Controller
       $form->ownerName = $request->f_name;
       $form->ownerPhone = $request->f_phone;
       $form->ownerEmail = $request->f_email;
+      $form->rimsWith = $request->f_rimswith;
 
 //      dd(array_map('intval', str_split($form->ownerPhone)));
 
@@ -930,6 +934,7 @@ class RecordController extends Controller
         $return['f_name'] = (isset($form->ownerName)) ? $form->ownerName : '';
         $return['f_phone'] = (isset($form->ownerPhone)) ? $form->ownerPhone : '';
         $return['f_email'] = (isset($form->ownerEmail)) ? $form->ownerEmail : '';
+        $return['f_rimswith'] = (isset($form->rimsWith)) ? $form->rimsWith : '';
         break;
       }
     }

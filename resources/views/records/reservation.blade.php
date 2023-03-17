@@ -326,6 +326,25 @@
                           </label>
                         </div>
                       </div>
+                      <div class="rims-with-select-row row bg-light">
+                        <div class="form-group col-md-3 text-right">
+                          <label for="service"><span class="validate" style="color: red;">*</span>Izvēle:</label>
+                        </div>
+                        <div class="col-md-8" id="service">
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="1">
+                              <label class="form-check-label" for="flexRadioDefault1">
+                                Līdzi būs Riepas ar Diskiem
+                              </label>
+                            </div>
+                            <div class="form-check">
+                              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="2">
+                              <label class="form-check-label" for="flexRadioDefault2">
+                                Līdzi būs tikai riepas
+                              </label>
+                            </div>
+                        </div>
+                      </div>
                       <div class="form-group row">
                         <label for="title" class="col-sm-3 col-form-label text-right">Piezīmes:</label>
                         <div class="col-9">

@@ -365,6 +365,7 @@ Route::middleware('checksession')->group(function() {
   Route::get('/pieraksts/cancel={id}', [App\Http\Controllers\Records\RecordController::class, 'cancelSlot'])->name('cancelSlot');
   Route::post('/pieraksts/getSlotInfo', [App\Http\Controllers\Records\RecordController::class, 'getSlotInfo']);
   Route::post('/pieraksts/fillSlot', [App\Http\Controllers\Records\RecordController::class, 'fillSlot']);
+  Route::post('/pieraksts/showMobileQueues', [App\Http\Controllers\Records\RecordController::class, 'showMobileQueues']);
   Route::post('/pieraksts/fillSlotMobile', [App\Http\Controllers\Records\RecordController::class, 'fillSlotMobile']);
   Route::post('/pieraksts/fillFiliale', [App\Http\Controllers\Records\RecordController::class, 'fillFiliale']);
   Route::post('/pieraksts/fillDates', [App\Http\Controllers\Records\RecordController::class, 'fillDates']);
