@@ -988,9 +988,9 @@ class RecordController extends Controller
                         $service = Service::where('service_id', $takenBy->purpose)->first();
                         if ($service->service_id == 1 && isset($takenBy->rimsWith)) {
                           if ($takenBy->rimsWith == 1) {
-                            $rimsWith = 'Riepas ar diskiem';
-                          } else {
                             $rimsWith = 'Riepas bez diskiem';
+                          } else {
+                            $rimsWith = 'Riepas ar diskiem';
                           }
                           $purpose = $service->pdf_title . ' - ' . $rimsWith;
                         } else {
@@ -1123,9 +1123,9 @@ class RecordController extends Controller
                           $service = Service::where('service_id', $takenBy->purpose)->first();
                           if ($service->service_id == 1 && isset($takenBy->rimsWith)) {
                             if ($takenBy->rimsWith == 1) {
-                              $rimsWith = 'Riepas ar diskiem';
-                            } else {
                               $rimsWith = 'Riepas bez diskiem';
+                            } else {
+                              $rimsWith = 'Riepas ar diskiem';
                             }
                             $purpose = $service->pdf_title . ' - ' . $rimsWith;
                           } else {
