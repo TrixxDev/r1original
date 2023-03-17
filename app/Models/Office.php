@@ -10,14 +10,35 @@ class Office extends Model
 
     protected $primaryKey = 'office_id';
 
-    public function __construct()
-    {
-      $this->_queues = false;
+  public function __construct()
+  {
+    $this->_queues = false;
+    $this->_workingDays = false;
+  }
+
+  public function loadQueues(){
+    $list = Queue::where('office_id', $this->office_id)->orderBy('iorder', 'ASC')->get();
+    $this->_queues = $list;
+  }
+
+    public function loadMobileQueues() {
+      $list = Queue::where('office_id', $this->office_id)->orderBy('queue_id', 'DESC')->orderBy('iorder', 'ASC')->get();
+      $this->_queues = $list;
     }
 
-    function loadQueues(){
-      $list = Queue::where('office_id', $this->office_id)->orderBy('iorder', 'ASC')->get();
-      $this->_queues = $list;
+    public function loadWorkingDays($date) {
+      $queues = [];
+      $list = [];
+      foreach ($this->_queues->toArray() as $queue) {
+        array_push($queues, $queue['queue_id']);
+      }
+      $lists = Workingday::whereRaw('queue_id IN(' . implode(', ', $queues) . ')')->where('date', $date)->get();
+      foreach ($lists as $queue) {
+        if ($queue->is_visible == 1) {
+          array_push($list, $queue);
+        }
+      }
+      $this->_workingDays = $list;
     }
 
     public static function intervalByTime($time){

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-
+  <link rel="stylesheet" href="{{asset('css/schedule.css')}}">
     <div class="container-fluid records">
         <div class="">
             <div class="main-content clearfix col-md-12 col-xl-12">
@@ -257,7 +257,6 @@
                         <form method="POST">
                             @csrf
                             <input type="hidden" name="date">
-                            <input type="hidden" name="queue_id">
                             <input type="hidden" name="slotNumber">
                             <input type="hidden" name="filiale">
                             <div class="modal-dialog" role="document">
@@ -283,14 +282,49 @@
 
                                                     <div class="form-group reservation-filiale">
                                                       <span class="validate">*</span><label for="select">Filiāle</label>
+
                                                       <div id="mobile-filiale">
-                                                        <select class="custom-select" name="filiale" required="required">
-                                                          <option disabled selected>Izvēlēties</option>
-                                                        </select>
+{{--                                                        <select class="custom-select" name="filiale" required="required">--}}
+{{--                                                          <option disabled selected>Izvēlēties</option>--}}
+{{--                                                        </select>--}}
+
+                                                        <div class="filiale_grid">
+                                                          <label class="filiale_card">
+                                                            <input name="filiale" class="filiale_radio" type="radio" id="filiale_ulbroka" value="1">
+
+                                                            <span class="filiale_plan-details">
+                                                              <span class="filiale_plan-cost">Ulbroka</span>
+                                                              <span>Acones iela 2a</span>
+                                                              <span>67910555</span>
+{{--                                                              <br>--}}
+{{--                                                              <span>Pirm. - Piekt. 9:00 - 18:00</span>--}}
+{{--                                                              <span>Sestdiena - 10:00 - 15:00</span>--}}
+{{--                                                              <span>Svētdiena - Slēgts</span>--}}
+                                                            </span>
+                                                          </label>
+                                                          <label class="filiale_card">
+                                                            <input name="filiale" class="filiale_radio" type="radio" id="filiale_riga" value="2">
+                                                            <span class="filiale_hidden-visually">Pro - $50 per month, 5 team members, 500 GB per month, 5 concurrent builds</span>
+                                                            <span class="filiale_plan-details" aria-hidden="true">
+                                                              <span class="filiale_plan-cost">Rīga</span>
+                                                              <span>Kalnciema iela 39</span>
+                                                              <span>67615615</span>
+{{--                                                              <br>--}}
+{{--                                                              <span>Pirm. - Piekt. 9:00 - 18:00</span>--}}
+{{--                                                              <span>Sestdiena - Slēgts</span>--}}
+{{--                                                              <span>Svētdiena - Slēgts</span>--}}
+                                                            </span>
+                                                          </label>
+                                                        </div>
+
                                                       </div>
                                                     </div>
 
-                                                    <div class="form-group hidden-dates" style="display: none;">
+                                                    <div id="mobile-slots-choice">
+
+                                                    </div>
+                                                  <div id="mobile-reservation-form" tabindex='1'>
+                                                    <div class="form-group hidden-dates" style="display: none; margin-top: 2rem;">
                                                       <label for="reservation-date"><span class="validate">*</span>Datums</label>
                                                       <div id="mobile-date">
                                                         <select class="custom-select" name="reservation-date">
@@ -322,12 +356,20 @@
 
                                                     <div class="form-group rims-with-mobile" style="display: none;">
                                                       <div class="form-check">
+                                                        <label class="form-check-label" for="rimsWith1">
+                                                          <img src="{{asset('images/bez_diskiem.jpg')}}" alt="">
+                                                        </label>
+                                                        <br>
                                                         <input value="1" class="form-check-input" type="radio" name="rims_with_input" id="rimsWith1">
-                                                        <label class="form-check-label" for="rimsWith1">Līzi būs riepas bez diskiem</label>
+                                                        Līzi būs riepas bez diskiem
                                                       </div>
                                                       <div class="form-check">
+                                                        <label class="form-check-label" for="rimsWith2">
+                                                          <img src="{{asset('images/ar_diskiem.png')}}" alt="">
+                                                        </label>
+                                                        <br>
                                                         <input value="2" class="form-check-input" type="radio" name="rims_with_input" id="rimsWith2">
-                                                        <label class="form-check-label" for="rimsWith2">Līdzi būs riepas ar diskiem</label>
+                                                        Līdzi būs riepas ar diskiem
                                                       </div>
                                                     </div>
 
@@ -369,7 +411,11 @@
                                                       <label for="mobile-email"><span class="validate">*</span>Mans e-pasts:</label>
                                                         <input type="email" class="form-control" id="mobile-email">
                                                     </div>
-
+                                                    <div class="modal-footer reservation-modal-footer">
+                                                      <button type="button" class="btn btn-primary" id="mobile-submit-reservation">Pierakstīties</button>
+                                                      <button type="button" class="btn btn-primary" id="mobile-close-modal" style="display: none;">Atgriezties</button>
+                                                    </div>
+                                                  </div>
                                                 </div>
                                                 <div class="mobile-body-success" style="display: none;">
                                                     <div class="alert alert-success">
@@ -377,10 +423,6 @@
                                                     </div>
                                                 </div>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer reservation-modal-footer">
-                                        <button type="button" class="btn btn-primary" id="mobile-submit-reservation">Pierakstīties</button>
-                                        <button type="button" class="btn btn-primary" id="mobile-close-modal" style="display: none;">Atgriezties</button>
                                     </div>
                                 </div>
                             </div>
