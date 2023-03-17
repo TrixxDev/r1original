@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Records;
 
-use App\Helper\CMailer;
+use App\Broadcasting\DeleteSlotChannel;
+use App\Broadcasting\NewSlotChannel;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\EmailController;
+use App\Models\Audit;
 use App\Models\User;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
+use Swift_TransportException;
 use Illuminate\Support\Str;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -23,6 +26,8 @@ use App\Models\Pdf;
 use App\Rules\ReCaptcha;
 use App\Helper\Utility;
 use Auth;
+use Throwable;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class RecordController extends Controller
 {
@@ -495,7 +500,7 @@ class RecordController extends Controller
             $out .= '';
           }
 
-          $out .= '<div class="time-list" data-date="' . $date . '">';
+          $out .= '<div class="time-list" data-date="' . $date . '" style="margin-left:8px;">';
 
           $openTime = 0;
           $closeTime = -1;
@@ -522,66 +527,69 @@ class RecordController extends Controller
             }
           }
 
-          foreach ($slots as $slot_iorder => $slot_info){
-            if ($date == $slot_info['date']) {
-              $freeSlot = $this->getLastNonNullValue($slot_info['slots']);
-              if (!empty($freeSlot)) {
-                $slot = $freeSlot[array_key_first($freeSlot)];
-                $slot_id = 'data-slot_id=' . $slot->slot_id;
-                if (stripos($slot->comment, '% darbam') !== false) {
-                  $slotText = str_replace('!', '', $slot->comment);
-                  $slotText = '<span>' . $slotText . '</span>';
-                  $availability = 'discount available';
-                  $discount = true;
+          if (!empty($slots)) {
+            foreach ($slots as $slot_iorder => $slot_info){
+              if ($date == $slot_info['date']) {
+                $freeSlot = $this->getLastNonNullValue($slot_info['slots']);
+                if (!empty($freeSlot)) {
+                  $slot = $freeSlot[array_key_first($freeSlot)];
+                  $slot_id = 'data-slot_id=' . $slot->slot_id;
+                  if (stripos($slot->comment, '% darbam') !== false) {
+                    $slotText = str_replace('!', '', $slot->comment);
+                    $slotText = '<span>' . $slotText . '</span>';
+                    $availability = 'discount available';
+                    $discount = true;
+                  } else {
+                    $slotText = 'Brīvs';
+                    $slotText = '<span>' . $slotText . '</span>';
+                    $availability = 'available';
+                    $discount = false;
+                  }
                 } else {
-                  $slotText = 'Brīvs';
-                  $slotText = '<span>' . $slotText . '</span>';
-                  $availability = 'available';
+                  $slotText = 'Aizņemts';
+                  $slot_id = '';
+                  $availability = 'unavailable';
                   $discount = false;
                 }
-              } else {
-                $slotText = 'Aizņemts';
-                $slot_id = '';
-                $availability = 'unavailable';
-                $discount = false;
-              }
-              $out .= '<div class="time-slot">';
-              $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot active">' . $slot_info['time'] . '<br>' . $slotText . '</div>';
-              $out .= '<div class="dots">';
-              if (!empty($slot_info['slots'])) {
-                foreach ($slot_info['slots'] as $slot) {
-                  if ($slot !== null) {
-                    if (stripos($slot->comment, '% darbam') !== false) {
-                      $out .= '<span class="dot-availability text-center">
+                $out .= '<div class="time-slot">';
+                $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot active">' . $slot_info['time'] . '<br>' . $slotText . '</div>';
+                $out .= '<div class="dots">';
+                if (!empty($slot_info['slots'])) {
+                  foreach ($slot_info['slots'] as $slot) {
+                    if ($slot !== null) {
+                      if (stripos($slot->comment, '% darbam') !== false) {
+                        $out .= '<span class="dot-availability text-center">
                         <span class="dot orange" data-toggle="tooltip" data-html="true" title="Atlaide">
                           <span class="sort-order">orange</span>
                         </span>
                       </span>';
-                    } else {
-                      $out .= '<span class="dot-availability text-center">
+                      } else {
+                        $out .= '<span class="dot-availability text-center">
                         <span class="dot green" data-toggle="tooltip" data-html="true" title="Brīvs">
                           <span class="sort-order">green</span>
                         </span>
                       </span>';
-                    }
-                  } else {
-                    $out .= '<span class="dot-availability text-center">
+                      }
+                    } else {
+                      $out .= '<span class="dot-availability text-center">
                       <span class="dot red" data-toggle="tooltip" data-html="true" title="Aizņemts">
                         <span class="sort-order">red</span>
                       </span>
                     </span>';
+                    }
                   }
-                }
-              } else {
-                $out .= '<span class="dot-availability text-center">
+                } else {
+                  $out .= '<span class="dot-availability text-center">
                   <span class="dot transparent" style="" data-toggle="tooltip" data-html="true" title="Aizņemts">
                     <span class="sort-order">transparent</span>
                   </span>
                 </span>';
+                }
+                $out .= '</div></div>';
               }
-              $out .= '</div></div>';
             }
           }
+
           $out .= '</div>';
 
         }
@@ -660,7 +668,6 @@ class RecordController extends Controller
         if (!$licPlate) $errorText['reg_nr'] = "Jābūt aizpildītam!\n";
 
         if ($filiale === NULL) $errorText['filiale'] = "Izvēlieties filiāli!\n";
-        if ($date === NULL) $errorText['reservationDate'] = "Izvēlieties pieraksta datumu!\n";
         if ($slot_id === NULL) $errorText['slotId'] = "Izvēlieties pieraksta laiku!\n";
         if (!$purpose) $errorText['purpose'] = "Laukam \"Es vēlos\" jābūt izvēlētam!\n";
         if (!$phone) $errorText['phone'] = "Jābūt aizpildītam!\n";
@@ -952,18 +959,27 @@ class RecordController extends Controller
                     $edited = ($editeduser) ? $editeduser->fullName : '';
                     $lastAction = (is_null($slot->edittime)) ? $slot->createtime : $slot->edittime;
                     $lastAction = (is_null($lastAction)) ? '' : $lastAction;
-		    if (!$takenBy->vehicleMake && !$takenBy->vehicleModel) {
-		      $purpose = '';
-		      $slotText = '';
-		    } else {
-		      if (!isset($takenBy->purpose)) {
-		        $purpose = '';
+                    if (!$takenBy->vehicleMake && !$takenBy->vehicleModel) {
+                      $purpose = '';
+                      $slotText = '';
+                    } else {
+                      if (!isset($takenBy->purpose)) {
+                        $purpose = '';
                         $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                       } else {
                         $service = Service::where('service_id', $takenBy->purpose)->first();
-                        $purpose = $service->pdf_title;
+                        if ($service->service_id == 1 && isset($takenBy->rimsWith)) {
+                          if ($takenBy->rimsWith == 1) {
+                            $rimsWith = 'Riepas ar diskiem';
+                          } else {
+                            $rimsWith = 'Riepas bez diskiem';
+                          }
+                          $purpose = $service->pdf_title . ' - ' . $rimsWith;
+                        } else {
+                          $purpose = $service->pdf_title;
+                        }
                         $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-		      }
+		                  }
                     }
                     break;
                   }
@@ -1079,18 +1095,27 @@ class RecordController extends Controller
                       $lastAction2 = (is_null($slot->edittime2)) ? $slot->createtime2 : $slot->edittime2;
                       $lastAction2 = (is_null($lastAction2)) ? '' : $lastAction2;
                       if (!$takenBy->vehicleMake && !$takenBy->vehicleModel) {
-			$purpose2 = '';
-			$slotText2 = '';
-		      } else {
-  		        if (!$takenBy->purpose) {
+                        $purpose2 = '';
+                        $slotText2 = '';
+                      } else {
+  		                  if (!$takenBy->purpose) {
                           $purpose2 = '';
                           $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                         } else {
                           $service = Service::where('service_id', $takenBy->purpose)->first();
-                          $purpose2 = $service->pdf_title;
-			  $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
-		        }
-		      }
+                          if ($service->service_id == 1 && isset($takenBy->rimsWith)) {
+                            if ($takenBy->rimsWith == 1) {
+                              $rimsWith = 'Riepas ar diskiem';
+                            } else {
+                              $rimsWith = 'Riepas bez diskiem';
+                            }
+                            $purpose = $service->pdf_title . ' - ' . $rimsWith;
+                          } else {
+                            $purpose = $service->pdf_title;
+                          }
+			                    $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
+		                    }
+		                  }
                       break;
                     }
                     case SLOT_STATUS_OFFER:

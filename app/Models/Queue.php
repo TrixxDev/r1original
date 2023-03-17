@@ -368,7 +368,7 @@ class Queue extends Model
       }
     }
 
-    function parseNotification($text, $date, $slotNum, $takenBy, $showTime2=false){
+    public function parseNotification($text, $date, $slotNum, $takenBy, $showTime2=false){
       $_weekDays = array(
         1=>'pirmdien',
         2=>'otrdien',
@@ -379,7 +379,6 @@ class Queue extends Model
         7=>'svētdien',
       );
 
-      if (0==1) $office = new Office();
       $office = Office::findOrFail($this->office_id);
 
       $time = $this->getSlotStartTime($date,$slotNum,false);

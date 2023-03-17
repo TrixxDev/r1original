@@ -19342,3 +19342,41 @@ table.queueTable:nth-child(2) {
 label#no-banner-label {
   width: 100%;
 }
+
+.datalist {
+  margin: 5px;
+}
+
+.datalist dt {
+  float: left;
+  width: 140px;
+  font-weight: bold;
+  margin: 1px 0 0 0;
+  padding: 3px 0 0 0;
+  border-bottom: 1px solid #DBF2B8;
+  color: #1D3D02;
+}
+
+.audit-changed {
+  color: red;
+}
+
+.red {
+  color: red;
+}
+
+.c {
+  margin-top: -1px;
+  height: 1px;
+  overflow: hidden;
+  clear: both;
+}
+
+.datalist dd {
+  float: left;
+  width: 84%;
+  margin: 1px 0 0 0;
+  padding: 3px 0 0 5px;
+  border-bottom: 1px solid #DBF2B8;
+  border-left: 1px solid #DBF2B8;
+}

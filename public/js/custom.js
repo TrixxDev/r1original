@@ -2038,7 +2038,7 @@ $(document).ready(function() {
     $('.modal-footer #close-modal').click();
   });
 
-  $('.slot .free-slot-link, .slot .offer-slot-link').on('click', function() {
+  $(document).on('click', '.slot .free-slot-link, .slot .offer-slot-link', function() {
     $('.modal-body.finish, .finish-footer').remove();
     $('.reservation-modal-body').slideDown();
     $('.reservation-modal-footer #submit-reservation').show();
@@ -2500,7 +2500,7 @@ $(document).ready(function() {
       method: 'POST',
       url: '/admin/rezervacijas/slot_ajax/' + $('.modal#slotModal input[name="queue_id"]').val() + '/' + $('.modal#slotModal #f_date').val() + '/' + $('.modal#slotModal input[name="slot"]').val() + '/' + $('.modal#slotModal input[name="part"]').val(),
       data: {
-	'f_currDate': $('.modal#slotModal input[name=date]').val(),
+	      'f_currDate': $('.modal#slotModal input[name=date]').val(),
         'f_office': $('.modal#slotModal #f_office').val(),
         'f_date': $('.modal#slotModal #f_date').val(),
         'f_time': $('.modal#slotModal #f_time').val(),

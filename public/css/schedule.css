@@ -28,6 +28,10 @@ div.reservation div.time-list .time-slot {
   /*margin: 15px 6px;*/
 }
 
+div.reservation div.time-list .time-slot .selected {
+  background-color: #c50909!important;
+}
+
 div.reservation div.time-list .available {
   background-color: #49c200;
 }

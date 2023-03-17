@@ -44,6 +44,28 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+      // sistēmas iekšējo moduļu auditēšana
+      define('AUDIT_FACILITY_LOGIN',100);
+      define('AUDIT_FACILITY_USER',101);
+      define('AUDIT_FACILITY_DB',102);
+      define('AUDIT_FACILITY_SYSCORE',103);
+      define('AUDIT_FACILITY_MESSAGE',104);
+
+      define('AUDIT_FACILITY_DOCUMENT',105);
+      define('AUDIT_FACILITY_CATEGORY',105);
+
+      define('AUDIT_FACILITY_FIZPERS',1);
+      define('AUDIT_FACILITY_JURIDPERS',2);
+
+      define('AUDIT_SEVERITY_CRITICAL',1);
+      define('AUDIT_SEVERITY_WARNING',2);
+      define('AUDIT_SEVERITY_INFO',3);
+      define('AUDIT_SEVERITY_DEBUG',100);
+
+//      $date=date("W");
+//      dd($date." Week Number");
+
       $banners = Bannerimage::all();
 
       View::share('banners', $banners);

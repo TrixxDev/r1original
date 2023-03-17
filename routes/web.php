@@ -25,7 +25,7 @@ Route::get('/register', function() { return abort(404); })->name('register');
 
 // Administrācijas panelis
 
-Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
+Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware('web')->group(function() {
   Route::get('/', [App\Http\Controllers\Admin\MainController::class, 'home'])->name('home');
 
   // Auto riepas
@@ -213,6 +213,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->group(function() {
 
   Route::match(['GET', 'POST'], '/rezervacijas/slot_ajax/{queue_id}/{date}/{slot_id}/{part}', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations_ajax'])->name('reservations_ajax');
 
+  Route::match(['GET', 'POST'],'/audits', [App\Http\Controllers\Admin\MainController::class, 'audits'])->name('audits');
+  Route::get('/audit/{id}', [App\Http\Controllers\Admin\MainController::class, 'audit'])->name('audit');
+
   // Iestatījumi
   // Pakalpojumi
   Route::get('/settings/services', [App\Http\Controllers\Admin\SettingsController::class, 'services'])->name('settings.services');
@@ -362,7 +365,7 @@ Route::middleware('checksession')->group(function() {
 // Pieraksts
 
   Route::get('/pieraksts', [App\Http\Controllers\Records\RecordController::class, 'index'])->name('pieraksts');
-  Route::get('/pieraksts/cancel={id}', [App\Http\Controllers\Records\RecordController::class, 'cancelSlot'])->name('cancelSlot');
+  Route::match(['GET', 'POST'], '/pieraksts/cancel={id}', [App\Http\Controllers\Records\RecordController::class, 'cancelSlot'])->name('cancelSlot');
   Route::post('/pieraksts/getSlotInfo', [App\Http\Controllers\Records\RecordController::class, 'getSlotInfo']);
   Route::post('/pieraksts/fillSlot', [App\Http\Controllers\Records\RecordController::class, 'fillSlot']);
   Route::post('/pieraksts/showMobileQueues', [App\Http\Controllers\Records\RecordController::class, 'showMobileQueues']);
