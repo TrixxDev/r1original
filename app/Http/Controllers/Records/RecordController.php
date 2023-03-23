@@ -31,6 +31,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 
 class RecordController extends Controller
 {
+
+    public $timeToOpen;
+    public $now;
     /**
      * Create a new controller instance.
      *
@@ -39,6 +42,8 @@ class RecordController extends Controller
     public function __construct()
     {
 
+      $this->timeToOpen = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 16, 00);
+      $this->now = \Carbon\Carbon::now();
 //      $hash = $this->getRandomHash();
 //
 //      dd($this->isHashTaken($hash));
@@ -55,10 +60,8 @@ class RecordController extends Controller
 
       $offices = Office::all();
 
-      $timeToOpen = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 16, 00);
-      $now = \Carbon\Carbon::now();
       $date = date('Y-m-d');
-      if ($timeToOpen < $now) {
+      if ($this->timeToOpen < $this->now) {
         $visibleDays = 9;
       } else {
         $visibleDays = 8;
@@ -453,7 +456,11 @@ class RecordController extends Controller
         $days = [];
 
         $date = date('Y-m-d');
-        $visibleDays = 8;
+        if ($this->timeToOpen < $this->now) {
+          $visibleDays = 9;
+        } else {
+          $visibleDays = 8;
+        }
         $todayDate = strtotime($date);
 
         $office->loadMobileQueues();
