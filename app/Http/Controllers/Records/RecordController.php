@@ -55,8 +55,14 @@ class RecordController extends Controller
 
       $offices = Office::all();
 
+      $timeToOpen = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 16, 00);
+      $now = \Carbon\Carbon::now();
       $date = date('Y-m-d');
-      $visibleDays = 8;
+      if ($timeToOpen < $now) {
+        $visibleDays = 9;
+      } else {
+        $visibleDays = 8;
+      }
       $todayDate = strtotime($date);
 
       foreach ($offices as $office) {
