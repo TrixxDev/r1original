@@ -8964,11 +8964,6 @@ body#checkout #delivery textarea, body#checkout #gift_message textarea {
     width: 100%
   }
 
-  #category #left-column #search_filters_wrapper {
-    margin-left: -30px;
-    margin-right: -30px
-  }
-
   #category #left-column #search_filter_controls {
     text-align: center;
     margin-bottom: 1rem
@@ -8981,12 +8976,12 @@ body#checkout #delivery textarea, body#checkout #gift_message textarea {
   #category #left-column #search_filters {
     margin-bottom: 0;
     box-shadow: none;
-    padding: 0;
+    padding: 10px 0 0;
     border-top: 1px solid #f6f6f6
   }
 
   #category #left-column #search_filters .facet {
-    padding-top: 0;
+    padding-top: 0.625rem;
     border-bottom: 1px solid #f6f6f6
   }
 
@@ -9009,7 +9004,7 @@ body#checkout #delivery textarea, body#checkout #gift_message textarea {
 
   #category #left-column #search_filters .facet .h6 {
     margin-bottom: 0;
-    padding: .625rem;
+    /*padding: .625rem;*/
     display: inline-block
   }
 
@@ -9035,8 +9030,8 @@ body#checkout #delivery textarea, body#checkout #gift_message textarea {
   }
 
   #category #left-column #search_filters .facet ul li {
-    border-top: 1px solid #f6f6f6;
-    padding: .625rem
+    /*border-top: 1px solid #f6f6f6;*/
+    /*padding: .625rem*/
   }
 
   #category #content-wrapper, #category #search_filter_toggler {
@@ -9068,8 +9063,8 @@ body#checkout #delivery textarea, body#checkout #gift_message textarea {
   }
 
   #category #left-column #search_filters_wrapper {
-    margin-left: -15px;
-    margin-right: -15px
+    margin-left: 15px;
+    margin-right: 15px
   }
 }
 

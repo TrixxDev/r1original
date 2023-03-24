@@ -3736,3 +3736,139 @@ $('#mobile-filiale input[name=filiale]').on('change', function() {
 });
 
 
+
+$('#mobile-filiale input[name=filiale]').on('change', function() {
+  let office_id = $(this).val();
+  $('#mobile-main input[name=filiale][type=hidden]').val(office_id);
+  $('#mobile-main input[name=date][type=hidden]').val();
+  $('#mobile-main input[name=slotNumber][type=hidden]').val();
+  $.ajax({
+    url: '/pieraksts/showMobileQueues',
+    data: {
+      office_id: office_id
+    },
+    method: 'post',
+    beforeSend: function() {
+      $('#mobile-slots-choice').animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
+      $('input[name=filiale].filiale_radio').attr('disabled', true).prop('disabled', true);
+    },
+    success: function (data){
+      $('input[name=filiale].filiale_radio').attr('disabled', false).prop('disabled', false);
+      $('#mobile-slots-choice').html(data).animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
+      $('.available.slot.active').on('click', function() {
+        if ($(this).hasClass('available')) {
+          $('.time-slot .slot').removeClass('selected');
+          $(this).addClass('selected');
+          $('input[type=hidden][name=date]').val($(this).parent().parent().attr('data-date'));
+          $('input[type=hidden][name=slot_id]').val($(this).attr('data-slot_id'));
+        }
+        $('#mobile-main input[name=date][type=hidden]').val($(this).parent().parent().attr('data-date'));
+        $('#mobile-main input[name=slotNumber][type=hidden]').val($(this).attr('data-slot_id'));
+        $('#mobile-reservation-form').show();
+        $([document.documentElement, document.body]).animate({
+          scrollTop: $('#mobile-reservation-form').offset().top});
+      });
+      $('.mobile_reservation_table').html(data).animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
+    }
+  })
+});
+
+$('div.modal-footer.reservation-modal-footer button#close-modal').on('click', function() {
+  $('div.form-group.row.rims_with').remove();
+});
+
+
+$('.r1-select.select-title.tire-width[name=d1]').on('change', function(){
+  let newVal = $(this).children(":selected").attr("id");
+
+  $('.r1-select.select-title.tire-width[name=d1]').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+$('.r1-select.select-title.tire-width[name=d2]').on('change', function(){
+  let newVal = $(this).children(":selected").attr("id");
+
+  $('.r1-select.select-title.tire-width[name=d2]').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+$('.r1-select.select-title.tire-width[name=d3]').on('change', function(){
+  let newVal = $(this).children(":selected").attr("id");
+
+  $('.r1-select.select-title.tire-width[name=d3]').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+$('.r1-select.select-title.tire-brand').on('change', function(){
+  let newVal = $(this).children(":selected").text();
+  $('.r1-select.select-title.tire-brand').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+$('.r1-select.select-title.tire-height').on('change', function(){
+  let newVal = $(this).children(":selected").text();
+  $('.r1-select.select-title.tire-height').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+$('.r1-select.select-title.tire-radius').on('change', function(){
+  let newVal = $(this).children(":selected").text();
+  $('.r1-select.select-title.tire-radius').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+$('.r1-select.select-title.select-application').on('change', function(){
+  let newVal = $(this).children(":selected").text();
+  $('.r1-select.select-title.select-application').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+$('.r1-select.select-title.select-studs-length').on('change', function(){
+  let newVal = $(this).children(":selected").val();
+  $('.r1-select.select-title.select-studs-length').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+// AUTO RIMS
+$('.r1-select.select-title.select-rim-lugs').on('change', function(){
+  let newVal = $(this).children(":selected").val();
+  $('.r1-select.select-title.select-rim-lugs').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+$('.r1-select.select-title.select-rim-spread').on('change', function(){
+  let newVal = $(this).children(":selected").val();
+  $('.r1-select.select-title.select-rim-spread').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+$('.r1-select.select-title.select-rim-diameter').on('change', function(){
+  let newVal = $(this).children(":selected").val();
+  $('.r1-select.select-title.select-rim-diameter').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+$('.r1-select.select-title.select-rim-offset').on('change', function(){
+  let newVal = $(this).children(":selected").val();
+  $('.r1-select.select-title.select-rim-offset').each(function() {
+    $(this).val(newVal);
+  });
+});
+
+$('.r1-select.select-title.select-rim-center').on('change', function(){
+  let newVal = $(this).children(":selected").val();
+  $('.r1-select.select-title.select-rim-center').each(function() {
+    $(this).val(newVal);
+  });
+});
