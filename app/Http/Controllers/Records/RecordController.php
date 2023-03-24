@@ -1266,8 +1266,6 @@
         $queue->loadWorkingDay($slot->date,false);
       }
 
-      dd($queue->_workingDays);
-
       $takenBy = json_decode($slot->takenby);
       $takenBy2 = json_decode($slot->takenby2);
 
