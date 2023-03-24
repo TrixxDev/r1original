@@ -1262,28 +1262,22 @@
 
       $office = Office::where('office_id', $queue->office_id)->first();
       $office->loadQueues();
-      foreach ($office->_queues as $queue){
-        $queue->loadWorkingDay($slot->date,false);
-      }
+      $office->loadWorkingDays($slot->date);
+
+      $day = $office->_workingDays[0];
+      $start = Office::intervalByTime($day->opentime);
+      $startTime = $start + $slot->iorder * $office->_workingDays[0]->slotSize;
 
       $takenBy = json_decode($slot->takenby);
       $takenBy2 = json_decode($slot->takenby2);
 
       if ($takenBy !== null) {
         $info = $takenBy;
-        if ($queue->isIntervalBeginning($slot->date,$slot->iorder)) {
-          $time = $queue->getSlotStartTime($slot->date,$slot->iorder,false);
-        } else {
-          $time = '';
-        }
+        $time = Office::timeByInterval($startTime);
       }
       if ($takenBy2 !== null) {
         $info = $takenBy2;
-        if ($queue->isIntervalBeginning($slot->date,$slot->iorder)) {
-          $time = $queue->getSlotStartTime($slot->date,$slot->iorder,false);
-        } else {
-          $time = '';
-        }
+        $time = Office::timeByInterval($startTime);
       }
 
       if ($request->post()) {
