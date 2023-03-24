@@ -19,6 +19,20 @@ class Rim extends Model
     return $this->_includeStock = $value;
   }
 
+  public function getLinkAttribute()
+  {
+    $rim = Rimmake::selectRaw('rim_makes.*, rim_makes.title as tread_title')
+      ->selectRaw('rim_brands.*, rim_brands.title as brand_title')
+      ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
+      ->where('rim_makes.make_id', $this->make_id)
+      ->first();
+    if (!isset($rim->brand_title) || !isset($rim->tread_title)) {
+      return false;
+    } else {
+      return route('lietais-disks', [$rim->brand_title, str_replace('/', '_', $rim->tread_title), $this->rim_id]);
+    }
+  }
+
   public function getAvailableAttribute()
   {
     switch ($this->quantity) {
@@ -176,9 +190,34 @@ class Rim extends Model
     return $tread->title;
   }
 
-  function getFullNameAttribute()
+  public function getFullNameAttribute()
   {
     return $this->getBrandTitleAttribute() . ' ' . $this->getTreadTitleAttribute() . ' ' . $this->skr . 'x' . $this->pcd . ' R' . $this->d3 . ' ' . $this->d1 . 'J et' . $this->et . ' ' . $this->dc . ' ' . $this->color;
+  }
+
+  public function getFullTitleAttribute()
+  {
+    return $this->getBrandTitleAttribute() . ' ' . $this->getTreadTitleAttribute();
+  }
+
+  public function getBrandCommentAttribute()
+  {
+    $tread = Rimmake::where('make_id', $this->make_id)->first();
+    $brand = Rimbrand::where('brand_id', $tread->brand_id)->first();
+
+    return $brand->comment;
+  }
+
+  public function getTreadCommentAttribute()
+  {
+    $tread = Rimmake::where('make_id', $this->make_id)->first();
+
+    return $tread->comment;
+  }
+
+  public function tread()
+  {
+    return $this->hasOne('App\Models\Rimmake', 'make_id', 'make_id');
   }
 
 }

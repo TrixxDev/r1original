@@ -385,7 +385,7 @@ foreach ($tires as $tire) {
       $dom->encoding = 'utf-8';
       $dom->xmlVersion = '1.0';
       $dom->formatOutput = true;
-      $xml_file_name = dirname(__DIR__, 4) . '/xml/kurpirkt.xml';
+      $xml_file_name = dirname(__DIR__, 4) . '/xml.xml/kurpirkt.xml';
 //      $file = file_get_contents('xml/kurpirkt.xml');
       $root = $dom->createElement('root');
       foreach ($tires as $tire) {

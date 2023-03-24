@@ -29,13 +29,57 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  * allows your team to easily build robust real-time web applications.
  */
 
-// import Echo from 'laravel-echo';
+
+
+import Echo from 'laravel-echo';
+import $ from 'jquery';
 
 // window.Pusher = require('pusher-js');
 
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: process.env.MIX_PUSHER_APP_KEY,
-//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-//     forceTLS: true
+window.Echo = new Echo({
+  broadcaster: 'pusher',
+  key: process.env.MIX_PUSHER_APP_KEY,
+  cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+  encrypted: true,
+});
+
+$.ajaxSetup({
+  headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+  }
+});
+//
+// $('table .btn').on('click', function() {
+//   let col = $(this).data('col');
+//   let row = $(this).data('row');
+//
+//   $('.modal-body #col').val(col);
+//   $('.modal-body #row').val(row);
+// });
+
+window.Echo.channel('slots')
+  .listen('.new-slot', (data) => {
+    console.log(data);
+  });
+
+// $('.modal-footer button.btn-primary').on('click', function(e) {
+//   e.preventDefault();
+//   let car = $('.modal-body input#car').val();
+//   let model = $('.modal-body input#model').val();
+//   let col = $('.modal-body input#col').val();
+//   let row = $('.modal-body input#row').val();
+//   $.ajax({
+//     url: '/store',
+//     method: 'post',
+//     data: {
+//       car: car,
+//       model: model,
+//       col: col,
+//       row: row,
+//     },
+//     dataType: 'JSON',
+//     success: function(data) {
+//       $('.btn-close').click();
+//     }
+//   });
 // });

@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Records;
 
+use App\Broadcasting\AdminNewSlotChannel;
+use App\Broadcasting\ChangeQueueChannel;
+use App\Broadcasting\EditSlotChannel;
+use App\Broadcasting\MoveSlotChannel;
 use App\Helper\Tires;
 use App\Http\Controllers\Controller;
+use App\Models\Audit;
 use App\Models\BookingForm;
 use App\Models\Office;
 use App\Models\Queue;
@@ -202,6 +207,7 @@ class RecordController extends Controller
                 $queue->moveSlots($date, $f_rows);
               }
             }
+            broadcast(new ChangeQueueChannel($date, $queue->queue_id, $workingDay->is_visible, $f_visible))->toOthers();
             $workingDay->is_visible = ($f_visible)?1:0;
             $workingDay->save();
 
@@ -234,6 +240,7 @@ class RecordController extends Controller
                     $queue->moveSlots($date, $f_rows);
                   }
                 }
+                broadcast(new ChangeQueueChannel($date, $queue->queue_id, $workingDay->is_visible, $f_visible))->toOthers();
                 $workingDay->is_visible = ($f_visible)?1:0;
                 $workingDay->save();
 
@@ -263,6 +270,7 @@ class RecordController extends Controller
                     $queue->moveSlots($date, $f_rows);
                   }
                 }
+                broadcast(new ChangeQueueChannel($date, $queue->queue_id, $workingDay->is_visible, $f_visible))->toOthers();
                 $workingDay->is_visible = ($f_visible)?1:0;
                 $workingDay->save();
 
@@ -373,13 +381,13 @@ class RecordController extends Controller
         $slot->status = $f_status;
         $slot->comment = $f_slotcomment;
 
-        if ($slot->createTime=='') {
-          $slot->createTime = NOW();
-          $slot->createUser = $userId;
+        if ($slot->createtime=='') {
+          $slot->createtime = NOW();
+          $slot->createuser = $userId;
         }
 
-        $slot->editTime = NOW();
-        $slot->editUser = $userId;
+        $slot->edittime = NOW();
+        $slot->edituser = $userId;
 
         switch ($f_status) {
           case (0): {
@@ -678,12 +686,14 @@ class RecordController extends Controller
         }
 
         $formData = json_encode($form);
+//        broadcast(new AdminNewSlotChannel($request->f_status, $formData, $slot->queue_id, $slot->iorder, $slot->date));
       } else {
         if ($request->f_status == SLOT_STATUS_FREE) {
           foreach ($form as $index => $value) {
             $value = '';
             $form->$index = $value;
           }
+          $text = 'Izdzēsts pieraksts';
           $f_status = $request->f_status;
           $formData = json_encode($form);
         } else {
@@ -694,6 +704,7 @@ class RecordController extends Controller
             $canDiscount = 1;
             $formData = $slot->takenby2 = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
           }
+          $text = 'Jauns pieraksts';
         }
       }
 
@@ -711,8 +722,8 @@ class RecordController extends Controller
           if ($f_part=='a'){
             $targetSlot->status = $f_status;
             $targetSlot->takenby = $formData;
-	          $targetSlot->createtime = $slot->createTime;
-            $targetSlot->createuser = $slot->createUser;
+	          $targetSlot->createtime = $slot->createtime;
+            $targetSlot->createuser = $slot->createuser;
             $targetSlot->edittime = NOW();
             $targetSlot->edituser = $userId;
             $targetSlot->is_mobile = $slot->is_mobile;
@@ -720,8 +731,8 @@ class RecordController extends Controller
             $bQueue = true;
             $targetSlot->status2 = $f_status;
             $targetSlot->takenby2 = $formData;
-            $targetSlot->createtime2 = $slot->createTime2;
-            $targetSlot->createuser2 = $slot->createUser2;
+            $targetSlot->createtime2 = $slot->createtime2;
+            $targetSlot->createuser2 = $slot->createuser2;
             $targetSlot->edittime2 = NOW();
             $targetSlot->edituser2 = $userId;
             $targetSlot->is_mobile2 = $slot->is_mobile2;
@@ -759,7 +770,7 @@ class RecordController extends Controller
           $slot->timestamps = false;
 
           //PRE($slot);die;
-          $slot->save();
+          broadcast(new MoveSlotChannel($f_status, $targetSlot, $slot, $targetSlot->queue_id, $targetSlot->iorder, $targetSlot->date));
         } else {
           if ($p=='a'){
             $prevStatus = $slot->status;
@@ -789,7 +800,7 @@ class RecordController extends Controller
             }
             $slot->edittime2 = NOW();
             $slot->edituser2 = $userId;
-	  }
+          }
           if ($f_slotcomment) {
             $slot->comment = $f_slotcomment;
             if ($p=='a'){
@@ -816,7 +827,13 @@ class RecordController extends Controller
 
           $slot->timestamps = false;
 
-          $slot->save();
+          if (empty($text)) $text = 'Labots pieraksts';
+
+          if ($slot->save()) {
+            Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id,0, $text, $slot);
+          }
+//          dd($slot);
+//          broadcast(new EditSlotChannel($f_status, json_decode($slot->takenby), $slot->queue_id, $slot->iorder, $slot->date))->toOthers();
         }
 
 //        if (($prevStatus!=SLOT_STATUS_TAKEN) && ($f_status==SLOT_STATUS_TAKEN)){
@@ -845,6 +862,10 @@ class RecordController extends Controller
       $return['status'] = ($errorCount >= 1) ? 0 : 1;
 
       $json = json_encode($return);
+
+      $returnSlot = json_decode($slot->takenby);
+      $slotDate = date('Y-m-d',strtotime($date));
+
       echo $json;
       die;
     }
@@ -993,3 +1014,4 @@ class RecordController extends Controller
   }
 
 }
+

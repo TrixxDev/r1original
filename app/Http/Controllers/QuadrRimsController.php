@@ -5,7 +5,6 @@
   use App\Models\FilterCars;
   use App\Models\FilterSizes;
   use App\Models\FilterModels;
-  use App\Models\Quadr;
   use App\Models\Quadrim;
   use App\Models\Quadrimbrand;
   use App\Models\Quadrimmake;
@@ -154,6 +153,27 @@
         ->paginate(20);
 
       return view('rims.quadr.tread', compact('rims', 'currRim', 'brand', 'tread'));
+    }
+
+    public function rims_ajax(Request $request)
+    {
+      $rim = Quadrim::selectRaw('quadrims.*, quadrim_makes.*')
+        ->rightJoin('quadrim_makes', 'quadrims.make_id', '=', 'quadrim_makes.make_id')
+        ->where('quadrims.rim_id', $request->tire_id)
+        ->first();
+
+      if ($request->quantity) {
+        $cart = CartController::addProduct($this->model, $rim->rim_id, $request->quantity);
+      } else {
+        $cart = CartController::addProduct($this->model, $rim->rim_id, $this->cartQty);
+      }
+
+      $quantity = Cart::count();
+      $total_sum = str_replace([',', '.00'], '', Cart::total());
+      $bought = ($request->quantity) ? $request->quantity : $this->cartQty;
+
+      echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
+
     }
 
     public function getRimOptions()

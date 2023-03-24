@@ -2,7 +2,9 @@
 
 namespace App\Helper;
 
+use App\Models\Audit;
 use App\Models\Office;
+use App\Models\Quickorder;
 use Exception;
 
 class SmsSender {
@@ -20,6 +22,108 @@ class SmsSender {
       return false;
     } else {
       return $phone_to_check;
+    }
+  }
+
+  public function sendOrderSMS($data, $orderId)
+  {
+    header("Content-type: text/html; charset=UTF-8");
+    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+    header("Cache-Control: no-cache");
+    header("Pragma: no-cache");
+
+    $target = $data['mobile_number'];
+    $smsText = 'Pasūtījums ar numuru - ' . $orderId . ' ir apstiprināts';
+
+    $sendString = '["'.$target.'","'.$smsText.'"]';
+
+    $sendString = '['.$sendString.']';
+    //$sendString .= '["28344474","'.$smsText.'"]';
+
+    $object = json_decode($sendString);
+    //dd($sendString, $object);
+
+//https://traffic.sales.lv/API:0.14/
+
+//    $sendSMS = P('reservation.sms.enabled',0);
+//
+//    if (!$sendSMS){
+//      audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, 0,0, $sendString);
+//      die;
+//    }
+//$sendString = '[[28344474, "Hello"]]';
+
+    $postdata = http_build_query(
+      array(
+        'APIKey' => '867459d28d672949f49d8f6df81a67d286ea96f9',
+        'Command' => 'GetSenders'
+      )
+    );
+
+    $opts = array('http' =>
+      array(
+        'method'  => 'POST',
+        'header'  => 'Content-type: application/x-www-form-urlencoded',
+        'content' => $postdata
+      )
+    );
+
+    $context = stream_context_create($opts);
+    $result = file_get_contents('https://traffic.sales.lv/API:0.14/', false, $context);
+
+    $data = json_decode($result);
+    $error = @$data->Error;
+
+    if ($error==''){
+      $sender = $data->Senders[0];	// paļaujamies uz to, ka ir vismaz viens atļautais sūtītājs!
+    } else {
+      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SMS, Ātrais pasūtījums: Neautorizēta IP!');
+      throw new Exception("SMS: Neautorizēta IP!");
+    }
+
+    if ($sender=='') {
+      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SMS, Ātrais pasūtījums: Nav pieejams neviens sūtītājs!');
+      throw new Exception("SMS: Nav pieejams neviens sūtītājs!");
+    }
+
+    $postdata = http_build_query(
+      array(
+        'APIKey' => '867459d28d672949f49d8f6df81a67d286ea96f9',
+        'Command' => 'SendMultiple',
+        'Sender' => $sender,
+        'Concatenated'=>'1',
+        'Unicode'=>'1',
+        'Content' => $sendString,
+      )
+    );
+    $opts = array('http' =>
+      array(
+        'method'  => 'POST',
+        'header'  => 'Content-type: application/x-www-form-urlencoded',
+        'content' => $postdata
+      )
+    );
+
+    $context = stream_context_create($opts);
+    $result = file_get_contents('https://traffic.sales.lv/API:0.14/', false, $context);
+
+
+//    audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SENT SMS: '.$result);
+
+    if ($result) {
+      if (stripos($orderId, 'u-') !== false) {
+        $orderId = str_replace('U-', '', $orderId);
+      } else {
+        $orderId = str_replace('K-', '', $orderId);
+      }
+      $order = Quickorder::where('order_id', $orderId)->first();
+      $order->sms_sended = 1;
+      $order->save();
+      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,$order->order_id,0,'SMS, Ātrais pasūtījums: Īsziņa veiksmīgi nosūtīta!', $order);
+      return json_encode(['success' => 'Īsziņa veiksmīgi nosūtīta']);
+    } else {
+      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,$order->order_id,0,'SMS, Ātrais pasūtījums: Neizdevās aizsūtīt īsziņu!');
+      return json_encode(['danger' => 'Īsziņa nav nosūtīta']);
     }
   }
 
@@ -55,7 +159,7 @@ class SmsSender {
               $sendString .= '["'.$target.'","'.$smsText.'"]';
             }
           }
-	  
+
           if ($queue->_workingDays[$date]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN){
             $form = json_decode($slot->takenby2);
             $smsText = $queue->parseNotification($queue->notificationSMS, $date, $slot->iorder, $form, true);
@@ -136,7 +240,7 @@ class SmsSender {
     $context = stream_context_create($opts);
     $result = file_get_contents('https://traffic.sales.lv/API:0.14/', false, $context);
 
-    
+
 //    audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SENT SMS: '.$result);
 
     dd($result);

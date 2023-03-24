@@ -15,7 +15,7 @@
               <div class="col-md-12 col-lg-4">
                 <section class="page-content" id="content">
                   <div class="images-container ">
-                    {!! App\Helper\Image::treadZoom('auto-rim', $currRim->make_id) !!}
+                    {!! App\Helper\Image::treadZoom('quadr-rim', $currRim->make_id) !!}
                   </div>
                   <div class="scroll-box-arrows">
                     <i class="material-icons left"></i>
@@ -32,7 +32,7 @@
                     <div class="product-prices">
                       <div class="product-discount">
                         <span>Veikala cena:</span>
-                        <span class="regular-price">€ {{ $currRim->price2 }}</span>
+                        <span class="regular-price">€ {{ $currRim->price1 }}</span>
                       </div>
                       <div class="product-price h5 has-discount" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
                         <link itemprop="availability" href="https://schema.org/InStock">
@@ -40,7 +40,7 @@
 
                         <div class="current-price">
                           <span>Akcijas cena:</span>
-                          <span itemprop="price" content="{{ $currRim->price3 }}">€ {{ $currRim->price3 }}</span>
+                          <span itemprop="price" content="{{ $currRim->price2 }}">€ {{ $currRim->price2 }}</span>
                         </div>
                       </div>
                     </div>
@@ -83,7 +83,7 @@
                     <table class="table">
                       <thead>
                       <tr>
-                        <th>Platums</th>
+                        <th>Diska platums collās</th>
                         <td>{{ $currRim->d1 }}</td>
                       </tr>
                       </thead>
@@ -93,7 +93,7 @@
                         <td>{{ $currRim->d3 }}</td>
                       </tr>
                       <tr>
-                        <th>Skrūvju izbīdījums</th>
+                        <th>Skrūvju attālums</th>
                         <td>{{ $currRim->pcd }}</td>
                       </tr>
                       <tr>
@@ -130,11 +130,30 @@
                     </table>
                   </div>
                   <div class="col-sm-12 col-md-8">
-                    @if($currRim->comment)
-                      <div class="alert" style="border: 1px solid #68c0a8">
-                        {{$currRim->comment}}
-                      </div>
-                    @endif
+                    <ul class="nav nav-tabs" style="border-bottom: none!important;">
+                      @if ($currRim->t_comment)
+                        <li class="nav-item">
+                          <a class="nav-link active" data-toggle="tab" href="#tread" style="border-color: #68c0a8 #68c0a8 transparent">Apraksts</a>
+                        </li>
+                      @endif
+                      @if ($currRim->b_comment)
+                        <li class="nav-item">
+                          <a class="nav-link @if (!$currRim->t_comment) active @endif" data-toggle="tab" href="#brand" style="border-color: #68c0a8 #68c0a8 transparent">Par zīmolu</a>
+                        </li>
+                      @endif
+                    </ul>
+                    <div class="tab-content">
+                      @if ($currRim->t_comment)
+                        <div id="tread" class="container alert tab-pane active" style="border: 1px solid #68c0a8">
+                          {!! $currRim->t_comment !!}
+                        </div>
+                      @endif
+                      @if ($currRim->b_comment)
+                        <div id="brand" class="container alert tab-pane @if (!$currRim->t_comment) active @endif" style="border: 1px solid #68c0a8">
+                          {!! $currRim->b_comment !!}
+                        </div>
+                      @endif
+                    </div>
                   </div>
                 </div>
               </div>
@@ -211,7 +230,14 @@
 
                         <td class="shopping-cart-col">
                           <div class="clearfix atc_div text-right">
-                            <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">
+                            <button class="grid-cart-btn"
+                                    data-toggle="modal"
+                                    @if (Auth::user())
+                                    data-target="#"
+                                    @else
+                                    data-target="#blockcart-modal"
+                                    @endif data-info="{{ $rim->rim_id }}"
+                            >
                               <i class="material-icons">add_shopping_cart</i>
                             </button>
                           </div>
