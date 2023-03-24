@@ -1271,11 +1271,19 @@
 
       if ($takenBy !== null) {
         $info = $takenBy;
-        $time = $queue->getSlotStartTime($slot->date,$slot->iorder,false);
+        if ($queue->isIntervalBeginning($slot->date,$slot->iorder)) {
+          $time = $queue->getSlotStartTime($slot->date,$slot->iorder,false);
+        } else {
+          $time = '';
+        }
       }
       if ($takenBy2 !== null) {
         $info = $takenBy2;
-        $time = $queue->getSlotStartTime2($slot->date,$slot->iorder,false);
+        if ($queue->isIntervalBeginning($slot->date,$slot->iorder)) {
+          $time = $queue->getSlotStartTime($slot->date,$slot->iorder,false);
+        } else {
+          $time = '';
+        }
       }
 
       if ($request->post()) {
