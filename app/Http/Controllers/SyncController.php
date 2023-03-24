@@ -102,11 +102,29 @@ class SyncController extends Controller
             } else {
               $this->krs = 0;
             }
+          } else {
+            $this->urs = 0;
+            $this->krs = 0;
           }
 
           $this->updateArticle($this->article);
           return json_encode(['urs_quantity' => intval($this->urs), 'krs_quantity' => intval($this->krs)]);
         }
+    }
+
+    public function getStocks($article)
+    {
+      foreach ($this->tire_tables as $tire_table => $tire_options) {
+        $model = "App\\Models\\" . $tire_options[0];
+
+        if (class_exists($model)) {
+          $item = $model::where('article', $article)->first();
+          if (!$item) continue;
+          return $item->getStockAvailability;
+        } else {
+          return false;
+        }
+      }
     }
 
     public function getStockLinks($article)

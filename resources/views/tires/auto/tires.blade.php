@@ -100,11 +100,7 @@
                                       data-info="{{ $tire->tire_id }}"
                                       {{--                                      data-info="{{ $currTire->tire_id }}--}}
                                       onclick="event.preventDefault()"
-                                      @hasrole('administrators')
-                                        data-target="#"
-                                      @else
-                                  data-target="#blockcart-modal"
-                                  @endhasrole>
+                                        data-target="#">
                                   <i class="material-icons">add_shopping_cart</i>
                                   </button>
                             </span>

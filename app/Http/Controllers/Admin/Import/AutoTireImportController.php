@@ -36,7 +36,7 @@ class AutoTireImportController extends Controller
             $tire = new Autotire();
           }
 
-          $brand = Autobrand::where('title', 'like', '%' . $fields[3] . '%')->first();
+          $brand = Autobrand::where('title', 'like', '%' . $fields[3] . '%')->orderBy('brand_id', 'DESC')->first();
 
           if ($brand === null) {
             $brand = new Autobrand();

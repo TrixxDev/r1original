@@ -195,7 +195,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   Route::post('/studs/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\StudsController::class, 'ajaxUpdateTires'])->name('studs.ajaxUpdateTires');
 
   // Interneta-veikals
-  Route::match(['GET', 'POST'],'/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
+  Route::match(['GET', 'POST'], '/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
   Route::match(['GET', 'POST'], '/order/{id}/update', [App\Http\Controllers\Admin\ShopController::class, 'order_update'])->name('order.update');
   Route::match(['GET', 'POST'], '/order/{id}/delete', [App\Http\Controllers\Admin\ShopController::class, 'delete'])->name('order.delete');
   Route::get('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'order'])->name('order');
@@ -262,6 +262,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
 Route::get('/sendSMS', function() {
   (new \App\Helper\SmsSender())->send();
 });
+
+Route::post('/orderSMS', [App\Http\Controllers\HomeController::class, 'sendOrderSMS']);
 
 Route::middleware('checksession')->group(function() {
 
@@ -468,6 +470,9 @@ Route::middleware('checksession')->group(function() {
   Route::get('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
   Route::post('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
   Route::middleware('auth')->get('/testing3', [App\Http\Controllers\HomeController::class, 'fastOrder']);
+
+  Route::get('queuetest', [App\Http\Controllers\HomeController::class, 'queuetest']);
+  Route::post('queuetest', [App\Http\Controllers\HomeController::class, 'queuetest']);
 
   // END ROUTES FOR TESTING PURPOSES
   Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);

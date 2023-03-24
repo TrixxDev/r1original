@@ -744,7 +744,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
       const urlData = new URLSearchParams(calcData).toString();
       // console.log(urlData);
 
-      popCalc('/testing3',780,400, urlData);
+      popCalc('/testing3',780,480, urlData);
     }
   });
 
@@ -855,7 +855,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
 
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,400, urlData);
+      popCalc('/testing3',780,480, urlData);
     }
   });
 
@@ -1075,7 +1075,7 @@ if (!admin) {
 
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,400, urlData);
+      popCalc('/testing3',780,480, urlData);
 
 
 })
@@ -1153,7 +1153,7 @@ $('.ct_matrix_row').each(function(key, value) {
 
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,400, urlData);
+      popCalc('/testing3',780,480, urlData);
 
 
      }
@@ -2997,7 +2997,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
 
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,400, urlData);
+      popCalc('/testing3',780,480, urlData);
 
 
     }
