@@ -196,6 +196,7 @@ class Queue extends Model
     }
 
     public function getSlotStartInterval($date,$slotNumber){
+      dd($this->_workingDays);
         $day = $this->_workingDays[$date];
         $start = self::intervalByTime($day['opentime']);
         return $start + $slotNumber * $this->_workingDays[$date]->slotSize;
