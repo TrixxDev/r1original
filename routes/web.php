@@ -25,7 +25,7 @@ Route::get('/register', function() { return abort(404); })->name('register');
 
 // Administrācijas panelis
 
-Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware('web')->group(function() {
+Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['web'])->group(function() {
   Route::get('/', [App\Http\Controllers\Admin\MainController::class, 'home'])->name('home');
 
   // Auto riepas
