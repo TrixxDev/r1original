@@ -162,7 +162,7 @@
                             <tr>
                               <th scope="col"></th>
                               <th scope="col">Izmērs</th>
-                              <th scope="col" class="hidden-sm-down text-center" title="Kordu slāņu skaits">PR</th>
+                              <th scope="col" class="hidden-sm-down text-center">Kods</th>
 
                               <th id="store-price-button" scope="col" class="text-center">
                                 Veikala cena
@@ -198,7 +198,7 @@
                                 </td>
 
                                 <td class="hidden-sm-down text-center">
-                                  {{$tire->pr}}
+                                  {{$tire->code}}
                                 </td>
 
 {{--                                <td class="hidden-sm-down text-center tread-code-cell-size">--}}
