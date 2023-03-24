@@ -1264,6 +1264,7 @@
       $office->loadQueues();
       foreach ($office->_queues as $queue){
         $queue->loadWorkingDay($slot->date,false);
+        dd($queue);
       }
 
       $takenBy = json_decode($slot->takenby);
