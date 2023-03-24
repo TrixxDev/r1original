@@ -102,6 +102,9 @@ class SyncController extends Controller
             } else {
               $this->krs = 0;
             }
+          } else {
+            $this->urs = 0;
+            $this->krs = 0;
           }
 
           $this->updateArticle($this->article);

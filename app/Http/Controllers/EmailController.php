@@ -62,7 +62,6 @@
         }
 
         try {
-          //EMail::send([], [], $message);
           Audit::audit(AUDIT_SEVERITY_INFO, AUDIT_FACILITY_MESSAGE, -1, 0, "Mail sent", $this);
           return true;
         } catch (Exception $e) {

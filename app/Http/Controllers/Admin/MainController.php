@@ -101,11 +101,11 @@ class MainController extends Controller
       $old_instance_data = $row1->audit_instance;
       $old_instance = unserialize($old_instance_data);
       if ($old_instance === false) {
-	if (class_exists($instance_class)) {
+	      if (class_exists($instance_class)) {
           $old_instance = new $instance_class;
-	} else {
-	  $old_instance = '';
-	}
+	      } else {
+	        $old_instance = '';
+	      }
       }
     } else {
       if (class_exists($instance_class)) {

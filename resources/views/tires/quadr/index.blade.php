@@ -165,7 +165,6 @@
                           <th scope="col"></th>
                           <th scope="col" class="table-tire-name-cell" style="width:50%;">Brends / modelis</th>
                           <th scope="col" class="text-center">Kods</th>
-                          <th scope="col" class="text-center">PR</th>
                           <th scope="col" id="store-price-button" class="text-center">Veikala cena</th>
                           <th scope="col" id="store-sale-button" class="text-center">Akcijas cena</th>
                           <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
@@ -283,7 +282,6 @@
 {{--                                  title="<span style='color: black'>{{ $tire->noise }}</span>">{{ $tire->noise }}</span>--}}
 {{--                          </td>--}}
                           <td class="text-center">{{$tire->code}}</td>
-                          <td class="text-center">{{$tire->pr}}</td>
                           <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
                           <td id="sale-price" class="text-center tire-price-red sale-price">€ {{ $tire->price2 }}</td>
                           <td class="hidden-sm-down text-center"></td>
