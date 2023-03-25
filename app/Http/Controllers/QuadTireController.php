@@ -86,7 +86,7 @@ class QuadTireController extends Controller
                           ->orderBy('d3', 'ASC')
                           ->orderBy('d1', 'ASC')
                           ->orderBy('d2', 'ASC')
-                          ->orderBy('price2', 'DESC')->paginate();
+                          ->orderBy('price2', 'DESC')->paginate(80);
 
 //        dd(DB::getQueryLog());
 

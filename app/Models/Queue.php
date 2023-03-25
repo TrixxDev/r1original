@@ -384,6 +384,7 @@ class Queue extends Model
       $time = $this->getSlotStartTime($date,$slotNum,false);
       $time2 = $this->getSlotStartTime2($date,$slotNum,false);
       if ($showTime2) $time = $time2;
+
       $dateStamp = strtotime($date.' '.$time);
       $dayOfWeek = $_weekDays[date('N', $dateStamp)];
       $dateFmt = date('d.m.Y', $dateStamp);
@@ -417,16 +418,21 @@ class Queue extends Model
       }
 
       $outText = str_replace('%TIME%',$time,$text);
-      $outText = str_replace('%TIME2%',$time2,$outText);
+      if ($showTime2) {
+        $outText = str_replace('%TIME2%',$time2,$outText);
+      }
       $outText = str_replace('%DATE%',$dateFmt,$outText);
+      $outText = str_replace('%DAY%',ucfirst($dayOfWeek),$outText);
       $outText = str_replace('%DATE_LONG%',$dayOfWeek.', '.$dateFmt,$outText);
       $outText = str_replace('%OFFICE%',$office->title,$outText);
       $outText = str_replace('%CARMAKE%',$takenBy->vehicleMake,$outText);
       $outText = str_replace('%CARMODEL%',$takenBy->vehicleModel,$outText);
       $outText = str_replace('%PURPOSE%',$purpose,$outText);
       $outText = str_replace('%PURPOSE_LONG%',$purposeLong,$outText);
+      $outText = str_replace('%CANCELID%',$takenBy->cancelId,$outText);
 
       return $outText;
     }
 
 }
+

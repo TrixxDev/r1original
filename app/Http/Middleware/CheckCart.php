@@ -15,9 +15,9 @@ class CheckCart
   public function handle($request, Closure $next)
   {
 
-    if (\Cart::countItems() == 0) {
-      return Redirect::route('home');
-    }
+//    if (\Cart::countItems() == 0) {
+//      return Redirect::route('home');
+//    }
 
     return $next($request);
 

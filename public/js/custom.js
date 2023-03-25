@@ -10,10 +10,10 @@ $.fn.hasId = function(id) {
   return this.attr('id') == id;
 };
 
-const pusher = new Pusher('04c358afec27f4ba222f', {
-  cluster: 'eu',
-  encrypted: true
-});
+//const pusher = new Pusher('04c358afec27f4ba222f', {
+//  cluster: 'eu',
+//  encrypted: true
+//});
 
 const ct_pagination = 0;
 const ct_pagination_nb = 100000;
@@ -744,7 +744,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
       const urlData = new URLSearchParams(calcData).toString();
       // console.log(urlData);
 
-      popCalc('/testing3',780,400, urlData);
+      popCalc('/testing3',780,480, urlData);
     }
   });
 
@@ -855,7 +855,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
 
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,400, urlData);
+      popCalc('/testing3',780,480, urlData);
     }
   });
 
@@ -1075,7 +1075,7 @@ if (!admin) {
 
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,400, urlData);
+      popCalc('/testing3',780,480, urlData);
 
 
 })
@@ -1153,7 +1153,7 @@ $('.ct_matrix_row').each(function(key, value) {
 
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,400, urlData);
+      popCalc('/testing3',780,480, urlData);
 
 
      }
@@ -2998,7 +2998,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
 
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,400, urlData);
+      popCalc('/testing3',780,480, urlData);
 
 
     }

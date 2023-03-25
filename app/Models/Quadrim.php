@@ -19,6 +19,11 @@
       return $this->_includeStock = $value;
     }
 
+    public function getLinkAttribute()
+    {
+      return route('kvadru-disks', [$this->getBrandTitleAttribute(), str_replace('/', '_', $this->getTreadTitleAttribute()), $this->rim_id]);
+    }
+
     public function getAvailableAttribute()
     {
       switch ($this->quantity) {
@@ -164,7 +169,11 @@
     public function getBrandTitleAttribute()
     {
       $tread = Quadrimmake::where('make_id', $this->make_id)->first();
-      $brand = Quadrimbrand::where('brand_id', $tread->brand_id)->first();
+      if (!$tread) {
+        return false;
+      } else {
+        $brand = Quadrimbrand::where('brand_id', $tread->brand_id)->first();
+      }
 
       return $brand->b_title;
     }
@@ -173,12 +182,23 @@
     {
       $tread = Quadrimmake::where('make_id', $this->make_id)->first();
 
-      return $tread->t_title;
+      if ($tread) return $tread->t_title;
+      return false;
     }
 
     function getFullNameAttribute()
     {
-      return $this->getTreadTitleAttribute() . ' ' . $this->skr . 'x' . $this->pcd . ' R' . $this->d3 . ' ' . $this->d1 . 'J et' . $this->et . ' ' . $this->dc . ' ' . $this->color;
+      return $this->getBrandTitleAttribute() . ' ' . $this->getTreadTitleAttribute() . ' ' . $this->skr . 'x' . $this->pcd . ' R' . $this->d3 . ' ' . $this->d1 . 'J et' . $this->et . ' ' . $this->color;
+    }
+
+    public function getFullTitleAttribute()
+    {
+      return $this->getBrandTitleAttribute() . ' ' . $this->getTreadTitleAttribute();
+    }
+
+    public function tread()
+    {
+      return $this->hasOne('App\Models\Quadrimmake', 'make_id', 'make_id');
     }
 
   }

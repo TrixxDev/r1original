@@ -19,15 +19,15 @@ class CheckSession
 
     $response = $next($request);
 
-    if (\Cart::countItems() == 0) {
-      if (Auth::check()) {
-        Order::where('userId', Auth::user()->id)->where('status', 1)->delete();
-//        dd(123);
-      } else {
-        Order::where('userIp', user_ip)->where('status', 1)->delete();
-//        dd(321);
-      }
-    }
+//    if (\Cart::countItems() == 0) {
+//      if (Auth::check()) {
+//        Order::where('userId', Auth::user()->id)->where('status', 1)->delete();
+////        dd(123);
+//      } else {
+//        Order::where('userIp', user_ip)->where('status', 1)->delete();
+////        dd(321);
+//      }
+//    }
 
 //    $session_id = Session::getId();
 //

@@ -32,6 +32,7 @@ class RimsController extends Controller
   public $currentCenter;
 
   public $model = 'Rim';
+  public $cartQty = 4;
 
   public $models;
 
@@ -76,6 +77,7 @@ class RimsController extends Controller
     View::share('studs_spread', $this->getRimOptions()['stud_spreads']);
     View::share('makes', $this->getRimMakes());
     View::share('models', $this->getRimModels());
+    View::share('cartQty', $this->cartQty);
 
   }
 
@@ -140,20 +142,28 @@ class RimsController extends Controller
   {
     $brand = Rimbrand::where('title', $brand)->first();
 
-    $tread = Rimmake::where('title', $tread)->first();
+    $rims = Rim::selectRaw('rims.*, rim_makes.*, rim_brands.*,
+                                                rim_brands.title as brands_title')
+      ->join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+      ->join('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
+      ->where('rim_brands.title', $brand->title)
+      ->where('rim_makes.title', str_replace('_', '/', $tread))
+      ->orderBy('d3', 'ASC')
+      ->orderBy('d1', 'ASC')
+      ->get();
 
-    $currRim = Rim::join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
-                     ->where('rim_makes.title', $tread->title)
-                     ->where('rims.rim_id', $rim)
-                     ->first();
+    $currRim = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
+      ->where('rim_makes.title', str_replace('_', '/', $tread))
+      ->where('rims.rim_id', $rim)
+      ->first();
 
-    $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
-      ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
-      ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
-      ->where('rims.make_id', $tread->make_id )
-      ->paginate(20);
+    $currBrand = Rimbrand::where('brand_id', $currRim->brand_id)->first();
 
-    return view('rims.auto.tread', compact('rims', 'currRim', 'brand', 'tread'));
+    $currRim->includeStock = true;
+
+    return view('rims.auto.tread',
+      compact('rims', 'currRim', 'currBrand')
+    );
   }
 
   public function quadr_rims_tread($brand, $tread, $rim)
@@ -202,34 +212,15 @@ class RimsController extends Controller
     if ($request->quantity) {
       $cart = CartController::addProduct($this->model, $rim->rim_id, $request->quantity);
     } else {
-      $cart = CartController::addProduct($this->model, $rim->rim_id, 4);
+      $cart = CartController::addProduct($this->model, $rim->rim_id, $this->cartQty);
     }
 
     $quantity = Cart::count();
     $total_sum = str_replace([',', '.00'], '', Cart::total());
-    $bought = ($request->quantity) ? $request->quantity : 4;
+    $bought = ($request->quantity) ? $request->quantity : $this->cartQty;
 
     echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
 
-//    dd($rim);
-//      Rim::with('tread')->selectRaw('auto_tires.*, auto_treads.*')
-//      ->rightJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-//      ->where('auto_treads.season', $this->season)
-//      ->where('auto_tires.tire_id', $request->tire_id)
-//      ->where('auto_tires.visible_users', '<>', 0)
-//      ->first();
-//
-//    if ($request->quantity) {
-//      $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
-//    } else {
-//      $cart = CartController::addProduct($this->model, $tire->tire_id, 4);
-//    }
-//
-//    $quantity = Cart::count();
-//    $total_sum = str_replace([',', '.00'], '', Cart::total());
-//    $bought = ($request->quantity) ? $request->quantity : 4;
-//
-//    echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
   }
 
   public function quadr_rims()

@@ -394,7 +394,7 @@
                                      href="{{ route('lietais-disks', [\Str::slug($rim->brandTitle), strtolower(str_replace('/', '_', $rim->treadTitle)), $rim->rim_id]) }}"
                                      data-content="{{ $rim->fullName }}"
                                      data-article="{{ $rim->article }}">
-                                    {{ $rim->brand_title . ' ' . $rim->title }}
+                                    {{ $rim->fullTitle }}
                                   </a>
                                 </td>
                                 <td class="text-center">
@@ -417,8 +417,8 @@
                                   {{$rim->color}}
                                 </td>
 
-                                <td id="store-price" class="text-center store-price">€ {{$rim->price2}}</td>
-                                <td id="sale-price" class="text-center tire-price-red sale-price">€ {{$rim->price3}}</td>
+                                <td id="store-price" class="text-center store-price">€ {{$rim->price1}}</td>
+                                <td id="sale-price" class="text-center tire-price-red sale-price">€ {{$rim->price2}}</td>
                                 <td class="hidden-sm-down text-center"></td>
 
                                 <td class="shopping-cart-col">

@@ -129,6 +129,13 @@ class Bigtire extends Model
 
   public function getDotAvailableAttribute()
   {
+
+    if ($this->urs_quantity > 0 && $this->krs_quantity <= 0) {
+      $this->quantity = $this->urs_quantity;
+    } else if ($this->urs_quantity <= 0 && $this->krs_quantity > 0) {
+      $this->quantity = $this->krs_quantity;
+    }
+
     if ($this->quantity < 0 && $this->getStockCount() > 0) {
       if ($this->_includeStock) {
         $count = $this->getStockCount();
@@ -183,6 +190,11 @@ class Bigtire extends Model
       }
     }
 
+  }
+
+  public function getFullNameAttribute()
+  {
+    return $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->code . ' ' . $this->getLiSiAttribute();
   }
 
   public function getTitleAttribute()

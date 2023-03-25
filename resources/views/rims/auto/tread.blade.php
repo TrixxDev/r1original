@@ -27,14 +27,14 @@
                 <div class="row">
                   <div class="col-sm-12 product-main-details">
 {{--                    {{ dd($tread, $brand) }}--}}
-                    <h1 class="h1 mt-1" itemprop="name">{{$brand->title.' '.$tread->title}}</h1>
+                    <h1 class="h1 mt-1" itemprop="name">{{$currRim->fullTitle}}</h1>
 {{--                    <h1 class="h1 mt-1" itemprop="name">{{ dd($rims[0]) }}</h1>--}}
                   </div>
                   <div class="col-sm-12 col-md-12 col-lg-6">
                     <div class="product-prices">
                       <div class="product-discount">
                         <span>Veikala cena:</span>
-                        <span class="regular-price">€ {{ $currRim->price2 }}</span>
+                        <span class="regular-price">€ {{ $currRim->price1 }}</span>
                       </div>
                       <div class="product-price h5 has-discount" itemprop="offers" itemscope="" itemtype="https://schema.org/Offer">
                         <link itemprop="availability" href="https://schema.org/InStock">
@@ -42,7 +42,7 @@
 
                         <div class="current-price">
                           <span>Akcijas cena:</span>
-                          <span itemprop="price" content="{{ $currRim->price3 }}">€ {{ $currRim->price3 }}</span>
+                          <span itemprop="price" content="{{ $currRim->price2 }}">€ {{ $currRim->price2 }}</span>
                         </div>
                       </div>
                     </div>
@@ -55,16 +55,16 @@
                             <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
                             <input type="hidden" name="article" class="tire_article" value="{{ $currRim->article }}">
                             <input type="hidden" name="title" class="tire_title" value="{{ $currRim->fullName }}">
-                            <input type="text" name="qty" id="quantity_wanted" value="4" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
+                            <input type="text" name="qty" id="quantity_wanted" value="{{ $cartQty }}" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                             <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                             <span class="input-group-btn-vertical">
-                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
-                                              <i class="material-icons touchspin-up"></i>
-                                            </button>
-                                            <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" type="button">
-                                              <i class="material-icons touchspin-down"></i>
-                                            </button>
-                                          </span>
+                              <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-up" type="button">
+                                <i class="material-icons touchspin-up"></i>
+                              </button>
+                              <button class="btn btn-touchspin js-touchspin bootstrap-touchspin-down" type="button">
+                                <i class="material-icons touchspin-down"></i>
+                              </button>
+                            </span>
                           </div>
                         </div>
                         <div class="add">
@@ -98,7 +98,7 @@
                         <td>{{ $currRim->d3 }}</td>
                       </tr>
                       <tr>
-                        <th>Skrūvju izbīdījums</th>
+                        <th>Skrūvju attālums</th>
                         <td>{{ $currRim->pcd }}</td>
                       </tr>
                       <tr>
@@ -139,11 +139,30 @@
                     </table>
                   </div>
                   <div class="col-sm-12 col-md-8">
-                    @if($currRim->comment)
-                    <div class="alert" style="border: 1px solid #68c0a8">
-                      {{$currRim->comment}}
-                    </div>
+                    <ul class="nav nav-tabs" style="border-bottom: none!important;">
+                      @if ($currRim->treadComment)
+                        <li class="nav-item">
+                          <a class="nav-link active" data-toggle="tab" href="#tread" style="border-color: #68c0a8 #68c0a8 transparent">Apraksts</a>
+                        </li>
                       @endif
+                      @if ($currRim->brandComment)
+                        <li class="nav-item">
+                          <a class="nav-link @if (!$currRim->treadComment) active @endif" data-toggle="tab" href="#brand" style="border-color: #68c0a8 #68c0a8 transparent">Par zīmolu</a>
+                        </li>
+                      @endif
+                    </ul>
+                    <div class="tab-content">
+                      @if ($currRim->treadComment)
+                        <div id="tread" class="container alert tab-pane active" style="border: 1px solid #68c0a8">
+                          {!! $currRim->treadComment !!}
+                        </div>
+                      @endif
+                      @if ($currRim->brandComment)
+                        <div id="brand" class="container alert tab-pane @if (!$currRim->treadComment) active @endif" style="border: 1px solid #68c0a8">
+                          {!! $currRim->brandComment !!}
+                        </div>
+                      @endif
+                    </div>
                   </div>
                 </div>
               </div>
@@ -217,17 +236,17 @@
                         </td>
 
 
-                        <td id="store-price" class="text-center store-price">€ {{$rim->price2}}</td>
+                        <td id="store-price" class="text-center store-price">€ {{$rim->price1}}</td>
                         <td id="sale-price" class="text-center tire-price-red sale-price">
-                          @if($rim->price3 != 0)
-                            € {{$rim->price3}}
+                          @if($rim->price2 != 0)
+                            € {{$rim->price2}}
                           @endif
                         </td>
                         <td class="hidden-sm-down text-center"></td>
 
                         <td class="shopping-cart-col">
                           <div class="clearfix atc_div text-right">
-                            <button class="cart-shopping-button grid-cart-btn"
+                            <button class="grid-cart-btn"
                                     data-toggle="modal"
                                     @if (Auth::user())
                                       data-target="#"

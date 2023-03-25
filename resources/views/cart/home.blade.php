@@ -2,6 +2,10 @@
 
 @section('content')
 
+  @php
+    $cart_have_others = 0;
+  @endphp
+
     <div class="container">
         <div class="row">
             <div class="main-content clearfix col-md-12 col-xl-10">
@@ -34,14 +38,9 @@
                                     <hr class="separator">
                                     @if (\Cart::count() > 0)
                                         @foreach (\Cart::content() as $item)
-{{--                                          {{ dd($item->options) }}--}}
                                         <div class="cart-item-table cart-item-container">
                                           <div class="item-name cart-item-name">
-                                              @if ($item->options->image == 'stud')
-                                                <a href="{{ $item->options->link }}" data-id_customization="0">{{ strtoupper($item->name) }}</a>
-                                              @else
-                                                <a href="{{ $item->options->link }}" data-id_customization="0">{{ strtoupper($item->name) . ' ' . $item->options->tire['d1'] . ' ' . $item->options->tire['d2'] . ' ' . $item->options->tire['d3'] . ' ' . $item->options->tire['li'].$item->options->tire['si'] }}</a>
-                                              @endif
+                                              <a href="{{ $item->options->link }}" data-id_customization="0" style="text-transform: uppercase;">{{ strtoupper($item->options->tireObj->fullName) }}</a>
                                               <br>
                                               <span class="item-price">€ {{ $item->options->tire['price2'] }}</span>
                                             <br>

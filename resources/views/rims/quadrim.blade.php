@@ -260,12 +260,12 @@
                         $brand = str_replace(" ", "", $brand);
                       }
                     @endphp
-                    <a href="{{ route('lietais-disks', [\Str::slug($rim->brandTitle), strtolower(str_replace('/', '_', $rim->treadTitle)), $rim->rim_id]) }}"
+                    <a href="{{ route('kvadru-disks', [\Str::slug($rim->brandTitle), strtolower(str_replace('/', '_', $rim->treadTitle)), $rim->rim_id]) }}"
                        class="grid-view-link"
                        data-article="{{ $rim->article }}">
                       <div class="tire-image-card sort-order">
                         <div class="text-center image-grid-overflow">
-                          {!! App\Helper\Image::showGrid('auto-rim', $rim->make_id) !!}
+                          {!! App\Helper\Image::showGrid('quadr-rim', $rim->make_id) !!}
                         </div>
 
                         <div class="tire-list-caption">
@@ -373,11 +373,11 @@
 
                           <td class="table-tire-name-cell">
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                               title='{!! App\Helper\Image::show('auto-rim', $rim->make_id) !!}'
+                               title='{!! App\Helper\Image::show('quadr-rim', $rim->make_id) !!}'
                                href="{{ route('kvadru-disks', [\Str::slug($rim->brandTitle), strtolower(str_replace('/', '_', $rim->treadTitle)), $rim->rim_id]) }}"
                                data-content="{{ $rim->fullName }}"
                                data-article="{{ $rim->article }}">
-                              {{ $rim->treadTitle }}
+                              {{ $rim->fullTitle }}
                             </a>
                           </td>
                           <td class="text-center">
@@ -405,7 +405,7 @@
                               {{--                                    <button class="cart-shopping-button grid-cart-btn" data-toggle="modal">--}}
                               {{--                                      <i class="material-icons">add_shopping_cart</i>--}}
                               {{--                                    </button>--}}
-                              <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
+                              <button class="cart-shopping-button" data-toggle="modal"
                                       @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
                                       @endif data-info="{{ $rim->rim_id }}"><i
                                   class="material-icons">add_shopping_cart</i>

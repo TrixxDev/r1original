@@ -54,25 +54,38 @@
                       @php $changeList=$instance->compare($old_instance); //dd($changeList);@endphp
 
                       <dl class="datalist">
-{{--                        {{ dd($changeList) }}--}}
+                        {{--                        {{ dd($changeList) }}--}}
                         @foreach ($changeList as $attribute_name => $attribute)
-{{--                          {{ dd($changeList) }}--}}
+{{--                                                    {{ dd($changeList, $attribute) }}--}}
                           @if ($attribute!==false)
                             @php
-                              if (is_array($attribute[0]) && !empty($attribute[0])) {
-                                $newVal = $attribute[0];
-                                if (!empty($newVal)) {
-                                  $newVal = $newVal[0];
+                              if (is_array($attribute[0])) {
+                                if (!empty($attribute[0])) {
+                                  $newVal = array_values(array_filter($attribute[0][0]));
+                                  $newVal = implode(', ', $newVal);
                                 } else {
-                                  $newVal = $newVal[0];
+                                  $newVal = '';
                                 }
+                              } else {
+                                $newVal = $attribute[0];
                               }
-                              $oldVal = '';
+                              if (is_array($attribute[1])) {
+                                if (!empty($attribute[1])) {
+                                  $oldVal = array_values(array_filter($attribute[0][1]));
+                                  $oldVal = implode(', ', $oldVal);
+                                } else {
+                                  $oldVal = '';
+                                }
+                              } else {
+                                $oldVal = $attribute[1];
+                              }
+
                             @endphp
 
                             @if ($newVal)
                               @php
-                                $delta = $oldVal.' <span class="red bold">-></span> '.$newVal;
+                                $delta = $out = strlen($oldVal) > 100 ? substr($oldVal,0,100)."..." : $oldVal;
+                                $delta .= ' <span class="red bold">-></span> '.$newVal;
                                 $class = 'audit-changed';
                               @endphp
                             @else
@@ -150,4 +163,5 @@
   </div>
 
 @endsection
+
 

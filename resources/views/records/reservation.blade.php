@@ -334,13 +334,13 @@
                             <div class="form-check">
                               <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" value="1">
                               <label class="form-check-label" for="flexRadioDefault1">
-                                Līdzi būs Riepas ar Diskiem
+                                Riepas bez Diskiem
                               </label>
                             </div>
                             <div class="form-check">
                               <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" value="2">
                               <label class="form-check-label" for="flexRadioDefault2">
-                                Līdzi būs tikai riepas
+                                Riepas ar Diskiem
                               </label>
                             </div>
                         </div>

@@ -781,7 +781,7 @@
   <script type="text/javascript" src="{{ asset('js/atc.js?rev=' . time()) }}"></script>
 @endif
 <script type="text/javascript" src="{{ asset('js/homeslider.js?rev=' . time()) }}"></script>
-<script src="{{ asset('js/pusher-js.js') }}"></script>
+{{-- <script src="{{ asset('js/pusher-js.js') }}"></script> --}}
 <script type="text/javascript" src="{{ asset('js/custom.js?rev=' . time()) }}"></script>
 <script type="text/javascript" src="{{ asset('js/cart.js?rev=' . time()) }}"></script>
 {{--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>--}}

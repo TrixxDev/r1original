@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Broadcasting\UpdateStockChannel;
 use App\Http\Controllers\CartController;
 use App\Helper\Tires;
 use App\Models\Audit;
@@ -24,6 +25,7 @@ use View;
 class AutoTireController extends Controller
 {
 
+
     public $brands;
     public $season;
     public $currBrand;
@@ -35,6 +37,7 @@ class AutoTireController extends Controller
     public $autoTiresD3;
     public $model = 'Autotire';
     public $tiresSize;
+    public $lastYear;
     public $type;
     public $code;
     public $fuel;
@@ -47,6 +50,7 @@ class AutoTireController extends Controller
 
   public function __construct(Request $request)
   {
+
 
     // || strpos(str_replace(url('/'), '', \URL::previous()), 'vasaras-riepas') !== false
 
@@ -133,7 +137,7 @@ class AutoTireController extends Controller
       ->orderBy('d1', 'ASC')
       ->orderBy('d2', 'ASC')
       ->orderBy('price2', 'DESC')
-      ->paginate();
+      ->paginate(80);
 //        $codes = Code::all()->toArray();
     $codes = Code::all();
 
@@ -204,9 +208,16 @@ class AutoTireController extends Controller
 
     if ($request->code) {
       $this->code = $request->code;
+      $week = date("W");
       if (in_array('CURRYEAR', $this->code)) {
+        $pastYear = substr(date('Y', strtotime(date('Y-m-d') . ' -1 year')), -2);
+        $currentYear = substr(date('Y'), -2);
+        $lastWeek = date('W',strtotime('28th December' . $currentYear)) . substr($currentYear, -2);
+        $fromDate = $week . substr($pastYear, -2);
         if (($key = array_search('CURRYEAR', $this->code)) !== false) {
-          $this->code[$key] = 'DOT__' . substr(date('Y'), -2);
+          $this->lastWeek = "";
+          $this->lastYear = "BETWEEN $pastYear AND $currentYear";
+          unset($this->code[$key]);
         }
       }
       $this->filterCount += 1;
@@ -226,7 +237,7 @@ class AutoTireController extends Controller
       $this->wet = '';
     }
 
-    $tires = Autotire::select('auto_tires.*', 'auto_treads.*', 'auto_treads.slug as tread_slug', 'auto_brands.slug as brand_slug')
+    $tires = Autotire::distinct()->selectRaw('`auto_tires`.*, `auto_treads`.*, `auto_treads`.`slug` as `tread_slug`, `auto_brands`.`slug` as `brand_slug`, `auto_tires`.*, `auto_treads`.*, `auto_treads`.`slug` as `tread_slug`, `auto_brands`.`slug` as `brand_slug`, SUBSTRING(TRIM(REPLACE(auto_tires.code, "DOT", "")),1,length(TRIM(REPLACE(auto_tires.code, "DOT", "")))-2) as `DotWeek`, RIGHT(TRIM(REPLACE(auto_tires.code, "DOT", "")), 2) as `DotYear`')
                       ->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
                       ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
                       ->leftJoin('auto_stock', 'auto_tires.tire_id', '=', 'auto_stock.tire_id')
@@ -239,12 +250,6 @@ class AutoTireController extends Controller
                       })->when($this->d3, function($query) {
                           $query->where('d3', $this->d3);
                       })->when($this->types, function($query) {
-//                          if (in_array('CURRYEAR', $this->code)) {
-//                            $query->where('code', 'like', 'DOT%' . substr(date('Y'), -2));
-//                            if (($key = array_search('CURRYEAR', $this->code)) !== false) {
-  //                              unset($this->code[$key]);
-  //                            }
-  //                          }
                           $query->whereIn('auto_tires.type', $this->types);
                       })->when($this->code, function($query) {
                           $query->whereLike('code', $this->code);
@@ -254,11 +259,13 @@ class AutoTireController extends Controller
                           $query->whereIn('wet', $this->wet);
                       })->where('auto_treads.season', $this->season)
                       ->where('auto_tires.visible_users', '<>', 0)
-                      ->orderBy('d3', 'ASC')
+                      ->groupBy('auto_tires.tire_id')
+                      ->when($this->lastYear, function($query) {
+                          $query->havingRaw('`DotWeek` >= ' . date("W") . ' AND `DotYear` ' . $this->lastYear);
+                      })->orderBy('d3', 'ASC')
                       ->orderBy('d1', 'ASC')
                       ->orderBy('d2', 'ASC')
-                      ->orderBy('price2', 'DESC')
-                      ->groupBy('auto_tires.tire_id')->paginate()->appends($request->query());
+                      ->orderBy('price2', 'DESC')->get();
 
 //    dd(DB::getQueryLog());
 
