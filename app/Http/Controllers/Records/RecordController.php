@@ -1262,6 +1262,9 @@
 
       $office = Office::where('office_id', $queue->office_id)->first();
       $office->loadQueues();
+      foreach ($office->_queues as $queue) {
+        $queue->loadWorkingDay($slot->date,false);
+      }
       $office->loadWorkingDays($slot->date);
 
       $day = $office->_workingDays[0];
