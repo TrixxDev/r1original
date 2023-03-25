@@ -234,7 +234,7 @@ class HomeController extends Controller
     public function accrualOrder(Request $request)
     {
 
-      Self::$connection = ftp_connect('192.168.0.36');
+      Self::$connection = ftp_connect('212.3.218.22');
 
       if (!@ftp_login(Self::$connection, 'r1_web', 'RA5bgdGc')){
         return 'Nesanāk savienoties ar Accrual serveri';
