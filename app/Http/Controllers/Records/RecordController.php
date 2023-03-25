@@ -1283,6 +1283,8 @@
         $time = Office::timeByInterval($startTime);
       }
 
+      dd($request);
+
       if ($request->post()) {
         if (is_null($request->delete)) {
 
