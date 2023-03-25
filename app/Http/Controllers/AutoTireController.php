@@ -137,7 +137,7 @@ class AutoTireController extends Controller
       ->orderBy('d1', 'ASC')
       ->orderBy('d2', 'ASC')
       ->orderBy('price2', 'DESC')
-      ->paginate(80);
+      ->paginate();
 //        $codes = Code::all()->toArray();
     $codes = Code::all();
 
@@ -237,35 +237,65 @@ class AutoTireController extends Controller
       $this->wet = '';
     }
 
-    $tires = Autotire::distinct()->selectRaw('`auto_tires`.*, `auto_treads`.*, `auto_treads`.`slug` as `tread_slug`, `auto_brands`.`slug` as `brand_slug`, `auto_tires`.*, `auto_treads`.*, `auto_treads`.`slug` as `tread_slug`, `auto_brands`.`slug` as `brand_slug`, SUBSTRING(TRIM(REPLACE(auto_tires.code, "DOT", "")),1,length(TRIM(REPLACE(auto_tires.code, "DOT", "")))-2) as `DotWeek`, RIGHT(TRIM(REPLACE(auto_tires.code, "DOT", "")), 2) as `DotYear`')
-                      ->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-                      ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
-                      ->leftJoin('auto_stock', 'auto_tires.tire_id', '=', 'auto_stock.tire_id')
-                      ->when($this->currBrand, function($query) {
-                          $query->where('auto_brands.slug', \Str::slug($this->currBrand));
-                      })->when($this->d1, function($query) {
-                          $query->where('d1', $this->d1);
-                      })->when($this->d2, function($query) {
-                          $query->where('d2', $this->d2);
-                      })->when($this->d3, function($query) {
-                          $query->where('d3', $this->d3);
-                      })->when($this->types, function($query) {
-                          $query->whereIn('auto_tires.type', $this->types);
-                      })->when($this->code, function($query) {
-                          $query->whereLike('code', $this->code);
-                      })->when($this->fuel, function($query) {
-                          $query->whereIn('eco', $this->fuel);
-                      })->when($this->wet, function($query) {
-                          $query->whereIn('wet', $this->wet);
-                      })->where('auto_treads.season', $this->season)
-                      ->where('auto_tires.visible_users', '<>', 0)
-                      ->groupBy('auto_tires.tire_id')
-                      ->when($this->lastYear, function($query) {
-                          $query->havingRaw('`DotWeek` >= ' . date("W") . ' AND `DotYear` ' . $this->lastYear);
-                      })->orderBy('d3', 'ASC')
-                      ->orderBy('d1', 'ASC')
-                      ->orderBy('d2', 'ASC')
-                      ->orderBy('price2', 'DESC')->get();
+    $tires = Autotire::selectRaw('`auto_tires`.*, `auto_treads`.*, `auto_treads`.`slug` as `tread_slug`, `auto_brands`.`title` as `brand_name`, `auto_brands`.`slug` as `brand_slug`, SUBSTRING(TRIM(REPLACE(auto_tires.code, "DOT", "")),1,length(TRIM(REPLACE(auto_tires.code, "DOT", "")))-2) as `DotWeek`, RIGHT(TRIM(REPLACE(auto_tires.code, "DOT", "")), 2) as `DotYear`')
+      ->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+      ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
+      ->leftJoin('auto_stock', 'auto_tires.tire_id', '=', 'auto_stock.tire_id')
+      ->when($this->currBrand, function($query) {
+        $query->where('auto_brands.slug', \Str::slug($this->currBrand));
+      })->when($this->d1, function($query) {
+        $query->where('d1', $this->d1);
+      })->when($this->d2, function($query) {
+        $query->where('d2', $this->d2);
+      })->when($this->d3, function($query) {
+        $query->where('d3', $this->d3);
+      })->when($this->types, function($query) {
+        $query->whereIn('auto_tires.type', $this->types);
+      })->when($this->code, function($query) {
+        $query->whereLike('code', $this->code);
+      })->when($this->fuel, function($query) {
+        $query->whereIn('eco', $this->fuel);
+      })->when($this->wet, function($query) {
+        $query->whereIn('wet', $this->wet);
+      })->where('auto_treads.season', $this->season)
+      ->where('auto_tires.visible_users', '<>', 0)
+      ->groupBy('auto_tires.tire_id')
+      ->when($this->lastYear, function($query) {
+        $query->havingRaw('`DotWeek` >= ' . date("W") . ' AND `DotYear` ' . $this->lastYear);
+      })->orderBy('d3', 'ASC')
+      ->orderBy('d1', 'ASC')
+      ->orderBy('d2', 'ASC')
+      ->orderBy('price2', 'DESC')->paginate()->appends($request->query());
+
+//    $tires = Autotire::distinct()->selectRaw('`auto_tires`.*, `auto_treads`.*, `auto_treads`.`slug` as `tread_slug`, `auto_brands`.`slug` as `brand_slug`, `auto_tires`.*, `auto_treads`.*, `auto_treads`.`slug` as `tread_slug`, `auto_brands`.`slug` as `brand_slug`, SUBSTRING(TRIM(REPLACE(auto_tires.code, "DOT", "")),1,length(TRIM(REPLACE(auto_tires.code, "DOT", "")))-2) as `DotWeek`, RIGHT(TRIM(REPLACE(auto_tires.code, "DOT", "")), 2) as `DotYear`')
+//      ->leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+//      ->leftJoin('auto_brands', 'auto_treads.brand_id', '=', 'auto_brands.brand_id')
+//      ->leftJoin('auto_stock', 'auto_tires.tire_id', '=', 'auto_stock.tire_id')
+//      ->when($this->currBrand, function($query) {
+//        $query->where('auto_brands.slug', \Str::slug($this->currBrand));
+//      })->when($this->d1, function($query) {
+//        $query->where('d1', $this->d1);
+//      })->when($this->d2, function($query) {
+//        $query->where('d2', $this->d2);
+//      })->when($this->d3, function($query) {
+//        $query->where('d3', $this->d3);
+//      })->when($this->types, function($query) {
+//        $query->whereIn('auto_tires.type', $this->types);
+//      })->when($this->code, function($query) {
+//        $query->whereLike('code', $this->code);
+//      })->when($this->fuel, function($query) {
+//        $query->whereIn('eco', $this->fuel);
+//      })->when($this->wet, function($query) {
+//        $query->whereIn('wet', $this->wet);
+//      })->where('auto_treads.season', $this->season)
+//      ->where('auto_tires.visible_users', '<>', 0)
+//      ->groupBy('auto_tires.tire_id')
+//      ->when($this->lastYear, function($query) {
+//        $query->havingRaw('`DotWeek` >= ' . date("W") . ' AND `DotYear` ' . $this->lastYear);
+//      })->orderBy('d3', 'ASC')
+//      ->orderBy('d1', 'ASC')
+//      ->orderBy('d2', 'ASC')
+//      ->orderBy('price2', 'DESC')->get();
 
 //    dd(DB::getQueryLog());
 
