@@ -69,7 +69,7 @@ class SyncController extends Controller
         set_time_limit(0);
 
         try {
-          $this->accrual = new PDO("sqlsrv:Server=212.3.218.22,1444;Database=accrual", "sa", "cenzors");
+          $this->accrual = new PDO("sqlsrv:Server=192.168.0.36,1444;Database=accrual", "sa", "cenzors");
         } catch (\PDOException $e) {
           return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
 //          die("Database connection failed: " . $e->getMessage());

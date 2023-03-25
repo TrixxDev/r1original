@@ -234,7 +234,7 @@ class HomeController extends Controller
     public function accrualOrder(Request $request)
     {
 
-      Self::$connection = ftp_connect('212.3.218.22');
+      Self::$connection = ftp_connect('192.168.0.36');
 
       if (!@ftp_login(Self::$connection, 'r1_web', 'RA5bgdGc')){
         return 'Nesanāk savienoties ar Accrual serveri';
@@ -376,17 +376,17 @@ class HomeController extends Controller
 
       $xml_string = $dom->saveXML();
 
-      $xml_file = fopen(dirname(__DIR__, 3) . '/public/storage/xml/pasutijums' . $xml_order . '-t.xml', 'wb');
+      $xml_file = fopen(dirname(__DIR__, 3) . '/public/storage/xml/pasutijums' . $xml_order . '.xml', 'wb');
       fwrite($xml_file, $xml_string);
       fclose($xml_file);
 
-      $file = dirname(__DIR__, 3) . '/public/storage/xml/pasutijums' . $xml_order . '-t.xml';
+      $file = dirname(__DIR__, 3) . '/public/storage/xml/pasutijums' . $xml_order . '.xml';
 
       //$dom->save(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml');
 
 //      dd(is_file(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml'));
 //      $ftp = uploadFTP("212.3.218.22", "r1_web", "RA5bgdGc", dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
-      uploadFTP($file, "pasutijums$xml_order-t.xml");
+      uploadFTP($file, "pasutijums$xml_order.xml");
 
       if (file_exists($file)) {
         unlink($file);
