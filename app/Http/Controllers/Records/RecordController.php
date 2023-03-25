@@ -1283,10 +1283,8 @@
         $time = Office::timeByInterval($startTime);
       }
 
-      dd($request);
-
       if ($request->post()) {
-        if (is_null($request->delete)) {
+        if (is_null($request->delete) && isset($request->delete)) {
 
           if ($takenBy !== null) {
             if ($takenBy->cancelId == $id) {
@@ -1330,7 +1328,7 @@
             Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Neizdevās atcelt pierakstu', $slot);
             return redirect(route('pieraksts'))->with('danger', 'Notikusi kļūda');
           }
-        } else if (is_null($request->input('cancel'))) {
+        } else if (is_null($request->cancel) && isset($request->cancel)) {
           return redirect(route('pieraksts'));
         }
       }
