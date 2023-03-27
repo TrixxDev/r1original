@@ -59,24 +59,24 @@ class MainController extends Controller
       DB::enableQueryLog();
       $models = $this->models();
 
-      if ($request->post())
-      {
-        $quote = "'";
-        $this->model = $request->model;
-        $this->param = $request->params;
-        $this->searchBy = $request->searchBy;
-
-        $modelName = $this->models[$this->model]['name'];
-
-        $audits = Audit::when($this->model, function($query) use ($quote, $modelName) {
-          $query->where('audit_classname', $modelName)->whereRaw('audit_instance LIKE ' . $quote . '%"' . $this->searchBy . '":"' . $quote . '||' . $this->param . '||' . $quote . '"%' . $quote);
-        })->orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(20);
-
-//        dd(DB::getQueryLog());
-
-        return view('admin.audits.audits', compact('audits', 'models'));
-
-      }
+//      if ($request->post())
+//      {
+//        $quote = "'";
+//        $this->model = $request->model;
+//        $this->param = $request->params;
+//        $this->searchBy = $request->searchBy;
+//
+//        $modelName = $this->models[$this->model]['name'];
+//
+//        $audits = Audit::when($this->model, function($query) use ($quote, $modelName) {
+//          $query->where('audit_classname', $modelName)->whereRaw('audit_instance LIKE ' . $quote . '%"' . $this->searchBy . '":"' . $quote . '||' . $this->param . '||' . $quote . '"%' . $quote);
+//        })->orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(20);
+//
+////        dd(DB::getQueryLog());
+//
+//        return view('admin.audits.audits', compact('audits', 'models'));
+//
+//      }
 
       $audits = Audit::orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(20);
 

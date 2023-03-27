@@ -416,7 +416,7 @@
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                                title='{!! App\Helper\Image::show('quadr', $tire->make_id) !!}'
                                href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
-                               data-content="{{ $tire->title . ' ' . $tire->fullSize }}"
+                               data-content="{{ $tire->fullName }}"
                                data-article="{{ $tire->article }}"
                                data-quantity="{{ $cartQty }}">
                               {{ $tire->title }}

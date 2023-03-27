@@ -8,6 +8,8 @@ use App\Helper\Tires;
 use App\Models\Audit;
 use App\Models\Autostock;
 use App\Models\Autotire;
+use App\Models\Moto;
+use App\Models\Motostock;
 use App\Models\Office;
 use App\Models\Quickorder;
 use App\Models\Service;
@@ -132,9 +134,9 @@ class HomeController extends Controller
 
             $itype = 'i3';
 
-            $tire = Autotire::where('article', $article)->first();
+            $tire = Moto::where('article', $article)->first();
             if (!$tire) continue;
-            $stock = Autostock::where('tire_id', $tire->tire_id)->where('itype', $itype)->first();
+            $stock = Motostock::where('tire_id', $tire->tire_id)->where('itype', $itype)->first();
             if (!$stock) {
               $tire->addSecondaryArticle($i3Article, 'i3');
               $out .= 'Nav atrasts ieraksts ar ID - ' . $tire->tire_id . '<br>';
@@ -376,17 +378,17 @@ class HomeController extends Controller
 
       $xml_string = $dom->saveXML();
 
-      $xml_file = fopen(dirname(__DIR__, 3) . '/public/storage/xml/pasutijums' . $xml_order . '-t.xml', 'wb');
+      $xml_file = fopen(dirname(__DIR__, 3) . '/public/storage/xml/pasutijums' . $xml_order . '.xml', 'wb');
       fwrite($xml_file, $xml_string);
       fclose($xml_file);
 
-      $file = dirname(__DIR__, 3) . '/public/storage/xml/pasutijums' . $xml_order . '-t.xml';
+      $file = dirname(__DIR__, 3) . '/public/storage/xml/pasutijums' . $xml_order . '.xml';
 
       //$dom->save(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml');
 
 //      dd(is_file(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml'));
 //      $ftp = uploadFTP("212.3.218.22", "r1_web", "RA5bgdGc", dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
-      uploadFTP($file, "pasutijums$xml_order-t.xml");
+      uploadFTP($file, "pasutijums$xml_order.xml");
 
       if (file_exists($file)) {
         unlink($file);

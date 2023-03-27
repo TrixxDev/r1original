@@ -43,7 +43,7 @@
                           <div class="form-group facet">
                             <h1 class="h6 facet-title">Platums</h1>
                             <select class="r1-select select-title tire-width" name="d1">
-                              <option>Visi</option>
+                              <option class="select-list" id="Visi">Visi</option>
                               @foreach ($autoTiresD1 as $tire)
                                 <option id="{{ $tire->d1 }}" @if ($tire->d1 == $d1) selected @endif>{{ $tire->d1 }}</option>
                               @endforeach
@@ -812,7 +812,7 @@
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                                title='{!! App\Helper\Image::show('auto', $tire->make_id) !!}'
                                href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"
-                               data-content="{{ $tire->title . ' ' . $tire->fullSize }}"
+                               data-content="{{ $tire->fullName }}"
                                data-article="{{ $tire->article }}"
                                data-quantity="{{ $cartQty }}">
                               <div class="table-link-title">{{ $tire->title }}</div>

@@ -186,7 +186,7 @@
                               <tr @if($currTire->tire_id == $tire->tire_id) style="font-weight: bold; background-color: #cbcbcb;"@endif class="tire-table-row">
                                 <th class="tire-info" style="display: none;"
                                     data-article="{{ $tire->article }}"
-                                    data-content="{{ $tire->title . ' ' . $tire->fullSize }}"
+                                    data-content="{{ $tire->fullName }}"
                                     data-quantity="{{ $cartQty }}"></th>
                                 <th scope="row" class="tread-tire-table-checkbox text-center">
                                   <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"

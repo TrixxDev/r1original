@@ -723,7 +723,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
       });
     } else {
       const tire_data = $(this).parent().parent().parent();
-      let product = $('.product-main-details h1').text();
+      let product = tire_data.find('.tire-info').data('content');
       let article = tire_data.find('th').data('article');
       if (article.length == 0) article = 'no_article';
       $('.popup input[name=qty]').val($('.tire-info', tire_data).data('quantity'));
@@ -737,7 +737,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
         'article': article,
         'qty': $('.tire-info', tire_data).data('quantity'),
         'user': user,
-        'prod': $('.product-main-details h1').text(),
+        'prod': product,
         'price': tire_data.find('.tire-price-red').text().trim().replace('€', ''),
       }
 
@@ -849,7 +849,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
           'article': tire_data.parent().parent().data('article'),
           'qty': $('.tire-info', tire_data).data('quantity'),
           'user': user,
-          'prod': tire_data.find('.card-title-text').text().trim(),
+          'prod': tire_data.find('.tire-info').data('content'),
           'price': tire_data.find('.rim-price-red').text().trim().replace('€', ''),
       }
 
