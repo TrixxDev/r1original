@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use App\Paysera\WebToPay;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\EmailController as Mailer;
 
 class CartController extends Controller
 {
@@ -611,6 +612,141 @@ class CartController extends Controller
       return Redirect::route('order.done');
     }
 
+    public function emailText($details) {
+      $out = '<div style="width: 70%; margin: 20px auto; font-family: Arial, Helvetica, sans-serif;">
+        <div style="display: flex;">
+          <div style="margin: 10px 25px;">
+            R1 Riepu serviss <br>
+            Kalnciema iela 39 <br>
+            Rīga, LV-1046 <br>
+            Tālrunis: +37167910555 <br>
+            E-pasts: <a href="mailto:info@r1riepas.lv">info@r1riepas.lv</a>
+          </div>
+          <div style="margin-left: auto;">
+            <img src="https://r1riepas.lv/img/r1-riepas-logo-1515661637.jpg" alt="" style="height: 100px;">
+          </div>
+        </div>
+        <div style="background-color: lightgrey; padding: 5px;">
+          <b>Pasūtījuma informācija</b>
+        </div>
+        <div style="margin: 10px 25px;">
+          Pasūtījuma Nr. ' . $details->id . '<br>
+          Pasūtījuma datums: ' . $details->created_at . '<br>
+          Pasūtījuma stāvoklis: <b>Pasūtījums tiek pārbaudīts.</b> <br> <br>
+          Menedžeris ar Jums sazināsies tuvākajā laikā, lai informētu par pasūtījuma gaitu.
+        </div>
+        <div style="background-color: lightgrey; padding: 5px;">
+          <b>Pasūtītāja dati</b>
+        </div>
+        <div>
+          <div style="margin: 10px 25px;">
+            E-pasts: ' . $details->info['email'] . '<br>
+            Pasūtītājs: ' . $details->info['name'] . ' ' . $details->info['surname'] . '<br>
+            Tālruņa numurs: ' . $details->info['phone_number'] . '<br>';
+            if (isset($details->info['company_registration_number'])) {
+              $out .= 'Reģistrācijas numurs: ' . $details->info['company_registration_number'] . '<br>';
+              if (isset($details->info['company_pvn_number'])) $out .= 'PVN Numurs: ' . $details->info['company_pvn_number'] . '<br>';
+              $out .= 'Uzņēmuma nosaukums: ' . $details->info['company_name'] . '<br>
+              Juridiskā adrese: ' . $details->info['company_address'] . '<br>';
+            }
+
+            if (isset($details->info['fitting_address']) && $details->info['fitting_address'] == 1) {
+              $out .= 'Saņemšanas vieta: Ulbroka, Institūta iela 1';
+            } elseif (isset($details->info['fitting_address']) && $details->info['fitting_address'] == 2) {
+              $out .= 'Saņemšanas vieta: Rīga, Kalnciema iela 39';
+            } else {
+              if (isset($details->info['shipping_city']) && $details->info['shipping_city'] == 1) {
+                $out .= 'Piegādes adrese: Rīga, ' . $details->info['shipping_address'];
+                if (isset($details->info['door_code'])) $out .= ', Durvju kods: ' . $details->info['door_code'];
+              } elseif (isset($details->info['shipping_city']) && $details->info['shipping_city'] == 2) {
+                $out .= 'Piegādes adrese: Salaspils, ' . $details->info['shipping_address'];
+                if (isset($details->info['door_code'])) $out .= ', Durvju kods: ' . $details->info['door_code'];
+              } else {
+                $out .= 'Piegādes adrese: Cits, ' . $details->info['shipping_address'];
+                if (isset($details->info['door_code'])) $out .= ', Durvju kods: ' . $details->info['door_code'];
+              }
+            }
+          $out .= '</div>
+          <div style="background-color: lightgrey; padding: 5px;">
+            <b>Pasūtītās preces</b>
+          </div>
+          <div style="margin: 10px 25px;">
+            <table style="border-collapse: collapse;
+                          border-spacing: 0;
+                          width: 100%;">
+              <tr>
+                <th style="text-align: left;">Nosaukums</th>
+                <th style="text-align: center;">Skaits</th>
+                <th style="text-align: center;">Cena</th>
+                <th style="text-align: center;">Summa</th>
+              </tr>';
+              foreach ($details->cart as $item) {
+              $out .= '<tr>
+                <td>' . $item->options->tireObj->fullName . '</td>
+                <td style="text-align: center;">' . $item->qty . '</td>
+                <td style="text-align: center;">€ ' . $item->price . '</td>
+                <td style="text-align: center;">€ ' . ($item->price * $item->qty) . '</td>
+              </tr>';
+              }
+              if ($details->fit_price > 0) {
+              $out .= '<tr>
+                <td>Montāža</td>
+                <td style="text-align: center;">1</td>
+                <td style="text-align: center;">€ ' . substr($details->fit_price, 0, -2) . '</td>
+                <td style="text-align: center;">€ ' . substr($details->fit_price, 0, -2) . '</td>
+              </tr>';
+              }
+              if ($details->delivery_price > 0) {
+              $out .= '<tr>
+                <td>Piegāde</td>
+                <td style="text-align: center;">1</td>
+                <td style="text-align: center;">€ ' . substr($details->delivery_price, 0, -2) . '</td>
+                <td style="text-align: center;">€ ' . substr($details->delivery_price, 0, -2) . '</td>
+              </tr>';
+              }
+              $out .= '<tr>
+                <td></td>
+                <td style="text-align: center;"></td>
+                <td style="text-align: center;"><b>Kopā:</b></td>';
+                if ($details->delivery_price > 0) {
+                  $out .= '<td style="text-align: center;">€ ' . (int) $details->price + (int) substr($details->delivery_price, 0, 2) . '</td>';
+                } elseif ($details->fit_price > 0) {
+                  $out .= '<td style="text-align: center;">€ ' . (int) $details->price + (int) substr($details->fit_price, 0, 2) . '</td>';
+                } else {
+                  $out .= '<td style="text-align: center;">€ ' . $details->price . '</td>';
+                }
+              $out .= '</tr>
+            </table>
+          </div>
+        </div>
+        <div style="background-color: lightgrey; padding: 5px;">
+          <b>Pasūtītāja komentāri, piezīmes</b>
+        </div>
+        <div style="margin: 10px 25px;">';
+          if (isset($details->info['notes'])) $out .= $details->info["notes"] . '<br>';
+          if ($details->info['car_brand'] != '') $out .= 'Auto marka: ' . $details->info['car_brand'] . '<br>';
+          if ($details->info['car_model'] != '') $out .= 'Auto modelis: ' . $details->info['car_model'] . '<br>';
+          if ($details->info['car_release_year'] != '') $out .= 'Izlaiduma gads: ' . $details->info['car_release_year'] . '<br>';
+          if ($details->info['car_engine_size'] != '') $out .= 'Dzinēja tilpums: ' . $details->info['car_engine_size'] . '<br>';
+        $out .= '</div>
+        <div style="background-color: lightgrey; padding: 5px;">
+          <b>Apmaksas informācija</b>
+        </div>
+        <div style="margin: 10px 25px;">';
+          if ($details->payment == 1) {
+            $out .= 'Apmaksa saņemšanas brīdī';
+          } elseif ($details->payment == 2) {
+            $out .= 'Bankas pārskaitījums';
+          } else {
+            $out .= 'Tiešsaistes apmaksa';
+          }
+          $out .= '<br>
+        </div>
+      </div>';
+
+      return $out;
+    }
+
     public function order_done() {
 
       if (!Session::has('order_id')) {
@@ -623,13 +759,13 @@ class CartController extends Controller
 
       $order->status = 2;
       switch($order->payment) {
-	case 1:
-	case 2: {
-	  $order->payment = $order->payment;
-	  break;
-	}
-	default:
-	  $order->payment = 3;
+        case 1:
+        case 2: {
+          $order->payment = $order->payment;
+          break;
+        }
+        default:
+	      $order->payment = 3;
       }
 
       //dd($data);
@@ -640,7 +776,20 @@ class CartController extends Controller
 
       $data->cart = Cart::content();
 
-      if (!Mail::to($data->info['email'])->bcc('info@r1.com.lv')->send(new \App\Mail\CartMail($data))) {  }
+      $mailText = $this->emailText($data);
+
+      $mailer = new Mailer();
+      $mailer->addRecipient($data->info['email']);
+      $bcc = 'karlis@r1riepas.lv';
+      if ($bcc) {
+        $mailer->addBCC($bcc);
+        $mailer->addBCC('info@r1.com.lv');
+      }
+      $mailer->subject = 'R1riepas.lv internetveikala pasūtījums';
+      $mailer->message = $mailText;
+      $mailer->send();
+
+//      if (!Mail::to($data->info['email'])->bcc('info@r1.com.lv')->send(new \App\Mail\CartMail($data))) {  }
 
       Session::remove('cart');
       Session::remove('cartOptions');

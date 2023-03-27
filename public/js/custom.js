@@ -3735,44 +3735,6 @@ $('#mobile-filiale input[name=filiale]').on('change', function() {
   })
 });
 
-
-
-$('#mobile-filiale input[name=filiale]').on('change', function() {
-  let office_id = $(this).val();
-  $('#mobile-main input[name=filiale][type=hidden]').val(office_id);
-  $('#mobile-main input[name=date][type=hidden]').val();
-  $('#mobile-main input[name=slotNumber][type=hidden]').val();
-  $.ajax({
-    url: '/pieraksts/showMobileQueues',
-    data: {
-      office_id: office_id
-    },
-    method: 'post',
-    beforeSend: function() {
-      $('#mobile-slots-choice').animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
-      $('input[name=filiale].filiale_radio').attr('disabled', true).prop('disabled', true);
-    },
-    success: function (data){
-      $('input[name=filiale].filiale_radio').attr('disabled', false).prop('disabled', false);
-      $('#mobile-slots-choice').html(data).animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
-      $('.available.slot.active').on('click', function() {
-        if ($(this).hasClass('available')) {
-          $('.time-slot .slot').removeClass('selected');
-          $(this).addClass('selected');
-          $('input[type=hidden][name=date]').val($(this).parent().parent().attr('data-date'));
-          $('input[type=hidden][name=slot_id]').val($(this).attr('data-slot_id'));
-        }
-        $('#mobile-main input[name=date][type=hidden]').val($(this).parent().parent().attr('data-date'));
-        $('#mobile-main input[name=slotNumber][type=hidden]').val($(this).attr('data-slot_id'));
-        $('#mobile-reservation-form').show();
-        $([document.documentElement, document.body]).animate({
-          scrollTop: $('#mobile-reservation-form').offset().top});
-      });
-      $('.mobile_reservation_table').html(data).animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
-    }
-  })
-});
-
 $('div.modal-footer.reservation-modal-footer button#close-modal').on('click', function() {
   $('div.form-group.row.rims_with').remove();
 });

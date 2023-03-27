@@ -48,8 +48,24 @@ div.reservation div.time-list .available {
   background: #d8d8d8;
 }
 
+.today .time-slot .slot {
+  color: gray;
+}
+
+.today .time-slot .slot .slot-gray-free {
+  color: #232323;
+}
+
+.today .time-slot .dots .dot-availability .red-taken {
+  background-color: #232323;
+}
+
 .slot span {
-  font-size: 12px;
+  font-size: 13px;
+}
+
+.slot .time-span {
+  font-size: 16px;
 }
 
 .dot-availability {

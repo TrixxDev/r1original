@@ -52,7 +52,7 @@
           $message->bcc($recipient['email'],trim($recipient['name']));
         }
         $message->subject($this->subject);
-        $message->setBody($this->message);
+        $message->setBody($this->message, 'text/html');
         $message->from($this->senderAddress, $this->senderName);
 
         foreach ($this->attachmentStrings as $attachment) {

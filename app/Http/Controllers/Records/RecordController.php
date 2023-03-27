@@ -26,6 +26,7 @@
   {
 
     public $timeToOpen;
+    public $timeToClose;
     public $now;
     /**
      * Create a new controller instance.
@@ -36,6 +37,7 @@
     {
 
       $this->timeToOpen = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 16, 00);
+      $this->timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 7, 30);
       $this->now = \Carbon\Carbon::now();
 //      $hash = $this->getRandomHash();
 //
@@ -512,7 +514,15 @@
             $out .= '';
           }
 
-          $out .= '<div class="time-list" data-date="' . $date . '" style="margin-left:8px;">';
+          if ($date == $today) {
+            if ($this->timeToClose < $this->now) {
+              $out .= '<div class="time-list today" data-date="' . $date . '" style="margin-left:8px;">';
+            } else {
+              $out .= '<div class="time-list" data-date="' . $date . '" style="margin-left:8px;">';
+            }
+          } else {
+            $out .= '<div class="time-list" data-date="' . $date . '" style="margin-left:8px;">';
+          }
 
           $openTime = 0;
           $closeTime = -1;
@@ -534,7 +544,8 @@
                 $slots[$queue->getSlotNumberByInterval($date, $i)] = [
                   'time' => Office::timeByInterval($i),
                   'slots' => $this->getPrevQueue($office->_workingDays, $queue->getSlotNumberByInterval($date, $i), $date),
-                  'date' => $date];
+                  'date' => $date
+                ];
               }
             }
           }
@@ -544,7 +555,14 @@
               if ($date == $slot_info['date']) {
                 $freeSlot = $this->getLastNonNullValue($slot_info['slots']);
                 if (!empty($freeSlot)) {
-                  if ($date != $today) {
+                  if ($date == $today && $this->timeToClose < $this->now) {
+                    $slot = $freeSlot[array_key_first($freeSlot)];
+                    $slot_id = '';
+                    $slotText = 'Brīvs';
+                    $slotText = '<span class="slot-gray-free">' . $slotText . '</span>';
+                    $availability = 'unavailable';
+                    $discount = false;
+                  } else {
                     $slot = $freeSlot[array_key_first($freeSlot)];
                     $slot_id = 'data-slot_id=' . $slot->slot_id;
                     if (stripos($slot->comment, '% darbam') !== false) {
@@ -558,20 +576,22 @@
                       $availability = 'available';
                       $discount = false;
                     }
+                  }
+                } else {
+                  if ($date == $today && $this->timeToClose < $this->now) {
+                    $slotText = '<span class="slot-taken">Aizņemts</span>';
+                    $slot_id = '';
+                    $availability = 'unavailable';
+                    $discount = false;
                   } else {
-                    $slotText = 'Brīvs';
+                    $slotText = 'Aizņemts';
                     $slot_id = '';
                     $availability = 'unavailable';
                     $discount = false;
                   }
-                } else {
-                  $slotText = 'Aizņemts';
-                  $slot_id = '';
-                  $availability = 'unavailable';
-                  $discount = false;
                 }
                 $out .= '<div class="time-slot">';
-                $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot active">' . $slot_info['time'] . '<br>' . $slotText . '</div>';
+                $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot active"><span class="time-span">' . $slot_info['time'] . '</span><br>' . $slotText . '</div>';
                 $out .= '<div class="dots">';
                 if (!empty($slot_info['slots'])) {
                   foreach ($slot_info['slots'] as $slot) {
@@ -599,10 +619,10 @@
                       }
                     } else {
                       $out .= '<span class="dot-availability text-center">
-                      <span class="dot red" data-toggle="tooltip" data-html="true" title="Aizņemts">
-                        <span class="sort-order">red</span>
-                      </span>
-                    </span>';
+                        <span class="dot red" data-toggle="tooltip" data-html="true" title="Aizņemts">
+                          <span class="sort-order">red</span>
+                        </span>
+                      </span>';
                     }
                   }
                 } else {

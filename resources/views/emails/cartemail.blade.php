@@ -36,17 +36,17 @@
       @endif
 
       @if (isset($details->info['fitting_address']) && $details->info['fitting_address'] == 1)
-	Saņemšanas vieta: Ulbroka, Institūta iela 1
+	      Saņemšanas vieta: Ulbroka, Institūta iela 1
       @elseif (isset($details->info['fitting_address']) && $details->info['fitting_address'] == 2)
-	Saņemšanas vieta: Rīga, Kalnciema iela 39
+	      Saņemšanas vieta: Rīga, Kalnciema iela 39
       @else
-	@if (isset($details->info['shipping_city']) && $details->info['shipping_city'] == 1)
-	  Piegādes adrese: Rīga, {{ $details->info['shipping_address'] }}@if (isset($details->info['door_code'])), Durvju kods: {{ $details->info['door_code'] }} @endif
-	@elseif (isset($details->info['shipping_city']) && $details->info['shipping_city'] == 2)
-	  Piegādes adrese: Salaspils, {{ $details->info['shipping_address'] }}@if (isset($details->info['door_code'])), Durvju kods: {{ $details->info['door_code'] }} @endif
-	@else
-	  Piegādes adrese: Cits, {{ $details->info['shipping_address'] }}@if (isset($details->info['door_code'])), Durvju kods: {{ $details->info['door_code'] }} @endif
-	@endif
+        @if (isset($details->info['shipping_city']) && $details->info['shipping_city'] == 1)
+          Piegādes adrese: Rīga, {{ $details->info['shipping_address'] }}@if (isset($details->info['door_code'])), Durvju kods: {{ $details->info['door_code'] }} @endif
+        @elseif (isset($details->info['shipping_city']) && $details->info['shipping_city'] == 2)
+          Piegādes adrese: Salaspils, {{ $details->info['shipping_address'] }}@if (isset($details->info['door_code'])), Durvju kods: {{ $details->info['door_code'] }} @endif
+        @else
+          Piegādes adrese: Cits, {{ $details->info['shipping_address'] }}@if (isset($details->info['door_code'])), Durvju kods: {{ $details->info['door_code'] }} @endif
+        @endif
       @endif
     </div>
     <div style="background-color: lightgrey; padding: 5px;">
@@ -62,42 +62,42 @@
           <th style="text-align: center;">Cena</th>
           <th style="text-align: center;">Summa</th>
         </tr>
-	@foreach ($details->cart as $item)
+        @foreach ($details->cart as $item)
         <tr>
           <td>{{ $item->options->tireObj->fullName }}</td>
           <td style="text-align: center;">{{ $item->qty }}</td>
           <td style="text-align: center;">€ {{ $item->price }}</td>
           <td style="text-align: center;">€ {{ ($item->price * $item->qty) }}</td>
         </tr>
-	@endforeach
-	@if ($details->fit_price > 0)
+        @endforeach
+        @if ($details->fit_price > 0)
         <tr>
           <td>Montāža</td>
           <td style="text-align: center;">1</td>
           <td style="text-align: center;">€ {{ substr($details->fit_price, 0, -2) }}</td>
           <td style="text-align: center;">€ {{ substr($details->fit_price, 0, -2) }}</td>
         </tr>
-	@endif
-	@if ($details->delivery_price > 0)
+        @endif
+        @if ($details->delivery_price > 0)
         <tr>
           <td>Piegāde</td>
           <td style="text-align: center;">1</td>
           <td style="text-align: center;">€ {{ substr($details->delivery_price, 0, -2) }}</td>
           <td style="text-align: center;">€ {{ substr($details->delivery_price, 0, -2) }}</td>
         </tr>
-	@endif
+	      @endif
         <tr>
           <td></td>
           <td style="text-align: center;"></td>
           <td style="text-align: center;"><b>Kopā:</b></td>
-	  @if ($details->delivery_price > 0)
-	    <td style="text-align: center;">€ {{ (int) $details->price + (int) substr($details->delivery_price, 0, 2) }}</td>
-	  @elseif ($details->fit_price > 0)
-	    <td style="text-align: center;">€ {{ (int) $details->price + (int) substr($details->fit_price, 0, 2) }}</td>
-	  @else
-	    <td style="text-align: center;">€ {{ $details->price }}</td>
-	  @endif
-	</tr>
+          @if ($details->delivery_price > 0)
+            <td style="text-align: center;">€ {{ (int) $details->price + (int) substr($details->delivery_price, 0, 2) }}</td>
+          @elseif ($details->fit_price > 0)
+            <td style="text-align: center;">€ {{ (int) $details->price + (int) substr($details->fit_price, 0, 2) }}</td>
+          @else
+            <td style="text-align: center;">€ {{ $details->price }}</td>
+          @endif
+        </tr>
       </table>
     </div>
   </div>
