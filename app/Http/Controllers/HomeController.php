@@ -8,6 +8,8 @@ use App\Helper\Tires;
 use App\Models\Audit;
 use App\Models\Autostock;
 use App\Models\Autotire;
+use App\Models\Moto;
+use App\Models\Motostock;
 use App\Models\Office;
 use App\Models\Quickorder;
 use App\Models\Service;
@@ -132,9 +134,9 @@ class HomeController extends Controller
 
             $itype = 'i3';
 
-            $tire = Autotire::where('article', $article)->first();
+            $tire = Moto::where('article', $article)->first();
             if (!$tire) continue;
-            $stock = Autostock::where('tire_id', $tire->tire_id)->where('itype', $itype)->first();
+            $stock = Motostock::where('tire_id', $tire->tire_id)->where('itype', $itype)->first();
             if (!$stock) {
               $tire->addSecondaryArticle($i3Article, 'i3');
               $out .= 'Nav atrasts ieraksts ar ID - ' . $tire->tire_id . '<br>';
