@@ -2044,6 +2044,7 @@ $(document).ready(function() {
   });
 
   $(document).on('click', '.slot .free-slot-link, .slot .offer-slot-link', function() {
+    $('#reservation .rims_with').remove();
     $('.modal-body.finish, .finish-footer').remove();
     $('.reservation-modal-body').slideDown();
     $('.reservation-modal-footer #submit-reservation').show();
