@@ -959,7 +959,7 @@ body#category .main-content {
   font-size: 20px;;
 }
 #search_filters, #search_filters_brands, #search_filters_suppliers{
-  padding: 5px 0px;
+  padding: 10px 0px;
 }
 #search_filters span[class*="show_"] {
   padding-right: 9px;
@@ -2316,7 +2316,7 @@ p {
     position: relative;
     box-shadow: none;
     border-radius: 20px;
-    margin-top: 10px;
+    /*margin-top: 10px;*/
     /*margin-left: 15px;*/
     /*margin-right: 15px;*/
   }
@@ -3340,7 +3340,7 @@ th.header {
 .tire-brand-name {
   cursor: default;
   margin-bottom: 0;
-  padding-top: 6px;
+  padding-top: 10px;
   margin-left: 10px;
   align-self: baseline;
   font-weight: bold;
