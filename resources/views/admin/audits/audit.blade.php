@@ -54,15 +54,14 @@
                       @php $changeList=$instance->compare($old_instance); //dd($changeList);@endphp
 
                       <dl class="datalist">
-                        {{--                        {{ dd($changeList) }}--}}
+{{--                                                {{ dd($changeList) }}--}}
                         @foreach ($changeList as $attribute_name => $attribute)
 {{--                                                    {{ dd($changeList, $attribute) }}--}}
                           @if ($attribute!==false)
                             @php
                               if (is_array($attribute[0])) {
                                 if (!empty($attribute[0])) {
-                                  $newVal = array_values(array_filter($attribute[0][0]));
-                                  $newVal = implode(', ', $newVal);
+                                  $newVal = array_values($attribute[0][0])[0];
                                 } else {
                                   $newVal = '';
                                 }
@@ -71,13 +70,16 @@
                               }
                               if (is_array($attribute[1])) {
                                 if (!empty($attribute[1])) {
-                                  $oldVal = array_values(array_filter($attribute[0][1]));
-                                  $oldVal = implode(', ', $oldVal);
+                                  $oldVal = array_values($attribute[1][0])[0];
                                 } else {
                                   $oldVal = '';
                                 }
                               } else {
-                                $oldVal = $attribute[1];
+                                if (is_bool($attribute[1])) {
+                                  $oldVal = ($attribute[1]) ?? '';
+                                } else {
+                                  $oldVal = $attribute[1];
+                                }
                               }
 
                             @endphp

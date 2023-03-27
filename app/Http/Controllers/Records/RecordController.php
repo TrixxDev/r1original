@@ -1307,7 +1307,7 @@
         if ($takenBy !== null) {
           if ($takenBy->cancelId == $id) {
             $slot->status = 0;
-            $slot->takenBy = '';
+            $slot->takenby = '';
             $slot->createtime = NULL;
             $slot->createuser = -1;
             $slot->edittime = NULL;
@@ -1319,7 +1319,7 @@
         if ($takenBy2 !== null) {
           if ($takenBy2->cancelId == $id) {
             $slot->status2 = 0;
-            $slot->takenBy2 = '';
+            $slot->takenby2 = '';
             $slot->createtime2 = NULL;
             $slot->createuser2 = -1;
             $slot->edittime2 = NULL;
