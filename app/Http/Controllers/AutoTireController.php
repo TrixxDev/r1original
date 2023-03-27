@@ -192,12 +192,12 @@ class AutoTireController extends Controller
     $this->d2 = ($this->d2 == 'Visi') ? '' : $request->d2;
     $this->d3 = ($this->d3 == 'Visi') ? '' : $request->d3;
 
-    if ($request->availability) {
-      $this->filterCount += 1;
-      $this->availability = $request->availability;
-    } else {
-      $this->availability = [];
-    }
+//    if ($request->availability) {
+//      $this->filterCount += 1;
+//      $this->availability = $request->availability;
+//    } else {
+//      $this->availability = [];
+//    }
 
     if ($request->types) {
       $this->filterCount += 1;
@@ -300,8 +300,9 @@ class AutoTireController extends Controller
 //    dd(DB::getQueryLog());
 
     return view('tires.auto.tires',
-            ['tires' => $tires, 'filterCount' => $this->filterCount, 'availability' => $this->availability]
+            ['tires' => $tires, 'filterCount' => $this->filterCount, ]
     );
+//    'availability' => $this->availability
   }
 
   public function tires_filter(Request $request) {
