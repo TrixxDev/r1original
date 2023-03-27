@@ -1284,52 +1284,47 @@
       }
 
       if ($request->post()) {
-        if (is_null($request->delete) && isset($request->delete)) {
-
-          if ($takenBy !== null) {
-            if ($takenBy->cancelId == $id) {
-              $slot->status = 0;
-              $slot->takenBy = '';
-              $slot->createtime = NULL;
-              $slot->createuser = -1;
-              $slot->edittime = NULL;
-              $slot->edituser = -1;
-              $slot->is_mobile = 0;
-            }
+        if ($takenBy !== null) {
+          if ($takenBy->cancelId == $id) {
+            $slot->status = 0;
+            $slot->takenBy = '';
+            $slot->createtime = NULL;
+            $slot->createuser = -1;
+            $slot->edittime = NULL;
+            $slot->edituser = -1;
+            $slot->is_mobile = 0;
           }
+        }
 
-          if ($takenBy2 !== null) {
-            if ($takenBy2->cancelId == $id) {
-              $slot->status2 = 0;
-              $slot->takenBy2 = '';
-              $slot->createtime2 = NULL;
-              $slot->createuser2 = -1;
-              $slot->edittime2 = NULL;
-              $slot->edituser2 = -1;
-              $slot->is_mobile2 = 0;
-            }
+        if ($takenBy2 !== null) {
+          if ($takenBy2->cancelId == $id) {
+            $slot->status2 = 0;
+            $slot->takenBy2 = '';
+            $slot->createtime2 = NULL;
+            $slot->createuser2 = -1;
+            $slot->edittime2 = NULL;
+            $slot->edituser2 = -1;
+            $slot->is_mobile2 = 0;
           }
+        }
 
-          if ($slot->save()) {
+        if ($slot->save()) {
 
-            $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $slot->date, $slot->iorder, $info, false);
+          $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $slot->date, $slot->iorder, $info, false);
 
-            $mailer = new Mailer();
-            $mailer->addRecipient($info->ownerEmail);
-            $bcc = 'karlis@r1riepas.lv';
-            if ($bcc) $mailer->addBCC($bcc);
-            $mailer->subject = 'Tava rezervacija R1 riepu servisā ATCELTA';
-            $mailer->message = $mailText;
-            $mailer->send();
+          $mailer = new Mailer();
+          $mailer->addRecipient($info->ownerEmail);
+          $bcc = 'karlis@r1riepas.lv';
+          if ($bcc) $mailer->addBCC($bcc);
+          $mailer->subject = 'Tava rezervacija R1 riepu servisā ATCELTA';
+          $mailer->message = $mailText;
+          $mailer->send();
 
-            Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Atcelts pieraksts', $slot);
-            return redirect(route('pieraksts'))->with('success', 'Atcelšana ir izdevusies');
-          } else {
-            Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Neizdevās atcelt pierakstu', $slot);
-            return redirect(route('pieraksts'))->with('danger', 'Notikusi kļūda');
-          }
-        } else if (is_null($request->cancel) && isset($request->cancel)) {
-          return redirect(route('pieraksts'));
+          Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Atcelts pieraksts', $slot);
+          return redirect(route('pieraksts'))->with('success', 'Atcelšana ir izdevusies');
+        } else {
+          Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Neizdevās atcelt pierakstu', $slot);
+          return redirect(route('pieraksts'))->with('danger', 'Notikusi kļūda');
         }
       }
 

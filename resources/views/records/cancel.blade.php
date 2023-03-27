@@ -34,7 +34,7 @@
           <button class="btn btn-primary" type="submit" name="delete" style="width: 75%; font-size: 3rem;">Jā</button>
         </div>
         <div class="col">
-          <button class="btn btn-secondary" type="submit" name="cancel" style="width: 75%; font-size: 3rem;">Nē</button>
+          <a href="{{ route('pieraksts') }}" class="btn btn-secondary" style="width: 75%; font-size: 3rem;">Nē</a>
         </div>
       </div>
     </div>

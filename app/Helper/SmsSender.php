@@ -33,7 +33,18 @@ class SmsSender {
     header("Pragma: no-cache");
 
     $target = $data['mobile_number'];
-    $smsText = 'Pasūtījums ar numuru - ' . $orderId . ' ir apstiprināts';
+    switch ($data['location']) {
+      case 'URS': {
+        $office = Office::where('office_id', 1)->first();
+        break;
+      }
+      case 'KRS': {
+        $office = Office::where('office_id', 2)->first();
+        break;
+      }
+    }
+//    $smsText = 'Pasūtījums ar numuru - ' . $orderId . ' ir apstiprināts';
+    $smsText = 'Jūsu pasūtījuma numurs ' . $orderId . ', saņemšana - ' . $office->title . '. Ar darba laikiem iespējams iepazīties - www.r1riepas.lv';
 
     $sendString = '["'.$target.'","'.$smsText.'"]';
 
