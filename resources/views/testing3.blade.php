@@ -72,6 +72,11 @@
         <input type="checkbox" id="safe" onchange="toggleSafe()" name="safe" value="1"><label for="safe"></label>
         <input style="width: 100px;" type="text" placeholder="Cena" name="price_safe" onkeyup="addSafePrice()" disabled="">
       </div>
+      <div class="bottom-long-fields">
+        <span style="margin-left: 118px;">Tel. Numurs</span>
+        <input type="checkbox" id="mobile" onchange="toggleMobile()" name="mobile" checked="" value="1"><label for="mobile"></label>
+        <input style="width: 100px;" type="text" placeholder="Telefona numurs" name="mobile_number">
+      </div>
       <div class="user-fields">
         <input type="text" name="user" placeholder="Lietotājs" value="{{ $param->user }}">
         <textarea type="textarea" name="comments" placeholder="Komentāri"></textarea>
@@ -274,10 +279,31 @@ function sendData(data){
           title: 'Paziņojums',
           html: resp.success,
           icon: 'success',
-          confirmButtonText: 'OK'
+          confirmButtonText: 'OK',
+          showDenyButton: true,
+          denyButtonText: 'SMS',
         }).then((result) => {
           if (result.isConfirmed) {
             window.close();
+          } else if (result.isDenied) {
+            $.ajax({
+              method: 'POST',
+              url: '/orderSMS',
+              data: {info: data, orderId: resp.orderId, '_token': data._token},
+              timeout: 10000,
+              success: function(response) {
+                Swal.fire({
+                title: 'Paziņojums',
+                html: response.success,
+                icon: 'success',
+                confirmButtonText: 'OK',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.close();
+                  }
+                })
+              }
+            });
           }
         });
       } else if (resp.danger) {
@@ -340,6 +366,14 @@ function toggleSafe(){
     $('#quick-buy-form input[name=price_safe]').attr('disabled','disabled').val('');
   }
   addSafePrice();
+}
+
+function toggleMobile(){
+  if ($('#mobile').prop('checked')) {
+    $('#quick-buy-form input[name=mobile_number]').removeAttr('disabled').focus();
+  } else {
+    $('#quick-buy-form input[name=mobile_number]').attr('disabled','disabled').val('');
+  }
 }
 
 function addSafePrice(){

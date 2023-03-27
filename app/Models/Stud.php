@@ -28,12 +28,15 @@ class Stud extends Model
     return $brand->b_title;
   }
 
+  public function getTreadAttribute() {
+    $tread = Studtread::where('tread_id', $this->make_id)->first();
+
+    return $tread->t_title;
+  }
+
   public function getFullNameAttribute()
   {
-    $tread = Studtread::where('tread_id', $this->make_id)->first();
-    $brand = Studbrand::where('brand_id', $tread->brand_id)->first();
-
-    return $brand->b_title . ' ' . $tread->t_title;
+    return $this->getBrandAttribute() . ' ' . $this->getTreadAttribute();
   }
 
   public function getShowAppAttribute()

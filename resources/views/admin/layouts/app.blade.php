@@ -128,6 +128,12 @@
                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-soccer"></use>
               </svg> Jauni lietie diski</a>
           </li>
+          <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.quadrims') }}" target="_top">
+              <svg class="c-sidebar-nav-icon">
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-soccer"></use>
+              </svg> Kvadru diski</a>
+          </li>
+
           <li class="c-sidebar-nav-title">Rezervācijas</li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.reservations') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
@@ -146,6 +152,11 @@
               </svg> Pasūtījumi</a>
           </li>
           <li class="c-sidebar-nav-title">Iestatījumi</li>
+          <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.audits') }}" target="_top">
+              <svg class="c-sidebar-nav-icon">
+                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list"></use>
+              </svg> Notikumu žurnāls</a>
+          </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.services') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list"></use>

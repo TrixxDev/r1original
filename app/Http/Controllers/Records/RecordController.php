@@ -2,32 +2,25 @@
 
 namespace App\Http\Controllers\Records;
 
-use App\Helper\CMailer;
-use App\Http\Controllers\Controller;
-use App\Http\Controllers\EmailController;
-use App\Models\Audit;
-use App\Models\User;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Mail;
-use Swift_TransportException;
-use Illuminate\Support\Str;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Carbon\Carbon;
-use Carbon\CarbonPeriod;
-use Illuminate\Http\Request;
-use App\Models\Workingday;
-use App\Models\Service;
-use App\Models\Office;
-use App\Helper\Tires;
-use App\Models\Queue;
-use App\Models\Slot;
-use App\Models\Pdf;
-use App\Rules\ReCaptcha;
-use App\Helper\Utility;
-use Auth;
-use Throwable;
-use PHPMailer\PHPMailer\PHPMailer;
+  use App\Http\Controllers\EmailController as Mailer;
+  use App\Models\Audit;
+  use Illuminate\Mail\Message;
+  use PhpOffice\PhpSpreadsheet\Spreadsheet;
+  use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+  use App\Http\Controllers\Controller;
+  use Illuminate\Support\Facades\Mail;
+  use Illuminate\Http\Request;
+  use Illuminate\Support\Str;
+  use App\Models\Workingday;
+  use App\Rules\ReCaptcha;
+  use App\Models\Service;
+  use App\Models\Office;
+  use App\Helper\Tires;
+  use App\Models\Queue;
+  use App\Models\Slot;
+  use App\Models\User;
+  use Carbon\Carbon;
+  use Auth;
 
 class RecordController extends Controller
 {
@@ -390,7 +383,11 @@ class RecordController extends Controller
         $slot->createUser = $slot->editUser = $userID;
         $slot->is_mobile = 0;
 
-        $slot->save();
+      if ($slot->save()) {
+        Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Izveidots jauns pieraksts', $slot);
+      } else {
+        Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id,0, 'Neizdevās izveidot pierakstu', $slot);
+      }
 
         switch ($form->purpose){
           case 0:{
@@ -432,21 +429,20 @@ class RecordController extends Controller
           'cancelId' => $cancelId
         ];
 
-        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
-          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
-        }
-//        $mailText = $queue->parseNotification($queue->notificationEmail, $slot->date, $slot->iorder, $form, false);
-//        $mailer = new CMailer();
-//        $mailer->addRecipient($form->ownerEmail);
-//        $bcc = $form->ownerEmail;
-//        if ($bcc) $mailer->addBCC($bcc);
-//        $mailer->subject = $queue->parseNotification($queue->notificationSubject, $slot->date, $slot->iorder, $form, false);
-//        $mailer->message = $mailText;
-//        $mailer->send();
+//        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
+//          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
+//        }
+      $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, false);
+//        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($mailText));
+      $mailer = new Mailer();
+      $mailer->addRecipient($form->ownerEmail);
+      $bcc = 'karlis@r1riepas.lv';
+      if ($bcc) $mailer->addBCC($bcc);
+      $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, false);
+      $mailer->message = $mailText;
+      $mailer->send();
 
-//        dd(mail($form->ownerEmail, 'asd', $mailText, 'From: indrikis38@gmail.com'));
-
-        return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
+      return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
     }
 
     public function showMobileQueues(Request $request) {
@@ -761,7 +757,11 @@ class RecordController extends Controller
         $fmtDate = date('d.m.Y',strtotime($slot->date));
         $dayOfWeek2 = $_weekDays2[date('N', strtotime($slot->date.' 00:00:00'))];
 
-        $slot->save();
+      if ($slot->save()) {
+        Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Izveidots jauns pieraksts', $slot);
+      } else {
+        Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id,0, 'Neizdevās izveidot pierakstu', $slot);
+      }
 
         switch ($form->purpose){
           case 0:{
@@ -803,9 +803,16 @@ class RecordController extends Controller
           'cancelId' => $cancelId
         ];
 
-        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
-          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
-        }
+      $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, false);
+//        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($mailText));
+
+      $mailer = new Mailer();
+      $mailer->addRecipient($form->ownerEmail);
+      $bcc = 'karlis@r1riepas.lv';
+      if ($bcc) $mailer->addBCC($bcc);
+      $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, false);
+      $mailer->message = $mailText;
+      $mailer->send();
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
 
@@ -1237,33 +1244,47 @@ class RecordController extends Controller
 
   }
 
-  public function cancelSlot($id)
-  {
+    public function cancelSlot(Request $request, $id)
+    {
 
     $timeToClose = Carbon::create(date('Y'), date('m'), date('d'), 7, 30);
     $now = Carbon::now();
 
     $slot = Slot::where('takenBy', 'like', '%"cancelId":"' . $id . '"%')->orWhere('takenBy2', 'like', '%"cancelId":"' . $id . '"%')->first();
 
-    $date = date('Y-m-d');
-    if ($slot->date < $date) return redirect(route('pieraksts'))->with('warning', 'Jūsu pieraksts vairs nav aktuāls');
-    if ($slot->date == $date && $timeToClose < $now) return redirect(route('pieraksts'))->with('warning', 'Pierakstu atcelt tiešsaistē iespējams līdz <b>7:30</b>, ja vēlaties mainīt pieraksta laiku vēlāk, zvaniet');
+      $date = date('Y-m-d');
+      if (!$slot) return redirect(route('pieraksts'));
+
+      if ($slot->date < $date) return redirect(route('pieraksts'))->with('warning', 'Jūsu pieraksts vairs nav aktuāls');
+      if ($slot->date == $date && $timeToClose < $now) return redirect(route('pieraksts'))->with('warning', 'Pierakstu atcelt tiešsaistē iespējams līdz <b>7:30</b>, ja vēlaties mainīt pieraksta laiku vēlāk, zvaniet');
 
     if (!$slot) return redirect(route('pieraksts'));
     $takenBy = json_decode($slot->takenby);
     $takenBy2 = json_decode($slot->takenby2);
 
-    if ($takenBy !== null) {
-      if ($takenBy->cancelId == $id) {
-        $slot->status = 0;
-        $slot->takenBy = '';
-        $slot->createtime = NULL;
-        $slot->createuser = -1;
-        $slot->edittime = NULL;
-        $slot->edituser = -1;
-        $slot->is_mobile = 0;
+      if ($takenBy !== null) {
+        $info = $takenBy;
+        $time = $queue->getSlotStartTime($slot->date,$slot->iorder,false);
       }
-    }
+      if ($takenBy2 !== null) {
+        $info = $takenBy2;
+        $time = $queue->getSlotStartTime2($slot->date,$slot->iorder,false);
+      }
+
+      if ($request->post()) {
+        if (is_null($request->delete)) {
+
+          if ($takenBy !== null) {
+            if ($takenBy->cancelId == $id) {
+              $slot->status = 0;
+              $slot->takenBy = '';
+              $slot->createtime = NULL;
+              $slot->createuser = -1;
+              $slot->edittime = NULL;
+              $slot->edituser = -1;
+              $slot->is_mobile = 0;
+            }
+          }
 
     if ($takenBy2 !== null) {
       if ($takenBy2->cancelId == $id) {
@@ -1277,17 +1298,43 @@ class RecordController extends Controller
       }
     }
 
-    if ($slot->save()) {
-      return redirect(route('pieraksts'))->with('success', 'Atcelšana ir izdevusies');
-    } else {
-      return redirect(route('pieraksts'))->with('danger', 'Notikusi kļūda');
+          if ($slot->save()) {
+
+            $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $slot->date, $slot->iorder, $info, false);
+
+            $mailer = new Mailer();
+            $mailer->addRecipient($info->ownerEmail);
+            $bcc = 'karlis@r1riepas.lv';
+            if ($bcc) $mailer->addBCC($bcc);
+            $mailer->subject = 'Tava rezervacija R1 riepu servisā ATCELTA';
+            $mailer->message = $mailText;
+            $mailer->send();
+
+            Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Atcelts pieraksts', $slot);
+            return redirect(route('pieraksts'))->with('success', 'Atcelšana ir izdevusies');
+          } else {
+            Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Neizdevās atcelt pierakstu', $slot);
+            return redirect(route('pieraksts'))->with('danger', 'Notikusi kļūda');
+          }
+        } else if (is_null($request->input('cancel'))) {
+          return redirect(route('pieraksts'));
+        }
+      }
+
+      $_weekDays = [
+        1 => 'pirmdien',
+        2 => 'otrdien',
+        3 => 'trešdien',
+        4 => 'ceturtdien',
+        5 => 'piektdien',
+        6 => 'sestdien',
+        7 => 'svētdien',
+      ];
+
+      $queue = Queue::where('queue_id', $slot->queue_id)->first();
+      $office = Office::where('office_id', $queue->office_id)->first();
+      return view('records.cancel', compact('slot', '_weekDays', 'info', 'time', 'office'));
     }
-//    if ($slot->save()) {
-//      return redirect(route('pieraksts'))->with('success', 'Jūs veiksmīgi atcēlāt pierakstu, paldies par informāciju!');
-//    } else {
-//      return redirect(route('pieraksts'))->with('danger', 'Notika kļūda, lūgums ar mums sazināties');
-//    }
-  }
 
   public function getRandomHash(): string
   {

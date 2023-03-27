@@ -63,7 +63,7 @@ class Moto extends Model
 
     public function getStockCount()
     {
-        $stocks = Motostock::where('tire_id', $this->tire_id)->get();
+        $stocks = Motostock::where('tire_id', $this->tire_id)->orderBy('stock_id', 'DESC')->get();
 
         $count=0;
 
@@ -288,7 +288,7 @@ class Moto extends Model
       array_push($stock_qty, $tire->quantity);
 
       foreach ($stock_names as $key => $stock_name) {
-        $stock = Motostock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
+        $stock = Motostock::where('itype', $key)->where('tire_id', $tire->tire_id)->orderBy('stock_id', 'DESC')->first();
         if ($stock && $stock->quantity != '-1') {
           array_push($stock_qty, $stock->quantity);
         }
@@ -321,7 +321,7 @@ class Moto extends Model
           $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
           $availability .= '<p>Kalnciema iela: ' . $tire->krs_quantity . '</p>';
           foreach ($stock_names as $key => $stock_name) {
-            $stock = Motostock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
+            $stock = Motostock::where('itype', $key)->where('tire_id', $tire->tire_id)->orderBy('stock_id', 'DESC')->first();
             if ($stock && $stock->quantity > 0) {
               $availability .= '<br><p>' . $stock_name . ': ' . $stock->quantity . '</p>';
             } else {

@@ -35,6 +35,7 @@ class AutoTireController extends Controller
     public $autoTiresD3;
     public $model = 'Autotire';
     public $tiresSize;
+    public $lastYear;
     public $type;
     public $code;
     public $fuel;
