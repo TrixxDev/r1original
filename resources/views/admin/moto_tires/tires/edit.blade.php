@@ -49,7 +49,11 @@
                             <select name="tire_type" id="tyre_type" class="form-control">
                               <option value="0">Nav</option>
                               @foreach ($tire->types() as $index => $value)
+<<<<<<< HEAD
+                              <option @if (strpos(strtolower($index), strtolower($tire->type)) !== false) selected @endif value="{{ $index }}">{{ $value }}</option>
+=======
                               <option @if (strpos($index, $tire->type) !== false) selected @endif value="{{ $index }}">{{ $value }}</option>
+>>>>>>> f2e4921fe54297fcf02250dc823fec57fd2bb42e
                               @endforeach
                             </select>
                           </div>
