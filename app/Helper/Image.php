@@ -129,7 +129,7 @@
       for ($i = 0; $i < ($maxBanners / $count); $i++) {
         foreach ($banners as $banner) {
           if (!empty($banner->url)) {
-            $return .= '<a href="' . url('//' . $banner->url) . '" target="_blank"><img class="banner-image" src="/storage/banners/' . $banner->name . '"></a>';
+            $return .= '<a href="' . url('//' . $banner->url) . '"><img class="banner-image" src="/storage/banners/' . $banner->name . '"></a>';
           } else {
             $return .= '<img class="banner-image" src="/storage/banners/' . $banner->name . '">';
           }
