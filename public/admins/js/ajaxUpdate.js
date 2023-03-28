@@ -14,6 +14,64 @@ $(document).ready(function() {
   let brand_id = $('#brand_select').val();
   let tread_id;
   let current_tread = pathParts[4];
+  let current_url;
+
+  $(document).on('click', 'button.edit-banner', function(e) {
+    e.preventDefault();
+    let url = $(this).parent().parent().find('.banner-link').text();
+    current_url = url;
+    $('<input type="text" name="url" class="banner-link-input form-control">').insertAfter($(this).parent().parent().find('.banner-link'));
+    $('.banner-link-input').val(url);
+    $(this).parent().parent().find('.banner-link').remove();
+    $(this).removeClass('btn-warning').addClass('btn-success').removeClass('edit-banner').addClass('save-banner');
+    $(this).parent().parent().children('.delete-form').find('.delete-banner').addClass('cancel-edit').removeClass('delete-banner').text('Atcelt');
+    if ($(document).find('.banner-link-input')) {
+      $('.banner-link-input').keypress(function(e) {
+        if (e.keyCode == 13) {
+          $('.save-banner').click();
+        }
+      });
+    }
+  });
+
+  $(document).on('click', 'button.save-banner',function(e) {
+    e.preventDefault();
+    let url = $(this).parent().parent().find('.banner-link-input').val();
+    $(this).parent().parent().children('.edit-form').find('input[type="hidden"][name="url"]').val(url);
+    $(this).parent().parent().children('.edit-form').submit();
+  });
+
+  $(document).on('click', 'button.cancel-edit', function(e) {
+    e.preventDefault();
+    let url = $(this).parent().parent().find('.banner-link-input').val();
+    $('<span class="banner-link form-control">' + url + '</span>').insertAfter($(this).parent().parent().find('.banner-link-input'));
+    $(this).parent().parent().find('.banner-link-input').remove();
+    $(this).parent().parent().find('.save-banner').removeClass('btn-success').addClass('btn-warning').removeClass('save-banner').addClass('edit-banner');
+    $(this).removeClass('cancel-edit').addClass('delete-banner').text('Dzēst');
+  });
+
+  $('.admin-banner-images input.enable-banner').on('change', function(e) {
+    e.preventDefault();
+    let banner_id = $(this).data('banner-id');
+    let enabled = ($(this).prop('checked') === true) ? 1 : 0;
+    $.ajax({
+      method: 'POST',
+      url: '/admin/settings/banners/' + banner_id + '/enable',
+      data: {enabled: enabled},
+      dataType: 'json',
+      beforeSend: function() {
+        $('.admin-banner-images input.enable-banner').attr('disabled', true);
+      },
+      success: function(data) {
+        if (data.error) {
+          alert(data.error);
+        }
+      },
+      complete: function() {
+        $('.admin-banner-images input.enable-banner').removeAttr('disabled');
+      }
+    });
+  });
 
   function changeBrands() {
     $('#tread_select').attr('disabled', true);

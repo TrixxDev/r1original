@@ -41,26 +41,52 @@ class BannerController extends Controller
     $fileName = pathinfo($name, PATHINFO_FILENAME);
     $fileExtension = pathinfo($name, PATHINFO_EXTENSION);
 
+    $name = $fileName . '.' . $fileExtension;
+
 //    $path = $request->file('formFile')->store('images/banners');
 //    dd($image);
+
     $save = new Bannerimage;
     $save->name = $name;
+    $save->enabled = 0;
 
-    $save->save();
+    if ($save->save()) {
+      if ($request->hasFile('formFile')) {
+        $image = $request->file('formFile');
 
-    if ($request->hasFile('formFile')) {
-      $image = $request->file('formFile');
-
-      $height = Image::make($image)->height();
-      $width = Image::make($image)->width();
+        $height = Image::make($image)->height();
+        $width = Image::make($image)->width();
 
 //      dd($width, $height);
 //      if ($width != 760 && $height != 100) return redirect()->back()->with('error', 'Bildes izmēram jābūt 760px x 100px');
 //      Image::make($image->getRealPath())->save('public/storage/banners/' . $name);
-      Image::make($image->getRealPath())->fit(760, 100)->save('public/storage/banners/' . $save->id . '.' . $fileExtension);
+        Image::make($image->getRealPath())->fit(540, 80)->save('storage/banners/' . $save->id . '.' . $fileExtension);
+      }
+      $save->name = $save->id . '.' . $fileExtension;
+      $save->save();
     }
 
     return redirect()->back()->with('status', 'Banneris pievienots veiksmīgi!');
+  }
+
+  public function update(Request $request, $id) {
+    $banner = Bannerimage::findOrFail($id);
+    $banner->url = $request->url;
+    $banner->save();
+    return redirect()->back()->with('success', 'Bannerim veiksmīgi izmainīts links');
+  }
+
+  public function enable(Request $request, $id) {
+    if ($request->enabled == 1) {
+      $banners = Bannerimage::where('enabled', 1)->get();
+      if (count($banners) == 4) {
+        echo json_encode(['error' => 'Maksimāli atļautais banneru skaits - 4']);
+        die;
+      }
+    }
+    $banner = Bannerimage::findOrFail($id);
+    $banner->enabled = $request->enabled;
+    $banner->save();
   }
 
   public function delete($id) {

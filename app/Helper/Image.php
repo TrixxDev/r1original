@@ -2,6 +2,8 @@
 
   namespace App\Helper;
 
+  use App\Models\Bannerimage;
+
   class Image {
 
     public static function image($type, $image) {
@@ -100,6 +102,44 @@
         return '<img src=' . asset('img/p/en-default-home_default.jpg') . '>';
       }
 
+    }
+
+    public static function countBanners() {
+      $banners = Bannerimage::where('enabled', 1)->get();
+      $count = count($banners);
+
+      return $count;
+    }
+
+    public static function showBanners(){
+      if (Self::countBanners() == 0) {
+        return false;
+      }
+      $banners = Bannerimage::where('enabled', 1)->get();
+      $count = count($banners);
+      $maxBanners = 8;
+      if ($count == 3) {
+        $maxBanners = 12;
+      }
+
+      $return = '';
+      $return .= '<div id="scroll-container">';
+      $return .= '<div class="scroll-content">';
+
+      for ($i = 0; $i < ($maxBanners / $count); $i++) {
+        foreach ($banners as $banner) {
+          if (!empty($banner->url)) {
+            $return .= '<a href="' . url('//' . $banner->url) . '" target="_blank"><img class="banner-image" src="/storage/banners/' . $banner->name . '"></a>';
+          } else {
+            $return .= '<img class="banner-image" src="/storage/banners/' . $banner->name . '">';
+          }
+        }
+      }
+
+      $return .= '</div>';
+      $return .= '</div>';
+
+      return $return;
     }
 
     public static function showBanner($image){
