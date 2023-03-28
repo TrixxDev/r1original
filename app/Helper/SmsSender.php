@@ -44,7 +44,7 @@ class SmsSender {
       }
     }
 //    $smsText = 'Pasūtījums ar numuru - ' . $orderId . ' ir apstiprināts';
-    $smsText = 'Jūsu pasūtījuma numurs ' . $orderId . ', saņemšana - ' . $office->title . '. Ar darba laikiem iespējams iepazīties - www.r1riepas.lv';
+    $smsText = 'Jūsu pasūtījuma numurs ' . $orderId . ', saņemšana - ' . $office->shipping . '. Ar darba laikiem iespējams iepazīties - www.r1riepas.lv';
 
     $sendString = '["'.$target.'","'.$smsText.'"]';
 

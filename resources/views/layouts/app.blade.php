@@ -766,6 +766,52 @@
 
     </footer>
 
+
+    @if (App\Helper\Image::countBanners() > 0)
+    {!! \App\Helper\Image::showBanners() !!}
+    <style>
+
+      footer {
+        padding-bottom: 80px;
+      }
+
+      #scroll-container {
+        position: fixed;
+        bottom: 0;
+        display: inline-flex;
+        z-index: 1;
+      }
+
+      .scroll-content {
+        display: flex;
+        white-space: nowrap;
+        animation: scroll 20s linear infinite;
+        height: 80px;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .scroll-content:hover {
+        animation-play-state: paused;
+      }
+
+      .scroll-content img {
+        width: 540px;
+        height: 80px;
+      }
+
+      @keyframes scroll {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+
+    </style>
+  @endif
+
 </main>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->

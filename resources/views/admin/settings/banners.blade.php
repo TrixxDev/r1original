@@ -39,11 +39,11 @@
                   <div class="no-codes">
                     @if( count($banners) == 0 )
                     <i class="fa-sharp fa-solid fa-eye-slash no-codes-icon"></i>
-                      <div class="no-codes-title">Pašlaik nav pievienots neviens banneris!</div>
+                      <div class="no-codes-title">Pašlaik nav pievienots neviens banneris! (540x80)</div>
                     @else
                       <i class="fa-solid fa-plus" style="font-size: 32px;"></i>
                     @endif
-                    <div>Spied šeit lai pievienotu papildus bannerus</div>
+                    <div>Spied šeit lai pievienotu papildus bannerus (540x80)</div>
                   </div>
                 </label>
 
@@ -57,10 +57,24 @@
                   <div class="admin-banner-images">
                       @foreach($banners as $banner)
                         {!! App\Helper\Image::showBanner($banner->id) !!}
-                      <form action="{{ route('admin.settings.banners.delete', $banner->id)}}" method="post">
-                        @csrf
-                        <button class="btn btn-danger ml-4">Dzēst</button>
-                      </form>
+                        <div class="options" style="display: flex">
+                          <input type="checkbox" data-banner-id="{{ $banner->id }}" class="enable-banner" style="margin-right: 4px;" @if ($banner->enabled) checked @endif name="enable">
+                          <div class="col-3">
+                            <div class="row">
+{{--                              <input type="text" class="form-control" value="{{ $banner->url }}">--}}
+                              <span class="banner-link form-control">{{ $banner->url }}</span>
+                            </div>
+                          </div>
+                          <form class="edit-form" action="{{ route('admin.settings.banners.update', $banner->id)}}" method="post">
+                            @csrf
+                            <input type="hidden" name="url">
+                            <button class="btn btn-warning ml-2 edit-banner">Labot</button>
+                          </form>
+                          <form class="delete-form" action="{{ route('admin.settings.banners.delete', $banner->id)}}" method="post">
+                            @csrf
+                            <button class="btn btn-danger ml-2 delete-banner">Dzēst</button>
+                          </form>
+                        </div>
                       @endforeach
 {{--                    <img class="banner-image" src="http://1.bp.blogspot.com/_KkBJ9yLOsXc/S6zmtAEypuI/AAAAAAAAEXI/VY3TJH5yUGU/s1600/blackbirdandlollybanner.jpg" alt="banner"><button class="btn btn-danger ml-4">Dzēst</button>--}}
 {{--                    <img class="banner-image" src="http://3.bp.blogspot.com/_KkBJ9yLOsXc/S6zmu4t9_ZI/AAAAAAAAEXg/SGqH_LZKrwQ/s1600/FlutterbySky.jpg" alt="banner"><button class="btn btn-danger ml-4">Dzēst</button>--}}

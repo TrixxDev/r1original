@@ -244,6 +244,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   // Skrienošā josla
   Route::get('/settings/banners', [App\Http\Controllers\Admin\BannerController::class, 'index'])->name('settings.banners');
   Route::post('/settings/banners', [App\Http\Controllers\Admin\BannerController::class, 'upload'])->name('settings.upload');
+  Route::post('/settings/banners/{id}/update', [App\Http\Controllers\Admin\BannerController::class, 'update'])->name('settings.banners.update');
+  Route::post('/settings/banners/{id}/enable', [App\Http\Controllers\Admin\BannerController::class, 'enable'])->name('settings.banners.enable');
   Route::post('/settings/banners/{id}/delete', [App\Http\Controllers\Admin\BannerController::class, 'delete'])->name('settings.banners.delete');
 
   // Riepu kodu paskaidrojumi
