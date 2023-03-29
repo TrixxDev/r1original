@@ -19,17 +19,20 @@
                             @foreach ($models as $model_name => $model)
                             <optgroup label="{{ $model['title'] }}">
                               @foreach ($model['searchBy'] as $model_col => $model_title)
-                                <option value="{{ $model_name }};{{ $model_col }}">{{ ucfirst($model_title) }}</option>
+                                <option @if ($modelname == $model_name . ';' . $model_col) selected @endif value="{{ $model_name }};{{ $model_col }}">{{ ucfirst($model_title) }}</option>
                               @endforeach
                             </optgroup>
                             @endforeach
                         </select>
                       </div>
                       <div class="col-3">
-                        <input type="text" name="params" class="form-control" placeholder="Parametri">
+                        <input type="text" name="params" class="form-control" placeholder="Parametri" @if ($param) value="{{ $param }}" @endif>
                       </div>
                       <div class="col">
                         <button class="btn btn-success">Meklēt</button>
+                        @if (!empty($modelname))
+                          <a href="{{ route('admin.audits') }}" class="btn btn-warning">Nodzēst filtru</a>
+                        @endif
                       </div>
                     </div>
                   </form>

@@ -26,24 +26,22 @@ class MainController extends Controller
           'title' => 'Slots',
           Schema::getColumnListing((new Slot)->getTable()),
           'searchBy' => [
-            'audit_time' => 'Laiks',
-            'audit_time' => 'Datums',
+            'audit_event' => 'Notikums',
             'vehiclePlate' => 'Mašīnas numurs',
             'ownerPhone' => 'Telefona numurs',
-            'ownerName' => 'Klienta vārds-uzvārds'
             // Datums, Laiks, Mašīnas numurs, Telefona numurs, Klienta vārds-uzvārds
-          ]
+          ],
         ],
-        'users' => [
-          'name' => 'App\\Models\\User',
-          'title' => 'Lietotāji',
-          Schema::getColumnListing((new User)->getTable()),
-          'searchBy' => [
-            'audit_time' => 'Laiks',
-            'audit_time' => 'Datums',
-            // Datums, Laiks, Mašīnas numurs, Telefona numurs, Klienta vārds-uzvārds
-          ]
-        ],
+//        'users' => [
+//          'name' => 'App\\Models\\User',
+//          'title' => 'Lietotāji',
+//          Schema::getColumnListing((new User)->getTable()),
+//          'searchBy' => [
+//            'audit_time' => 'Laiks',
+//            'audit_time' => 'Datums',
+//            // Datums, Laiks, Mašīnas numurs, Telefona numurs, Klienta vārds-uzvārds
+//          ]
+//        ],
       ];
 
       return $this->models;
@@ -59,28 +57,41 @@ class MainController extends Controller
       DB::enableQueryLog();
       $models = $this->models();
 
-//      if ($request->post())
-//      {
-//        $quote = "'";
-//        $this->model = $request->model;
-//        $this->param = $request->params;
-//        $this->searchBy = $request->searchBy;
-//
-//        $modelName = $this->models[$this->model]['name'];
-//
-//        $audits = Audit::when($this->model, function($query) use ($quote, $modelName) {
-//          $query->where('audit_classname', $modelName)->whereRaw('audit_instance LIKE ' . $quote . '%"' . $this->searchBy . '":"' . $quote . '||' . $this->param . '||' . $quote . '"%' . $quote);
-//        })->orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(20);
-//
-////        dd(DB::getQueryLog());
-//
-//        return view('admin.audits.audits', compact('audits', 'models'));
-//
-//      }
+      if ($request->post())
+      {
+        if (empty($request->params)) return redirect(route('admin.audits'));
+        $quote = "'";
+        $this->model = $modelname = $request->model;
+        $this->param = $param = $request->params;
 
+        $params = explode(';', $this->model);
+        $this->model = $params[0];
+
+        $modelName = $this->models[$this->model]['name'];
+        $this->searchBy = $params[1];
+
+        if ($this->searchBy == 'audit_event') {
+          $audits = Audit::where('audit_classname', $modelName)->where($this->searchBy, 'like', '%' . $this->param . '%')
+          ->orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(20);
+          $modelname = $this->model . ';' . $this->searchBy;
+        } else {
+          $audits = Audit::when($this->model, function($query) use ($quote, $modelName) {
+            $query->where('audit_classname', $modelName)->whereRaw('audit_instance LIKE ' . $quote . '%"' . $this->searchBy . '":"' . $this->param . '"%' . $quote);
+//          $query->where('audit_classname', $modelName)->whereRaw('audit_instance LIKE ' . $quote . '%"' . $this->searchBy . '":"' . $quote . '||' . $this->param . '||' . $quote . '"%' . $quote);
+          })->orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(20);
+        }
+
+//        dd(DB::getQueryLog());
+
+        return view('admin.audits.audits', compact('audits', 'models', 'modelname', 'param'));
+
+      }
+
+      $modelname = '';
+      $param = '';
       $audits = Audit::orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(20);
 
-      return view('admin.audits.audits', compact('audits', 'models'));
+      return view('admin.audits.audits', compact('audits', 'models', 'modelname', 'param'));
   }
 
   public function audit($id)
