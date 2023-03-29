@@ -41,6 +41,16 @@
 
     }
 
+    public function services_enable(Request $request, $id)
+    {
+      $service = Service::where('service_id', $id)->first();
+      $service->timestamps = false;
+      $service->enabled = $request->service_enable;
+      if (!$service->save()) {
+        echo json_encode(['error' => 'Notika kļūda']);
+      }
+    }
+
     public function services_edit($id)
     {
       return $id;

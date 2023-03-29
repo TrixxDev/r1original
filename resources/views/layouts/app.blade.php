@@ -767,9 +767,36 @@
     </footer>
 
 
-    @if (App\Helper\Image::countBanners() > 0)
+    @if (App\Helper\Image::countBanners() > 0 && !isset($_COOKIE['disable_scrolling']))
     {!! \App\Helper\Image::showBanners() !!}
+
+    <script>
+      function setCookie(cname, cvalue, exdays) {
+        const d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        let expires = "expires="+ d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+      }
+
+      $('img.closing_image').on('click', function() {
+        setCookie('disable_scrolling', 'true', 1);
+        $(this).remove();
+        $('#scroll-container').remove();
+        $('footer#footer').css('padding-bottom', '0px');
+      });
+    </script>
+
     <style>
+
+      img.closing_image {
+        position: fixed;
+        bottom: 85px;
+        z-index: 3;
+        width: 20px;
+        height: 20px;
+        left: 1880px;
+        cursor: pointer;
+      }
 
       footer {
         padding-bottom: 80px;

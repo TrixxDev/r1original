@@ -348,7 +348,7 @@
                                                         <select class="custom-select" name="serviceOption" required="required">
                                                           <option disabled selected>Izvēlēties</option>
                                                           @foreach ($services as $service)
-                                                            <option value="{{ $service->service_id }}">{{ $service->title }}</option>
+                                                            <option value="{{ $service->service_id }}" @if ($service->enabled == 0) disabled @endif>{{ $service->title }}</option>
                                                           @endforeach
                                                         </select>
                                                       </div>
@@ -485,7 +485,7 @@
                                                 <div class="col-md-8" id="service">
                                                     @foreach ($services as $service)
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="serviceOption" id="serviceOption{{ $service->service_id }}" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif value="{{ $service->service_id }}">
+                                                        <input class="form-check-input" type="radio" name="serviceOption" @if ($service->enabled == 0) disabled @endif id="serviceOption{{ $service->service_id }}" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif value="{{ $service->service_id }}">
                                                         <label class="form-check-label" for="serviceOption{{ $service->service_id }}">
                                                             {{ $service->title }}
                                                         </label>

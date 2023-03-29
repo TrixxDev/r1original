@@ -71,6 +71,29 @@ $(document).ready(function() {
         $('.admin-banner-images input.enable-banner').removeAttr('disabled');
       }
     });
+  })
+
+  $('.services-list input.service_enable').on('change', function(e) {
+    e.preventDefault();
+    let service_id = $(this).data('service-id');
+    let enabled = ($(this).prop('checked') === true) ? 1 : 0;
+    $.ajax({
+      method: 'POST',
+      url: '/admin/settings/services/' + service_id + '/enable',
+      data: {enabled: enabled},
+      dataType: 'json',
+      beforeSend: function() {
+        $('.services-list input.service_enable').attr('disabled', true);
+      },
+      success: function(data) {
+        if (data.error) {
+          alert(data.error);
+        }
+      },
+      complete: function() {
+        $('.services-list input.service_enable').removeAttr('disabled');
+      }
+    });
   });
 
   function changeBrands() {
@@ -188,9 +211,10 @@ $(document).ready(function() {
             $el = ($('.no-services').length === 1) ? $('.no-services').first() : $('.services').first();
             $($el).before('<li id="service_' + data.service_id + '" class="services list-group-item d-flex justify-content-between align-items-center">' +
               '<span class="service_title">' + data.service_title + '</span>' +
-              '<div class="options">' +
-              '<a href="/admin/settings/services/' + data.service_id + '/edit" class="badge bg-primary rounded-pill service-edit">Labot</a> ' +
-              '<a href="/admin/settings/services/' + data.service_id + '/delete" class="badge bg-primary rounded-pill service-delete">Dzēst</a>' +
+              '<div class="options" style="display: inline-flex; align-items: center;">' +
+              '<input type="checkbox" class="service_enable" data-service-id="' + data.service_id + '" name="service_enable">' +
+              '<a href="/admin/settings/services/' + data.service_id + '/edit" style="margin-left: 10px;" class="badge bg-primary rounded-pill service-edit">Labot</a> ' +
+              '<a href="/admin/settings/services/' + data.service_id + '/delete" style="margin-left: 10px;" class="badge bg-primary rounded-pill service-delete">Dzēst</a>' +
               '</div>' +
               '</li>');
             $('input[name="service"]').val('');
