@@ -778,7 +778,12 @@
         document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
       }
 
-      $('img.closing_image').on('click', function() {
+      $(window).on('resize', function() {
+        let width = ($(this).width() - 23) + 'px';
+        $('img.closing_image').css('left', width);
+      });
+
+      $('img.closing_image').css('left', ($(window).width() - 23) + 'px').on('click', function() {
         setCookie('disable_scrolling', 'true', 1);
         $(this).remove();
         $('#scroll-container').remove();
