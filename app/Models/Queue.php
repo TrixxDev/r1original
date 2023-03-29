@@ -77,8 +77,8 @@ class Queue extends Model
           $slot->iorder = $i;
           $slot->status = 0;
           $slot->status2 = 0;
-          $slot->takenBy = $takenBy;
-          $slot->takenBy2 = $takenBy;
+          $slot->takenby = $takenBy;
+          $slot->takenby2 = $takenBy;
           if ($allowCreate) $slot->save();
           $this->_slots[$date][$i] = $slot;
         }
@@ -114,8 +114,8 @@ class Queue extends Model
           $slot->iorder = $key;
           $slot->status = '';
           $slot->status2 = '';
-          $slot->takenBy = $takenBy;
-          $slot->takenBy2 = $takenBy;
+          $slot->takenby = $takenBy;
+          $slot->takenby2 = $takenBy;
           $this->_slots[$date][$i->slot_id] = $slot;
         }
       }

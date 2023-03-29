@@ -727,6 +727,14 @@ class RecordController extends Controller
             $targetSlot->edittime = NOW();
             $targetSlot->edituser = $userId;
             $targetSlot->is_mobile = $slot->is_mobile;
+
+            $slot->status = 0;
+            $slot->takenby = '';
+            $slot->createtime = null;
+            $slot->createuser = -1;
+            $slot->edittime = null;
+            $slot->edituser = -1;
+            $slot->is_mobile = null;
           } else {
             $bQueue = true;
             $targetSlot->status2 = $f_status;
@@ -736,12 +744,21 @@ class RecordController extends Controller
             $targetSlot->edittime2 = NOW();
             $targetSlot->edituser2 = $userId;
             $targetSlot->is_mobile2 = $slot->is_mobile2;
+
+            $slot->status2 = 0;
+            $slot->takenby2 = '';
+            $slot->createtime2 = null;
+            $slot->createuser2 = -1;
+            $slot->edittime2 = null;
+            $slot->edituser2 = -1;
+            $slot->is_mobile2 = null;
           }
           $targetSlot->comment = $f_slotcomment;
 
           $targetSlot->timestamps = false;
 
           $targetSlot->save();
+          $slot->save();
 
           // Pārlasam slotu, gadījumiem ja izmaiņa ir tā paša slota sekundārajā rindā
           if ($slot->slot_id>0){
