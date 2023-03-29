@@ -45,7 +45,7 @@
     {
       $service = Service::where('service_id', $id)->first();
       $service->timestamps = false;
-      $service->enabled = $request->service_enable;
+      $service->enabled = $request->enabled;
       if (!$service->save()) {
         echo json_encode(['error' => 'Notika kļūda']);
       }
