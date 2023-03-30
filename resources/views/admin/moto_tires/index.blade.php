@@ -174,7 +174,7 @@
 {{--                                                <td>{{ $tire->code }}</td>--}}
 {{--                                                <td>{{ $tire->eco }}</td>--}}
 {{--                                                <td>{{ $tire->wet }}</td>--}}
-                                                <td>{{ $tire->noise }}</td>
+                                                <td>{{ $tire->code }}</td>
                                                 <td>{{ $tire->comment }}</td>
                                                 <td>{{ $tire->article }}</td>
                                                 <td>
