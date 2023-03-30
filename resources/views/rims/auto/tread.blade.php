@@ -260,10 +260,9 @@
                         </td>
 
                         <td class="dot-availability text-center">
-                          <span class="dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}"
-                                data-toggle="tooltip"
+                          <span class="dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}" data-toggle="tooltip"
                                 data-html="true"
-                                title="<span>{{ $rim->stockAvailability }}</span>">
+                                title="{{ $rim->stockAvailability }}">
                             <span class="sort-order">{{ $rim->dotAvailable }}</span>
                           </span>
                         </td>

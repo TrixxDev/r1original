@@ -21,7 +21,16 @@
 
     public function getLinkAttribute()
     {
-      return route('kvadru-disks', [$this->getBrandTitleAttribute(), str_replace('/', '_', $this->getTreadTitleAttribute()), $this->rim_id]);
+      $rim = Quadrimmake::selectRaw('quadrim_makes.*, quadrim_makes.t_title as tread_title')
+        ->selectRaw('quadrim_brands.*, quadrim_brands.b_title as brand_title')
+        ->leftJoin('quadrim_brands', 'quadrim_makes.brand_id', '=', 'quadrim_brands.brand_id')
+        ->where('quadrim_makes.make_id', $this->make_id)
+        ->first();
+      if (!isset($rim->brand_title) || !isset($rim->tread_title)) {
+        return false;
+      } else {
+        return route('lietais-disks', [$rim->brand_title, str_replace('/', '_', $rim->tread_title), $this->rim_id]);
+      }
     }
 
     public function getAvailableAttribute()
@@ -70,6 +79,36 @@
 
     public function getDotAvailableAttribute()
     {
+
+      if ($this->urs_quantity > 0 && $this->krs_quantity <= 0) {
+        $this->quantity = $this->urs_quantity;
+      } else if ($this->urs_quantity <= 0 && $this->krs_quantity > 0) {
+        $this->quantity = $this->krs_quantity;
+      } else if ($this->urs_quantity <= 0 && $this->krs_quantity <= 0) {
+        $this->quantity = 0;
+      }
+
+      if ($this->quantity < 0 && $this->getStockCount() > 0) {
+        if ($this->_includeStock) {
+          $count = $this->getStockCount();
+          switch ($count){
+            case -1:
+            case 0: {
+              return 'red';
+            }
+            case 1:
+            case 2:
+            case 3: {
+              return 'half-yellow';
+            }
+            default:{
+              return 'yellow';
+            }
+          }
+        } else {
+          return 'red';
+        }
+      }
       switch ($this->quantity) {
         case 1:
         case 2:
@@ -122,13 +161,11 @@
 
     public function getStockAvailabilityAttribute()
     {
-      $rim = Self::where('rim_id', $this->rim_id)->first();
+      $rim = Quadrim::where('rim_id', $this->rim_id)->first();
 //    $stocks = Rimstock::where('tire_id', $this->tire_id)->get();
 
       $stock_names = [
         'i3' => 'I3',
-        'gy' => 'GoodYear',
-        'rz' => 'RiepuZona',
       ];
 
       if ($rim->urs_quantity >= 4) {
@@ -146,7 +183,7 @@
         $availability = '<p>Ulbrokā: ' . $rim->urs_quantity . '</p><br>';
         $availability .= '<p>Kalnciema ielā: ' . $rim->krs_quantity . '</p>';
 //      foreach ($stock_names as $key => $stock_name) {
-//        $stock = Autostock::where('itype', $key)->where('tire_id', $rim->tire_id)->first();
+//        $stock = Autostock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
 //        if ($stock && $stock->quantity > 0) {
 //          $availability .= '<br><p>' . $stock_name . ': ' . $stock->quantity . '</p>';
 //        } else {
@@ -194,6 +231,21 @@
     public function getFullTitleAttribute()
     {
       return $this->getBrandTitleAttribute() . ' ' . $this->getTreadTitleAttribute();
+    }
+
+    public function getBrandCommentAttribute()
+    {
+      $tread = Quadrimmake::where('make_id', $this->make_id)->first();
+      $brand = Quadrimbrand::where('brand_id', $tread->brand_id)->first();
+
+      return $brand->b_comment;
+    }
+
+    public function getTreadCommentAttribute()
+    {
+      $tread = Quadrimmake::where('make_id', $this->make_id)->first();
+
+      return $tread->t_comment;
     }
 
     public function tread()

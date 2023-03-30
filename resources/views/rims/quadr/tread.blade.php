@@ -26,7 +26,7 @@
               <div class="col-md-12 col-lg-8">
                 <div class="row">
                   <div class="col-sm-12 product-main-details">
-                    <h1 class="h1 mt-1" itemprop="name">{{$currRim->brandTitle . ' ' . $currRim->treadTitle}}</h1>
+                    <h1 class="h1 mt-1" itemprop="name">{{$currRim->fullTitle}}</h1>
                   </div>
                   <div class="col-sm-12 col-md-12 col-lg-6">
                     <div class="product-prices">
@@ -244,10 +244,9 @@
                         </td>
 
                         <td class="dot-availability text-center">
-                          <span class="dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}"
-                                data-toggle="tooltip"
+                          <span class="dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}" data-toggle="tooltip"
                                 data-html="true"
-                                title="<span>{{ $rim->stockAvailability }}</span>">
+                                title="{{ $rim->stockAvailability }}">
                             <span class="sort-order">{{ $rim->dotAvailable }}</span>
                           </span>
                         </td>
