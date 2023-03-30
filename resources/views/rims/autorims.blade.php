@@ -191,53 +191,65 @@
                           <div class="sidebar-bottom">
                             <section class="facet clearfix facet--availability">
                               <h1 class="h6 facet-title">Atlase</h1>
-                              <ul>
-                                <li class="show-selected-checkbox-li mb-1">
-                                  <label class="facet-label" for="show-selected-checkbox" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
-                                  <span class="custom-checkbox">
-                                    <input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces" disabled>
-                                    <span class="ps-shown-by-js">
-                                      <i class="material-icons checkbox-checked"></i>
-                                    </span>
-                                  </span>
-                                    <span>Atrādīt izvēlētos</span>
+                              <ul class="collapse">
+                                <li class="show-selected-checkbox-li">
+                                  <label class="facet-label" for="show-selected-checkbox"
+                                         style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+                            <span class="custom-checkbox">
+                              <input type="checkbox" class="tire-table-checkbox" id="show-selected-checkbox"
+                                     title="Rādīt tikai atzīmētās preces" disabled>
+                              <span class="ps-shown-by-js">
+                                <i class="material-icons checkbox-checked"></i>
+                              </span>
+                            </span>
+                                    <span>Rādīt izvēlētos</span>
                                   </label>
                                 </li>
                               </ul>
                               <h1 class="h6 facet-title">Pieejamība</h1>
-                              <ul id="facet_availability">
+                              <ul id="facet_availability" class="collapse">
                                 <li>
-                                  <label class="facet-label" for="facet_availability_0" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
-                                  <span class="custom-checkbox">
-                                      <input id="facet_availability_0" type="checkbox" data-search-url="#" data-color="green">
-                                      <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
-                                  </span>
+                                  <label class="facet-label" for="facet_availability_0"
+                                         style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+                            <span class="custom-checkbox">
+                              <input id="facet_availability_0" class="green" {{-- @if (in_array('green', $availability)) checked @endif --}} type="checkbox" name="availability[]"
+                                     data-search-url="#" value="green"
+                                     data-for="dot" data-value="green" data-color="green">
+                              <span class="ps-shown-by-js">
+                                <i class="material-icons checkbox-checked"></i>
+                              </span>
+                            </span>
                                     Pieejams
                                     <span class="dot green" style="float:right;margin-top: 3px;"></span>
                                   </label>
                                 </li>
                                 <li>
-                                  <label class="facet-label" for="facet_availability_1" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
-                                  <span class="custom-checkbox">
-                                      <input id="facet_availability_1" type="checkbox" data-search-url="#" data-color="yellow">
-                                      <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
-                                  </span>
-                                    Pasutams
+                                  <label class="facet-label" for="facet_availability_1"
+                                         style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+                            <span class="custom-checkbox">
+                              <input id="facet_availability_1" class="yellow" {{-- @if (in_array('yellow', $availability)) checked @endif --}} type="checkbox" name="availability[]"
+                                     data-search-url="#" value="yellow"
+                                     data-for="dot" data-value="yellow" data-color="yellow">
+                              <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
+                            </span>
+                                    Pasūtāms
                                     <span class="dot yellow" style="float:right;margin-top: 3px;"></span>
                                   </label>
                                 </li>
                                 <li>
-                                  <label class="facet-label" for="facet_availability_2" style="width: 100%;text-align: left;cursor: pointer">
-                                  <span class="custom-checkbox">
-                                      <input id="facet_availability_2" type="checkbox" data-search-url="#" data-color="red">
-                                      <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
-                                  </span>
+                                  <label class="facet-label" for="facet_availability_2"
+                                         style="width: 100%;text-align: left;cursor: pointer">
+                            <span class="custom-checkbox">
+                              <input id="facet_availability_2" class="red" {{-- @if (in_array('red', $availability)) checked @endif --}} type="checkbox" name="availability[]"
+                                     data-search-url="#" value="red"
+                                     data-for="dot" data-value="red" data-color="red">
+                              <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
+                            </span>
                                     Zvaniet!
                                     <span class="dot red" style="float:right;margin-top: 3px;"></span>
                                   </label>
                                 </li>
                               </ul>
-                              <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i></button>
                             </section>
                           </div>
                         </div>
@@ -436,13 +448,11 @@
                                 </td>
 
                                 <td class="dot-availability text-center">
-                                        <span class="dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}"
-                                              data-toggle="tooltip"
-                                              data-html="true"
-                                              onclick="event.preventDefault()"
-                                              title="<span>{{ $rim->stockAvailability }}</span>">
-                                      <span class="sort-order" style="display: none;">{{ $rim->dotAvailable }}</span>
-                                    </span>
+                                  <span class="dot {{ $rim->dotAvailable }} {{ $rim->stockCount }}" data-toggle="tooltip"
+                                        data-html="true"
+                                        title="{{ $rim->stockAvailability }}">
+                                    <span class="sort-order">{{ $rim->dotAvailable }}</span>
+                                  </span>
                                 </td>
                               </tr>
                               @php
