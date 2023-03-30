@@ -136,11 +136,11 @@
                     </table>
                       <hr>
                     @endif
-                      <h4>Pasūtītās preces</h4>
+                    <h4>Pasūtītās preces</h4>
                     @foreach (\Cart::content() as $item)
                       <div class="cart-item-table cart-item-container">
                         <div class="item-name cart-item-name">
-                          <a href="{{ $item->options->link }}" data-id_customization="0">{{ strtoupper($item->name) . ' ' . $item->options->tire['d1'] . ' ' . $item->options->tire['d2'] . ' ' . $item->options->tire['d3'] . ' ' . $item->options->tire['li'].$item->options->tire['si'] }}</a>
+                          <a href="{{ $item->options->link }}" data-id_customization="0" style="text-transform: uppercase;">{{ strtoupper($item->options->tireObj->fullName) }}</a>
                           <br>
                           <span class="item-price">€ {{ $item->options->tire['price2'] }} x {{$item->qty}}</span>
                           <br>

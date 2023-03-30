@@ -172,7 +172,9 @@ $(document).ready(function() {
     }
   });
 
-  changeBrands();
+  if ($(document).find('.brand-settings').length && $(document).find('.make-settings').length) {
+    changeBrands();
+  }
 
   // $(document).on('click', '.service-edit', function(e) {
   //   e.preventDefault();
@@ -1210,7 +1212,9 @@ $('.make-settings').on('click', '.delete-make', function (e) {
   if (!confirm('Vai tiešām dzēst?')) e.preventDefault();
 });
 
-let $tab = $('.tread_comment .nav-link.active').attr('href').replace('#', '');
+if ($('.tread_comment .nav-link.active').length) {
+  let $tab = $('.tread_comment .nav-link.active').attr('href').replace('#', '');
+}
 
 // Brenda apraksta iestatījumi
 
