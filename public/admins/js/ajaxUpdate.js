@@ -265,7 +265,7 @@ $(document).ready(function() {
 
     let $date = new Date();
     const $year = $date.getFullYear();
-    const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+    const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
     const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
     const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
     const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -285,7 +285,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -300,7 +300,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -325,7 +325,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -340,7 +340,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -365,7 +365,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -380,7 +380,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -405,7 +405,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -420,7 +420,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -445,7 +445,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -460,7 +460,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -485,7 +485,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -500,7 +500,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -525,7 +525,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -540,7 +540,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -565,7 +565,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -580,7 +580,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -606,7 +606,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -621,7 +621,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -647,7 +647,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
@@ -662,7 +662,7 @@ $(document).ready(function() {
 
             let $date = new Date();
             const $year = $date.getFullYear();
-            const $month = 1 + parseInt(($date.getMonth() < 10) ? '0' + $date.getMonth() : $date.getMonth());
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
             const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
