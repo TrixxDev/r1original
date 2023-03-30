@@ -79,6 +79,36 @@ class Rim extends Model
 
   public function getDotAvailableAttribute()
   {
+
+    if ($this->urs_quantity > 0 && $this->krs_quantity <= 0) {
+      $this->quantity = $this->urs_quantity;
+    } else if ($this->urs_quantity <= 0 && $this->krs_quantity > 0) {
+      $this->quantity = $this->krs_quantity;
+    } else if ($this->urs_quantity <= 0 && $this->krs_quantity <= 0) {
+      $this->quantity = 0;
+    }
+
+    if ($this->quantity < 0 && $this->getStockCount() > 0) {
+      if ($this->_includeStock) {
+        $count = $this->getStockCount();
+        switch ($count){
+          case -1:
+          case 0: {
+            return 'red';
+          }
+          case 1:
+          case 2:
+          case 3: {
+            return 'half-yellow';
+          }
+          default:{
+            return 'yellow';
+          }
+        }
+      } else {
+        return 'red';
+      }
+    }
     switch ($this->quantity) {
       case 1:
       case 2:
@@ -136,8 +166,6 @@ class Rim extends Model
 
     $stock_names = [
       'i3' => 'I3',
-      'gy' => 'GoodYear',
-      'rz' => 'RiepuZona',
     ];
 
     if ($rim->urs_quantity >= 4) {
@@ -155,7 +183,7 @@ class Rim extends Model
       $availability = '<p>Ulbrokā: ' . $rim->urs_quantity . '</p><br>';
       $availability .= '<p>Kalnciema ielā: ' . $rim->krs_quantity . '</p>';
 //      foreach ($stock_names as $key => $stock_name) {
-//        $stock = Autostock::where('itype', $key)->where('tire_id', $rim->tire_id)->first();
+//        $stock = Autostock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
 //        if ($stock && $stock->quantity > 0) {
 //          $availability .= '<br><p>' . $stock_name . ': ' . $stock->quantity . '</p>';
 //        } else {
