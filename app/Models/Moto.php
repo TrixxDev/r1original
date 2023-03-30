@@ -368,32 +368,50 @@ class Moto extends Model
       $types = Self::select('type')->get();
       foreach ($types as $type) {
         switch ($type->type) {
-          case 'custom':
+          case 'CUSTOM':
+          case 'Custom':
+          case 'ustom':
             $tipi[$type->type] = 'Custom';
             break;
+          case 'SCOOTER':
+          case 'Scooter':
           case 'scooter':
             $tipi[$type->type] = 'Scooter';
             break;
+          case 'HARLEY DAVIDSON':
+          case 'Harley Davidson':
           case 'harley davidson':
             $tipi[$type->type] = 'Harley Davidson';
             break;
+          case 'MOTO CROSS':
+          case 'Moto Cross':
           case 'moto cross':
             $tipi[$type->type] = 'Moto Cross';
             break;
+          case 'RACING':
+          case 'Racing':
           case 'racing':
             $tipi[$type->type] = 'Racing';
             break;
+          case 'SPORT':
+          case 'Sport':
           case 'sport':
             $tipi[$type->type] = 'Sport';
             break;
+          case 'SPORT TOURING':
+          case 'Sport Touring':
           case 'sport touring':
             $tipi[$type->type] = 'Sport Touring';
             break;
+          case 'TRAIL':
+          case 'Trail':
           case 'trail':
             $tipi[$type->type] = 'Trail';
             break;
         }
       }
+
+      sort($tipi);
 
       return array_unique($tipi);
     }

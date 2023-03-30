@@ -20,3 +20,4 @@ yarn-error.log
 /vendor1/
 /.idea/inspectionProfiles/Project_Default.xml
 /public/starco.sync.xml
+/resources/views/pages/
