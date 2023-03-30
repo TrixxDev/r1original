@@ -229,7 +229,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   Route::get('/settings/users/create', [App\Http\Controllers\Admin\SettingsController::class, 'users_create'])->name('settings.users.create');
   Route::post('/settings/users/store', [App\Http\Controllers\Admin\SettingsController::class, 'users_store'])->name('settings.users.store');
   Route::get('/settings/users/{id}/edit', [App\Http\Controllers\Admin\SettingsController::class, 'users_edit'])->name('settings.users.edit');
+  Route::post('/settings/users/{id}/update', [App\Http\Controllers\Admin\SettingsController::class, 'users_update'])->name('settings.users.update');
+  Route::match(['GET', 'POST'], '/settings/user/{id}/pwdChange', [App\Http\Controllers\Admin\SettingsController::class, 'user_pwdChange'])->name('settings.user.pwdChange');
   Route::get('/settings/users/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'users_destroy'])->name('settings.users.destroy');
+
+  // Lomas
+  Route::get('/settings/roles', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('settings.roles');
 
   // Sinhronizācijas
   Route::get('/settings/syncs', [App\Http\Controllers\Admin\SettingsController::class, 'syncs'])->name('settings.syncs');

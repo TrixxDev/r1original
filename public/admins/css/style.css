@@ -8776,6 +8776,48 @@ html:not([dir=rtl]) .nav {
   color: #8a93a2
 }
 
+.role-settings {
+  display: flex;
+  align-items: flex-start;
+  border: none!important;
+}
+
+.role-settings .nav-tabs {
+  width: 250px;
+  border: none!important;
+}
+
+.role-settings .nav-tabs .nav-item {
+  width: 100%!important;
+}
+
+.role-settings .nav-tabs .nav-link {
+  border: 1px solid #ffffff00!important;
+  border-top-left-radius: 0.25rem!important;
+  border-bottom-left-radius: 0.25rem!important;
+}
+
+.role-settings .nav-tabs .nav-link.active, .role-settings .nav-tabs .nav-item.show .nav-link {
+  color: #768192!important;
+  background-color: #ebedef!important;
+  border-color: #c4c9d0 transparent #c4c9d0 #c4c9d0!important;
+}
+
+.role-settings .tab-content {
+  border: 1px solid #c4c9d0!important;
+  border-top-right-radius: 5px!important;
+  border-bottom-right-radius: 5px!important;
+  border-bottom-left-radius: 5px!important;
+  height: 500px!important;
+  width: 100%;
+}
+
+.role-settings .tab-content > .active {
+  display: block!important;
+  padding-left: 20px!important;
+  padding-right: 20px!important;
+}
+
 .nav-tabs {
   border-bottom: 1px solid;
   border-color: #c4c9d0

@@ -16,6 +16,7 @@
   use Illuminate\Support\Facades\File;
   use Illuminate\Support\Facades\Hash;
   use Illuminate\Support\Str;
+  use Illuminate\Testing\Fluent\Concerns\Has;
   use Spatie\Permission\Models\Role;
 
   class SettingsController extends Controller
@@ -108,6 +109,44 @@
       $roles = Role::all();
 
       return view('admin.settings.users_edit', compact('user', 'roles'));
+    }
+
+    public function users_update(Request $request, $id)
+    {
+
+      $user = User::findOrFail($id);
+      $user->name = strip_tags($request->name);
+      $user->surname = strip_tags($request->surname);
+      $user->username = strip_tags($request->username);
+      $user->password = Hash::make($request->password);
+      $user->email = strip_tags($request->email);
+
+      foreach ($request->status as $role) {
+        $user->assignRole($role);
+      }
+
+      $user->save();
+
+//      dd(Hash::make($request->password));
+
+      return redirect(route('admin.settings.users'))->withSuccess('Lietotājs veiksmīgi izlabots!');
+
+    }
+
+    public function user_pwdChange($user, Request $request)
+    {
+      if ($request->post()) {
+        if ($request->password == $request->password_again) {
+          $user = User::findOrFail($user);
+          $user->password = Hash::make($request->password);
+          $user->save();
+          return redirect()->back()->with('success', 'Parole veiksmīgi nomainīta!');
+        } else {
+          return redirect()->back()->with('danger', 'Paroles nesakrīt');
+        }
+      }
+
+      return view('admin.settings.pwdChange');
     }
 
     public function users_destroy($id)

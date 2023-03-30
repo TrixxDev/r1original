@@ -10,7 +10,7 @@
         </div>
       @endif
       <div class="card">
-        <form class="form-horizontal" method="post" enctype="multipart/form-data">
+        <form action="{{ route('admin.settings.users.update', $user->id) }}" class="form-horizontal" method="post" enctype="multipart/form-data">
           <div class="card-header">{{ 'Lietotāja labošana: ' . ucfirst($user->name) . ' ' . ucfirst($user->surname) }}
             <div style="float: right; position: relative; top: -7px;">
               @if ($user->id === Auth::user()->id)
@@ -34,9 +34,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-md-3 col-form-label" for="nickname">Lietotājvārds</label>
+              <label class="col-md-3 col-form-label" for="username">Lietotājvārds</label>
               <div class="col-md-9">
-                <input class="form-control" id="nickname" type="text" name="nickname" placeholder="Lietotājvārds">
+                <input class="form-control" id="username" type="text" name="username" @if ($user->username) {{ 'value=' . $user->username }} @endif placeholder="Lietotājvārds">
               </div>
             </div>
             <div class="form-group row">
