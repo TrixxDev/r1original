@@ -304,19 +304,19 @@ class RimsController extends Controller
         $fileNameMed   = $id . '-n';
         $fileNameLarge   = $id . '-o';
   //            dd($image);
-        Image::make($image->getRealPath())->save('public/storage/rims/tread/' . $fileName . '.jpg');
+        Image::make($image->getRealPath())->save('storage/rims/tread/' . $fileName . '.jpg');
         Image::make($image->getRealPath())
           ->resize(100, 100, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/rims/tread/' . $fileNameSmall . '.jpg');
+          })->save('storage/rims/tread/' . $fileNameSmall . '.jpg');
         Image::make($image->getRealPath())
           ->resize(200, 200, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/rims/tread/' . $fileNameMed . '.jpg');
+          })->save('storage/rims/tread/' . $fileNameMed . '.jpg');
         Image::make($image->getRealPath())
           ->resize(1500, 1500, function($constraint) {
             $constraint->aspectRatio();
-          })->save('public/storage/rims/tread/' . $fileNameLarge . '.jpg');
+          })->save('storage/rims/tread/' . $fileNameLarge . '.jpg');
       }
       return redirect()->back();
     }
