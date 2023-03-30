@@ -411,6 +411,7 @@ Route::middleware('checksession')->group(function() {
 
 // Sinhronizācijas
 
+  Route::get('/sync/all', [App\Http\Controllers\SyncController::class, 'sync_all'])->name('sync-all');
   Route::get('/sync/accrual', [App\Http\Controllers\SyncController::class, 'accrual'])->name('accrual-sync');
   Route::get('/sync/goodyear', [App\Http\Controllers\SyncController::class, 'gy'])->name('gy-sync');
   Route::get('/sync/i3-auto', [App\Http\Controllers\SyncController::class, 'i3auto'])->name('i3-sync');

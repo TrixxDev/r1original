@@ -212,7 +212,7 @@
                           </a>
                         </td>
                         <td class="text-center">
-                            {{$rim->d1}}*{{$rim->d3}}
+                            {{$rim->d1}}x{{$rim->d3}}
                         </td>
 
                         <td class="text-center hidden-sm-down">

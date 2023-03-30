@@ -33,6 +33,7 @@ class SyncController extends Controller
 
     public function __construct()
     {
+      set_time_limit(0);
       $this->tire_tables = [
         'auto_tires' => [
           'Autotire',
@@ -540,8 +541,6 @@ class SyncController extends Controller
       public function i3auto()
       {
 
-          set_time_limit(0);
-
           $sync = DB::table('sync_times')->where('name', 'i3-auto')->get();
           $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
           $time_now = \Carbon\Carbon::now();
@@ -628,7 +627,7 @@ class SyncController extends Controller
             $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
             $stock->quantity = $quantity;
             $stock->metadata = $metadata;
-	    if ($stock->save()) {
+            if ($stock->save()) {
               $updated++;
             }
 
@@ -757,8 +756,6 @@ class SyncController extends Controller
       public function i3moto()
       {
 
-        set_time_limit(0);
-
         $sync = DB::table('sync_times')->where('name', 'i3-moto')->get();
         $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
         $time_now = \Carbon\Carbon::now();
@@ -855,106 +852,104 @@ class SyncController extends Controller
         echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
       }
 
-    public function i3quadr()
-    {
+      public function i3quadr()
+      {
 
-      set_time_limit(0);
+        $sync = DB::table('sync_times')->where('name', 'i3-quadr')->get();
+        $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+        $time_now = \Carbon\Carbon::now();
+        if ($time_now->diff($sync_time)->invert == 1) {
+          $token_url = "api.latakko.eu/Token";
 
-      $sync = DB::table('sync_times')->where('name', 'i3-quadr')->get();
-      $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
-      $time_now = \Carbon\Carbon::now();
-      if ($time_now->diff($sync_time)->invert == 1) {
-        $token_url = "api.latakko.eu/Token";
+          $curl = curl_init();
+          curl_setopt_array($curl, array(
+            CURLOPT_URL => $token_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+            CURLOPT_HTTPHEADER => array(
+              "cache-control: no-cache",
+              "content-type: application/x-www-form-urlencoded"
+            ),
+          ));
+          $response = curl_exec($curl);
+          $err = curl_error($curl);
 
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => $token_url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-          CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "content-type: application/x-www-form-urlencoded"
-          ),
-        ));
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
+          curl_close($curl);
 
-        curl_close($curl);
+          if (!$err)
+          {
+            $token = json_decode($response);
+          } else {
+            throw new \Exception($err);
+          }
 
-        if (!$err)
-        {
-          $token = json_decode($response);
-        } else {
-          throw new \Exception($err);
+          $token_bearer = $token->access_token;
+
+          $curl = curl_init();
+          curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+              "cache-control: no-cache",
+              "authorization: Bearer " . $token_bearer,
+            ),
+          ));
+          $response = curl_exec($curl);
+
+          $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
+
+          file_put_contents($filename, $response);
+          chmod($filename, 0775);
+
+          $err = curl_error($curl);
+
+          if ($err) throw new \Exception($err);
+
+          curl_close($curl);
         }
 
-        $token_bearer = $token->access_token;
+        $counted = 0;
+        $updated = 0;
 
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "GET",
-          CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "authorization: Bearer " . $token_bearer,
-          ),
-        ));
-        $response = curl_exec($curl);
+        Quadrstock::where('itype', 'i3')->update(['quantity' => 0]);
 
-        $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
+        $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
+        $content = json_decode($content);
 
-        file_put_contents($filename, $response);
-        chmod($filename, 0775);
+        $out = '';
 
-        $err = curl_error($curl);
+        foreach ($content as $item) {
 
-        if ($err) throw new \Exception($err);
+          $counted++;
 
-        curl_close($curl);
+          $stock = Quadrstock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
+          if (!$stock) {
+            continue;
+          }
+
+          $quantity = intval($item->QuantityAvailable);
+          $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+          $stock->quantity = $quantity;
+          $stock->metadata = $metadata;
+          if ($stock->save()) {
+            $updated++;
+          }
+
+        }
+
+        DB::table('sync_times')->where('name', 'i3-quadr')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
       }
-
-      $counted = 0;
-      $updated = 0;
-
-      Quadrstock::where('itype', 'i3')->update(['quantity' => 0]);
-
-      $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
-      $content = json_decode($content);
-
-      $out = '';
-
-      foreach ($content as $item) {
-
-        $counted++;
-
-        $stock = Quadrstock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
-        if (!$stock) {
-          continue;
-        }
-
-        $quantity = intval($item->QuantityAvailable);
-        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
-        $stock->quantity = $quantity;
-        $stock->metadata = $metadata;
-        if ($stock->save()) {
-          $updated++;
-        }
-
-      }
-
-      DB::table('sync_times')->where('name', 'i3-quadr')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
-      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-    }
 
       public function duellmoto()
       {
@@ -962,8 +957,6 @@ class SyncController extends Controller
         $url = 'ftp://duellus:WebUpdate!@updateftp.duell.fi/ic.TXT';
 
         $opts = ['ftp' => []];
-
-        set_time_limit(0);
 
         $context = stream_context_create($opts);
 
@@ -1012,8 +1005,6 @@ class SyncController extends Controller
       $url = 'ftp://duellus:WebUpdate!@updateftp.duell.fi/ic.TXT';
 
       $opts = ['ftp' => []];
-
-      set_time_limit(0);
 
       $context = stream_context_create($opts);
 
@@ -1066,8 +1057,6 @@ class SyncController extends Controller
           'timeout'  => 600,
         ]
       ];
-
-      set_time_limit(800);
 
       $context  = stream_context_create($opts);
       $xmlString = file_get_contents($url, false, $context);
@@ -1387,7 +1376,6 @@ class SyncController extends Controller
 
     public function rzauto()
     {
-        set_time_limit(0);
         $url = 'https://riepuzona.lv/partnerproducts.xml?email=xml@r1.com.lv&password=R1nok1An';
 
         $opts = ['http' => [
@@ -1496,7 +1484,6 @@ class SyncController extends Controller
 
     public function starco()
     {
-      set_time_limit(0);
 
 //      $image = file_get_contents('http://194.19.236.7/Pictures/034788.jpg');
 
@@ -1774,6 +1761,20 @@ class SyncController extends Controller
         DB::table('sync_times')->where('name', 'starco-big')->update(['updated_at' => NOW()]);
         echo 'Preču cenas atjaunotas!';
 
+    }
+
+    public function sync_all()
+    {
+      $this->i3auto();
+      $this->gy();
+      $this->rzauto();
+      $this->i3moto();
+      $this->duellmoto();
+      $this->i3quadr();
+      $this->duellquadr();
+//      $this->i3big();
+      $this->starco();
+      return 'Visas sinhronizācijas notika!';
     }
 
 }

@@ -411,7 +411,7 @@
                                 </td>
 
                                 <td class="text-center hidden-sm-down">
-                                  {{$rim->skr}} * {{$rim->pcd}}
+                                  {{$rim->skr}}x{{$rim->pcd}}
                                 </td>
 
                                 <td class="text-center hidden-sm-down">
