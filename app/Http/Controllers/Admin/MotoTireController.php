@@ -281,7 +281,7 @@
       $tire->d2 = $request->d2;
       $tire->d4 = $request->d4;
       $tire->d3 = $request->d3;
-      $tire->type = ($request->tire_type) ? $request->tire_type : 1;
+      $tire->type = ($request->tire_type) ? $request->tire_type : '';
       $tire->li = $request->li;
       $tire->si = $request->si;
       $tire->price1 = $request->price1;

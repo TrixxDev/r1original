@@ -1337,7 +1337,7 @@ class SyncController extends Controller
         }
         unlink($path);
 
-        file_put_contents(dirname(__DIR__, 3) . '/GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv', $stock);
+        file_put_contents(dirname(__DIR__, 3) . '/public/storage/xml/GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv', $stock);
 
         echo "Auto riepas<br>";
         Autostock::where('itype', 'gy')->update(['quantity' => 0]);
@@ -1387,7 +1387,7 @@ class SyncController extends Controller
         $context = stream_context_create($opts);
         $xmlString = file_get_contents($url, false, $context);
 
-        file_put_contents(dirname(__DIR__, 3) . '/rz.auto.xml', $xmlString);
+        file_put_contents(dirname(__DIR__, 3) . '/public/storage/xml/rz.auto.xml', $xmlString);
 
         $xml = simplexml_load_string($xmlString);
 

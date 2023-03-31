@@ -44,16 +44,13 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                          <label class="col-md-3 col-form-label" for="tyre_type">Tips</label>
+                          <label class="col-md-3 col-form-label" for="tyre_type">Tips {{ $tire->type }}</label>
                           <div class="col-md-9">
                             <select name="tire_type" id="tyre_type" class="form-control">
-                              <option value="0">Nav</option>
+                              <option value="">Nav</option>
                               @foreach ($tire->types() as $index => $value)
-<<<<<<< HEAD
-                              <option @if (strpos(strtolower($index), strtolower($tire->type)) !== false) selected @endif value="{{ $index }}">{{ $value }}</option>
-=======
-                              <option @if (strpos($index, $tire->type) !== false) selected @endif value="{{ $index }}">{{ $value }}</option>
->>>>>>> f2e4921fe54297fcf02250dc823fec57fd2bb42e
+                              <option @if (strtolower($value) == strtolower($tire->type)) selected @endif value="{{ strtolower($value) }}">{{ $value }}</option>
+{{--                              <option @if (strpos($value, $tire->type) !== false) selected @endif value="{{ strtolower($value) }}">{{ $value }}</option>--}}
                               @endforeach
                             </select>
                           </div>
