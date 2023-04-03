@@ -340,7 +340,7 @@ $(document).ready(function() {
             scrollTop: $("section#mobile-main").offset().top
           });
           $('.mobile-reservation-modal-body .mobile-body').slideUp();
-          $('.mobile-reservation-modal-body .mobile-body-success .alert').append(data.success);
+          $('.mobile-reservation-modal-body .mobile-body-success .alert').append(data.taken);
           $('.mobile-reservation-modal-body .mobile-body-success').slideDown();
         }
       }
