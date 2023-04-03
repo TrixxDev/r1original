@@ -53,9 +53,9 @@
               <div class="col-md-9">
                 <select name="tire_type" id="tyre_type" class="form-control">
                   <option value="">Izvēlies tipu</option>
-                  <option value="1">Nav</option>
+                  <option value="">Nav</option>
                   @foreach ((new \App\Models\Moto)->types() as $index => $value)
-                  <option value="{{ $index }}">{{ $value }}</option>
+                  <option value="{{ strtolower($value) }}">{{ $value }}</option>
                   @endforeach
                 </select>
               </div>

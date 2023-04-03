@@ -335,6 +335,13 @@ $(document).ready(function() {
             $('.mobile-reservation-modal-body .mobile-body').slideDown();
             $('.mobile-reservation-modal-body .mobile-body-success .alert').text('');
           });
+        } else if (data.taken) {
+          $('html, body').animate({
+            scrollTop: $("section#mobile-main").offset().top
+          });
+          $('.mobile-reservation-modal-body .mobile-body').slideUp();
+          $('.mobile-reservation-modal-body .mobile-body-success .alert').append(data.success);
+          $('.mobile-reservation-modal-body .mobile-body-success').slideDown();
         }
       }
     });
