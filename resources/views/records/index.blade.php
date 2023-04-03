@@ -421,7 +421,7 @@
                                                     <div class="alert alert-success">
 
                                                     </div>
-                                                    <button class="btn btn-success" onclick="window.location.href='/'">Atgriezties</button>
+                                                    <a href="{{ route('pieraksts') }}" class="btn btn-success">Atgriezties</a>
                                                 </div>
                                         </div>
                                     </div>
