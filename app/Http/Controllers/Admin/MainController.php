@@ -73,13 +73,13 @@ class MainController extends Controller
 
           if ($this->searchBy == 'audit_event') {
             $audits = Audit::where('audit_classname', $modelName)->where($this->searchBy, 'like', '%' . $this->param . '%')
-              ->orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(20);
+              ->orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(200);
             $modelname = $this->model . ';' . $this->searchBy;
           } else {
             $audits = Audit::when($this->model, function ($query) use ($quote, $modelName) {
               $query->where('audit_classname', $modelName)->whereRaw('audit_instance LIKE ' . $quote . '%"' . $this->searchBy . '":"' . $this->param . '"%' . $quote);
               //          $query->where('audit_classname', $modelName)->whereRaw('audit_instance LIKE ' . $quote . '%"' . $this->searchBy . '":"' . $quote . '||' . $this->param . '||' . $quote . '"%' . $quote);
-            })->orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(20);
+            })->orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(200);
           }
           return view('admin.audits.audits', compact('audits', 'models', 'modelname', 'param'));
         }
@@ -90,7 +90,7 @@ class MainController extends Controller
 
       $modelname = '';
       $param = '';
-      $audits = Audit::orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(20);
+      $audits = Audit::orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(200);
 
       return view('admin.audits.audits', compact('audits', 'models', 'modelname', 'param'));
   }
