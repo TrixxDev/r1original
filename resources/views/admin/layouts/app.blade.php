@@ -135,11 +135,11 @@
           </li>
 
           <li class="c-sidebar-nav-title">Rezervācijas</li>
-          <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.reservations') }}" target="_top">
-              <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list-numbered"></use>
-              </svg> Rezervācijas</a>
-          </li>
+{{--          <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.reservations') }}" target="_top">--}}
+{{--              <svg class="c-sidebar-nav-icon">--}}
+{{--                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list-numbered"></use>--}}
+{{--              </svg> Rezervācijas</a>--}}
+{{--          </li>--}}
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.records') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-clock"></use>
