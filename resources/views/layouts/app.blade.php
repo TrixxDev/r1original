@@ -403,19 +403,19 @@
                                 <div class="popover sub-menu js-sub-menu collapse" id="top_sub_menu_26942"
                                      style="display: none; top: 130px;">
                                     <ul class="top-menu" data-depth="1">
-                                        <li class="category" id="category-13">
-                                            <a class="dropdown-item dropdown-submenu"
-                                               href="{{ route('ziemas-riepas') }}"
-                                               data-depth="1">
-                                                Ziemas riepas
-                                            </a>
-                                        </li>
                                         <li class="category" id="category-14">
                                             <a class="dropdown-item dropdown-submenu"
                                                href="{{ route('vasaras-riepas') }}"
                                                data-depth="1">
                                                 Vasaras riepas
                                             </a>
+                                        </li>
+                                        <li class="category" id="category-17">
+                                          <a class="dropdown-item dropdown-submenu"
+                                             href="{{ route('motociklu-riepas') }}"
+                                             data-depth="1">
+                                            Motociklu riepas
+                                          </a>
                                         </li>
                                         <li class="category" id="category-16">
                                             <a class="dropdown-item dropdown-submenu"
@@ -424,12 +424,12 @@
                                                 Kvadraciklu riepas
                                             </a>
                                         </li>
-                                        <li class="category" id="category-17">
-                                            <a class="dropdown-item dropdown-submenu"
-                                               href="{{ route('motociklu-riepas') }}"
-                                               data-depth="1">
-                                                Motociklu riepas
-                                            </a>
+                                        <li class="category" id="category-13">
+                                          <a class="dropdown-item dropdown-submenu"
+                                             href="{{ route('ziemas-riepas') }}"
+                                             data-depth="1">
+                                            Ziemas riepas
+                                          </a>
                                         </li>
 {{--                                        <li class="category" id="category-18">--}}
 {{--                                            <a class="dropdown-item dropdown-submenu"--}}

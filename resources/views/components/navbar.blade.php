@@ -266,11 +266,11 @@
 
     <div class="dropdown-options riepas">
       <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ route('ziemas-riepas') }}">Ziemas Riepas</a>
+        <a class="dropdown-item" href="{{ route('vasaras-riepas') }}">Vasaras Riepas</a>
       </div>
 
       <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ route('vasaras-riepas') }}">Vasaras Riepas</a>
+        <a class="dropdown-item" href="{{ route('motociklu-riepas') }}">Motociklu Riepas</a>
       </div>
 
       <div class="nav-dropdown-link">
@@ -278,7 +278,7 @@
       </div>
 
       <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ route('motociklu-riepas') }}">Motociklu Riepas</a>
+        <a class="dropdown-item" href="{{ route('ziemas-riepas') }}">Ziemas Riepas</a>
       </div>
 
 {{--      <div class="nav-dropdown-link">--}}
