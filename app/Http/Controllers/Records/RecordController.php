@@ -444,7 +444,7 @@
       $mailer->message = $mailText;
       $mailer->send();
 
-      return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
+      return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama e-pastā.']);
     }
 
     public function showMobileQueues(Request $request) {
@@ -835,7 +835,7 @@
       $mailer->message = $mailText;
       $mailer->send();
 
-      return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
+      return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama e-pastā.']);
 
     }
 

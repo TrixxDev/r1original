@@ -556,6 +556,13 @@
                                                 Riepu izmēru kalkulators
                                             </a>
                                         </li>
+                                        <li class="cms-page" id="cms-page-13">
+                                          <a class="dropdown-item dropdown-submenu"
+                                             href="{{ url('/riepu-atruma-indeksu-tabula') }}"
+                                             data-depth="1">
+                                              LI un SI indeksu tabula
+                                          </a>
+                                        </li>
 {{--                                        <li class="cms-page" id="cms-page-13">--}}
 {{--                                            <a class="dropdown-item dropdown-submenu"--}}
 {{--                                               href="{{ route('moto_trans') }}"--}}
