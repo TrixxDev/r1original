@@ -337,6 +337,10 @@
       <div class="nav-dropdown-link">
         <a class="dropdown-item sizeCalc" href="{{ url('/kalkulators')  }}">Riepu izmēru kalkulators</a>
       </div>
+
+      <div class="nav-dropdown-link">
+        <a class="dropdown-item" href="{{ url('/riepu-atruma-indeksu-tabula')  }}">LI un SI indeksu tabula</a>
+      </div>
     </div>
 
     <a class="nav-dropdown-button navbar-item navbar-link-btn" href="{{ route('pieraksts') }}">E-Pieraksts</a>
