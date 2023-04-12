@@ -1,27 +1,27 @@
 <?php
 
-namespace App\Http\Controllers;
+  namespace App\Http\Controllers;
 
-use App\Models\Autotire;
-use App\Models\Bigbrand;
-use App\Models\Bigstock;
-use App\Models\Bigtire;
-use App\Models\Bigtread;
-use App\Models\Moto;
-use App\Models\Motostock;
-use App\Models\Quadr;
-use App\Models\Quadrstock;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
-use App\Models\Autostock;
-use Illuminate\Support\Facades\Session;
-use mysql_xdevapi\Exception;
-use PDO;
-use Illuminate\Support\Str;
+  use App\Models\Autotire;
+  use App\Models\Bigbrand;
+  use App\Models\Bigstock;
+  use App\Models\Bigtire;
+  use App\Models\Bigtread;
+  use App\Models\Moto;
+  use App\Models\Motostock;
+  use App\Models\Quadr;
+  use App\Models\Quadrstock;
+  use Carbon\Carbon;
+  use Illuminate\Support\Facades\DB;
+  use Illuminate\Http\Request;
+  use App\Models\Autostock;
+  use Illuminate\Support\Facades\Session;
+  use mysql_xdevapi\Exception;
+  use PDO;
+  use Illuminate\Support\Str;
 
-class SyncController extends Controller
-{
+  class SyncController extends Controller
+  {
 
     public $accrual;
     public $tire_tables;
@@ -67,50 +67,50 @@ class SyncController extends Controller
     public function accrual(Request $request)
     {
 
-        set_time_limit(0);
+      set_time_limit(0);
 
-        try {
-          $this->accrual = new PDO("sqlsrv:Server=" . env('ACCRUAL_IP') . ",1444;Database=accrual", "sa", "cenzors");
-        } catch (\PDOException $e) {
-          return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
+      try {
+        $this->accrual = new PDO("sqlsrv:Server=" . env('ACCRUAL_IP') . ",1444;Database=accrual", "sa", "cenzors");
+      } catch (\PDOException $e) {
+        return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
 //          die("Database connection failed: " . $e->getMessage());
 //          exit;
-        }
+      }
 
-	      (isset($request->article)) ? $this->article = $request->article : $this->article = '';
+      (isset($request->article)) ? $this->article = $request->article : $this->article = '';
 
-	      if (!$this->article) {
-          $this->updateArticles();
-          DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => NOW()]);
-          echo 'Done';
-        } else {
+      if (!$this->article) {
+        $this->updateArticles();
+        DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+        echo 'Done';
+      } else {
 
-          $productInfo = $this->getAccrualInventory($this->article);
-          if (isset($productInfo[$this->article])) {
-            $stores = $productInfo['_stores'][$this->article];
+        $productInfo = $this->getAccrualInventory($this->article);
+        if (isset($productInfo[$this->article])) {
+          $stores = $productInfo['_stores'][$this->article];
 
-            if (isset($stores[1])) {
-              $this->urs = $stores[1];
-              $this->urs = str_replace('Noliktava: ', '', $this->urs);
-              $this->urs = intval($this->urs);
-            } else {
-              $this->urs = 0;
-            }
-            if (isset($stores[2])) {
-              $this->krs = $stores[2];
-              $this->krs = str_replace('Veikals: ', '', $this->krs);
-              $this->krs = intval($this->krs);
-            } else {
-              $this->krs = 0;
-            }
+          if (isset($stores[1])) {
+            $this->urs = $stores[1];
+            $this->urs = str_replace('Noliktava: ', '', $this->urs);
+            $this->urs = intval($this->urs);
           } else {
             $this->urs = 0;
+          }
+          if (isset($stores[2])) {
+            $this->krs = $stores[2];
+            $this->krs = str_replace('Veikals: ', '', $this->krs);
+            $this->krs = intval($this->krs);
+          } else {
             $this->krs = 0;
           }
-
-          $this->updateArticle($this->article);
-          return json_encode(['urs_quantity' => intval($this->urs), 'krs_quantity' => intval($this->krs)]);
+        } else {
+          $this->urs = 0;
+          $this->krs = 0;
         }
+
+        $this->updateArticle($this->article);
+        return json_encode(['urs_quantity' => intval($this->urs), 'krs_quantity' => intval($this->krs)]);
+      }
     }
 
     public function getStocks($article)
@@ -303,15 +303,15 @@ class SyncController extends Controller
             $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
             $result = $this->accrual->query($sql);
             if ($result->rowCount()) {
-                foreach ($result as $rows) {
-                  set_time_limit(0);
-                  $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-                  $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-                }
-                $product->price1 = $veikala_cena;
-                $product->price2 = $akcijas_cena;
-                $product->updated_at = date('Y-m-d H:i:s');
-                $product->save();
+              foreach ($result as $rows) {
+                set_time_limit(0);
+                $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
+                $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+              }
+              $product->price1 = $veikala_cena;
+              $product->price2 = $akcijas_cena;
+              $product->updated_at = date('Y-m-d H:i:s');
+              $product->save();
             }
           }
         }
@@ -396,37 +396,37 @@ class SyncController extends Controller
       }
     }
 
-  //    public function updateStock($stock)
-  //    {
-  //        foreach ($stock as $id => $value) {
-  //
-  //            $noliktavas = explode(';', $value);
-  //            $urs = @$noliktavas[0];
-  //            $krs = @$noliktavas[1];
-  //
-  //            $urs = explode(': ', $urs);
-  //            @$urs_quantity = (int) $urs[1];
-  //
-  //            $krs = explode(': ', $krs);
-  //            @$krs_quantity = (int) $krs[1];
-  //
-  //            $product = Autotire::findOrFail($id);
-  //            if ($product) {
-  //                $product->timestamps = false;
-  //                $product->quantity = $urs_quantity + $krs_quantity;
-  //                $product->save();
-  //            }
-  //        }
-  //    }
+    //    public function updateStock($stock)
+    //    {
+    //        foreach ($stock as $id => $value) {
+    //
+    //            $noliktavas = explode(';', $value);
+    //            $urs = @$noliktavas[0];
+    //            $krs = @$noliktavas[1];
+    //
+    //            $urs = explode(': ', $urs);
+    //            @$urs_quantity = (int) $urs[1];
+    //
+    //            $krs = explode(': ', $krs);
+    //            @$krs_quantity = (int) $krs[1];
+    //
+    //            $product = Autotire::findOrFail($id);
+    //            if ($product) {
+    //                $product->timestamps = false;
+    //                $product->quantity = $urs_quantity + $krs_quantity;
+    //                $product->save();
+    //            }
+    //        }
+    //    }
 
     public function getInventory($tire_tables, $article = null)
     {
       $map = $this->getAccrualIdToEntityIdMap($tire_tables, $article);
 
-  //        dd($map);
+      //        dd($map);
       $inventory = $this->getAccrualInventory($article);
 
-  //        dd($inventory);
+      //        dd($inventory);
 
       if ($article && !isset($inventory[$article])){
         $inventory = ['_stores' => [$article => ['0']], $article => 0];
@@ -437,12 +437,12 @@ class SyncController extends Controller
       $articles = array_keys($stores);
       $stores = array_combine($articles, array_map('implode', array_fill(0,count($stores),';'), $stores));
 
-  //        dump($map, $inventory, $stores); die;
+      //        dump($map, $inventory, $stores); die;
 
       $stock = $this->mapInventory($map, $inventory);
       $storestock = $this->mapInventory($map, $stores);
 
-  //        dump($stock, $storestock);die;
+      //        dump($stock, $storestock);die;
       return [$articles, $stock, $storestock];
     }
 
@@ -463,11 +463,11 @@ class SyncController extends Controller
           array_push($result, ['tire_id' => $row->$key, 'article' => $row->article]);
         }
 
-  //        Jāuztaisa masīvs - [
-  //        [
-  //              'tire_id' => $tire_id,
-  //              'accrual_id' => $accrual_id
-  //        ]
+        //        Jāuztaisa masīvs - [
+        //        [
+        //              'tire_id' => $tire_id,
+        //              'accrual_id' => $accrual_id
+        //        ]
 
       }
       $mapped = array_column($result, 'article', 'tire_id');
@@ -491,8 +491,8 @@ class SyncController extends Controller
 
       $stores = $this->getAccrualStores();
 
-  //        $article = '15215/70DECONODRIVE109SC';
-        $sql = "SELECT k.Artikuls, a.Atlikums, a.Rezervets, (a.Atlikums - a.Rezervets) AS atl_min_rez, a.StorId
+      //        $article = '15215/70DECONODRIVE109SC';
+      $sql = "SELECT k.Artikuls, a.Atlikums, a.Rezervets, (a.Atlikums - a.Rezervets) AS atl_min_rez, a.StorId
         FROM atlikumi a INNER JOIN katdetal k ON (k.ArticleId = a.ArticleId) WHERE a.FrFirmId = 1";
 
       if($article) $sql .= " AND k.Artikuls = '$article'";
@@ -515,7 +515,7 @@ class SyncController extends Controller
         }
       }
 
-  //    dd($inventory);
+      //    dd($inventory);
 
       return $inventory;
     }
@@ -536,468 +536,468 @@ class SyncController extends Controller
       return $stores;
     }
 
-      // Lattako sync
+    // Lattako sync
 
-      public function i3auto()
-      {
+    public function i3auto()
+    {
 
-          $sync = DB::table('sync_times')->where('name', 'i3-auto')->get();
-          $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
-          $time_now = \Carbon\Carbon::now();
-          if ($time_now->diff($sync_time)->invert == 1) {
-            $token_url = "api.latakko.eu/Token";
+      $sync = DB::table('sync_times')->where('name', 'i3-auto')->get();
+      $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+      $time_now = \Carbon\Carbon::now();
+      if ($time_now->diff($sync_time)->invert == 1) {
+        $token_url = "api.latakko.eu/Token";
 
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-              CURLOPT_URL => $token_url,
-              CURLOPT_RETURNTRANSFER => true,
-              CURLOPT_ENCODING => "",
-              CURLOPT_MAXREDIRS => 10,
-              CURLOPT_TIMEOUT => 30,
-              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-              CURLOPT_CUSTOMREQUEST => "POST",
-              CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-              CURLOPT_HTTPHEADER => array(
-                "cache-control: no-cache",
-                "content-type: application/x-www-form-urlencoded"
-              ),
-            ));
-            $response = curl_exec($curl);
-            $err = curl_error($curl);
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => $token_url,
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "POST",
+          CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+          CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "content-type: application/x-www-form-urlencoded"
+          ),
+        ));
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
 
-            curl_close($curl);
+        curl_close($curl);
 
-            if (!$err)
-            {
-              $token = json_decode($response);
-            } else {
-              throw new \Exception($err);
-            }
+        if (!$err)
+        {
+          $token = json_decode($response);
+        } else {
+          throw new \Exception($err);
+        }
 
-            $token_bearer = $token->access_token;
+        $token_bearer = $token->access_token;
 
-            $curl = curl_init();
-            curl_setopt_array($curl, array(
-              CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
-              CURLOPT_RETURNTRANSFER => true,
-              CURLOPT_ENCODING => "",
-              CURLOPT_MAXREDIRS => 10,
-              CURLOPT_TIMEOUT => 30,
-              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-              CURLOPT_CUSTOMREQUEST => "GET",
-              CURLOPT_HTTPHEADER => array(
-                "cache-control: no-cache",
-                "authorization: Bearer " . $token_bearer,
-              ),
-            ));
-            $response = curl_exec($curl);
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "GET",
+          CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "authorization: Bearer " . $token_bearer,
+          ),
+        ));
+        $response = curl_exec($curl);
 
-            $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
+        $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
 
-            file_put_contents($filename, $response);
-            chmod($filename, 0775);
+        file_put_contents($filename, $response);
+        chmod($filename, 0775);
 
-            $err = curl_error($curl);
+        $err = curl_error($curl);
 
-            if ($err) throw new \Exception($err);
+        if ($err) throw new \Exception($err);
 
-            curl_close($curl);
-          }
+        curl_close($curl);
+      }
 
-          $counted = 0;
-          $updated = 0;
+      $counted = 0;
+      $updated = 0;
 
-          Autostock::where('itype', 'i3')->update(['quantity' => 0]);
+      Autostock::where('itype', 'i3')->update(['quantity' => 0]);
 
-          $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
-          $content = json_decode($content);
+      $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
+      $content = json_decode($content);
 
-          $out = '';
+      $out = '';
 
-          foreach ($content as $item) {
+      foreach ($content as $item) {
 
-            $counted++;
+        $counted++;
 
-            $stock = Autostock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
-            if (!$stock) {
-              continue;
-            }
+        $stock = Autostock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
+        if (!$stock) {
+          continue;
+        }
 
-            $quantity = intval($item->QuantityAvailable);
-            $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
-            $stock->quantity = $quantity;
-            $stock->metadata = $metadata;
-            if ($stock->save()) {
-              $updated++;
-            }
-
-          }
-
-          DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
-          echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-
-
-  //        $stocks = Autostock::where('itype', 'i3')->get();
-  //        foreach ($stocks as $stock) {
-  //
-  //          $counted++;
-  //
-  //          if (!$err) {
-  //            $metadata = '';
-  //            $response = json_decode($response);
-  //            $metadata = '';
-  //            $response = (object) $response;
-  //            if (empty(get_object_vars($response)) || isset($response->Message)) continue;
-  //            echo '<br><pre>';
-  //            var_dump($response);
-  //            echo '</pre><br>';
-  //            var_dump(get_object_vars($response));
-  //            $stock->quantity = intval($response->QuantityAvailable);
-  //            $stock->metadata = $metadata;
-  //            if ($stock->save()) {
-  //              $updated++;
-  //            }
-
-  //            if (is_null($response)) {
-  //              var_dump($stock->);
-  //            }
-  //          } else {
-  //            throw new \Exception($err);
-  //          }
-  //
-  //
-  //        }
-
-  //        $url = "https://api.gummigrossen.se/api/Tyres?username=XmL_r1&password=M20h:2|5";
-  //
-  //        $opts = ['http' =>
-  //            [
-  //                'method'  => 'GET',
-  //                'timeout'  => 600,
-  //            ]
-  //        ];
-  //
-  //        set_time_limit(800);
-  //
-  //        $context  = stream_context_create($opts);
-  //        $xmlString = file_get_contents($url, false, $context);
-  //
-  //        file_put_contents('i3.auto.xml',$xmlString);
-  //
-  //        $xml = simplexml_load_string($xmlString);
-  //
-  //        unset($context);
-  //
-  //        echo "Auto riepas<br>";
-  //        Autostock::where('itype', 'i3')->update(['quantity' => 0]);
-  //
-  //        $updated = 0;
-  //        $counted = 0;
-  //        foreach ($xml->Item as $item){
-  //            $article = $item->stockcode;
-  //            $quantity = intval($item->qty_available);
-  //
-  //            $metadata = '';
-  //            $price = @$item->price; if ($price!='') $metadata.='price: '.$price.'; ';
-  //            $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
-  //            $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
-  //
-  //            $list = Autostock::where('article', $article)->where('itype', 'i3')->get();
-  //
-  //            foreach ($list as $itam){
-  //                $itam->quantity = $quantity;
-  //                $itam->metadata = $metadata;
-  //                $itam->save();
-  //                $updated++;
-  //            }
-  //            $counted++;
-  //        }
-  //        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => NOW()]);
-  //        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+        $quantity = intval($item->QuantityAvailable);
+        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+        $stock->quantity = $quantity;
+        $stock->metadata = $metadata;
+        if ($stock->save()) {
+          $updated++;
+        }
 
       }
 
-      public function i3show()
-      {
-        echo 'Auto riepas:<br>';
-        $stocks = Autostock::where('itype', 'i3')->get();
-        foreach ($stocks as $stock) {
-          $tire = Autotire::where('tire_id', $stock->tire_id)->first();
-          if (!$tire) continue;
-          $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
-          //dd($text);
-          echo $text;
-        }
-        echo '<br>';
+      DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
-        echo 'Moto riepas:<br>';
-        $stocks = Motostock::where('itype', 'i3')->get();
-        foreach ($stocks as $stock) {
-          $tire = Moto::where('tire_id', $stock->tire_id)->first();
-          if (!$tire) continue;
-          $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
-          //dd($text);
-          echo $text;
-        }
-        echo '<br>';
 
-        echo 'Kvadru riepas:<br>';
-        $stocks = Quadrstock::where('itype', 'i3')->get();
-        foreach ($stocks as $stock) {
-          $tire = Quadr::where('tire_id', $stock->tire_id)->first();
-          if (!$tire) continue;
-          $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
-          //dd($text);
-          echo $text;
+      //        $stocks = Autostock::where('itype', 'i3')->get();
+      //        foreach ($stocks as $stock) {
+      //
+      //          $counted++;
+      //
+      //          if (!$err) {
+      //            $metadata = '';
+      //            $response = json_decode($response);
+      //            $metadata = '';
+      //            $response = (object) $response;
+      //            if (empty(get_object_vars($response)) || isset($response->Message)) continue;
+      //            echo '<br><pre>';
+      //            var_dump($response);
+      //            echo '</pre><br>';
+      //            var_dump(get_object_vars($response));
+      //            $stock->quantity = intval($response->QuantityAvailable);
+      //            $stock->metadata = $metadata;
+      //            if ($stock->save()) {
+      //              $updated++;
+      //            }
+
+      //            if (is_null($response)) {
+      //              var_dump($stock->);
+      //            }
+      //          } else {
+      //            throw new \Exception($err);
+      //          }
+      //
+      //
+      //        }
+
+      //        $url = "https://api.gummigrossen.se/api/Tyres?username=XmL_r1&password=M20h:2|5";
+      //
+      //        $opts = ['http' =>
+      //            [
+      //                'method'  => 'GET',
+      //                'timeout'  => 600,
+      //            ]
+      //        ];
+      //
+      //        set_time_limit(800);
+      //
+      //        $context  = stream_context_create($opts);
+      //        $xmlString = file_get_contents($url, false, $context);
+      //
+      //        file_put_contents('i3.auto.xml',$xmlString);
+      //
+      //        $xml = simplexml_load_string($xmlString);
+      //
+      //        unset($context);
+      //
+      //        echo "Auto riepas<br>";
+      //        Autostock::where('itype', 'i3')->update(['quantity' => 0]);
+      //
+      //        $updated = 0;
+      //        $counted = 0;
+      //        foreach ($xml->Item as $item){
+      //            $article = $item->stockcode;
+      //            $quantity = intval($item->qty_available);
+      //
+      //            $metadata = '';
+      //            $price = @$item->price; if ($price!='') $metadata.='price: '.$price.'; ';
+      //            $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
+      //            $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
+      //
+      //            $list = Autostock::where('article', $article)->where('itype', 'i3')->get();
+      //
+      //            foreach ($list as $itam){
+      //                $itam->quantity = $quantity;
+      //                $itam->metadata = $metadata;
+      //                $itam->save();
+      //                $updated++;
+      //            }
+      //            $counted++;
+      //        }
+      //        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+      //        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+
+    }
+
+    public function i3show()
+    {
+      echo 'Auto riepas:<br>';
+      $stocks = Autostock::where('itype', 'i3')->get();
+      foreach ($stocks as $stock) {
+        $tire = Autotire::where('tire_id', $stock->tire_id)->first();
+        if (!$tire) continue;
+        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
+        //dd($text);
+        echo $text;
+      }
+      echo '<br>';
+
+      echo 'Moto riepas:<br>';
+      $stocks = Motostock::where('itype', 'i3')->get();
+      foreach ($stocks as $stock) {
+        $tire = Moto::where('tire_id', $stock->tire_id)->first();
+        if (!$tire) continue;
+        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
+        //dd($text);
+        echo $text;
+      }
+      echo '<br>';
+
+      echo 'Kvadru riepas:<br>';
+      $stocks = Quadrstock::where('itype', 'i3')->get();
+      foreach ($stocks as $stock) {
+        $tire = Quadr::where('tire_id', $stock->tire_id)->first();
+        if (!$tire) continue;
+        $text = $tire->title . ' ' . $tire->li . $tire->si . ' ' .( $tire->fullSize) . ' [' . $tire->article . ']:[' . $stock->article . ']: ' . $stock->quantity . ' / ' . $stock->metadata . '<br>';
+        //dd($text);
+        echo $text;
+      }
+      echo '<br>';
+    }
+
+    public function i3moto()
+    {
+
+      $sync = DB::table('sync_times')->where('name', 'i3-moto')->get();
+      $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+      $time_now = \Carbon\Carbon::now();
+      if ($time_now->diff($sync_time)->invert == 1) {
+        $token_url = "api.latakko.eu/Token";
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => $token_url,
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "POST",
+          CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+          CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "content-type: application/x-www-form-urlencoded"
+          ),
+        ));
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+
+        curl_close($curl);
+
+        if (!$err)
+        {
+          $token = json_decode($response);
+        } else {
+          throw new \Exception($err);
         }
-        echo '<br>';
+
+        $token_bearer = $token->access_token;
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "GET",
+          CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "authorization: Bearer " . $token_bearer,
+          ),
+        ));
+        $response = curl_exec($curl);
+
+        $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
+
+        file_put_contents($filename, $response);
+        chmod($filename, 0775);
+
+        $err = curl_error($curl);
+
+        if ($err) throw new \Exception($err);
+
+        curl_close($curl);
       }
 
-      public function i3moto()
-      {
+      $counted = 0;
+      $updated = 0;
 
-        $sync = DB::table('sync_times')->where('name', 'i3-moto')->get();
-        $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
-        $time_now = \Carbon\Carbon::now();
-        if ($time_now->diff($sync_time)->invert == 1) {
-          $token_url = "api.latakko.eu/Token";
+      Motostock::where('itype', 'i3')->update(['quantity' => 0]);
 
-          $curl = curl_init();
-          curl_setopt_array($curl, array(
-            CURLOPT_URL => $token_url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-            CURLOPT_HTTPHEADER => array(
-              "cache-control: no-cache",
-              "content-type: application/x-www-form-urlencoded"
-            ),
-          ));
-          $response = curl_exec($curl);
-          $err = curl_error($curl);
+      $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
+      $content = json_decode($content);
 
-          curl_close($curl);
+      $out = '';
 
-          if (!$err)
-          {
-            $token = json_decode($response);
-          } else {
-            throw new \Exception($err);
-          }
+      foreach ($content as $item) {
 
-          $token_bearer = $token->access_token;
+        $counted++;
 
-          $curl = curl_init();
-          curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-              "cache-control: no-cache",
-              "authorization: Bearer " . $token_bearer,
-            ),
-          ));
-          $response = curl_exec($curl);
-
-          $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
-
-          file_put_contents($filename, $response);
-          chmod($filename, 0775);
-
-          $err = curl_error($curl);
-
-          if ($err) throw new \Exception($err);
-
-          curl_close($curl);
+        $stock = Motostock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
+        if (!$stock) {
+          continue;
         }
 
-        $counted = 0;
-        $updated = 0;
-
-        Motostock::where('itype', 'i3')->update(['quantity' => 0]);
-
-        $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
-        $content = json_decode($content);
-
-        $out = '';
-
-        foreach ($content as $item) {
-
-          $counted++;
-
-          $stock = Motostock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
-          if (!$stock) {
-            continue;
-          }
-
-          $quantity = intval($item->QuantityAvailable);
-          $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
-          $stock->quantity = $quantity;
-          $stock->metadata = $metadata;
-          if ($stock->save()) {
-            $updated++;
-          }
-
+        $quantity = intval($item->QuantityAvailable);
+        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+        $stock->quantity = $quantity;
+        $stock->metadata = $metadata;
+        if ($stock->save()) {
+          $updated++;
         }
 
-        DB::table('sync_times')->where('name', 'i3-moto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
-        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
       }
 
-      public function i3quadr()
-      {
+      DB::table('sync_times')->where('name', 'i3-moto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+    }
 
-        $sync = DB::table('sync_times')->where('name', 'i3-quadr')->get();
-        $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
-        $time_now = \Carbon\Carbon::now();
-        if ($time_now->diff($sync_time)->invert == 1) {
-          $token_url = "api.latakko.eu/Token";
+    public function i3quadr()
+    {
 
-          $curl = curl_init();
-          curl_setopt_array($curl, array(
-            CURLOPT_URL => $token_url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-            CURLOPT_HTTPHEADER => array(
-              "cache-control: no-cache",
-              "content-type: application/x-www-form-urlencoded"
-            ),
-          ));
-          $response = curl_exec($curl);
-          $err = curl_error($curl);
+      $sync = DB::table('sync_times')->where('name', 'i3-quadr')->get();
+      $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+      $time_now = \Carbon\Carbon::now();
+      if ($time_now->diff($sync_time)->invert == 1) {
+        $token_url = "api.latakko.eu/Token";
 
-          curl_close($curl);
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => $token_url,
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "POST",
+          CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+          CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "content-type: application/x-www-form-urlencoded"
+          ),
+        ));
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
 
-          if (!$err)
-          {
-            $token = json_decode($response);
-          } else {
-            throw new \Exception($err);
-          }
+        curl_close($curl);
 
-          $token_bearer = $token->access_token;
-
-          $curl = curl_init();
-          curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-              "cache-control: no-cache",
-              "authorization: Bearer " . $token_bearer,
-            ),
-          ));
-          $response = curl_exec($curl);
-
-          $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
-
-          file_put_contents($filename, $response);
-          chmod($filename, 0775);
-
-          $err = curl_error($curl);
-
-          if ($err) throw new \Exception($err);
-
-          curl_close($curl);
+        if (!$err)
+        {
+          $token = json_decode($response);
+        } else {
+          throw new \Exception($err);
         }
 
-        $counted = 0;
-        $updated = 0;
+        $token_bearer = $token->access_token;
 
-        Quadrstock::where('itype', 'i3')->update(['quantity' => 0]);
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_TIMEOUT => 30,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "GET",
+          CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "authorization: Bearer " . $token_bearer,
+          ),
+        ));
+        $response = curl_exec($curl);
 
-        $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
-        $content = json_decode($content);
+        $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
 
-        $out = '';
+        file_put_contents($filename, $response);
+        chmod($filename, 0775);
 
-        foreach ($content as $item) {
+        $err = curl_error($curl);
 
-          $counted++;
+        if ($err) throw new \Exception($err);
 
-          $stock = Quadrstock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
-          if (!$stock) {
-            continue;
-          }
-
-          $quantity = intval($item->QuantityAvailable);
-          $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
-          $stock->quantity = $quantity;
-          $stock->metadata = $metadata;
-          if ($stock->save()) {
-            $updated++;
-          }
-
-        }
-
-        DB::table('sync_times')->where('name', 'i3-quadr')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
-        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+        curl_close($curl);
       }
 
-      public function duellmoto()
-      {
+      $counted = 0;
+      $updated = 0;
 
-        $url = 'ftp://duellus:WebUpdate!@updateftp.duell.fi/ic.TXT';
+      Quadrstock::where('itype', 'i3')->update(['quantity' => 0]);
 
-        $opts = ['ftp' => []];
+      $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
+      $content = json_decode($content);
 
-        $context = stream_context_create($opts);
+      $out = '';
 
-        $xmlString = file_get_contents($url, false, $context);
+      foreach ($content as $item) {
 
-        $lines = explode("\r", $xmlString);
-        $articles = [];
-        foreach ($lines as $idx => $line) {
-          if ($idx > 0) {
-            $lineData = explode("\t", trim($line));
-            if ((@$lineData[0] != '') && (is_numeric(@$lineData[3]))) {
-              $articles[trim($lineData[0])] = trim($lineData[3]);
-            }
-          }
+        $counted++;
+
+        $stock = Quadrstock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
+        if (!$stock) {
+          continue;
         }
 
-        unset($context);
-
-        echo "Moto riepas<br>";
-        Motostock::where('itype', 'duell')->update(['quantity' => 0]);
-
-        $updated = 0;
-        $counted = 0;
-
-        foreach ($articles as $item => $amount) {
-          $article = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
-          $quantity = intval($amount);
-
-          $list = Motostock::where('article', $article)->where('itype', 'duell')->get();
-
-          foreach ($list as $itam){
-            $itam->quantity = $quantity;
-            $itam->save();
-            $updated++;
-          }
-          $counted++;
+        $quantity = intval($item->QuantityAvailable);
+        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+        $stock->quantity = $quantity;
+        $stock->metadata = $metadata;
+        if ($stock->save()) {
+          $updated++;
         }
-        DB::table('sync_times')->where('name', 'duell_moto')->update(['updated_at' => NOW()]);
-        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
       }
+
+      DB::table('sync_times')->where('name', 'i3-quadr')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+    }
+
+    public function duellmoto()
+    {
+
+      $url = 'ftp://duellus:WebUpdate!@updateftp.duell.fi/ic.TXT';
+
+      $opts = ['ftp' => []];
+
+      $context = stream_context_create($opts);
+
+      $xmlString = file_get_contents($url, false, $context);
+
+      $lines = explode("\r", $xmlString);
+      $articles = [];
+      foreach ($lines as $idx => $line) {
+        if ($idx > 0) {
+          $lineData = explode("\t", trim($line));
+          if ((@$lineData[0] != '') && (is_numeric(@$lineData[3]))) {
+            $articles[trim($lineData[0])] = trim($lineData[3]);
+          }
+        }
+      }
+
+      unset($context);
+
+      echo "Moto riepas<br>";
+      Motostock::where('itype', 'duell')->update(['quantity' => 0]);
+
+      $updated = 0;
+      $counted = 0;
+
+      foreach ($articles as $item => $amount) {
+        $article = mb_convert_encoding($item, 'UTF-8', 'UTF-8');
+        $quantity = intval($amount);
+
+        $list = Motostock::where('article', $article)->where('itype', 'duell')->get();
+
+        foreach ($list as $itam){
+          $itam->quantity = $quantity;
+          $itam->save();
+          $updated++;
+        }
+        $counted++;
+      }
+      DB::table('sync_times')->where('name', 'duell_moto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+
+    }
 
     public function duellquadr()
     {
@@ -1042,7 +1042,7 @@ class SyncController extends Controller
         }
         $counted++;
       }
-      DB::table('sync_times')->where('name', 'duell_quadr')->update(['updated_at' => NOW()]);
+      DB::table('sync_times')->where('name', 'duell_quadr')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
     }
@@ -1134,10 +1134,10 @@ class SyncController extends Controller
           $tread = $item->protector;
 
           if (strpos($brand, 'RIEPAS dažādas') !== false ||
-              strpos($brand, 'Atjaunotas') !== false ||
-              strpos($brand, 'Riepas daŽĀdas') !== false) {
-              $brand = '';
-              $tread = '';
+            strpos($brand, 'Atjaunotas') !== false ||
+            strpos($brand, 'Riepas daŽĀdas') !== false) {
+            $brand = '';
+            $tread = '';
           }
 
 //          if ($item->stockcode !== '385652251417943058TT0R0') continue;
@@ -1298,125 +1298,125 @@ class SyncController extends Controller
         }
 
       }
-      DB::table('sync_times')->where('name', 'i3-big')->update(['updated_at' => NOW()]);
+      DB::table('sync_times')->where('name', 'i3-big')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
     public function gy()
     {
-        $file = 'GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv';
+      $file = 'GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv';
 
-        $server = 'ftp.goodyear.eu';
-        $acc = 'p22989';
-        $passw = 'm4kXUrRWkx8aHDCU';
-        $path = 'GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv';
+      $server = 'ftp.goodyear.eu';
+      $acc = 'p22989';
+      $passw = 'm4kXUrRWkx8aHDCU';
+      $path = 'GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv';
 
-        $ftp = ftp_connect($server) or die ();
-        ftp_login($ftp, $acc, $passw);
-        ftp_pasv($ftp, true);
-        if(!ftp_get($ftp, $path, $file, FTP_ASCII)) {
+      $ftp = ftp_connect($server) or die ();
+      ftp_login($ftp, $acc, $passw);
+      ftp_pasv($ftp, true);
+      if(!ftp_get($ftp, $path, $file, FTP_ASCII)) {
 
-            $error = error_get_last();
-            ftp_close($ftp);
-            throw new Exception('Could not read remote file: '. print_r($error, true));
-        }
-
+        $error = error_get_last();
         ftp_close($ftp);
+        throw new Exception('Could not read remote file: '. print_r($error, true));
+      }
 
-        $stock = [];
+      ftp_close($ftp);
 
-        if (($handle = fopen($path, "r")) !== FALSE)
+      $stock = [];
+
+      if (($handle = fopen($path, "r")) !== FALSE)
+      {
+        $i = 0;
+        while (($data = fgetcsv($handle, 0, ";")) !== FALSE)
         {
-            $i = 0;
-            while (($data = fgetcsv($handle, 0, ";")) !== FALSE)
-            {
-                $stock[((string) $data[2])] = (int) $data[5];
-                $i++;
-            }
-            fclose($handle);
+          $stock[((string) $data[2])] = (int) $data[5];
+          $i++;
         }
-        unlink($path);
+        fclose($handle);
+      }
+      unlink($path);
 
-        file_put_contents(dirname(__DIR__, 3) . '/public/storage/xml/GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv', $stock);
+      file_put_contents(dirname(__DIR__, 3) . '/public/storage/xml/GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv', $stock);
 
-        echo "Auto riepas<br>";
-        Autostock::where('itype', 'gy')->update(['quantity' => 0]);
+      echo "Auto riepas<br>";
+      Autostock::where('itype', 'gy')->update(['quantity' => 0]);
 
-        $keys = array_keys($stock);
-        $values = array_values($stock);
+      $keys = array_keys($stock);
+      $values = array_values($stock);
 
-        $intKeys = array_map('intval', $keys);
+      $intKeys = array_map('intval', $keys);
 
-        $stock = array_combine($intKeys, $values);
+      $stock = array_combine($intKeys, $values);
 
-        unset($stock[0]);
+      unset($stock[0]);
 
-        $updated = 0;
-        $counted = 0;
-        foreach ($stock as $item => $quantity){
-            $article = $item;
-            $quantity = intval($quantity);
+      $updated = 0;
+      $counted = 0;
+      foreach ($stock as $item => $quantity){
+        $article = $item;
+        $quantity = intval($quantity);
 
-            $list = Autostock::where('article', $article)->where('itype', 'gy')->get();
+        $list = Autostock::where('article', $article)->where('itype', 'gy')->get();
 
-            $metadata = '';
-            $discount = @$item->discount; if ($discount!='') $metadata.='discount: '.$discount.'; ';
+        $metadata = '';
+        $discount = @$item->discount; if ($discount!='') $metadata.='discount: '.$discount.'; ';
 
-            foreach ($list as $item){
-                $item->quantity = $quantity;
-                $item->metadata = $metadata;
-                $item->save();
-                $updated++;
-            }
-            $counted++;
+        foreach ($list as $item){
+          $item->quantity = $quantity;
+          $item->metadata = $metadata;
+          $item->save();
+          $updated++;
         }
-        DB::table('sync_times')->where('name', 'gy-auto')->update(['updated_at' => NOW()]);
-        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+        $counted++;
+      }
+      DB::table('sync_times')->where('name', 'gy-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
     public function rzauto()
     {
-        $url = 'https://riepuzona.lv/partnerproducts.xml?email=xml@r1.com.lv&password=R1nok1An';
+      $url = 'https://riepuzona.lv/partnerproducts.xml?email=xml@r1.com.lv&password=R1nok1An';
 
-        $opts = ['http' => [
-            'method' => 'GET',
-            'timeout' => 100,
-          ],
-        ];
+      $opts = ['http' => [
+        'method' => 'GET',
+        'timeout' => 100,
+      ],
+      ];
 
-        $context = stream_context_create($opts);
-        $xmlString = file_get_contents($url, false, $context);
+      $context = stream_context_create($opts);
+      $xmlString = file_get_contents($url, false, $context);
 
-        file_put_contents(dirname(__DIR__, 3) . '/public/storage/xml/rz.auto.xml', $xmlString);
+      file_put_contents(dirname(__DIR__, 3) . '/public/storage/xml/rz.auto.xml', $xmlString);
 
-        $xml = simplexml_load_string($xmlString);
+      $xml = simplexml_load_string($xmlString);
 
-        unset($context);
+      unset($context);
 
-        Autostock::where('itype', 'rz')->update(['quantity' => 0]);
+      Autostock::where('itype', 'rz')->update(['quantity' => 0]);
 
-        $updated = 0;
-        $counted = 0;
+      $updated = 0;
+      $counted = 0;
 
-        foreach ($xml->item as $item) {
-          $article = $item->code;
-          $quantity = intval($item->stock_amount);
+      foreach ($xml->item as $item) {
+        $article = $item->code;
+        $quantity = intval($item->stock_amount);
 
-          $list = Autostock::where('article', $article)->where('itype', 'rz')->get();
+        $list = Autostock::where('article', $article)->where('itype', 'rz')->get();
 
-          $metadata = '';
-          $discount = @$item->discount; if ($discount != '') $metadata.='discount: ' . $discount . '; ';
+        $metadata = '';
+        $discount = @$item->discount; if ($discount != '') $metadata.='discount: ' . $discount . '; ';
 
-          foreach ($list as $item){
-            $item->quantity = $quantity;
-            $item->metadata = $metadata;
-            $item->save();
-            $updated++;
-          }
-          $counted++;
+        foreach ($list as $item){
+          $item->quantity = $quantity;
+          $item->metadata = $metadata;
+          $item->save();
+          $updated++;
         }
-        DB::table('sync_times')->where('name', 'rz-auto')->update(['updated_at' => NOW()]);
-        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+        $counted++;
+      }
+      DB::table('sync_times')->where('name', 'rz-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
     public function rzautoshow()
@@ -1551,215 +1551,215 @@ class SyncController extends Controller
 
       $initial = ["/[0-9.]+/", "/L/", "/S/", "/VF/", "/FI/", "/P/", "/SL/", "/DW/", "/IF/", "/CFO/"];
 
-        $counted = 0;
-        $updated = 0;
-        foreach ($tires as $item) {
+      $counted = 0;
+      $updated = 0;
+      foreach ($tires as $item) {
 
-          dd($item);
+        dd($item);
 
-          if (Bigtire::where('article', $item['product_no'])->exists()) continue;
+        if (Bigtire::where('article', $item['product_no'])->exists()) continue;
 
-          $type = $item['segment_description'];
+        $type = $item['segment_description'];
 
-          if ($type === 'AGRO' || $type === 'IND' || $type === 'CONSTR') {
+        if ($type === 'AGRO' || $type === 'IND' || $type === 'CONSTR') {
 
-            if ($item['enabled'] == 'YES') {
+          if ($item['enabled'] == 'YES') {
 
-              $article = $item['product_no'];
+            $article = $item['product_no'];
 
-              $size = $item['Size'];
-              $size = str_replace(" ", "", $size);
-              $size = str_replace(",", ".", $size);
-              $size = str_replace("X", "x", $size);
-              $size = str_replace("\\", "", $size);
+            $size = $item['Size'];
+            $size = str_replace(" ", "", $size);
+            $size = str_replace(",", ".", $size);
+            $size = str_replace("X", "x", $size);
+            $size = str_replace("\\", "", $size);
 
-              $brand = ucfirst(strtolower($item['Brand']));
-              $tread = $item['Profil'];
+            $brand = ucfirst(strtolower($item['Brand']));
+            $tread = $item['Profil'];
 
-              $exploded = SyncController::multiexplode(["/", "-", "R", "x", "D"], $size);
+            $exploded = SyncController::multiexplode(["/", "-", "R", "x", "D"], $size);
 
-              $size = preg_replace($initial, "", $size);
-              $size = strtr($size, ['(-)' => '']);
+            $size = preg_replace($initial, "", $size);
+            $size = strtr($size, ['(-)' => '']);
 
-              $size = str_split($size);
+            $size = str_split($size);
 
-              for ($x = 0; $x < count($size); $x++) {
-                $sepNr = $x + 1;
-                ${"sep$sepNr"} = $size[$x];
-              }
+            for ($x = 0; $x < count($size); $x++) {
+              $sepNr = $x + 1;
+              ${"sep$sepNr"} = $size[$x];
+            }
 
-              $li = $item['LI_1'];
-              $si = $item['SI_1'];
+            $li = $item['LI_1'];
+            $si = $item['SI_1'];
 
-              $position = SyncController::getByArticle($article);
-              if ($position === false) {
-                $position = new Bigtire();
-              }
+            $position = SyncController::getByArticle($article);
+            if ($position === false) {
+              $position = new Bigtire();
+            }
 
-              $returnText = '';
+            $returnText = '';
 
-              if (!empty($brand) && !empty($tread)) {
-                $treadId = SyncController::getTreadId($tread, $brand);
-                // Jauns breands - Bigtire_brands
-                $returnText .= 'Jauns brends - ' . $brand . '<br>';
-                if ($treadId === false) {
-                  $brandId = SyncController::getBrandId($brand);
-                  if ($brandId === false) {
-                    $brandId = Bigbrand::insertGetId([
-                      'title' => $brand,
-                      'slug' => Str::slug($brand),
-                    ]);
-                  }
-                  // Jauns protektors - Bigtire_treads
-                  $returnText .= 'Jauns protektors - ' . $tread . '<br>';
-                  $treadId = Bigtread::insertGetId([
-                    'brand_id' => $brandId,
-                    'title' => $tread,
-                    'slug' => Str::slug($tread),
+            if (!empty($brand) && !empty($tread)) {
+              $treadId = SyncController::getTreadId($tread, $brand);
+              // Jauns breands - Bigtire_brands
+              $returnText .= 'Jauns brends - ' . $brand . '<br>';
+              if ($treadId === false) {
+                $brandId = SyncController::getBrandId($brand);
+                if ($brandId === false) {
+                  $brandId = Bigbrand::insertGetId([
+                    'title' => $brand,
+                    'slug' => Str::slug($brand),
                   ]);
                 }
+                // Jauns protektors - Bigtire_treads
+                $returnText .= 'Jauns protektors - ' . $tread . '<br>';
+                $treadId = Bigtread::insertGetId([
+                  'brand_id' => $brandId,
+                  'title' => $tread,
+                  'slug' => Str::slug($tread),
+                ]);
               }
-
-              $position->make_id = $treadId;
-
-              $outPath = dirname(__DIR__, 3) . '/storage/app/public/industrial/tread/' . $treadId . '.jpg';
-
-              Self::grab_image('http://194.19.236.7/Pictures/' . $article . '.jpg', $outPath);
-
-              $exploded[0] = strtr($exploded[0], ['(' => '']);
-              $exploded[0] = strtr($exploded[0], [')' => '']);
-              $exploded[0] = floatval($exploded[0]);
-
-              $exploded[1] = strtr($exploded[1], ['(' => '']);
-              $exploded[1] = strtr($exploded[1], [')' => '']);
-              $exploded[1] = floatval($exploded[1]);
-
-              @$exploded[2] = strtr($exploded[2], ['(' => '']);
-              @$exploded[2] = strtr($exploded[2], [')' => '']);
-              @$exploded[2] = floatval($exploded[2]);
-
-              if ($exploded[0] === floatval(0)) {
-                continue;
-              }
-
-              $position->d1 = $exploded[0];
-              $position->sep = $sep1;
-              if (!$exploded[2]) {
-                $position->d2 = NULL;
-                $position->sep2 = NULL;
-                $position->d3 = $exploded[1];
-              } else {
-                $position->d2 = $exploded[1];
-                $position->sep2 = $sep2;
-                $position->d3 = $exploded[2];
-              }
-
-              $position->type = $type;
-              $position->li = $li;
-              $position->si = $si;
-              $position->code = $item['PR'];
-              $position->price1 = NULL;
-              $position->price2 = NULL;
-              $position->implemention = $item['sub_segment_description'];
-              $position->kind = NULL;
-              $position->axis_bus = NULL;
-              $position->axis_truck = NULL;
-              $position->conditions_bus = NULL;
-              $position->conditions_truck = NULL;
-              $position->offer = NULL;
-              $position->priceoffer = NULL;
-              $position->comment = $item['Radial_Diagonal'];
-              $position->visible_users = 1;
-              $position->visible_list = 1;
-              $position->available = 1;
-              $position->article = $article;
-              $position->quantity = 0;
-
-              $position->save();
-
-              if ($article !== '') {
-                $position->addSecondaryArticle($article, 'starco');
-              }
-
-              $updated++;
-
             }
-          }
-          $counted++;
-        }
 
-        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)<br>";
+            $position->make_id = $treadId;
 
-        $string = file_get_contents($stocks, false, $context);
-        $stocks = json_decode($string, true)['value'];
+            $outPath = dirname(__DIR__, 3) . '/storage/app/public/industrial/tread/' . $treadId . '.jpg';
 
-        foreach ($stocks as $item) {
+            Self::grab_image('http://194.19.236.7/Pictures/' . $article . '.jpg', $outPath);
 
-          if ($item['RIG_STOCK'] == 0) {
+            $exploded[0] = strtr($exploded[0], ['(' => '']);
+            $exploded[0] = strtr($exploded[0], [')' => '']);
+            $exploded[0] = floatval($exploded[0]);
 
-            if (Bigtire::where('article', $item['product_no'])->exists()) {
-              Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0, 'updated_at' => date('Y-m-d H:i:s')]);
-            } else {
+            $exploded[1] = strtr($exploded[1], ['(' => '']);
+            $exploded[1] = strtr($exploded[1], [')' => '']);
+            $exploded[1] = floatval($exploded[1]);
+
+            @$exploded[2] = strtr($exploded[2], ['(' => '']);
+            @$exploded[2] = strtr($exploded[2], [')' => '']);
+            @$exploded[2] = floatval($exploded[2]);
+
+            if ($exploded[0] === floatval(0)) {
               continue;
             }
 
-          } else {
-
-            if (Bigstock::where('article', $item['product_no'])->exists()) {
-              Bigstock::where('article', $item['product_no'])->where('itype', 'starco')->update(['quantity' => $item['RIG_STOCK'], 'updated_at' => date('Y-m-d H:i:s')]);;
+            $position->d1 = $exploded[0];
+            $position->sep = $sep1;
+            if (!$exploded[2]) {
+              $position->d2 = NULL;
+              $position->sep2 = NULL;
+              $position->d3 = $exploded[1];
             } else {
-              continue;
+              $position->d2 = $exploded[1];
+              $position->sep2 = $sep2;
+              $position->d3 = $exploded[2];
             }
+
+            $position->type = $type;
+            $position->li = $li;
+            $position->si = $si;
+            $position->code = $item['PR'];
+            $position->price1 = NULL;
+            $position->price2 = NULL;
+            $position->implemention = $item['sub_segment_description'];
+            $position->kind = NULL;
+            $position->axis_bus = NULL;
+            $position->axis_truck = NULL;
+            $position->conditions_bus = NULL;
+            $position->conditions_truck = NULL;
+            $position->offer = NULL;
+            $position->priceoffer = NULL;
+            $position->comment = $item['Radial_Diagonal'];
+            $position->visible_users = 1;
+            $position->visible_list = 1;
+            $position->available = 1;
+            $position->article = $article;
+            $position->quantity = 0;
+
+            $position->save();
+
+            if ($article !== '') {
+              $position->addSecondaryArticle($article, 'starco');
+            }
+
+            $updated++;
 
           }
         }
+        $counted++;
+      }
 
-        echo "Preču daudzumi atjaunoti!<br>";
+      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)<br>";
 
-        $string = file_get_contents($prices, false, $context);
-        $prices = json_decode($string, true)['value'];
+      $string = file_get_contents($stocks, false, $context);
+      $stocks = json_decode($string, true)['value'];
 
-        foreach ($prices as $item) {
+      foreach ($stocks as $item) {
+
+        if ($item['RIG_STOCK'] == 0) {
 
           if (Bigtire::where('article', $item['product_no'])->exists()) {
-            $itam = Bigtire::where('article', $item['product_no'])->first();
+            Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0, 'updated_at' => date('Y-m-d H:i:s')]);
           } else {
             continue;
           }
 
-          if ($itam->article == $item['product_no']) {
-
-            if ($item['price'] < 100) {
-              $price1 = ($item['price'] + 8) / 70 * 100;
-              $price2 = $item['price'] + 10;
-              Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
-            }
-            if ($item['price'] >= 100 && $item['price'] < 200) {
-              $price1 = ($item['price'] + 12) / 70 * 100;
-              $price2 = $item['price'] + 15;
-              Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
-            }
-            if ($item['price'] > 200) {
-              $price1 = ($item['price'] + 15) / 70 * 100;
-              $price2 = $item['price'] + 20;
-              Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
-            }
-
-          }
+        } else {
 
           if (Bigstock::where('article', $item['product_no'])->exists()) {
-            $stock = Bigstock::where('article', $item['product_no'])->first();
-            if (Bigtire::where('article', $item['product_no'])->exists()) {
-              if ($stock->quantity == 0) Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0]);
-            }
+            Bigstock::where('article', $item['product_no'])->where('itype', 'starco')->update(['quantity' => $item['RIG_STOCK'], 'updated_at' => date('Y-m-d H:i:s')]);;
           } else {
             continue;
           }
 
         }
+      }
 
-        DB::table('sync_times')->where('name', 'starco-big')->update(['updated_at' => NOW()]);
-        echo 'Preču cenas atjaunotas!';
+      echo "Preču daudzumi atjaunoti!<br>";
+
+      $string = file_get_contents($prices, false, $context);
+      $prices = json_decode($string, true)['value'];
+
+      foreach ($prices as $item) {
+
+        if (Bigtire::where('article', $item['product_no'])->exists()) {
+          $itam = Bigtire::where('article', $item['product_no'])->first();
+        } else {
+          continue;
+        }
+
+        if ($itam->article == $item['product_no']) {
+
+          if ($item['price'] < 100) {
+            $price1 = ($item['price'] + 8) / 70 * 100;
+            $price2 = $item['price'] + 10;
+            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
+          }
+          if ($item['price'] >= 100 && $item['price'] < 200) {
+            $price1 = ($item['price'] + 12) / 70 * 100;
+            $price2 = $item['price'] + 15;
+            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
+          }
+          if ($item['price'] > 200) {
+            $price1 = ($item['price'] + 15) / 70 * 100;
+            $price2 = $item['price'] + 20;
+            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
+          }
+
+        }
+
+        if (Bigstock::where('article', $item['product_no'])->exists()) {
+          $stock = Bigstock::where('article', $item['product_no'])->first();
+          if (Bigtire::where('article', $item['product_no'])->exists()) {
+            if ($stock->quantity == 0) Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0]);
+          }
+        } else {
+          continue;
+        }
+
+      }
+
+      DB::table('sync_times')->where('name', 'starco-big')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+      echo 'Preču cenas atjaunotas!';
 
     }
 
@@ -1777,4 +1777,4 @@ class SyncController extends Controller
       return 'Visas sinhronizācijas notika!';
     }
 
-}
+  }
