@@ -429,7 +429,9 @@ class Queue extends Model
       $outText = str_replace('%CARMODEL%',$takenBy->vehicleModel,$outText);
       $outText = str_replace('%PURPOSE%',$purpose,$outText);
       $outText = str_replace('%PURPOSE_LONG%',$purposeLong,$outText);
-      $outText = str_replace('%CANCELID%',$takenBy->cancelId,$outText);
+      if (isset($takenBy->cancelId)) {
+        $outText = str_replace('%CANCELID%',$takenBy->cancelId,$outText);
+      }
 
       return $outText;
     }

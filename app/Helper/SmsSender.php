@@ -162,7 +162,7 @@ class SmsSender {
         foreach ($queue->_slots[$date] as $slot){
           if ($slot->status==SLOT_STATUS_TAKEN){
             $form = json_decode($slot->takenby);
-            $smsText = $queue->parseNotification($queue->notificationSMS, $date, $slot->iorder, $form, false);
+            $smsText = $queue->parseNotification($queue->getOriginal()['notificationSMS'], $date, $slot->iorder, $form, false);
             $target = $this->isValidPhoneNumber($form->ownerPhone);
             echo 'SMS: '.$form->ownerPhone.' ('.$target.') :'.nl2br($smsText).'<br/>'."\n";
             if ($target){
@@ -173,7 +173,7 @@ class SmsSender {
 
           if ($queue->_workingDays[$date]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN){
             $form = json_decode($slot->takenby2);
-            $smsText = $queue->parseNotification($queue->notificationSMS, $date, $slot->iorder, $form, true);
+            $smsText = $queue->parseNotification($queue->getOriginal()['notificationSMS'], $date, $slot->iorder, $form, true);
             $target = $this->isValidPhoneNumber($form->ownerPhone);
             echo '*SMS: '.$form->ownerPhone.' ('.$target.') :'.$smsText.'<br/>'."\n";
             if ($target){
