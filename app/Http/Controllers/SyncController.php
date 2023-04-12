@@ -994,7 +994,7 @@
         }
         $counted++;
       }
-      DB::table('sync_times')->where('name', 'duell_moto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+      DB::table('sync_times')->where('name', 'duell-moto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
     }
@@ -1042,7 +1042,7 @@
         }
         $counted++;
       }
-      DB::table('sync_times')->where('name', 'duell_quadr')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+      DB::table('sync_times')->where('name', 'duell-quadr')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
     }
