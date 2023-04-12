@@ -18,10 +18,13 @@ class ShopController extends Controller
   public $status_enum = [
     1 => 'Nav pabeigts/Nav informācijas',
     2 => 'Jauns',
+    9 => 'Procesā',
     3 => 'Gaidām apmaksu',
     4 => 'Gaidām preci',
+    8 => 'Gaida piegādi',
     6 => 'Prece nav pieejama',
     7 => 'Klients atteicās',
+    10 => 'Kļūdains pasūtījums',
     5 => 'Pabeigts'
 ];
 
