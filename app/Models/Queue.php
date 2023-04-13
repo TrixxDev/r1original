@@ -417,6 +417,7 @@ class Queue extends Model
         }
       }
 
+      dd($_SERVER);
       $url = $_SERVER['REQUEST_SCHEME'] . '://' . env('APP_URL');
 
       $outText = str_replace('%TIME%',$time,$text);
