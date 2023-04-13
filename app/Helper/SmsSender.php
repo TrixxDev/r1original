@@ -186,6 +186,7 @@ class SmsSender {
       }
     }
     $sendString = '['.$sendString.']';
+    //
     //$sendString .= '["28344474","'.$smsText.'"]';
 
     $object = json_decode($sendString);
