@@ -417,8 +417,7 @@ class Queue extends Model
         }
       }
 
-      dd($_SERVER);
-      $url = $_SERVER['REQUEST_SCHEME'] . '://' . env('APP_URL');
+      $url = $_SERVER['HTTP_ORIGIN'];
 
       $outText = str_replace('%TIME%',$time,$text);
       if ($showTime2) {
