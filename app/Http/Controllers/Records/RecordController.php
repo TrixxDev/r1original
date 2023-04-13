@@ -2,6 +2,8 @@
 
   namespace App\Http\Controllers\Records;
 
+  use App\Events\NewNotification;
+  use App\Helper\SmsSender;
   use App\Http\Controllers\EmailController as Mailer;
   use App\Models\Audit;
   use Illuminate\Mail\Message;
@@ -331,14 +333,10 @@
 
       if (!$purpose) $errorText['purpose'] = "Laukam \"Es vēlos\" jābūt aizpildītam!\n";
       if (!Auth::check()) {
-        if (!$email) $errorText['email'] = "Jābūt aizpildītam!\n";
-        if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errorText['emptyEmail'] = "Lauks \"Mans e-pasts\" aizpildīts nekorekti!\n";
         if (!$phone) $errorText['phone'] = "Jābūt aizpildītam!\n";
         if ($phone && !is_numeric($phone)) $errorText['wrongPhone'] = "Telefona numuram jāsastāv tikai no cipariem!\n";
       } else {
         if (!Auth::user()->hasRole(['administrators', 'moderators'])) {
-          if (!$email) $errorText['email'] = "Jābūt aizpildītam!\n";
-          if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errorText['emptyEmail'] = "Lauks \"Mans e-pasts\" aizpildīts nekorekti!\n";
           if (!$phone) $errorText['phone'] = "Jābūt aizpildītam!\n";
           if ($phone && !is_numeric($phone)) $errorText['wrongPhone'] = "Telefona numuram jāsastāv tikai no cipariem!\n";
         }
@@ -434,17 +432,24 @@
 //        if (!Mail::to($form->ownerEmail)->bcc('karlis@r1riepas.lv')->send(new \App\Mail\Mail($details))) {
 //          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
 //        }
-      $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, false);
-//        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($mailText));
-      $mailer = new Mailer();
-      $mailer->addRecipient($form->ownerEmail);
-      $bcc = 'karlis@r1riepas.lv';
-      if ($bcc) $mailer->addBCC($bcc);
-      $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, false);
-      $mailer->message = $mailText;
-      $mailer->send();
 
-      return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama e-pastā.']);
+      $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleSMS'], $slot->date, $slot->iorder, $form, false);
+
+      if ($form->ownerEmail) {
+        $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, false);
+//        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($mailText));
+        $mailer = new Mailer();
+        $mailer->addRecipient($form->ownerEmail);
+        $bcc = 'karlis@r1riepas.lv';
+        if ($bcc) $mailer->addBCC($bcc);
+        $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, false);
+        $mailer->message = $mailText;
+        $mailer->send();
+      }
+
+      (new SmsSender)->sendSchedule((array) $form, $smsText, $slot);
+
+      return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama īsziņā.']);
     }
 
     public function showMobileQueues(Request $request) {
@@ -714,20 +719,11 @@
       if (!$carModel) $errorText['model'] = "Jābūt aizpildītam!\n";
       if (!$licPlate) $errorText['reg_nr'] = "Jābūt aizpildītam!\n";
 
-      if ($filiale === NULL) $errorText['filiale'] = "Izvēlieties filiāli!\n";
-      if ($slot_id === NULL) $errorText['slotId'] = "Izvēlieties pieraksta laiku!\n";
-      if (!$purpose) $errorText['purpose'] = "Laukam \"Es vēlos\" jābūt izvēlētam!\n";
-      if (!$phone) $errorText['phone'] = "Jābūt aizpildītam!\n";
-      if ($phone && !is_numeric($phone)) $errorText['wrongPhone'] = "Telefona numuram jāsastāv tikai no cipariem!\n";
-      if (!Auth::check()) {
-        if (!$email) $errorText['email'] = "Jābūt aizpildītam!\n";
-        if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errorText['emptyEmail'] = "Lauks \"Mans e-pasts\" aizpildīts nekorekti!\n";
-      } else {
-        if (!Auth::user()->hasRole(['administrators', 'moderators'])) {
-          if (!$email) $errorText['email'] = "Jābūt aizpildītam!\n";
-          if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) $errorText['emptyEmail'] = "Lauks \"Mans e-pasts\" aizpildīts nekorekti!\n";
-        }
-      }
+        if ($filiale === NULL) $errorText['filiale'] = "Izvēlieties filiāli!\n";
+        if ($slot_id === NULL) $errorText['slotId'] = "Izvēlieties pieraksta laiku!\n";
+        if (!$purpose) $errorText['purpose'] = "Laukam \"Es vēlos\" jābūt izvēlētam!\n";
+        if (!$phone) $errorText['phone'] = "Jābūt aizpildītam!\n";
+        if ($phone && !is_numeric($phone)) $errorText['wrongPhone'] = "Telefona numuram jāsastāv tikai no cipariem!\n";
 
       if (!empty($errorText)) {
         return json_encode(['error' => $errorText]);
@@ -824,18 +820,23 @@
         'cancelId' => $cancelId
       ];
 
-      $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, false);
+        $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleSMS'], $slot->date, $slot->iorder, $form, false);
+
+        if ($form->ownerEmail) {
+          $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, false);
 //        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($mailText));
+          $mailer = new Mailer();
+          $mailer->addRecipient($form->ownerEmail);
+          $bcc = 'karlis@r1riepas.lv';
+          if ($bcc) $mailer->addBCC($bcc);
+          $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, false);
+          $mailer->message = $mailText;
+          $mailer->send();
+        }
 
-      $mailer = new Mailer();
-      $mailer->addRecipient($form->ownerEmail);
-      $bcc = 'karlis@r1riepas.lv';
-      if ($bcc) $mailer->addBCC($bcc);
-      $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, false);
-      $mailer->message = $mailText;
-      $mailer->send();
+        (new SmsSender)->sendSchedule((array) $form, $smsText, $slot);
 
-      return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama e-pastā.']);
+        return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama īsziņā.']);
 
     }
 
@@ -1331,15 +1332,21 @@
 
         if ($slot->save()) {
 
-          $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $slot->date, $slot->iorder, $info, false);
+            if ($info->ownerEmail) {
+              $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $slot->date, $slot->iorder, $info, false);
 
-          $mailer = new Mailer();
-          $mailer->addRecipient($info->ownerEmail);
-          $bcc = 'karlis@r1riepas.lv';
-          if ($bcc) $mailer->addBCC($bcc);
-          $mailer->subject = 'Tava rezervacija R1 riepu servisā ATCELTA';
-          $mailer->message = $mailText;
-          $mailer->send();
+              $mailer = new Mailer();
+              $mailer->addRecipient($info->ownerEmail);
+              $bcc = 'karlis@r1riepas.lv';
+              if ($bcc) $mailer->addBCC($bcc);
+              $mailer->subject = 'Tava rezervacija R1 riepu servisā ATCELTA';
+              $mailer->message = $mailText;
+              $mailer->send();
+            }
+
+            $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleCancelSMS'], $slot->date, $slot->iorder, $info, false);
+
+            (new SmsSender)->sendSchedule((array) $info, $smsText, $slot);
 
           Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Atcelts pieraksts', $slot);
           return redirect(route('pieraksts'))->with('success', 'Atcelšana ir izdevusies');
