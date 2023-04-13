@@ -408,7 +408,7 @@
                                                       <input type="text" class="form-control" id="mobile-phone">
                                                     </div>
                                                     <div class="form-group client-email last">
-                                                      <label for="mobile-email"><span class="validate">*</span>Mans e-pasts:</label>
+                                                      <label for="mobile-email">Mans e-pasts:</label>
                                                         <input type="email" class="form-control" id="mobile-email">
                                                     </div>
                                                     <div class="modal-footer reservation-modal-footer">
@@ -517,7 +517,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group row last">
-                                            <label for="email" class="col-sm-3" style="text-align: left;"><span class="validate" style="color: red;">*</span>Mans e-pasts:</label>
+                                            <label for="email" class="col-sm-3" style="text-align: left;">Mans e-pasts:</label>
                                             <div class="col-sm-9">
                                                 <input type="email" class="form-control" id="email">
                                             </div>

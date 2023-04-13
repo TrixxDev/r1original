@@ -1,11 +1,11 @@
-<p style="text-align: center;"><strong><span style="font-size: 18pt;">RIEPU NOMAIŅA</span></strong></p>
+<p style="text-align: center;"><strong><span style="font-size: 18pt;">RIEPU NOMAIŅA CENA</span></strong></p>
 <div class="pak-table">
 <table dir="ltr" style="width: 100%; height: 223.906px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 27.5356%;" width="63"><col style="width: 14.4934%;" width="63"><col style="width: 15.2174%;" width="63"><col style="width: 21.4674%;" width="63"><col style="width: 21.2862%;" width="63"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
-<td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
-<td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>VIEGLIE AUTO</strong></td>
-<td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>KROSOVERI/SUV/CARGO*</strong></td>
+<td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../img/michelin_certificate.jpg" width="195" height="75"></strong></td>
+<td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>RIEPU NOMAIŅA VIEGLIEM AUTO</strong></td>
+<td style="text-align: center; height: 22.3906px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>RIEPU NOMAIŅA KROSOVERIEM/SUV/CARGO*</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>4 riepu nomaiņa</strong></td>
@@ -72,12 +72,12 @@
 </table>
 </div>
 <p style="text-align: left;">* - riepas ar "C" indeksu un riepas ar sekojošiem izmēriem vai lielākas (diametrā) 225/70R16, 225/65R17, 225/60R18, 225/55R19</p>
-<p style="text-align: center;"><strong><span style="font-size: 18pt;">MOTOCIKLIEM, MOTOROLLERIEM</span></strong></p>
+<p style="text-align: center;"><strong><span style="font-size: 18pt;">RIEPU NOMAIŅA MOTOCIKLIEM un MOTOROLLERIEM</span></strong></p>
 <div class="pak-table">
 <table dir="ltr" style="width: 100%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 26.0126%;" width="63"><col style="width: 17.1017%;" width="63"><col style="width: 15.3915%;" width="63"><col style="width: 24.7598%;" width="63"><col style="width: 16.7344%;" width="63"></colgroup>
 <tbody>
 <tr>
-<td><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
+<td><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../img/michelin_certificate.jpg" width="195" height="75"></strong></td>
 <td style="text-align: center;" data-sheets-value="{"><strong>BEZ KAMERAS</strong></td>
 <td style="text-align: center;" data-sheets-value="{"><strong>AR KAMERU R15<</strong></td>
 <td style="text-align: center;" data-sheets-value="{"><strong>AR KAMERU R10-R14</strong></td>
@@ -116,7 +116,7 @@
 </table>
 </div>
 <p style="text-align: center;"> </p>
-<p style="text-align: center;"><strong><span style="font-size: 18pt;">KVADRACIKLIEM</span></strong></p>
+<p style="text-align: center;"><strong><span style="font-size: 18pt;">RIEPU NOMAIŅA KVADRACIKLIEM</span></strong></p>
 <table dir="ltr" style="width: 100%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 71.3774%;" width="63"><col style="width: 28.6042%;" width="63"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
@@ -152,20 +152,20 @@
 <p style="text-align: center;"> </p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">RITEŅU MONTĀŽA</span></strong></p>
 <div class="pak-table">
-<table dir="ltr" style="width: 100%; height: 179.094px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.2264%;" width="222"><col style="width: 19.5069%;" width="57"><col style="width: 14.6315%;" width="61"><col style="width: 16.4378%;" width="57"><col style="width: 17.07%;" width="57"><col style="width: 11.0188%;" width="57"></colgroup>
+<table dir="ltr" style="width: 100%; height: 185.953px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.217105263157894%;" width="222"><col style="width: 19.490131578947366%;" width="57"><col style="width: 14.638157894736842%;" width="61"><col style="width: 16.447368421052634%;" width="57"><col style="width: 17.105263157894736%;" width="57"><col style="width: 11.019736842105262%;" width="57"></colgroup>
 <tbody>
-<tr style="height: 22.3906px;">
-<td style="height: 67.1406px;" colspan="1" rowspan="2">
-<div style="text-align: center;"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></div>
+<tr style="height: 24.7031px;">
+<td style="height: 74px;" colspan="1" rowspan="2">
+<div style="text-align: center;"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../img/michelin_certificate.jpg" width="195" height="75"></strong></div>
 </td>
-<td style="height: 22.3906px; text-align: center;" colspan="5" rowspan="1" data-sheets-value="{"><strong>VIEGLIE AUTO</strong></td>
+<td style="height: 24.7031px; text-align: center;" colspan="5" rowspan="1" data-sheets-value="{"><strong>RITEŅU NOMAIŅA VIEGLIEM AUTO</strong></td>
 </tr>
-<tr style="height: 44.75px;">
-<td style="height: 44.75px; text-align: center;" data-sheets-value="{"><strong>Tērauda diski</strong></td>
-<td style="height: 44.75px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 12"-16"</strong></td>
-<td style="height: 44.75px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 17"-18"</strong></td>
-<td style="height: 44.75px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 19"-20"</strong></td>
-<td style="height: 44.75px; text-align: center;" data-sheets-value="{"><strong>R21<</strong></td>
+<tr style="height: 49.2969px;">
+<td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>Tērauda diski</strong></td>
+<td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 12"-16"</strong></td>
+<td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 17"-18"</strong></td>
+<td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 19"-20"</strong></td>
+<td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>R21<</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riepas montāža</strong></td>
@@ -215,8 +215,8 @@
 <table dir="ltr" style="width: 100%; height: 156.734px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.668%;" width="222"><col style="width: 21.7609%;" width="57"><col style="width: 17.3171%;" width="61"><col style="width: 18.4051%;" width="57"><col style="width: 20.7624%;" width="57"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
-<td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
-<td style="height: 22.3906px; text-align: center;" colspan="4" rowspan="1" data-sheets-value="{"><strong>KROSOVERI/SUV/CARGO*</strong></td>
+<td style="height: 44.7812px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../img/michelin_certificate.jpg" width="195" height="75"></strong></td>
+<td style="height: 22.3906px; text-align: center;" colspan="4" rowspan="1" data-sheets-value="{"><strong>RITEŅU NOMAIŅA KROSOVERIEM/SUV/CARGO*</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{"><strong>Tērauda diski</strong></td>
@@ -268,7 +268,7 @@
 <table dir="ltr" style="width: 100%; height: 111.953px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 17.3442%;" width="63"><col style="width: 40.7485%;" width="63"><col style="width: 41.9073%;" width="63"></colgroup>
 <tbody>
 <tr style="height: 22.3906px;">
-<td style="height: 22.3906px; text-align: left;"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
+<td style="height: 22.3906px; text-align: left;"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../img/michelin_certificate.jpg" width="195" height="75"></strong></td>
 <td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>4 riteņi</strong></td>
 <td style="text-align: center; height: 22.3906px;" data-sheets-value="{"><strong>2 riteņi</strong></td>
 </tr>
@@ -299,7 +299,7 @@
 <table dir="ltr" style="width: 100%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 17.4031%;" width="63"><col style="width: 40.585%;" width="63"><col style="width: 42.012%;" width="63"></colgroup>
 <tbody>
 <tr>
-<td><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../public/img/michelin_certificate.jpg" width="195" height="75"></strong></td>
+<td><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../img/michelin_certificate.jpg" width="195" height="75"></strong></td>
 <td style="text-align: center;" data-sheets-value="{"><strong>4 riteņi</strong></td>
 <td style="text-align: center;" data-sheets-value="{"><strong>2 riteņi</strong></td>
 </tr>

@@ -417,11 +417,14 @@ class Queue extends Model
         }
       }
 
+      $url = $_SERVER['REQUEST_SCHEME'] . '://' . env('APP_URL');
+
       $outText = str_replace('%TIME%',$time,$text);
       if ($showTime2) {
         $outText = str_replace('%TIME2%',$time2,$outText);
       }
       $outText = str_replace('%DATE%',$dateFmt,$outText);
+      $outText = str_replace('%URL%', $url, $outText);
       $outText = str_replace('%DAY%',ucfirst($dayOfWeek),$outText);
       $outText = str_replace('%DATE_LONG%',$dayOfWeek.', '.$dateFmt,$outText);
       $outText = str_replace('%OFFICE%',$office->title,$outText);
