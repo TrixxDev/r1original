@@ -32,15 +32,15 @@
 <p>Preču piegāde Rīgā un Salaspilī tiek veikta darba dienās no 09:00 līdz 18:00, sestdien no 10:00 līdz 15.00.</p>
 <h4><strong>Piegādes izmaksas ārpus Rīgas un Salaspils:</strong></h4>
 <ul>
-<li>1 motorollera riepa vai moto kamera – 5.00 EUR</li>
-<li>1 moto riepa – 7.00 EUR</li>
-<li>1 auto riepa – 10.00 EUR</li>
-<li>2 auto riepas (vieglajam auto) – 12.00 EUR</li>
+<li>1 motorollera riepa vai moto kamera – 14.00 EUR</li>
+<li>1 moto riepa – 14.00 EUR</li>
+<li>1 auto riepa – 17.00 EUR</li>
+<li>2 auto riepas (vieglajam auto) – 22.00 EUR</li>
 <li>2 auto riepas (4x4 vai C) – 15.00 EUR</li>
-<li>4 riepas (vieglajam auto) – 17.00 EUR</li>
-<li>4 riepas (4x4 vai C) – 21.00 EUR</li>
-<li>4 vieglmetāla diski – 17.00 EUR</li>
-<li>4 vieglmetā diski + 4 riepas – 25.00 EUR</li>
+<li>4 riepas (vieglajam auto) – 27.00 EUR</li>
+<li>4 riepas (4x4 vai C) – 27.00 EUR</li>
+<li>4 vieglmetāla diski – 27.00 EUR</li>
+<li>4 vieglmetā diski + 4 riepas – 30.00 EUR</li>
 </ul>
 <h4><strong>Kā iepirkties?</strong></h4>
 <p>Iepirkties R1 i-veikalā ir droši, viegli un ērti.</p>
