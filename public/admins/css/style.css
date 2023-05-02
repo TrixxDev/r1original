@@ -8782,6 +8782,11 @@ html:not([dir=rtl]) .nav {
   border: none!important;
 }
 
+.role-settings .nav-tabs.revert .nav-item {
+  border-color: #c4c9d0 #c4c9d0 #c4c9d0 transparent!important;
+  border: 1px solid;
+}
+
 .role-settings .nav-tabs {
   width: 250px;
   border: none!important;
@@ -8804,8 +8809,7 @@ html:not([dir=rtl]) .nav {
 }
 
 .role-settings .tab-content {
-  border: 1px solid #c4c9d0!important;
-  border-top-right-radius: 5px!important;
+  border: 2px solid #c4c9d0!important;
   border-bottom-right-radius: 5px!important;
   border-bottom-left-radius: 5px!important;
   height: 500px!important;

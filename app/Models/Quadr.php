@@ -81,7 +81,7 @@ class Quadr extends Model
   {
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => 'https://www.duell.fi/jm/en/search?q=' . $article . '&limit=10&timestamp=1674471998394&ajaxSearch=1&id_lang=3',
+      CURLOPT_URL => 'https://www.duell.fi/jm/en/search?q=' . $article . '&ajaxSearch=1',
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,
@@ -345,6 +345,7 @@ class Quadr extends Model
           $availability = '<p style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
         }
       }
+      $availability .= '';
 
       return $availability;
     }

@@ -235,6 +235,12 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
 
   // Lomas
   Route::get('/settings/roles', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('settings.roles');
+  Route::get('/settings/roles/create', [App\Http\Controllers\Admin\RoleController::class, 'create'])->name('settings.roles.create');
+  Route::post('/settings/roles/insert', [App\Http\Controllers\Admin\RoleController::class, 'insert'])->name('settings.roles.insert');
+  Route::get('/settings/roles/{id}/delete', [App\Http\Controllers\Admin\RoleController::class, 'destroy'])->name('settings.roles.destroy');
+  Route::post('/settings/roles/togglePermission', [App\Http\Controllers\Admin\RoleController::class, 'togglePermission'])->name('settings.roles.togglePermission');
+
+  Route::get('/settings/permissions/{id}/delete', [App\Http\Controllers\Admin\RoleController::class, 'removePermission'])->name('settings.roles.removePermission');
 
   // Sinhronizācijas
   Route::get('/settings/syncs', [App\Http\Controllers\Admin\SettingsController::class, 'syncs'])->name('settings.syncs');

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Broadcasting\UpdateStockChannel;
 use App\Helper\SmsSender;
 use App\Helper\Tires;
 use App\Models\Audit;

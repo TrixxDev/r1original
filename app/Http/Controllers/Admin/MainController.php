@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Audit;
+use App\Models\Quickorder;
 use App\Models\Slot;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -30,6 +31,14 @@ class MainController extends Controller
             'vehiclePlate' => 'Mašīnas numurs',
             'ownerPhone' => 'Telefona numurs',
             // Datums, Laiks, Mašīnas numurs, Telefona numurs, Klienta vārds-uzvārds
+          ],
+        ],
+        'quickorder' => [
+          'name' => 'App\\Models\\Quickorder',
+          'title' => 'Ātrie pasūtījumi',
+          Schema::getColumnListing((new Quickorder)->getTable()),
+          'searchBy' => [
+            'order_id' => 'Pasūtījuma numurs',
           ],
         ],
 //        'users' => [
@@ -75,6 +84,13 @@ class MainController extends Controller
             $audits = Audit::where('audit_classname', $modelName)->where($this->searchBy, 'like', '%' . $this->param . '%')
               ->orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(200);
             $modelname = $this->model . ';' . $this->searchBy;
+          } else if ($this->model == 'quickorder' && $this->searchBy == 'order_id') {
+            $audits = Audit::when($this->model, function ($query) use ($quote, $modelName) {
+              $query->where('audit_classname', $modelName)->whereRaw('audit_instance LIKE ' . $quote . '%"' . $this->searchBy . '";i:' . $this->param . '%' . $quote);
+              //          $query->where('audit_classname', $modelName)->whereRaw('audit_instance LIKE ' . $quote . '%"' . $this->searchBy . '":"' . $quote . '||' . $this->param . '||' . $quote . '"%' . $quote);
+            })->orderBy('audit_time', 'DESC')->orderBy('id', 'DESC')->paginate(200);
+//            dd(DB::getQueryLog());
+            return view('admin.audits.audits', compact('audits', 'models', 'modelname', 'param'));
           } else {
             $audits = Audit::when($this->model, function ($query) use ($quote, $modelName) {
               $query->where('audit_classname', $modelName)->whereRaw('audit_instance LIKE ' . $quote . '%"' . $this->searchBy . '":"' . $this->param . '"%' . $quote);
@@ -84,7 +100,6 @@ class MainController extends Controller
           return view('admin.audits.audits', compact('audits', 'models', 'modelname', 'param'));
         }
 
-//        dd(DB::getQueryLog());
 
       }
 
