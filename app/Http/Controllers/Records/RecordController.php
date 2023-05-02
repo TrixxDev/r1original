@@ -38,9 +38,12 @@
     public function __construct()
     {
 
-      $this->timeToOpen = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 16, 00);
-      $this->timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 7, 30);
-      $this->now = \Carbon\Carbon::now();
+//      $notification = 'Hello world!';
+//      broadcast(new NewNotification($notification))->toOthers();
+
+    $this->timeToOpen = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 16, 00);
+    $this->timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 8, 45);
+    $this->now = \Carbon\Carbon::now();
 //      $hash = $this->getRandomHash();
 //
 //      dd($this->isHashTaken($hash));
@@ -1169,9 +1172,9 @@
                                 } else {
                                   $rimsWith = 'Riepas ar diskiem';
                                 }
-                                $purpose = $service->pdf_title . ' - ' . $rimsWith;
+                                $purpose2 = $service->pdf_title . ' - ' . $rimsWith;
                               } else {
-                                $purpose = $service->pdf_title;
+                                $purpose2 = $service->pdf_title;
                               }
                               $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                             }
@@ -1268,17 +1271,13 @@
 
     public function cancelSlot(Request $request, $id)
     {
-
-      $timeToClose = Carbon::create(date('Y'), date('m'), date('d'), 7, 30);
-      $now = Carbon::now();
-
       $slot = Slot::where('takenBy', 'like', '%"cancelId":"' . $id . '"%')->orWhere('takenBy2', 'like', '%"cancelId":"' . $id . '"%')->first();
 
       $date = date('Y-m-d');
       if (!$slot) return redirect(route('pieraksts'));
 
       if ($slot->date < $date) return redirect(route('pieraksts'))->with('warning', 'Jūsu pieraksts vairs nav aktuāls');
-      if ($slot->date == $date && $timeToClose < $now) return redirect(route('pieraksts'))->with('warning', 'Pierakstu atcelt tiešsaistē iespējams līdz <b>7:30</b>, ja vēlaties mainīt pieraksta laiku vēlāk, zvaniet');
+      if ($slot->date == $date && $this->timeToClose < $this->now) return redirect(route('pieraksts'))->with('warning', 'Pierakstu atcelt tiešsaistē iespējams līdz <b>8:45</b>, ja vēlaties mainīt pieraksta laiku vēlāk, zvaniet');
 
       $queue = Queue::where('queue_id', $slot->queue_id)->first();
 
