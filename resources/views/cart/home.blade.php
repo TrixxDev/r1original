@@ -143,7 +143,7 @@
                                     <div class="cart-options">
                                       <label class="cart-delivery-label">
                                         <input type="radio" name="data[cart_delivery_radio]" checked value="1">
-                                        <span>Ulbroka, Institūta iela 1</span>
+                                        <span>Ulbroka, Acones iela 2A</span>
                                       </label>
                                       <label class="cart-delivery-label">
                                         <input type="radio" name="data[cart_delivery_radio]" value="2">

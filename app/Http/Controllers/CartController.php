@@ -651,7 +651,7 @@ class CartController extends Controller
             }
 
             if (isset($details->info['fitting_address']) && $details->info['fitting_address'] == 1) {
-              $out .= 'Saņemšanas vieta: Ulbroka, Institūta iela 1';
+              $out .= 'Saņemšanas vieta: Ulbroka, Acones iela 2A';
             } elseif (isset($details->info['fitting_address']) && $details->info['fitting_address'] == 2) {
               $out .= 'Saņemšanas vieta: Rīga, Kalnciema iela 39';
             } else {
