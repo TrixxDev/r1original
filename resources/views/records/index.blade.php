@@ -148,11 +148,26 @@
                                                     @break
 
                                                     @case (SLOT_STATUS_OFFER)
-                                                    @php
-                                                      $slotClass = 'slot-offer';
-                                                      //'. url_self_reference(array('d'=>$date,'qu'=>$queue->id,'time'=>$slot->iorder)).'
-                                                      $slotText = '<button class="offer-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
-                                                    @endphp
+                                                    @if ($date == $today)
+                                                      @if (\Carbon\Carbon::parse(App\Models\Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now())
+                                                        @php
+                                                          $slotClass = 'slot-offer';
+                                                          //'. url_self_reference(array('d'=>$date,'qu'=>$queue->id,'time'=>$slot->iorder)).'
+                                                          $slotText = '<button class="offer-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
+                                                        @endphp
+                                                      @else
+                                                        @php
+                                                          $slotClass = 'taken-slot';
+                                                          $slotCaption = 'Aizņemts';
+                                                        @endphp
+                                                      @endif
+                                                    @else
+                                                      @php
+                                                        $slotClass = 'slot-offer';
+                                                        //'. url_self_reference(array('d'=>$date,'qu'=>$queue->id,'time'=>$slot->iorder)).'
+                                                        $slotText = '<button class="offer-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
+                                                      @endphp
+                                                    @endif
                                                     @break
 
                                                     @case (SLOT_STATUS_CLOSED)
