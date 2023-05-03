@@ -97,8 +97,8 @@
       );
 
     $tires = new Tires();
-//    $timeStep = $tires->arrayGCD($slotSizes);
-    $timeStep = '';
+    $timeStep = $tires->arrayGCD($slotSizes);
+//    $timeStep = '';
     $services = Service::orderBy('service_id', 'ASC')->get();
 
       return view('records.index', compact('date', '_weekDays', 'workingDays', 'timeStep', 'visibleDays', 'offices', 'services'));
