@@ -368,11 +368,12 @@
       $queue->loadWorkingDay($date);
       $queue->loadSlots($date, true);
 
-      $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slotNumber),true);
-      $fmtDate = date('d.m.Y',strtotime($date));
-      $dayOfWeek2 = $_weekDays2[date('N', strtotime($date.' 00:00:00'))];
+    $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slotNumber),true);
+    $fmtDate = date('d.m.Y',strtotime($date));
+    $dayOfWeek2 = $_weekDays2[date('N', strtotime($date.' 00:00:00'))];
+    $today = date('Y-m-d');
 
-    if (Carbon::parse($time)->subHour() <= Carbon::now()) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+    if ($date == $today && Carbon::parse($time)->subHour() <= Carbon::now()) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
 
     $slot = $queue->_slots[$date][$slotNumber];
 //      $slot = Slot::find($slot->slot_id);
@@ -454,7 +455,7 @@
     $today = date('Y-m-d');
 
     (new SmsSender)->sendSchedule((array) $form, $smsText, $slot);
-    if ($today == $slot->date) {
+    if ($today == $slot->date && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
       $vehicle = str_replace(' ', '%20', $form->vehicleMake);
       $model = str_replace(' ', '%20', $form->vehicleModel);
       if ($office->office_id == 1) {
