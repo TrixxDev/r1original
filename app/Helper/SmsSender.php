@@ -189,12 +189,12 @@ class SmsSender {
     if ($error==''){
       $sender = $data->Senders[0];	// paļaujamies uz to, ka ir vismaz viens atļautais sūtītājs!
     } else {
-      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SMS, Ātrais pasūtījums: Neautorizēta IP!');
+      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SMS, Pieraksts: Neautorizēta IP!');
       throw new Exception("SMS: Neautorizēta IP!");
     }
 
     if ($sender=='') {
-      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SMS, Ātrais pasūtījums: Nav pieejams neviens sūtītājs!');
+      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SMS, Pieraksts: Nav pieejams neviens sūtītājs!');
       throw new Exception("SMS: Nav pieejams neviens sūtītājs!");
     }
 
@@ -317,10 +317,14 @@ class SmsSender {
     if ($error==''){
       $sender = $data->Senders[0];	// paļaujamies uz to, ka ir vismaz viens atļautais sūtītājs!
     } else {
+      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SMS, Pieraksts: Neautorizēta IP!');
       throw new Exception("SMS: Neautorizēta IP!");
     }
 
-    if ($sender=='') throw new Exception("SMS: Nav pieejams neviens sūtītājs!");
+    if ($sender=='') {
+      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SMS, Pieraksts: Nav pieejams neviens sūtītājs!');
+      throw new Exception("SMS: Nav pieejams neviens sūtītājs!");
+    }
 
     $postdata = http_build_query(
       array(
@@ -345,6 +349,12 @@ class SmsSender {
 
 
 //    audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SENT SMS: '.$result);
+
+    if ($result) {
+      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,$slot->slot_id,0,'SMS, Pieraksts: Īsziņas veiksmīgi nosūtītas!', $slot);
+    } else {
+      Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,$slot->slot_id,0,'SMS, Pieraksts: Neizdevās nosūtīt īsziņas!');
+    }
 
     dd($result);
   }

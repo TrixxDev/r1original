@@ -38,9 +38,6 @@
                           @if (session('warning'))
                             <div class="alert alert-warning">{!! session('warning') !!}</div>
                           @endif
-                          @if ($timeToClose < $now)
-                            <div class="alert alert-warning">Tekošajā dienā E-pierakstīties nav iespējams, ja redzat brīvus laikus un vēlaties šodien nomainīt riepas, tad lūdzu zvaniet!</div>
-                          @endif
                         @else
                           <h1>{{ $dayOfWeek . ", " . $dateFmt  }}</h1>
                         @endif
@@ -98,39 +95,49 @@
 
                                                   @switch ($slot->status)
                                                     @case (SLOT_STATUS_FREE)
-                                                    @if ($date == $today && $timeToClose < $now)
-                                                      @php
-                                                        $slotClass = 'slot-gray-free';
-                                                        $slotCaption = 'Brīvs';
-                                                        $slotText = ''.$slotCaption.'';
-                                                      @endphp
+                                                    @if ($date == $today)
+                                                      @if (\Carbon\Carbon::parse(App\Models\Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now())
+                                                        @if (trim($slot->comment)=='')
+                                                          @php
+                                                            $slotClass = 'available-slot';
+                                                            $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Brīvs</button>';
+                                                          @endphp
+                                                        @else
+                                                          @php
+                                                            $slotClass = 'slot-offer';
+                                                            $slotCaption = '<button class="offer-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
+                                                            //$slotCaption = $slot->comment;
+                                                          @endphp
+                                                        @endif
+                                                      @else
+                                                        @php
+                                                          $slotClass = 'taken-slot';
+                                                          $slotCaption = 'Aizņemts';
+                                                        @endphp
+                                                      @endif
                                                     @else
                                                       @if (trim($slot->comment)=='')
                                                         @php
                                                           $slotClass = 'available-slot';
-                                                          $slotCaption = '<button class="free-slot-link" id="slot' . $slot->iorder . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slot->iorder . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Brīvs</button>';
+                                                          $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Brīvs</button>';
                                                         @endphp
                                                       @else
                                                         @php
                                                           $slotClass = 'slot-offer';
-                                                          $slotCaption = '<button class="offer-slot-link" id="slot' . $slot->iorder . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slot->iorder . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
+                                                          $slotCaption = '<button class="offer-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
                                                           //$slotCaption = $slot->comment;
                                                         @endphp
                                                       @endif
-                                                      @php
-                                                        //'. url_self_reference(array('d'=>$date,'qu'=>$queue->id,'time'=>$slot->iorder)).'
-                                                        $slotText = $slotCaption;
-                                                      @endphp
                                                     @endif
+                                                    @php
+                                                      //'. url_self_reference(array('d'=>$date,'qu'=>$queue->id,'time'=>$slot->iorder)).'
+                                                      $slotText = $slotCaption;
+                                                    @endphp
                                                     @break;
 
                                                     @case (SLOT_STATUS_TAKEN)
-                                                    @if ($date == $today && $timeToClose < $now)
-                                                      @php $slotClass = 'slot-gray'; @endphp
-                                                    @else
-                                                      @php $slotClass = 'taken-slot'; @endphp
-                                                    @endif
                                                     @php
+                                                      $slotClass = 'taken-slot';
                                                       $takenBy = json_decode($slot->takenby);
                                                       $plate = substr($takenBy->ownerPhone,-3,3);
                                                       $plate = filter_var($plate, FILTER_SANITIZE_NUMBER_INT);
@@ -141,18 +148,11 @@
                                                     @break
 
                                                     @case (SLOT_STATUS_OFFER)
-                                                    @if ($date == $today && $timeToClose < $now)
-                                                      @php
-                                                        $slotClass = 'slot-gray-free';
-                                                        $slotText = 'Brīvs';
-                                                      @endphp
-                                                    @else
-                                                      @php
-                                                        $slotClass = 'slot-offer';
-                                                        //'. url_self_reference(array('d'=>$date,'qu'=>$queue->id,'time'=>$slot->iorder)).'
-                                                        $slotText = '<button class="offer-slot-link" id="slot' . $slot->iorder . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slot->iorder . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
-                                                      @endphp
-                                                    @endif
+                                                    @php
+                                                      $slotClass = 'slot-offer';
+                                                      //'. url_self_reference(array('d'=>$date,'qu'=>$queue->id,'time'=>$slot->iorder)).'
+                                                      $slotText = '<button class="offer-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
+                                                    @endphp
                                                     @break
 
                                                     @case (SLOT_STATUS_CLOSED)
@@ -161,22 +161,15 @@
                                                     @else
                                                       @php $slotCaption = $slot->comment; @endphp
                                                     @endif
-                                                    @if ($date == $today && $timeToClose < $now)
-                                                      @php
-                                                        $slotClass = 'slot-gray';
-                                                        $slotText = '';
-                                                      @endphp
-                                                    @else
-                                                      @php
-                                                        $slotClass = 'closed-slot';
-                                                        $slotText = $slotCaption;
-                                                      @endphp
-                                                    @endif
+                                                    @php
+                                                      $slotClass = 'closed-slot';
+                                                      $slotText = $slotCaption;
+                                                    @endphp
                                                     @break
                                                   @endswitch
 
                                                   <td class="time-slot">{{ App\Models\Office::timeByInterval($i) }}</td>
-                                                  <td class="{{ $slotClass }} slot{{ $slot->iorder }}-{{ $slot->queue_id }} slot" data-date="{{ $date }}" data-queue="{{ $slot->queue_id }}">
+                                                  <td class="{{ $slotClass }} slot{{ $slotNumber }}-{{ $slot->queue_id }} slot" data-date="{{ $date }}" data-queue="{{ $slot->queue_id }}">
                                                     {!! $slotText !!}
                                                   </td>
 
@@ -189,26 +182,15 @@
                                                       @case (SLOT_STATUS_OFFER)
                                                       @case (SLOT_STATUS_CLOSED)
                                                       @case (SLOT_STATUS_FREE)
-                                                      @if ($date == $today && $timeToClose < $now)
-                                                        @php
-                                                          $slotClass = 'slot-gray';
-                                                          $slotText = '';
-                                                        @endphp
-                                                      @else
-                                                        @php
-                                                          $slotClass = 'available-slot';
-                                                          $slotText = '';
-                                                        @endphp
-                                                      @endif
+                                                      @php
+                                                        $slotClass = 'available-slot';
+                                                        $slotText = '';
+                                                      @endphp
                                                       @break
 
                                                       @case (SLOT_STATUS_TAKEN)
-                                                      @if ($date == $today && $timeToClose < $now)
-                                                        @php $slotClass = 'slot-gray'; @endphp
-                                                      @else
-                                                        @php $slotClass = 'slot-taken'; @endphp
-                                                      @endif
                                                       @php
+                                                        $slotClass = 'slot-taken';
                                                         $takenBy = json_decode($slot->takenby2);
                                                         //$slotText = '<a href="'. url_self_reference(array('d'=>$date,'qu'=>$queue->id,'time'=>$i)).'">'.H($takenBy).'</a>';
                                                         $plate = substr($takenBy->ownerPhone,-3,3);
@@ -222,7 +204,7 @@
                                                     @endswitch
 
                                                     <td class="time-slot">{{ App\Models\Office::timeByInterval($i) }}</td>
-                                                    <td class="{{ $slotClass }} slot">
+                                                    <td class="{{ $slotClass }} slot{{ $slotNumber }}-{{ $slot->queue_id }} slot" data-date="{{ $date }}" data-queue="{{ $slot->queue_id }}">
                                                       {!! $slotText !!}
                                                     </td>
                                                   @endif

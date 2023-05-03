@@ -96,10 +96,10 @@
         7=>'Svētdiena',
       );
 
-      $tires = new Tires();
-      $timeStep = $tires->arrayGCD($slotSizes);
-
-      $services = Service::orderBy('service_id', 'ASC')->get();
+    $tires = new Tires();
+//    $timeStep = $tires->arrayGCD($slotSizes);
+    $timeStep = '';
+    $services = Service::orderBy('service_id', 'ASC')->get();
 
       return view('records.index', compact('date', '_weekDays', 'workingDays', 'timeStep', 'visibleDays', 'offices', 'services'));
     }
@@ -372,8 +372,10 @@
       $fmtDate = date('d.m.Y',strtotime($date));
       $dayOfWeek2 = $_weekDays2[date('N', strtotime($date.' 00:00:00'))];
 
-      $slot = $queue->_slots[$date][$slotNumber];
-      $slot = Slot::findOrFail($slot->slot_id);
+    if (Carbon::parse($time)->subHour() <= Carbon::now()) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+
+    $slot = $queue->_slots[$date][$slotNumber];
+//      $slot = Slot::find($slot->slot_id);
 
       if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
 
@@ -441,16 +443,41 @@
       if ($form->ownerEmail) {
         $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, false);
 //        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($mailText));
-        $mailer = new Mailer();
-        $mailer->addRecipient($form->ownerEmail);
-        $bcc = 'karlis@r1riepas.lv';
-        if ($bcc) $mailer->addBCC($bcc);
-        $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, false);
-        $mailer->message = $mailText;
-        $mailer->send();
-      }
+      $mailer = new Mailer();
+      $mailer->addRecipient($form->ownerEmail);
+      $bcc = 'karlis@r1riepas.lv';
+      if ($bcc) $mailer->addBCC($bcc);
+      $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, false);
+      $mailer->message = $mailText;
+      $mailer->send();
+    }
+    $today = date('Y-m-d');
 
-      (new SmsSender)->sendSchedule((array) $form, $smsText, $slot);
+    (new SmsSender)->sendSchedule((array) $form, $smsText, $slot);
+    if ($today == $slot->date) {
+      $vehicle = str_replace(' ', '%20', $form->vehicleMake);
+      $model = str_replace(' ', '%20', $form->vehicleModel);
+      if ($office->office_id == 1) {
+
+        $cURLConnection = curl_init();
+
+        curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=120363130984594947@g.us&apikey=ATpfS4ctcJUW&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model);
+        curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+        curl_exec($cURLConnection);
+
+        curl_close($cURLConnection);
+      } else {
+        $cURLConnection = curl_init();
+
+        curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=120363150684433547@g.us&apikey=ATpfS4ctcJUW&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model);
+        curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+        curl_exec($cURLConnection);
+
+        curl_close($cURLConnection);
+      }
+    }
 
       return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama īsziņā.']);
     }
@@ -1277,7 +1304,7 @@
       if (!$slot) return redirect(route('pieraksts'));
 
       if ($slot->date < $date) return redirect(route('pieraksts'))->with('warning', 'Jūsu pieraksts vairs nav aktuāls');
-      if ($slot->date == $date && $this->timeToClose < $this->now) return redirect(route('pieraksts'))->with('warning', 'Pierakstu atcelt tiešsaistē iespējams līdz <b>8:45</b>, ja vēlaties mainīt pieraksta laiku vēlāk, zvaniet');
+//      if ($slot->date == $date && $this->timeToClose < $this->now) return redirect(route('pieraksts'))->with('warning', 'Pierakstu atcelt tiešsaistē iespējams līdz <b>8:45</b>, ja vēlaties mainīt pieraksta laiku vēlāk, zvaniet');
 
       $queue = Queue::where('queue_id', $slot->queue_id)->first();
 
@@ -1346,6 +1373,32 @@
             $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleCancelSMS'], $slot->date, $slot->iorder, $info, false);
 
             (new SmsSender)->sendSchedule((array) $info, $smsText, $slot);
+            if ($date == $slot->date) {
+
+              $vehicle = str_replace(' ', '%20', $info->vehicleMake);
+              $model = str_replace(' ', '%20', $info->vehicleModel);
+
+              if ($office->office_id == 1) {
+
+                $cURLConnection = curl_init();
+
+                curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=120363130984594947@g.us&apikey=ATpfS4ctcJUW&text=Atcelts%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model);
+                curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+                curl_exec($cURLConnection);
+
+                curl_close($cURLConnection);
+              } else {
+                $cURLConnection = curl_init();
+
+                curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=120363150684433547@g.us&apikey=ATpfS4ctcJUW&text=Atcelts%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model);
+                curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+                curl_exec($cURLConnection);
+
+                curl_close($cURLConnection);
+              }
+            }
 
           Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Atcelts pieraksts', $slot);
           return redirect(route('pieraksts'))->with('success', 'Atcelšana ir izdevusies');
