@@ -461,7 +461,7 @@
 
         $cURLConnection = curl_init();
 
-        curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=120363130984594947@g.us&apikey=ATpfS4ctcJUW&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model);
+        curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=120363130984594947@g.us&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model);
         curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
 
         curl_exec($cURLConnection);
@@ -470,7 +470,7 @@
       } else {
         $cURLConnection = curl_init();
 
-        curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=120363150684433547@g.us&apikey=ATpfS4ctcJUW&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model);
+        curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=120363150684433547@g.us&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model);
         curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
 
         curl_exec($cURLConnection);
