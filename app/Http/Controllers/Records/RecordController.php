@@ -27,22 +27,26 @@
   class RecordController extends Controller
   {
 
-    public $timeToOpen;
-    public $timeToClose;
-    public $now;
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
+  public $timeToOpen;
+  public $timeToClose;
+  public $startSendWpp;
+  public $endSendWpp;
+  public $now;
+  /**
+   * Create a new controller instance.
+   *
+   * @return void
+   */
+  public function __construct()
+  {
 
 //      $notification = 'Hello world!';
 //      broadcast(new NewNotification($notification))->toOthers();
 
     $this->timeToOpen = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 16, 00);
     $this->timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 8, 45);
+    $this->startSendWpp = $this->timeToClose;
+    $this->endSendWpp = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 18, 00);
     $this->now = \Carbon\Carbon::now();
 //      $hash = $this->getRandomHash();
 //
