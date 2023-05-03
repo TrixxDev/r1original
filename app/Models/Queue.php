@@ -417,7 +417,7 @@ class Queue extends Model
         }
       }
 
-      $url = $_SERVER['HTTP_ORIGIN'];
+      $url = env('SCHEDULE_URL');
 
       $outText = str_replace('%TIME%',$time,$text);
       if ($showTime2) {
