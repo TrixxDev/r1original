@@ -182,10 +182,24 @@
                                                       @case (SLOT_STATUS_OFFER)
                                                       @case (SLOT_STATUS_CLOSED)
                                                       @case (SLOT_STATUS_FREE)
-                                                      @php
-                                                        $slotClass = 'available-slot';
-                                                        $slotText = '';
-                                                      @endphp
+                                                      @if ($date == $today)
+                                                        @if (\Carbon\Carbon::parse(App\Models\Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now())
+                                                          @php
+                                                            $slotClass = 'available-slot';
+                                                            $slotText = '';
+                                                          @endphp
+                                                        @else
+                                                          @php
+                                                            $slotClass = 'taken-slot';
+                                                            $slotText = 'Aizņemts';
+                                                          @endphp
+                                                        @endif
+                                                      @else
+                                                        @php
+                                                          $slotClass = 'taken-slot';
+                                                          $slotCaption = 'Aizņemts';
+                                                        @endphp
+                                                      @endif
                                                       @break
 
                                                       @case (SLOT_STATUS_TAKEN)
