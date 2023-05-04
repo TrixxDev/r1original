@@ -212,7 +212,7 @@
                                                       @else
                                                         @php
                                                           $slotClass = 'available-slot';
-                                                          $slotCaption = '';
+                                                          $slotText = '';
                                                         @endphp
                                                       @endif
                                                       @break
