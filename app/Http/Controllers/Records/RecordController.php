@@ -579,103 +579,162 @@
 
           for ($i=$openTime;$i<$closeTime;$i+=$timeStep) {
             foreach ($office->_queues as $queue) {
-              if ($queue->isIntervalBeginning($date,$i)) {
-                $office->loadWorkingDays($date);
-                $slots[$queue->getSlotNumberByInterval($date, $i)] = [
-                  'time' => Office::timeByInterval($i),
-                  'slots' => $this->getPrevQueue($office->_workingDays, $queue->getSlotNumberByInterval($date, $i), $date),
-                  'date' => $date
-                ];
-              }
-            }
-          }
-
-          if (!empty($slots)) {
-            foreach ($slots as $slot_iorder => $slot_info){
-              if ($date == $slot_info['date']) {
-                $freeSlot = $this->getLastNonNullValue($slot_info['slots']);
-                if (!empty($freeSlot)) {
-                  if ($date == $today && $this->timeToClose < $this->now) {
-                    $slot = $freeSlot[array_key_first($freeSlot)];
-                    $slot_id = '';
-                    $slotText = 'Brīvs';
-                    $slotText = '<span class="slot-gray-free">' . $slotText . '</span>';
-                    $availability = 'unavailable';
-                    $discount = false;
-                  } else {
-                    $slot = $freeSlot[array_key_first($freeSlot)];
-                    $slot_id = 'data-slot_id=' . $slot->slot_id;
-                    if (stripos($slot->comment, '% darbam') !== false) {
-                      $slotText = str_replace('!', '', $slot->comment);
-                      $slotText = '<span>' . $slotText . '</span>';
-                      $availability = 'discount available';
-                      $discount = true;
-                    } else {
-                      $slotText = 'Brīvs';
-                      $slotText = '<span>' . $slotText . '</span>';
-                      $availability = 'available';
-                      $discount = false;
-                    }
-                  }
-                } else {
-                  if ($date == $today && $this->timeToClose < $this->now) {
-                    $slotText = '<span class="slot-taken">Aizņemts</span>';
-                    $slot_id = '';
-                    $availability = 'unavailable';
-                    $discount = false;
-                  } else {
-                    $slotText = 'Aizņemts';
-                    $slot_id = '';
-                    $availability = 'unavailable';
-                    $discount = false;
-                  }
-                }
-                $out .= '<div class="time-slot">';
-                $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot active"><span class="time-span">' . $slot_info['time'] . '</span><br>' . $slotText . '</div>';
-                $out .= '<div class="dots">';
-                if (!empty($slot_info['slots'])) {
-                  foreach ($slot_info['slots'] as $slot) {
-                    if ($slot !== null) {
-                      if ($date != $today) {
-                        if (stripos($slot->comment, '% darbam') !== false) {
-                          $out .= '<span class="dot-availability text-center">
-                          <span class="dot orange" data-toggle="tooltip" data-html="true" title="Atlaide">
-                            <span class="sort-order">orange</span>
-                          </span>
-                        </span>';
+              $office->loadWorkingDays($date);
+              $queue->loadSlots($date);
+              $slotNumber = ($queue->getSlotNumberByInterval($date, $i));
+              if (($slotNumber !== false) && ($queue->_workingDays[$date]->isVisible()))
+                if ($queue->isIntervalBeginning($date, $i)) {
+                  $slot = $queue->_slots[$date][$slotNumber];
+                  $slot_id = 'data-slot_id=' . $slot->slot_id;
+                  switch ($slot->status) {
+                    case SLOT_STATUS_FREE: {
+                      if ($date == $today) {
+                        if (Carbon::parse(Office::timeByInterval($i))->subHour() >= Carbon::now()) {
+                          if (trim($slot->comment)=='') {
+                            $availability = 'available';
+                            $slotText = 'Brīvs';
+                            $discount = false;
+                          } else {
+                            $availability = 'available discount';
+                            $slotText = $slot->comment;
+                            $discount = true;
+                          }
                         } else {
-                          $out .= '<span class="dot-availability text-center">
-                          <span class="dot green" data-toggle="tooltip" data-html="true" title="Brīvs">
-                            <span class="sort-order">green</span>
-                          </span>
-                        </span>';
+                          $availability = 'unavailable';
+                          $slotText = 'Aizņemts';
+                          $discount = false;
                         }
                       } else {
-                        $out .= '<span class="dot-availability text-center">
-                          <span class="dot red" data-toggle="tooltip" data-html="true" title="Aizņemts">
-                            <span class="sort-order">red</span>
-                          </span>
-                        </span>';
+                        if (trim($slot->comment)=='') {
+                          $availability = 'available';
+                          $slotText = 'Brīvs';
+                          $discount = false;
+                        } else {
+                          $availability = 'available discount';
+                          $slotText = $slot->comment;
+                          $discount = true;
+                        }
                       }
-                    } else {
-                      $out .= '<span class="dot-availability text-center">
-                        <span class="dot red" data-toggle="tooltip" data-html="true" title="Aizņemts">
-                          <span class="sort-order">red</span>
-                        </span>
-                      </span>';
+                      break;
+                    }
+
+                    case SLOT_STATUS_TAKEN: {
+                      $availability = 'unavailable';
+                      $slotText = 'Aizņemts';
+                      $discount = false;
+                      break;
+                    }
+
+                    case SLOT_STATUS_OFFER: {
+                      if ($date == $today) {
+                        if (Carbon::parse(Office::timeByInterval($i))->subHour() >= Carbon::now()) {
+                          $availability = 'available discount';
+                          $slotText = $slot->comment;
+                          $discount = true;
+                        } else {
+                          $availability = 'unavailable';
+                          $slotText = 'Aizņemts';
+                          $discount = false;
+                        }
+                      } else {
+                        $availability = 'available discount';
+                        $slotText = $slot->comment;
+                        $discount = true;
+                      }
+                      break;
                     }
                   }
-                } else {
-                  $out .= '<span class="dot-availability text-center">
-                  <span class="dot transparent" style="" data-toggle="tooltip" data-html="true" title="Aizņemts">
-                    <span class="sort-order">transparent</span>
-                  </span>
-                </span>';
+                  $out .= '<div class="time-slot">';
+                  $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot active"><span class="time-span">' . Office::timeByInterval($i) . '</span><br><span>' . $slotText . '</span></div>';
+                  $out .= '</div>';
+
+//                $slots[$queue->getSlotNumberByInterval($date, $i)] = [
+//                  'time' => Office::timeByInterval($i),
+//                  'slots' => $this->getPrevQueue($office->_workingDays, $queue->getSlotNumberByInterval($date, $i), $date),
+//                  'date' => $date
+//                ];
+//                sort($slots);
                 }
-                $out .= '</div></div>';
               }
             }
-          }
+//            foreach ($queue->_slots[$date] as $slot) {
+//              if ($queue->isIntervalBeginning($date, $i)) {
+//                $slot_id = 'data-slot_id=' . $slot->slot_id;
+//                if (stripos($slot->comment, '% darbam') !== false) {
+//                  $slotText = str_replace('!', '', $slot->comment);
+//                  $slotText = '<span>' . $slotText . '</span>';
+//                  $availability = 'discount available';
+//                  $discount = true;
+//                } else {
+//                  $slotText = 'Brīvs';
+//                  $slotText = '<span>' . $slotText . '</span>';
+//                  $availability = 'available';
+//                  $discount = false;
+//                }
+//                $out .= '<div class="time-slot">';
+//                $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot active"><span class="time-span">' . Office::timeByInterval($i) . '</span><br>' . $slotText . '</div>';
+//                $out .= '</div>';
+//              }
+//            }
+//          }
+
+//          if (!empty($slots)) {
+//            foreach ($slots as $slot_iorder => $slot_info){
+//              if ($date == $slot_info['date']) {
+//                $freeSlot = $this->getLastNonNullValue($slot_info['slots']);
+//                $slot = $freeSlot[array_key_first($freeSlot)];
+//                $slot_id = 'data-slot_id=' . $slot->slot_id;
+//                if (stripos($slot->comment, '% darbam') !== false) {
+//                  $slotText = str_replace('!', '', $slot->comment);
+//                  $slotText = '<span>' . $slotText . '</span>';
+//                  $availability = 'discount available';
+//                  $discount = true;
+//                } else {
+//                  $slotText = 'Brīvs';
+//                  $slotText = '<span>' . $slotText . '</span>';
+//                  $availability = 'available';
+//                  $discount = false;
+//                }
+//                $out .= '<div class="time-slot">';
+//                $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot active"><span class="time-span">' . $slot_info['time'] . '</span><br>' . $slotText . '</div>';
+//                $out .= '<div class="dots">';
+//                if (!empty($slot_info['slots'])) {
+//                  foreach ($slot_info['slots'] as $slot) {
+//                    if ($slot !== null) {
+//                      $workingDay = Workingday::where('date', $slot->date)->where('queue_id', $slot->queue_id)->first();
+//
+//                        if (stripos($slot->comment, '% darbam') !== false) {
+//                          $out .= '<span class="dot-availability text-center">
+//                          <span class="dot orange" data-toggle="tooltip" data-html="true" title="Atlaide">
+//                            <span class="sort-order">orange</span>
+//                          </span>
+//                        </span>';
+//                        } else {
+//                          $out .= '<span class="dot-availability text-center">
+//                          <span class="dot green" data-toggle="tooltip" data-html="true" title="Brīvs">
+//                            <span class="sort-order">green</span>
+//                          </span>
+//                        </span>';
+//                        }
+//                    } else {
+//                      $out .= '<span class="dot-availability text-center">
+//                        <span class="dot red" data-toggle="tooltip" data-html="true" title="Aizņemts">
+//                          <span class="sort-order">red</span>
+//                        </span>
+//                      </span>';
+//                    }
+//                  }
+//                } else {
+//                  $out .= '<span class="dot-availability text-center">
+//                  <span class="dot transparent" style="" data-toggle="tooltip" data-html="true" title="Aizņemts">
+//                    <span class="sort-order">transparent</span>
+//                  </span>
+//                </span>';
+//                }
+//                $out .= '</div></div>';
+//              }
+//            }
+//          }
 
           $out .= '</div>';
 
@@ -809,6 +868,10 @@
       $fmtDate = date('d.m.Y',strtotime($slot->date));
       $dayOfWeek2 = $_weekDays2[date('N', strtotime($slot->date.' 00:00:00'))];
 
+      $today = date('Y-m-d');
+
+      if ($date == $today && Carbon::parse($time)->subHour() <= Carbon::now()) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+
       if ($slot->save()) {
         Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Izveidots jauns pieraksts', $slot);
       } else {
@@ -870,6 +933,30 @@
         }
 
         (new SmsSender)->sendSchedule((array) $form, $smsText, $slot);
+        if ($today == $slot->date && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
+          $vehicle = str_replace(' ', '%20', $form->vehicleMake);
+          $model = str_replace(' ', '%20', $form->vehicleModel);
+          if ($office->office_id == 1) {
+
+            $cURLConnection = curl_init();
+
+            curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=120363130984594947@g.us&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model);
+            curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+            curl_exec($cURLConnection);
+
+            curl_close($cURLConnection);
+          } else {
+            $cURLConnection = curl_init();
+
+            curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=120363150684433547@g.us&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model);
+            curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+            curl_exec($cURLConnection);
+
+            curl_close($cURLConnection);
+          }
+        }
 
         return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama īsziņā.']);
 
@@ -1330,11 +1417,11 @@
 
       if ($takenBy !== null) {
         $info = $takenBy;
-        $time = Office::timeByInterval($startTime);
+        $time = Office::timeByInterval($queue->getSlotTime($date, $slot->iorder));
       }
       if ($takenBy2 !== null) {
         $info = $takenBy2;
-        $time = Office::timeByInterval($startTime);
+        $time = Office::timeByInterval($queue->getSlotTime($date, $slot->iorder));
       }
 
       if ($request->post()) {
