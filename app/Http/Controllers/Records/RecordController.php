@@ -1314,7 +1314,7 @@
                               $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                             } else {
                               $service = Service::where('service_id', $takenBy->purpose)->first();
-                              if (is_null($service)) {
+                              if (!is_null($service)) {
                                 if ($service->service_id == 1 && isset($takenBy->rimsWith)) {
                                   if ($takenBy->rimsWith == 1) {
                                     $rimsWith = 'Riepas bez diskiem';
