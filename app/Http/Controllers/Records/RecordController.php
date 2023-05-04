@@ -1406,11 +1406,11 @@
 
       if ($takenBy !== null) {
         $info = $takenBy;
-        $time = Office::timeByInterval($queue->getSlotTime($date, $slot->iorder));
+        $time = Office::timeByInterval($startTime);
       }
       if ($takenBy2 !== null) {
         $info = $takenBy2;
-        $time = Office::timeByInterval($queue->getSlotTime($date, $slot->iorder));
+        $time = Office::timeByInterval($startTime);
       }
 
       if ($request->post()) {
