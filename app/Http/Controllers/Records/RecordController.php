@@ -468,11 +468,14 @@
       $service = str_replace(' ', '%20', $service->pdf_title);
       $vehiclePlate = str_replace(' ', '%20', $form->vehiclePlate);
 
-      $append = '';
-      if ($rimsWith == 1) {
-        $append = '%20-%20Riepas%20bez%20diskiem';
+      if (isset($rimsWith)) {
+        if ($rimsWith == 1) {
+          $append = '%20-%20Riepas%20bez%20diskiem';
+        } else {
+          $append = '%20-%20Riepas%20ar%20diskiem';
+        }
       } else {
-        $append = '%20-%20Riepas%20ar%20diskiem';
+        $append = '';
       }
 
       if ($office->office_id == 1) {
@@ -946,11 +949,14 @@
           $service = str_replace(' ', '%20', $service->pdf_title);
           $vehiclePlate = str_replace(' ', '%20', $form->vehiclePlate);
 
-          $append = '';
-          if ($rimsWith == 1) {
-            $append = '%20-%20Riepas%20bez%20diskiem';
+          if (isset($rimsWith)) {
+            if ($rimsWith == 1) {
+              $append = '%20-%20Riepas%20bez%20diskiem';
+            } else {
+              $append = '%20-%20Riepas%20ar%20diskiem';
+            }
           } else {
-            $append = '%20-%20Riepas%20bez%20diskiem';
+            $append = '';
           }
 
 
