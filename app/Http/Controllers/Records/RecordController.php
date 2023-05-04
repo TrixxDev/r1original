@@ -547,22 +547,11 @@
 
           if ($office->_openQueues > 0) {
             $out .= '<h3>' . $office->title . '<br>' . $dayOfWeek . ' ' . $dateFmt . '</h3>';
-            if ($date == $today) {
-              $out .= '<div class="alert alert-warning">Tekošajā dienā E-pierakstīties nav iespējams, ja redzat brīvus laikus un vēlaties šodien nomainīt riepas, tad lūdzu zvaniet!</div>';
-            }
           } else {
             $out .= '';
           }
 
-          if ($date == $today) {
-            if ($this->timeToClose < $this->now) {
-              $out .= '<div class="time-list today" data-date="' . $date . '" style="margin-left:8px;">';
-            } else {
-              $out .= '<div class="time-list" data-date="' . $date . '" style="margin-left:8px;">';
-            }
-          } else {
-            $out .= '<div class="time-list" data-date="' . $date . '" style="margin-left:8px;">';
-          }
+          $out .= '<div class="time-list" data-date="' . $date . '" style="margin-left:8px;">';
 
           $openTime = 0;
           $closeTime = -1;
