@@ -211,8 +211,8 @@
                                                         @endif
                                                       @else
                                                         @php
-                                                          $slotClass = 'taken-slot';
-                                                          $slotCaption = 'Aizņemts';
+                                                          $slotClass = 'available-slot';
+                                                          $slotCaption = '';
                                                         @endphp
                                                       @endif
                                                       @break
