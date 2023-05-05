@@ -288,7 +288,7 @@ Route::middleware('checksession')->group(function() {
    return redirect('/pieraksts');
   })->name('home');
   Route::get('/callback', function() {
-   require_once(dirname(__DIR__) . '\\app\\Paysera\\callback.php');
+   require_once(dirname(__DIR__) . '/app/Paysera/callback.php');
   });
   Route::get('/logout', function() {
     Auth::logout();
