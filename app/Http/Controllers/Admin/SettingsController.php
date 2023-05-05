@@ -52,9 +52,18 @@
       }
     }
 
-    public function services_edit($id)
+    public function services_edit(Request $request, $id)
     {
-      return $id;
+      $service = Service::find($id);
+      $service->timestamps = false;
+      $service->title = $request->title;
+      $service->pdf_title = $request->pdf_title;
+      $service->f_save = (isset($request->f_save)) ? 1 : null;
+      if ($service->save()) {
+        echo json_encode(['success' => 'Informācija veiksmīgi izlabota', 'f_save' => $service->f_save]);
+      } else {
+        echo json_encode(['error' => 'Notika kļūda']);
+      }
     }
 
     public function services_destroy($id)

@@ -47,7 +47,7 @@
                         @else
                             @foreach ($services as $service)
                             <li id="service_{{ $service->service_id }}" class="services list-group-item d-flex justify-content-between align-items-center">
-                                <span class="service_title">{{ $service->title }}</span>
+                                <span class="service_title" data-desc="{{ $service->pdf_title }}" @if (!is_null($service->f_save)) data-save="1" @endif>{{ $service->title }}</span>
                                 <div class="options" style="display: inline-flex; align-items: center;">
                                     <input type="checkbox" class="service_enable" data-service-id="{{ $service->service_id }}" @if ($service->enabled) checked @endif name="service_enable">
                                     <a href="{{ route('admin.settings.services.edit', $service->service_id) }}" style="margin-left: 10px;" class="edit badge bg-primary rounded-pill service-edit">Labot</a>

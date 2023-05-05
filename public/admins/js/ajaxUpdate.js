@@ -188,6 +188,8 @@ $(document).ready(function() {
     edit = false;
     $('input[name="service_id"]').val('');
     $('input[name="service"]').val('');
+    $('input[name="pdf_service"]').val('');
+    $('input[name="f_save"]').attr('checked', false).prop('checked', false);
     $('.services_form .card-footer button').removeClass('service_edit_button').addClass('service_add_button').first().text('Izveidot');
     $(this).remove();
   });
@@ -233,15 +235,37 @@ $(document).ready(function() {
 
   $(document).on('click', '.service_edit_button', function(e) {
     e.preventDefault();
-    edit = false;
-    let $value = $('input[name="service"]').val();
+    let title = $('input[name="service"]').val();
+    let pdf_title = $('input[name="pdf_service"]').val();
+    let f_save = ($('input[name="f_save"]:checked').val()) ? 1 : null;
+    if (title === '') {
+      return false;
+    }
     let $id = $('input[name="service"]').attr('data-service-id');
-    $('li#' + $id + ' .service_title').html($value);
-    $('input[name="service_id"]').val('');
-    $('input[name="service"]').val('').removeAttr('data-service-id');
-    $('.services_form .card-footer button').first().text('Izveidot');
-    $('.services_form .card-footer button').first().attr('type', 'submit').removeClass('service_edit_button').addClass('service_add_button');
-    $('.services_form .card-footer button').last().remove();
+    $.ajax({
+      url: '/admin/settings/services/' + $id.replace('service_', '') + '/edit',
+      method: 'POST',
+      data: { 'title': title, 'pdf_title': pdf_title, 'f_save': f_save },
+      dataType: 'JSON',
+      success: function(data) {
+        if (data.f_save != null) {
+          $('li#' + $id + ' .service_title').attr('data-save', 1);
+        } else {
+          $('li#' + $id + ' .service_title').removeAttr('data-save');
+        }
+        edit = false;
+        let $value = $('input[name="service"]').val();
+        $('li#' + $id + ' .service_title').html($value);
+        $('li#' + $id + ' .service_title').attr('data-desc', pdf_title);
+        $('input[name="service_id"]').val('');
+        $('input[name="pdf_service"]').val('');
+        $('input[name="service"]').val('').removeAttr('data-service-id');
+        $('input[name="f_save"]').attr('checked', false).prop('checked', false);
+        $('.services_form .card-footer button').first().text('Izveidot');
+        $('.services_form .card-footer button').first().attr('type', 'submit').removeClass('service_edit_button').addClass('service_add_button');
+        $('.services_form .card-footer button').last().remove();
+      }
+    });
   });
 
   $(document).on('click', '.services .options a.edit', function(e) {
@@ -252,9 +276,12 @@ $(document).ready(function() {
     }
     let service_id = $(this).parent().parent().attr('id');
     let service_title = $(this).parent().parent().children().first().text();
+    let service_desc = $(this).parent().parent().children().first().attr('data-desc');
     $('input[name="service"]').attr('data-service-id', service_id);
     $('input[name="service_id"]').val(service_id);
     $('input[name="service"]').val(service_title);
+    $('input[name="pdf_service"]').val(service_desc);
+    if ($(this).parent().parent().children().first().attr('data-save') == 1) $('input[name="f_save"]').attr('checked', true).prop('checked', true);
     $('.services_form .card-footer button').first().text('Labot');
     $('.services_form .card-footer button').first().removeAttr('type').removeClass('service_add_button').addClass('service_edit_button');
   });
