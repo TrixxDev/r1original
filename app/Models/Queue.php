@@ -410,7 +410,7 @@ class Queue extends Model
           $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
           break;
         }
-        case 4:{
+        case 6:{
           $purpose = 'kondicioniera uzpilde';
           $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
           break;

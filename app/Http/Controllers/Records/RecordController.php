@@ -401,33 +401,33 @@
         Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id,0, 'Neizdevās izveidot pierakstu', $slot);
       }
 
-      switch ($form->purpose){
-        case 0:{
-          $purpose = '';
-          $purposeLong = '';
-          break;
-        }
-        case 1:{
-          $purpose = 'riepu nomaiņa';
-          $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri Jums būs līdzi';
-          break;
-        }
-        case 2:{
-          $purpose = 'riepu nomaiņa';
-          $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri glabājas pie mums';
-          break;
-        }
-        case 3:{
-          $purpose = 'riepu nomaiņa';
-          $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
-          break;
-        }
-        case 4:{
-          $purpose = 'kondicioniera uzpilde';
-          $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
-          break;
-        }
+    switch ($form->purpose){
+      case 0:{
+        $purpose = '';
+        $purposeLong = '';
+        break;
       }
+      case 1:{
+        $purpose = 'riepu nomaiņa';
+        $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri Jums būs līdzi';
+        break;
+      }
+      case 2:{
+        $purpose = 'riepu nomaiņa';
+        $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri glabājas pie mums';
+        break;
+      }
+      case 3:{
+        $purpose = 'riepu nomaiņa';
+        $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
+        break;
+      }
+      case 6:{
+        $purpose = 'kondicioniera uzpilde';
+        $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
+        break;
+      }
+    }
 
       $details = [
         'car' => $form->vehicleMake,
@@ -908,7 +908,7 @@
           $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
           break;
         }
-        case 4:{
+        case 6:{
           $purpose = 'kondicioniera uzpilde';
           $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
           break;
