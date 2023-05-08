@@ -19,6 +19,11 @@ class Rim extends Model
     return $this->_includeStock = $value;
   }
 
+  public function getOfferPriceAttribute()
+  {
+    return $this->price3;
+  }
+
   public function getLinkAttribute()
   {
     $rim = Rimmake::selectRaw('rim_makes.*, rim_makes.title as tread_title')
@@ -37,13 +42,13 @@ class Rim extends Model
   {
     switch ($this->quantity) {
       case 1: {
-        return 'Pēdējā';
+        return 'Pēdējais';
       }
       case 2: {
-        return 'Pēdējās 2';
+        return 'Pēdējie 2';
       }
       case 3: {
-        return 'Pēdējās 3';
+        return 'Pēdējie 3';
       }
       case -1:
       case 0: {
@@ -51,13 +56,13 @@ class Rim extends Model
           $count = $this->getStockCount();
           switch ($count){
             case 1: {
-              return 'Pēdējā';
+              return 'Pēdējais';
             }
             case 2: {
-              return 'Pēdējās 2';
+              return 'Pēdējie 2';
             }
             case 3: {
-              return 'Pēdējās 3';
+              return 'Pēdējie 3';
             }
             case -1:
             case 0:{
@@ -146,23 +151,24 @@ class Rim extends Model
 
   public function getStockCount()
   {
-//    $stocks = Autostock::where('tire_id', $this->rim_id)->get();
-//
-//    $count=0;
-//
-//    foreach ($stocks as $stock) {
-//        if ($stock !== NULL && $stock->quantity >= 1) {
-//          $count += $stock->quantity;
-//        }
-//      }
-//
-//    return $count;
+
+    $stocks = Rimstock::where('rim_id', $this->rim_id)->get();
+
+    $count=0;
+
+    foreach ($stocks as $stock) {
+      if ($stock !== NULL && $stock->quantity >= 1) {
+        $count += $stock->quantity;
+      }
+    }
+
+    return $count;
   }
 
   public function getStockAvailabilityAttribute()
   {
     $rim = Rim::where('rim_id', $this->rim_id)->first();
-//    $stocks = Rimstock::where('tire_id', $this->tire_id)->get();
+    $stocks = Rimstock::where('rim_id', $this->rim_id)->get();
 
     $stock_names = [
       'i3' => 'I3',
@@ -182,20 +188,20 @@ class Rim extends Model
     if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
       $availability = '<p>Ulbrokā: ' . $rim->urs_quantity . '</p><br>';
       $availability .= '<p>Kalnciema ielā: ' . $rim->krs_quantity . '</p>';
-//      foreach ($stock_names as $key => $stock_name) {
-//        $stock = Autostock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
-//        if ($stock && $stock->quantity > 0) {
-//          $availability .= '<br><p>' . $stock_name . ': ' . $stock->quantity . '</p>';
-//        } else {
-//          $availability .= '<br><p>' . $stock_name . ': 0</p>';
-//        }
-//      }
+      foreach ($stock_names as $key => $stock_name) {
+        $stock = Rimstock::where('itype', $key)->where('rim_id', $rim->rim_id)->first();
+        if ($stock && $stock->quantity > 0) {
+          $availability .= '<br><p>' . $stock_name . ': ' . $stock->quantity . '</p>';
+        } else {
+          $availability .= '<br><p>' . $stock_name . ': 0</p>';
+        }
+      }
     } else {
       $dot = $this->getDotAvailableAttribute();
       if ($dot === 'red') {
         $availability = '<p style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</p>';
       } else if ($dot === 'yellow' || $dot === 'half-yellow') {
-        $availability = '<p style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
+        $availability = '<p style="text-align: center;">Diski pieejami partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
       }
     }
     $availability .= '';

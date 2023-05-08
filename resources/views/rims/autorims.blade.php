@@ -304,7 +304,7 @@
                                   <div style="display: flex;">
                                     <input type="checkbox" name="product_ids[]" value="{{$rim->rim_id}}" style="margin-right: 5px;">
                                     <div class="rim-price-old" style="align-self: center;">€{{$rim->price1}}</div>
-                                    <div class="rim-price-red" style="align-self: center;">€{{$rim->price2}}</div>
+                                    <div class="rim-price-red" style="align-self: center;">€{{$rim->price3}}</div>
 
                                     <span style="margin-left: auto;" data-toggle="tooltip" data-html="true"
                                           title="<span style='color: black'>Pievienot grozam</span>">
@@ -423,11 +423,11 @@
                                 </td>
 
                                 <td class="hidden-sm-down text-center">
-                                  {{$rim->color}}
+                                  {{ strtoupper($rim->color) }}
                                 </td>
 
                                 <td id="store-price" class="text-center store-price">€ {{$rim->price1}}</td>
-                                <td id="sale-price" class="text-center tire-price-red sale-price">€ {{$rim->price2}}</td>
+                                <td id="sale-price" class="text-center tire-price-red sale-price">€ {{$rim->price3}}</td>
                                 <td class="hidden-sm-down text-center"></td>
 
                                 <td class="shopping-cart-col">
@@ -462,7 +462,7 @@
                           <div class="col-md-12">
                           </div>
                         </nav>
-{{--                      {{ $rims->links() }}--}}
+                      {{ $rims->links() }}
                     </div>
                       <div id="js-product-list-bottom">
                         <div id="js-product-list-bottom"></div>

@@ -11,6 +11,10 @@
   use App\Models\Motostock;
   use App\Models\Quadr;
   use App\Models\Quadrstock;
+  use App\Models\Rim;
+  use App\Models\Rimbrand;
+  use App\Models\Rimmake;
+  use App\Models\Rimstock;
   use Carbon\Carbon;
   use Illuminate\Support\Facades\DB;
   use Illuminate\Http\Request;
@@ -30,6 +34,8 @@
 
     public $urs = 0;
     public $krs = 0;
+    private $treadId;
+    private $brandId;
 
     public function __construct()
     {
@@ -49,7 +55,7 @@
         ],
         'rims' => [
           'Rim',
-          ''
+          'rim_stock'
         ],
         'quadrims' => [
           'Quadrim',
@@ -714,6 +720,197 @@
       //        }
       //        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
       //        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+
+    }
+
+    public function i3autoalloyrims()
+    {
+
+      set_time_limit(0);
+
+      $sync = DB::table('sync_times')->where('name', 'i3-alloy-rims')->get();
+      $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+      $time_now = \Carbon\Carbon::now();
+      if ($time_now->diff($sync_time)->invert == 1) {
+        if (!isset($_COOKIE['i3-token'])) {
+          $token_url = "gd-api-test.barnstenit.se/Token";
+//        $token_url = "api.latakko.eu/Token";
+
+          $curl = curl_init();
+          curl_setopt_array($curl, array(
+            CURLOPT_URL => $token_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+            CURLOPT_HTTPHEADER => array(
+              "cache-control: no-cache",
+              "content-type: application/x-www-form-urlencoded"
+            ),
+          ));
+          $response = curl_exec($curl);
+          $err = curl_error($curl);
+
+          curl_close($curl);
+
+          if (!$err)
+          {
+            $token = json_decode($response);
+          } else {
+            dd($err);
+          }
+
+          setcookie('i3-token', $token->access_token, time() + $token->expires_in, '/');
+        }
+        $token_bearer = $_COOKIE['i3-token'];
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => 'https://gd-api-test.barnstenit.se/api/Articles?IncludeCarTyres=false&IncludeMotorcycleTyres=false&IncludeTruckTyres=false&IncludeEarthmoverTyres=false&IncludeAlloyRims=true&OnlyLocalStockItems=true',
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "GET",
+          CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "authorization: Bearer " . $token_bearer,
+          ),
+        ));
+        $response = curl_exec($curl);
+
+        $filename = dirname(__DIR__, 3) . '\\public\\storage\\xml\\i3-alloy-rims-articles.txt';
+
+        file_put_contents($filename, $response);
+        chmod($filename, 0775);
+
+        $err = curl_error($curl);
+
+        if ($err) throw new \Exception($err);
+
+        curl_close($curl);
+      }
+
+      $counted = 0;
+      $updated = 0;
+
+      Rimstock::where('itype', 'i3')->update(['quantity' => 0]);
+
+      $content = file_get_contents(dirname(__DIR__, 3) . '\\public\\storage\\xml\\i3-alloy-rims-articles.txt');
+      $content = json_decode($content);
+
+      $returnText = '';
+
+      foreach ($content as $item) {
+
+        $counted++;
+
+        if (!$item->NumberOfBolts || !$item->BoltCircle || !$item->Diameter) continue;
+
+        $rim = Rim::where('article', $item->ArticleId)->first();
+        $newRim = false;
+
+        if ($rim == null) {
+          $newRim = true;
+          $rim = new Rim;
+        }
+
+        $rim->timestamps = false;
+
+        $imageId = $item->ImageId;
+
+        $brand = Rimbrand::where('title', $item->BrandName)->first();
+        $tread = Rimmake::where('title', $item->PatternModelText)->first();
+
+        if ($tread === null) {
+          $tread = new Rimmake;
+          $tread->timestamps = false;
+          if ($brand === null) {
+            $brand = new Rimbrand;
+            $brand->timestamps = false;
+            $brand->title = $item->BrandName;
+            $brand->slug = Str::slug($brand->title);
+            $brand->save();
+            $tread->brand_id = $brand->brand_id;
+          } else {
+            $tread->brand_id = $brand->brand_id;
+          }
+          $tread->title = $item->PatternModelText;
+          $tread->slug = Str::slug($tread->title);
+          $tread->save();
+        }
+
+        $brandId = $brand->brand_id;
+        $treadId = $tread->make_id;
+
+        $quantity = intval($item->QuantityAvailable);
+        if ($imageId != null) {
+          $outPath = dirname(__DIR__, 3) . '/public/storage/rims/tread/' . $treadId . '-o.jpg';
+
+          if (!file_exists($outPath)) {
+            Self::grab_image('https://gd-api-test.barnstenit.se/api/ArticleImages/' . $imageId, $outPath);
+          }
+        }
+
+        $rim->make_id = $treadId;
+        $rim->d1 = $item->Width;
+        $rim->d3 = $item->Diameter;
+        $rim->dc = $item->CenterBore;
+        $rim->used = 0;
+        $rim->price1 = ceil((round(($item->NetPrice * 1.21), 2) + 15) / 0.7);
+        $rim->price2 = $item->Price;
+        $rim->price3 = floor(round($item->RetailPrice * 1.21, 2));
+        $rim->offer = 0;
+        $rim->priceOffer = 0;
+        if ($newRim == true) {
+          $rim->comment = '';
+          if ($quantity >= 4) {
+            $rim->visible_users = 1;
+            $rim->visible_list = 1;
+          }
+        } else {
+          if ($quantity < 4) {
+            $rim->visible_users = 0;
+            $rim->visible_list = 0;
+          }
+        }
+        $rim->available = 0;
+        $rim->skr = $item->NumberOfBolts;
+        $rim->pcd = $item->BoltCircle;
+        $rim->et = $item->Offset;
+        $rim->color = $item->Color;
+        $rim->article = $item->ArticleId;
+        $rim->quantity = 0;
+        $rim->urs_quantity = 0;
+        $rim->krs_quantity = 0;
+        $rim->ordered = 0;
+        $rim->reserved = 0;
+        $rim->updated_at = Carbon::now()->format('Y-m-d H:i:s');
+
+        $rim->save();
+
+        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+
+        $stock = Rimstock::where('rim_id', $rim->rim_id)->first();
+
+        if ($stock == null) $stock = new Rimstock;
+        $stock->rim_id = $rim->rim_id;
+        $stock->article = $rim->article;
+        $stock->quantity = $quantity;
+        $stock->itype = 'i3';
+        $stock->metadata = $metadata;
+        if ($stock->save()) {
+          $updated++;
+        }
+        $counted++;
+
+      }
+
+      DB::table('sync_times')->where('name', 'i3-alloy-rims')->update(['updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
+      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
 
     }
 
@@ -1468,12 +1665,25 @@
     }
 
     private static function grab_image($url,$saveto){
-      $ch = curl_init ($url);
-      curl_setopt($ch, CURLOPT_HEADER, 0);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
-      $raw=curl_exec($ch);
-      curl_close ($ch);
+
+      $token_bearer = $_COOKIE['i3-token'];
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "GET",
+        CURLOPT_HTTPHEADER => array(
+          "cache-control: no-cache",
+          "authorization: Bearer " . $token_bearer,
+        ),
+      ));
+      $raw = curl_exec($curl);
+      curl_close ($curl);
       if(file_exists($saveto)){
         unlink($saveto);
       }

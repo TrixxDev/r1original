@@ -8,6 +8,7 @@
   use App\Models\Code;
   use App\Models\Moto;
   use App\Models\Quadr;
+  use App\Models\Rim;
   use App\Models\User;
   use DOMDocument;
   use Illuminate\Http\Request;
@@ -345,6 +346,7 @@
       $tires = Autotire::with('tread')->where('visible_users', '<>', 0)->get();
       $moto = Moto::with('tread')->where('visible_users', '<>', 0)->get();
       $quadr = Quadr::with('tread')->where('visible_users', '<>', 0)->get();
+      $rims = Rim::with('tread')->where('visible_users', '<>', 0)->get();
       $dom = new DOMDocument();
       $dom->encoding = 'utf-8';
       $dom->xmlVersion = '1.0';
@@ -352,7 +354,7 @@
       $xml_file_name = dirname(__DIR__, 4) . '/public/storage/xml/salidzini.xml';
       $root = $dom->createElement('root');
       $file = file_get_contents(dirname(__DIR__, 4) . '/public/storage/xml/salidzini.xml');
-foreach ($tires as $tire) {
+      foreach ($tires as $tire) {
         if (!isset($tire->tread->season)) {
           continue;
         }
@@ -423,6 +425,27 @@ foreach ($tires as $tire) {
         $child_node_title = $dom->createElement('category_link', route('kvadraciklu-riepas'));
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
+        $item->appendChild($child_node_title);
+        $root->appendChild($item);
+        $dom->appendChild($root);
+      }
+      foreach ($rims as $rim) {
+        $item = $dom->createElement('item');
+        $child_node_title = $dom->createElement('name', htmlspecialchars($rim->fullName));
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('price', $rim->offerPrice);
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('link', $rim->link);
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('image', Image::showAd('auto-rim', $rim->make_id));
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('category', 'Lietie diski');
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('category_full', ' &gt;&gt; '.$rim->d3.'&quot;');
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('category_link', route('lietie-diski'));
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('in_stock', ($rim->quantity + $rim->getStockCount()));
         $item->appendChild($child_node_title);
         $root->appendChild($item);
         $dom->appendChild($root);
@@ -533,6 +556,7 @@ foreach ($tires as $tire) {
 
       $accrual_last_time = DB::table('sync_times')->where('name', 'accrual')->first()->updated_at;
       $i3_auto = DB::table('sync_times')->where('name', 'i3-auto')->first()->updated_at;
+      $i3_alloy_rims = DB::table('sync_times')->where('name', 'i3-alloy-rims')->first()->updated_at;
       $gy_auto = DB::table('sync_times')->where('name', 'gy-auto')->first()->updated_at;
       $rz_auto = DB::table('sync_times')->where('name', 'rz-auto')->first()->updated_at;
       $i3_moto = DB::table('sync_times')->where('name', 'i3-moto')->first()->updated_at;
@@ -545,6 +569,7 @@ foreach ($tires as $tire) {
       return view('admin.settings.syncs',
               compact('accrual_last_time',
                 'i3_auto',
+                'i3_alloy_rims',
                 'gy_auto',
                 'rz_auto',
                 'i3_moto',

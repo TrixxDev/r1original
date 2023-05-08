@@ -42,7 +42,7 @@
 
                         <div class="current-price">
                           <span>Akcijas cena:</span>
-                          <span itemprop="price" content="{{ $currRim->price2 }}">€ {{ $currRim->price2 }}</span>
+                          <span itemprop="price" content="{{ $currRim->price3 }}">€ {{ $currRim->price3 }}</span>
                         </div>
                       </div>
                     </div>
@@ -108,16 +108,6 @@
                       <tr>
                         <th>Skrūvju skaits</th>
                         <td>{{ $currRim->skr }}</td>
-                      </tr>
-                      <tr>
-                        <th>Stāvoklis</th>
-                        <td>
-                         @if( $currRim->used === 0)
-                          {{ 'Jauns' }}
-                         @else
-                            {{ 'Lietots' }}
-                          @endif
-                        </td>
                       </tr>
                       <tr>
                         <th>Piezīmes</th>
@@ -232,14 +222,14 @@
                         </td>
 
                         <td class="hidden-sm-down text-center">
-                          {{$rim->color}}
+                          {{ strtoupper($rim->color) }}
                         </td>
 
 
                         <td id="store-price" class="text-center store-price">€ {{$rim->price1}}</td>
                         <td id="sale-price" class="text-center tire-price-red sale-price">
-                          @if($rim->price2 != 0)
-                            € {{$rim->price2}}
+                          @if($rim->price3 != 0)
+                            € {{$rim->price3}}
                           @endif
                         </td>
                         <td class="hidden-sm-down text-center"></td>

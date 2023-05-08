@@ -384,6 +384,46 @@ $(document).ready(function() {
         });
         $sync = 'Lattako Auto';
         break;
+      case 'i3-alloy-rims': // Lattako Auto disku sinhronizācija - AJAX
+        $.ajax({
+          url: '/sync/i3-alloy-rims',
+          method: 'GET',
+          success: function(data) {
+
+            let $date = new Date();
+            const $year = $date.getFullYear();
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
+            const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
+            const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
+            const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
+
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+
+            $('<p style="border-bottom: 1px solid #d8dbe0;">Lattako auto disku - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
+            $('.i3alloyrims_last_time').html($time);
+          },
+          error: function() {
+
+            let $date = new Date();
+            const $year = $date.getFullYear();
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
+            const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
+            const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
+            const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
+
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+
+            $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Lattako Auto disku<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
+            $('.i3alloyrims_last_time').html($time);
+          },
+          complete: function() {
+            $('#' + $btn_id).attr('disabled', false).text('Sinhronizēt').css('cursor', 'pointer');
+          }
+        });
+        $sync = 'Lattako Auto diski';
+        break;
       case 'i3-moto': // Lattako Moto riepu sinhronizācija - AJAX
         $.ajax({
           url: '/sync/i3-moto',

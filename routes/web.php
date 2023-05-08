@@ -426,6 +426,7 @@ Route::middleware('checksession')->group(function() {
   Route::get('/sync/accrual', [App\Http\Controllers\SyncController::class, 'accrual'])->name('accrual-sync');
   Route::get('/sync/goodyear', [App\Http\Controllers\SyncController::class, 'gy'])->name('gy-sync');
   Route::get('/sync/i3-auto', [App\Http\Controllers\SyncController::class, 'i3auto'])->name('i3-sync');
+  Route::get('/sync/i3-alloy-rims', [App\Http\Controllers\SyncController::class, 'i3autoalloyrims'])->name('i3-alloy-rims');
   Route::get('/sync/i3-moto', [App\Http\Controllers\SyncController::class, 'i3moto'])->name('i3-moto');
   Route::get('/sync/i3-quadr', [App\Http\Controllers\SyncController::class, 'i3quadr'])->name('i3-quadr');
   Route::get('/sync/i3-big', [App\Http\Controllers\SyncController::class, 'i3big'])->name('i3-big');
