@@ -782,7 +782,7 @@
         ));
         $response = curl_exec($curl);
 
-        $filename = dirname(__DIR__, 3) . '\\public\\storage\\xml\\i3-alloy-rims-articles.txt';
+        $filename = dirname(__DIR__, 3) . '/public/storage/xml/i3-alloy-rims-articles.txt';
 
         file_put_contents($filename, $response);
         chmod($filename, 0775);
@@ -799,7 +799,7 @@
 
       Rimstock::where('itype', 'i3')->update(['quantity' => 0]);
 
-      $content = file_get_contents(dirname(__DIR__, 3) . '\\public\\storage\\xml\\i3-alloy-rims-articles.txt');
+      $content = file_get_contents(dirname(__DIR__, 3) . '/public/storage/xml/i3-alloy-rims-articles.txt');
       $content = json_decode($content);
 
       $returnText = '';
