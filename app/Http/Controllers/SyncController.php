@@ -733,7 +733,7 @@
       $time_now = \Carbon\Carbon::now();
       if ($time_now->diff($sync_time)->invert == 1) {
         if (!isset($_COOKIE['i3-token'])) {
-          $token_url = "gd-api-test.barnstenit.se/Token";
+          $token_url = "api.latakko.eu/Token";
 //        $token_url = "api.latakko.eu/Token";
 
           $curl = curl_init();
@@ -769,7 +769,7 @@
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
-          CURLOPT_URL => 'https://gd-api-test.barnstenit.se/api/Articles?IncludeCarTyres=false&IncludeMotorcycleTyres=false&IncludeTruckTyres=false&IncludeEarthmoverTyres=false&IncludeAlloyRims=true&OnlyLocalStockItems=true',
+          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?IncludeCarTyres=false&IncludeMotorcycleTyres=false&IncludeTruckTyres=false&IncludeEarthmoverTyres=false&IncludeAlloyRims=true&OnlyLocalStockItems=true',
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
