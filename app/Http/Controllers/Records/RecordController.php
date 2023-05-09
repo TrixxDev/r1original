@@ -264,8 +264,8 @@
       $fmtDate = date('d.m.Y',strtotime($date));
       $dayOfWeek = $_weekDays[date('N', strtotime($date.' 00:00:00'))];
 
-      return json_encode(['dayOfWeek' => $dayOfWeek, 'date' => $fmtDate, 'time' => $time, 'office_title' => $office->title]);
-    }
+    return json_encode(['dayOfWeek' => $dayOfWeek, 'date' => $fmtDate, 'time' => $time, 'office_title' => $office->title, 'conditioner' => $conditioner]);
+  }
 
     public function fillSlot(Request $request)
     {
