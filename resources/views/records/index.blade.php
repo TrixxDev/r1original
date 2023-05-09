@@ -109,6 +109,12 @@
                                                             //$slotCaption = $slot->comment;
                                                           @endphp
                                                         @endif
+                                                        @if ($queue->_workingDays[$date]->isHalf())
+                                                          @php
+                                                            $slotClass = 'available-slot';
+                                                            $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Tikai AC uzpilde, brīvs</button>';
+                                                          @endphp
+                                                        @endif
                                                       @else
                                                         @php
                                                           $slotClass = 'slot-gray';
@@ -126,6 +132,12 @@
                                                           $slotClass = 'slot-offer';
                                                           $slotCaption = '<button class="offer-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
                                                           //$slotCaption = $slot->comment;
+                                                        @endphp
+                                                      @endif
+                                                      @if ($queue->_workingDays[$date]->isHalf())
+                                                        @php
+                                                          $slotClass = 'available-slot';
+                                                          $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Tikai AC uzpilde, brīvs</button>';
                                                         @endphp
                                                       @endif
                                                     @endif
@@ -171,7 +183,7 @@
                                                         @endphp
                                                       @else
                                                         @php
-                                                          $slotClass = 'taken-slot';
+                                                          $slotClass = 'slot-gray';
                                                           $slotCaption = 'Aizņemts';
                                                         @endphp
                                                       @endif
@@ -373,7 +385,7 @@
                                                         <select class="custom-select" name="serviceOption" required="required">
                                                           <option disabled selected>Izvēlēties</option>
                                                           @foreach ($services as $service)
-                                                            <option value="{{ $service->service_id }}" @if ($service->enabled == 0) disabled @endif>{{ $service->title }}</option>
+                                                            <option value="{{ $service->service_id }}" @if ($service->enabled == 0) disabled @endif @if ($service->f_ac == 1) data-ac="1" @endif>{{ $service->title }}</option>
                                                           @endforeach
                                                         </select>
                                                       </div>
@@ -511,7 +523,7 @@
                                                 <div class="col-md-8" id="service">
                                                     @foreach ($services as $service)
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="serviceOption" @if ($service->enabled == 0) disabled @endif id="serviceOption{{ $service->service_id }}" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif value="{{ $service->service_id }}">
+                                                        <input class="form-check-input" type="radio" name="serviceOption" @if ($service->enabled == 0) disabled @endif id="serviceOption{{ $service->service_id }}" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif @if ($service->f_ac == 1) data-ac="1" @endif value="{{ $service->service_id }}">
                                                         <label class="form-check-label" for="serviceOption{{ $service->service_id }}">
                                                             {{ $service->title }}
                                                         </label>

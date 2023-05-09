@@ -2077,6 +2077,17 @@ $(document).ready(function() {
         $('.dateOfDay').text(data.date);
         $('.timeOfDay').text(data.time);
         $('.officeTitle').text(data.office_title);
+        $('.reservation-modal-body .services #service .form-check').each(function() {
+          if (data.conditioner === true) {
+            if (!$(this).children().first().attr('data-ac')) {
+              $(this).children().first().attr('disabled', true).prop('disabled', true);
+            }
+          } else {
+            if ($(this).children().first().attr('data-ac')) {
+              $(this).children().first().attr('disabled', true).prop('disabled', true);
+            }
+          }
+        })
       }
     });
   });
@@ -3725,8 +3736,8 @@ $('#mobile-filiale input[name=filiale]').on('change', function() {
     success: function (data){
       $('input[name=filiale].filiale_radio').attr('disabled', false).prop('disabled', false);
       $('#mobile-slots-choice').html(data).animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
-      $('.available.slot.active').on('click', function() {
-        if ($(this).hasClass('available')) {
+      $('.time-slot .slot.available').on('click', function() {
+        if ($(this).hasClass('active')) {
           $('.time-slot .slot').removeClass('selected');
           $(this).addClass('selected');
           $('input[type=hidden][name=date]').val($(this).parent().parent().attr('data-date'));
@@ -3739,12 +3750,33 @@ $('#mobile-filiale input[name=filiale]').on('change', function() {
           scrollTop: $('#mobile-reservation-form').offset().top});
       });
       $('.mobile_reservation_table').html(data).animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
+      $('.available.slot').on('click', function() {
+        if (!$(this).hasClass('conditioner')) {
+          $('#mobile-service select[name=serviceOption] option').each(function() {
+            $(this).attr('disabled', false).prop('disabled', false);
+            if ($(this).attr('data-ac')) {
+              $(this).attr('disabled', true).prop('disabled', true);
+            }
+          });
+        }
+      });
+      $('.slot.conditioner').on('click', function() {
+        $('#mobile-service select[name=serviceOption] option').each(function() {
+          $(this).removeAttr('disabled').removeProp('disabled');
+          if (!$(this).attr('data-ac')) {
+            $(this).attr('disabled', true).prop('disabled', true);
+          }
+        });
+      });
     }
   })
 });
 
 $('div.modal-footer.reservation-modal-footer button#close-modal').on('click', function() {
   $('div.form-group.row.rims_with').remove();
+  $('.reservation-modal-body .services #service .form-check').each(function() {
+    $(this).children().first().attr('disabled', false).prop('disabled', false);
+  })
 });
 
 

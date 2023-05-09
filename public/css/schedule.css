@@ -44,7 +44,7 @@ div.reservation div.time-list .available {
   font-size: 17px;
 }
 
-.slot.active {
+.slot.unavailable {
   background: #d8d8d8;
 }
 
@@ -122,6 +122,10 @@ div.reservation div.time-list .available {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.time-slot .conditioner {
+  background: #37b2ff!important;
 }
 
 @media only screen and (max-width: 600px) {
