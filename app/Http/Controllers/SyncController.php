@@ -843,7 +843,6 @@
           $tread->save();
         }
 
-        $brandId = $brand->brand_id;
         $treadId = $tread->make_id;
 
         $quantity = intval($item->QuantityAvailable);
