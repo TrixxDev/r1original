@@ -255,8 +255,10 @@
       $queue = Queue::where('queue_id', $queue_id)->first();
       $office = Office::where('office_id', $queue->office_id)->first();
 
-      $queue->loadWorkingDay($date);
-      $queue->loadSlots($date, true);
+    $queue->loadWorkingDay($date);
+    $queue->loadSlots($date, true);
+
+    $conditioner = ($queue->_workingDays[$date]->isHalf()) ? true : false;
 
       $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slotNumber),true);
       $fmtDate = date('d.m.Y',strtotime($date));
@@ -458,7 +460,6 @@
       $mailer->message = $mailText;
       $mailer->send();
     }
-    $today = date('Y-m-d');
 
     (new SmsSender)->sendSchedule((array) $form, $smsText, $slot);
     if ($today == $slot->date && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
@@ -600,13 +601,18 @@
                       if ($date == $today) {
                         if (Carbon::parse(Office::timeByInterval($i))->subHour() >= Carbon::now()) {
                           if (trim($slot->comment)=='') {
-                            $availability = 'available';
+                            $availability = 'available active';
                             $slotText = 'Brīvs';
                             $discount = false;
                           } else {
-                            $availability = 'available discount';
+                            $availability = 'available discount active';
                             $slotText = $slot->comment;
                             $discount = true;
+                          }
+                          if ($queue->_workingDays[$date]->isHalf()) {
+                            $availability = 'available conditioner active';
+                            $slotText = 'AC Uzpilde';
+                            $discount = false;
                           }
                         } else {
                           $availability = 'unavailable';
@@ -615,13 +621,18 @@
                         }
                       } else {
                         if (trim($slot->comment)=='') {
-                          $availability = 'available';
+                          $availability = 'available active';
                           $slotText = 'Brīvs';
                           $discount = false;
                         } else {
-                          $availability = 'available discount';
+                          $availability = 'available discount active';
                           $slotText = $slot->comment;
                           $discount = true;
+                        }
+                        if ($queue->_workingDays[$date]->isHalf()) {
+                          $availability = 'available conditioner active';
+                          $slotText = 'AC Uzpilde';
+                          $discount = false;
                         }
                       }
                       break;
@@ -637,7 +648,7 @@
                     case SLOT_STATUS_OFFER: {
                       if ($date == $today) {
                         if (Carbon::parse(Office::timeByInterval($i))->subHour() >= Carbon::now()) {
-                          $availability = 'available discount';
+                          $availability = 'available discount active';
                           $slotText = $slot->comment;
                           $discount = true;
                         } else {
@@ -646,7 +657,7 @@
                           $discount = false;
                         }
                       } else {
-                        $availability = 'available discount';
+                        $availability = 'available discount active';
                         $slotText = $slot->comment;
                         $discount = true;
                       }
@@ -654,7 +665,7 @@
                     }
                   }
                   $out .= '<div class="time-slot">';
-                  $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot active"><span class="time-span">' . Office::timeByInterval($i) . '</span><br><span>' . $slotText . '</span></div>';
+                  $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot"><span class="time-span">' . Office::timeByInterval($i) . '</span><br><span>' . $slotText . '</span></div>';
                   $out .= '</div>';
 
 //                $slots[$queue->getSlotNumberByInterval($date, $i)] = [
