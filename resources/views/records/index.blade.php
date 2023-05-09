@@ -111,7 +111,7 @@
                                                         @endif
                                                       @else
                                                         @php
-                                                          $slotClass = 'taken-slot';
+                                                          $slotClass = 'slot-gray';
                                                           $slotCaption = 'Aizņemts';
                                                         @endphp
                                                       @endif
@@ -136,8 +136,22 @@
                                                     @break;
 
                                                     @case (SLOT_STATUS_TAKEN)
-                                                    @php
-                                                      $slotClass = 'taken-slot';
+                                                      @if ($date == $today)
+                                                        @if (\Carbon\Carbon::parse(App\Models\Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now())
+                                                          @php
+                                                          $slotClass = 'taken-slot';
+                                                          @endphp
+                                                        @else
+                                                          @php
+                                                            $slotClass = 'slot-gray';
+                                                          @endphp
+                                                        @endif
+                                                      @else
+                                                        @php
+                                                          $slotClass = 'taken-slot';
+                                                        @endphp
+                                                      @endif
+                                                      @php
                                                       $takenBy = json_decode($slot->takenby);
                                                       $plate = substr($takenBy->ownerPhone,-3,3);
                                                       $plate = filter_var($plate, FILTER_SANITIZE_NUMBER_INT);
@@ -200,12 +214,12 @@
                                                       @if ($date == $today)
                                                         @if (\Carbon\Carbon::parse(App\Models\Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now())
                                                           @php
-                                                            $slotClass = 'available-slot';
+                                                            $slotClass = 'slot-gray';
                                                             $slotText = '';
                                                           @endphp
                                                         @else
                                                           @php
-                                                            $slotClass = 'taken-slot';
+                                                            $slotClass = 'slot-gray';
                                                             $slotText = 'Aizņemts';
                                                           @endphp
                                                         @endif

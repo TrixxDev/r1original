@@ -808,7 +808,7 @@
 
         $counted++;
 
-        if (!$item->NumberOfBolts || !$item->BoltCircle || !$item->Diameter) continue;
+        if (!$item->NumberOfBolts || !$item->BoltCircle || !$item->Diameter || !$item->RetailPrice) continue;
 
         $rim = Rim::where('article', $item->ArticleId)->first();
         $newRim = false;
