@@ -89,7 +89,13 @@ class RimsController extends Controller
     $brands = Rimbrand::paginate();
 
     $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
-      ->where('rims.visible_users', '<>', 0)
+      ->when($this->currentSkr, function($query) {
+        $query->where('skr', $this->currentSkr);
+      })->when($this->currentPcd, function($query) {
+        $query->where('pcd', $this->currentPcd);
+      })->when($this->currentDia, function($query) {
+        $query->where('d3', $this->currentDia);
+      })->where('rims.visible_users', '<>', 0)
       ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
       ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
       ->orderBy('price2', 'DESC')
