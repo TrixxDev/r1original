@@ -176,6 +176,29 @@ $(document).ready(function() {
     changeBrands();
   }
 
+  if ($(document).find('.role-settings')) {
+    $('.role-settings #myTab .nav-item').each(function() {
+      $('a', this).on('click', function() {
+        $('.role-settings .revert .delete-role a').attr('href', '/admin/settings/roles/' + $(this).data('id') + '/delete');
+      })
+    });
+
+    $('.role-settings .tab-pane .permissions .permission').each(function() {
+      $('input', this).change(function() {
+        let data = $(this).data('switch');
+        $.ajax({
+          method: 'POST',
+          url: '/admin/settings/roles/togglePermission',
+          data: {data: data},
+          dataType: 'json',
+          success: function(data) {
+            console.log(data);
+          }
+        })
+      })
+    });
+  }
+
   // $(document).on('click', '.service-edit', function(e) {
   //   e.preventDefault();
   //   edit = true;

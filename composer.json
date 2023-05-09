@@ -6,10 +6,10 @@
   "license": "MIT",
   "require": {
     "php": "^7.3|^8.0",
-    "beyondcode/laravel-websockets": "^1.14",
+    "beyondcode/laravel-websockets": "*",
     "bumbummen99/shoppingcart": "^4.2",
     "fideloper/proxy": "^4.4",
-    "fruitcake/laravel-cors": "^2.0",
+    "fruitcake/laravel-cors": "^3.0",
     "guzzlehttp/guzzle": "^7.0.1",
     "intervention/image": "*",
     "laravel/framework": "^8.75.0",
@@ -19,9 +19,12 @@
     "livewire/livewire": "^2.11",
     "phpmailer/phpmailer": "^6.8",
     "phpoffice/phpspreadsheet": "^1.28",
-    "pusher/pusher-php-server": "^7.2",
+    "predis/predis": "^2.1",
+    "pusher/pusher-php-server": "~3.0",
     "spatie/laravel-activitylog": "^3.17",
-    "spatie/laravel-permission": "*"
+    "spatie/laravel-permission": "*",
+    "ext-json": "*",
+    "ext-curl": "*"
   },
   "require-dev": {
     "facade/ignition": "^2.5",
