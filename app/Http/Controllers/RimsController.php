@@ -49,10 +49,10 @@ class RimsController extends Controller
 
     $this->currentForm = ($request->currentForm == 1) ? 1 : 2;
 
-    $this->currentSkr = ($request->currentSkr) ? $request->currentSkr : '';
-    $this->currentPcd = ($request->currentPcd) ? $request->currentPcd : '';
+    $this->currentSkr = ($request->currentSkr) ? $request->currentSkr : 5;
+    $this->currentPcd = ($request->currentPcd) ? $request->currentPcd : 112;
     $this->currentEt = ($request->currentEt) ? $request->currentEt : '';
-    $this->currentDia = ($request->currentDia) ? $request->currentDia : '';
+    $this->currentDia = ($request->currentDia) ? $request->currentDia : 16;
     $this->currentCenter = ($request->currentCenter) ? $request->currentCenter : '';
 
     if (($this->currentSkr !== false)||($this->currentPcd !== false)||($this->currentEt !== false)) {
