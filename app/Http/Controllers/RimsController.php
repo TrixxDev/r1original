@@ -96,9 +96,10 @@ class RimsController extends Controller
       })->when($this->currentDia, function($query) {
         $query->where('d3', $this->currentDia);
       })->where('rims.visible_users', '<>', 0)
-      ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
-      ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
-      ->orderBy('price2', 'DESC')
+      ->orderBy('quantity', 'DESC')
+//      ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+//      ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+      ->orderBy('price3', 'DESC')
       ->paginate();
 
     return view('rims.autorims', compact('rims','brands'));
@@ -129,9 +130,10 @@ class RimsController extends Controller
       })->when($this->currentCenter, function($query) {
         $query->where('rims.dc', $this->currentCenter);
       })->where('rims.visible_users', '<>', 0)
-      ->orderBy('d3', 'ASC')
-      ->orderBy('d1', 'ASC')
-      ->orderBy('price2', 'DESC')
+      ->orderBy('quantity', 'DESC')
+//      ->orderBy('d3', 'ASC')
+//      ->orderBy('d1', 'ASC')
+      ->orderBy('price3', 'DESC')
       ->groupBy('rims.rim_id')->paginate()->appends($request->query());
 
 
@@ -154,8 +156,10 @@ class RimsController extends Controller
       ->join('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
       ->where('rim_brands.title', $brand->title)
       ->where('rim_makes.title', str_replace('_', '/', $tread))
-      ->orderBy('d3', 'ASC')
-      ->orderBy('d1', 'ASC')
+      ->orderBy('quantity', 'DESC')
+      ->orderBy('price3', 'DESC')
+//      ->orderBy('d3', 'ASC')
+//      ->orderBy('d1', 'ASC')
       ->get();
 
     $currRim = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
@@ -244,8 +248,8 @@ class RimsController extends Controller
       ->select('rims.*', 'rim_makes.*', 'rim_brands.brand_id as brand_id', 'rim_brands.title as brand_title')
       ->orderBy('rim_brands.brand_id', 'ASC')
       ->where('rims.price1', '<>' , 0)
-      ->where('rims.price2', '<>' , 0)
       ->where('rims.price3', '<>' , 0)
+      ->where('rims.price2', '<>' , 0)
       ->paginate();
 //    return view('rims.autorims', compact('rims','brands'));
     return view('rims.quadrim', compact('rims', 'brands', 'makes', 'models', 'diameters', 'lug_count'));

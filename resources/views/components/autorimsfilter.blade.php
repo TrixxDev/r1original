@@ -91,7 +91,6 @@
                 </span>
               </div>
               <select name="currentSkr" id="" class="r1-select select-title select-rim-lugs">
-                <option value="Visi">Visi</option>
                 @foreach($lugs as $lug)
                   <option @if ($lug == $currentSkr) selected @endif value="{{$lug}}">{{$lug}}</option>
                 @endforeach
@@ -109,7 +108,6 @@
                 </span>
               </div>
               <select name="currentPcd" id="" class="r1-select select-title select-rim-spread">
-                <option value="Visi">Visi</option>
                 @foreach($studs_spread as $stud_spread)
                   <option @if ($stud_spread == $currentPcd) selected @endif value="{{$stud_spread}}">{{$stud_spread}}</option>
                 @endforeach
@@ -127,7 +125,6 @@
                 </span>
               </div>
               <select name="currentDia" id="" class="r1-select select-title select-rim-diameter">
-                <option value="Visi">Visi</option>
                 @foreach($diameters as $diameter)
                   <option @if ($diameter == $currentDia) selected @endif value="{{$diameter}}">{{$diameter}}</option>
                 @endforeach

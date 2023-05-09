@@ -55,7 +55,7 @@
         ],
         'rims' => [
           'Rim',
-          'rim_stock'
+          ''
         ],
         'quadrims' => [
           'Quadrim',
@@ -764,8 +764,10 @@
           }
 
           setcookie('i3-token', $token->access_token, time() + $token->expires_in, '/');
+          $token_bearer = $token->access_token;
+        } else {
+          $token_bearer = $_COOKIE['i3-token'];
         }
-        $token_bearer = $_COOKIE['i3-token'];
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -818,6 +820,8 @@
           $rim = new Rim;
         }
 
+
+
         $rim->timestamps = false;
 
         $imageId = $item->ImageId;
@@ -825,22 +829,30 @@
         $brand = Rimbrand::where('title', $item->BrandName)->first();
         $tread = Rimmake::where('title', $item->PatternModelText)->first();
 
+        if ($brand === null) {
+          $brand = new Rimbrand;
+          $brand->timestamps = false;
+          $brand->title = $item->BrandName;
+          $brand->slug = Str::slug($brand->title);
+          $brand->save();
+        }
+
         if ($tread === null) {
           $tread = new Rimmake;
           $tread->timestamps = false;
-          if ($brand === null) {
-            $brand = new Rimbrand;
-            $brand->timestamps = false;
-            $brand->title = $item->BrandName;
-            $brand->slug = Str::slug($brand->title);
-            $brand->save();
-            $tread->brand_id = $brand->brand_id;
-          } else {
-            $tread->brand_id = $brand->brand_id;
-          }
+          $tread->brand_id = $brand->brand_id;
           $tread->title = $item->PatternModelText;
           $tread->slug = Str::slug($tread->title);
           $tread->save();
+        } else {
+          if ($tread->brand_id != $brand->brand_id) {
+            $tread = new Rimmake;
+            $tread->timestamps = false;
+            $tread->brand_id = $brand->brand_id;
+            $tread->title = $item->PatternModelText;
+            $tread->slug = Str::slug($tread->title);
+            $tread->save();
+          }
         }
 
         $treadId = $tread->make_id;
@@ -869,6 +881,9 @@
           if ($quantity >= 4) {
             $rim->visible_users = 1;
             $rim->visible_list = 1;
+          } else {
+            $rim->visible_users = 0;
+            $rim->visible_list = 0;
           }
         } else {
           if ($quantity < 4) {

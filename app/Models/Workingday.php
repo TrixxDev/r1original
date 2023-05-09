@@ -37,4 +37,8 @@ class Workingday extends Model
       return ($this->toArray()['is_visible']!=0) && ($this->opentime!=$this->closetime);
     }
 
+    public function isHalf() {
+      return ($this->toArray()['secondaryAvailable']!=0);
+    }
+
 }
