@@ -858,7 +858,6 @@
         $treadId = $tread->make_id;
 
         $quantity = intval($item->QuantityAvailable);
-        dump($quantity);
         if ($imageId != null) {
           $outPath = dirname(__DIR__, 3) . '/public/storage/rims/tread/' . $treadId . '-o.jpg';
 
@@ -915,8 +914,24 @@
         $stock->rim_id = $rim->rim_id;
         $stock->article = $rim->article;
         $stock->quantity = $quantity;
+        $rimVisible = Rim::where('article', $stock->article)->first();
+        if (isset($rimVisible)) {
+          if ($quantity > 0) {
+            if ($quantity > 4) {
+              $rimVisible->visible_users = 1;
+              $rimVisible->visible_list = 1;
+            } else {
+              $rimVisible->visible_users = 0;
+              $rimVisible->visible_list = 0;
+            }
+          } else {
+            $rimVisible->visible_users = 0;
+            $rimVisible->visible_list = 0;
+          }
+        }
         $stock->itype = 'i3';
         $stock->metadata = $metadata;
+        $rimVisible->save();
         if ($stock->save()) {
           $updated++;
         }
