@@ -172,7 +172,7 @@
                                                       $plate = trim($plate,' -.');
 
                                                       $slotText = ''. \App\Helper\Tires::truncateCharacters(trim($takenBy->vehicleMake),8,'&mldr;',1) . $ac . ' xxxxx'.$plate.'';
-                                                    @endphp
+                                                      @endphp
                                                     @break
 
                                                     @case (SLOT_STATUS_OFFER)
@@ -246,17 +246,29 @@
                                                       @break
 
                                                       @case (SLOT_STATUS_TAKEN)
+                                                      @if ($date == $today)
+                                                        @if (\Carbon\Carbon::parse(App\Models\Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now())
+                                                          @php
+                                                            $slotClass = 'taken-slot';
+                                                          @endphp
+                                                        @else
+                                                          @php
+                                                            $slotClass = 'slot-gray';
+                                                          @endphp
+                                                        @endif
+                                                      @else
+                                                        @php
+                                                          $slotClass = 'taken-slot';
+                                                        @endphp
+                                                      @endif
                                                       @php
-                                                        $slotClass = 'slot-taken';
                                                         $takenBy = json_decode($slot->takenby2);
                                                         $service = \App\Models\Service::where('service_id', $takenBy->purpose)->first();
                                                         $ac = (isset($service->f_ac) && !is_null($service->f_ac)) ? '*' : '';
-                                                        //$slotText = '<a href="'. url_self_reference(array('d'=>$date,'qu'=>$queue->id,'time'=>$i)).'">'.H($takenBy).'</a>';
                                                         $plate = substr($takenBy->ownerPhone,-3,3);
                                                         $plate = filter_var($plate, FILTER_SANITIZE_NUMBER_INT);
                                                         $plate = trim($plate,' -.');
 
-                                                        //$slotText = ''.H($takenBy->vehicleMake).' xxxxx'.H($plate).'';
                                                         $slotText = ''. \App\Helper\Tires::truncateCharacters(trim($takenBy->vehicleMake),8,'&mldr;',1) . $ac . ' xxxxx'.$plate.'';
                                                       @endphp
                                                       @break
