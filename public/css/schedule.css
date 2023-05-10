@@ -52,6 +52,10 @@ div.reservation div.time-list .available {
   color: gray;
 }
 
+.schedule-table .time-slot .slot {
+  user-select: none!important;
+}
+
 .today .time-slot .slot .slot-gray-free {
   color: #232323;
 }
