@@ -165,6 +165,29 @@ class Rim extends Model
     return $count;
   }
 
+  public static function StockLink($rim)
+  {
+    $stocks = Rimstock::where('rim_id', $rim->rim_id)->get();
+
+    $urls = [];
+
+    foreach ($stocks as $stock) {
+      switch ($stock->itype) {
+        case 'i3': {
+          $urls['Latakko'] = ['link' => 'https://shop.latakko.eu/product/' . $stock->article, 'remaining' => $stock->quantity];
+          break;
+        }
+//          case 'rz': {
+//            dd(Self::RZLink($stock->article));
+//            $urls = [$stock->itype => Self::RZLink($stock->article)];
+//            break;
+//          }
+      }
+    }
+
+    return $urls;
+  }
+
   public function getStockAvailabilityAttribute()
   {
     $rim = Rim::where('rim_id', $this->rim_id)->first();
