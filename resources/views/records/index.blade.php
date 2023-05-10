@@ -227,7 +227,7 @@
                                                         @if (\Carbon\Carbon::parse(App\Models\Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now())
                                                           @php
                                                             $slotClass = 'available-slot unavailable';
-                                                            $slotText = '------------------';
+                                                            $slotText = '----------';
                                                           @endphp
                                                         @else
                                                           @php
@@ -238,7 +238,7 @@
                                                       @else
                                                         @php
                                                           $slotClass = 'available-slot unavailable';
-                                                          $slotText = '------------------';
+                                                          $slotText = '----------';
                                                         @endphp
                                                       @endif
                                                       @break
