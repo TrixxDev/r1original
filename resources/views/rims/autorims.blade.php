@@ -145,7 +145,7 @@
                                 <div class="r1-select-params" style="margin: -10px 0 -15px 0">
                                   <div style="width: 100%">
                                     <div class="form-group facet">
-                                      <h1 class="h6 facet-title">Platums, No</h1>
+                                      <h1 class="h6 facet-title">Platums (J), No</h1>
                                       <select name="currentWid" class="r1-select select-title select-rim-width">
                                         @foreach ($widths as $width)
                                           <option @if ($width == $currentWid) selected @endif value="{{$width}}">{{$width}}</option>
@@ -185,7 +185,7 @@
                                 <div class="r1-select-params" style="margin: -10px 0 -15px 0">
                                   <div style="width: 100%">
                                     <div class="form-group facet">
-                                      <h1 class="h6 facet-title">Izbīdījums, No</h1>
+                                      <h1 class="h6 facet-title">Izbīdījums (ET), No</h1>
                                       <select name="currentEt" class="r1-select select-title select-rim-offset">
                                         <option value="Visi">Visi</option>
                                         @foreach ($offsets as $offset)
