@@ -858,6 +858,7 @@
         $treadId = $tread->make_id;
 
         $quantity = intval($item->QuantityAvailable);
+        dump($quantity);
         if ($imageId != null) {
           $outPath = dirname(__DIR__, 3) . '/public/storage/rims/tread/' . $treadId . '-o.jpg';
 
