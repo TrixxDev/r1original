@@ -112,7 +112,7 @@
                                                         @if ($queue->_workingDays[$date]->isHalf())
                                                           @php
                                                             $slotClass = 'available-slot';
-                                                            $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Tikai AC uzpilde, brīvs</button>';
+                                                            $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Kondicioniera apkope</button>';
                                                           @endphp
                                                         @endif
                                                       @else
@@ -137,7 +137,7 @@
                                                       @if ($queue->_workingDays[$date]->isHalf())
                                                         @php
                                                           $slotClass = 'available-slot';
-                                                          $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Tikai AC uzpilde, brīvs</button>';
+                                                          $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Kondicioniera apkope</button>';
                                                         @endphp
                                                       @endif
                                                     @endif
@@ -226,8 +226,8 @@
                                                       @if ($date == $today)
                                                         @if (\Carbon\Carbon::parse(App\Models\Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now())
                                                           @php
-                                                            $slotClass = 'slot-gray';
-                                                            $slotText = '';
+                                                            $slotClass = 'available-slot unavailable';
+                                                            $slotText = '----------------------------------------------------------';
                                                           @endphp
                                                         @else
                                                           @php
@@ -237,8 +237,8 @@
                                                         @endif
                                                       @else
                                                         @php
-                                                          $slotClass = 'available-slot';
-                                                          $slotText = '';
+                                                          $slotClass = 'available-slot unavailable';
+                                                          $slotText = '----------------------------------------------------------';
                                                         @endphp
                                                       @endif
                                                       @break

@@ -4026,6 +4026,12 @@ td.header-empty {
   border-top: 1px solid #0000001c;
 }
 
+.schedule-table .table td.available-slot.unavailable {
+  letter-spacing: -1.5px;
+  user-select: none;
+  background: #e0ffe0!important;
+}
+
 .schedule-table .table thead th {
   vertical-align: bottom;
   border-bottom: 2px solid black;
