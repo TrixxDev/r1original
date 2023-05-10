@@ -142,22 +142,70 @@
                                 </select>
                               </section>
                               <section class="facet clearfix">
-                                <h1 class="h6 facet-title">Izbīdījums</h1>
-                                <div class="title hidden-md-up" data-target="#facet_37134" data-toggle="collapse">
-                                  <h1 class="h6 facet-title">Izbīdījums</h1>
-                                  <span class="float-xs-right">
-                                  <span class="navbar-toggler collapse-icons">
-                                      <i class="material-icons add"></i>
-                                      <i class="material-icons remove"></i>
-                                  </span>
-                                </span>
+                                <div class="r1-select-params" style="margin: -10px 0 -15px 0">
+                                  <div style="width: 100%">
+                                    <div class="form-group facet">
+                                      <h1 class="h6 facet-title">Platums, No</h1>
+                                      <select name="currentWid" class="r1-select select-title select-rim-width">
+                                        @foreach ($widths as $width)
+                                          <option @if ($width == $currentWid) selected @endif value="{{$width}}">{{$width}}</option>
+                                        @endforeach
+                                      </select>
+                                    </div>
+                                  </div>
+                                  <div style="width: 100%">
+                                    <div class="form-group facet">
+                                      <h1 class="h6 facet-title">Līdz</h1>
+                                      <select name="currentWid2" class="r1-select select-title select-rim-width2">
+                                        @foreach ($widths as $width)
+                                          <option @if ($width == $currentWid2) selected @endif value="{{$width}}">{{$width}}</option>
+                                        @endforeach
+                                      </select>
+                                    </div>
+                                  </div>
                                 </div>
-                                <select name="currentEt" id="" class="r1-select select-title select-rim-offset">
-                                  <option value="Visi">Visi</option>
-                                  @foreach($offsets as $offset)
-                                    <option @if ($offset == $currentEt) selected @endif value="{{$offset}}">{{$offset}}</option>
-                                  @endforeach
-                                </select>
+                              </section>
+                              <section class="facet clearfix">
+{{--                                <h1 class="h6 facet-title">Izbīdījums</h1>--}}
+{{--                                <div class="title hidden-md-up" data-target="#facet_37134" data-toggle="collapse">--}}
+{{--                                  <h1 class="h6 facet-title">Izbīdījums</h1>--}}
+{{--                                  <span class="float-xs-right">--}}
+{{--                                  <span class="navbar-toggler collapse-icons">--}}
+{{--                                      <i class="material-icons add"></i>--}}
+{{--                                      <i class="material-icons remove"></i>--}}
+{{--                                  </span>--}}
+{{--                                </span>--}}
+{{--                                </div>--}}
+{{--                                <select name="currentEt" id="" class="r1-select select-title select-rim-offset">--}}
+{{--                                  <option value="Visi">Visi</option>--}}
+{{--                                  @foreach($offsets as $offset)--}}
+{{--                                    <option @if ($offset == $currentEt) selected @endif value="{{$offset}}">{{$offset}}</option>--}}
+{{--                                  @endforeach--}}
+{{--                                </select>--}}
+                                <div class="r1-select-params" style="margin: -10px 0 -15px 0">
+                                  <div style="width: 100%">
+                                    <div class="form-group facet">
+                                      <h1 class="h6 facet-title">Izbīdījums, No</h1>
+                                      <select name="currentEt" class="r1-select select-title select-rim-offset">
+                                        <option value="Visi">Visi</option>
+                                        @foreach ($offsets as $offset)
+                                          <option @if ($offset == $currentEt) selected @endif value="{{$offset}}">{{$offset}}</option>
+                                        @endforeach
+                                      </select>
+                                    </div>
+                                  </div>
+                                  <div style="width: 100%">
+                                    <div class="form-group facet">
+                                      <h1 class="h6 facet-title">Līdz</h1>
+                                      <select name="currentEt2" class="r1-select select-title select-rim-offset2">
+                                        <option value="Visi">Visi</option>
+                                        @foreach ($offsets as $offset)
+                                          <option @if ($offset == $currentEt2) selected @endif value="{{$offset}}">{{$offset}}</option>
+                                        @endforeach
+                                      </select>
+                                    </div>
+                                  </div>
+                                </div>
                               </section>
                               <section class="facet clearfix">
                                 <h1 class="h6 facet-title">Centrs</h1>

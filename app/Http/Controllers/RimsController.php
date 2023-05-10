@@ -25,9 +25,12 @@ class RimsController extends Controller
 
   public $currentForm;
 
+  public $currentWid;
+  public $currentWid2;
   public $currentSkr;
   public $currentPcd;
   public $currentEt;
+  public $currentEt2;
   public $currentDia;
   public $currentCenter;
 
@@ -49,9 +52,12 @@ class RimsController extends Controller
 
     $this->currentForm = ($request->currentForm == 1) ? 1 : 2;
 
+    $this->currentWid = ($request->currentWid) ? $request->currentWid : 6.5;
+    $this->currentWid2 = ($request->currentWid2) ? $request->currentWid2 : 7.5;
     $this->currentSkr = ($request->currentSkr) ? $request->currentSkr : 5;
     $this->currentPcd = ($request->currentPcd) ? $request->currentPcd : 112;
     $this->currentEt = ($request->currentEt) ? $request->currentEt : '';
+    $this->currentEt2 = ($request->currentEt2) ? $request->currentEt2 : '';
     $this->currentDia = ($request->currentDia) ? $request->currentDia : 16;
     $this->currentCenter = ($request->currentCenter) ? $request->currentCenter : '';
 
@@ -65,11 +71,15 @@ class RimsController extends Controller
 
     View::share('brandList', $this->getBrandList());
     View::share('currentCar', $this->currentCar);
+    View::share('currentWid', $this->currentWid);
+    View::share('currentWid2', $this->currentWid2);
     View::share('currentEt', $this->currentEt);
+    View::share('currentEt2', $this->currentEt2);
     View::share('currentPcd', $this->currentPcd);
     View::share('currentSkr', $this->currentSkr);
     View::share('currentDia', $this->currentDia);
     View::share('currentCenter', $this->currentCenter);
+    View::share('widths', $this->getRimOptions()['widths']);
     View::share('offsets', $this->getRimOptions()['offsets']);
     View::share('centers', $this->getRimOptions()['rim_center']);
     View::share('diameters', $this->getRimOptions()['diameters']);
@@ -89,7 +99,11 @@ class RimsController extends Controller
     $brands = Rimbrand::paginate();
 
     $rims = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
-      ->when($this->currentSkr, function($query) {
+      ->when($this->currentWid, function($query) {
+        $query->where('d1', '>=', $this->currentWid);
+      })->when($this->currentWid2, function($query) {
+        $query->where('d1', '<=', $this->currentWid2);
+      })->when($this->currentSkr, function($query) {
         $query->where('skr', $this->currentSkr);
       })->when($this->currentPcd, function($query) {
         $query->where('pcd', $this->currentPcd);
@@ -107,20 +121,28 @@ class RimsController extends Controller
 
   public function rims_search(Request $request){
 
-    //    DB::enableQueryLog();
+    DB::enableQueryLog();
 
+    $this->currentWid = ($request->currentWid == 'Visi') ? '' : $request->currentWid;
+    $this->currentWid2 = ($request->currentWid2 == 'Visi') ? '' : $request->currentWid2;
     $this->currentEt = ($request->currentEt == 'Visi') ? '' : $request->currentEt;
+    $this->currentEt2 = ($request->currentEt2 == 'Visi') ? '' : $request->currentEt2;
     $this->currentPcd = ($request->currentPcd == 'Visi') ? '' : $request->currentPcd;
     $this->currentSkr = ($request->currentSkr == 'Visi') ? '' : $request->currentSkr;
     $this->currentDia = ($request->currentDia == 'Visi') ? '' : $request->currentDia;
     $this->currentCenter = ($request->currentCenter == 'Visi') ? '' : $request->currentCenter;
-    $this->d1 = ($this->d1 == 'Visi') ? '' : $request->d1;
 
     $rims = Rim::select('rims.*')
       ->leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
       ->leftJoin('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
-      ->when($this->currentEt, function($query) {
-        $query->where('rims.et', $this->currentEt);
+      ->when($this->currentWid, function($query) {
+        $query->where('rims.d1', '>=', $this->currentWid);
+      })->when($this->currentWid2, function($query) {
+        $query->where('rims.d1', '<=', $this->currentWid2);
+      })->when($this->currentEt, function($query) {
+        $query->where('rims.et', '>=', $this->currentEt);
+      })->when($this->currentEt2, function($query) {
+        $query->where('rims.et', '<=', $this->currentEt2);
       })->when($this->currentPcd, function($query) {
         $query->where('rims.pcd', $this->currentPcd);
       })->when($this->currentSkr, function($query) {
@@ -257,6 +279,7 @@ class RimsController extends Controller
 
   public function getRimOptions()
   {
+    $rim_widths = [];
     $rim_offsets = [];
     $rim_diameters = [];
     $rim_lug_count = [];
@@ -264,12 +287,17 @@ class RimsController extends Controller
     $rim_center = [];
 
     foreach (Rim::all() as $rim) {
+      array_push($rim_widths, $rim->d1);
       array_push($rim_offsets, $rim->et);
       array_push($rim_diameters, $rim->d3);
       array_push($rim_lug_count, $rim->skr);
       array_push($rim_stud_spreads, $rim->pcd);
       array_push($rim_center, number_format((float) $rim->dc, 1, '.', ' '));
     }
+
+    $rim_widths = array_unique($rim_widths);
+    $rim_widths = array_values($rim_widths);
+    $rim_widths = array_filter($rim_widths);
 
     $rim_offsets = array_unique($rim_offsets);
     $rim_offsets = array_values($rim_offsets);
@@ -292,6 +320,7 @@ class RimsController extends Controller
     $rim_center = array_filter($rim_center);
     unset($rim_center[1]);
 
+    asort($rim_widths, SORT_NATURAL | SORT_FLAG_CASE);
     asort($rim_offsets, SORT_NATURAL | SORT_FLAG_CASE);
     asort($rim_diameters, SORT_NATURAL | SORT_FLAG_CASE);
     asort($rim_lug_count, SORT_NATURAL | SORT_FLAG_CASE);
@@ -299,6 +328,7 @@ class RimsController extends Controller
     asort($rim_center, SORT_NATURAL | SORT_FLAG_CASE);
 
     return [
+      'widths' => $rim_widths,
       'offsets' => $rim_offsets,
       'diameters' => $rim_diameters,
       'lug_counts' => $rim_lug_count,
