@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-  <link rel="stylesheet" href="{{asset('css/schedule.css')}}">
+    <link rel="stylesheet" href="{{asset('css/schedule.css?rev=' . time())}}">
     <div class="container-fluid records">
         <div class="">
             <div class="main-content clearfix col-md-12 col-xl-12">
