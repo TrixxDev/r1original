@@ -3296,9 +3296,9 @@ th.header {
   overflow-y: hidden;
 }
 
-.modal#slotModal {
-  overflow: hidden;
-}
+/*.modal#slotModal {*/
+/*  overflow: hidden;*/
+/*}*/
 
 .modal-background {
   background: black;

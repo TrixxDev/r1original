@@ -338,6 +338,7 @@ class RecordController extends Controller
   {
 
     if ($request->post()) {
+      dd(123);
       $return=[];
       $errorCount = 0;
       $return['errorCount'] = 1;
