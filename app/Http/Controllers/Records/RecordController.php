@@ -1460,11 +1460,11 @@
 
       if ($day->isHalf()) {
         if ($takenBy !== null) {
-          $startTime = $start + $slot->iorder * ($office->_workingDays[0]->slotSize/2);
+          $startTime = $start + $slot->iorder * ($day->slotSize/2);
           $info = $takenBy;
         }
         if ($takenBy2 !== null) {
-          $startTime = $start + $slot->iorder * ($office->_workingDays[0]->slotSize);
+          $startTime = $start + $slot->iorder * ($day->slotSize);
           $info = $takenBy2;
         }
       } else {
@@ -1474,7 +1474,7 @@
         if ($takenBy2 !== null) {
           $info = $takenBy2;
         }
-        $startTime = $start + $slot->iorder * ($office->_workingDays[0]->slotSize);
+        $startTime = $start + $slot->iorder * ($day->slotSize);
       }
       $time = Office::timeByInterval($startTime);
 
