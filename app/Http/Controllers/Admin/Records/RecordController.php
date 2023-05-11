@@ -338,7 +338,6 @@ class RecordController extends Controller
   {
 
     if ($request->post()) {
-      dd(123);
       $return=[];
       $errorCount = 0;
       $return['errorCount'] = 1;
@@ -716,15 +715,28 @@ class RecordController extends Controller
       if ($errorCount==0){
         // kļūdu nav, saglabājam
         if ($move){
-          if ($f_part=='a'){
-            $targetSlot->status = $f_status;
-            $targetSlot->takenby = $formData;
-	          $targetSlot->createtime = $slot->createtime;
-            $targetSlot->createuser = $slot->createuser;
-            $targetSlot->edittime = NOW();
-            $targetSlot->edituser = $userId;
-            $targetSlot->is_mobile = $slot->is_mobile;
 
+          // $p - No kuras puses (A/B) ņemās slots
+          // $f_part - Uz kurā pusē liksies slots (A/B)
+
+          if ($p == 'a') {
+            if ($f_part == 'a') {
+              $targetSlot->status = $f_status;
+              $targetSlot->takenby = $formData;
+              $targetSlot->createtime = $slot->createtime;
+              $targetSlot->createuser = $slot->createuser;
+              $targetSlot->edittime = NOW();
+              $targetSlot->edituser = $userId;
+              $targetSlot->is_mobile = $slot->is_mobile;
+            } else {
+              $targetSlot->status2 = $f_status;
+              $targetSlot->takenby2 = $formData;
+              $targetSlot->createtime2 = $slot->createtime;
+              $targetSlot->createuser2 = $slot->createuser;
+              $targetSlot->edittime2 = NOW();
+              $targetSlot->edituser2 = $userId;
+              $targetSlot->is_mobile2 = $slot->is_mobile;
+            }
             $slot->status = 0;
             $slot->takenby = '';
             $slot->createtime = null;
@@ -733,15 +745,23 @@ class RecordController extends Controller
             $slot->edituser = -1;
             $slot->is_mobile = null;
           } else {
-            $bQueue = true;
-            $targetSlot->status2 = $f_status;
-            $targetSlot->takenby2 = $formData;
-            $targetSlot->createtime2 = $slot->createtime2;
-            $targetSlot->createuser2 = $slot->createuser2;
-            $targetSlot->edittime2 = NOW();
-            $targetSlot->edituser2 = $userId;
-            $targetSlot->is_mobile2 = $slot->is_mobile2;
-
+            if ($f_part == 'a') {
+              $targetSlot->status = $f_status;
+              $targetSlot->takenby = $formData;
+              $targetSlot->createtime = $slot->createtime2;
+              $targetSlot->createuser = $slot->createuser2;
+              $targetSlot->edittime = NOW();
+              $targetSlot->edituser = $userId;
+              $targetSlot->is_mobile = $slot->is_mobile2;
+            } else {
+              $targetSlot->status2 = $f_status;
+              $targetSlot->takenby2 = $formData;
+              $targetSlot->createtime2 = $slot->createtime2;
+              $targetSlot->createuser2 = $slot->createuser2;
+              $targetSlot->edittime2 = NOW();
+              $targetSlot->edituser2 = $userId;
+              $targetSlot->is_mobile2 = $slot->is_mobile2;
+            }
             $slot->status2 = 0;
             $slot->takenby2 = '';
             $slot->createtime2 = null;
@@ -758,30 +778,30 @@ class RecordController extends Controller
           $slot->save();
 
           // Pārlasam slotu, gadījumiem ja izmaiņa ir tā paša slota sekundārajā rindā
-          if ($slot->slot_id>0){
-            $slot = Slot::where('slot_id', $slot->slot_id)->first();
-          }
-
-          $mailSlot = $targetSlot;
-          $mailQueue = $targetQueue;
-
-          if ($p=='a'){
-            $prevStatus = $slot->status;
-            $slot->status = SLOT_STATUS_FREE;
-            $slot->takenby = '';
-          } else {
-            $prevStatus = $slot->status2;
-            $slot->status2 = SLOT_STATUS_FREE;
-            $slot->takenby2 = '';
-          }
-
-//          if ($slot->takenby==SLOT_STATUS_FREE && $slot->takenby2==SLOT_STATUS_FREE) {
-//            $slot->comment = '';
-//            $slot->takenby = '';
-//            $slot->createtime = '';
-//            $slot->edittime = '';
+//          if ($slot->slot_id>0){
+//            $slot = Slot::where('slot_id', $slot->slot_id)->first();
 //          }
-          $slot->timestamps = false;
+//
+//          $mailSlot = $targetSlot;
+//          $mailQueue = $targetQueue;
+//
+//          if ($p=='a'){
+//            $prevStatus = $slot->status;
+//            $slot->status = SLOT_STATUS_FREE;
+//            $slot->takenby = '';
+//          } else {
+//            $prevStatus = $slot->status2;
+//            $slot->status2 = SLOT_STATUS_FREE;
+//            $slot->takenby2 = '';
+//          }
+//
+////          if ($slot->takenby==SLOT_STATUS_FREE && $slot->takenby2==SLOT_STATUS_FREE) {
+////            $slot->comment = '';
+////            $slot->takenby = '';
+////            $slot->createtime = '';
+////            $slot->edittime = '';
+////          }
+//          $slot->timestamps = false;
 
           //PRE($slot);die;
 //          broadcast(new MoveSlotChannel($f_status, $targetSlot, $slot, $targetSlot->queue_id, $targetSlot->iorder, $targetSlot->date));
