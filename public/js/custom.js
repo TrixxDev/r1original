@@ -2483,6 +2483,16 @@ $(document).ready(function() {
         } else {
           $('.modal#slotModal #f_status').val(1);
         }
+        $('.reservation_edit .reservationOption').each(function() {
+          $(this).on('click', function() {
+            if ($(this).is(':checked')) {
+              $('.reservation_edit .reservationOption').attr('disabled', true).prop('disabled', true);
+              $(this).attr('disabled', false).prop('disabled', false);
+            } else {
+              $('.reservation_edit .reservationOption').attr('disabled', false).prop('disabled', false);
+            }
+          })
+        });
         $('.modal#slotModal #f_slotcomment').html(data.f_slotcomment);
          if (data.p == 'a') {
            if (data.is_mobile == 1) {
@@ -2534,6 +2544,7 @@ $(document).ready(function() {
         'f_date': $('.modal#slotModal #f_date').val(),
         'f_time': $('.modal#slotModal #f_time').val(),
         'f_status': $('.modal#slotModal #f_status').val(),
+        'f_statuscase': $('.modal#slotModal .reservationOption:checked').val(),
         'f_car': $('.modal#slotModal #f_car').val(),
         'f_model': $('.modal#slotModal #f_model').val(),
         'f_plate': $('.modal#slotModal #f_plate').val(),

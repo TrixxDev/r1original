@@ -12,12 +12,26 @@ use App\Models\Service;
 use App\Models\Slot;
 use App\Models\User;
 use App\Models\Workingday;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\Utility;
 
 class RecordController extends Controller
 {
+
+  public $startSendWpp;
+  public $endSendWpp;
+  public $ursWpp = '120363130984594947@g.us';
+  public $krsWpp = '120363150684433547@g.us';
+  public $now;
+
+  public function __construct()
+  {
+    $this->startSendWpp = Carbon::create(date('Y'), date('m'), date('d'), 8, 45);
+    $this->endSendWpp = Carbon::create(date('Y'), date('m'), date('d'), 18, 00);
+    $this->now = Carbon::now();
+  }
 
   public function parse_datetime($str){
     $str = str_replace('-','.',$str);
@@ -552,6 +566,7 @@ class RecordController extends Controller
       $return['error_fields']['f_purpose'] = "";*/
 
       $date = $request->f_currDate;
+      $f_statuscase = (int) $request->f_statuscase;
 
       $queue = Queue::where('queue_id', $q)->first();
       $queue->loadWorkingDay($date);
@@ -637,6 +652,69 @@ class RecordController extends Controller
       $form->ownerPhone = $request->f_phone;
       $form->ownerEmail = $request->f_email;
       $form->rimsWith = $request->f_rimswith;
+
+      $today = date('Y-m-d');
+
+      if (!is_null($f_statuscase)) {
+
+        if ($today == $slot->date && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
+          $newOffice = Office::where('office_id', Queue::where('queue_id', $f_office)->first()->office_id)->first()->office_id;
+          $service = Service::where('service_id', $form->purpose)->first();
+          $vehicle = str_replace(' ', '%20', $form->vehicleMake);
+          $model = str_replace(' ', '%20', $form->vehicleModel);
+          if (!is_null($service)) $service = str_replace(' ', '%20', $service->pdf_title);
+          $vehiclePlate = str_replace(' ', '%20', $form->vehiclePlate);
+
+          if (!is_null($form->rimsWith)) {
+            if ($form->rimsWith == 1) {
+              $append = '%20-%20Riepas%20bez%20diskiem';
+            } else {
+              $append = '%20-%20Riepas%20ar%20diskiem';
+            }
+          } else {
+            $append = '';
+          }
+
+          switch ($f_statuscase) {
+            case 1: {
+              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
+              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
+              break;
+            }
+            case 2: {
+              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
+              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
+              break;
+            }
+            case 3: {
+              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate;
+              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate;
+              break;
+            }
+          }
+
+          if ($newOffice == 1) {
+
+            $cURLConnection = curl_init();
+
+            curl_setopt($cURLConnection, CURLOPT_URL, $ursUrl);
+            curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+            curl_exec($cURLConnection);
+
+            curl_close($cURLConnection);
+          } else {
+            $cURLConnection = curl_init();
+
+            curl_setopt($cURLConnection, CURLOPT_URL, $krsUrl);
+            curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+            curl_exec($cURLConnection);
+
+            curl_close($cURLConnection);
+          }
+        }
+      }
 
 //      dd(array_map('intval', str_split($form->ownerPhone)));
 

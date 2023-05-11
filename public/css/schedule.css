@@ -64,6 +64,10 @@ div.reservation div.time-list .available {
   background-color: #232323;
 }
 
+.available.moto.active.slot {
+  background: #317b04!important;
+}
+
 .slot span {
   font-size: 13px;
 }

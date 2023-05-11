@@ -145,6 +145,8 @@
                                       @endif
                                     @elseif ($slot->status2 == SLOT_STATUS_FREE)
                                       @php $slotClass2 = 'slot-free'; @endphp
+                                    @elseif ($slot->status2 == SLOT_STATUS_CLOSED)
+                                      @php $slotClass2 = 'slot-closed'; @endphp
                                     @endif
 
                                     @if ($queue->_workingDays[$workingDay]->secondaryAvailable)
@@ -199,7 +201,7 @@
                                       $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
                                     @endphp
 
-				    @if ($queue->_workingDays[$workingDay]->secondaryAvailable && $slot->status2==SLOT_STATUS_OFFER)
+				                              @if ($queue->_workingDays[$workingDay]->secondaryAvailable && $slot->status2==SLOT_STATUS_OFFER)
                                       @php
                                         $slotClass2 = 'slot-offer';
                                       	$slotText = ''.$slot->comment.'';
@@ -223,6 +225,10 @@
                                       $slotText = $slotCaption;
 
                                       $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
+
+                                      if ($queue->_workingDays[$workingDay]->secondaryAvailable) {
+                                        $buttons = '<div class="buttonbar"><svg data-toggle="modal" data-target="#slotModal" data-date="' . date('Y-m-d', strtotime($dateFmt)) . '" data-queue-id="' . $queue->queue_id . '" data-slot-id="' . $slotNumber . '" data-slot-part="a" class="c-sidebar-nav-icon icons"><use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-pencil"></use></svg></div>';
+                                      }
                                     @endphp
                                   @break
                                 @endswitch
@@ -384,6 +390,15 @@
                             <option value="1">Aizņemts</option>
                             <option value="3">Slēgts</option>
                           </select>
+                        </div>
+                        <div class="col-2" style="margin-right: 10px;">
+                          <input type="checkbox" class="reservationOption" id="newReservation" value="1" title="" style="margin-right: 5px;"><label for="newReservation">Jauns</label>
+                        </div>
+                        <div class="col-2" style="margin-right: 10px;">
+                          <input type="checkbox" class="reservationOption" id="editReservation" value="2" title="" style="margin-right: 5px;"><label for="editReservation">Labots</label>
+                        </div>
+                        <div class="col-2">
+                          <input type="checkbox" class="reservationOption" id="deleteReservation" value="3" title="" style="margin: 0 5px 0 0;"><label for="deleteReservation" style="">Dzēsts</label>
                         </div>
                       </div>
                       <div class="form-group row">

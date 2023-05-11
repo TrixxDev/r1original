@@ -233,7 +233,6 @@
 
                                                     @switch ($slot->status2)
                                                       @case (SLOT_STATUS_OFFER)
-                                                      @case (SLOT_STATUS_CLOSED)
                                                       @case (SLOT_STATUS_FREE)
                                                       @if ($date == $today)
                                                         @if (\Carbon\Carbon::parse(App\Models\Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now())
@@ -266,6 +265,18 @@
                                                         @endphp
                                                       @endif
                                                       @break
+
+                                                      @case (SLOT_STATUS_CLOSED)
+                                                      @if (trim($slot->comment)=='')
+                                                        @php $slotCaption = 'Slēgts'; @endphp
+                                                      @else
+                                                        @php $slotCaption = $slot->comment; @endphp
+                                                      @endif
+                                                      @php
+                                                        $slotClass = 'closed-slot';
+                                                        $slotText = $slotCaption;
+                                                      @endphp
+                                                      @break;
 
                                                       @case (SLOT_STATUS_TAKEN)
                                                       @if ($date == $today)

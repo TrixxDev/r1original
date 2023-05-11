@@ -373,7 +373,7 @@
       $service = str_replace(' ', '%20', $service->pdf_title);
       $vehiclePlate = str_replace(' ', '%20', $form->vehiclePlate);
 
-      if (isset($rimsWith)) {
+      if (!is_null($rimsWith)) {
         if ($rimsWith == 1) {
           $append = '%20-%20Riepas%20bez%20diskiem';
         } else {
@@ -514,9 +514,16 @@
                             $discount = true;
                           }
                           if ($queue->_workingDays[$date]->isHalf()) {
-                            $availability = 'available conditioner active';
-                            $slotText = 'AC Uzpilde';
-                            $discount = false;
+                            $service = Service::where('f_ac', 1)->first();
+                            if (!is_null($service)) {
+                              $availability = 'available conditioner active';
+                              $slotText = 'AC Uzpilde';
+                              $discount = false;
+                            } else {
+                              $availability = 'available active';
+                              $slotText = 'Brīvs';
+                              $discount = false;
+                            }
                           }
                         } else {
                           $availability = 'unavailable';
@@ -534,9 +541,16 @@
                           $discount = true;
                         }
                         if ($queue->_workingDays[$date]->isHalf()) {
-                          $availability = 'available conditioner active';
-                          $slotText = 'AC Uzpilde';
-                          $discount = false;
+                          $service = Service::where('f_ac', 1)->first();
+                          if (!is_null($service)) {
+                            $availability = 'available conditioner active';
+                            $slotText = 'AC Uzpilde';
+                            $discount = false;
+                          } else {
+                            $availability = 'available active';
+                            $slotText = 'Brīvs';
+                            $discount = false;
+                          }
                         }
                       }
                       break;
@@ -572,12 +586,78 @@
                   $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot"><span class="time-span">' . Office::timeByInterval($i) . '</span><br><span>' . $slotText . '</span></div>';
                   $out .= '</div>';
 
+
 //                $slots[$queue->getSlotNumberByInterval($date, $i)] = [
 //                  'time' => Office::timeByInterval($i),
 //                  'slots' => $this->getPrevQueue($office->_workingDays, $queue->getSlotNumberByInterval($date, $i), $date),
 //                  'date' => $date
 //                ];
 //                sort($slots);
+                } else {
+                  if ($queue->_workingDays[$date]->secondaryAvailable) {
+
+                    $slot = $queue->_slots[$date][$slotNumber];
+
+                    $slot_id = 'data-slot_id=' . $slot->slot_id;
+                    switch ($slot->status2) {
+                      case SLOT_STATUS_OFFER:
+                      case SLOT_STATUS_FREE: {
+                        if ($date == $today) {
+                          if (Carbon::parse(Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now()) {
+                            $service = Service::where('f_moto', 1)->first();
+                            if (!is_null($service)) {
+                              $availability = 'available moto active';
+                              $slotText = 'Moto montāža';
+                              $discount = false;
+                            } else {
+                              $availability = 'unavailable';
+                              $slotText = '----------';
+                              $discount = false;
+                            }
+                          } else {
+                            $availability = 'unavailable';
+                            $slotText = 'Aizņemts';
+                            $discount = false;
+                          }
+                        } else {
+                          $service = Service::where('f_moto', 1)->first();
+                          if (!is_null($service)) {
+                            $availability = 'available moto active';
+                            $slotText = 'Moto montāža';
+                          } else {
+                            $availability = 'unavailable';
+                            $slotText = '----------';
+                            $discount = false;
+                          }
+                        }
+                        break;
+                      }
+
+                      case (SLOT_STATUS_CLOSED): {
+                        if (trim($slot->comment) == '') {
+                          $slotCaption = 'Slēgts';
+                        }else {
+                          $slotCaption = $slot->comment;
+                        }
+                        $availability = 'closed-slot';
+                        $slotText = $slotCaption;
+                        $discount = false;
+                        break;
+                      }
+
+                      case (SLOT_STATUS_TAKEN): {
+                        $availability = 'unavailable';
+                        $slotText = 'Aizņemts';
+                        $discount = false;
+                        break;
+                      }
+
+                    }
+                    $out .= '<div class="time-slot">';
+                    $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot"><span class="time-span">' . Office::timeByInterval($i) . '</span><br><span>' . $slotText . '</span></div>';
+                    $out .= '</div>';
+
+                  }
                 }
               }
             }
@@ -864,7 +944,7 @@
           $service = str_replace(' ', '%20', $service->pdf_title);
           $vehiclePlate = str_replace(' ', '%20', $form->vehiclePlate);
 
-          if (isset($rimsWith)) {
+          if (!is_null($rimsWith)) {
             if ($rimsWith == 1) {
               $append = '%20-%20Riepas%20bez%20diskiem';
             } else {
@@ -1094,7 +1174,7 @@
                             $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                           } else {
                             $service = Service::where('service_id', $takenBy->purpose)->first();
-                            if ($service->service_id == 1 && isset($takenBy->rimsWith)) {
+                            if (!is_null($takenBy->rimsWith)) {
                               if ($takenBy->rimsWith == 1) {
                                 $rimsWith = 'Riepas bez diskiem';
                               } else {
