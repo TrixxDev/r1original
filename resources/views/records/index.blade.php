@@ -99,20 +99,25 @@
                                                       @if (\Carbon\Carbon::parse(App\Models\Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now())
                                                         @if (trim($slot->comment)=='')
                                                           @php
-                                                            $slotClass = 'available-slot';
-                                                            $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Brīvs</button>';
+                                                            if ($queue->_workingDays[$date]->isHalf()) {
+                                                              $service = \App\Models\Service::where('f_ac', 1)->first();
+                                                              if (!is_null($service)) {
+                                                                $slotClass = 'available-slot';
+                                                                $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-service="ac" data-toggle="modal" data-target="#reservation">Kondicioniera apkope</button>';
+                                                              } else {
+                                                                $slotClass = 'available-slot';
+                                                                $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Brīvs</button>';
+                                                              }
+                                                            } else {
+                                                              $slotClass = 'available-slot';
+                                                              $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Brīvs</button>';
+                                                            }
                                                           @endphp
                                                         @else
                                                           @php
                                                             $slotClass = 'slot-offer';
                                                             $slotCaption = '<button class="offer-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
                                                             //$slotCaption = $slot->comment;
-                                                          @endphp
-                                                        @endif
-                                                        @if ($queue->_workingDays[$date]->isHalf())
-                                                          @php
-                                                            $slotClass = 'available-slot';
-                                                            $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Kondicioniera apkope</button>';
                                                           @endphp
                                                         @endif
                                                       @else
@@ -124,20 +129,25 @@
                                                     @else
                                                       @if (trim($slot->comment)=='')
                                                         @php
-                                                          $slotClass = 'available-slot';
-                                                          $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Brīvs</button>';
+                                                          if ($queue->_workingDays[$date]->isHalf()) {
+                                                            $service = \App\Models\Service::where('f_ac', 1)->first();
+                                                            if (!is_null($service)) {
+                                                              $slotClass = 'available-slot';
+                                                              $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-service="ac" data-toggle="modal" data-target="#reservation">Kondicioniera apkope</button>';
+                                                            } else {
+                                                              $slotClass = 'available-slot';
+                                                              $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Brīvs</button>';
+                                                            }
+                                                          } else {
+                                                            $slotClass = 'available-slot';
+                                                            $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Brīvs</button>';
+                                                          }
                                                         @endphp
                                                       @else
                                                         @php
                                                           $slotClass = 'slot-offer';
                                                           $slotCaption = '<button class="offer-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">' . $slot->comment . '</button>';
                                                           //$slotCaption = $slot->comment;
-                                                        @endphp
-                                                      @endif
-                                                      @if ($queue->_workingDays[$date]->isHalf())
-                                                        @php
-                                                          $slotClass = 'available-slot';
-                                                          $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Kondicioniera apkope</button>';
                                                         @endphp
                                                       @endif
                                                     @endif
@@ -228,8 +238,14 @@
                                                       @if ($date == $today)
                                                         @if (\Carbon\Carbon::parse(App\Models\Office::timeByInterval($i))->subHour() >= \Carbon\Carbon::now())
                                                           @php
-                                                            $slotClass = 'available-slot unavailable';
-                                                            $slotText = '----------';
+                                                            $service = \App\Models\Service::where('f_moto', 1)->first();
+                                                            if (!is_null($service)) {
+                                                              $slotClass = 'available-slot';
+                                                              $slotText = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-service="moto" data-toggle="modal" data-target="#reservation">Motocikla montāža</button>';
+                                                            } else {
+                                                              $slotClass = 'available-slot unavailable';
+                                                              $slotText = '----------';
+                                                            }
                                                           @endphp
                                                         @else
                                                           @php
@@ -239,8 +255,14 @@
                                                         @endif
                                                       @else
                                                         @php
-                                                          $slotClass = 'available-slot unavailable';
-                                                          $slotText = '----------';
+                                                          $service = \App\Models\Service::where('f_moto', 1)->first();
+                                                          if (!is_null($service)) {
+                                                            $slotClass = 'available-slot';
+                                                            $slotText = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-service="moto" data-toggle="modal" data-target="#reservation">Motocikla montāža</button>';
+                                                          } else {
+                                                            $slotClass = 'available-slot unavailable';
+                                                            $slotText = '----------';
+                                                          }
                                                         @endphp
                                                       @endif
                                                       @break
@@ -539,7 +561,7 @@
                                                 <div class="col-md-8" id="service">
                                                     @foreach ($services as $service)
                                                     <div class="form-check">
-                                                        <input class="form-check-input" type="radio" name="serviceOption" @if ($service->enabled == 0) disabled @endif id="serviceOption{{ $service->service_id }}" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif @if ($service->f_ac == 1) data-ac="1" @endif value="{{ $service->service_id }}">
+                                                        <input class="form-check-input" type="radio" name="serviceOption" @if ($service->enabled == 0) disabled @endif id="serviceOption{{ $service->service_id }}" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif @if ($service->f_ac == 1) data-ac="1" @endif @if ($service->f_moto == 1) data-moto="1" @endif value="{{ $service->service_id }}">
                                                         <label class="form-check-label" for="serviceOption{{ $service->service_id }}">
                                                             {{ $service->title }}
                                                         </label>

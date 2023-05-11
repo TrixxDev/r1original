@@ -115,142 +115,21 @@
       return Office::orderBy('office_id', 'DESC')->get();
     }
 
-    public function fillDates()
-    {
-      $date = date('Y-m-d');
-      $visibleDays = 8;
-      $currentDate = strtotime($date);
-
-      $f = 0;
-
-      $timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 7, 30);
-      $now = \Carbon\Carbon::now();
-
-      if ($timeToClose < $now) {
-        $f = 1;
-      }
-
-      $_weekDays = [
-        1=>'Pirmdiena',
-        2=>'Otrdiena',
-        3=>'Trešdiena',
-        4=>'Ceturtdiena',
-        5=>'Piektdiena',
-        6=>'Sestdiena',
-      ];
-
-      for ($i=$f;$i<$visibleDays;$i++){
-        $ndate = date('Y-m-d',strtotime("+{$i} days",$currentDate));
-        $day = Workingday::where('date', $ndate)->first();
-        if (!isset($_weekDays[$day->weekday])) continue;
-        $day = $_weekDays[$day->weekday];
-        $workingDays[] = ['date_id' => $i, 'date' => $ndate, 'day' => $day];
-      }
-
-      return json_encode(array_reverse($workingDays));
-
-    }
-
-    public function fillSlots(Request $request)
-    {
-
-      $date = date('Y-m-d');
-      $visibleDays = 8;
-      $currentDate = strtotime($date);
-
-      $offices = Office::where('office_id', $request->filiale)->get();
-
-      $todayDate = time();
-      $today = date('Y-m-d',$todayDate);
-
-      $workingDays = [];
-      $slotSizes = [];
-      foreach ($offices as $office) {
-        $office->loadQueues();
-        foreach ($office->_queues as $queue){
-          $queue->loadWorkingDay($date,false);
-          $queue->loadSlots($date,false);
-          $slotSizes[] = $queue->_workingDays[$date]->slotSize;
-          $workingDays[] = $date;
-          for ($i=1;$i<$visibleDays;$i++){
-            $ndate = date('Y-m-d',strtotime("+{$i} days",$todayDate));
-            $queue->loadWorkingDay($ndate,false);
-            $queue->loadSlots($ndate,false);
-            $workingDays[] = $ndate;
-          }
-        }
-      }
-
-      $tires = new Tires();
-      $timeStep = (int) $tires->arrayGCD($slotSizes);
-
-      $openTime = 0;
-      $closeTime = -1;
-
-      foreach ($offices as $office) {
-        if ($openTime==0) {
-          $openTime = $office->getOpenTime($request->date);
-        } else {
-          $t = $office->getOpenTime($request->date);
-          if ($t > 0) {
-            $openTime = min($openTime, $t);
-          }
-        }
-        $closeTime = max($closeTime, $office->getCloseTime($request->date));
-      }
-
-      $times = [];
-      $takenTimes = [];
-
-      for ($i = $openTime; $i < $closeTime; $i += $timeStep) {
-        foreach ($offices as $office) {
-          $queue_id = ($office->office_id == 1) ? 1 : 3;
-          foreach ($office->_queues as $queue) {
-            $queue->getSlots($request->date); // Šī funkcija neeksistē lol
-            $slotNumber = $queue->getSlotNumberByInterval($request->date,$i);
-            if (($slotNumber!==false)&&($queue->isVisible($request->date))) {
-              if ($queue->isIntervalBeginning($request->date,$i)) {
-                $slot = $queue->_slots[$request->date][$slotNumber];
-
-                //$times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => true];
-                if ($slot->status == 0 || $slot->status == 2) {
-                  $times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id];
-                }
-              }
-            }
-            $queue->getSlots($request->date, $queue_id); // Šī funkcija neeksistē lol
-            $slotNumber1 = $queue->getSlotNumberByInterval($request->date,$i);
-            if (($slotNumber1!==false)&&($queue->isVisible($request->date))) {
-              if ($queue->isIntervalBeginning($request->date,$i)) {
-                $slot1 = $queue->_slots[$request->date][$slotNumber1];
-                //$times[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot->slot_id, 'taken' => true];
-                if ($slot1->status == 1 || $slot1->status == 2) {
-                  $takenTimes[Queue::timeByInterval($i)] = ['time' => Queue::timeByInterval($i), 'slot_id' => $slot1->slot_id];
-                }
-              }
-            }
-          }
-        }
-      }
-
-      return json_encode(['times' => array_reverse($times), 'takenTimes' => $takenTimes]);
-
-    }
-
-    public function getSlotInfo(Request $request)
-    {
-      $_weekDays = [
-        1=>'Pirmdiena',
-        2=>'Otrdiena',
-        3=>'Trešdiena',
-        4=>'Ceturtdiena',
-        5=>'Piektdiena',
-        6=>'Sestdiena',
-        7=>'Svētdiena',
-      ];
-      $date = $request->date;
-      $queue_id = $request->queue_id;
-      $slotNumber = $request->slotNumber;
+  public function getSlotInfo(Request $request)
+  {
+    $_weekDays = [
+      1=>'Pirmdiena',
+      2=>'Otrdiena',
+      3=>'Trešdiena',
+      4=>'Ceturtdiena',
+      5=>'Piektdiena',
+      6=>'Sestdiena',
+      7=>'Svētdiena',
+    ];
+    $date = $request->date;
+    $queue_id = $request->queue_id;
+    $slotNumber = $request->slotNumber;
+    $service = ($request->service) ? $request->service : false;
 
       $queue = Queue::where('queue_id', $queue_id)->first();
       $office = Office::where('office_id', $queue->office_id)->first();
@@ -258,13 +137,33 @@
     $queue->loadWorkingDay($date);
     $queue->loadSlots($date, true);
 
-    $conditioner = ($queue->_workingDays[$date]->isHalf()) ? true : false;
+    $moto = false;
+    if ($service == 'moto') {
+      $moto = true;
+    }
+
+    $conditioner = false;
+    if ($service == 'ac') {
+      $conditioner = true;
+    }
+
+//    $moto = false;
+//    $service = Service::where('f_moto', 1)->first();
+//    if (!is_null($service)) {
+//      $moto = ($queue->_workingDays[$date]->isHalf()) ? true : false;
+//    }
+//
+//    $conditioner = false;
+//    $service = Service::where('f_ac', 1)->first();
+//    if (!is_null($service)) {
+//      $conditioner = ($queue->_workingDays[$date]->isHalf()) ? true : false;
+//    }
 
       $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slotNumber),true);
       $fmtDate = date('d.m.Y',strtotime($date));
       $dayOfWeek = $_weekDays[date('N', strtotime($date.' 00:00:00'))];
 
-    return json_encode(['dayOfWeek' => $dayOfWeek, 'date' => $fmtDate, 'time' => $time, 'office_title' => $office->title, 'conditioner' => $conditioner]);
+    return json_encode(['dayOfWeek' => $dayOfWeek, 'date' => $fmtDate, 'time' => $time, 'office_title' => $office->title, 'conditioner' => $conditioner, 'moto' => $moto]);
   }
 
     public function fillSlot(Request $request)
@@ -424,9 +323,14 @@
         $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
         break;
       }
-      case 6:{
+      case 5:{
         $purpose = 'kondicioniera uzpilde';
         $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
+        break;
+      }
+      case 6:{
+        $purpose = 'Motocikla montāža';
+        $purpose = 'Jūs vēlaties nomainīt motocikla riepu/as pie mums';
         break;
       }
     }

@@ -133,10 +133,14 @@
                                       @else
                                         @php $slotClass2 = 'slot-taken'; @endphp
                                       @endif
-                                      @php $takenBy = json_decode($slot->takenby2); @endphp
+                                      @php
+                                        $takenBy = json_decode($slot->takenby2);
+                                        $service = \App\Models\Service::where('service_id', $takenBy->purpose)->first();
+                                        $ac = (isset($service->f_ac) && !is_null($service->f_ac)) ? '*' : '';
+                                      @endphp
                                       @if ($slotText=='')
                                         @php
-                                          $slotText2='<span style="color: red;font-weight:normal">'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel.' '.$takenBy->ownerPhone.'</span>';
+                                          $slotText2='<span style="color: red;font-weight:normal">'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel . $ac . ' '.$takenBy->ownerPhone.'</span>';
                                         @endphp
                                       @endif
                                     @elseif ($slot->status2 == SLOT_STATUS_FREE)
@@ -151,7 +155,11 @@
                                   @break
                                   @case (SLOT_STATUS_TAKEN)
 
-                                    @php $takenBy = json_decode($slot->takenby); @endphp
+                                    @php
+                                      $takenBy = json_decode($slot->takenby);
+                                      $service = \App\Models\Service::where('service_id', $takenBy->purpose)->first();
+                                      $ac = (isset($service->f_ac) && !is_null($service->f_ac)) ? '*' : '';
+                                    @endphp
 
                                     @if ($slot->createuser>0)
                                       @php $slotClass = 'slot-taken-admin'; @endphp
@@ -159,7 +167,7 @@
                                       @php $slotClass = 'slot-taken'; @endphp
                                     @endif
 
-                                    @php $slotText = '<span>'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel.' '.$takenBy->ownerPhone . '</span>'; @endphp
+                                    @php $slotText = '<span>'.$takenBy->vehicleMake.' '.$takenBy->vehicleModel . $ac . ' '.$takenBy->ownerPhone . '</span>'; @endphp
 
 
                                     @if ($queue->_workingDays[$workingDay]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN)
@@ -170,7 +178,9 @@
                                       @endif
                                       @php
                                         $takenBy = json_decode($slot->takenby2);
-                                        $slotText2='<span style="color: red;font-weight:normal">'. $takenBy->vehicleMake .' '. $takenBy->vehicleModel .' '. $takenBy->ownerPhone .'</span>';
+                                        $service = \App\Models\Service::where('service_id', $takenBy->purpose)->first();
+                                        $ac = (isset($service->f_ac) && !is_null($service->f_ac)) ? '*' : '';
+                                        $slotText2='<span style="color: red;font-weight:normal">'. $takenBy->vehicleMake .' '. $takenBy->vehicleModel . $ac . ' '. $takenBy->ownerPhone .'</span>';
                                       @endphp
                                     @endif
 

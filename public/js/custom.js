@@ -2058,6 +2058,7 @@ $(document).ready(function() {
     $('.reservation-modal-footer #close-modal').text('Atcelt');
     $('#reservation #modalTitle.title-finish').remove();
     $('#reservation #modalTitle').slideDown();
+    service = $(this).data('service');
     date = $(this).data('date');
     queue_id = $(this).data('col');
     iorder = $(this).data('iorder');
@@ -2070,7 +2071,7 @@ $(document).ready(function() {
     $.ajax({
       url: '/pieraksts/getSlotInfo',
       method: 'POST',
-      data: { 'date': date, 'queue_id': queue_id, 'slotNumber': iorder },
+      data: { 'date': date, 'queue_id': queue_id, 'slotNumber': iorder, 'service': service },
       dataType: "JSON",
       success: function(data) {
         $('.dayOfWeek').text(data.dayOfWeek);
@@ -2080,6 +2081,10 @@ $(document).ready(function() {
         $('.reservation-modal-body .services #service .form-check').each(function() {
           if (data.conditioner === true) {
             if (!$(this).children().first().attr('data-ac')) {
+              $(this).children().first().attr('disabled', true).prop('disabled', true);
+            }
+          } else if (data.moto === true) {
+            if (!$(this).children().first().attr('data-moto')) {
               $(this).children().first().attr('disabled', true).prop('disabled', true);
             }
           } else {
