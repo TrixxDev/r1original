@@ -203,7 +203,7 @@ class RecordController extends Controller
                 $queue->moveSlots($date, $f_rows);
               }
             }
-            broadcast(new ChangeQueueChannel($date, $queue->queue_id, $workingDay->is_visible, $f_visible))->toOthers();
+//            broadcast(new ChangeQueueChannel($date, $queue->queue_id, $workingDay->is_visible, $f_visible))->toOthers();
             $workingDay->is_visible = ($f_visible)?1:0;
             $workingDay->save();
 
@@ -236,7 +236,7 @@ class RecordController extends Controller
                     $queue->moveSlots($date, $f_rows);
                   }
                 }
-                broadcast(new ChangeQueueChannel($date, $queue->queue_id, $workingDay->is_visible, $f_visible))->toOthers();
+//                broadcast(new ChangeQueueChannel($date, $queue->queue_id, $workingDay->is_visible, $f_visible))->toOthers();
                 $workingDay->is_visible = ($f_visible)?1:0;
                 $workingDay->save();
 
@@ -266,7 +266,7 @@ class RecordController extends Controller
                     $queue->moveSlots($date, $f_rows);
                   }
                 }
-                broadcast(new ChangeQueueChannel($date, $queue->queue_id, $workingDay->is_visible, $f_visible))->toOthers();
+//                broadcast(new ChangeQueueChannel($date, $queue->queue_id, $workingDay->is_visible, $f_visible))->toOthers();
                 $workingDay->is_visible = ($f_visible)?1:0;
                 $workingDay->save();
 
@@ -783,7 +783,7 @@ class RecordController extends Controller
           $slot->timestamps = false;
 
           //PRE($slot);die;
-          broadcast(new MoveSlotChannel($f_status, $targetSlot, $slot, $targetSlot->queue_id, $targetSlot->iorder, $targetSlot->date));
+//          broadcast(new MoveSlotChannel($f_status, $targetSlot, $slot, $targetSlot->queue_id, $targetSlot->iorder, $targetSlot->date));
         } else {
           if ($p=='a'){
             $prevStatus = $slot->status;
