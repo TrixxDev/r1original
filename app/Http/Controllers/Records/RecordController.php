@@ -1454,19 +1454,29 @@
 
       $day = $office->_workingDays[0];
       $start = Office::intervalByTime($day->opentime);
-      $startTime = $start + $slot->iorder * $office->_workingDays[0]->slotSize;
 
       $takenBy = json_decode($slot->takenby);
       $takenBy2 = json_decode($slot->takenby2);
 
-      if ($takenBy !== null) {
-        $info = $takenBy;
-        $time = Office::timeByInterval($startTime);
+      if ($day->isHalf()) {
+        if ($takenBy !== null) {
+          $startTime = $start + $slot->iorder * ($office->_workingDays[0]->slotSize/2);
+          $info = $takenBy;
+        }
+        if ($takenBy2 !== null) {
+          $startTime = $start + $slot->iorder * ($office->_workingDays[0]->slotSize);
+          $info = $takenBy2;
+        }
+      } else {
+        if ($takenBy !== null) {
+          $info = $takenBy;
+        }
+        if ($takenBy2 !== null) {
+          $info = $takenBy2;
+        }
+        $startTime = $start + $slot->iorder * ($office->_workingDays[0]->slotSize);
       }
-      if ($takenBy2 !== null) {
-        $info = $takenBy2;
-        $time = Office::timeByInterval($startTime);
-      }
+      $time = Office::timeByInterval($startTime);
 
       if ($request->post()) {
         if ($takenBy !== null) {
