@@ -915,7 +915,7 @@
         $stock->article = $rim->article;
         $stock->quantity = $quantity;
         $rimVisible = Rim::where('article', $stock->article)->first();
-        if (isset($rimVisible)) {
+        if (!is_null($rimVisible)) {
           if ($quantity > 0) {
             if ($quantity > 4) {
               $rimVisible->visible_users = 1;
