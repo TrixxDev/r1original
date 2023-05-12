@@ -665,7 +665,7 @@ class RecordController extends Controller
           if (!is_null($service)) $service = str_replace(' ', '%20', $service->pdf_title);
           $vehiclePlate = str_replace(' ', '%20', $form->vehiclePlate);
 
-          if (!is_null($form->rimsWith)) {
+          if (!empty($form->rimsWith)) {
             if ($form->rimsWith == 1) {
               $append = '%20-%20Riepas%20bez%20diskiem';
             } else {

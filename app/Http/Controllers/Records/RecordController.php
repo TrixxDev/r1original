@@ -373,7 +373,7 @@
       $service = str_replace(' ', '%20', $service->pdf_title);
       $vehiclePlate = str_replace(' ', '%20', $form->vehiclePlate);
 
-      if (!is_null($rimsWith)) {
+      if (!empty($rimsWith)) {
         if ($rimsWith == 1) {
           $append = '%20-%20Riepas%20bez%20diskiem';
         } else {
@@ -949,7 +949,7 @@
           $service = str_replace(' ', '%20', $service->pdf_title);
           $vehiclePlate = str_replace(' ', '%20', $form->vehiclePlate);
 
-          if (!is_null($rimsWith)) {
+          if (!empty($rimsWith)) {
             if ($rimsWith == 1) {
               $append = '%20-%20Riepas%20bez%20diskiem';
             } else {
@@ -1179,7 +1179,7 @@
                             $slotText = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                           } else {
                             $service = Service::where('service_id', $takenBy->purpose)->first();
-                            if (!is_null($takenBy->rimsWith)) {
+                            if (!empty($takenBy->rimsWith)) {
                               if ($takenBy->rimsWith == 1) {
                                 $rimsWith = 'Riepas bez diskiem';
                               } else {
@@ -1314,8 +1314,8 @@
                               $slotText2 = $takenBy->vehicleMake . ' ' . $takenBy->vehicleModel . ' // ' . $takenBy->vehiclePlate . ' ' . $takenBy->ownerName . ' ' . $takenBy->comment . ' ' . $slot->comment;
                             } else {
                               $service = Service::where('service_id', $takenBy->purpose)->first();
-                              if (!is_null($service)) {
-                                if ($service->service_id == 1 && isset($takenBy->rimsWith)) {
+                              if (!empty($service)) {
+                                if (isset($takenBy->rimsWith)) {
                                   if ($takenBy->rimsWith == 1) {
                                     $rimsWith = 'Riepas bez diskiem';
                                   } else {
