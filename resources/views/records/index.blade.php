@@ -103,7 +103,7 @@
                                                               $service = \App\Models\Service::where('f_ac', 1)->first();
                                                               if (!is_null($service)) {
                                                                 $slotClass = 'available-slot';
-                                                                $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-service="ac" data-toggle="modal" data-target="#reservation">Kondicioniera apkope</button>';
+                                                                $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-part="a" data-service="ac" data-toggle="modal" data-target="#reservation">Kondicioniera apkope</button>';
                                                               } else {
                                                                 $slotClass = 'available-slot';
                                                                 $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Brīvs</button>';
@@ -133,7 +133,7 @@
                                                             $service = \App\Models\Service::where('f_ac', 1)->first();
                                                             if (!is_null($service)) {
                                                               $slotClass = 'available-slot';
-                                                              $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-service="ac" data-toggle="modal" data-target="#reservation">Kondicioniera apkope</button>';
+                                                              $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-part="a" data-service="ac" data-toggle="modal" data-target="#reservation">Kondicioniera apkope</button>';
                                                             } else {
                                                               $slotClass = 'available-slot';
                                                               $slotCaption = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-toggle="modal" data-target="#reservation">Brīvs</button>';
@@ -176,7 +176,7 @@
                                                       @php
                                                       $takenBy = json_decode($slot->takenby);
                                                       $service = \App\Models\Service::where('service_id', $takenBy->purpose)->first();
-                                                      $ac = (isset($service->f_ac) && !is_null($service->f_ac)) ? '*' : '';
+                                                      $ac = (isset($service->f_ac) && $service->f_ac != 0) ? '*' : '';
                                                       $plate = substr($takenBy->ownerPhone,-3,3);
                                                       $plate = filter_var($plate, FILTER_SANITIZE_NUMBER_INT);
                                                       $plate = trim($plate,' -.');
@@ -240,7 +240,7 @@
                                                             $service = \App\Models\Service::where('f_moto', 1)->first();
                                                             if (!is_null($service)) {
                                                               $slotClass = 'available-slot';
-                                                              $slotText = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-service="moto" data-toggle="modal" data-target="#reservation">Motocikla montāža</button>';
+                                                              $slotText = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-part="b" data-service="moto" data-toggle="modal" data-target="#reservation">' . $service->title . '</button>';
                                                             } else {
                                                               $slotClass = 'available-slot unavailable';
                                                               $slotText = '----------';
@@ -257,7 +257,7 @@
                                                           $service = \App\Models\Service::where('f_moto', 1)->first();
                                                           if (!is_null($service)) {
                                                             $slotClass = 'available-slot';
-                                                            $slotText = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-service="moto" data-toggle="modal" data-target="#reservation">Motocikla montāža</button>';
+                                                            $slotText = '<button class="free-slot-link" id="slot' . $slotNumber . '-' . $slot->queue_id . '" data-col="' . $slot->queue_id . '" data-iorder="' . $slotNumber . '" data-date="' . $slot->date . '" data-part="b" data-service="moto" data-toggle="modal" data-target="#reservation">' . $service->title . '</button>';
                                                           } else {
                                                             $slotClass = 'available-slot unavailable';
                                                             $slotText = '----------';
@@ -296,13 +296,11 @@
                                                       @endif
                                                       @php
                                                         $takenBy = json_decode($slot->takenby2);
-                                                        $service = \App\Models\Service::where('service_id', $takenBy->purpose)->first();
-                                                        $ac = (isset($service->f_ac) && !is_null($service->f_ac)) ? '*' : '';
                                                         $plate = substr($takenBy->ownerPhone,-3,3);
                                                         $plate = filter_var($plate, FILTER_SANITIZE_NUMBER_INT);
                                                         $plate = trim($plate,' -.');
 
-                                                        $slotText = ''. \App\Helper\Tires::truncateCharacters(trim($takenBy->vehicleMake),8,'&mldr;',1) . $ac . ' xxxxx'.$plate.'';
+                                                        $slotText = ''. \App\Helper\Tires::truncateCharacters(trim($takenBy->vehicleMake),8,'&mldr;',1) . ' xxxxx'.$plate.'';
                                                       @endphp
                                                       @break
                                                     @endswitch
@@ -345,6 +343,7 @@
                             <input type="hidden" name="date">
                             <input type="hidden" name="slotNumber">
                             <input type="hidden" name="filiale">
+                            <input type="hidden" name="part">
                             <div class="modal-dialog" role="document">
                                 @if (session('success'))
                                   <div class="alert alert-success" style="border-color: #75bd59;">{!! session('success') !!}</div>
@@ -434,7 +433,7 @@
                                                         <select class="custom-select" name="serviceOption" required="required">
                                                           <option disabled selected>Izvēlēties</option>
                                                           @foreach ($services as $service)
-                                                            <option value="{{ $service->service_id }}" @if ($service->enabled == 0) disabled @endif @if ($service->f_ac == 1) data-ac="1" @endif>{{ $service->title }}</option>
+                                                            <option value="{{ $service->service_id }}" @if ($service->enabled == 0) disabled @endif @if ($service->f_ac == 1) data-ac="1" @endif @if ($service->f_moto == 1) data-moto="1" @endif>{{ $service->title }}</option>
                                                           @endforeach
                                                         </select>
                                                       </div>
@@ -528,6 +527,7 @@
                 <input type="hidden" name="date">
                 <input type="hidden" name="queue_id">
                 <input type="hidden" name="slotNumber">
+                <input type="hidden" name="part">
                 <input type="hidden" name="grecaptcha">
                 <input type="hidden" name="grecaptcha_app">
                 <div class="modal-dialog reservation-modal-dialog" role="document">

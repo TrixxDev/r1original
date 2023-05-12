@@ -2063,6 +2063,11 @@ $(document).ready(function() {
     queue_id = $(this).data('col');
     iorder = $(this).data('iorder');
     slot = $(this).attr('id');
+    if ($(this).attr('data-part') != false) {
+      part = $(this).attr('data-part');
+    } else {
+      part = null;
+    }
 
     // $('input[name="date"]').val(date);
     // $('input[name="queue_id"]').val(queue_id);
@@ -2071,13 +2076,14 @@ $(document).ready(function() {
     $.ajax({
       url: '/pieraksts/getSlotInfo',
       method: 'POST',
-      data: { 'date': date, 'queue_id': queue_id, 'slotNumber': iorder, 'service': service },
+      data: { 'date': date, 'queue_id': queue_id, 'slotNumber': iorder, 'service': service, 'part': part },
       dataType: "JSON",
       success: function(data) {
         $('.dayOfWeek').text(data.dayOfWeek);
         $('.dateOfDay').text(data.date);
         $('.timeOfDay').text(data.time);
         $('.officeTitle').text(data.office_title);
+        $('#reservation input[type="hidden"][name="part"]').val(part);
         $('.reservation-modal-body .services #service .form-check').each(function() {
           if (data.conditioner === true) {
             if (!$(this).children().first().attr('data-ac')) {
@@ -2189,6 +2195,7 @@ $(document).ready(function() {
     let phone = $('#reservation #phone').val();
     let email = $('#reservation #email').val();
     let rimsWith = $('#reservation input[name="rims_with_input"]:checked').val();
+    let slotPart = $('#reservation input[type="hidden"][name="part"]').val();
     // let rimsWith;
     // $('#reservation .rim-with input').each(function() {
     //   if($(this).is(':checked') == true){
@@ -2214,6 +2221,7 @@ $(document).ready(function() {
         'date': date,
         'queue_id': queue_id,
         'slotNumber': iorder,
+        'slotPart': slotPart,
         'token': $('#reservation input[name=grecaptcha]').val(),
         'action': $('#reservation input[name=grecaptcha_app]').val(),
       },
@@ -2255,8 +2263,14 @@ $(document).ready(function() {
           let plate = phone.substr(-3);
           plate = parseInt(plate);
           plate = $.trim(plate);
+          let ac;
+          if (data.ac === true) {
+            ac = '*';
+          } else {
+            ac = '';
+          }
 
-          let successText = truncateCharacters($.trim(car),8,'&mldr;',1) + ' xxxxx' + plate;
+          let successText = truncateCharacters($.trim(car),8,'&mldr;',1) + ac + ' xxxxx' + plate;
 
           $('.reservation-modal-body').slideToggle();
           $('#modalTitle').first().slideToggle();
@@ -2264,11 +2278,14 @@ $(document).ready(function() {
           $('.reservation-modal-footer #submit-reservation').hide();
           $('.reservation-modal-footer #close-modal').text('Aizvērt');
           $('<div class="modal-body finish">' + data.success + '</div><div class="modal-footer finish-footer"><button type="button" class="btn btn-secondary" id="close-modal" data-dismiss="modal" style="margin-right: 10px;">Aizvērt</button></div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
-          $('<td class="taken-slot slot">' + successText + '</td>').hide().fadeIn().insertAfter($('#' + slot + '[data-date="' + date + '"]').parent());
-          $('#' + slot + '[data-date="' + date + '"]').parent().fadeOut().remove();
+          $('<td class="taken-slot slot">' + successText + '</td>').hide().fadeIn().insertAfter($('#' + slot + '[data-date="' + date + '"][data-part="' + data.slotPart + '"]').parent());
+          $('#' + slot + '[data-date="' + date + '"][data-part="' + data.slotPart + '"]').parent().fadeOut().remove();
           $('#brand, #model, #phone, #email').removeAttr('placeholder');
           $('#reservation form').trigger('reset');
           $('#reservation .temp_save_nr').remove();
+          $('.reservation-modal-body .services #service .form-check').each(function() {
+            $(this).children('input[name=serviceOption]').attr('disabled', false).prop('disabled', false);
+          });
         } else if (data.taken) {
           $('#submit-reservation, #close-modal').removeAttr('disabled');
           $('.reservation-modal-body').slideToggle();
@@ -2280,6 +2297,9 @@ $(document).ready(function() {
           $('#brand, #model, #phone, #email').removeAttr('placeholder');
           $('#reservation form').trigger('reset');
           $('#reservation .temp_save_nr').remove();
+          $('.reservation-modal-body .services #service .form-check').each(function() {
+            $(this).children('input[name=serviceOption]').attr('disabled', false).prop('disabled', false);
+          });
         }
       }
     });
@@ -3784,6 +3804,9 @@ $('#mobile-filiale input[name=filiale]').on('change', function() {
             if ($(this).attr('data-ac')) {
               $(this).attr('disabled', true).prop('disabled', true);
             }
+            if ($(this).attr('data-moto')) {
+              $(this).attr('disabled', true).prop('disabled', true);
+            }
           });
         }
       });
@@ -3791,6 +3814,14 @@ $('#mobile-filiale input[name=filiale]').on('change', function() {
         $('#mobile-service select[name=serviceOption] option').each(function() {
           $(this).removeAttr('disabled').removeProp('disabled');
           if (!$(this).attr('data-ac')) {
+            $(this).attr('disabled', true).prop('disabled', true);
+          }
+        });
+      });
+      $('.slot.moto').on('click', function() {
+        $('#mobile-service select[name=serviceOption] option').each(function() {
+          $(this).removeAttr('disabled').removeProp('disabled');
+          if (!$(this).attr('data-moto')) {
             $(this).attr('disabled', true).prop('disabled', true);
           }
         });

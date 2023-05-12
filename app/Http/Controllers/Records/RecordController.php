@@ -130,6 +130,11 @@
     $queue_id = $request->queue_id;
     $slotNumber = $request->slotNumber;
     $service = ($request->service) ? $request->service : false;
+    if ($request->part != null) {
+      $part = $request->part;
+    } else {
+      $part = null;
+    }
 
       $queue = Queue::where('queue_id', $queue_id)->first();
       $office = Office::where('office_id', $queue->office_id)->first();
@@ -159,9 +164,24 @@
 //      $conditioner = ($queue->_workingDays[$date]->isHalf()) ? true : false;
 //    }
 
-      $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slotNumber),true);
-      $fmtDate = date('d.m.Y',strtotime($date));
-      $dayOfWeek = $_weekDays[date('N', strtotime($date.' 00:00:00'))];
+    $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slotNumber),true);
+    $fmtDate = date('d.m.Y',strtotime($date));
+    $dayOfWeek = $_weekDays[date('N', strtotime($date.' 00:00:00'))];
+
+    $day = $queue->_workingDays[$date];
+    $start = Office::intervalByTime($day->opentime);
+
+    if ($part != null) {
+      if ($part == 'a') {
+        $startTime = $start + $slotNumber * ($day->slotSize);
+      } else {
+        $startTime = $start + $slotNumber * $day->slotSize + ($day->slotSize/2);
+      }
+    } else {
+      $startTime = $start + $slotNumber * ($day->slotSize);
+    }
+    $time = Office::timeByInterval($startTime);
+
 
     return json_encode(['dayOfWeek' => $dayOfWeek, 'date' => $fmtDate, 'time' => $time, 'office_title' => $office->title, 'conditioner' => $conditioner, 'moto' => $moto]);
   }
@@ -201,9 +221,10 @@
         $userID = Auth::user()->id;
       }
 
-      $date = $request->date;
-      $queue_id = $request->queue_id;
-      $slotNumber = $request->slotNumber;
+    $date = $request->date;
+    $queue_id = $request->queue_id;
+    $slotNumber = $request->slotNumber;
+    $slotPart = strip_tags($request->slotPart);
 
       $_weekDays2 = array(
         1=>'pirmdien',
@@ -285,6 +306,7 @@
     $slot = $queue->_slots[$date][$slotNumber];
 //      $slot = Slot::find($slot->slot_id);
 
+    if ($slotPart == 'a') {
       if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
 
       $slot->timestamps = false;
@@ -295,6 +317,19 @@
       $slot->createtime = $slot->edittime = NOW();
       $slot->createuser = $slot->edituser = $userID;
       $slot->is_mobile = 0;
+    } else {
+      if ($slot->status2 != SLOT_STATUS_FREE && $slot->status2 == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+
+      $slot->timestamps = false;
+
+      $slot->takenby2 = json_encode($form);
+      $slot->status2 = 1;
+
+      $slot->createtime2 = $slot->edittime = NOW();
+      $slot->createuser2 = $slot->edituser = $userID;
+      $slot->is_mobile2 = 0;
+    }
+
 
       if ($slot->save()) {
         Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Izveidots jauns pieraksts', $slot);
@@ -311,26 +346,31 @@
       case 1:{
         $purpose = 'riepu nomaiņa';
         $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri Jums būs līdzi';
+        $ac = false;
         break;
       }
       case 2:{
         $purpose = 'riepu nomaiņa';
         $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri glabājas pie mums';
+        $ac = false;
         break;
       }
       case 3:{
         $purpose = 'riepu nomaiņa';
         $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
+        $ac = false;
         break;
       }
       case 6:{
         $purpose = 'kondicioniera uzpilde';
         $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
+        $ac = true;
         break;
       }
       case 8:{
         $purpose = 'riepu nomaiņa';
         $purposeLong = '';
+        $ac = false;
         break;
       }
     }
@@ -507,10 +547,12 @@
                           if (trim($slot->comment)=='') {
                             $availability = 'available active';
                             $slotText = 'Brīvs';
+                            $slotPart = '';
                             $discount = false;
                           } else {
                             $availability = 'available discount active';
                             $slotText = $slot->comment;
+                            $slotPart = '';
                             $discount = true;
                           }
                           if ($queue->_workingDays[$date]->isHalf()) {
@@ -518,26 +560,31 @@
                             if (!is_null($service)) {
                               $availability = 'available conditioner active';
                               $slotText = 'AC Uzpilde';
+                              $slotPart = 'data-part="a"';
                               $discount = false;
                             } else {
                               $availability = 'available active';
                               $slotText = 'Brīvs';
+                              $slotPart = 'data-part="a"';
                               $discount = false;
                             }
                           }
                         } else {
                           $availability = 'unavailable';
                           $slotText = 'Aizņemts';
+                          $slotPart = '';
                           $discount = false;
                         }
                       } else {
                         if (trim($slot->comment)=='') {
                           $availability = 'available active';
                           $slotText = 'Brīvs';
+                          $slotPart = '';
                           $discount = false;
                         } else {
                           $availability = 'available discount active';
                           $slotText = $slot->comment;
+                          $slotPart = '';
                           $discount = true;
                         }
                         if ($queue->_workingDays[$date]->isHalf()) {
@@ -545,10 +592,12 @@
                           if (!is_null($service)) {
                             $availability = 'available conditioner active';
                             $slotText = 'AC Uzpilde';
+                            $slotPart = 'data-part="a"';
                             $discount = false;
                           } else {
                             $availability = 'available active';
                             $slotText = 'Brīvs';
+                            $slotPart = 'data-part="a"';
                             $discount = false;
                           }
                         }
@@ -560,6 +609,7 @@
                       $availability = 'unavailable';
                       $slotText = 'Aizņemts';
                       $discount = false;
+                      $slotPart = '';
                       break;
                     }
 
@@ -568,22 +618,25 @@
                         if (Carbon::parse(Office::timeByInterval($i))->subHour() >= Carbon::now()) {
                           $availability = 'available discount active';
                           $slotText = $slot->comment;
+                          $slotPart = '';
                           $discount = true;
                         } else {
                           $availability = 'unavailable';
                           $slotText = 'Aizņemts';
+                          $slotPart = '';
                           $discount = false;
                         }
                       } else {
                         $availability = 'available discount active';
                         $slotText = $slot->comment;
+                        $slotPart = '';
                         $discount = true;
                       }
                       break;
                     }
                   }
                   $out .= '<div class="time-slot">';
-                  $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot"><span class="time-span">' . Office::timeByInterval($i) . '</span><br><span>' . $slotText . '</span></div>';
+                  $out .= '<div ' . $slot_id . ' ' . $slotPart . ' class="' . $availability . ' slot"><span class="time-span">' . Office::timeByInterval($i) . '</span><br><span>' . $slotText . '</span></div>';
                   $out .= '</div>';
 
 
@@ -608,15 +661,18 @@
                             if (!is_null($service)) {
                               $availability = 'available moto active';
                               $slotText = 'Moto montāža';
+                              $slotPart = 'data-part="b"';
                               $discount = false;
                             } else {
                               $availability = 'unavailable';
                               $slotText = '----------';
+                              $slotPart = '';
                               $discount = false;
                             }
                           } else {
                             $availability = 'unavailable';
                             $slotText = 'Aizņemts';
+                            $slotPart = '';
                             $discount = false;
                           }
                         } else {
@@ -624,9 +680,11 @@
                           if (!is_null($service)) {
                             $availability = 'available moto active';
                             $slotText = 'Moto montāža';
+                            $slotPart = 'data-part="b"';
                           } else {
                             $availability = 'unavailable';
                             $slotText = '----------';
+                            $slotPart = '';
                             $discount = false;
                           }
                         }
@@ -641,6 +699,7 @@
                         }
                         $availability = 'closed-slot';
                         $slotText = $slotCaption;
+                        $slotPart = '';
                         $discount = false;
                         break;
                       }
@@ -648,13 +707,14 @@
                       case (SLOT_STATUS_TAKEN): {
                         $availability = 'unavailable';
                         $slotText = 'Aizņemts';
+                        $slotPart = '';
                         $discount = false;
                         break;
                       }
 
                     }
                     $out .= '<div class="time-slot">';
-                    $out .= '<div ' . $slot_id . ' class="' . $availability . ' slot"><span class="time-span">' . Office::timeByInterval($i) . '</span><br><span>' . $slotText . '</span></div>';
+                    $out .= '<div ' . $slot_id . ' ' . $slotPart . ' class="' . $availability . ' slot"><span class="time-span">' . Office::timeByInterval($i) . '</span><br><span>' . $slotText . '</span></div>';
                     $out .= '</div>';
 
                   }
@@ -789,6 +849,7 @@
       $filiale = $request->filiale;
       $date = $request->date;
       $slot_id = $request->slot_id;
+      $slotPart = $request->part;
 
       $_weekDays2 = array(
         1=>'pirmdien',
@@ -849,18 +910,48 @@
       $form->rimsWith = $rimsWith;
 
       $slot = Slot::findOrFail($slot_id);
-      if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+      if (!slotPart) {
+        if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
 
-      $slot->timestamps = false;
+        $slot->timestamps = false;
 
-      $slot->takenby = json_encode($form);
-      $slot->status = 1;
+        $slot->takenby = json_encode($form);
+        $slot->status = 1;
 
-      $slot->createtime = date('Y-m-d H:i:s');
-      $slot->createuser = $userID;
-      $slot->edittime = date('Y-m-d H:i:s');
-      $slot->edituser = $userID;
-      $slot->is_mobile = 1;
+        $slot->createtime = date('Y-m-d H:i:s');
+        $slot->createuser = $userID;
+        $slot->edittime = date('Y-m-d H:i:s');
+        $slot->edituser = $userID;
+        $slot->is_mobile = 1;
+      } else {
+        if ($slotPart == 'a') {
+          if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+
+          $slot->timestamps = false;
+
+          $slot->takenby = json_encode($form);
+          $slot->status = 1;
+
+          $slot->createtime = date('Y-m-d H:i:s');
+          $slot->createuser = $userID;
+          $slot->edittime = date('Y-m-d H:i:s');
+          $slot->edituser = $userID;
+          $slot->is_mobile = 1;
+        } else {
+          if ($slot->status2 != SLOT_STATUS_FREE && $slot->status2 == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+
+          $slot->timestamps = false;
+
+          $slot->takenby2 = json_encode($form);
+          $slot->status2 = 1;
+
+          $slot->createtime2 = date('Y-m-d H:i:s');
+          $slot->createuser2 = $userID;
+          $slot->edittime2 = date('Y-m-d H:i:s');
+          $slot->edituser2 = $userID;
+          $slot->is_mobile2 = 1;
+        }
+      }
 
       $queue = Queue::where('queue_id', $slot->queue_id)->first();
       $office = Office::where('office_id', $queue->office_id)->first();
@@ -886,31 +977,37 @@
         case 0:{
           $purpose = '';
           $purposeLong = '';
+          $ac = false;
           break;
         }
         case 1:{
           $purpose = 'riepu nomaiņa';
           $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri Jums būs līdzi';
+          $ac = false;
           break;
         }
         case 2:{
           $purpose = 'riepu nomaiņa';
           $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kuri glabājas pie mums';
+          $ac = false;
           break;
         }
         case 3:{
           $purpose = 'riepu nomaiņa';
           $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
+          $ac = false;
           break;
         }
         case 6:{
           $purpose = 'kondicioniera uzpilde';
           $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
+          $ac = true;
           break;
         }
         case 8:{
           $purpose = 'riepu nomaiņa';
           $purposeLong = '';
+          $ac = false;
           break;
         }
       }
@@ -986,7 +1083,7 @@
           }
         }
 
-        return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama īsziņā.']);
+        return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama īsziņā.', 'slotPart' => $slotPart, 'ac' => $ac]);
 
     }
 

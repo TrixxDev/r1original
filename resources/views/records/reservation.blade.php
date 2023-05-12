@@ -136,7 +136,7 @@
                                       @php
                                         $takenBy = json_decode($slot->takenby2);
                                         $service = \App\Models\Service::where('service_id', $takenBy->purpose)->first();
-                                        $ac = (isset($service->f_ac) && !is_null($service->f_ac)) ? '*' : '';
+                                        $ac = (isset($service->f_ac) && $service->f_ac != 0) ? '*' : '';
                                       @endphp
                                       @if ($slotText=='')
                                         @php
@@ -160,7 +160,7 @@
                                     @php
                                       $takenBy = json_decode($slot->takenby);
                                       $service = \App\Models\Service::where('service_id', $takenBy->purpose)->first();
-                                      $ac = (isset($service->f_ac) && !is_null($service->f_ac)) ? '*' : '';
+                                      $ac = (isset($service->f_ac) && $service->f_ac != 0) ? '*' : '';
                                     @endphp
 
                                     @if ($slot->createuser>0)
@@ -180,9 +180,7 @@
                                       @endif
                                       @php
                                         $takenBy = json_decode($slot->takenby2);
-                                        $service = \App\Models\Service::where('service_id', $takenBy->purpose)->first();
-                                        $ac = (isset($service->f_ac) && !is_null($service->f_ac)) ? '*' : '';
-                                        $slotText2='<span style="color: red;font-weight:normal">'. $takenBy->vehicleMake .' '. $takenBy->vehicleModel . $ac . ' '. $takenBy->ownerPhone .'</span>';
+                                        $slotText2='<span style="color: red;font-weight:normal">'. $takenBy->vehicleMake .' '. $takenBy->vehicleModel . ' '. $takenBy->ownerPhone .'</span>';
                                       @endphp
                                     @endif
 

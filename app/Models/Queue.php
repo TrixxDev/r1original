@@ -415,6 +415,11 @@ class Queue extends Model
           $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
           break;
         }
+        case 8:{
+          $purpose = 'riepu nomaiņa';
+          $purposeLong = '';
+          break;
+        }
       }
 
       $url = env('SCHEDULE_URL');

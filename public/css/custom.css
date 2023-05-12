@@ -4374,6 +4374,7 @@ table.queueTable:nth-child(2) {
 .queueTable td.slot-free {
   height: 53px;
   padding: 0;
+  text-align: center;
 }
 
 .queueTable td.slot.slot-gray {

@@ -41,7 +41,7 @@ class Office extends Model
 
     public static function intervalByTime($time){
       if (strpos($time, ':') !== false){
-        list($hours, $minutes, $seconds) = explode(':', $time);
+        @list($hours, $minutes, $seconds) = explode(':', $time);
 
         $minutes = $hours * 60 + $minutes;
         $slotNum = floor($minutes / 10);
