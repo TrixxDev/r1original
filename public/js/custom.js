@@ -235,7 +235,7 @@ $(document).ready(function() {
     let rimsWith = $('.rims-with-mobile input[name="rims_with_input"]:checked').val();
     let storageBin = $('#mobile_storage_bin').val();
     let slot_id = $('section#mobile-main input[name=slotNumber][type=hidden]').val();
-
+    let slotPart = $('section#mobile-main input[name=part][type=hidden]').val();
 
 
 
@@ -257,7 +257,8 @@ $(document).ready(function() {
         'filiale': filiale,
         'date': date,
         'storageBin': storageBin,
-        'rims_with': rimsWith
+        'rims_with': rimsWith,
+        'slotPart': slotPart
       },
       success: function (data) {
         if (data.error) {
@@ -3789,6 +3790,7 @@ $('#mobile-filiale input[name=filiale]').on('change', function() {
           $(this).addClass('selected');
           $('input[type=hidden][name=date]').val($(this).parent().parent().attr('data-date'));
           $('input[type=hidden][name=slot_id]').val($(this).attr('data-slot_id'));
+          $('input[type=hidden][name=part]').val($(this).attr('data-part'));
         }
         $('#mobile-main input[name=date][type=hidden]').val($(this).parent().parent().attr('data-date'));
         $('#mobile-main input[name=slotNumber][type=hidden]').val($(this).attr('data-slot_id'));
@@ -3798,23 +3800,17 @@ $('#mobile-filiale input[name=filiale]').on('change', function() {
       });
       $('.mobile_reservation_table').html(data).animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
       $('.available.slot').on('click', function() {
+        $('#mobile-service select[name=serviceOption] option').each(function() {
+          $(this).removeAttr('selected');
+          $(this).attr('disabled', false).prop('disabled', false);
+          if ($(this).attr('data-moto')) {
+            $(this).attr('disabled', true).prop('disabled', true);
+          }
+          if ($(this).attr('data-ac')) {
+            $(this).attr('disabled', true).prop('disabled', true);
+          }
+        });
         $('#mobile-service select[name=serviceOption]').prop('selectedIndex',0);
-        if (!$(this).hasClass('conditioner')) {
-          $('#mobile-service select[name=serviceOption] option').each(function() {
-            $(this).attr('disabled', false).prop('disabled', false);
-            if ($(this).attr('data-ac')) {
-              $(this).attr('disabled', true).prop('disabled', true);
-            }
-          });
-        }
-        if (!$(this).hasClass('moto')) {
-          $('#mobile-service select[name=serviceOption] option').each(function() {
-            $(this).attr('disabled', false).prop('disabled', false);
-            if ($(this).attr('data-moto')) {
-              $(this).attr('disabled', true).prop('disabled', true);
-            }
-          });
-        }
       });
       $('.slot.conditioner').on('click', function() {
         $('#mobile-service select[name=serviceOption] option').each(function() {

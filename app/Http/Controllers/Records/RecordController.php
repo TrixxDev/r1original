@@ -863,7 +863,7 @@
       $filiale = $request->filiale;
       $date = $request->date;
       $slot_id = $request->slot_id;
-      $slotPart = $request->part;
+      $slotPart = $request->slotPart;
 
       $_weekDays2 = array(
         1=>'pirmdien',
