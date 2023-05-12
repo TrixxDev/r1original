@@ -924,7 +924,7 @@
       $form->rimsWith = $rimsWith;
 
       $slot = Slot::findOrFail($slot_id);
-      if (!slotPart) {
+      if (!$slotPart) {
         if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
 
         $slot->timestamps = false;
