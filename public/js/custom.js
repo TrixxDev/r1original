@@ -3798,12 +3798,18 @@ $('#mobile-filiale input[name=filiale]').on('change', function() {
       });
       $('.mobile_reservation_table').html(data).animate({ height: 'toggle', opacity: 'toggle' }, 'slow');
       $('.available.slot').on('click', function() {
+        $('#mobile-service select[name=serviceOption]').prop('selectedIndex',0);
         if (!$(this).hasClass('conditioner')) {
           $('#mobile-service select[name=serviceOption] option').each(function() {
             $(this).attr('disabled', false).prop('disabled', false);
             if ($(this).attr('data-ac')) {
               $(this).attr('disabled', true).prop('disabled', true);
             }
+          });
+        }
+        if (!$(this).hasClass('moto')) {
+          $('#mobile-service select[name=serviceOption] option').each(function() {
+            $(this).attr('disabled', false).prop('disabled', false);
             if ($(this).attr('data-moto')) {
               $(this).attr('disabled', true).prop('disabled', true);
             }
