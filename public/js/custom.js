@@ -2098,6 +2098,9 @@ $(document).ready(function() {
             if ($(this).children().first().attr('data-ac')) {
               $(this).children().first().attr('disabled', true).prop('disabled', true);
             }
+            if ($(this).children().first().attr('data-moto')) {
+              $(this).children().first().attr('disabled', true).prop('disabled', true);
+            }
           }
         })
       }
