@@ -323,14 +323,14 @@
         $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
         break;
       }
-      case 5:{
+      case 6:{
         $purpose = 'kondicioniera uzpilde';
         $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
         break;
       }
-      case 6:{
-        $purpose = 'Motocikla montāža';
-        $purpose = 'Jūs vēlaties nomainīt motocikla riepu/as pie mums';
+      case 8:{
+        $purpose = 'riepu nomaiņa';
+        $purposeLong = '';
         break;
       }
     }
@@ -906,6 +906,11 @@
         case 6:{
           $purpose = 'kondicioniera uzpilde';
           $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';
+          break;
+        }
+        case 8:{
+          $purpose = 'riepu nomaiņa';
+          $purposeLong = '';
           break;
         }
       }
