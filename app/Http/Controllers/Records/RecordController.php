@@ -423,33 +423,33 @@
         $append = '';
       }
 
-//      if ($office->office_id == 1) {
-//
-//        $cURLConnection = curl_init();
-//
-//        $url = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
-//
-//        curl_setopt($cURLConnection, CURLOPT_URL, $url);
-//        curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-//
-//        curl_exec($cURLConnection);
-//
-//        curl_close($cURLConnection);
-//      } else {
-//        $cURLConnection = curl_init();
-//
-//        $url = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
-//
-//        curl_setopt($cURLConnection, CURLOPT_URL, $url);
-//        curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-//
-//        curl_exec($cURLConnection);
-//
-//        curl_close($cURLConnection);
-//      }
+      if ($office->office_id == 1) {
+
+        $cURLConnection = curl_init();
+
+        $url = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
+
+        curl_setopt($cURLConnection, CURLOPT_URL, $url);
+        curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+        curl_exec($cURLConnection);
+
+        curl_close($cURLConnection);
+      } else {
+        $cURLConnection = curl_init();
+
+        $url = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
+
+        curl_setopt($cURLConnection, CURLOPT_URL, $url);
+        curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+        curl_exec($cURLConnection);
+
+        curl_close($cURLConnection);
+      }
     }
 
-      return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama īsziņā.']);
+      return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama īsziņā.', 'slotPart' => $slotPart, 'ac' => $ac]);
     }
 
     public function showMobileQueues(Request $request) {
