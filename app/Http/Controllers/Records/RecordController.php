@@ -301,6 +301,20 @@
     $dayOfWeek2 = $_weekDays2[date('N', strtotime($date.' 00:00:00'))];
     $today = date('Y-m-d');
 
+    $day = $queue->_workingDays[$date];
+    $start = Office::intervalByTime($day->opentime);
+
+    if ($slotPart != null) {
+      if ($slotPart == 'a') {
+        $startTime = $start + $slotNumber * ($day->slotSize);
+      } else {
+        $startTime = $start + $slotNumber * $day->slotSize + ($day->slotSize/2);
+      }
+    } else {
+      $startTime = $start + $slotNumber * ($day->slotSize);
+    }
+    $time = Office::timeByInterval($startTime);
+
     if ($date == $today && Carbon::parse($time)->subHour() <= Carbon::now()) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
 
     $slot = $queue->_slots[$date][$slotNumber];
@@ -962,8 +976,21 @@
       $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slot->iorder),true);
       $fmtDate = date('d.m.Y',strtotime($slot->date));
       $dayOfWeek2 = $_weekDays2[date('N', strtotime($slot->date.' 00:00:00'))];
-
       $today = date('Y-m-d');
+
+      $day = $queue->_workingDays[$date];
+      $start = Office::intervalByTime($day->opentime);
+
+      if ($slotPart != null) {
+        if ($slotPart == 'a') {
+          $startTime = $start + $slot->iorder * ($day->slotSize);
+        } else {
+          $startTime = $start + $slot->iorder * $day->slotSize + ($day->slotSize/2);
+        }
+      } else {
+        $startTime = $start + $slot->iorder * ($day->slotSize);
+      }
+      $time = Office::timeByInterval($startTime);
 
       if ($date == $today && Carbon::parse($time)->subHour() <= Carbon::now()) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
 
