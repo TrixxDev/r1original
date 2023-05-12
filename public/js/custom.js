@@ -3815,6 +3815,8 @@ $('#mobile-filiale input[name=filiale]').on('change', function() {
           $(this).removeAttr('disabled').removeProp('disabled');
           if (!$(this).attr('data-ac')) {
             $(this).attr('disabled', true).prop('disabled', true);
+          } else {
+            $(this).attr('selected', true).prop('selected', true);
           }
         });
       });
@@ -3823,6 +3825,8 @@ $('#mobile-filiale input[name=filiale]').on('change', function() {
           $(this).removeAttr('disabled').removeProp('disabled');
           if (!$(this).attr('data-moto')) {
             $(this).attr('disabled', true).prop('disabled', true);
+          } else {
+            $(this).attr('selected', true).prop('selected', true);
           }
         });
       });
