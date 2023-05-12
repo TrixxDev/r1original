@@ -675,43 +675,45 @@ class RecordController extends Controller
             $append = '';
           }
 
-          switch ($f_statuscase) {
-            case 1: {
-              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
-              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
-              break;
+          if ($f_statuscase) {
+            switch ($f_statuscase) {
+              case 1: {
+                $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
+                $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
+                break;
+              }
+              case 2: {
+                $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
+                $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
+                break;
+              }
+              case 3: {
+                $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate;
+                $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate;
+                break;
+              }
             }
-            case 2: {
-              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
-              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate . ',%20pakalpojums%20-%20' . $service . $append;
-              break;
+
+            if ($newOffice == 1) {
+
+              $cURLConnection = curl_init();
+
+              curl_setopt($cURLConnection, CURLOPT_URL, $ursUrl);
+              curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+              curl_exec($cURLConnection);
+
+              curl_close($cURLConnection);
+            } else {
+              $cURLConnection = curl_init();
+
+              curl_setopt($cURLConnection, CURLOPT_URL, $krsUrl);
+              curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+              curl_exec($cURLConnection);
+
+              curl_close($cURLConnection);
             }
-            case 3: {
-              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate;
-              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20' . $vehicle . '%20' . $model . ',%20' . $vehiclePlate;
-              break;
-            }
-          }
-
-          if ($newOffice == 1) {
-
-            $cURLConnection = curl_init();
-
-            curl_setopt($cURLConnection, CURLOPT_URL, $ursUrl);
-            curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-
-            curl_exec($cURLConnection);
-
-            curl_close($cURLConnection);
-          } else {
-            $cURLConnection = curl_init();
-
-            curl_setopt($cURLConnection, CURLOPT_URL, $krsUrl);
-            curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-
-            curl_exec($cURLConnection);
-
-            curl_close($cURLConnection);
           }
         }
       }
