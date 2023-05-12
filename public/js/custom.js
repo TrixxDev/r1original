@@ -2421,6 +2421,12 @@ $(document).ready(function() {
     // console.log($(this).data('date'));
     // throw '';
 
+    const date = new Date();
+    let currentDay= String(date.getDate()).padStart(2, '0');
+    let currentMonth = String(date.getMonth()+1).padStart(2,"0");
+    let currentYear = date.getFullYear();
+    let today = `${currentYear}-${currentMonth}-${currentDay}`;
+
     if ($('.last-info').length) {
 	    $('.last-info').remove();
     }
@@ -2484,14 +2490,19 @@ $(document).ready(function() {
           $('.modal#slotModal #f_status').val(1);
         }
         $('.reservation_edit .reservationOption').each(function() {
-          $(this).on('click', function() {
-            if ($(this).is(':checked')) {
-              $('.reservation_edit .reservationOption').attr('disabled', true).prop('disabled', true);
-              $(this).attr('disabled', false).prop('disabled', false);
-            } else {
-              $('.reservation_edit .reservationOption').attr('disabled', false).prop('disabled', false);
-            }
-          })
+          if (today == data.d) {
+            $(this).parent().show();
+            $(this).on('click', function() {
+              if ($(this).is(':checked')) {
+                $('.reservation_edit .reservationOption').attr('disabled', true).prop('disabled', true);
+                $(this).attr('disabled', false).prop('disabled', false);
+              } else {
+                $('.reservation_edit .reservationOption').attr('disabled', false).prop('disabled', false);
+              }
+            })
+          } else {
+            $(this).parent().hide();
+          }
         });
         $('.modal#slotModal #f_slotcomment').html(data.f_slotcomment);
          if (data.p == 'a') {
