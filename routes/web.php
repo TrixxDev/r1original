@@ -196,6 +196,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
 
   // Interneta-veikals
   Route::match(['GET', 'POST'], '/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
+  Route::match(['GET', 'POST'], '/orders/print', [App\Http\Controllers\Admin\ShopController::class, 'orders_print'])->name('orders_print');
   Route::match(['GET', 'POST'], '/order/{id}/update', [App\Http\Controllers\Admin\ShopController::class, 'order_update'])->name('order.update');
   Route::match(['GET', 'POST'], '/order/{id}/delete', [App\Http\Controllers\Admin\ShopController::class, 'delete'])->name('order.delete');
   Route::get('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'order'])->name('order');

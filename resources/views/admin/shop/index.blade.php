@@ -17,10 +17,24 @@
       <div class="row">
         <div class="col-md-12">
           <div class="card">
+            <div class="card-header">Pasūtījumi
+              <span style="float: right;">
+                <form method="post" class="form-inline" action="{{ route('admin.orders_print') }}">
+                  @csrf
+                  <label for="orders_from">No: </label>
+{{--                  <input class="form-control" style="margin: 0 10px" type="date" id="orders_from" name="orders_from">--}}
+                  <input class="date form-control" name="orders_from" style="margin: 0 10px" id="orders_from" type="text" autocomplete="off">
+                  <label for="order_to">Līdz: </label>
+{{--                  <input class="form-control" style="margin: 0 10px" type="date" id="orders_to" name="orders_to">--}}
+                  <input class="date form-control" name="orders_to" style="margin: 0 10px" id="orders_to" type="text" autocomplete="off">
+                  <button name="print" class="btn btn-success" type="submit" style="margin: 0 10px">Printēt</button>
+                  <a class="btn btn-primary" href="#">Izveidot</a>
+                </form>
+              </span>
+            </div>
             <form class="form-horizontal services_form" id="ordersForm" method="post">
               @csrf
               <input type="hidden" name="service_id">
-              <div class="card-header">Pasūtījumi <span style="float: right;"><a class="btn btn-primary" href="#">Izveidot</a></span></div>
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-12">

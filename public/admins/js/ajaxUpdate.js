@@ -1364,3 +1364,5 @@ $('.tread_comment').on('click', '.brand-comment-edit-cancel[type=button]', funct
   $('.tread_comment .brand-comment-edit').attr('type', 'button').removeAttr('name').removeAttr('value');
   $('.nav.nav-tabs .nav-item').first().children('.nav-link').removeClass('disabled');
 });
+
+$('#orders_from, #orders_to').datepicker({ dateFormat: 'yy-mm-dd' });

@@ -4,13 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\Office;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ShopController extends Controller
 {
@@ -70,6 +74,133 @@ class ShopController extends Controller
 
     return view('admin.shop.index', compact('orders', 'status_enum', 'pay_enum'));
 
+  }
+
+  public function orders_print(Request $request)
+  {
+
+    $status_enum = $this->status_enum;
+    $pay_enum = $this->pay_enum;
+
+    DB::enableQueryLog();
+
+    $time_from = $request->orders_from;
+    $time_to = $request->orders_to;
+
+    if (is_null($time_from) && is_null($time_to) || is_null($time_from) && $time_to) return Redirect::back();
+
+    $time_to = Carbon::parse($time_to)->addDay()->format('Y-m-d');
+    if (is_null($time_to)) {
+      $time_to = Carbon::parse(date('d-m-Y'))->addDay()->format('Y-m-d');
+    }
+
+    $orders = Order::where('created_at','>=', $time_from)
+                   ->where('created_at','<=', $time_to)
+                   ->orderBy('created_at', 'ASC')
+                   ->get();
+
+    $spreadsheet = new Spreadsheet();
+
+
+
+    $sheet = $spreadsheet->getActiveSheet();
+    $sheet->setTitle('Pasūtījumi - ' . date('Y-m-d'));
+
+    $sheet->setCellValue('A1', 'Pasūtījuma datums');
+    $sheet->setCellValue('B1', 'Klients');
+    $sheet->setCellValue('C1', 'Klienta nr.');
+    $sheet->setCellValue('D1', 'Klienta e-pasts.');
+    $sheet->setCellValue('E1', 'Preču daudzums');
+    $sheet->setCellValue('F1', 'Summa');
+    $sheet->setCellValue('G1', 'Pasūtījuma statuss');
+    $sheet->setCellValue('H1', 'Menedžeris');
+    $sheet->setCellValue('I1', 'Preču grupas');
+    $sheet->setCellValue('J1', 'Piegādes adrese');
+
+    $b = 2;
+
+    foreach ($orders as $order) {
+      $item_count = [];
+      $item_sum = [];
+      @$userData = json_decode(json_encode(unserialize($order->info)));
+      if ($userData == false || !isset($userData->items)) continue;
+      $sheet->setCellValue('A' . $b, Carbon::parse($order->created_at)->format('Y-m-d'));
+      if (isset($userData->name) || isset($userData->surname)) {
+        $sheet->setCellValue('B' . $b, $userData->name . ', ' . $userData->surname);
+      } else {
+        $sheet->setCellValue('B' . $b, 'Nav info');
+      }
+      $sheet->setCellValue('C' . $b, $userData->phone_number);
+      $sheet->setCellValue('D' . $b, $userData->email);
+      if (isset($userData->items)) {
+        foreach ($userData->items as $item) {
+          if (!isset($item->quantity)) continue;
+          array_push($item_count, $item->quantity);
+          array_push($item_sum, ($item->price * $item->quantity));
+        }
+      }
+      $item_count = array_sum($item_count);
+      $item_sum = array_sum($item_sum);
+      if ($order->delivery_price > 0) {
+        $item_sum = $item_sum + (int) substr($order->delivery_price, 0, -2);
+      } else if ($order->fit_price > 0) {
+        $item_sum = $item_sum + (int) substr($order->fit_price, 0, -2);
+      }
+      $sheet->setCellValue('E' . $b, $item_count);
+      $sheet->setCellValue('F' . $b, $item_sum);
+      $sheet->setCellValue('G' . $b, $status_enum[$order->status]);
+      if (User::find($order->edituser)) {
+        $sheet->setCellValue('H' . $b, User::find($order->edituser)->fullName);
+      } else {
+        $sheet->setCellValue('H' . $b, 'Neviens nav veicis labojumus');
+      }
+      if (isset($userData->shipping_city)) {
+        if ($userData->shipping_city == 1) {
+          $sheet->setCellValue('J' . $b, 'Rīga, ' . $userData->shipping_address);
+        } else if ($userData->shipping_city == 2) {
+          $sheet->setCellValue('J' . $b, 'Salaspils, ' . $userData->shipping_address);
+        } else {
+          $sheet->setCellValue('J' . $b, $userData->shipping_address);
+        }
+      } else {
+        $sheet->setCellValue('J' . $b, '');
+      }
+
+      $b++;
+    }
+
+    $sheet->setAutoFilter('A:H');
+    $lastRow = $sheet->getHighestRow();
+    $sheet->getStyle('A2:J' . $lastRow)->getAlignment()->setHorizontal('center');
+    $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
+    $cellIterator->setIterateOnlyExistingCells(true);
+    foreach ($cellIterator as $cell) {
+      if ($cell->getColumn() == 'H') continue;
+      $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
+    }
+    $sheet->getColumnDimension('D')->setWidth(33);
+    $sheet->getColumnDimension('E')->setWidth(10);
+    $sheet->getColumnDimension('F')->setWidth(10);
+    $sheet->getColumnDimension('G')->setWidth(31);
+    $sheet->getColumnDimension('H')->setWidth(27);
+    $sheet->getColumnDimension('I')->setWidth(14);
+
+    $writer = new Xlsx($spreadsheet);
+    $filename = 'pasutijumi.xlsx';
+
+    $writer->save($filename);
+
+    // Set the content-type:
+    header('Content-Type: application/vnd.ms-excel');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Content-Length: ' . filesize($filename));
+    readfile($filename); // send file
+    unlink($filename); // delete file
+    exit;
+
+
+//          dd(DB::getQueryLog());
+//    return view('admin.shop.index', compact('orders', 'status_enum', 'pay_enum'));
   }
 
   public function order($id)

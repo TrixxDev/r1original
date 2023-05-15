@@ -19,6 +19,7 @@
     <link href="{{ asset('admins/css/dataTable.bootstrap4.css?rev=' . time()) }}" rel="stylesheet">
     <link href="{{ asset('admins/css/coreui-chartjs.css?rev=' . time()) }}" rel="stylesheet">
     <link href="{{ asset('admins/css/bootstrap-multiselect.css?rev=' . time()) }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
   <body class="c-app">
@@ -263,6 +264,7 @@
       </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="https://cdn.tiny.cloud/1/3nivlf7ukirc5znzq6r1m68qaf80subltkj10h3an5njfepn/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         $(document).ready(function() {
