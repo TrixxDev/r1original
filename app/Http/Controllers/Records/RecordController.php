@@ -320,7 +320,7 @@
     $slot = $queue->_slots[$date][$slotNumber];
 //      $slot = Slot::find($slot->slot_id);
 
-    if ($slotPart == 'a') {
+    if (!$slotPart) {
       if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
 
       $slot->timestamps = false;
@@ -328,20 +328,39 @@
       $slot->takenby = json_encode($form);
       $slot->status = 1;
 
-      $slot->createtime = $slot->edittime = NOW();
-      $slot->createuser = $slot->edituser = $userID;
-      $slot->is_mobile = 0;
+      $slot->createtime = date('Y-m-d H:i:s');
+      $slot->createuser = $userID;
+      $slot->edittime = date('Y-m-d H:i:s');
+      $slot->edituser = $userID;
+      $slot->is_mobile = 1;
     } else {
-      if ($slot->status2 != SLOT_STATUS_FREE && $slot->status2 == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+      if ($slotPart == 'a') {
+        if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
 
-      $slot->timestamps = false;
+        $slot->timestamps = false;
 
-      $slot->takenby2 = json_encode($form);
-      $slot->status2 = 1;
+        $slot->takenby = json_encode($form);
+        $slot->status = 1;
 
-      $slot->createtime2 = $slot->edittime = NOW();
-      $slot->createuser2 = $slot->edituser = $userID;
-      $slot->is_mobile2 = 0;
+        $slot->createtime = date('Y-m-d H:i:s');
+        $slot->createuser = $userID;
+        $slot->edittime = date('Y-m-d H:i:s');
+        $slot->edituser = $userID;
+        $slot->is_mobile = 1;
+      } else {
+        if ($slot->status2 != SLOT_STATUS_FREE && $slot->status2 == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+
+        $slot->timestamps = false;
+
+        $slot->takenby2 = json_encode($form);
+        $slot->status2 = 1;
+
+        $slot->createtime2 = date('Y-m-d H:i:s');
+        $slot->createuser2 = $userID;
+        $slot->edittime2 = date('Y-m-d H:i:s');
+        $slot->edituser2 = $userID;
+        $slot->is_mobile2 = 1;
+      }
     }
 
 
