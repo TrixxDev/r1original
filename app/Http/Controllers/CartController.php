@@ -741,8 +741,9 @@ class CartController extends Controller
             $out .= 'Tiešsaistes apmaksa';
           }
           $out .= '<br>
-        </div>
-      </div>';
+        </div>';
+        if (isset($details->email_notifications)) $out .= '<div style="background-color:lightgrey;padding:5px"><b>Piekrītu, ka man tiks sūtīti paziņojumi par akcijām un jaunumiem uz norādīto e-pastu</b></div>';
+      $out .= '</div>';
 
       return $out;
     }
