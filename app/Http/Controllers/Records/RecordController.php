@@ -1458,7 +1458,7 @@
                             } else {
                               $service = Service::where('service_id', $takenBy->purpose)->first();
                               if (!empty($service)) {
-                                if (isset($takenBy->rimsWith)) {
+                                if (!is_null($takenBy->rimsWith)) {
                                   if ($takenBy->rimsWith == 1) {
                                     $rimsWith = 'Riepas bez diskiem';
                                   } else {

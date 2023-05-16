@@ -742,7 +742,11 @@ class CartController extends Controller
           }
           $out .= '<br>
         </div>';
-        if (isset($details->info['email_notifications'])) $out .= '<div style="background-color:lightgrey;padding:5px"><b>Piekrītu, ka man tiks sūtīti paziņojumi par akcijām un jaunumiem uz norādīto e-pastu</b></div>';
+        if (isset($details->info['email_notifications'])) {
+          $out .= '<div style="background-color:lightgrey;padding:5px"><b>Piekrītu, ka man tiks sūtīti paziņojumi par akcijām un jaunumiem uz norādīto e-pastu</b></div>';
+        } else {
+          $out .= '<div style="background-color:lightgrey;padding:5px"><b>Nepiekrītu, ka man tiks sūtīti paziņojumi par akcijām un jaunumiem uz norādīto e-pastu</b></div>';
+        }
       $out .= '</div>';
 
       return $out;

@@ -64,13 +64,13 @@ class ShopController extends Controller
         $query->where('status', $this->filteredStatus);
       })->when($this->filteredEditor, function($query) {
         $query->where('edituser', $this->filteredEditor);
-      })->orderBy('id', 'desc')->paginate(100);
+      })->orderBy('id', 'desc')->paginate(100)->appends($request->query());
 //      dd(DB::getQueryLog());
 
       return view('admin.shop.index', compact('orders', 'status_enum', 'pay_enum'));
     }
 
-    $orders = Order::orderBy('id', 'desc')->paginate(100);
+    $orders = Order::orderBy('id', 'desc')->paginate(100)->appends($request->query());
 
     return view('admin.shop.index', compact('orders', 'status_enum', 'pay_enum'));
 

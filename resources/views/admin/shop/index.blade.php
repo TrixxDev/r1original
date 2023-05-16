@@ -32,9 +32,9 @@
                 </form>
               </span>
             </div>
-            <form class="form-horizontal services_form" id="ordersForm" method="post">
-              @csrf
-              <input type="hidden" name="service_id">
+            <form class="form-horizontal services_form" id="ordersForm" method="get">
+              <input type="hidden" disabled name="csrf_token" value="{{ csrf_token() }}">
+              <input type="hidden" disabled name="service_id">
               <div class="card-body">
                 <div class="row">
                   <div class="col-md-12">
