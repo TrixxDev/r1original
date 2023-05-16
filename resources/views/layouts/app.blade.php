@@ -34,7 +34,7 @@
     <script src="{{ asset('js/loginToggle.js?rev=' . time()) }}"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="{{asset('css/magiczoomplus.css')}}"/>
+    <link type="text/css" rel="stylesheet" href="{{asset('css/magiczoomplus.css?rev=' . time())}}"/>
     <script src="{{asset('js/magic.js')}}"></script>
   <script>
       toastr.options = {
