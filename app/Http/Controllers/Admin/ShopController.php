@@ -110,12 +110,13 @@ class ShopController extends Controller
     $sheet->setCellValue('B1', 'Klients');
     $sheet->setCellValue('C1', 'Klienta nr.');
     $sheet->setCellValue('D1', 'Klienta e-pasts.');
-    $sheet->setCellValue('E1', 'Preču daudzums');
-    $sheet->setCellValue('F1', 'Summa');
-    $sheet->setCellValue('G1', 'Pasūtījuma statuss');
-    $sheet->setCellValue('H1', 'Menedžeris');
-    $sheet->setCellValue('I1', 'Preču grupas');
-    $sheet->setCellValue('J1', 'Piegādes adrese');
+    $sheet->setCellValue('E1', 'Akcijas');
+    $sheet->setCellValue('F1', 'Preču daudzums');
+    $sheet->setCellValue('G1', 'Summa');
+    $sheet->setCellValue('H1', 'Pasūtījuma statuss');
+    $sheet->setCellValue('I1', 'Menedžeris');
+    $sheet->setCellValue('J1', 'Preču grupas');
+    $sheet->setCellValue('K1', 'Piegādes adrese');
 
     $b = 2;
 
