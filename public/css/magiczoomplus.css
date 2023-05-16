@@ -1,7 +1,7 @@
 /*
 
 
-   Magic Zoom Plus v5.2.6 
+   Magic Zoom Plus v5.2.6
    Copyright 2018 Magic Toolbox
    Buy a license: https://www.magictoolbox.com/magiczoomplus/
    License agreement: https://www.magictoolbox.com/license/
@@ -895,7 +895,7 @@ button.mz-button.mz-button-close {
     z-index: 95 !important;
 }
 :root:not(.mobile-magic) button.mz-button {
-    color: rgba(180, 180, 180, .75) !important;
+    color: red !important;
     -webkit-transform: scale(.85) !important;
             transform: scale(.85) !important;
     -webkit-transition: color .25s, border-color .25s, -webkit-transform .25s !important;
