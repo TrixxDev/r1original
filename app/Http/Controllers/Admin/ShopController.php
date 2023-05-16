@@ -147,24 +147,25 @@ class ShopController extends Controller
       } else if ($order->fit_price > 0) {
         $item_sum = $item_sum + (int) substr($order->fit_price, 0, -2);
       }
-      $sheet->setCellValue('E' . $b, $item_count);
-      $sheet->setCellValue('F' . $b, $item_sum);
-      $sheet->setCellValue('G' . $b, $status_enum[$order->status]);
+      $sheet->setCellValue('E' . $b, (isset($userData->email_notifications)) ? 'Jā' : 'Nē');
+      $sheet->setCellValue('F' . $b, $item_count);
+      $sheet->setCellValue('G' . $b, $item_sum);
+      $sheet->setCellValue('H' . $b, $status_enum[$order->status]);
       if (User::find($order->edituser)) {
-        $sheet->setCellValue('H' . $b, User::find($order->edituser)->fullName);
+        $sheet->setCellValue('I' . $b, User::find($order->edituser)->fullName);
       } else {
-        $sheet->setCellValue('H' . $b, 'Neviens nav veicis labojumus');
+        $sheet->setCellValue('I' . $b, 'Neviens nav veicis labojumus');
       }
       if (isset($userData->shipping_city)) {
         if ($userData->shipping_city == 1) {
-          $sheet->setCellValue('J' . $b, 'Rīga, ' . $userData->shipping_address);
+          $sheet->setCellValue('K' . $b, 'Rīga, ' . $userData->shipping_address);
         } else if ($userData->shipping_city == 2) {
-          $sheet->setCellValue('J' . $b, 'Salaspils, ' . $userData->shipping_address);
+          $sheet->setCellValue('K' . $b, 'Salaspils, ' . $userData->shipping_address);
         } else {
-          $sheet->setCellValue('J' . $b, $userData->shipping_address);
+          $sheet->setCellValue('K' . $b, $userData->shipping_address);
         }
       } else {
-        $sheet->setCellValue('J' . $b, '');
+        $sheet->setCellValue('K' . $b, '');
       }
 
       $b++;
