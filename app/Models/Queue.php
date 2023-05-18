@@ -381,9 +381,21 @@ class Queue extends Model
 
       $office = Office::findOrFail($this->office_id);
 
-      $time = $this->getSlotStartTime($date,$slotNum,false);
-      $time2 = $this->getSlotStartTime2($date,$slotNum,false);
-      if ($showTime2) $time = $time2;
+      $this->loadWorkingDay($date);
+
+      $day = $this->_workingDays[$date];
+      $start = Office::intervalByTime($day->opentime);
+
+      if ($showTime2 != null) {
+        if ($showTime2 == false) {
+          $startTime = $start + $slotNum * ($day->slotSize);
+        } else {
+          $startTime = $start + $slotNum * $day->slotSize + ($day->slotSize/2);
+        }
+      } else {
+        $startTime = $start + $slotNum * ($day->slotSize);
+      }
+      $time = Office::timeByInterval($startTime);
 
       $dateStamp = strtotime($date.' '.$time);
       $dayOfWeek = $_weekDays[date('N', $dateStamp)];
@@ -425,9 +437,6 @@ class Queue extends Model
       $url = env('SCHEDULE_URL');
 
       $outText = str_replace('%TIME%',$time,$text);
-      if ($showTime2) {
-        $outText = str_replace('%TIME2%',$time2,$outText);
-      }
       $outText = str_replace('%DATE%',$dateFmt,$outText);
       $outText = str_replace('%URL%', $url, $outText);
       $outText = str_replace('%DAY%',ucfirst($dayOfWeek),$outText);

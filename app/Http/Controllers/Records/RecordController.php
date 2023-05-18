@@ -296,7 +296,7 @@
       $queue->loadWorkingDay($date);
       $queue->loadSlots($date, true);
 
-    $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slotNumber),true);
+//    $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slotNumber),true);
     $fmtDate = date('d.m.Y',strtotime($date));
     $dayOfWeek2 = $_weekDays2[date('N', strtotime($date.' 00:00:00'))];
     $today = date('Y-m-d');
@@ -307,11 +307,14 @@
     if ($slotPart != null) {
       if ($slotPart == 'a') {
         $startTime = $start + $slotNumber * ($day->slotSize);
+        $secondarySlot = false;
       } else {
         $startTime = $start + $slotNumber * $day->slotSize + ($day->slotSize/2);
+        $secondarySlot = true;
       }
     } else {
       $startTime = $start + $slotNumber * ($day->slotSize);
+      $secondarySlot = true;
     }
     $time = Office::timeByInterval($startTime);
 
@@ -424,16 +427,16 @@
 //          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
 //        }
 
-      $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleSMS'], $slot->date, $slot->iorder, $form, false);
+      $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleSMS'], $slot->date, $slot->iorder, $form, $secondarySlot);
 
       if ($form->ownerEmail) {
-        $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, false);
+        $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, $secondarySlot);
 //        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($mailText));
       $mailer = new Mailer();
       $mailer->addRecipient($form->ownerEmail);
       $bcc = 'karlis@r1riepas.lv';
       if ($bcc) $mailer->addBCC($bcc);
-      $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, false);
+      $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, $secondarySlot);
       $mailer->message = $mailText;
       $mailer->send();
     }
@@ -1003,11 +1006,14 @@
       if ($slotPart != null) {
         if ($slotPart == 'a') {
           $startTime = $start + $slot->iorder * ($day->slotSize);
+          $secondarySlot = false;
         } else {
           $startTime = $start + $slot->iorder * $day->slotSize + ($day->slotSize/2);
+          $secondarySlot = true;
         }
       } else {
         $startTime = $start + $slot->iorder * ($day->slotSize);
+        $secondarySlot = false;
       }
       $time = Office::timeByInterval($startTime);
 
@@ -1070,16 +1076,16 @@
         'cancelId' => $cancelId
       ];
 
-        $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleSMS'], $slot->date, $slot->iorder, $form, false);
+        $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleSMS'], $slot->date, $slot->iorder, $form, $secondarySlot);
 
         if ($form->ownerEmail) {
-          $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, false);
+          $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, $secondarySlot);
 //        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($mailText));
           $mailer = new Mailer();
           $mailer->addRecipient($form->ownerEmail);
           $bcc = 'karlis@r1riepas.lv';
           if ($bcc) $mailer->addBCC($bcc);
-          $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, false);
+          $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, $secondarySlot);
           $mailer->message = $mailText;
           $mailer->send();
         }
