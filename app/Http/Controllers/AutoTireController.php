@@ -137,6 +137,7 @@ class AutoTireController extends Controller
       ->orderBy('d1', 'ASC')
       ->orderBy('d2', 'ASC')
       ->orderBy('price2', 'DESC')
+      ->groupBy('tire_id')
       ->paginate();
 //        $codes = Code::all()->toArray();
     $codes = Code::all();

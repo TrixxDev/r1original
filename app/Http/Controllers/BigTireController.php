@@ -7,6 +7,7 @@ use App\Helper\Tires;
 use App\Models\Bigbrand;
 use App\Models\Bigtire;
 use App\Models\Bigtread;
+use App\Models\Code;
 use Cart;
 use Illuminate\Http\Request;
 use Auth;
@@ -27,8 +28,20 @@ class BigTireController extends Controller
     public $bigTiresD3;
     public $model = 'Bigtire';
     public $tiresSize;
+    public $tire_types;
+    public $tire_implementions;
+    public $tire_axis;
+    public $tire_conditions;
     public $code;
-    public $axle;
+    public $code_array = [];
+    public $type;
+    public $types;
+    public $implemention;
+    public $implementions;
+//    public $axi;
+//    public $axis;
+//    public $condition;
+//    public $conditions;
     public $surface;
     public $availability;
     public $filterCount = 0;
@@ -43,16 +56,20 @@ class BigTireController extends Controller
       $this->bigTiresD2 = Tires::getBigTiresD2();
       $this->bigTiresD3 = Tires::getBigTiresD3();
 
-      ($request->brand == 'Visi') ? $this->currBrand = 'Visi' : $this->currBrand = $request->brand;
-      ($this->currBrand === NULL) ? $this->currBrand = 'Visi' : $this->currBrand = $request->brand;
+      $this->currBrand = ($request->brand == 'Visi') ? 'Visi' : $request->brand;
+      $this->currBrand = ($this->currBrand === NULL) ? 'Visi' : $request->brand;
 
-      ($request->d1 == 'Visi') ? $this->d1 = 'Visi' : $this->d1 = $request->d1;
-      ($request->d2 == 'Visi') ? $this->d2 = 'Visi' : $this->d2 = $request->d2;
-      ($request->d3 == 'Visi') ? $this->d3 = 'Visi' : $this->d3 = $request->d3;
+      $this->d1 = ($request->d1 == 'Visi') ? 'Visi' : $request->d1;
+      $this->d2 = ($request->d2 == 'Visi') ? 'Visi' : $request->d2;
+      $this->d3 = ($request->d3 == 'Visi') ? 'Visi' : $request->d3;
+//      $this->type = ($request->type == 'Visi') ? '' : $request->type;
+//      $this->implement = ($request->implement == 'Visi') ? '' : $request->implement;
+//      $this->axle = ($request->axle == 'Visi') ? '' : $request->axle;
+//      $this->condition = ($request->condition == 'Visi') ? '' : $request->condition;
 
-      ($request->code) ? $this->code = $request->code : $this->code = [];
-      ($request->axle) ? $this->axle = $request->axle : $this->axle = [];
-      ($request->surface) ? $this->surface = $request->surface : $this->surface = [];
+//      ($request->tire_type) ? $this->tire_type = $request->tire_type : $this->tire_type = [];
+//      ($request->axle) ? $this->axle = $request->axle : $this->axle = [];
+//      ($request->surface) ? $this->surface = $request->surface : $this->surface = [];
 
       if ($request->d1 == NULL && $this->d1 == NULL) {
         $this->d1 = 10;
@@ -66,6 +83,12 @@ class BigTireController extends Controller
           $this->d3 = 16.5;
       }
 
+      $codes = Code::all();
+
+      foreach ($codes as $code) {
+        $this->code_array[$code->name] = $code->explanation;
+      }
+
       View::share('brands', $this->brands);
       View::share('bigTiresD1', $this->bigTiresD1);
       View::share('bigTiresD2', $this->bigTiresD2);
@@ -74,9 +97,13 @@ class BigTireController extends Controller
       View::share('d1', $this->d1);
       View::share('d2', $this->d2);
       View::share('d3', $this->d3);
-      View::share('code', $this->code);
-      View::share('axle', $this->axle);
-      View::share('surface', $this->surface);
+      View::share('types', []);
+      View::share('implementions', []);
+      View::share('code_array', $this->code_array);
+      View::share('tire_types', $this->getTireOptions()['tire_types']);
+      View::share('tire_implementions', $this->getTireOptions()['tire_implementions']);
+//      View::share('tire_axis', $this->getTireOptions()['tire_axis']);
+//      View::share('tire_conditions', $this->getTireOptions()['tire_conditions']);
       View::share('filterCount', $this->filterCount);
       View::share('cartQty', $this->cartQty);
     }
@@ -106,6 +133,8 @@ class BigTireController extends Controller
     public function tires_search(Request $request)
     {
       DB::enableQueryLog();
+
+//      dd($request);
       $this->currBrand = ($request->brand == 'Visi') ? '' : $request->brand;
 
       $code = $request->code;
@@ -121,6 +150,12 @@ class BigTireController extends Controller
 
       $this->d1 = ($this->d1 == 'Visi') ? '' : $request->d1;
       $this->d2 = ($this->d2 == 'Visi') ? '' : $request->d2;
+      $this->d3 = ($this->d3 == 'Visi') ? '' : $request->d3;
+
+      $types = $this->type = ($request->type) ? $request->type : [];
+      $implementions = $this->implementions = ($request->implemention) ? $request->implemention : [];
+//      $axis = $this->axis = ($request->axi) ? $request->axi : [];
+//      $conditions = $this->conditions = ($request->condition) ? $request->condition : [];
 
       $tires = Bigtire::join('bigtire_treads', 'big_tires.make_id', '=', 'bigtire_treads.tread_id')
       ->when($makes, function($query) use ($makes) {
@@ -129,20 +164,33 @@ class BigTireController extends Controller
         $query->where('d1', $this->d1);
       })->when($this->d2, function($query) {
         $query->where('d2', $this->d2);
-      })->where('d3', $this->d3)
+      })->when($this->d3, function($query) {
+          $query->where('d3', $this->d3);
+      })->when($this->type, function($query) {
+          $query->whereIn('big_tires.type', $this->type);
+      })->when($this->implemention, function($query) {
+          $query->whereIn('big_tires.implemention', $this->implemention);
+      })->where('visible_users', '<>', 0)
         ->orderBy('d3', 'ASC')
         ->orderBy('d1', 'ASC')
         ->orderBy('d2', 'ASC')
         ->orderBy('price2', 'DESC')
         ->paginate()->appends($request->query());
-//      dd(DB::getQueryLog());
+
+//      dd(DB::getQueryLog(), $tires);
+
+//      ->when($this->axis, function($query) {
+//      $query->whereIn('axis_bus', $this->axis)->orWhereIn('axis_truck', $this->axis);
+//    })->when($this->conditions, function($query) {
+//      $query->whereIn('conditions_bus', $this->conditions)->orWhereIn('conditions_truck', $this->conditions);
+//    })
 
 //      ->when($code, function($query) use ($code){
 //      $query->where('code', 'LIKE', '%' . $code . '%');
 //    })
 
       return view('tires.industrial.index',
-        compact('tires', 'code')
+        compact('tires', 'code', 'types', 'implementions')
       );
     }
 
@@ -223,5 +271,50 @@ class BigTireController extends Controller
 
       return $brand_list;
     }
+
+  public function getTireOptions()
+  {
+    $tire_type = [];
+    $tire_implemention = [];
+    $tire_axis = [];
+    $tire_condition = [];
+
+    foreach (Bigtire::all() as $tire) {
+      array_push($tire_type, $tire->type);
+      array_push($tire_implemention, $tire->implemention);
+      array_push($tire_axis, $tire->axis_bus);
+      array_push($tire_axis, $tire->axis_truck);
+      array_push($tire_condition, $tire->conditions_bus);
+      array_push($tire_condition, $tire->conditions_truck);
+    }
+
+    $tire_type = array_unique($tire_type);
+    $tire_type = array_values($tire_type);
+    $tire_type = array_filter($tire_type);
+
+    $tire_implemention = array_unique($tire_implemention);
+    $tire_implemention = array_values($tire_implemention);
+    $tire_implemention = array_filter($tire_implemention);
+
+    $tire_axis = array_unique($tire_axis);
+    $tire_axis = array_values($tire_axis);
+    $tire_axis = array_filter($tire_axis);
+
+    $tire_condition = array_unique($tire_condition);
+    $tire_condition = array_values($tire_condition);
+    $tire_condition = array_filter($tire_condition);
+
+    asort($tire_type, SORT_NATURAL | SORT_FLAG_CASE);
+    asort($tire_implemention, SORT_NATURAL | SORT_FLAG_CASE);
+    asort($tire_axis, SORT_NATURAL | SORT_FLAG_CASE);
+    asort($tire_condition, SORT_NATURAL | SORT_FLAG_CASE);
+
+    return [
+      'tire_types' => $tire_type,
+      'tire_implementions' => $tire_implemention,
+      'tire_axis' => $tire_axis,
+      'tire_conditions' => $tire_condition,
+    ];
+  }
 
 }

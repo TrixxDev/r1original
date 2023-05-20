@@ -152,6 +152,131 @@
                         </li>
                       </ul>
                     </section>
+                    <section class="facet clearfix facet--8">
+                      <h1 class="h6 facet-title hidden-sm-down facet-hover type-dropdown-btn">Tips
+                        <span class="material-icons type-dropdown">keyboard_arrow_down</span>
+                      </h1>
+                      <div class="title hidden-md-up" data-target="#facet_70638" data-toggle="collapse">
+                        <h1 class="h6 facet-title">Tips</h1>
+                        <span class="float-xs-right">
+                          <span class="navbar-toggler collapse-icons">
+                            <i class="material-icons add"></i>
+                            <i class="material-icons remove"></i>
+                          </span>
+                        </span>
+                      </div>
+                      <ul id="facet_type" class="collapse" style="display: none;">
+                        @foreach ($tire_types as $tire_type_id => $tire_type)
+                        <li data-label="type_{{ $tire_type_id }}">
+                          <label class="facet-label" for="facet_type_{{ $tire_type_id }}">
+                            <span class="custom-checkbox">
+                              <input id="facet_type_{{ $tire_type_id }}" data-search-url="" name="type[]"
+                                     @if (in_array($tire_type, $types)) checked="" @endif value="{{ $tire_type }}"
+                                   data-for="type" data-value="A" type="checkbox">
+                              <span class="ps-shown-by-js">
+                                <i class="material-icons checkbox-checked"></i>
+                              </span>
+                            </span>
+                            <a href="javascript:;" class="_gray-darker search-link js-search-link first-uppercase text-lowercase" rel="nofollow">{{ $tire_type }}</a>
+                          </label>
+                        </li>
+                        @endforeach
+                      </ul>
+                    </section>
+                    <section class="facet clearfix facet--8">
+                      <h1 class="h6 facet-title hidden-sm-down facet-hover implementions-dropdown-btn">Pielietojums
+                        <span class="material-icons implementions-dropdown">keyboard_arrow_down</span>
+                      </h1>
+                      <div class="title hidden-md-up" data-target="#facet_70638" data-toggle="collapse">
+                        <h1 class="h6 facet-title">Pielietojums</h1>
+                        <span class="float-xs-right">
+                          <span class="navbar-toggler collapse-icons">
+                            <i class="material-icons add"></i>
+                            <i class="material-icons remove"></i>
+                          </span>
+                        </span>
+                      </div>
+                      <ul id="facet_implementions" class="collapse" style="display: none;">
+                        @foreach ($tire_implementions as $tire_implemention_id => $tire_implemention)
+                        <li data-label="implemention_{{ $tire_implemention_id }}">
+                          <label class="facet-label" for="facet_implemention_{{ $tire_implemention_id }}">
+                            <span class="custom-checkbox">
+                              <input id="facet_implemention_{{ $tire_implemention_id }}" data-search-url="" name="implemention[]"
+                                     @if (in_array($tire_implemention, $implementions)) checked="" @endif value="{{ $tire_implemention }}"
+                                     data-for="implementions" data-value="{{ $tire_implemention_id }}" type="checkbox">
+                              <span class="ps-shown-by-js">
+                                <i class="material-icons checkbox-checked"></i>
+                              </span>
+                            </span>
+                            <a href="javascript:;" class="_gray-darker search-link js-search-link first-uppercase text-lowercase" rel="nofollow">{{ $tire_implemention }}</a>
+                          </label>
+                        </li>
+                        @endforeach
+                      </ul>
+                    </section>
+{{--                    <section class="facet clearfix facet--8">--}}
+{{--                      <h1 class="h6 facet-title hidden-sm-down facet-hover axis-dropdown-btn">Pielietojuma ass--}}
+{{--                        <span class="material-icons axis-dropdown">keyboard_arrow_down</span>--}}
+{{--                      </h1>--}}
+{{--                      <div class="title hidden-md-up" data-target="#facet_70638" data-toggle="collapse">--}}
+{{--                        <h1 class="h6 facet-title">Pielietojuma ass</h1>--}}
+{{--                        <span class="float-xs-right">--}}
+{{--                          <span class="navbar-toggler collapse-icons">--}}
+{{--                            <i class="material-icons add"></i>--}}
+{{--                            <i class="material-icons remove"></i>--}}
+{{--                          </span>--}}
+{{--                        </span>--}}
+{{--                      </div>--}}
+{{--                      <ul id="facet_axis" class="collapse" style="display: none;">--}}
+{{--                        @foreach ($tire_axis as $tire_axis_id => $tire_axi)--}}
+{{--                        <li data-label="axis_{{ $tire_axis_id }}">--}}
+{{--                          <label class="facet-label" for="facet_axis_{{ $tire_axis_id }}">--}}
+{{--                            <span class="custom-checkbox">--}}
+{{--                              <input id="facet_axis_{{ $tire_axis_id }}" data-search-url="" name="axi[]"--}}
+{{--                                     @if (in_array($tire_axi, $axis)) checked="" @endif value="{{ $tire_axi }}"--}}
+{{--                                     data-for="axis" data-value="{{ $tire_axis_id }}" type="checkbox">--}}
+{{--                              <span class="ps-shown-by-js">--}}
+{{--                                <i class="material-icons checkbox-checked"></i>--}}
+{{--                              </span>--}}
+{{--                            </span>--}}
+{{--                            <a href="javascript:;" class="_gray-darker search-link js-search-link first-uppercase text-lowercase" rel="nofollow">{{ $tire_axi }}</a>--}}
+{{--                          </label>--}}
+{{--                        </li>--}}
+{{--                        @endforeach--}}
+{{--                      </ul>--}}
+{{--                    </section>--}}
+{{--                    <section class="facet clearfix facet--8">--}}
+{{--                      <h1 class="h6 facet-title hidden-sm-down facet-hover conditions-dropdown-btn">Ceļa apstākļi--}}
+{{--                        <span class="material-icons conditions-dropdown">keyboard_arrow_down</span>--}}
+{{--                      </h1>--}}
+{{--                      <div class="title hidden-md-up" data-target="#facet_70638" data-toggle="collapse">--}}
+{{--                        <h1 class="h6 facet-title">Ceļa apstākļi</h1>--}}
+{{--                        <span class="float-xs-right">--}}
+{{--                          <span class="navbar-toggler collapse-icons">--}}
+{{--                            <i class="material-icons add"></i>--}}
+{{--                            <i class="material-icons remove"></i>--}}
+{{--                          </span>--}}
+{{--                        </span>--}}
+{{--                      </div>--}}
+{{--                      <ul id="facet_conditions" class="collapse" style="display: none;">--}}
+{{--                        @foreach ($tire_conditions as $tire_condition_id => $tire_condition)--}}
+{{--                        <li data-label="condition_{{ $tire_axis_id }}">--}}
+{{--                          <label class="facet-label" for="facet_condition_{{ $tire_condition_id }}">--}}
+{{--                            <span class="custom-checkbox">--}}
+{{--                              <input id="facet_condition_{{ $tire_condition_id }}" data-search-url="" name="condition[]"--}}
+{{--                                     @if (in_array($tire_condition, $conditions)) checked="" @endif value="{{ $tire_condition }}"--}}
+{{--                                     data-for="conditions" data-value="{{ $tire_condition_id }}" type="checkbox">--}}
+{{--                              <span class="ps-shown-by-js">--}}
+{{--                                <i class="material-icons checkbox-checked"></i>--}}
+{{--                              </span>--}}
+{{--                            </span>--}}
+{{--                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">{{ $tire_condition }}</a>--}}
+{{--                          </label>--}}
+{{--                        </li>--}}
+{{--                        @endforeach--}}
+{{--                      </ul>--}}
+{{--                    </section>--}}
+                    <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i></button>
                   </div>
                 </div>
               </div>
@@ -257,16 +382,19 @@
                         $brand = $tire->fullSize;
                         $tire->includeStock = true;
                         if ($cbrand!=$brand){
-                          if ($index == 0) {
-                        //    echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="tire-type-title flipped-title">Lielās riepas</span></h4>';
 
-                            echo '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-                                    Filtrs ('. $filterCount .')
+                        if ($cbrand) {
+                           echo '<h4 class="tire-brand-name">' . $cbrand;
+                        }
+                        if ($index == 0){
+                          //<h4 style="display: inline-block;">Izvēlētie filtri: </h4>
+                          echo '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
+                                    Filtrs ()
                                   </button><div class="filters" style="margin: 0 auto;"></div>';
-                            echo '<h4 class="tire-brand-name">' . $cbrand . '<span class="tire-type-title flipped-title">Lielās riepas</span></h4>';
-                          } else {
-                            '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
-                          }
+                          echo '<span class="text-uppercase flipped-title tire-brand-name" style="color:black;">Lielās riepas</span>';
+                          echo '</h4>';
+                        }
+                        echo '';
 
                       @endphp
 
@@ -299,9 +427,7 @@
                         @php
                           $cbrand = $brand;
                           $stripe = 1;
-                      } else {
-                          $brand = str_replace(" ", "", $brand);
-                      }
+                        }
                         @endphp
                         @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif
                       <tr class="tire-table-row">
@@ -314,37 +440,100 @@
                           <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                              title='{!! App\Helper\Image::show('big', $tire->make_id) !!}'
                              href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"
-                             data-content="{{ $tire->title }}">
+                             data-content="{{ $tire->fullName }}"
+                             data-article="{{ $tire->article }}"
+                             data-quantity="{{ $cartQty }}">
                             {{ $tire->title }}
                           </a>
                         </td>
 {{--                           ass --}}
-                        <td>
-                          @if ($tire->axis_bus)
-                            {{ $tire->axis_bus }}
-                            @if ($tire->axis_truck)
-                              | {{ $tire->axis_truck }}
-                            @endif
-                          @endif
-                          @if ($tire->axis_truck)
-                            {{ $tire->axis_truck }}
+
+                        <td class="hidden-sm-down text-center">
+                          @if (isset($code_array[$tire->axis_bus]) || isset($code_array[$tire->axis_truck]))
+                            <span data-toggle="tooltip" title="<span style='color: black'>
+                              @if (isset($code_array[$tire->axis_bus]))
+                                {!! $code_array[$tire->axis_bus] !!}
+                                @if (isset($code_array[$tire->axis_truck]))
+                                  | {!! $code_array[$tire->axis_truck] !!}
+                                @endif
+                              @endif
+                              @if (isset($code_array[$tire->axis_truck]))
+                              {!! $code_array[$tire->axis_truck] !!}
+                                @if (isset($code_array[$tire->axis_bus]))
+                                  | {!! $code_array[$tire->axis_bus] !!}
+                                @endif
+                              @endif
+                              </span>" class="hidden-sm-down table-cell prod-code">
+                              @if ($tire->axis_bus)
+                                {{ $tire->axis_bus }}
+                                @if ($tire->axis_truck)
+                                  | {{ $tire->axis_truck }}
+                                @endif
+                              @endif
+                              @if ($tire->axis_truck)
+                                {{ $tire->axis_truck }}
+                                @if ($tire->axis_bus)
+                                  | {{ $tire->axis_bus }}
+                                @endif
+                              @endif
+                            </span>
+                          @else
                             @if ($tire->axis_bus)
-                              | {{ $tire->axis_bus }}
+                              {{ $tire->axis_bus }}
+                              @if ($tire->axis_truck)
+                                | {{ $tire->axis_truck }}
+                              @endif
+                            @endif
+                            @if ($tire->axis_truck)
+                              {{ $tire->axis_truck }}
+                              @if ($tire->axis_bus)
+                                | {{ $tire->axis_bus }}
+                              @endif
                             @endif
                           @endif
                         </td>
 {{--                        Segums--}}
-                        <td>
-                          @if ($tire->conditions_bus)
-                            {{ $tire->conditions_bus }}
-                            @if ($tire->conditions_truck)
-                              | {{ $tire->conditions_truck }}
-                            @endif
-                          @endif
-                          @if ($tire->conditions_truck)
-                            {{ $tire->conditions_truck }}
+                        <td class="hidden-sm-down text-center">
+                          @if (isset($code_array[$tire->conditions_bus]) || isset($code_array[$tire->conditions_truck]))
+                            <span data-toggle="tooltip" title="<span style='color: black'>
+                              @if (isset($code_array[$tire->conditions_bus]))
+                              {!! $code_array[$tire->conditions_bus] !!}
+                                @if (isset($code_array[$tire->conditions_truck]))
+                                  | {!! $code_array[$tire->conditions_truck] !!}
+                                @endif
+                              @endif
+                              @if (isset($code_array[$tire->conditions_truck]))
+                              {!! $code_array[$tire->conditions_truck] !!}
+                                @if (isset($code_array[$tire->conditions_bus]))
+                                  | {!! $code_array[$tire->conditions_bus] !!}
+                                @endif
+                              @endif
+                              </span>" class="hidden-sm-down table-cell prod-code">
+                              @if ($tire->conditions_bus)
+                                {{ $tire->conditions_bus }}
+                                @if ($tire->conditions_truck)
+                                  | {{ $tire->conditions_truck }}
+                                @endif
+                              @endif
+                              @if ($tire->conditions_truck)
+                                {{ $tire->conditions_truck }}
+                                @if ($tire->conditions_bus)
+                                  | {{ $tire->conditions_bus }}
+                                @endif
+                              @endif
+                            </span>
+                          @else
                             @if ($tire->conditions_bus)
-                              | {{ $tire->conditions_bus }}
+                              {{ $tire->conditions_bus }}
+                              @if ($tire->conditions_truck)
+                                | {{ $tire->conditions_truck }}
+                              @endif
+                            @endif
+                            @if ($tire->conditions_truck)
+                              {{ $tire->conditions_truck }}
+                              @if ($tire->conditions_bus)
+                                | {{ $tire->conditions_bus }}
+                              @endif
                             @endif
                           @endif
                         </td>

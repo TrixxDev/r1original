@@ -995,7 +995,7 @@
       $queue->loadWorkingDay($slot->date);
       $queue->loadSlots($slot->date, true);
 
-      $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slot->iorder),true);
+//      $time = Queue::timeByInterval($queue->getSlotStartInterval($date,$slot->iorder),true);
       $fmtDate = date('d.m.Y',strtotime($slot->date));
       $dayOfWeek2 = $_weekDays2[date('N', strtotime($slot->date.' 00:00:00'))];
       $today = date('Y-m-d');

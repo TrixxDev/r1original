@@ -5702,3 +5702,7 @@ div#service-option-selection {
 .sidebar-top {
   margin-top: 10px;
 }
+
+.first-uppercase:first-letter {
+  text-transform: uppercase;
+}

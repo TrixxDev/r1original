@@ -431,7 +431,7 @@
                                                       <label for="serviceOption"><span class="validate">*</span>Es vēlos:</label>
                                                       <div id="mobile-service">
                                                         <select class="custom-select" name="serviceOption" required="required">
-                                                          <option disabled selected>Izvēlēties</option>
+                                                          <option disabled class="disabled" selected>Izvēlēties</option>
                                                           @foreach ($services as $service)
                                                             <option value="{{ $service->service_id }}" @if ($service->enabled == 0) disabled @endif @if ($service->f_ac == 1) data-ac="1" @endif @if ($service->f_moto == 1) data-moto="1" @endif>{{ $service->title }}</option>
                                                           @endforeach

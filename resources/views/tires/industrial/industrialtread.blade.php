@@ -177,8 +177,34 @@
                       <td class="big-tire-tread-name-cell-size">
                         {{ $tire->fullSize }}
                       </td>
-                      <td class="hidden-sm-down text-center">ass</td>
-                      <td class="hidden-sm-down text-center">segums</td>
+                      <td class="hidden-sm-down text-center">
+                        @if ($tire->axis_bus)
+                          {{ $tire->axis_bus }}
+                          @if ($tire->axis_truck)
+                            | {{ $tire->axis_truck }}
+                          @endif
+                        @endif
+                        @if ($tire->axis_truck)
+                          {{ $tire->axis_truck }}
+                          @if ($tire->axis_bus)
+                            | {{ $tire->axis_bus }}
+                          @endif
+                        @endif
+                      </td>
+                      <td class="hidden-sm-down text-center">
+                        @if ($tire->conditions_bus)
+                          {{ $tire->conditions_bus }}
+                          @if ($tire->conditions_truck)
+                            | {{ $tire->conditions_truck }}
+                          @endif
+                        @endif
+                        @if ($tire->conditions_truck)
+                          {{ $tire->conditions_truck }}
+                          @if ($tire->conditions_bus)
+                            | {{ $tire->conditions_bus }}
+                          @endif
+                        @endif
+                      </td>
                       <td class="hidden-sm-down text-center">
                         <span data-toggle="tooltip"
                               title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . ' ' . $tire->si }}
