@@ -196,15 +196,13 @@ class BigTireController extends Controller
 
     public function tires_tread($brand, $tread, $tire) {
 
-      $brand = Bigbrand::where('slug', $brand)->first();
-
-      $tread = Bigtread::where('slug', $tread)->first();
+      $brand = Bigbrand::where('title', $brand)->first();
 
       $tires = Bigtire::selectRaw('big_tires.*, bigtire_treads.*, bigtire_brands.*, bigtire_brands.title as brands_title, bigtire_treads.title as treads_title')
                         ->join('bigtire_treads', 'big_tires.make_id', '=', 'bigtire_treads.tread_id')
                         ->join('bigtire_brands', 'bigtire_treads.brand_id', '=', 'bigtire_brands.brand_id')
                         ->where('bigtire_brands.title', $brand->title)
-                        ->where('bigtire_treads.title', $tread->title)
+                        ->where('bigtire_treads.title', str_replace('_', '/', $tread))
                         ->where('big_tires.visible_users', 1)
                         ->where('big_tires.visible_list', 1)
                         ->orderBy('d3', 'ASC')
@@ -213,7 +211,7 @@ class BigTireController extends Controller
                         ->get();
 
       $currTire = Bigtire::with('tread')->leftJoin('bigtire_treads', 'big_tires.make_id', '=', 'bigtire_treads.tread_id')
-                                                ->where('bigtire_treads.title', $tread->title)
+                                                ->where('bigtire_treads.title', str_replace('_', '/', $tread))
                                                 ->where('big_tires.tire_id', $tire)
                                                 ->first();
 
@@ -282,10 +280,8 @@ class BigTireController extends Controller
     foreach (Bigtire::all() as $tire) {
       array_push($tire_type, $tire->type);
       array_push($tire_implemention, $tire->implemention);
-      array_push($tire_axis, $tire->axis_bus);
-      array_push($tire_axis, $tire->axis_truck);
-      array_push($tire_condition, $tire->conditions_bus);
-      array_push($tire_condition, $tire->conditions_truck);
+      array_push($tire_axis, $tire->axis);
+      array_push($tire_condition, $tire->conditions);
     }
 
     $tire_type = array_unique($tire_type);

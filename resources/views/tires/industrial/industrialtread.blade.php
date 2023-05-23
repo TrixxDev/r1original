@@ -178,31 +178,13 @@
                         {{ $tire->fullSize }}
                       </td>
                       <td class="hidden-sm-down text-center">
-                        @if ($tire->axis_bus)
-                          {{ $tire->axis_bus }}
-                          @if ($tire->axis_truck)
-                            | {{ $tire->axis_truck }}
-                          @endif
-                        @endif
-                        @if ($tire->axis_truck)
-                          {{ $tire->axis_truck }}
-                          @if ($tire->axis_bus)
-                            | {{ $tire->axis_bus }}
-                          @endif
+                        @if ($tire->axis)
+                          {{ $tire->axis }}
                         @endif
                       </td>
                       <td class="hidden-sm-down text-center">
-                        @if ($tire->conditions_bus)
-                          {{ $tire->conditions_bus }}
-                          @if ($tire->conditions_truck)
-                            | {{ $tire->conditions_truck }}
-                          @endif
-                        @endif
-                        @if ($tire->conditions_truck)
-                          {{ $tire->conditions_truck }}
-                          @if ($tire->conditions_bus)
-                            | {{ $tire->conditions_bus }}
-                          @endif
+                        @if ($tire->conditions)
+                          {{ $tire->conditions }}
                         @endif
                       </td>
                       <td class="hidden-sm-down text-center">
@@ -212,14 +194,7 @@
                       </td>
 
                       <td class="hidden-sm-down text-center tread-code-cell-size">
-                        <span data-toggle="tooltip"
-                              @if($tire->code == 'XL')
-                              title="<span style='color: black'>XL ??????????? SUBJECT TO CHANGE</span>"
-                              @else
-                              title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>"
-                              @endif
-                              class="hidden-sm-down table-cell prod-code">{{ $tire->code }} as
-                        </span>
+                        {{ $tire->code . 'PR' }}
                       </td>
 
                       <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>

@@ -607,7 +607,7 @@ $(document).ready(function() {
         });
         $sync = 'Duell Kvadracikli';
         break;
-      case 'i3-big': // Lattako Lielo riepu sinhronizācija - AJAX
+      case 'i3-big': // Lattako Lielo riepu (Truck) sinhronizācija - AJAX
         $.ajax({
           url: '/sync/i3-big',
           method: 'GET',
@@ -638,14 +638,54 @@ $(document).ready(function() {
 
             const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
-            $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Lattako Lielās riepas<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
+            $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Lattako Lielās riepas (Truck)<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
             $('.i3big_last_time').html($time);
           },
           complete: function() {
             $('#' + $btn_id).attr('disabled', false).text('Sinhronizēt').css('cursor', 'pointer');
           }
         });
-        $sync = 'Lattako Lielās riepas';
+        $sync = 'Lattako Lielās riepas (Truck)';
+        break;
+      case 'i3-agro': // Lattako Lielo riepu (Agro) sinhronizācija - AJAX
+        $.ajax({
+          url: '/sync/i3-agro',
+          method: 'GET',
+          success: function(data) {
+
+            let $date = new Date();
+            const $year = $date.getFullYear();
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
+            const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
+            const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
+            const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
+
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+
+            $('<p style="border-bottom: 1px solid #d8dbe0;">Lattako - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
+            $('.i3agro_last_time').html($time);
+          },
+          error: function() {
+
+            let $date = new Date();
+            const $year = $date.getFullYear();
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
+            const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
+            const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
+            const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
+
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+
+            $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Lattako Lielās riepas (Agro)<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
+            $('.i3agro_last_time').html($time);
+          },
+          complete: function() {
+            $('#' + $btn_id).attr('disabled', false).text('Sinhronizēt').css('cursor', 'pointer');
+          }
+        });
+        $sync = 'Lattako Lielās riepas (Agro)';
         break;
       case 'gy-auto': // GoodYear Auto riepu sinhronizācija - AJAX
         $.ajax({

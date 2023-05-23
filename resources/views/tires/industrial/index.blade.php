@@ -316,7 +316,7 @@
                     @endphp
                     @if($tire->price1)
                       <a
-                        href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"
+                        href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
                         class="grid-view-link"
                         data-article="{{ $tire->article }}">
                         <div class="tire-image-card sort-order">
@@ -439,7 +439,7 @@
                         <td class="table-tire-name-cell">
                           <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                              title='{!! App\Helper\Image::show('big', $tire->make_id) !!}'
-                             href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), $tire->tread->slug, $tire->tire_id]) }}"
+                             href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
                              data-content="{{ $tire->fullName }}"
                              data-article="{{ $tire->article }}"
                              data-quantity="{{ $cartQty }}">
@@ -447,93 +447,38 @@
                           </a>
                         </td>
 {{--                           ass --}}
-
                         <td class="hidden-sm-down text-center">
-                          @if (isset($code_array[$tire->axis_bus]) || isset($code_array[$tire->axis_truck]))
+                          @if (isset($code_array[$tire->axis]))
                             <span data-toggle="tooltip" title="<span style='color: black'>
-                              @if (isset($code_array[$tire->axis_bus]))
-                                {!! $code_array[$tire->axis_bus] !!}
-                                @if (isset($code_array[$tire->axis_truck]))
-                                  | {!! $code_array[$tire->axis_truck] !!}
-                                @endif
-                              @endif
-                              @if (isset($code_array[$tire->axis_truck]))
-                              {!! $code_array[$tire->axis_truck] !!}
-                                @if (isset($code_array[$tire->axis_bus]))
-                                  | {!! $code_array[$tire->axis_bus] !!}
-                                @endif
+                              @if (isset($code_array[$tire->axis]))
+                                {!! $code_array[$tire->axis] !!}
                               @endif
                               </span>" class="hidden-sm-down table-cell prod-code">
-                              @if ($tire->axis_bus)
-                                {{ $tire->axis_bus }}
-                                @if ($tire->axis_truck)
-                                  | {{ $tire->axis_truck }}
-                                @endif
-                              @endif
-                              @if ($tire->axis_truck)
-                                {{ $tire->axis_truck }}
-                                @if ($tire->axis_bus)
-                                  | {{ $tire->axis_bus }}
-                                @endif
+                              @if ($tire->axis)
+                                {{ $tire->axis }}
                               @endif
                             </span>
                           @else
-                            @if ($tire->axis_bus)
-                              {{ $tire->axis_bus }}
-                              @if ($tire->axis_truck)
-                                | {{ $tire->axis_truck }}
-                              @endif
-                            @endif
-                            @if ($tire->axis_truck)
-                              {{ $tire->axis_truck }}
-                              @if ($tire->axis_bus)
-                                | {{ $tire->axis_bus }}
-                              @endif
+                            @if ($tire->axis)
+                              {{ $tire->axis }}
                             @endif
                           @endif
                         </td>
 {{--                        Segums--}}
                         <td class="hidden-sm-down text-center">
-                          @if (isset($code_array[$tire->conditions_bus]) || isset($code_array[$tire->conditions_truck]))
+                          @if (isset($code_array[$tire->conditions]))
                             <span data-toggle="tooltip" title="<span style='color: black'>
-                              @if (isset($code_array[$tire->conditions_bus]))
-                              {!! $code_array[$tire->conditions_bus] !!}
-                                @if (isset($code_array[$tire->conditions_truck]))
-                                  | {!! $code_array[$tire->conditions_truck] !!}
-                                @endif
-                              @endif
-                              @if (isset($code_array[$tire->conditions_truck]))
-                              {!! $code_array[$tire->conditions_truck] !!}
-                                @if (isset($code_array[$tire->conditions_bus]))
-                                  | {!! $code_array[$tire->conditions_bus] !!}
-                                @endif
+                              @if (isset($code_array[$tire->conditions]))
+                              {!! $code_array[$tire->conditions] !!}
                               @endif
                               </span>" class="hidden-sm-down table-cell prod-code">
-                              @if ($tire->conditions_bus)
-                                {{ $tire->conditions_bus }}
-                                @if ($tire->conditions_truck)
-                                  | {{ $tire->conditions_truck }}
-                                @endif
-                              @endif
-                              @if ($tire->conditions_truck)
-                                {{ $tire->conditions_truck }}
-                                @if ($tire->conditions_bus)
-                                  | {{ $tire->conditions_bus }}
-                                @endif
+                              @if ($tire->conditions)
+                                {{ $tire->conditions }}
                               @endif
                             </span>
                           @else
-                            @if ($tire->conditions_bus)
-                              {{ $tire->conditions_bus }}
-                              @if ($tire->conditions_truck)
-                                | {{ $tire->conditions_truck }}
-                              @endif
-                            @endif
-                            @if ($tire->conditions_truck)
-                              {{ $tire->conditions_truck }}
-                              @if ($tire->conditions_bus)
-                                | {{ $tire->conditions_bus }}
-                              @endif
+                            @if ($tire->conditions)
+                              {{ $tire->conditions }}
                             @endif
                           @endif
                         </td>
@@ -545,9 +490,7 @@
                         </td>
 
                         <td class="hidden-sm-down text-center">
-                          <span data-toggle="tooltip"
-                                title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>"
-                                class="hidden-sm-down table-cell prod-code">{{ $tire->code }}</span>
+                          {{ $tire->code . 'PR' }}
                         </td>
 
                         <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>

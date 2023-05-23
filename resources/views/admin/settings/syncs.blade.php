@@ -143,9 +143,17 @@
               <div class="row">
                 <div class="col-md-4">
                   <div class="card bg-light">
-                    <div class="card-header text-center font-weight-bold">Lattako</div>
+                    <div class="card-header text-center font-weight-bold">Lattako (Truck)</div>
                     <button class="card-body btn" id="i3-big">Sinhronizēt</button>
                     <div class="card-footer text-center font-weight-bold">Pēdējo reizi sinhronizēts<br><span class="i3big_last_time">{{ $i3_big }}</span></div>
+                  </div>
+                </div>
+
+                <div class="col-md-4">
+                  <div class="card bg-light">
+                    <div class="card-header text-center font-weight-bold">Lattako (Agro)</div>
+                    <button class="card-body btn" id="i3-agro">Sinhronizēt</button>
+                    <div class="card-footer text-center font-weight-bold">Pēdējo reizi sinhronizēts<br><span class="i3agro_last_time">{{ $i3_agro }}</span></div>
                   </div>
                 </div>
 

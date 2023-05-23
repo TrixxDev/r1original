@@ -431,6 +431,7 @@ Route::middleware('checksession')->group(function() {
   Route::get('/sync/i3-moto', [App\Http\Controllers\SyncController::class, 'i3moto'])->name('i3-moto');
   Route::get('/sync/i3-quadr', [App\Http\Controllers\SyncController::class, 'i3quadr'])->name('i3-quadr');
   Route::get('/sync/i3-big', [App\Http\Controllers\SyncController::class, 'i3big'])->name('i3-big');
+  Route::get('/sync/i3-agro', [App\Http\Controllers\SyncController::class, 'i3agro'])->name('i3-agro');
   Route::get('/sync/starco', [App\Http\Controllers\SyncController::class, 'starco'])->name('starco');
   Route::get('/sync/rz-auto', [App\Http\Controllers\SyncController::class, 'rzauto'])->name('rz-auto');
   Route::get('/sync/duell-moto', [App\Http\Controllers\SyncController::class, 'duellmoto'])->name('duellmoto');

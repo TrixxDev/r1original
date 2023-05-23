@@ -1274,258 +1274,820 @@
 
     }
 
-    public function i3big()
+//    public function i3big()
+//    {
+//      set_time_limit(0);
+//
+//      $sync = DB::table('sync_times')->where('name', 'i3-big')->get();
+//      $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+//      $time_now = \Carbon\Carbon::now();
+//      if ($time_now->diff($sync_time)->invert == 1) {
+//        if (!isset($_COOKIE['i3-token'])) {
+//          $token_url = "gd-api-test.barnstenit.se/Token";
+////        $token_url = "api.latakko.eu/Token";
+//
+//          $curl = curl_init();
+//          curl_setopt_array($curl, array(
+//            CURLOPT_URL => $token_url,
+//            CURLOPT_RETURNTRANSFER => true,
+//            CURLOPT_ENCODING => "",
+//            CURLOPT_MAXREDIRS => 10,
+//            CURLOPT_TIMEOUT => 30,
+//            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//            CURLOPT_CUSTOMREQUEST => "POST",
+//            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+//            CURLOPT_HTTPHEADER => array(
+//              "cache-control: no-cache",
+//              "content-type: application/x-www-form-urlencoded"
+//            ),
+//          ));
+//          $response = curl_exec($curl);
+//          $err = curl_error($curl);
+//
+//          curl_close($curl);
+//
+//          if (!$err)
+//          {
+//            $token = json_decode($response);
+//          } else {
+//            dd($err);
+//          }
+//
+//          setcookie('i3-token', $token->access_token, time() + $token->expires_in, '/');
+//          $token_bearer = $token->access_token;
+//        } else {
+//          $token_bearer = $_COOKIE['i3-token'];
+//        }
+//
+//        $curl = curl_init();
+//        curl_setopt_array($curl, array(
+//          CURLOPT_URL => 'https://gd-api-test.barnstenit.se/api/Articles?IncludeCarTyres=false&IncludeMotorcycleTyres=false&IncludeTruckTyres=true&IncludeEarthmoverTyres=false&OnlyLocalStockItems=true',
+//          CURLOPT_RETURNTRANSFER => true,
+//          CURLOPT_ENCODING => "",
+//          CURLOPT_MAXREDIRS => 10,
+//          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+//          CURLOPT_CUSTOMREQUEST => "GET",
+//          CURLOPT_HTTPHEADER => array(
+//            "cache-control: no-cache",
+//            "authorization: Bearer " . $token_bearer,
+//          ),
+//        ));
+//        $response = curl_exec($curl);
+//
+//        $filename = dirname(__DIR__, 3) . '/public/storage/xml/i3-industrial.txt';
+//
+//        file_put_contents($filename, $response);
+//        chmod($filename, 0775);
+//
+//        $err = curl_error($curl);
+//
+//        if ($err) throw new \Exception($err);
+//
+//        curl_close($curl);
+//      }
+//
+//      $counted = 0;
+//      $updated = 0;
+//
+//      Bigstock::where('itype', 'i3')->update(['quantity' => 0]);
+//
+//      $content = file_get_contents(dirname(__DIR__, 3) . '/public/storage/xml/i3-industrial.txt');
+//      $content = json_decode($content);
+//
+//      $out = '';
+//
+//      foreach ($content as $item){
+//
+//        dd($item);
+//
+//        $item = json_encode($item);
+//        $item = (object) json_decode($item, TRUE);
+//
+//        $type = $item->aplication;
+//
+//        if (empty($item->description)) {
+//          continue;
+//        }
+//
+//        if ($type === 'Bus/Truck' || $type === 'Truck' || $type === 'Bus') {
+//
+//          $article = $item->stockcode;
+//
+//          $price = round($item->price);
+//
+//          if ($price != 0) {
+//            if ($price < 100) {
+//              $price1 = ($price + 8) / 70 * 100;
+//              $price2 = $price + 10;
+//            }
+//            if ($price >= 100 && $price < 200) {
+//              $price1 = ($price + 12) / 70 * 100;
+//              $price2 = $price + 15;
+//            }
+//            if ($price >= 200) {
+//              $price1 = ($price + 15) / 70 * 100;
+//              $price2 = $price + 20;
+//            }
+//          }
+//
+//          $price1 = round($price1);
+//          $price2 = round($price2);
+//
+//          $d1 = $item->width;
+//          $d2 = $item->profile;
+//          $d3 = $item->diameter;
+//
+//          if (is_array($item->description)) {
+//            continue;
+//          }
+//          $sizes = preg_split('/ /', $item->description)[0];
+//          $sizes = SyncController::multiexplode([$d1, $d2, $d3], $sizes);
+//          $sizes = array_values(array_filter($sizes));
+//
+//          if (count($sizes) < 0) {
+//            continue;
+//          }
+//
+//          for ($x = 0; $x < count($sizes); $x++) {
+//            $sepNr = $x + 1;
+//            ${"sep$sepNr"} = $sizes[$x];
+//          }
+//
+//          $brand = $item->brand;
+//          $brand = str_replace(' (KRAVAS)', '', $brand);
+//          $brand = str_replace(' (COACH)', '', $brand);
+//          $brand = ucfirst(strtolower($brand));
+//          $tread = $item->protector;
+//
+//          if (strpos($brand, 'RIEPAS dažādas') !== false ||
+//            strpos($brand, 'Atjaunotas') !== false ||
+//            strpos($brand, 'Riepas daŽĀdas') !== false) {
+//            $brand = '';
+//            $tread = '';
+//          }
+//
+////          if ($item->stockcode !== '385652251417943058TT0R0') continue;
+//
+//          $lisi = $item->li_si;
+//          if (is_array($lisi)) {
+//            continue;
+//          }
+//          if (preg_match('/ [\d]+PR/', $lisi)) {
+//            $lisi = preg_replace('/ [0-9]+PR/', '', $lisi);
+//          }
+//          if (preg_match('/[\d]+PR /', $lisi)) {
+//            $lisi = preg_replace('/[\d]+PR /', '', $lisi);
+//          }
+//
+//          if (str_word_count($lisi) > 1) {
+//            $lisi = preg_replace("/\([^)]+\)/","",$lisi);
+//            $lisi = SyncController::multiexplode([' ', '/'], $lisi);
+//          } else {
+//            if (preg_match("/([\d]+[a-zA-Z]+)/i", $lisi)) {
+//              if (strpos($lisi, '/') !== false) {
+//                $lisi = explode('/', $lisi);
+//                $si = preg_replace('/[\d]+/', '', $lisi[1]);
+//              }
+//            }
+//          }
+//          if (is_array($lisi)) {
+//            $li = $lisi[0];
+//            if (preg_match('/[a-zA-Z]/i', $li[0])) {
+//              $lisi = preg_split('/(?<=[a-zA-Z])/i', $li);
+//              $li = $lisi[1];
+//              if (!isset($si)) {
+//                $si = $lisi[0];
+//              }
+//            } else {
+//              if (isset($lisi[1])) {
+//                if (preg_match('/[a-zA-Z]/i', $lisi[1])) {
+//                  $si = preg_replace('/[\d]+/i', '', $lisi[1]);
+//                }
+//                $li = $lisi[0];
+//              } else {
+//                $lisi = preg_split('/(?=[a-zA-Z])/i', $lisi[0]);
+//                $li = $lisi[0];
+//                $si = $lisi[1];
+//              }
+//            }
+//          }
+//
+//          $position = SyncController::getByArticle($article);
+//          if ($position === false) {
+//            $position = new Bigtire();
+//          }
+//
+//          $returnText = '';
+//
+//          if (!empty($brand) && !empty($tread)) {
+//            $treadId = SyncController::getTreadId($tread, $brand);
+//            // Jauns breands - Bigtire_brands
+//            $returnText .= 'Jauns brends - ' . $brand . '<br>';
+//            if ($treadId === false) {
+//              $brandId = SyncController::getBrandId($brand);
+//              if ($brandId === false) {
+//                $brandId = Bigbrand::insertGetId([
+//                  'title' => $brand,
+//                  'slug' => Str::slug($brand),
+//                ]);
+//              }
+//              // Jauns protektors - Bigtire_treads
+//              $returnText .= 'Jauns protektors - ' . $tread . '<br>';
+//              $treadId = Bigtread::insertGetId([
+//                'brand_id' => $brandId,
+//                'title' => $tread,
+//                'slug' => Str::slug($tread),
+//              ]);
+//            }
+//          }
+//
+//          $position->make_id = $treadId;
+//
+//          $image = $item->image;
+//
+//          $outPath = dirname(__DIR__, 3) . '/storage/app/public/industrial/tread/';
+//
+//          @$image = file_get_contents('http://i3.lattako.lv/images/tyres/' . $image . '-o.jpg');
+//          $new_image = $outPath . $treadId . '.jpg';
+//
+//          if (trim($image) !== false) {
+//            file_put_contents($new_image, $image);
+//          } else {
+//            echo 'Neeksistē - Artikuls (' . $article . ')';
+//          }
+//
+//          $position->d1 = $d1;
+//          $position->sep = $sep1;
+//          if (is_array($d2)) {
+//            $position->d2 = null;
+//            $position->sep2 = null;
+//            $position->d3 = $d3;
+//          } else {
+//            $position->d2 = $d2;
+//            $position->sep2 = $sep2;
+//            $position->d3 = $d3;
+//          }
+//
+//          if ($type === 'Truck') {
+//            $type = str_replace('Truck', 'Kravas', $type);
+//          } else if ($type === 'Buss') {
+//            $type = str_replace('Buss', 'Autobuss', $type);
+//          } else if ($type === 'Bus/Truck') {
+//            $type = str_replace('Bus/Truck', 'Autobuss/Kravas', $type);
+//          }
+//
+//          $position->type = 'TRUCK';
+//          $position->li = $li;
+//          $position->si = $si;
+//          $position->price1 = $price1;
+//          $position->price2 = $price2;
+//          $position->implemention = $type;
+//          $position->kind = null;
+//          (empty($item->buss_possition)) ? $position->axis_bus = null : $position->axis_bus = $item->buss_possition;
+//          (empty($item->truck_possition)) ? $position->axis_truck = null : $position->axis_truck = $item->truck_possition;
+//          (empty($item->road_for_Buss)) ? $position->conditions_bus = null : $position->conditions_bus = $item->road_for_Buss;
+//          (empty($item->road_for_trucks)) ? $position->conditions_truck = null : $position->conditions_truck = $item->road_for_trucks;
+//          $position->offer = null;
+//          $position->priceoffer = null;
+//          $position->comment = null;
+//          if ($item->qty_available > 0) {
+//            if (!empty($d1) && !empty($d2) && !empty($d3) || !empty($d1) && empty($d2) && !empty($d3)) {
+//              $position->visible_users = 1;
+//              $position->visible_list = 1;
+//            } else {
+//              $position->visible_users = 0;
+//              $position->visible_list = 0;
+//            }
+//          } else {
+//            $position->visible_users = 0;
+//            $position->visible_list = 0;
+//          }
+//
+//          $position->available = 1;
+//          $position->article = $article;
+//
+//          $position->save();
+//
+//          if ($article !== '') {
+//            $position->addSecondaryArticle($article, 'i3');
+//          }
+//
+//          $lists = Bigstock::where('article', $article)->where('itype', 'i3')->get();
+//
+//          foreach ($lists as $list) {
+//            $list->update(['quantity' => $item->qty_available, 'updated_at' => date('Y-m-d H:i:s')]);
+//            $updated++;
+//          }
+//
+//          $counted++;
+//
+//        }
+//
+//      }
+//      DB::table('sync_times')->where('name', 'i3-big')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+//      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+//    }
+
+    public function getBigSizes($tire)
     {
-      $url = "https://gd-middleware-test.barnstenit.se/api/Truck?username=XmL_r1&password=M20h:2|5";
+      $fullSize = [];
 
-      $opts = ['http' =>
-        [
-          'method'  => 'GET',
-          'timeout'  => 600,
-        ]
-      ];
+      $title = explode(' ', $tire->ArticleText)[0];
+      $title = str_replace(',', '.', $title);
 
-      $context  = stream_context_create($opts);
-      $xmlString = file_get_contents($url, false, $context);
+      if ($tire->Radial == true) {
+        if (strpos($title, 'R') === true) return false;
+        $delimiters = ['/', 'R', '-'];
+        $pattern = '/(' . implode('|', array_map(function($delimiter) {
+            return preg_quote($delimiter, '/');
+          }, $delimiters)) . ')/';
+        $parts = preg_split($pattern, $title, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-      file_put_contents(dirname(__DIR__, 3) . '/i3.industrial.xml',$xmlString);
+        if (count($parts) == 5) {
+          $d1 = sprintf('%g', $parts[0]);
+          $sep1 = (is_string($parts[1])) ? strtolower($parts[1]) : $parts[1];
+          $d2 = sprintf('%g', $parts[2]);
+          $sep2 = $parts[3];
+          $d3 = (fmod($parts[4], 1) === 0.0) ? (int) $parts[4] : $parts[4];
+        } else if (count($parts) == 3) {
+          if (preg_match("/[a-zA-Z]/i", $parts[0])){
+            $parts[0] = str_replace('L', '', $parts[0]);
+            $d1 = sprintf('%g', $parts[0]);
+            $d1 = $d1 . 'L';
+          } else {
+            $d1= sprintf('%g', $parts[0]);
+          }
+          $sep1 = (is_string($parts[1])) ? strtolower($parts[1]) : $parts[1];
+          $d2 = null;
+          $sep2 = null;
+          $d3 = (fmod($parts[2], 1) === 0.0) ? (int) $parts[2] : $parts[2];
+        }
+      } else {
+        $delimiters = ['/', 'x', 'X', '-'];
+        $pattern = '/(' . implode('|', array_map(function($delimiter) {
+            return preg_quote($delimiter, '/');
+          }, $delimiters)) . ')/';
+        $parts = preg_split($pattern, $title, -1, PREG_SPLIT_DELIM_CAPTURE);
 
-      $xml = simplexml_load_string($xmlString);
+        if (count($parts) == 5) {
+          $d1 = sprintf('%g', $parts[0]);
+          $sep1 = (is_string($parts[1])) ? strtolower($parts[1]) : $parts[1];
+          $d2 = sprintf('%g', $parts[2]);
+          $sep2 = $parts[3];
+          $d3 = sprintf('%g', $parts[4]);
+        } else if (count($parts) == 3) {
+          if (preg_match("/[a-zA-Z]/i", $parts[0])){
+            $parts[0] = str_replace('L', '', $parts[0]);
+            $d1 = sprintf('%g', $parts[0]);
+            $d1 = $d1 . 'L';
+          } else {
+            $d1 = sprintf('%g', $parts[0]);
+          }
+          $sep1 = (is_string($parts[1])) ? strtolower($parts[1]) : $parts[1];
+          $d2 = null;
+          $sep2 = null;
+          $d3 = (fmod($parts[2], 1) === 0.0) ? (int) $parts[2] : $parts[2];
+        }
+      }
 
-      unset($context);
+      $fullSize['d1'] = $d1;
+      $fullSize['sep1'] = $sep1;
+      $fullSize['d2'] = $d2;
+      $fullSize['sep2'] = $sep2;
+      $fullSize['d3'] = $d3;
 
-      echo "Kravas riepas<br>";
-      Bigstock::where('itype', 'i3')->update(['quantity' => 0]);
+      return $fullSize;
+    }
 
-      $updated = 0;
+    public function getAgroPr($tire)
+    {
+      $returnText = '';
+
+      $params = explode(' ', $tire);
+      foreach ($params as $param) {
+        if (stripos($param, 'PR') !== false) {
+          $returnText = preg_replace('~\D~', '', $param);
+        } else continue;
+      }
+
+      return $returnText;
+    }
+
+    public function i3agro()
+    {
+      set_time_limit(0);
+
+      $sync = DB::table('sync_times')->where('name', 'i3-agro')->first();
+      $sync_time = \Carbon\Carbon::parse($sync->updated_at)->addHour();
+      $time_now = \Carbon\Carbon::now();
+      if ($time_now->diff($sync_time)->invert == 1) {
+        if (!isset($_COOKIE['i3-token'])) {
+//        $token_url = "api.latakko.eu/Token";
+
+          $curl = curl_init();
+          curl_setopt_array($curl, array(
+            CURLOPT_URL => env('I3_TOKEN_URL'),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+            CURLOPT_HTTPHEADER => array(
+              "cache-control: no-cache",
+              "content-type: application/x-www-form-urlencoded"
+            ),
+          ));
+          $response = curl_exec($curl);
+          $err = curl_error($curl);
+
+          curl_close($curl);
+
+          if (!$err)
+          {
+            $token = json_decode($response);
+          } else {
+            dd($err);
+          }
+
+          setcookie('i3-token', $token->access_token, time() + $token->expires_in, '/');
+          $token_bearer = $token->access_token;
+        } else {
+          $token_bearer = $_COOKIE['i3-token'];
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => env('I3_AGRO_URL'),
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "GET",
+          CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "authorization: Bearer " . $token_bearer,
+          ),
+        ));
+        $response = curl_exec($curl);
+
+        $filename = dirname(__DIR__, 3) . '\\public\\storage\\xml\\i3-agro.txt';
+
+        file_put_contents($filename, $response);
+        chmod($filename, 0775);
+
+        $err = curl_error($curl);
+
+        if ($err) throw new \Exception($err);
+
+        curl_close($curl);
+      }
+
       $counted = 0;
-      foreach ($xml->Item as $item){
+      $updated = 0;
 
-        $item = json_encode($item);
-        $item = (object) json_decode($item, TRUE);
+      Bigstock::where('itype', 'i3')->where('type', 'agro')->update(['quantity' => 0]);
 
-        $type = $item->aplication;
+      $content = file_get_contents(dirname(__DIR__, 3) . '\\public\\storage\\xml\\i3-agro.txt');
+      $content = json_decode($content);
 
-        if (empty($item->description)) {
-          continue;
+      $returnText = '';
+
+      foreach ($content as $item) {
+
+        $counted++;
+
+        $tire = Bigtire::where('article', $item->ArticleId)->first();
+        $newTire = false;
+
+        if ($tire == null) {
+          $newTire = true;
+          $tire = new Bigtire();
         }
 
-        if ($type === 'Bus/Truck' || $type === 'Truck' || $type === 'Bus') {
+        $tire->timestamps = false;
 
-          $article = $item->stockcode;
+        $imageId = $item->ImageId;
 
-          $price = round($item->price);
+        $brand = Bigbrand::where('title', $item->BrandName)->first();
+        $tread = Bigtread::where('title', $item->PatternModelText)->first();
 
-          if ($price != 0) {
-            if ($price < 100) {
-              $price1 = ($price + 8) / 70 * 100;
-              $price2 = $price + 10;
-            }
-            if ($price >= 100 && $price < 200) {
-              $price1 = ($price + 12) / 70 * 100;
-              $price2 = $price + 15;
-            }
-            if ($price >= 200) {
-              $price1 = ($price + 15) / 70 * 100;
-              $price2 = $price + 20;
-            }
-          }
 
-          $price1 = round($price1);
-          $price2 = round($price2);
-
-          $d1 = $item->width;
-          $d2 = $item->profile;
-          $d3 = $item->diameter;
-
-          if (is_array($item->description)) {
-            continue;
-          }
-          $sizes = preg_split('/ /', $item->description)[0];
-          $sizes = SyncController::multiexplode([$d1, $d2, $d3], $sizes);
-          $sizes = array_values(array_filter($sizes));
-
-          if (count($sizes) < 0) {
-            continue;
-          }
-
-          for ($x = 0; $x < count($sizes); $x++) {
-            $sepNr = $x + 1;
-            ${"sep$sepNr"} = $sizes[$x];
-          }
-
-          $brand = $item->brand;
-          $brand = str_replace(' (KRAVAS)', '', $brand);
-          $brand = str_replace(' (COACH)', '', $brand);
-          $brand = ucfirst(strtolower($brand));
-          $tread = $item->protector;
-
-          if (strpos($brand, 'RIEPAS dažādas') !== false ||
-            strpos($brand, 'Atjaunotas') !== false ||
-            strpos($brand, 'Riepas daŽĀdas') !== false) {
-            $brand = '';
-            $tread = '';
-          }
-
-//          if ($item->stockcode !== '385652251417943058TT0R0') continue;
-
-          $lisi = $item->li_si;
-          if (is_array($lisi)) {
-            continue;
-          }
-          if (preg_match('/ [\d]+PR/', $lisi)) {
-            $lisi = preg_replace('/ [0-9]+PR/', '', $lisi);
-          }
-          if (preg_match('/[\d]+PR /', $lisi)) {
-            $lisi = preg_replace('/[\d]+PR /', '', $lisi);
-          }
-
-          if (str_word_count($lisi) > 1) {
-            $lisi = preg_replace("/\([^)]+\)/","",$lisi);
-            $lisi = SyncController::multiexplode([' ', '/'], $lisi);
-          } else {
-            if (preg_match("/([\d]+[a-zA-Z]+)/i", $lisi)) {
-              if (strpos($lisi, '/') !== false) {
-                $lisi = explode('/', $lisi);
-                $si = preg_replace('/[\d]+/', '', $lisi[1]);
-              }
-            }
-          }
-          if (is_array($lisi)) {
-            $li = $lisi[0];
-            if (preg_match('/[a-zA-Z]/i', $li[0])) {
-              $lisi = preg_split('/(?<=[a-zA-Z])/i', $li);
-              $li = $lisi[1];
-              if (!isset($si)) {
-                $si = $lisi[0];
-              }
-            } else {
-              if (isset($lisi[1])) {
-                if (preg_match('/[a-zA-Z]/i', $lisi[1])) {
-                  $si = preg_replace('/[\d]+/i', '', $lisi[1]);
-                }
-                $li = $lisi[0];
-              } else {
-                $lisi = preg_split('/(?=[a-zA-Z])/i', $lisi[0]);
-                $li = $lisi[0];
-                $si = $lisi[1];
-              }
-            }
-          }
-
-          $position = SyncController::getByArticle($article);
-          if ($position === false) {
-            $position = new Bigtire();
-          }
-
-          $returnText = '';
-
-          if (!empty($brand) && !empty($tread)) {
-            $treadId = SyncController::getTreadId($tread, $brand);
-            // Jauns breands - Bigtire_brands
-            $returnText .= 'Jauns brends - ' . $brand . '<br>';
-            if ($treadId === false) {
-              $brandId = SyncController::getBrandId($brand);
-              if ($brandId === false) {
-                $brandId = Bigbrand::insertGetId([
-                  'title' => $brand,
-                  'slug' => Str::slug($brand),
-                ]);
-              }
-              // Jauns protektors - Bigtire_treads
-              $returnText .= 'Jauns protektors - ' . $tread . '<br>';
-              $treadId = Bigtread::insertGetId([
-                'brand_id' => $brandId,
-                'title' => $tread,
-                'slug' => Str::slug($tread),
-              ]);
-            }
-          }
-
-          $position->make_id = $treadId;
-
-          $image = $item->image;
-
-          $outPath = dirname(__DIR__, 3) . '/storage/app/public/industrial/tread/';
-
-          @$image = file_get_contents('http://i3.lattako.lv/images/tyres/' . $image . '.jpg');
-          $new_image = $outPath . $treadId . '.jpg';
-
-          if (trim($image) !== false) {
-            file_put_contents($new_image, $image);
-          } else {
-            echo 'Neeksistē - Artikuls (' . $article . ')';
-          }
-
-          $position->d1 = $d1;
-          $position->sep = $sep1;
-          if (is_array($d2)) {
-            $position->d2 = null;
-            $position->sep2 = null;
-            $position->d3 = $d3;
-          } else {
-            $position->d2 = $d2;
-            $position->sep2 = $sep2;
-            $position->d3 = $d3;
-          }
-
-          if ($type === 'Truck') {
-            $type = str_replace('Truck', 'Kravas', $type);
-          } else if ($type === 'Buss') {
-            $type = str_replace('Buss', 'Autobuss', $type);
-          } else if ($type === 'Bus/Truck') {
-            $type = str_replace('Bus/Truck', 'Autobuss/Kravas', $type);
-          }
-
-          $position->type = 'TRUCK';
-          $position->li = $li;
-          $position->si = $si;
-          $position->price1 = $price1;
-          $position->price2 = $price2;
-          $position->implemention = $type;
-          $position->kind = null;
-          (empty($item->buss_possition)) ? $position->axis_bus = null : $position->axis_bus = $item->buss_possition;
-          (empty($item->truck_possition)) ? $position->axis_truck = null : $position->axis_truck = $item->truck_possition;
-          (empty($item->road_for_Buss)) ? $position->conditions_bus = null : $position->conditions_bus = $item->road_for_Buss;
-          (empty($item->road_for_trucks)) ? $position->conditions_truck = null : $position->conditions_truck = $item->road_for_trucks;
-          $position->offer = null;
-          $position->priceoffer = null;
-          $position->comment = null;
-          if ($item->qty_available > 0) {
-            if (!empty($d1) && !empty($d2) && !empty($d3) || !empty($d1) && empty($d2) && !empty($d3)) {
-              $position->visible_users = 1;
-              $position->visible_list = 1;
-            } else {
-              $position->visible_users = 0;
-              $position->visible_list = 0;
-            }
-          } else {
-            $position->visible_users = 0;
-            $position->visible_list = 0;
-          }
-
-          $position->available = 1;
-          $position->article = $article;
-
-          $position->save();
-
-          if ($article !== '') {
-            $position->addSecondaryArticle($article, 'i3');
-          }
-
-          $lists = Bigstock::where('article', $article)->where('itype', 'i3')->get();
-
-          foreach ($lists as $list) {
-            $list->update(['quantity' => $item->qty_available, 'updated_at' => date('Y-m-d H:i:s')]);
-            $updated++;
-          }
-
-          $counted++;
-
+        if ($brand === null) {
+          $brand = new Bigbrand;
+          $brand->timestamps = false;
+          $brand->title = $item->BrandName;
+          $brand->slug = Str::slug($brand->title);
+          $brand->save();
         }
+
+        if ($tread === null) {
+          $tread = new Bigtread;
+          $tread->timestamps = false;
+          $tread->brand_id = $brand->brand_id;
+          $tread->title = $item->PatternModelText;
+          $tread->slug = Str::slug($tread->title);
+          $tread->save();
+        } else {
+          if ($tread->brand_id != $brand->brand_id) {
+            $tread = new Bigtread;
+            $tread->timestamps = false;
+            $tread->brand_id = $brand->brand_id;
+            $tread->title = $item->PatternModelText;
+            $tread->slug = Str::slug($tread->title);
+            $tread->save();
+          }
+        }
+
+        $treadId = $tread->tread_id;
+
+        $quantity = intval($item->QuantityAvailable);
+        if ($imageId != null) {
+          $outPath = dirname(__DIR__, 3) . '/public/storage/industrial/tread/' . $treadId . '-o.jpg';
+
+          if (!file_exists($outPath)) {
+            Self::grab_image(env('I3_IMAGE_URL') . $imageId, $outPath);
+          }
+        }
+
+
+        $sizes = $this->getBigSizes($item);
+
+        $pr = $this->getAgroPr($item->ArticleText);
+
+        $tire->make_id = $treadId;
+        $tire->d1 = $sizes['d1'];
+        $tire->sep = $sizes['sep1'];
+        $tire->d2 = $sizes['d2'];
+        $tire->sep2 = $sizes['sep2'];
+        $tire->d3 = $sizes['d3'];
+        $tire->type = 'AGRO';
+//        $tire->type = ($item->MainGroupName) ? 'AGRO' : 'IND';
+        $tire->li = ($item->LoadIndex !== null) ? $item->LoadIndex : null;
+        $tire->si = ($item->SpeedIndex !== null) ? $item->SpeedIndex : null;
+        $tire->code = $pr; // PR
+        $tire->price1 = ceil((round(($item->NetPrice * 1.21), 2) + 15) / 0.7);
+        $tire->price2 = $item->Price;
+        $tire->price3 = floor(round($item->RetailPrice * 1.21, 2));
+        $tire->implemention = null;
+        $tire->kind = null;
+        $tire->axis = $item->PositionText;
+        $tire->conditions = null;
+        $tire->visible_users = 1;
+        $tire->visible_list = 1;
+        $tire->available = 0;
+        $tire->article = $item->ArticleId;
+        $tire->quantity = 0;
+        $tire->urs_quantity = 0;
+        $tire->krs_quantity = 0;
+        $tire->updated_at = Carbon::now()->format('Y-m-d H:i:s');
+
+        $tire->save();
+
+        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+
+        $stock = Bigstock::where('tire_id', $tire->tire_id)->first();
+
+        if ($stock == null) $stock = new Bigstock();
+        $stock->tire_id = $tire->tire_id;
+        $stock->article = $tire->article;
+        $stock->quantity = $quantity;
+//        $tireVisible = Bigtire::where('article', $stock->article)->first();
+//        if (!is_null($tireVisible)) {
+//          if ($quantity > 0) {
+//            if ($quantity > 4) {
+//              $tireVisible->visible_users = 1;
+//              $tireVisible->visible_list = 1;
+//            } else {
+//              $tireVisible->visible_users = 0;
+//              $tireVisible->visible_list = 0;
+//            }
+//          } else {
+//            $tireVisible->visible_users = 0;
+//            $tireVisible->visible_list = 0;
+//          }
+//        }
+        $stock->itype = 'i3';
+        $stock->type = 'agro';
+        $stock->metadata = $metadata;
+//        $tireVisible->save();
+        if ($stock->save()) {
+          $updated++;
+        }
+        $counted++;
 
       }
-      DB::table('sync_times')->where('name', 'i3-big')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+
+      DB::table('sync_times')->where('name', 'i3-agro')->update(['updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
+      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
+    }
+
+    public function i3big()
+    {
+      set_time_limit(0);
+
+      $sync = DB::table('sync_times')->where('name', 'i3-big')->first();
+      $sync_time = \Carbon\Carbon::parse($sync->updated_at)->addHour();
+      $time_now = \Carbon\Carbon::now();
+      if ($time_now->diff($sync_time)->invert == 1) {
+        if (!isset($_COOKIE['i3-token'])) {
+//        $token_url = "api.latakko.eu/Token";
+
+          $curl = curl_init();
+          curl_setopt_array($curl, array(
+            CURLOPT_URL => env('I3_TOKEN_URL'),
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+            CURLOPT_HTTPHEADER => array(
+              "cache-control: no-cache",
+              "content-type: application/x-www-form-urlencoded"
+            ),
+          ));
+          $response = curl_exec($curl);
+          $err = curl_error($curl);
+
+          curl_close($curl);
+
+          if (!$err)
+          {
+            $token = json_decode($response);
+          } else {
+            dd($err);
+          }
+
+          setcookie('i3-token', $token->access_token, time() + $token->expires_in, '/');
+          $token_bearer = $token->access_token;
+        } else {
+          $token_bearer = $_COOKIE['i3-token'];
+        }
+
+        $curl = curl_init();
+        curl_setopt_array($curl, array(
+          CURLOPT_URL => env('I3_TRUCK_URL'),
+          CURLOPT_RETURNTRANSFER => true,
+          CURLOPT_ENCODING => "",
+          CURLOPT_MAXREDIRS => 10,
+          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+          CURLOPT_CUSTOMREQUEST => "GET",
+          CURLOPT_HTTPHEADER => array(
+            "cache-control: no-cache",
+            "authorization: Bearer " . $token_bearer,
+          ),
+        ));
+        $response = curl_exec($curl);
+
+        $filename = dirname(__DIR__, 3) . '\\public\\storage\\xml\\i3-industrial.txt';
+
+        file_put_contents($filename, $response);
+        chmod($filename, 0775);
+
+        $err = curl_error($curl);
+
+        if ($err) throw new \Exception($err);
+
+        curl_close($curl);
+      }
+
+      $counted = 0;
+      $updated = 0;
+
+      Bigstock::where('itype', 'i3')->where('type', 'truck')->update(['quantity' => 0]);
+
+      $content = file_get_contents(dirname(__DIR__, 3) . '\\public\\storage\\xml\\i3-industrial.txt');
+      $content = json_decode($content);
+
+      $returnText = '';
+
+      foreach ($content as $item) {
+
+        $counted++;
+
+        $tire = Bigtire::where('article', $item->ArticleId)->first();
+        $newTire = false;
+
+        if ($tire == null) {
+          $newTire = true;
+          $tire = new Bigtire();
+        }
+
+        $tire->timestamps = false;
+
+        $imageId = $item->ImageId;
+
+        $brand = Bigbrand::where('title', $item->BrandName)->first();
+        $tread = Bigtread::where('title', $item->PatternModelText)->first();
+
+
+        if ($brand === null) {
+          $brand = new Bigbrand;
+          $brand->timestamps = false;
+          $brand->title = $item->BrandName;
+          $brand->slug = Str::slug($brand->title);
+          $brand->save();
+        }
+
+        if ($tread === null) {
+          $tread = new Bigtread;
+          $tread->timestamps = false;
+          $tread->brand_id = $brand->brand_id;
+          $tread->title = $item->PatternModelText;
+          $tread->slug = Str::slug($tread->title);
+          $tread->save();
+        } else {
+          if ($tread->brand_id != $brand->brand_id) {
+            $tread = new Bigtread;
+            $tread->timestamps = false;
+            $tread->brand_id = $brand->brand_id;
+            $tread->title = $item->PatternModelText;
+            $tread->slug = Str::slug($tread->title);
+            $tread->save();
+          }
+        }
+
+        $treadId = $tread->tread_id;
+
+        $quantity = intval($item->QuantityAvailable);
+        if ($imageId != null) {
+          $outPath = dirname(__DIR__, 3) . '/public/storage/industrial/tread/' . $treadId . '-o.jpg';
+
+          if (!file_exists($outPath)) {
+            Self::grab_image(env('I3_IMAGE_URL') . $imageId, $outPath);
+          }
+        }
+
+
+        $sizes = $this->getBigSizes($item);
+
+        $tire->make_id = $treadId;
+        $tire->d1 = $sizes['d1'];
+        $tire->sep = $sizes['sep1'];
+        $tire->d2 = $sizes['d2'];
+        $tire->sep2 = $sizes['sep2'];
+        $tire->d3 = $sizes['d3'];
+        $tire->type = 'Truck';
+//        $tire->type = ($item->MainGroupName) ? 'AGRO' : 'IND';
+        $tire->li = ($item->LoadIndex !== null) ? $item->LoadIndex : '';
+        $tire->si = ($item->SpeedIndex !== null) ? $item->SpeedIndex : '';
+        $tire->code = null; // PR
+        $tire->price1 = ceil((round(($item->NetPrice * 1.21), 2) + 15) / 0.7);
+        $tire->price2 = $item->Price;
+        $tire->price3 = floor(round($item->RetailPrice * 1.21, 2));
+        $tire->implemention = 'Kravas/Autobuss';
+        $tire->kind = null;
+        $tire->axis = $item->PositionText;
+        $tire->conditions = null;
+        $tire->visible_users = 1;
+        $tire->visible_list = 1;
+        $tire->available = 0;
+        $tire->article = $item->ArticleId;
+        $tire->quantity = 0;
+        $tire->urs_quantity = 0;
+        $tire->krs_quantity = 0;
+        $tire->updated_at = Carbon::now()->format('Y-m-d H:i:s');
+
+        $tire->save();
+
+        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+
+        $stock = Bigstock::where('tire_id', $tire->tire_id)->first();
+
+        if ($stock == null) $stock = new Bigstock();
+        $stock->tire_id = $tire->tire_id;
+        $stock->article = $tire->article;
+        $stock->quantity = $quantity;
+//        $tireVisible = Bigtire::where('article', $stock->article)->first();
+//        if (!is_null($tireVisible)) {
+//          if ($quantity > 0) {
+//            if ($quantity > 4) {
+//              $tireVisible->visible_users = 1;
+//              $tireVisible->visible_list = 1;
+//            } else {
+//              $tireVisible->visible_users = 0;
+//              $tireVisible->visible_list = 0;
+//            }
+//          } else {
+//            $tireVisible->visible_users = 0;
+//            $tireVisible->visible_list = 0;
+//          }
+//        }
+        $stock->itype = 'i3';
+        $stock->type = 'truck';
+        $stock->metadata = $metadata;
+//        $tireVisible->save();
+        if ($stock->save()) {
+          $updated++;
+        }
+        $counted++;
+
+      }
+
+      DB::table('sync_times')->where('name', 'i3-big')->update(['updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
@@ -1697,7 +2259,7 @@
     private static function grab_image($url,$saveto){
 
       if (!isset($_COOKIE['i3-token'])) {
-        $token_url = "api.latakko.eu/Token";
+        $token_url = "gd-api-test.barnstenit.se/Token";
 //        $token_url = "api.latakko.eu/Token";
 
         $curl = curl_init();
@@ -1746,13 +2308,35 @@
         ),
       ));
       $raw = curl_exec($curl);
+      $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
       curl_close ($curl);
-      if(file_exists($saveto)){
-        unlink($saveto);
+      if ($status !== 404) {
+        if(file_exists($saveto)){
+          unlink($saveto);
+        }
+        $fp = fopen($saveto,'x');
+        fwrite($fp, $raw);
+        fclose($fp);
       }
-      $fp = fopen($saveto,'x');
-      fwrite($fp, $raw);
-      fclose($fp);
+    }
+
+    private static function starco_image($url,$saveto)
+    {
+      $ch = curl_init ($url);
+      curl_setopt($ch, CURLOPT_HEADER, 0);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_BINARYTRANSFER,1);
+      $raw=curl_exec($ch);
+      $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+      curl_close ($ch);
+      if ($status !== 404) {
+        if (file_exists($saveto)) {
+          unlink($saveto);
+        }
+        $fp = fopen($saveto, 'x');
+        fwrite($fp, $raw);
+        fclose($fp);
+      }
     }
 
     public function starco()
@@ -1828,8 +2412,6 @@
       $updated = 0;
       foreach ($tires as $item) {
 
-        dd($item);
-
         if (Bigtire::where('article', $item['product_no'])->exists()) continue;
 
         $type = $item['segment_description'];
@@ -1895,9 +2477,9 @@
 
             $position->make_id = $treadId;
 
-            $outPath = dirname(__DIR__, 3) . '/storage/app/public/industrial/tread/' . $treadId . '.jpg';
+            $outPath = dirname(__DIR__, 3) . '/public/storage/industrial/tread/' . $treadId . '-o.jpg';
 
-            Self::grab_image('http://194.19.236.7/Pictures/' . $article . '.jpg', $outPath);
+            Self::starco_image('http://194.19.236.7/Pictures/' . $article . '.jpg', $outPath);
 
             $exploded[0] = strtr($exploded[0], ['(' => '']);
             $exploded[0] = strtr($exploded[0], [')' => '']);
@@ -1915,14 +2497,14 @@
               continue;
             }
 
-            $position->d1 = $exploded[0];
+            $position->d1 = sprintf('%g', $exploded[0]);
             $position->sep = $sep1;
             if (!$exploded[2]) {
               $position->d2 = NULL;
               $position->sep2 = NULL;
               $position->d3 = $exploded[1];
             } else {
-              $position->d2 = $exploded[1];
+              $position->d2 = sprintf('%g', $exploded[1]);
               $position->sep2 = $sep2;
               $position->d3 = $exploded[2];
             }
@@ -1935,10 +2517,8 @@
             $position->price2 = NULL;
             $position->implemention = $item['sub_segment_description'];
             $position->kind = NULL;
-            $position->axis_bus = NULL;
-            $position->axis_truck = NULL;
-            $position->conditions_bus = NULL;
-            $position->conditions_truck = NULL;
+            $position->axis = NULL;
+            $position->conditions = NULL;
             $position->offer = NULL;
             $position->priceoffer = NULL;
             $position->comment = $item['Radial_Diagonal'];

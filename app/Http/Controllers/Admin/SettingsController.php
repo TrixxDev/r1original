@@ -564,6 +564,7 @@
       $i3_quadr = DB::table('sync_times')->where('name', 'i3-quadr')->first()->updated_at;
       $duell_quadr = DB::table('sync_times')->where('name', 'duell-quadr')->first()->updated_at;
       $i3_big = DB::table('sync_times')->where('name', 'i3-big')->first()->updated_at;
+      $i3_agro = DB::table('sync_times')->where('name', 'i3-agro')->first()->updated_at;
       $starco_big = DB::table('sync_times')->where('name', 'starco-big')->first()->updated_at;
 
       return view('admin.settings.syncs',
@@ -577,6 +578,7 @@
                 'i3_quadr',
                 'duell_quadr',
                 'i3_big',
+                'i3_agro',
                 'starco_big'
               )
             );
