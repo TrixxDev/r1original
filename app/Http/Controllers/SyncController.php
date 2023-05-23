@@ -2043,7 +2043,10 @@
         $tire->price3 = floor(round($item->RetailPrice * 1.21, 2));
         $tire->implemention = 'Kravas/Autobuss';
         $tire->kind = null;
-        $tire->axis = $item->PositionText;
+        $positionText = $item->PositionText;
+        $parts = preg_split('/(?=[A-Z])/', $positionText);
+        $positionText = implode(' ', $parts);
+        $tire->axis = $positionText;
         $tire->conditions = null;
         $tire->visible_users = 1;
         $tire->visible_list = 1;
