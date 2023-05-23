@@ -404,7 +404,6 @@
                           <th scope="col"></th>
                           <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
                           <th scope="col">Ass</th>
-                          <th scope="col" class="text-center">Segums</th>
                           <th scope="col" class="text-center">LI/SI</th>
                           <th scope="col" class="hidden-sm-down text-center">
                             Kods
@@ -464,24 +463,6 @@
                             @endif
                           @endif
                         </td>
-{{--                        Segums--}}
-                        <td class="hidden-sm-down text-center">
-                          @if (isset($code_array[$tire->conditions]))
-                            <span data-toggle="tooltip" title="<span style='color: black'>
-                              @if (isset($code_array[$tire->conditions]))
-                              {!! $code_array[$tire->conditions] !!}
-                              @endif
-                              </span>" class="hidden-sm-down table-cell prod-code">
-                              @if ($tire->conditions)
-                                {{ $tire->conditions }}
-                              @endif
-                            </span>
-                          @else
-                            @if ($tire->conditions)
-                              {{ $tire->conditions }}
-                            @endif
-                          @endif
-                        </td>
 {{--                        LI/SI--}}
                         <td class="text-center">
                           <span data-toggle="tooltip"
@@ -490,7 +471,7 @@
                         </td>
 
                         <td class="hidden-sm-down text-center">
-                          {{ $tire->code . 'PR' }}
+                          @if (!empty($tire->code)) {{ $tire->code . 'PR' }} @endif
                         </td>
 
                         <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>

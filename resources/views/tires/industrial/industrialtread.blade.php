@@ -148,7 +148,6 @@
                     <th scope="col"></th>
                     <th scope="col" class="">Izmērs</th>
                     <th scope="col" class="hidden-sm-down text-center">Ass</th>
-                    <th scope="col" class="hidden-sm-down text-center">Segums</th>
                     <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
                     <th scope="col" class="hidden-sm-down text-center">Kods</th>
                     <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
@@ -183,18 +182,13 @@
                         @endif
                       </td>
                       <td class="hidden-sm-down text-center">
-                        @if ($tire->conditions)
-                          {{ $tire->conditions }}
-                        @endif
-                      </td>
-                      <td class="hidden-sm-down text-center">
                         <span data-toggle="tooltip"
                               title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . ' ' . $tire->si }}
                         </span>
                       </td>
 
                       <td class="hidden-sm-down text-center tread-code-cell-size">
-                        {{ $tire->code . 'PR' }}
+                        @if (!empty($tire->code)) {{ $tire->code . 'PR' }} @endif
                       </td>
 
                       <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
