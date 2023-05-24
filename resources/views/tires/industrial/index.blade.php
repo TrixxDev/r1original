@@ -442,7 +442,7 @@
                              data-content="{{ $tire->fullName }}"
                              data-article="{{ $tire->article }}"
                              data-quantity="{{ $cartQty }}">
-                            {{ $tire->title }}
+                            <div class="table-link-title">{{ $tire->title }}</div>
                           </a>
                         </td>
 {{--                           ass --}}
@@ -475,15 +475,14 @@
                         </td>
 
                         <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
-                        <td id="sale-price" class="text-center tire-price-red">€ {{ $tire->price2 }}</td>
+                        <td id="sale-price" class="text-center tire-price-red">€ {{ $tire->price3 }}</td>
                         <td class="hidden-sm-down text-center"></td>
 
                         <td class="shopping-cart-col">
                           <div class="clearfix atc_div text-right">
-                            <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
-                                    @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal"
-                                    @endif data-info="{{ $tire->tire_id }}"><i
-                                class="material-icons">add_shopping_cart</i>
+                            <button class="cart-shopping-button" data-toggle="modal"
+                              @hasrole('administrators') data-target="#" @else data-target="#blockcart-modal" @endhasrole data-info="{{ $tire->tire_id }}"><i
+                              class="material-icons">add_shopping_cart</i>
                             </button>
                           </div>
                         </td>

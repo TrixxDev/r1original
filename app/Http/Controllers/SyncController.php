@@ -53,6 +53,10 @@
           'Quadr',
           'quadr_stock'
         ],
+        'big_tires' => [
+          'Bigtire',
+          'bigtire_stock',
+        ],
         'rims' => [
           'Rim',
           ''

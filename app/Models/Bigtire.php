@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use DB;
 use Auth;
+use Illuminate\Support\Str;
 
 class Bigtire extends Model
 {
@@ -17,6 +18,7 @@ class Bigtire extends Model
     protected $fillable = ['visible_users', 'visible_list'];
 
     public $timestamps = false;
+    public static $url;
 
     use HasFactory;
   /**
@@ -47,10 +49,11 @@ class Bigtire extends Model
   public function getFullSizeAttribute()
   {
     if (empty($this->sep2) && empty($this->d2)) {
-      return $this->d1 . $this->sep . $this->d3;
+      $size = $this->d1 . $this->sep . $this->d3;
     } else {
-      return $this->d1 . $this->sep . $this->d2 . $this->sep2 . $this->d3;
+      $size = $this->d1 . $this->sep . $this->d2 . $this->sep2 . $this->d3;
     }
+    return strtoupper($size);
   }
 
   public function getOfferPriceAttribute()
@@ -81,6 +84,49 @@ class Bigtire extends Model
     }
 
     return $count;
+  }
+
+  public static function StockLink($tire)
+  {
+    $stocks = Bigstock::where('tire_id', $tire->tire_id)->get();
+
+    $urls = [];
+
+    foreach ($stocks as $stock) {
+      switch ($stock->itype) {
+        case 'i3': {
+          $urls['Latakko'] = ['link' => 'https://shop.latakko.eu/product/' . $stock->article, 'remaining' => $stock->quantity];
+          break;
+        }
+        case 'starco': {
+          $file = file_get_contents(dirname(__DIR__, 2) . '/public/starco.sync.xml');
+          $tires = json_decode($file, true);
+          foreach ($tires as $tire) {
+            if ($tire['product_no'] == $stock->article) {
+              $name = Str::slug(str_replace(['/', '.'], '-', $tire['name']));
+              Bigtire::$url = 'https://shop.bohnenkamp-baltic.com/' . $name . '.html';
+              $handle = curl_init(Bigtire::$url);
+              curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+              $response = curl_exec($handle);
+              $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+              curl_close($handle);
+              if ($httpCode != 200) {
+                Bigtire::$url = 'https://shop.bohnenkamp-baltic.com/catalogsearch/result/?q=' . $stock->article;
+              }
+            }
+          }
+          $urls['Starco'] = ['link' => Bigtire::$url, 'remaining' => $stock->quantity];
+          break;
+        }
+//          case 'rz': {
+//            dd(Self::RZLink($stock->article));
+//            $urls = [$stock->itype => Self::RZLink($stock->article)];
+//            break;
+//          }
+      }
+    }
+
+    return $urls;
   }
 
   public function getAvailableAttribute()
