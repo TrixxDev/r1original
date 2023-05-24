@@ -119,8 +119,10 @@ class BigTireController extends Controller
         })->when($this->d3, function($query) {
           $query->where('d3', $this->d3);
         })->where('visible_users', '<>', 0)
+        ->orderBy('d3', 'ASC')
+        ->orderBy('d1', 'ASC')
+        ->orderBy('d2', 'ASC')
         ->orderBy('quantity', 'DESC')
-        ->orderBy('price3', 'DESC')
         ->paginate();
 
       return view('tires.industrial.index',
@@ -169,6 +171,9 @@ class BigTireController extends Controller
       })->when($this->implemention, function($query) {
           $query->whereIn('big_tires.implemention', $this->implemention);
       })->where('visible_users', '<>', 0)
+        ->orderBy('d3', 'ASC')
+        ->orderBy('d1', 'ASC')
+        ->orderBy('d2', 'ASC')
         ->orderBy('quantity', 'DESC')
         ->paginate()->appends($request->query());
 
