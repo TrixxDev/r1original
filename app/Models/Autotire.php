@@ -106,11 +106,10 @@ class Autotire extends Model
             $urls['Goodyear'] = ['link' => 'https://myway.goodyear.com/p/' . $stock->article, 'remaining' => $stock->quantity];
             break;
           }
-//          case 'rz': {
-//            dd(Self::RZLink($stock->article));
-//            $urls = [$stock->itype => Self::RZLink($stock->article)];
-//            break;
-//          }
+          case 'rz': {
+            $urls['RiepuZona'] = ['link' => 'https://riepuzona.lv/lv/meklet/t-' . $stock->article, 'remaining' => $stock->quantity];
+            break;
+          }
         }
       }
 

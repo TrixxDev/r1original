@@ -2430,6 +2430,8 @@
 
           if ($item['enabled'] == 'YES') {
 
+            if ($type === 'CONSTR') $type = 'IND';
+
             $article = $item['product_no'];
 
             $size = $item['Size'];
