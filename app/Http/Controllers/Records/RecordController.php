@@ -325,6 +325,7 @@
 
     if (!$slotPart) {
       if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+      if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_CLOSED) return json_encode(['taken' => 'Atvainojiet, šajā laikā esam slēgti!']);
 
       $slot->timestamps = false;
 
@@ -339,6 +340,7 @@
     } else {
       if ($slotPart == 'a') {
         if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+        if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_CLOSED) return json_encode(['taken' => 'Atvainojiet, šajā laikā esam slēgti!']);
 
         $slot->timestamps = false;
 
@@ -352,6 +354,7 @@
         $slot->is_mobile = 1;
       } else {
         if ($slot->status2 != SLOT_STATUS_FREE && $slot->status2 == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+        if ($slot->status2 != SLOT_STATUS_FREE && $slot->status2 == SLOT_STATUS_CLOSED) return json_encode(['taken' => 'Atvainojiet, šajā laikā esam slēgti!']);
 
         $slot->timestamps = false;
 
@@ -949,6 +952,7 @@
       $slot = Slot::findOrFail($slot_id);
       if (!$slotPart) {
         if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+        if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_CLOSED) return json_encode(['taken' => 'Atvainojiet, šajā laikā esam slēgti!']);
 
         $slot->timestamps = false;
 
@@ -963,6 +967,7 @@
       } else {
         if ($slotPart == 'a') {
           if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+          if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_CLOSED) return json_encode(['taken' => 'Atvainojiet, šajā laikā esam slēgti!']);
 
           $slot->timestamps = false;
 
@@ -976,6 +981,7 @@
           $slot->is_mobile = 1;
         } else {
           if ($slot->status2 != SLOT_STATUS_FREE && $slot->status2 == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
+          if ($slot->status2 != SLOT_STATUS_FREE && $slot->status2 == SLOT_STATUS_CLOSED) return json_encode(['taken' => 'Atvainojiet, šajā laikā esam slēgti!']);
 
           $slot->timestamps = false;
 
