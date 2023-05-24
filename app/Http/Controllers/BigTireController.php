@@ -170,7 +170,6 @@ class BigTireController extends Controller
           $query->whereIn('big_tires.implemention', $this->implemention);
       })->where('visible_users', '<>', 0)
         ->orderBy('quantity', 'DESC')
-        ->orderBy('price3', 'DESC')
         ->paginate()->appends($request->query());
 
 //      dd(DB::getQueryLog(), $tires);

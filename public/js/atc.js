@@ -52,17 +52,18 @@ $(document).ready(function () {
 
   $('.industrial-sorter').each(function() {
     $(this).tablesorter({
+        sortList: [[6,1]],
         headers: {
-          0: {sorter: false},
-          1: {sorter: true},
-          2: {sorter: false},
-          3: {sorter: false},
-          4: {sorter: false},
-          5: {sorter: false},
-          8: {sorter: false},
-          9: {sorter: false},
-          10: {sorter: false},
-          11: {sorter: false}
+          // 0: {sorter: false},
+          // 1: {sorter: false}6,
+          // 2: {sorter: false},
+          // 3: {sorter: false},
+          // 4: {sorter: false},
+          5: {sorter: true},
+          6: {sorter: true},
+          // 7: {sorter: false},
+          // 8: {sorter: false},
+          // 9: {sorter: false}
         },
       }
     );
