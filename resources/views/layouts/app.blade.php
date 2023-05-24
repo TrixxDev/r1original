@@ -431,13 +431,13 @@
                                             Ziemas riepas
                                           </a>
                                         </li>
-{{--                                        <li class="category" id="category-18">--}}
-{{--                                            <a class="dropdown-item dropdown-submenu"--}}
-{{--                                               href="{{ route('lielas-riepas') }}"--}}
-{{--                                               data-depth="1">--}}
-{{--                                                  Lielās riepas--}}
-{{--                                            </a>--}}
-{{--                                        </li>--}}
+                                        <li class="category" id="category-18">
+                                            <a class="dropdown-item dropdown-submenu"
+                                               href="{{ route('lielas-riepas') }}"
+                                               data-depth="1">
+                                                  Lielās riepas
+                                            </a>
+                                        </li>
                                         <li class="category" id="category-18">
                                           <a class="dropdown-item dropdown-submenu"
                                              href="{{ route('radzes') }}"

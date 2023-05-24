@@ -2046,7 +2046,7 @@
         $positionText = $item->PositionText;
         $parts = preg_split('/(?=[A-Z])/', $positionText);
         $positionText = implode(' ', $parts);
-        $tire->axis = $positionText;
+        $tire->axis = ltrim($positionText, ' ');
         $tire->conditions = null;
         $tire->visible_users = 1;
         $tire->visible_list = 1;
@@ -2591,17 +2591,17 @@
           if ($item['price'] < 100) {
             $price1 = ($item['price'] + 8) / 70 * 100;
             $price2 = $item['price'] + 10;
-            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
+            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
           }
           if ($item['price'] >= 100 && $item['price'] < 200) {
             $price1 = ($item['price'] + 12) / 70 * 100;
             $price2 = $item['price'] + 15;
-            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
+            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
           }
           if ($item['price'] > 200) {
             $price1 = ($item['price'] + 15) / 70 * 100;
             $price2 = $item['price'] + 20;
-            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price2' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
+            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
           }
 
         }

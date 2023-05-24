@@ -119,10 +119,8 @@ class BigTireController extends Controller
         })->when($this->d3, function($query) {
           $query->where('d3', $this->d3);
         })->where('visible_users', '<>', 0)
-        ->orderBy('d3', 'ASC')
-        ->orderBy('d1', 'ASC')
-        ->orderBy('d2', 'ASC')
-        ->orderBy('price2', 'DESC')
+        ->orderBy('quantity', 'DESC')
+        ->orderBy('price3', 'DESC')
         ->paginate();
 
       return view('tires.industrial.index',
@@ -171,10 +169,8 @@ class BigTireController extends Controller
       })->when($this->implemention, function($query) {
           $query->whereIn('big_tires.implemention', $this->implemention);
       })->where('visible_users', '<>', 0)
-        ->orderBy('d3', 'ASC')
-        ->orderBy('d1', 'ASC')
-        ->orderBy('d2', 'ASC')
-        ->orderBy('price2', 'DESC')
+        ->orderBy('quantity', 'DESC')
+        ->orderBy('price3', 'DESC')
         ->paginate()->appends($request->query());
 
 //      dd(DB::getQueryLog(), $tires);
@@ -203,11 +199,11 @@ class BigTireController extends Controller
                         ->join('bigtire_brands', 'bigtire_treads.brand_id', '=', 'bigtire_brands.brand_id')
                         ->where('bigtire_brands.title', $brand->title)
                         ->where('bigtire_treads.title', str_replace('_', '/', $tread))
-                        ->where('big_tires.visible_users', 1)
-                        ->where('big_tires.visible_list', 1)
+                        ->where('visible_users', '<>', 0)
                         ->orderBy('d3', 'ASC')
                         ->orderBy('d1', 'ASC')
                         ->orderBy('d2', 'ASC')
+                        ->orderBy('price3', 'ASC')
                         ->get();
 
       $currTire = Bigtire::with('tread')->leftJoin('bigtire_treads', 'big_tires.make_id', '=', 'bigtire_treads.tread_id')

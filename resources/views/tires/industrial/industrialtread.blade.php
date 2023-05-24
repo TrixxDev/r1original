@@ -192,7 +192,7 @@
                       </td>
 
                       <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
-                      <td id="sale-price" class="text-center tire-price-red sale-price">€ {{ $tire->price2 }}</td>
+                      <td id="sale-price" class="text-center tire-price-red sale-price">€ {{ $tire->price3 }}</td>
                       <td class="hidden-sm-down text-center tread-comment-cell-size">{{$tire->comment}}</td>
                       <td class="shopping-cart-col">
                         <div class="clearfix atc_div text-right">

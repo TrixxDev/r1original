@@ -281,9 +281,9 @@
         <a class="dropdown-item" href="{{ route('ziemas-riepas') }}">Ziemas Riepas</a>
       </div>
 
-{{--      <div class="nav-dropdown-link">--}}
-{{--        <a class="dropdown-item" href="{{ route('lielas-riepas') }}">Lielās riepas</a>--}}
-{{--      </div>--}}
+      <div class="nav-dropdown-link">
+        <a class="dropdown-item" href="{{ route('lielas-riepas') }}">Lielās riepas</a>
+      </div>
 
       <div class="nav-dropdown-link">
         <a class="dropdown-item" href="{{ route('radzes') }}">Skrūvējamas radzes</a>
