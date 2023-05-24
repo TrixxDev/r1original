@@ -403,7 +403,7 @@
                         <tr>
                           <th scope="col"></th>
                           <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
-                          <th scope="col">Ass</th>
+                          <th scope="col" style="text-align: center;">Ass</th>
                           <th scope="col" class="text-center">LI/SI</th>
                           <th scope="col" class="hidden-sm-down text-center">
                             Kods
