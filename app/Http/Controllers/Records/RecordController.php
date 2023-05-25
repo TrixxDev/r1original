@@ -1632,6 +1632,7 @@
             $slot->edituser = -1;
             $slot->is_mobile = 0;
           }
+          $secondarySlot = false;
         }
 
         if ($takenBy2 !== null) {
@@ -1644,12 +1645,13 @@
             $slot->edituser2 = -1;
             $slot->is_mobile2 = 0;
           }
+          $secondarySlot = true;
         }
 
         if ($slot->save()) {
 
             if ($info->ownerEmail) {
-              $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $slot->date, $slot->iorder, $info, false);
+              $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $slot->date, $slot->iorder, $info, $secondarySlot);
 
               $mailer = new Mailer();
               $mailer->addRecipient($info->ownerEmail);
@@ -1660,7 +1662,7 @@
               $mailer->send();
             }
 
-            $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleCancelSMS'], $slot->date, $slot->iorder, $info, false);
+            $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleCancelSMS'], $slot->date, $slot->iorder, $info, $secondarySlot);
 
             (new SmsSender)->sendSchedule((array) $info, $smsText, $slot);
             if ($date == $slot->date) {
