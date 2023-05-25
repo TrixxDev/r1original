@@ -1736,7 +1736,7 @@
         ));
         $response = curl_exec($curl);
 
-        $filename = dirname(__DIR__, 3) . '\\public\\storage\\xml\\i3-agro.txt';
+        $filename = dirname(__DIR__, 3) . '/public/storage/xml/i3-agro.txt';
 
         file_put_contents($filename, $response);
         chmod($filename, 0775);
@@ -1949,7 +1949,7 @@
         ));
         $response = curl_exec($curl);
 
-        $filename = dirname(__DIR__, 3) . '\\public\\storage\\xml\\i3-industrial.txt';
+        $filename = dirname(__DIR__, 3) . '/public/storage/xml/i3-industrial.txt';
 
         file_put_contents($filename, $response);
         chmod($filename, 0775);
