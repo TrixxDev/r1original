@@ -44,7 +44,7 @@ class SmsSender {
       }
     }
 //    $smsText = 'Pasūtījums ar numuru - ' . $orderId . ' ir apstiprināts';
-    $smsText = 'Jusu pasutijuma numurs ' . $orderId . ', sanemsana - ' . iconv('UTF-8', 'ASCII//TRANSLIT', $office->shipping) . '. Ar darba laikiem iespejams iepazities - www.r1riepas.lv';
+    $smsText = 'Jusu pasutijuma numurs ' . $orderId . ', sanemsana - ' . str_replace('ā', 'a', $office->shipping) . '. Ar darba laikiem iespejams iepazities - www.r1riepas.lv';
 
     $sendString = '["'.$target.'","'.$smsText.'"]';
 
