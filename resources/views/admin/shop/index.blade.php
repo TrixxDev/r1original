@@ -91,7 +91,7 @@
                         @endphp
                           <tr>
                             @if (isset($items['name']) || isset($items['surname']))
-                              <td>{{ $order->created_at . ' - ' . $items['name'] . ', ' . $items['surname'] }}</td>
+                              <td>{{ $order->created_at . ' - ' . $items['name'] . ', ' . $items['surname'] . ' (' . $items['phone_number'] . ')'}}</td>
                             @else
                               <td>{{ $order->created_at }}</td>
                             @endif

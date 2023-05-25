@@ -113,10 +113,11 @@ class ShopController extends Controller
     $sheet->setCellValue('E1', 'Akcijas');
     $sheet->setCellValue('F1', 'Preču daudzums');
     $sheet->setCellValue('G1', 'Summa');
-    $sheet->setCellValue('H1', 'Pasūtījuma statuss');
-    $sheet->setCellValue('I1', 'Menedžeris');
-    $sheet->setCellValue('J1', 'Preču grupas');
-    $sheet->setCellValue('K1', 'Piegādes adrese');
+    $sheet->setCellValue('H1', 'Apmaksas veids');
+    $sheet->setCellValue('I1', 'Pasūtījuma statuss');
+    $sheet->setCellValue('J1', 'Menedžeris');
+    $sheet->setCellValue('K1', 'Preču grupas');
+    $sheet->setCellValue('L1', 'Piegādes adrese');
 
     $b = 2;
 
@@ -150,22 +151,23 @@ class ShopController extends Controller
       $sheet->setCellValue('E' . $b, (isset($userData->email_notifications)) ? 'Jā' : 'Nē');
       $sheet->setCellValue('F' . $b, $item_count);
       $sheet->setCellValue('G' . $b, $item_sum);
-      $sheet->setCellValue('H' . $b, $status_enum[$order->status]);
+      $sheet->setCellValue('H' . $b, $pay_enum[$order->payment]);
+      $sheet->setCellValue('I' . $b, $status_enum[$order->status]);
       if (User::find($order->edituser)) {
-        $sheet->setCellValue('I' . $b, User::find($order->edituser)->fullName);
+        $sheet->setCellValue('J' . $b, User::find($order->edituser)->fullName);
       } else {
-        $sheet->setCellValue('I' . $b, 'Neviens nav veicis labojumus');
+        $sheet->setCellValue('J' . $b, 'Neviens nav veicis labojumus');
       }
       if (isset($userData->shipping_city)) {
         if ($userData->shipping_city == 1) {
-          $sheet->setCellValue('K' . $b, 'Rīga, ' . $userData->shipping_address);
+          $sheet->setCellValue('L' . $b, 'Rīga, ' . $userData->shipping_address);
         } else if ($userData->shipping_city == 2) {
-          $sheet->setCellValue('K' . $b, 'Salaspils, ' . $userData->shipping_address);
+          $sheet->setCellValue('L' . $b, 'Salaspils, ' . $userData->shipping_address);
         } else {
-          $sheet->setCellValue('K' . $b, $userData->shipping_address);
+          $sheet->setCellValue('L' . $b, $userData->shipping_address);
         }
       } else {
-        $sheet->setCellValue('K' . $b, '');
+        $sheet->setCellValue('L' . $b, '');
       }
 
       $b++;
@@ -177,15 +179,16 @@ class ShopController extends Controller
     $cellIterator = $sheet->getRowIterator()->current()->getCellIterator();
     $cellIterator->setIterateOnlyExistingCells(true);
     foreach ($cellIterator as $cell) {
-      if ($cell->getColumn() == 'H') continue;
+      if ($cell->getColumn() == 'I') continue;
       $sheet->getColumnDimension($cell->getColumn())->setAutoSize(true);
     }
     $sheet->getColumnDimension('D')->setWidth(33);
     $sheet->getColumnDimension('E')->setWidth(10);
     $sheet->getColumnDimension('F')->setWidth(10);
     $sheet->getColumnDimension('G')->setWidth(31);
-    $sheet->getColumnDimension('H')->setWidth(27);
-    $sheet->getColumnDimension('I')->setWidth(14);
+    $sheet->getColumnDimension('H')->setWidth(45);
+    $sheet->getColumnDimension('I')->setWidth(27);
+    $sheet->getColumnDimension('J')->setWidth(14);
 
     $writer = new Xlsx($spreadsheet);
     $filename = 'pasutijumi.xlsx';
