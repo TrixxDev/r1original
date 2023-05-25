@@ -42,6 +42,7 @@
                         <thead>
                       <tr>
                         <th scope="col">Datums</th>
+                        <th scope="col">Pas. Nr.</th>
                         <th scope="col">Preces</th>
                         <th scope="col">Summa</th>
                         <th scope="col">
@@ -94,6 +95,7 @@
                             @else
                               <td>{{ $order->created_at }}</td>
                             @endif
+                            <td>{{ $order->id }}</td>
                             <td>{{ $item_count }}</td>
                             <td>{{ $item_sum }} €</td>
                             <td>{{ $status_enum[$order->status] }}</td>
