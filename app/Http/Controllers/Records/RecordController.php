@@ -445,7 +445,7 @@
     if ($today == $slot->date && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
       $service = Service::where('service_id', $form->purpose)->first();
       $vehicle = str_replace(' ', '%20', $form->vehicleMake);
-      $userComment = (!empty($form->comment)) ?? ',%20Piezīmes%20-%20' . str_replace(' ', '%20', $form->comment);
+      $userComment = (!empty($form->comment)) ? ',%20Piezīmes%20-%20' . str_replace(' ', '%20', $form->comment) : '';
       $model = str_replace(' ', '%20', $form->vehicleModel);
       $service = str_replace(' ', '%20', $service->pdf_title);
       $vehiclePlate = str_replace(' ', '%20', $form->vehiclePlate);
@@ -1098,7 +1098,7 @@
         if ($today == $slot->date && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
           $service = Service::where('service_id', $form->purpose)->first();
           $vehicle = str_replace(' ', '%20', $form->vehicleMake);
-          $userComment = (!empty($form->comment)) ?? ',%20Piezīmes%20-%20' . str_replace(' ', '%20', $form->comment);
+          $userComment = (!empty($form->comment)) ? ',%20Piezīmes%20-%20' . str_replace(' ', '%20', $form->comment) : '';
           $model = str_replace(' ', '%20', $form->vehicleModel);
           $service = str_replace(' ', '%20', $service->pdf_title);
           $vehiclePlate = str_replace(' ', '%20', $form->vehiclePlate);
