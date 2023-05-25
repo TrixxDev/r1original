@@ -314,7 +314,7 @@
       }
     } else {
       $startTime = $start + $slotNumber * ($day->slotSize);
-      $secondarySlot = true;
+      $secondarySlot = false;
     }
     $time = Office::timeByInterval($startTime);
 
@@ -336,7 +336,6 @@
       $slot->createuser = $userID;
       $slot->edittime = date('Y-m-d H:i:s');
       $slot->edituser = $userID;
-      $slot->is_mobile = 1;
     } else {
       if ($slotPart == 'a') {
         if ($slot->status != SLOT_STATUS_FREE && $slot->status == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
@@ -351,7 +350,6 @@
         $slot->createuser = $userID;
         $slot->edittime = date('Y-m-d H:i:s');
         $slot->edituser = $userID;
-        $slot->is_mobile = 1;
       } else {
         if ($slot->status2 != SLOT_STATUS_FREE && $slot->status2 == SLOT_STATUS_TAKEN) return json_encode(['taken' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!']);
         if ($slot->status2 != SLOT_STATUS_FREE && $slot->status2 == SLOT_STATUS_CLOSED) return json_encode(['taken' => 'Atvainojiet, šajā laikā esam slēgti!']);
@@ -365,7 +363,6 @@
         $slot->createuser2 = $userID;
         $slot->edittime2 = date('Y-m-d H:i:s');
         $slot->edituser2 = $userID;
-        $slot->is_mobile2 = 1;
       }
     }
 
