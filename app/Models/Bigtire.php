@@ -58,10 +58,10 @@ class Bigtire extends Model
 
   public function getOfferPriceAttribute()
   {
-    if ($this->price2 == null) {
+    if ($this->price3 == null) {
       return $this->price1;
     } else {
-      return $this->price2;
+      return $this->price3;
     }
   }
 
