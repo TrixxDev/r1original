@@ -1753,7 +1753,7 @@
 
       Bigstock::where('itype', 'i3')->where('type', 'agro')->update(['quantity' => 0]);
 
-      $content = file_get_contents(dirname(__DIR__, 3) . '/public/storage/xml/i3-agro.txt';);
+      $content = file_get_contents(dirname(__DIR__, 3) . '/public/storage/xml/i3-agro.txt');
       $content = json_decode($content);
 
       $returnText = '';
