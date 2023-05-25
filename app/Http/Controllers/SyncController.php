@@ -1624,7 +1624,7 @@
           $sep1 = (is_string($parts[1])) ? strtolower($parts[1]) : $parts[1];
           $d2 = null;
           $sep2 = null;
-          $d3 = (fmod($parts[2], 1) === 0.0) ? (int) $parts[2] : $parts[2];
+          $d3 = sprintf('%g', $parts[2]);
         }
       } else {
         $delimiters = ['/', 'x', 'X', '-'];
@@ -1650,7 +1650,7 @@
           $sep1 = (is_string($parts[1])) ? strtolower($parts[1]) : $parts[1];
           $d2 = null;
           $sep2 = null;
-          $d3 = (fmod($parts[2], 1) === 0.0) ? (int) $parts[2] : $parts[2];
+          $d3 = sprintf('%g', $parts[2]);
         }
       }
 
