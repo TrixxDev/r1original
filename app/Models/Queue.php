@@ -368,7 +368,7 @@ class Queue extends Model
       }
     }
 
-    public function parseNotification($text, $date, $slotNum, $takenBy, $showTime2=false){
+    public function parseNotification($text, $date, $slotNum, $takenBy, $showTime2=false, $time){
       $_weekDays = array(
         1=>'pirmdien',
         2=>'otrdien',
@@ -386,16 +386,16 @@ class Queue extends Model
       $day = $this->_workingDays[$date];
       $start = Office::intervalByTime($day->opentime);
 
-      if ($showTime2 != null) {
-        if ($showTime2 == false) {
-          $startTime = $start + $slotNum * ($day->slotSize);
-        } else {
-          $startTime = $start + $slotNum * $day->slotSize + ($day->slotSize/2);
-        }
-      } else {
-        $startTime = $start + $slotNum * ($day->slotSize);
-      }
-      $time = Office::timeByInterval($startTime);
+//      if ($showTime2 != null) {
+//        if ($showTime2 == false) {
+//          $startTime = $start + $slotNum * ($day->slotSize);
+//        } else {
+//          $startTime = $start + $slotNum * $day->slotSize + ($day->slotSize/2);
+//        }
+//      } else {
+//        $startTime = $start + $slotNum * ($day->slotSize);
+//      }
+//      $time = Office::timeByInterval($startTime);
 
       $dateStamp = strtotime($date.' '.$time);
       $dayOfWeek = $_weekDays[date('N', $dateStamp)];

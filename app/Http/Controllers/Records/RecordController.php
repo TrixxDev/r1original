@@ -427,16 +427,16 @@
 //          return json_encode(['success' => 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b>']);
 //        }
 
-      $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleSMS'], $slot->date, $slot->iorder, $form, $secondarySlot);
+      $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleSMS'], $slot->date, $slot->iorder, $form, $secondarySlot, $time);
 
       if ($form->ownerEmail) {
-        $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, $secondarySlot);
+        $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, $secondarySlot, $time);
 //        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($mailText));
       $mailer = new Mailer();
       $mailer->addRecipient($form->ownerEmail);
       $bcc = 'karlis@r1riepas.lv';
       if ($bcc) $mailer->addBCC($bcc);
-      $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, $secondarySlot);
+      $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, $secondarySlot, $time);
       $mailer->message = $mailText;
       $mailer->send();
     }
@@ -1080,16 +1080,16 @@
         'cancelId' => $cancelId
       ];
 
-        $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleSMS'], $slot->date, $slot->iorder, $form, $secondarySlot);
+        $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleSMS'], $slot->date, $slot->iorder, $form, $secondarySlot, $time);
 
         if ($form->ownerEmail) {
-          $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, $secondarySlot);
+          $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $form, $secondarySlot, $time);
 //        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($mailText));
           $mailer = new Mailer();
           $mailer->addRecipient($form->ownerEmail);
           $bcc = 'karlis@r1riepas.lv';
           if ($bcc) $mailer->addBCC($bcc);
-          $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, $secondarySlot);
+          $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $form, $secondarySlot, $time);
           $mailer->message = $mailText;
           $mailer->send();
         }
@@ -1601,7 +1601,7 @@
       $takenBy = json_decode($slot->takenby);
       $takenBy2 = json_decode($slot->takenby2);
 
-      if ($day->isHalf()) {
+      if ($day->isHalf()) { // Ja ir pusrinda
         if ($takenBy !== null) {
           $startTime = $start + $slot->iorder * ($day->slotSize/2);
           $info = $takenBy;
@@ -1610,7 +1610,7 @@
           $startTime = $start + $slot->iorder * ($day->slotSize);
           $info = $takenBy2;
         }
-      } else {
+      } else { // Ja ir pilna rinda
         if ($takenBy !== null) {
           $info = $takenBy;
         }
@@ -1651,7 +1651,7 @@
         if ($slot->save()) {
 
             if ($info->ownerEmail) {
-              $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $slot->date, $slot->iorder, $info, $secondarySlot);
+              $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $slot->date, $slot->iorder, $info, $secondarySlot, $time);
 
               $mailer = new Mailer();
               $mailer->addRecipient($info->ownerEmail);
@@ -1662,7 +1662,7 @@
               $mailer->send();
             }
 
-            $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleCancelSMS'], $slot->date, $slot->iorder, $info, $secondarySlot);
+            $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleCancelSMS'], $slot->date, $slot->iorder, $info, $secondarySlot, $time);
 
             (new SmsSender)->sendSchedule((array) $info, $smsText, $slot);
             if ($date == $slot->date) {
