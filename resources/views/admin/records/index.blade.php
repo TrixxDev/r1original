@@ -200,9 +200,9 @@
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="isActive">
               </div>
-              <div class="col-3"><input type="text" class="form-control ui-datepicker" id="openTime"></div>
+              <div class="col-3"><input type="text" class="form-control ui-datepicker1" id="openTime"></div>
               <span class="timeSeparator">-</span>
-              <div class="col-3"><input type="text" class="form-control ui-datepicker" id="closeTime"></div>
+              <div class="col-3"><input type="text" class="form-control ui-datepicker1" id="closeTime"></div>
             </div>
             <div class="form-group row">
               <legend class="col-form-label col-sm-2 float-sm-left pt-0 text-right">Mainīt</legend>
