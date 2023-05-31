@@ -480,6 +480,8 @@ class Moto extends Model
 	        'scooter' => ['Sc', 'Scooter'],
         ];
 
+        if ($type == 1) return '';
+
         return $arr[$type];
       } else {
         return ['', ''];

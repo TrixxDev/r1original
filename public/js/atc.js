@@ -70,6 +70,7 @@ $(document).ready(function () {
   });
   $('.moto-sorter').each(function() {
     $(this).tablesorter({
+        sortList: [[6,1]],
         headers: {
           0: {sorter: false},
           1: {sorter: true},
