@@ -1590,12 +1590,12 @@
 
       $office = Office::where('office_id', $queue->office_id)->first();
       $office->loadQueues();
-      foreach ($office->_queues as $queue) {
-        $queue->loadWorkingDay($slot->date,false);
-      }
+//      foreach ($office->_queues as $queue) {
+//        $queue->loadWorkingDay($slot->date,false);
+//      }
       $office->loadWorkingDays($slot->date);
 
-      $day = $office->_workingDays[0];
+      $day = Workingday::where('is_visible', 1)->where('date', $slot->date)->where('queue_id', $slot->queue_id)->first();
       $start = Office::intervalByTime($day->opentime);
 
       $takenBy = json_decode($slot->takenby);
@@ -1603,11 +1603,11 @@
 
       if ($day->isHalf()) { // Ja ir pusrinda
         if ($takenBy !== null) {
-          $startTime = $start + $slot->iorder * ($day->slotSize/2);
+          $startTime = $start + $slot->iorder * ($day->slotSize);
           $info = $takenBy;
         }
         if ($takenBy2 !== null) {
-          $startTime = $start + $slot->iorder * ($day->slotSize);
+          $startTime = $start + $slot->iorder * $day->slotSize + ($day->slotSize/2);
           $info = $takenBy2;
         }
       } else { // Ja ir pilna rinda
