@@ -265,13 +265,28 @@ class HomeController extends Controller
       $summa_pvn = $summa - ($summa / 1.21);
       $summa_pvn = number_format((float)$summa_pvn, 2, '.', '');
 
-      $article = $request->info['article'];
+      $articles = explode('$', $request->info['article']);
+
+
+      $articleArray = $articles;
+      $qtyArray = $request->info['qty'];
+      $priceArray = $request->info['price'];
+
+      $ieraksti = [];
+
+      for ($i = 0; $i < count($articleArray); $i++) {
+        $ieraksti[$i] = [
+          $articleArray[$i],
+          $qtyArray[$i],
+          $priceArray[$i]
+        ];
+      }
 
 //      $prod = $request->info['prod'];
-      $quantity = $request->info['qty'];
-      $price = $request->info['price'];
-      $price_pvn = ($price / 1.21);
-      $price_pvn = number_format((float)$price_pvn, 2, '.', '');
+//      $quantity = $request->info['qty'];
+//      $price = $request->info['price'];
+//      $price_pvn = ($price / 1.21);
+//      $price_pvn = number_format((float)$price_pvn, 2, '.', '');
       $comment = $request->info['comments'];
       $user = $request->info['user'];
       $mobile = 0;
@@ -291,10 +306,10 @@ class HomeController extends Controller
 
       $xml_order = new QuickOrder;
       $xml_order->office = $request->info['location'];
-      $xml_order->item_article = $article;
-      $xml_order->quantity = $quantity;
-      $xml_order->price_per_one = $price;
-      $xml_order->total_price = $summa;
+      $xml_order->item_article = '';
+      $xml_order->quantity = 0;
+      $xml_order->price_per_one = 0;
+      $xml_order->total_price = 0;
       $xml_order->fitting = $montage;
       $xml_order->fitting_price = $montage_price_pvn;
       $xml_order->safe = $safe;
@@ -330,16 +345,20 @@ class HomeController extends Controller
       $xml_string .= '<SasPerson>' . $user . '</SasPerson>';
       $xml_string .= '</PZHeader>';
       $xml_string .= '<Ieraksti>';
-      $xml_string .= '<Ieraksts>';
-      $xml_string .= '<Artikuls>' . $article . '</Artikuls>';
+      foreach ($ieraksti as $ieraksts) {
+        $xml_string .= '<Ieraksts>';
+        $xml_string .= '<Artikuls>' . $ieraksts[0] . '</Artikuls>';
 //      $xml_string .= '<Nosaukums>' . $prod . '</Nosaukums>';
-      $xml_string .= '<Mervieniba>gab</Mervieniba>';
-      $xml_string .= '<Cena>' . $price_pvn . '</Cena>';
-      $xml_string .= '<Daudzums>' . $quantity . '.000</Daudzums>';
-      $xml_string .= '<Summa>' . $price . '</Summa>';
-      $xml_string .= '<Nodoklis>PVN 21%</Nodoklis>';
-      $xml_string .= '<Likme>21.00</Likme>';
-      $xml_string .= '</Ieraksts>';
+        $xml_string .= '<Mervieniba>gab</Mervieniba>';
+        $price_pvn = ($ieraksts[2] / 1.21);
+        $price_pvn = number_format((float)$price_pvn, 2, '.', '');
+        $xml_string .= '<Cena>' . $price_pvn . '</Cena>';
+        $xml_string .= '<Daudzums>' . $ieraksts[1] . '.000</Daudzums>';
+        $xml_string .= '<Summa>' . $ieraksts[2] . '</Summa>';
+        $xml_string .= '<Nodoklis>PVN 21%</Nodoklis>';
+        $xml_string .= '<Likme>21.00</Likme>';
+        $xml_string .= '</Ieraksts>';
+      }
       if ($montage == 1) {
         $xml_string .= '<Ieraksts>';
         $xml_string .= '<Artikuls>04</Artikuls>';
@@ -365,10 +384,13 @@ class HomeController extends Controller
       $xml_string .= '</Ieraksti>';
       $xml_string .= '</AccrualPZ>';
 
+
       $sync = new SyncController();
-      $request = request()->merge(['article' => $article]);
+      $request = request()->merge(['articles' => $articles]);
       $old_stocks = $sync->accrual($request);
-      $old_stocks = json_decode($old_stocks);
+      foreach ($old_stocks as $old_stock) {
+        $old_stock_array[] = (array) json_decode($old_stock);
+      }
 
       $dom = new DOMDocument();
       $dom->preserveWhiteSpace = FALSE;
@@ -395,14 +417,28 @@ class HomeController extends Controller
 
       sleep(4);
 
-      $request = request()->merge(['article' => $article]);
+      $request = request()->merge(['articles' => $articles]);
       $new_stocks = $sync->accrual($request);
-      $new_stocks = json_decode($new_stocks);
+      foreach ($new_stocks as $new_stock) {
+        $new_stock_array[] = (array) json_decode($new_stock);
+      }
 
+      $articleCount = count($articles);
 
       switch ($location_prefix) {
         case 'U': {
-          if ($new_stocks->urs_quantity != $old_stocks->urs_quantity) {
+          $compare = [];
+
+          for ($i = 0; $i < $articleCount; $i++) {
+            if (($old_stock_array[$i]['urs_quantity'] == $new_stock_array[$i]['urs_quantity']) == 1) {
+              array_push($compare, 'false'); // Ir vienāds
+            } else {
+              array_push($compare, 'true'); // Nav vienāds
+            }
+          }
+
+          if (!in_array('false', $compare)) {
+//          if ($new_stocks->urs_quantity != $old_stocks->urs_quantity) {
             Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $order->order_id,0, 'Izveidots jauns ātrais pasūtījums', $order);
             return json_encode(['success' => 'Pasūtījums ir pieņemts!<br><b>' . $number . '</b>', 'orderId' => $number]);
           } else {
@@ -410,7 +446,17 @@ class HomeController extends Controller
           }
         }
         case 'K': {
-          if ($new_stocks->krs_quantity != $old_stocks->krs_quantity) {
+          $compare = [];
+
+          for ($i = 0; $i < $articleCount; $i++) {
+            if (($old_stock_array[$i]['krs_quantity'] == $new_stock_array[$i]['krs_quantity']) == 1) {
+              array_push($compare, 'false'); // Ir vienāds
+            } else {
+              array_push($compare, 'true'); // Nav vienāds
+            }
+          }
+
+          if (!in_array('false', $compare)) {
 //            broadcast(new UpdateStockChannel($article, $new_stocks, 123));
             Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $order->order_id,0, 'Izveidots jauns ātrais pasūtījums', $order);
             return json_encode(['success' => 'Pasūtījums ir pieņemts!<br><b>' . $number . '</b>', 'orderId' => $number]);
@@ -431,12 +477,18 @@ class HomeController extends Controller
     }
 
     public function fastOrder() {
-      $param = (object) request()->input();
+//      $param = (object) request()->input();
 
+//      , compact('param', 'links')
+      return view('/testing3');
+    }
+
+    public function getLinks(Request $request) {
       $model = new SyncController();
-      $links = $model->getStockLinks($param->article);
-
-      return view('/testing3', compact('param', 'links'));
+      foreach ($request->articles as $article) {
+        $links[$article] = $model->getStockLinks($article);
+      }
+      return $links;
     }
 
     public function changeName($array, $oldName, $newName)

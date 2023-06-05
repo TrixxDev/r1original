@@ -5,12 +5,15 @@
   <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="csrf-token" content="{!! csrf_token() !!}">
   <title>Ātrais pasūtījums</title>
   <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
   <link rel="stylesheet" href="{{ asset('css/theme.css') }}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{{ asset('css/jquery-ui.min.css?rev=' . time()) }}" type="text/css" media="all">
+  <link rel="stylesheet" href="{{ asset('css/jquery.ui.theme.min.css?rev=' . time()) }}" type="text/css" media="all">
   <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
   <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}">
 
@@ -22,26 +25,28 @@
     <div class="busy_bgr"><div class="busy_img"></div></div>
     <form id="quick-buy-form">
       @csrf
-      <input type="hidden" name="article" value="{{ $param->article }}">
+      <input type="hidden" name="article" value="">
       <div class="location-wraper">
         <div class="radio-field">
           <input id="loc_URS" type="radio" name="location" value="URS" checked="">
           <label for="loc_URS">
-            URS <span id="urs_quantity">
-              <div class="spinner-border text-dark" role="status">
-                <span class="sr-only">Loading...</span>
-              </div>
-            </span>
+            URS
+{{--            <span id="urs_quantity">--}}
+{{--              <div class="spinner-border text-dark" role="status">--}}
+{{--                <span class="sr-only">Loading...</span>--}}
+{{--              </div>--}}
+{{--            </span>--}}
           </label>
         </div>
         <div class="radio-field">
           <input id="loc_KRS" type="radio" name="location" value="KRS">
           <label for="loc_KRS">
-            KRS <span id="krs_quantity">
-              <div class="spinner-border text-dark" role="status">
-                <span class="sr-only">Loading...</span>
-              </div>
-            </span>
+            KRS
+{{--            <span id="krs_quantity">--}}
+{{--              <div class="spinner-border text-dark" role="status">--}}
+{{--                <span class="sr-only">Loading...</span>--}}
+{{--              </div>--}}
+{{--            </span>--}}
           </label>
         </div>
         @if (isset($links) && count($links) > 0)
@@ -52,18 +57,13 @@
           @endforeach
         @endif
       </div>
-      <div class="top-long-fields">
-        <input type="text" placeholder="Prece" name="prod" value="{{ $param->prod }}" readonly="">
-        <label for="qty">Sk.</label>
-        <input type="number" min="1" placeholder="Daudzums" name="qty" value="{{ $param->qty }}" onchange="calcQuickBuyPrice()" onkeyup="calcQuickBuyPrice()" style="width: 70px;">
-        <label for="price">Cena</label>
-        <input type="text" placeholder="Cena" name="price" style="width: 80px" value="{{ $param->price }}" onchange="calcQuickBuyPrice()" onkeyup="calcQuickBuyPrice()">
+      <div class="inserthere">
 
       </div>
       <div class="bottom-long-fields">
         <span style="margin-left: 54px;">Montāža</span>
         <input type="checkbox" id="montage" onchange="toggleMontage()" name="montage" value="1"><label for="montage"></label>
-        <input type="text" name="total" placeholder="Summa" value="{{ $param->qty * $param->price }}" readonly="">
+        <input type="text" name="total" placeholder="Summa" value="" readonly="">
         <label for="total">Summa:</label>
         <input type="text" placeholder="Cena" name="price_montage" onkeyup="addMontagePrice()" disabled="">
       </div>
@@ -78,7 +78,7 @@
         <input style="width: 100px;" type="text" placeholder="Telefona numurs" name="mobile_number">
       </div>
       <div class="user-fields">
-        <input type="text" name="user" placeholder="Lietotājs" value="{{ $param->user }}">
+        <input type="text" name="user" placeholder="Lietotājs" value="">
         <textarea type="textarea" name="comments" placeholder="Komentāri"></textarea>
       </div>
       <a style="margin-left: 0;" class="button" onclick="return sendData(getFormData($('#quick-buy-form')));">Apstiprināt</a>
@@ -108,6 +108,7 @@
         float: left;
         margin: 0 0 15px -13px;
         width: 120px;
+        height: 120px;
       }
 
       .popup .location-wraper input {
@@ -119,6 +120,7 @@
       .popup .top-long-fields {
         height: 51px !important;
         width: 100% !important;
+        display: table-header-group;
       }
 
       .popup .top-long-fields input {
@@ -127,8 +129,16 @@
       }
 
       .popup .top-long-fields input[name="prod"] {
-        width: 368px;
-        margin-left: 30px;
+        width: 305px;
+        margin-left: 10px;
+      }
+
+      span.delete_item {
+        float: left;
+      }
+
+      span.delete_item img {
+        width: 10px;
       }
 
       .popup .top-long-fields input[name="qty"] {
@@ -234,19 +244,177 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
 <script>
-function calcQuickBuyPrice(){
-  var total = parseFloat($('#quick-buy-form input[name=qty]').val()) * parseFloat($('#quick-buy-form input[name=price]').val());
-  $('#quick-buy-form input[name=total]').val(isNaN(total) ? '' : total);
+
+$.ajaxSetup({
+  headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+  }
+});
+
+let $items = JSON.parse(localStorage.getItem('allEntries'));
+
+let $price = [];
+let $count = [];
+let $article = [];
+let $articles = [];
+let $user = '';
+
+$.each($items, function(index, item) {
+  $("<div class='top-long-fields'>" +
+    "<span class='delete_item'><img src='/images/cancel.png' style='width: 10px;'></span>" +
+    "<span data-article='" + item.article + "'>" +
+    "<input type='text' title='URS' name='urs_quantity' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
+    "<input type='text' title='KRS' name='krs_quantity' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
+    "<input type='text' title='Latakko' name='latakko' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
+    "<input type='text' title='Goodyear' name='goodyear' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
+    "<input type='text' title='RiepuZona' name='riepuzona' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
+    "<input type='text' title='Duell' name='duell' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
+    "<input type='text' title='StarCo' name='starco' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
+    "</span>" +
+    "<input type='text' placeholder='Prece' name='prod' value='" + item.prod + "' readonly=''>" +
+    "<label for='qty'>Sk.</label>" +
+    "<input type='number' min='1' placeholder='Daudzums' name='qty' value='" + item.qty + "' onchange='calcQuickBuyPrice()' onkeyup='calcQuickBuyPrice()' style='width: 70px;'>" +
+    "<label for='price'>Cena</label>" +
+    "<input type='text' placeholder='Cena' name='price' style='width: 80px' value='" + item.price + "' onchange='calcQuickBuyPrice()' onkeyup='calcQuickBuyPrice()'>" +
+    "</div>").appendTo('.inserthere');
+
+  $article.push(item.article);
+  $price.push(parseInt(item.price) * item.qty);
+  $count.push(item.qty);
+  $user = item.user;
+});
+
+$articles = $article;
+
+$price = $price.reduce((a, b) => a + b, 0);
+$count = $count.reduce((a, b) => a + b, 0);
+
+let $globalPrice;
+
+$article = $article.join('$');
+$('#quick-buy-form input[name=article]').val($article);
+$('.user-fields input[name=user]').val($user);
+$('#quick-buy-form input[name=total]').val(isNaN($price) ? '' : $price);
+$globalPrice = $price;
+
+$price = [];
+$count = [];
+
+function calcQuickBuyPrice(addServices = false){
+  $('.inserthere .top-long-fields').each(function(index, value) {
+    $price.push(parseInt($('input[name=qty]', value).val()) * $('input[name=price]', value).val());
+  });
+  $price = $price.reduce((a, b) => a + b, 0);
+  if (addServices === true) {
+    if ($('#quick-buy-form input[name=price_montage]').val() > 0) {
+      $price = $price + parseInt($('#quick-buy-form input[name=price_montage]').val());
+    } else if ($('#quick-buy-form input[name=price_safe]').val() > 0) {
+      $price = $price + parseInt($('#quick-buy-form input[name=price_safe]').val());
+    } else if ($('#quick-buy-form input[name=price_montage]').val() > 0 && $('#quick-buy-form input[name=price_safe]').val() > 0) {
+      $price = $price + parseInt($('#quick-buy-form input[name=price_montage]').val()) + parseInt($('#quick-buy-form input[name=price_safe]').val());
+    }
+  }
+  $globalPrice = $price;
+  $('#quick-buy-form input[name=total]').val(isNaN($price) ? '' : $price);
+  $price = [];
 }
+
+$('#quick-buy-form').on('click', '.delete_item', function() {
+  let posCount = $('.top-long-fields').length;
+  let $title = $(this).parent().children('input[name=prod]').val();
+  $(this).parent().remove();
+  $.each($items, function(index, value) {
+    if (value.prod === $title) {
+      delete $items[index];
+    }
+  });
+  let existingEntries = [];
+  $items = Object.entries($items)
+    .filter(([key, value]) => value !== undefined)
+    .reduce((obj, [key, value]) => {
+      existingEntries.push(value);
+      obj[key] = value;
+      return obj;
+    }, {});
+  localStorage.setItem('allEntries', JSON.stringify(existingEntries));
+  $article = [];
+  $.each($items, function(index, item) {
+    $article.push(item.article);
+  });
+  $article = $article.join('$');
+  $('#quick-buy-form input[name=article]').val($article);
+  calcQuickBuyPrice(true);
+  if (posCount === 1) {
+    localStorage.removeItem('allEntries');
+    window.close();
+  }
+});
 
 $.ajax({
   url: '/sync/accrual',
   method: 'GET',
   dataType: 'JSON',
-  data: {'article': <?php echo "'" . $param->article . "'" ?>},
+  data: {'articles': $articles},
   success: function(data) {
-    $('#urs_quantity').html('(' + data.urs_quantity + ')');
-    $('#krs_quantity').html('(' + data.krs_quantity + ')');
+    $.each(data, function(index, value) {
+      let item = JSON.parse(value);
+      $('#quick-buy-form span[data-article="' + item.article + '"] input[name=urs_quantity]').val(item.urs_quantity);
+      $('#quick-buy-form span[data-article="' + item.article + '"] input[name=krs_quantity]').val(item.krs_quantity);
+    });
+    // $('#urs_quantity').html('(' + data.urs_quantity + ')');
+    // $('#krs_quantity').html('(' + data.krs_quantity + ')');
+  }
+});
+
+$.ajax({
+  url: '/getLinks',
+  method: 'POST',
+  dataType: 'JSON',
+  data: {'articles': $articles},
+  success: function(data) {
+    $.each(data, function(index, value) {
+      let $linkArticle = index;
+      let $item = $('#quick-buy-form span[data-article="' + $linkArticle + '"]');
+      if (value.Latakko) {
+        $item.find('input[name=latakko]').val(value.Latakko.remaining).on('click', function() {
+          window.open(value.Latakko.link);
+        });
+      } else {
+        $item.find('input[name=latakko]').css('visibility', 'hidden');
+      }
+
+      if (value.Goodyear) {
+        $item.find('input[name=goodyear]').val(value.Goodyear.remaining).on('click', function() {
+          window.open(value.Goodyear.link);
+        });
+      } else {
+        $item.find('input[name=goodyear]').css('visibility', 'hidden');
+      }
+
+      if (value.RiepuZona) {
+        $item.find('input[name=riepuzona]').val(value.RiepuZona.remaining).on('click', function() {
+          window.open(value.RiepuZona.link);
+        });
+      } else {
+        $item.find('input[name=riepuzona]').css('visibility', 'hidden');
+      }
+
+      if (value.Duell) {
+        $item.find('input[name=duell]').val(value.Duell.remaining).on('click', function() {
+          window.open(value.Duell.link);
+        });
+      } else {
+        $item.find('input[name=duell]').css('visibility', 'hidden');
+      }
+
+      if (value.Starco) {
+        $item.find('input[name=starco]').val(value.Starco.remaining).on('click', function() {
+          window.open(value.Starco.link);
+        });
+      } else {
+        $item.find('input[name=starco]').css('visibility', 'hidden');
+      }
+    });
   }
 });
 
@@ -284,6 +452,7 @@ function sendData(data){
           denyButtonText: 'SMS',
         }).then((result) => {
           if (result.isConfirmed) {
+            localStorage.removeItem('allEntries');
             window.close();
           } else if (result.isDenied) {
             $.ajax({
@@ -299,6 +468,7 @@ function sendData(data){
                 confirmButtonText: 'OK',
                 }).then((result) => {
                   if (result.isConfirmed) {
+                    localStorage.removeItem('allEntries');
                     window.close();
                   }
                 })
@@ -349,12 +519,14 @@ function toggleMontage(){
 
 function addMontagePrice(){
   if (!isNaN(parseFloat($('#quick-buy-form input[name=price]').val())) && !isNaN(parseFloat($('#quick-buy-form input[name=qty]').val()))) {
-    montage = isNaN(parseFloat($('#quick-buy-form input[name=price_montage]').val())) ? 0 : parseFloat($('#quick-buy-form input[name=price_montage]').val());
-    $('#quick-buy-form input[name=total]').val(montage+parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+    montage = isNaN(parseInt($('#quick-buy-form input[name=price_montage]').val())) ? 0 : parseInt($('#quick-buy-form input[name=price_montage]').val());
+    $('#quick-buy-form input[name=total]').val($globalPrice + montage);
     if (montage > 0 && safe > 0) {
-      $('#quick-buy-form input[name=total]').val(montage + safe + parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+      $('#quick-buy-form input[name=total]').val($globalPrice + montage + safe);
     } else if (montage === 0 && safe > 0) {
-      $('#quick-buy-form input[name=total]').val(safe + parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+      $('#quick-buy-form input[name=total]').val($globalPrice + safe);
+    } else if (montage === 0) {
+      calcQuickBuyPrice(true);
     }
   }
 }
@@ -379,11 +551,13 @@ function toggleMobile(){
 function addSafePrice(){
   if (!isNaN(parseFloat($('#quick-buy-form input[name=price]').val())) && !isNaN(parseFloat($('#quick-buy-form input[name=qty]').val()))) {
     safe = isNaN(parseFloat($('#quick-buy-form input[name=price_safe]').val())) ? 0 : parseFloat($('#quick-buy-form input[name=price_safe]').val());
-    $('#quick-buy-form input[name=total]').val(safe+parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+    $('#quick-buy-form input[name=total]').val(safe + $globalPrice);
     if (safe > 0 && montage > 0) {
-      $('#quick-buy-form input[name=total]').val(safe + montage + parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+      $('#quick-buy-form input[name=total]').val(safe + montage + $globalPrice);
     } else if (safe === 0 && montage > 0) {
-      $('#quick-buy-form input[name=total]').val(montage + parseFloat($('#quick-buy-form input[name=qty]').val())*parseFloat($('#quick-buy-form input[name=price]').val()));
+      $('#quick-buy-form input[name=total]').val(montage + $globalPrice);
+    } else if (safe === 0) {
+      calcQuickBuyPrice(true);
     }
   }
 }
@@ -395,6 +569,6 @@ function showQuickBuyForm(id) {
   calcQuickBuyPrice();
 };
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-</body>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script></body>
 </html>

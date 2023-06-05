@@ -451,8 +451,8 @@ ul#top-menu li .sub-menu a.dropdown-item:before{
 
 /* Inner */
 .popup-inner {
-  max-width:700px;
-  width:90%;
+  max-width:880px;
+  width:100%;
   padding:25px;
   position:absolute;
   top:50%;

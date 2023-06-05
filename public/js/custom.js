@@ -10,6 +10,22 @@ $.fn.hasId = function(id) {
   return this.attr('id') == id;
 };
 
+function addEntry(item) {
+  // Parse the JSON stored in allEntriesP
+  let existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+  if(existingEntries == null) existingEntries = [];
+  let entry = {
+    "article": item.article,
+    "qty": item.qty,
+    "user": item.user,
+    "prod": item.prod,
+    "price": item.price,
+  };
+  // Save allEntries back to local storage
+  existingEntries.push(entry);
+  localStorage.setItem("allEntries", JSON.stringify(existingEntries));
+};
+
 //const pusher = new Pusher('04c358afec27f4ba222f', {
 //  cluster: 'eu',
 //  encrypted: true
@@ -749,10 +765,12 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
         'price': tire_data.find('.tire-price-red').text().trim().replace('€', ''),
       }
 
+      addEntry(calcData);
+
       const urlData = new URLSearchParams(calcData).toString();
       // console.log(urlData);
 
-      popCalc('/testing3',780,480, urlData);
+      popCalc('/testing3',950,650);
     }
   });
 
@@ -861,9 +879,11 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
           'price': tire_data.find('.rim-price-red').text().trim().replace('€', ''),
       }
 
+      addEntry(calcData);
+
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,480, urlData);
+      popCalc('/testing3',950,650);
     }
   });
 
@@ -1081,9 +1101,11 @@ if (!admin) {
           'price': tire_price,
       }
 
+      addEntry(calcData);
+
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,480, urlData);
+      popCalc('/testing3',950,650);
 
 
 })
@@ -1159,9 +1181,11 @@ $('.ct_matrix_row').each(function(key, value) {
           'price': tire_price,
       }
 
+      addEntry(calcData);
+
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,480, urlData);
+      popCalc('/testing3',950,650);
 
 
      }
@@ -3065,9 +3089,11 @@ $('.tire-table-checkbox').children().each(function(key, value){
           'price': $('.tire-price-red', tire_data).html().replace('€', ''),
       }
 
+      addEntry(calcData);
+
       const urlData = new URLSearchParams(calcData).toString();
 
-      popCalc('/testing3',780,480, urlData);
+      popCalc('/testing3',950,650);
 
 
     }

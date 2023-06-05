@@ -488,6 +488,7 @@ Route::middleware('checksession')->group(function() {
   Route::get('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
   Route::post('/testing2', [App\Http\Controllers\HomeController::class, 'changeArticles']);
   Route::middleware('auth')->get('/testing3', [App\Http\Controllers\HomeController::class, 'fastOrder']);
+  Route::middleware('auth')->post('/getLinks', [App\Http\Controllers\HomeController::class, 'getLinks']);
 
   Route::get('queuetest', [App\Http\Controllers\HomeController::class, 'queuetest']);
   Route::post('queuetest', [App\Http\Controllers\HomeController::class, 'queuetest']);

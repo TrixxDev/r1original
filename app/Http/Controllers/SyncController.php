@@ -30,7 +30,7 @@
     public $accrual;
     public $tire_tables;
     public $stock_tables;
-    public $article = '';
+    public $articles = '';
 
     public $urs = 0;
     public $krs = 0;
@@ -87,39 +87,72 @@
 //          exit;
       }
 
-      (isset($request->article)) ? $this->article = $request->article : $this->article = '';
+      (isset($request->articles)) ? $this->articles = $request->articles : $this->articles = '';
 
-      if (!$this->article) {
+      if (!$this->articles) {
         $this->updateArticles();
         DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
         echo 'Done';
       } else {
 
-        $productInfo = $this->getAccrualInventory($this->article);
-        if (isset($productInfo[$this->article])) {
-          $stores = $productInfo['_stores'][$this->article];
+        if (is_array($this->articles)) {
+          $return = [];
+          foreach ($this->articles as $article) {
+            $productInfo = $this->getAccrualInventory($article);
+            if (isset($productInfo[$article])) {
+              $stores = $productInfo['_stores'][$article];
 
-          if (isset($stores[1])) {
-            $this->urs = $stores[1];
-            $this->urs = str_replace('Noliktava: ', '', $this->urs);
-            $this->urs = intval($this->urs);
+              if (isset($stores[1])) {
+                $this->urs = $stores[1];
+                $this->urs = str_replace('Noliktava: ', '', $this->urs);
+                $this->urs = intval($this->urs);
+              } else {
+                $this->urs = 0;
+              }
+              if (isset($stores[2])) {
+                $this->krs = $stores[2];
+                $this->krs = str_replace('Veikals: ', '', $this->krs);
+                $this->krs = intval($this->krs);
+              } else {
+                $this->krs = 0;
+              }
+            } else {
+              $this->urs = 0;
+              $this->krs = 0;
+            }
+
+            $this->updateArticle($article);
+            array_push($return, json_encode(['article' => $article, 'urs_quantity' => intval($this->urs), 'krs_quantity' => intval($this->krs)]));
+          }
+          return $return;
+        } else {
+
+          $productInfo = $this->getAccrualInventory($this->articles);
+          if (isset($productInfo[$this->articles])) {
+            $stores = $productInfo['_stores'][$this->articles];
+
+            if (isset($stores[1])) {
+              $this->urs = $stores[1];
+              $this->urs = str_replace('Noliktava: ', '', $this->urs);
+              $this->urs = intval($this->urs);
+            } else {
+              $this->urs = 0;
+            }
+            if (isset($stores[2])) {
+              $this->krs = $stores[2];
+              $this->krs = str_replace('Veikals: ', '', $this->krs);
+              $this->krs = intval($this->krs);
+            } else {
+              $this->krs = 0;
+            }
           } else {
             $this->urs = 0;
-          }
-          if (isset($stores[2])) {
-            $this->krs = $stores[2];
-            $this->krs = str_replace('Veikals: ', '', $this->krs);
-            $this->krs = intval($this->krs);
-          } else {
             $this->krs = 0;
           }
-        } else {
-          $this->urs = 0;
-          $this->krs = 0;
-        }
 
-        $this->updateArticle($this->article);
-        return json_encode(['urs_quantity' => intval($this->urs), 'krs_quantity' => intval($this->krs)]);
+          $this->updateArticle($this->articles);
+          return json_encode(['urs_quantity' => intval($this->urs), 'krs_quantity' => intval($this->krs)]);
+        }
       }
     }
 
