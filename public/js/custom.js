@@ -3058,6 +3058,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
             $('.blockcart.cart-preview .header').empty();
             $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
           } else {
+            console.log(data);
             // TIRE IMAGE INSIDE MODAL
             $('.modal-product-info .product-name').html(data.cart.name);
             if (data.cart.options.tire.price2 != null) {
