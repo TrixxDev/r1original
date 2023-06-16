@@ -2110,20 +2110,22 @@ $(document).ready(function() {
         $('.officeTitle').text(data.office_title);
         $('#reservation input[type="hidden"][name="part"]').val(part);
         $('.reservation-modal-body .services #service .form-check').each(function() {
-          if (data.conditioner === true) {
-            if (!$(this).children().first().attr('data-ac')) {
-              $(this).children().first().attr('disabled', true).prop('disabled', true);
-            }
-          } else if (data.moto === true) {
-            if (!$(this).children().first().attr('data-moto')) {
-              $(this).children().first().attr('disabled', true).prop('disabled', true);
-            }
-          } else {
-            if ($(this).children().first().attr('data-ac')) {
-              $(this).children().first().attr('disabled', true).prop('disabled', true);
-            }
-            if ($(this).children().first().attr('data-moto')) {
-              $(this).children().first().attr('disabled', true).prop('disabled', true);
+          if (data.half == true) {
+            if (data.conditioner === true) {
+              if (!$(this).children().first().attr('data-ac')) {
+                $(this).children().first().attr('disabled', true).prop('disabled', true);
+              }
+            } else if (data.moto === true) {
+              if (!$(this).children().first().attr('data-moto')) {
+                $(this).children().first().attr('disabled', true).prop('disabled', true);
+              }
+            } else {
+              if ($(this).children().first().attr('data-ac')) {
+                $(this).children().first().attr('disabled', true).prop('disabled', true);
+              }
+              if ($(this).children().first().attr('data-moto')) {
+                $(this).children().first().attr('disabled', true).prop('disabled', true);
+              }
             }
           }
         })

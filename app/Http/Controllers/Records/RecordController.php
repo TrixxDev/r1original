@@ -142,13 +142,22 @@
     $queue->loadWorkingDay($date);
     $queue->loadSlots($date, true);
 
-    $moto = false;
-    if ($service == 'moto') {
-      $moto = true;
-    }
+    if ($queue->_workingDays[$date]->isHalf()) {
+      $half = true;
 
-    $conditioner = false;
-    if ($service == 'ac') {
+      $moto = false;
+      if ($service == 'moto') {
+        $moto = true;
+      }
+
+      $conditioner = false;
+      if ($service == 'ac') {
+        $conditioner = true;
+      }
+    } else {
+      $half = false;
+
+      $moto = true;
       $conditioner = true;
     }
 
@@ -183,7 +192,7 @@
     $time = Office::timeByInterval($startTime);
 
 
-    return json_encode(['dayOfWeek' => $dayOfWeek, 'date' => $fmtDate, 'time' => $time, 'office_title' => $office->title, 'conditioner' => $conditioner, 'moto' => $moto]);
+    return json_encode(['dayOfWeek' => $dayOfWeek, 'date' => $fmtDate, 'time' => $time, 'office_title' => $office->title, 'half' => $half, 'conditioner' => $conditioner, 'moto' => $moto]);
   }
 
     public function fillSlot(Request $request)
