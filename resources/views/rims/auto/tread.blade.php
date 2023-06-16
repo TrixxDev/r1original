@@ -188,7 +188,7 @@
                   <tbody id="tires-table-body">
 
                   @foreach($rims as $rim)
-                    @if($rim->price2)
+                    @if($rim->price3)
                       <tr @if($currRim->rim_id == $rim->rim_id) style="font-weight: bold; background-color: #e0e0e0;" @endif class="tire-table-row">
                         <th class="tire-info" style="display: none;" data-article="{{ $rim->article }}" data-content="{{ $rim->fullName }}" data-quantity="{{ $cartQty }}"></th>
                         <th scope="row" class="tire-table-checkbox">

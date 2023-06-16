@@ -44,7 +44,7 @@
 
                         <div class="current-price">
                           <span>Akcijas cena:</span>
-                          <span itemprop="price" content="{{ $currTire->price2 }}">€ {{ $currTire->price2 }}</span>
+                          <span itemprop="price" content="{{ $currTire->price3 }}">€ {{ $currTire->price3 }}</span>
                         </div>
                       </div>
                     </div>

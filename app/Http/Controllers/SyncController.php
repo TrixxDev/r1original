@@ -536,7 +536,7 @@
 
       //        $article = '15215/70DECONODRIVE109SC';
       $sql = "SELECT k.Artikuls, a.Atlikums, a.Rezervets, (a.Atlikums - a.Rezervets) AS atl_min_rez, a.StorId
-        FROM atlikumi a INNER JOIN katdetal k ON (k.ArticleId = a.ArticleId) WHERE a.FrFirmId = 1";
+        FROM atlikumi a INNER JOIN katdetal k ON (k.ArticleId = a.ArticleId) WHERE a.FrFirmId = 1 AND k.Deleted = 0";
 
       if($article) $sql .= " AND k.Artikuls = '$article'";
 

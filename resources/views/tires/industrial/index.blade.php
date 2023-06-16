@@ -338,7 +338,7 @@
                             <div style="display: flex;">
                               <input type="checkbox" name="product_ids[]" value="{{$tire->tire_id}}" style="margin-right: 5px;">
                               <div class="rim-price-old" style="align-self: center;">€{{$tire->price1}}</div>
-                              <div class="rim-price-red" style="align-self: center;">€{{$tire->price2}}</div>
+                              <div class="rim-price-red" style="align-self: center;">€{{$tire->price3}}</div>
                               <button style="margin-left: auto;"
                                       class="grid-buy-btn cart-shopping-button"
                                       data-toggle="modal"
