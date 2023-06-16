@@ -435,6 +435,7 @@ class CartController extends Controller
                     ->where('auto_tires.tire_id', $tire_id)
                     ->first();
                 $image = 'auto';
+                $price = $tire->price2;
                 $availability = $tire->dotAvailable;
                 break;
             }
@@ -447,6 +448,7 @@ class CartController extends Controller
                     ->where('quadr_tires.tire_id', $tire_id)
                     ->first();
                 $image = 'quadr';
+                $price = $tire->price2;
                 $availability = $tire->dotAvailable;
                 break;
             }
@@ -459,6 +461,7 @@ class CartController extends Controller
                     ->where('moto_tires.tire_id', $tire_id)
                     ->first();
                 $image = 'moto';
+                $price = $tire->price2;
                 $availability = $tire->dotAvailable;
                 break;
             }
@@ -471,6 +474,7 @@ class CartController extends Controller
                   ->where('big_tires.tire_id', $tire_id)
                   ->first();
                 $image = 'industrial';
+                $price = $tire->price3;
                 $availability = $tire->dotAvailable;
                 break;
             }
@@ -482,6 +486,7 @@ class CartController extends Controller
                   ->where('rims.rim_id', $tire_id)
                   ->first();
                 $image = 'rims';
+                $price = $tire->price3;
                 $availability = $tire->dotAvailable;
                 break;
             }
@@ -493,6 +498,7 @@ class CartController extends Controller
                 ->where('quadrims.rim_id', $tire_id)
                 ->first();
               $image = 'quadrims';
+              $price = $tire->price3;
               $availability = $tire->dotAvailable;
               break;
             }
@@ -504,6 +510,7 @@ class CartController extends Controller
                 ->where('studs.stud_id', $tire_id)
                 ->first();
               $image = 'stud';
+              $price = $tire->price2;
               $availability = $tire->dotAvailable;
               break;
             }
