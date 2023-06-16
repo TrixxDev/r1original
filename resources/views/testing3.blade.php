@@ -261,7 +261,7 @@ let $user = '';
 
 $.each($items, function(index, item) {
   $("<div class='top-long-fields'>" +
-    "<span class='delete_item'><img src='/images/cancel.png' style='width: 10px;'></span>" +
+    "<span class='delete_item' style='cursor: pointer;'><img src='/images/cancel.png' style='width: 10px;'></span>" +
     "<span data-article='" + item.article + "'>" +
     "<input type='text' title='URS' name='urs_quantity' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
     "<input type='text' title='KRS' name='krs_quantity' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
