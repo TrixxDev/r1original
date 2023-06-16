@@ -3060,7 +3060,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
           } else {
             // TIRE IMAGE INSIDE MODAL
             $('.modal-product-info .product-name').html(data.cart.name);
-            if (data.cart.options.tire.price2 !== null) {
+            if (data.cart.options.tire.price2 != null) {
               $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
             } else {
               $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price3));
