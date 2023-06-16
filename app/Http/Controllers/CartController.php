@@ -524,7 +524,7 @@ class CartController extends Controller
 //            if ($item->id == $tire_id) {
 //              return $cart->update($item->rowId, $item->qty + $quantity);
 //            } else {
-              return Cart::instance(Session::getId())->add($tire_id, $tire->fullName, $quantity, $tire->price2, 0, ['tire' => $tire->toArray(), 'tireObj' => $tire, 'link' => $tire->link, 'image' => $image, 'availability' => $availability])
+              return Cart::instance(Session::getId())->add($tire_id, $tire->fullName, $quantity, $price, 0, ['tire' => $tire->toArray(), 'tireObj' => $tire, 'link' => $tire->link, 'image' => $image, 'availability' => $availability])
                 ->associate('App\Models\\' . ucfirst($model));
 //            }
 //          }
