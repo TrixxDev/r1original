@@ -240,7 +240,7 @@ class Bigtire extends Model
 
   public function getFullNameAttribute()
   {
-    return $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->code . ' ' . $this->getLiSiAttribute();
+    return $this->getTitleAttribute() . ' ' . $this->getFullSizeAttribute() . ' ' . $this->code . 'PR ' . $this->getLiSiAttribute();
   }
 
   public function getTitleAttribute()
