@@ -265,11 +265,11 @@ $.each($items, function(index, item) {
     "<span data-article='" + item.article + "'>" +
     "<input type='text' title='URS' name='urs_quantity' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
     "<input type='text' title='KRS' name='krs_quantity' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
-    "<input type='text' title='Latakko' name='latakko' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
-    "<input type='text' title='Goodyear' name='goodyear' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
-    "<input type='text' title='RiepuZona' name='riepuzona' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
-    "<input type='text' title='Duell' name='duell' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
-    "<input type='text' title='StarCo' name='starco' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:default;'>" +
+    "<input type='text' title='Latakko' name='latakko' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:pointer;'>" +
+    "<input type='text' title='Goodyear' name='goodyear' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:pointer;'>" +
+    "<input type='text' title='RiepuZona' name='riepuzona' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:pointer;'>" +
+    "<input type='text' title='Duell' name='duell' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:pointer;'>" +
+    "<input type='text' title='StarCo' name='starco' readonly style='width: 26px!important;padding:0!important;text-align:center;cursor:pointer;'>" +
     "</span>" +
     "<input type='text' placeholder='Prece' name='prod' value='" + item.prod + "' readonly=''>" +
     "<label for='qty'>Sk.</label>" +
