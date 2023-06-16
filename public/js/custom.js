@@ -3035,11 +3035,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
           if (data.cart.options.image == 'stud') {
             // STUD IMAGE INSIDE MODAL
             $('.modal-product-info .product-name').html(data.cart.name);
-            if (data.cart.options.tire.price2) {
-              $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
-            } else {
-              $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price3));
-            }
+            $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
             $('.modal-product-info .product-stud-length').html(data.cart.options.tire.stud_length);
             $('.modal-product-info .product-stud-count').html(data.cart.options.tire.stud_count);
             $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
@@ -3051,11 +3047,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
           } else if (data.cart.options.image == 'rims' || data.cart.options.image == 'quadrims') {
             // STUD IMAGE INSIDE MODAL
             $('.modal-product-info .product-name').html(data.cart.name);
-            if (data.cart.options.tire.price2) {
-              $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
-            } else {
-              $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price3));
-            }
+            $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
             $('.modal-product-info .product-rim-width').html(data.cart.options.tire.d1);
             $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
             $('.modal-product-info .product-lug-distance').html(data.cart.options.tire.skr + 'x' + data.cart.options.tire.pcd);
@@ -3068,7 +3060,11 @@ $('.tire-table-checkbox').children().each(function(key, value){
           } else {
             // TIRE IMAGE INSIDE MODAL
             $('.modal-product-info .product-name').html(data.cart.name);
-            $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+            if (data.cart.options.tire.price2) {
+              $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+            } else {
+              $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price3));
+            }
             $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
             $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
             $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
