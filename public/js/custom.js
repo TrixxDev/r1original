@@ -2110,7 +2110,14 @@ $(document).ready(function() {
         $('.officeTitle').text(data.office_title);
         $('#reservation input[type="hidden"][name="part"]').val(part);
         $('.reservation-modal-body .services #service .form-check').each(function() {
-          if (data.half == true) {
+          if (data.weekend === true) {
+            if (!$(this).children().first().attr('data-ac')) {
+              $(this).children().first().attr('disabled', false).prop('disabled', false);
+            }
+            if (!$(this).children().first().attr('data-moto')) {
+              $(this).children().first().attr('disabled', false).prop('disabled', false);
+            }
+          } else {
             if (data.conditioner === true) {
               if (!$(this).children().first().attr('data-ac')) {
                 $(this).children().first().attr('disabled', true).prop('disabled', true);
