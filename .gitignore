@@ -16,9 +16,7 @@ yarn-error.log
 /xml/
 /public/img/
 /public/images/
-/xml/
-/vendor1/
 /.idea/inspectionProfiles/Project_Default.xml
 /public/starco.sync.xml
-/resources/views/pages/
+/resources/views/pages/*
 /.idea/jsLibraryMappings.xml
