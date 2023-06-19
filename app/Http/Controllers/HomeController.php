@@ -267,18 +267,23 @@ class HomeController extends Controller
 
       $articles = explode('$', $request->info['article']);
 
-
       $articleArray = $articles;
       $qtyArray = $request->info['qty'];
       $priceArray = $request->info['price'];
 
-      $ieraksti = [];
-
-      for ($i = 0; $i < count($articleArray); $i++) {
-        $ieraksti[$i] = [
-          $articleArray[$i],
-          $qtyArray[$i],
-          $priceArray[$i]
+      if (is_array($articleArray) && count($articleArray) > 1 || is_array($qtyArray) || is_array($priceArray)) {
+        for ($i = 0; $i < count($articleArray); $i++) {
+          $ieraksti[$i] = [
+            $articleArray[$i],
+            $qtyArray[$i],
+            $priceArray[$i]
+          ];
+        }
+      } else {
+        $ieraksti[0] = [
+          $articleArray[0],
+          $qtyArray,
+          $priceArray
         ];
       }
 
