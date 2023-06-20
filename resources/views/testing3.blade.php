@@ -245,9 +245,6 @@
 <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
 <script>
 
-let height = $('.popup-inner').height() + 150;
-window.resizeTo(window.innerWidth, height);
-
 $.ajaxSetup({
   headers: {
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -571,6 +568,8 @@ function showQuickBuyForm(id) {
   $('#quick-buy-form input[name=prod]').val($('#js-product-list article[data-id-product-attribute="'+id+'"]').find('.product-title-hidden').text());
   calcQuickBuyPrice();
 };
+let height = $('.popup-inner').height() + 150;
+window.resizeTo(window.innerWidth, height);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script></body>
