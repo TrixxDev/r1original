@@ -245,6 +245,9 @@
 <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
 <script>
 
+let height = $('.popup-inner').height() + 150;
+window.resizeTo(window.innerWidth, height);
+
 $.ajaxSetup({
   headers: {
     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
