@@ -198,7 +198,7 @@
 
                         <td>
                           <a data-toggle="tooltip" data-html="true" class="rim-table-link">
-                            {{ $rim->brand_title . ' ' . $rim->title }}
+                            {{ $rim->fullTitle }}
                           </a>
                         </td>
                         <td class="text-center">
@@ -232,7 +232,7 @@
                             € {{$rim->price3}}
                           @endif
                         </td>
-                        <td class="hidden-sm-down text-center"></td>
+                        <td class="hidden-sm-down text-center">{{$rim->comment}}</td>
 
                         <td class="shopping-cart-col">
                           <div class="clearfix atc_div text-right">

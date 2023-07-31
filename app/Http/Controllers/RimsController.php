@@ -173,7 +173,8 @@ class RimsController extends Controller
     $brand = Rimbrand::where('title', $brand)->first();
 
     $rims = Rim::selectRaw('rims.*, rim_makes.*, rim_brands.*,
-                                                rim_brands.title as brands_title')
+                                                rim_brands.title as brands_title,
+                                                rims.comment as comment')
       ->join('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
       ->join('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
       ->where('rim_brands.title', $brand->title)
