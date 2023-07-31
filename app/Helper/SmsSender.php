@@ -251,9 +251,37 @@ class SmsSender {
         $slotSizes[] = $queue->_workingDays[$date]->slotSize;
 
         foreach ($queue->_slots[$date] as $slot){
+
+          $day = $queue->_workingDays[$date];
+          $start = Office::intervalByTime($day->opentime);
+
+          $slotPart = null;
+
+          if ($slot->status==SLOT_STATUS_TAKEN){
+            $slotPart = 'a';
+          }
+
+          if ($queue->_workingDays[$date]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN){
+            $slotPart = 'b';
+          }
+
+          if ($slotPart != null) {
+            if ($slotPart == 'a') {
+              $startTime = $start + $slot->iorder * ($day->slotSize);
+              $secondarySlot = false;
+            } else {
+              $startTime = $start + $slot->iorder * $day->slotSize + ($day->slotSize/2);
+              $secondarySlot = true;
+            }
+          } else {
+            $startTime = $start + $slot->iorder * ($day->slotSize);
+            $secondarySlot = false;
+          }
+          $time = Office::timeByInterval($startTime);
+
           if ($slot->status==SLOT_STATUS_TAKEN){
             $form = json_decode($slot->takenby);
-            $smsText = $queue->parseNotification($queue->getOriginal()['notificationSMS'], $date, $slot->iorder, $form, false);
+            $smsText = $queue->parseNotification($queue->getOriginal()['notificationSMS'], $date, $slot->iorder, $form, $secondarySlot, $time);
             $target = $this->isValidPhoneNumber($form->ownerPhone);
             echo 'SMS: '.$form->ownerPhone.' ('.$target.') :'.nl2br($smsText).'<br/>'."\n";
             if ($target){
@@ -264,7 +292,7 @@ class SmsSender {
 
           if ($queue->_workingDays[$date]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN){
             $form = json_decode($slot->takenby2);
-            $smsText = $queue->parseNotification($queue->getOriginal()['notificationSMS'], $date, $slot->iorder, $form, true);
+            $smsText = $queue->parseNotification($queue->getOriginal()['notificationSMS'], $date, $slot->iorder, $form, $secondarySlot, $time);
             $target = $this->isValidPhoneNumber($form->ownerPhone);
             echo '*SMS: '.$form->ownerPhone.' ('.$target.') :'.$smsText.'<br/>'."\n";
             if ($target){
