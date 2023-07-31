@@ -91,7 +91,7 @@ class QuadrTireImportController extends Controller
                 $tire->save();
                 $tire_id = $tire->id;
 
-                $duell = @$fields[28];
+                $duell = @$fields[29];
 
                 if ($tire_id !== null) {
                     $out .= "<p>Labojam izmēru: \"{$brand->title} {$tread->title}\" {$fields[4]}/{$fields[5]} R{$fields[6]} (LI:{$fields[8]}, SI:{$fields[9]}, kods: {$fields[16]}) - <strong>{$fields[2]}</strong></p>";
