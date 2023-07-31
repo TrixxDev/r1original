@@ -485,11 +485,12 @@
       $tires = Autotire::with('tread')->where('visible_users', '<>', 0)->get();
       $moto = Moto::with('tread')->where('visible_users', '<>', 0)->get();
       $quadr = Quadr::with('tread')->where('visible_users', '<>', 0)->get();
+      $rims = Rim::with('tread')->where('visible_users', '<>', 0)->get();
       $dom = new DOMDocument();
       $dom->encoding = 'utf-8';
       $dom->xmlVersion = '1.0';
       $dom->formatOutput = true;
-      $xml_file_name = dirname(__DIR__, 4) . '/xml.xml/kurpirkt.xml';
+      $xml_file_name = dirname(__DIR__, 4) . '/xml/kurpirkt.xml';
 //      $file = file_get_contents('xml/kurpirkt.xml');
       $root = $dom->createElement('root');
       foreach ($tires as $tire) {
@@ -563,6 +564,27 @@
         $child_node_title = $dom->createElement('category_link', route('kvadraciklu-riepas'));
         $item->appendChild($child_node_title);
         $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
+        $item->appendChild($child_node_title);
+        $root->appendChild($item);
+        $dom->appendChild($root);
+      }
+      foreach ($rims as $rim) {
+        $item = $dom->createElement('item');
+        $child_node_title = $dom->createElement('name', htmlspecialchars($rim->fullName));
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('price', $rim->offerPrice);
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('link', $rim->link);
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('image', Image::showAd('auto-rim', $rim->make_id));
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('category', 'Lietie diski');
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('category_full', ' &gt;&gt; '.$rim->d3.'&quot;');
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('category_link', route('lietie-diski'));
+        $item->appendChild($child_node_title);
+        $child_node_title = $dom->createElement('in_stock', ($rim->quantity + $rim->getStockCount()));
         $item->appendChild($child_node_title);
         $root->appendChild($item);
         $dom->appendChild($root);
