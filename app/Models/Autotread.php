@@ -23,4 +23,12 @@ class Autotread extends Model
       }
     }
 
+    public function tires() {
+        return $this->hasMany(Autotire::class, 'make_id', 'tread_id');
+    }
+
+    public function tireCount() {
+        return $this->tires()->selectRaw('make_id, count(*) as tire_count')->groupBy('make_id');
+    }
+
 }

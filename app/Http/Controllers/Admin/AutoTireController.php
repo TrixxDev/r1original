@@ -603,7 +603,8 @@ class AutoTireController extends Controller
 
     public function ajaxUpdateTreads(Request $request)
     {
-        $treads = Autotread::where('brand_id', $request->brand_id)->orderBy('t_title', 'ASC')->get();
+        $treads = Autotread::with('tireCount')->where('brand_id', $request->brand_id)->orderBy('t_title', 'ASC')->get();
+
         return json_encode($treads);
     }
 

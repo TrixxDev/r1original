@@ -12,4 +12,12 @@ class Mototread extends Model
     protected $table = 'moto_treads';
 
     protected $primaryKey = 'tread_id';
+
+    public function tires() {
+        return $this->hasMany(Moto::class, 'make_id', 'tread_id');
+    }
+
+    public function tireCount() {
+        return $this->tires()->selectRaw('make_id, count(*) as tire_count')->groupBy('make_id');
+    }
 }

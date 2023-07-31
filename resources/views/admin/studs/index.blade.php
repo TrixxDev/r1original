@@ -25,7 +25,6 @@
                 <div class="form-group row brand-settings">
                   <label class="col-md-2 col-form-label" for="brand_select">Brends: </label>
                   <select name="brand" class="form-control col-md-3" data-model="studs" id="brand_select">
-                    <option value=""></option>
                     @foreach ($brands as $curr_brand)
                       <option value="{{ $curr_brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $curr_brand->brand_id) {{ 'selected' }} @endif >{{ ucwords(strtolower($curr_brand->b_title)) }}</option>
                     @endforeach
@@ -168,9 +167,7 @@
                               <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
                             </svg>
                           </a>
-                          <a onclick="confirm('Tiešām vēlies dzēst?')" class="btn btn-danger" href="
-                            {{ route('admin.studs.destroy', $stud->stud_id) }}
-                            ">
+                          <a onclick="if (confirm('Tiešām vēlies dzēst?') === true) { window.location.href = '{{ route('admin.studs.destroy', $stud->stud_id) }}' }" class="btn btn-danger">
                             <svg class="c-icon">
                               <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
                             </svg>

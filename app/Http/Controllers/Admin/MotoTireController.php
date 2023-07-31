@@ -591,7 +591,7 @@
 
     public function ajaxUpdateTreads(Request $request)
     {
-      $treads = Mototread::select('moto_treads.*', 'moto_treads.title as t_title')->where('brand_id', $request->brand_id)->orderBy('title', 'ASC')->get();
+      $treads = Mototread::with('tireCount')->select('moto_treads.*', 'moto_treads.title as t_title')->where('brand_id', $request->brand_id)->orderBy('title', 'ASC')->get();
       return json_encode($treads);
     }
 

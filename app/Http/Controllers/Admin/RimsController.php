@@ -397,7 +397,7 @@ class RimsController extends Controller
 
     public function ajaxUpdateTreads(Request $request)
     {
-      $treads = Rimmake::select('rim_makes.*', 'rim_makes.title as t_title', 'rim_makes.make_id as tread_id')->where('brand_id', $request->brand_id)->orderBy('title', 'ASC')->get();
+      $treads = Rimmake::with('tireCount')->select('rim_makes.*', 'rim_makes.title as t_title', 'rim_makes.make_id as tread_id')->where('brand_id', $request->brand_id)->orderBy('title', 'ASC')->get();
       return json_encode($treads);
     }
 

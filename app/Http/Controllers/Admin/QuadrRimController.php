@@ -322,7 +322,7 @@
 
     public function ajaxUpdateTreads(Request $request)
     {
-      $treads = Quadrimmake::select('quadrim_makes.*', 'quadrim_makes.make_id as tread_id')->where('brand_id', $request->brand_id)->orderBy('t_title', 'ASC')->get();
+      $treads = Quadrimmake::with('tireCount')->select('quadrim_makes.*', 'quadrim_makes.make_id as tread_id')->where('brand_id', $request->brand_id)->orderBy('t_title', 'ASC')->get();
       return json_encode($treads);
     }
 

@@ -15,6 +15,7 @@ $(document).ready(function() {
   let tread_id;
   let current_tread = pathParts[4];
   let current_url;
+  let tire_count;
 
   $(document).on('click', 'button.edit-banner', function(e) {
     e.preventDefault();
@@ -119,17 +120,22 @@ $(document).ready(function() {
           } else if (value.season !== null && value.season == 2) {
             season = 'Ziemas';
           }
+          if (value.tire_count) {
+            tire_count = (value.tire_count[0]) ? ' [' + value.tire_count[0].tire_count + ']' : ' [0]';
+          } else {
+            tire_count = '';
+          }
           if (value.season) {
             if (current_tread == value.tread_id) {
-              html += '<option value="' + value.tread_id + '" selected>' + value.t_title + ' (' + season + ')</option>';
+              html += '<option value="' + value.tread_id + '" selected>' + value.t_title + ' (' + season + ')' + tire_count + '</option>';
             } else {
-              html += '<option value="' + value.tread_id + '">' + value.t_title + ' (' + season + ')</option>';
+              html += '<option value="' + value.tread_id + '">' + value.t_title + ' (' + season + ')' + tire_count + '</option>';
             }
           } else {
             if (current_tread == value.tread_id) {
-              html += '<option value="' + value.tread_id + '" selected>' + value.t_title + '</option>';
+              html += '<option value="' + value.tread_id + '" selected>' + value.t_title + tire_count + '</option>';
             } else {
-              html += '<option value="' + value.tread_id + '">' + value.t_title + '</option>';
+              html += '<option value="' + value.tread_id + '">' + value.t_title + tire_count + '</option>';
             }
           }
 

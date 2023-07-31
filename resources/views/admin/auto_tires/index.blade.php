@@ -214,7 +214,7 @@
                                                             <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
                                                         </svg>
                                                     </a>
-                                                    <a onclick="confirm('Tiešām vēlies dzēst?')" class="btn btn-danger" href="{{ route('admin.auto.tire.destroy', $tire->tire_id) }}">
+                                                    <a onclick="if (confirm('Tiešām vēlies dzēst?') === true) { document.location.href = '{{ route('admin.auto.tire.destroy', $tire->tire_id) }}' }" class="btn btn-danger">
                                                         <svg class="c-icon">
                                                             <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
                                                         </svg>

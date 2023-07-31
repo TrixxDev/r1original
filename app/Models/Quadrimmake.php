@@ -12,4 +12,12 @@ class Quadrimmake extends Model
 
   protected $primaryKey = 'make_id';
 
+    public function tires() {
+        return $this->hasMany(Quadrim::class, 'make_id', 'tread_id');
+    }
+
+    public function tireCount() {
+        return $this->tires()->selectRaw('make_id, count(*) as tire_count')->groupBy('make_id');
+    }
+
 }

@@ -563,7 +563,7 @@
 
     public function ajaxUpdateTreads(Request $request)
     {
-      $treads = Quadrtread::select('quadr_treads.*', 'quadr_treads.title as t_title')->where('brand_id', $request->brand_id)->orderBy('title', 'ASC')->get();
+      $treads = Quadrtread::with('tireCount')->select('quadr_treads.*', 'quadr_treads.title as t_title')->where('brand_id', $request->brand_id)->orderBy('title', 'ASC')->get();
       return json_encode($treads);
     }
 
