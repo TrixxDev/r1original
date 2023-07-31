@@ -20,3 +20,6 @@ yarn-error.log
 /public/starco.sync.xml
 /resources/views/pages/*
 /.idea/jsLibraryMappings.xml
+/app/Http/Controllers/HomeController2.php
+/resources/views/testing33.blade.php
+/resources/views/pages/
