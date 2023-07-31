@@ -59,7 +59,6 @@ class QuadrTireImportController extends Controller
                   $tread->brand_id = ($brand === null) ? $brand_id : $brand->brand_id;
                   $tread->title = $fields[13];
                   $tread->slug = Str::slug($fields[13], '-');
-                  $tread->comment = '';
                   $tread->save();
                   $tread_id = $tread->id;
                   $out.='<p>Jauns protektora modelis: '.ucfirst($tread->title).'</p>';
@@ -83,7 +82,7 @@ class QuadrTireImportController extends Controller
                 $tire->price2 = @$fields[16];
 
                 $tire->comment = @$fields[20];
-                $tire->code = @$fields[27];
+                $tire->code = @$fields[12];
 
                 $tire->quantity = 0;
 

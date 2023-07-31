@@ -862,6 +862,15 @@
 
   gtag('config', 'UA-230419920-1');
 </script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-76Y13VND83"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-76Y13VND83');
+</script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 <script src="{{ asset('js/scrollTo.js') }}"></script>

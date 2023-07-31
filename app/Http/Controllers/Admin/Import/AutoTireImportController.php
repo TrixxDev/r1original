@@ -73,6 +73,31 @@ class AutoTireImportController extends Controller
           $tire->d2 = @$fields[5];
           $tire->d3 = @$fields[6];
 
+          switch (@$fields[12]) {
+              case 'M+S': {
+                  $returnType = 1;
+                  break;
+              }
+              case 'R': {
+                  $returnType = 2;
+                  break;
+              }
+              case 'R+': {
+                  $returnType = 3;
+                  break;
+              }
+              case 'W': {
+                  $returnType = 4;
+                  break;
+              }
+              default: {
+                  $returnType = NULL;
+                  break;
+              }
+          }
+
+          $tire->type = $returnType;
+
           $tire->li = @$fields[8];
           $tire->si = @$fields[9];
 
