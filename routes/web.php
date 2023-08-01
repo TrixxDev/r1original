@@ -55,6 +55,10 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   Route::get('/import/moto', [App\Http\Controllers\Admin\Import\MotoTireImportController::class, 'index'])->name('moto.import');
   Route::post('/import/moto', [App\Http\Controllers\Admin\Import\MotoTireImportController::class, 'import'])->name('moto.import.post');
 
+  // Lielo riepu imports
+  Route::get('/import/big', [App\Http\Controllers\Admin\Import\BigTireImportController::class, 'index'])->name('big.import');
+  Route::post('/import/big', [App\Http\Controllers\Admin\Import\BigTireImportController::class, 'import'])->name('big.import.post');
+
   // Auto riepu brendi
   Route::get('/brands/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'brands_list'])->name('auto.brands');
   Route::get('/brands/auto/add', [App\Http\Controllers\Admin\AutoTireController::class, 'brand_add'])->name('auto.brands.add');
@@ -91,6 +95,21 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   Route::post('/moto/tread/{tread_id}/image', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_image'])->name('moto.tires.image');
   Route::post('/moto/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\MotoTireController::class, 'ajaxUpdateTreads'])->name('moto.tires.ajaxUpdateTreads');
   Route::post('/moto/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\MotoTireController::class, 'ajaxUpdateTires'])->name('moto.tires.ajaxUpdateTires');
+
+  // Lielās riepas
+  Route::match(['GET', 'POST'], '/big', [App\Http\Controllers\Admin\BigTireController::class, 'index'])->name('big.tires');
+  Route::get('/big/edit/{id}', [App\Http\Controllers\Admin\BigTireController::class, 'tire_edit'])->name('big.tire.edit');
+  Route::post('/big/edit/{id}', [App\Http\Controllers\Admin\BigTireController::class, 'tire_update'])->name('big.tire.update');
+  Route::get('/big/delete/{id}', [App\Http\Controllers\Admin\BigTireController::class, 'tire_destroy'])->name('big.tire.destroy');
+  Route::post('/big/ajaxUpdateTreads', [App\Http\Controllers\Admin\BigTireController::class, 'ajaxUpdateTreads'])->name('big.tires.ajaxUpdateTreads');
+  Route::post('/big/ajaxUpdateTires', [App\Http\Controllers\Admin\BigTireController::class, 'ajaxUpdateTires'])->name('big.tires.ajaxUpdateTires');
+  Route::match(['GET', 'POST'], '/big/tread/{tread_id}', [App\Http\Controllers\Admin\BigTireController::class, 'tires_search'])->name('big.tires.search');
+  Route::get('/big/tread/{tread_id}/create', [App\Http\Controllers\Admin\BigTireController::class, 'tire_create'])->name('big.tires.create');
+  Route::post('/big/tread/{tread_id}/delete', [App\Http\Controllers\Admin\BigTireController::class, 'tires_destroy'])->name('big.tires.delete_all');
+  Route::post('/big/tread/{tread_id}/store', [App\Http\Controllers\Admin\BigTireController::class, 'tire_store'])->name('big.tires.store');
+  Route::post('/big/tread/{tread_id}/image', [App\Http\Controllers\Admin\BigTireController::class, 'tire_image'])->name('big.tires.image');
+  Route::post('/big/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\BigTireController::class, 'ajaxUpdateTreads'])->name('big.tires.ajaxUpdateTreads');
+  Route::post('/big/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\BigTireController::class, 'ajaxUpdateTires'])->name('big.tires.ajaxUpdateTires');
 
   // Moto riepu brendi
   Route::get('/brands/moto', [App\Http\Controllers\Admin\MotoTireController::class, 'brands_list'])->name('moto.brands');
