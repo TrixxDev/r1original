@@ -130,13 +130,32 @@
                       </tbody>
                     </table>
                   </div>
-                  <div class="col-sm-12 col-md-8">
-                    @if($currTire->comment)
-                      <div class="alert" style="border: 1px solid #68c0a8">
-                        {{ $currTire->comment }}
-                      </div>
-                    @endif
-                  </div>
+                    <div class="col-sm-12 col-md-8">
+                        <ul class="nav nav-tabs" style="border-bottom: none!important;">
+                            @if ($currTire->t_comment)
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#tread" style="border-color: #68c0a8 #68c0a8 transparent">Apraksts</a>
+                                </li>
+                            @endif
+                            @if ($currBrand->b_comment)
+                                <li class="nav-item">
+                                    <a class="nav-link @if (!$currTire->t_comment) active @endif" data-toggle="tab" href="#brand" style="border-color: #68c0a8 #68c0a8 transparent">Par zīmolu</a>
+                                </li>
+                            @endif
+                        </ul>
+                        <div class="tab-content">
+                            @if ($currTire->t_comment)
+                                <div id="tread" class="container alert tab-pane active" style="border: 1px solid #68c0a8">
+                                    {!! $currTire->t_comment !!}
+                                </div>
+                            @endif
+                            @if ($currBrand->b_comment)
+                                <div id="brand" class="container alert tab-pane @if (!$currTire->t_comment) active @endif" style="border: 1px solid #68c0a8">
+                                    {!! $currBrand->b_comment !!}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
               </div>
             </div>

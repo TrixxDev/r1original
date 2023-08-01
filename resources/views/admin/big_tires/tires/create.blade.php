@@ -121,7 +121,7 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="comment">Komentārs</label>
+                            <label class="col-md-3 col-form-label" for="comment">Piezīmes</label>
                             <div class="col-md-9">
                                 <input class="form-control" id="comment" type="text" name="comment" placeholder="Komentārs">
                             </div>

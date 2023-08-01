@@ -414,7 +414,7 @@
                           </th>
 
                           <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
-                          <th scope="col" class="hidden-sm-down">Piezīmes</th>
+                          <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
                           <th scope="col"></th>
                           <th scope="col">
                             <div class="tire-table-icon icon-question"></div>
@@ -476,7 +476,7 @@
 
                         <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
                         <td id="sale-price" class="text-center tire-price-red">€ {{ $tire->price3 }}</td>
-                        <td class="hidden-sm-down text-center"></td>
+                        <td class="hidden-sm-down text-center">{{ $tire->comment }}</td>
 
                         <td class="shopping-cart-col">
                           <div class="clearfix atc_div text-right">

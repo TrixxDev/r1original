@@ -215,10 +215,12 @@ class BigTireController extends Controller
                                                 ->where('big_tires.tire_id', $tire)
                                                 ->first();
 
+      $currBrand = Bigbrand::where('brand_id', $currTire->brand_id)->first();
+
       $currTire->includeStock = true;
 
       return view('tires.industrial.industrialtread',
-        compact('tires', 'currTire', 'brand', 'tread')
+        compact('tires', 'currTire', 'currBrand', 'brand', 'tread')
       );
     }
 
