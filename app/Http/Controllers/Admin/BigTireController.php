@@ -246,7 +246,7 @@ class BigTireController extends Controller
         $tire->si = ($request->si === null) ? '' : $request->si;
         $tire->code = ($request->code === null) ? '' : $request->code;
         $tire->price1 = ($request->price1 === null) ? '' : $request->price1;
-        $tire->price2 = ($request->price2 === null) ? '' : $request->price2;
+        $tire->price3 = ($request->price2 === null) ? '' : $request->price2;
         $tire->implemention = ($request->implemention === null) ? '' : $request->implemention;
         $tire->comment = ($request->comment === null) ? '' : $request->comment;
         $tire->article = ($request->article === null) ? '' : $request->article;
@@ -284,7 +284,7 @@ class BigTireController extends Controller
         $tire->si = $request->si;
         $tire->code = $request->code;
         $tire->price1 = $request->price1;
-        $tire->price2 = $request->price2;
+        $tire->price3 = $request->price2;
         $tire->implemention = $request->implemention;
         $tire->comment = $request->comment;
         $tire->article = $request->article;
