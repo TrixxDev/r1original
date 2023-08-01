@@ -155,7 +155,7 @@
                                                 <td>{{ $tire->d3 }}</td>
                                                 <td>{{ ucfirst(strtolower($tire->type)) }}</td>
                                                 <td>{{ $tire->price1 }}</td>
-                                                <td style="color: red; font-weight: 500;">{{ $tire->price2 }}</td>
+                                                <td style="color: red; font-weight: 500;">{{ $tire->price3 }}</td>
                                                 <td>{{ $tire->li }}</td>
                                                 <td>{{ $tire->si }}</td>
                                                 <td>{{ $tire->code }}</td>
