@@ -5,6 +5,7 @@
   use App\Http\Controllers\Controller;
   use App\Models\Motobrand;
   use App\Models\Moto;
+  use App\Models\Motostock;
   use App\Models\Mototread;
   use Illuminate\Http\Request;
   use Illuminate\Support\Facades\Redirect;
@@ -261,6 +262,26 @@
 
       $tire->save();
 
+      if ($request->i3article !== null) {
+        $i3stock = new Motostock;
+        $i3stock->tire_id = $tire->tire_id;
+        $i3stock->article = $request->i3article;
+        $i3stock->quantity = 0;
+        $i3stock->itype = 'i3';
+        $i3stock->metadata = '';
+        $i3stock->save();
+      }
+
+      if ($request->duellarticle !== null) {
+        $duellstock = new Motostock;
+        $duellstock->tire_id = $tire->tire_id;
+        $duellstock->article = $request->duellarticle;
+        $duellstock->quantity = 0;
+        $duellstock->itype = 'duell';
+        $duellstock->metadata = '';
+        $duellstock->save();
+      }
+
       return redirect(route('admin.moto.tires.search', $id))->with('success', 'Riepa veiksmīgi pievienota');
 
     }
@@ -269,7 +290,10 @@
     {
       $tire = Moto::with('tread')->where('tire_id', $id)->first();
 
-      return view('admin.moto_tires.tires.edit', compact('tire'));
+      $i3stock = Motostock::where('tire_id', $tire->tire_id)->where('itype', 'i3')->first();
+      $duellstock = Motostock::where('tire_id', $tire->tire_id)->where('itype', 'duell')->first();
+
+      return view('admin.moto_tires.tires.edit', compact('tire', 'i3stock', 'duellstock'));
     }
 
     public function tire_update(Request $request, $id)
@@ -298,6 +322,45 @@
 
       $tire->save();
 
+      $i3stock = Motostock::where('tire_id', $id)->where('itype', 'i3')->first();
+      $duellstock = Motostock::where('tire_id', $id)->where('itype', 'duell')->first();
+
+      if ($i3stock) {
+        if ($request->i3article) {
+          $i3stock->article = $request->i3article;
+          $i3stock->save();
+        } else {
+          $i3stock->delete();
+        }
+      } else {
+        if ($request->i3article) {
+          $i3stock = new Motostock;
+          $i3stock->tire_id = $tire->tire_id;
+          $i3stock->article = $request->i3article;
+          $i3stock->itype = 'i3';
+          $i3stock->metadata = '';
+          $i3stock->save();
+        }
+      }
+
+      if ($duellstock) {
+        if ($request->duellarticle) {
+          $duellstock->article = $request->duellarticle;
+          $duellstock->save();
+        } else {
+          $duellstock->delete();
+        }
+      } else {
+        if ($request->duellarticle) {
+          $duellstock = new Motostock;
+          $duellstock->tire_id = $tire->tire_id;
+          $duellstock->article = $request->duellarticle;
+          $duellstock->itype = 'duell';
+          $duellstock->metadata = '';
+          $duellstock->save();
+        }
+      }
+
       return redirect(route('admin.moto.tire.edit', $id))->with('success', 'Informācija veiksmīgi atjaunota');
     }
 
@@ -314,6 +377,7 @@
     {
 
       Moto::whereIn('tire_id', $request->tire_id)->delete();
+      Motostock::whereIn('tire_id', $request->tire_id)->delete();
 
       $response = (count($request->tire_id) > 1) ? 'Riepas veiksmīgi dzēstas!' : 'Riepa veiksmīgi dzēsta!';
 

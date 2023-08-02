@@ -11,7 +11,7 @@
             @endif
             <div class="card">
                 <form class="form-horizontal" action="{{ route('admin.big.tire.update', $tire->tire_id) }}" method="post" enctype="multipart/form-data">
-                    <div class="card-header">{{ 'Labot riepas info - ' . $tire->title . ' | ' . $tire->d1 . '/' . $tire->d2 . ' R' . $tire->d3 }}
+                    <div class="card-header">{{ 'Labot riepas info - ' . $tire->title . ' | ' . $tire->fullSize }}
                         <div style="float: right; position: relative; top: -7px;">
                             <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>
                             <a class="btn btn-md btn-info" href="{{ route('admin.big.tires.search', $tire->tread->tread_id) }}"> Atpakaļ</a>
@@ -120,9 +120,9 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="article">Artikuls</label>
+                            <label class="col-md-3 col-form-label" for="article">Accrual artikuls</label>
                             <div class="col-md-9">
-                                <input class="form-control" id="article" type="text" @if ($tire->article) value="{{ $tire->article }}" @endif name="article" placeholder="Artikuls">
+                                <input class="form-control" id="article" type="text" @if ($tire->article) value="{{ $tire->article }}" @endif name="article" placeholder="Accrual artikuls">
                             </div>
                         </div>
                         <div class="form-group row">
@@ -143,6 +143,34 @@
                                 <input class="form-control" id="krs_quantity" type="number" value="{{ $tire->krs_quantity }}" name="krs_quantity" placeholder="Atlikums kalnciema ielā">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="i3article">I3 artikuls</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="i3article" type="text" @if ($i3stock) value="{{ $i3stock->article }}" @endif name="i3article" placeholder="I3 artikuls">
+                            </div>
+                        </div>
+                        @if ($i3stock)
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="i3stocks">I3 atlikums</label>
+                            <div class="col-md-9">
+                                <input class="form-control" readonly style="cursor: default;" id="i3stocks" type="text" @if ($i3stock) value="{{ $i3stock->quantity }}" @endif>
+                            </div>
+                        </div>
+                        @endif
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="starcoarticle">Starco artikuls</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="starcoarticle" type="text" @if ($starcostock) value="{{ $starcostock->article }}" @endif name="starcoarticle" placeholder="Starco artikuls">
+                            </div>
+                        </div>
+                        @if ($starcostock)
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="starcostocks">Starco atlikums</label>
+                            <div class="col-md-9">
+                                <input class="form-control" readonly id="starcostocks" style="cursor: default;" type="text" @if ($starcostock) value="{{ $starcostock->quantity }}" @endif>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>

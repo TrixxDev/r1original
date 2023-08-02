@@ -133,7 +133,49 @@
                                 <input class="form-control" id="krs_quantity" type="number" value="{{ $tire->krs_quantity }}" name="krs_quantity" placeholder="Atlikums kalnciema ielā">
                             </div>
                         </div>
-                    </div>
+                        <div class="form-group row">
+                          <label class="col-md-3 col-form-label" for="i3article">I3 artikuls</label>
+                          <div class="col-md-9">
+                            <input class="form-control" id="i3article" type="text" @if ($i3stock) value="{{ $i3stock->article }}" @endif name="i3article" placeholder="I3 artikuls">
+                          </div>
+                        </div>
+                        @if ($i3stock)
+                        <div class="form-group row">
+                          <label class="col-md-3 col-form-label" for="i3quantity">I3 atlikums</label>
+                          <div class="col-md-9">
+                            <input class="form-control" id="i3quantity" type="number" style="cursor: default;" readonly value="{{ $i3stock->quantity }}">
+                          </div>
+                        </div>
+                        @endif
+                        <div class="form-group row">
+                          <label class="col-md-3 col-form-label" for="article">Duell artikuls</label>
+                          <div class="col-md-9">
+                            <input class="form-control" id="article" type="text" @if ($duellstock) value="{{ $duellstock->article }}" @endif name="article" placeholder="Duell artikuls">
+                          </div>
+                        </div>
+                        @if ($duellstock)
+                        <div class="form-group row">
+                          <label class="col-md-3 col-form-label" for="quantity">Duell atlikums</label>
+                          <div class="col-md-9">
+                            <input class="form-control" id="quantity" type="number" style="cursor: default;" readonly value="{{ $duellstock->quantity }}">
+                          </div>
+                        </div>
+                        @endif
+                        <div class="form-group row">
+                          <label class="col-md-3 col-form-label" for="article">Starco artikuls</label>
+                          <div class="col-md-9">
+                            <input class="form-control" id="article" type="text" @if ($starcostock) value="{{ $starcostock->article }}" @endif name="article" placeholder="Starco artikuls">
+                          </div>
+                        </div>
+                        @if ($starcostock)
+                        <div class="form-group row">
+                          <label class="col-md-3 col-form-label" for="quantity">Starco atlikums</label>
+                          <div class="col-md-9">
+                            <input class="form-control" id="quantity" type="number" style="cursor: default;" readonly value="{{ $starcostock->quantity }}">
+                          </div>
+                        </div>
+                        @endif
+                      </div>
                     <div class="card-footer">
                         <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>
                         <a class="btn btn-md btn-info" href="{{ route('admin.quadr.tires.search', $tire->tread->tread_id) }}"> Atpakaļ</a>

@@ -120,6 +120,18 @@
                 <input class="form-control" id="krs_quantity" type="number" name="krs_quantity" placeholder="Atlikums kalnciema ielā">
               </div>
             </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="i3article">I3 artikuls</label>
+              <div class="col-md-9">
+                <input class="form-control" id="i3article" type="text" name="i3article" placeholder="I3 artikuls">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="duellarticle">Duell artikuls</label>
+              <div class="col-md-9">
+                <input class="form-control" id="duellarticle" type="text" name="duellarticle" placeholder="Duell artikuls">
+              </div>
+            </div>
           </div>
           <div class="card-footer">
             <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>

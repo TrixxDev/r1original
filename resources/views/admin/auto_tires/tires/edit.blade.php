@@ -11,7 +11,7 @@
             @endif
             <div class="card">
                 <form class="form-horizontal" action="{{ route('admin.auto.tire.update', $tire->tire_id) }}" method="post" enctype="multipart/form-data">
-                    <div class="card-header">{{ 'Labot riepas info - ' . $tire->title . ' | ' . $tire->d1 . '/' . $tire->d2 . ' R' . $tire->d3 }}
+                    <div class="card-header">{{ 'Labot riepas info - ' . $tire->title . ' | ' . $tire->fullSize }}
                         <div style="float: right; position: relative; top: -7px;">
                             <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>
                             <a class="btn btn-md btn-info" href="{{ route('admin.auto.tires.search', $tire->tread->tread_id) }}"> Atpakaļ</a>
@@ -128,6 +128,48 @@
                                 <input class="form-control" id="krs_quantity" type="number" value="{{ $tire->krs_quantity }}" name="krs_quantity" placeholder="Atlikums kalnciema ielā">
                             </div>
                         </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="i3article">I3 artikuls</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="i3article" type="text" @if ($i3stock) value="{{ $i3stock->article }}" @endif name="i3article">
+                            </div>
+                        </div>
+                        @if ($i3stock)
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="i3quantity">I3 atlikums</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="i3quantity" readonly style="cursor: default;" type="number" value="{{ $i3stock->quantity }}">
+                            </div>
+                        </div>
+                        @endif
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="gyarticle">GoodYear artikuls</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="gyarticle" type="text" @if ($gystock) value="{{ $gystock->article }}" @endif name="gyarticle">
+                            </div>
+                        </div>
+                        @if ($gystock)
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="gyquantity">GoodYear atlikums</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="gyquantity" readonly style="cursor: default;" type="number" value="{{ $gystock->quantity }}">
+                            </div>
+                        </div>
+                        @endif
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="rzarticle">RiepuZona artikuls</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="rzarticle" type="text" @if ($rzstock) value="{{ $rzstock->article }}" @endif name="rzarticle">
+                            </div>
+                        </div>
+                        @if ($rzstock)
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="rzquantity">RiepuZona atlikums</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="rzquantity" readonly style="cursor: default;" type="number" value="{{ $rzstock->quantity }}">
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>

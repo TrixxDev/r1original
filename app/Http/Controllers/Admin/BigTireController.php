@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bigbrand;
+use App\Models\Bigstock;
 use App\Models\Bigtire;
 use App\Models\Bigtread;
 use Illuminate\Http\Request;
@@ -237,9 +238,9 @@ class BigTireController extends Controller
 
         $tire->make_id = $id;
         $tire->d1 = ($request->d1 === null) ? '' : $request->d1;
-        $tire->sep = ($request->sep === null) ? '' : $request->sep;
-        $tire->d2 = ($request->d2 === null) ? '' : $request->d2;
-        $tire->sep2 = ($request->sep2 === null) ? '' : $request->sep2;
+        $tire->sep = ($request->sep === null) ? null : $request->sep;
+        $tire->d2 = ($request->d2 === null) ? null : $request->d2;
+        $tire->sep2 = ($request->sep2 === null) ? null : $request->sep2;
         $tire->d3 = ($request->d3 === null) ? '' : $request->d3;
         $tire->type = ($request->tire_type === null) ? NULL : $request->tire_type;
         $tire->li = ($request->li === null) ? '' : $request->li;
@@ -258,6 +259,32 @@ class BigTireController extends Controller
 
         $tire->save();
 
+        if ($request->i3article !== null) {
+          $i3stock = new Bigstock;
+          $i3stock->tire_id = $tire->tire_id;
+          $i3stock->article = $request->i3article;
+          $i3stock->quantity = 0;
+          $i3stock->itype = 'i3';
+          if ($tire->type == 'AGRO') {
+            $i3stock->type = 'agro';
+          } else {
+            $i3stock->type = 'truck';
+          }
+          $i3stock->metadata = '';
+          $i3stock->save();
+        }
+
+        if ($request->starcoarticle !== null) {
+          $starcostock = new Bigstock;
+          $starcostock->tire_id = $tire->tire_id;
+          $starcostock->article = $request->starcoarticle;
+          $starcostock->quantity = 0;
+          $starcostock->itype = 'starco';
+          $starcostock->type = 'null';
+          $starcostock->metadata = '';
+          $starcostock->save();
+        }
+
         return redirect(route('admin.big.tires.search', $id))->with('success', 'Riepa veiksmīgi pievienota');
 
     }
@@ -266,7 +293,10 @@ class BigTireController extends Controller
     {
         $tire = Bigtire::with('tread')->where('tire_id', $id)->first();
 
-        return view('admin.big_tires.tires.edit', compact('tire'));
+        $i3stock = Bigstock::where('tire_id', $tire->tire_id)->where('itype', 'i3')->first();
+        $starcostock = Bigstock::where('tire_id', $tire->tire_id)->where('itype', 'starco')->first();
+
+        return view('admin.big_tires.tires.edit', compact('tire', 'i3stock', 'starcostock'));
     }
 
     public function tire_update(Request $request, $id)
@@ -296,13 +326,59 @@ class BigTireController extends Controller
 
         $tire->save();
 
+        $i3stock = Bigstock::where('tire_id', $id)->where('itype', 'i3')->first();
+        $starcostock = Bigstock::where('tire_id', $id)->where('itype', 'starco')->first();
+
+        if ($i3stock) {
+          if ($request->i3article) {
+            $i3stock->article = $request->i3article;
+            $i3stock->save();
+          } else {
+            $i3stock->delete();
+          }
+        } else {
+          if ($request->i3article) {
+            $i3stock = new Bigstock;
+            $i3stock->tire_id = $tire->tire_id;
+            $i3stock->article = $request->i3article;
+            $i3stock->itype = 'i3';
+            if ($tire->type == 'AGRO') {
+              $i3stock->type = 'agro';
+            } else {
+              $i3stock->type = 'truck';
+            }
+            $i3stock->metadata = '';
+            $i3stock->save();
+          }
+        }
+
+        if ($starcostock) {
+          if ($request->starcoarticle) {
+            $starcostock->article = $request->starcoarticle;
+            $starcostock->save();
+          } else {
+            $starcostock->delete();
+          }
+        } else {
+          if ($request->starcoarticle) {
+            $starcostock = new Bigstock;
+            $starcostock->tire_id = $tire->tire_id;
+            $starcostock->article = $request->starcoarticle;
+            $starcostock->itype = 'starco';
+            $starcostock->type = null;
+            $starcostock->metadata = '';
+            $starcostock->save();
+          }
+        }
+
         return redirect(route('admin.big.tire.edit', $id))->with('success', 'Informācija veiksmīgi atjaunota');
     }
 
-    public function tire_destroy($id)
+    public function tire_destroy(Request $request)
     {
 
-      Bigtire::where('tire_id', $id)->delete();
+      Bigtire::whereIn('tire_id', $request->tire_id)->delete();
+      Bigstock::whereIn('tire_id', $request->tire_id)->delete();
 
       return redirect()->back()->with('success', 'Riepa veiksmīgi dzēsta!');
 
@@ -311,6 +387,7 @@ class BigTireController extends Controller
     public function tires_destroy(Request $request)
     {
 
+      Bigstock::whereIn('tire_id', $request->tire_id)->delete();
       Bigtire::whereIn('tire_id', $request->tire_id)->delete();
 
       $response = (count($request->tire_id) > 1) ? 'Riepas veiksmīgi dzēstas!' : 'Riepa veiksmīgi dzēsta!';

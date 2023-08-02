@@ -16,7 +16,7 @@
       @endif
       <div class="card">
         <form class="form-horizontal" action="{{ route('admin.auto.tires.store', $tread->tread_id) }}" method="post" enctype="multipart/form-data">
-          <div class="card-header">Pievienot riepu - {{ $brand->title . ' ' . $tread->title }}
+          <div class="card-header">Pievienot riepu - {{ $brand->title . ' ' . $tread->t_title }}
             <div style="float: right; position: relative; top: -7px;">
               <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>
               <a class="btn btn-md btn-info" href="{{ route('admin.auto.tires.search', $tread->tread_id) }}"> Atpakaļ</a>
@@ -133,6 +133,24 @@
               <div class="col-md-9">
                 <input class="form-control" id="krs_quantity" type="number" name="krs_quantity" placeholder="Atlikums kalnciema ielā">
               </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="i3article">I3 artikuls</label>
+                <div class="col-md-9">
+                    <input class="form-control" id="i3article" type="text" name="i3article" placeholder="I3 artikuls">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="gyarticle">GoodYear artikuls</label>
+                <div class="col-md-9">
+                    <input class="form-control" id="gyarticle" type="text" name="gyarticle" placeholder="GoodYear artikuls">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-3 col-form-label" for="rzarticle">RiepuZona artikuls</label>
+                <div class="col-md-9">
+                    <input class="form-control" id="rzarticle" type="text" name="rzarticle" placeholder="RiepuZona artikuls">
+                </div>
             </div>
           </div>
           <div class="card-footer">

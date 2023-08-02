@@ -119,9 +119,9 @@
                         @csrf
                         <div class="row justify-content-end tires-header">
                           @if (isset($tires) && count($tires) > 0)
-                            <button class="btn btn-md btn-danger" style="margin-right: 10px;" onclick="confirm('Tiešām vēlies dzēst?')">Dzēst</button>
+                            <button class="btn btn-md btn-danger" style="margin-right: 10px;" onclick="if (confirm('Tiešām vēlies dzēst?') !== true) { return false; }">Dzēst</button>
                           @endif
-                          <button class="btn btn-md btn-primary new_tire"><a class="text-white" href="{{ route('admin.big.tires.create', $tread->tread_id) }}">Pievienot</a></button>
+                          <a class="text-white btn btn-md btn-primary new_tire" href="{{ route('admin.big.tires.create', $tread->tread_id) }}">Pievienot</a>
                         </div>
                         @endif
                         <div class="row">
