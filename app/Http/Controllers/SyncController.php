@@ -2670,7 +2670,7 @@
       $this->duellmoto();
       $this->i3quadr();
       $this->duellquadr();
-//      $this->i3big();
+      $this->i3big();
       $this->starco();
       return 'Visas sinhronizācijas notika!';
     }
