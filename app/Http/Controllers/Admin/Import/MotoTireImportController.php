@@ -31,10 +31,12 @@ class MotoTireImportController extends Controller
                 $fields = explode("\t",$row);
 
                 $tire = Moto::where('article', $fields[0])->first();
+                $new = false;
 
                 if ($tire === null)
                 {
                     $tire = new Moto();
+                    $new = true;
                 }
 
                 $brand = Motobrand::where('title', 'like', '%' . $fields[1] . '%')->first();
@@ -96,7 +98,7 @@ class MotoTireImportController extends Controller
                 $i3 = @$fields[18];
                 $duell = @$fields[19];
 
-                if ($tire_id !== null) {
+                if ($new === false) {
                     $out .= "<p>Labojam izmēru: \"{$brand->title} {$tread->title}\" {$fields[6]} (LI:{$fields[7]}, SI:{$fields[8]}, kods: {$fields[9]}) - <strong>{$fields[0]}</strong></p>";
                 } else {
                     $out .= "<p>Pievienojam izmēru: \"{$brand->title} {$tread->title}\" {$fields[6]} (LI:{$fields[7]}, SI:{$fields[8]}, kods: {$fields[9]}) - <strong>{$fields[0]}</strong></p>";

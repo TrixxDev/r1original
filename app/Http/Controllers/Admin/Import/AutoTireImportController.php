@@ -31,9 +31,11 @@ class AutoTireImportController extends Controller
           $fields = explode("\t", $row);
 
           $tire = Autotire::where('article', $fields[2])->first();
+          $new = false;
 
           if ($tire === null) {
             $tire = new Autotire();
+            $new = true;
           }
 
           $brand = Autobrand::where('title', 'like', '%' . $fields[3] . '%')->orderBy('brand_id', 'DESC')->first();
@@ -126,7 +128,7 @@ class AutoTireImportController extends Controller
           $gy = @$fields[20];
           $rz = @$fields[21];
 
-          if ($tire_id !== null) {
+          if ($new === false) {
             $out .= "<p>Labojam izmēru: \"{$brand->title} {$tread->t_title}\" {$fields[4]}/{$fields[5]} R{$fields[6]} (LI:{$fields[8]}, SI:{$fields[9]}, kods: {$fields[10]}) - <strong>{$fields[2]}</strong></p>";
           } else {
             $out .= "<p>Pievienojam izmēru: \"{$brand->title} {$tread->t_title}\" {$fields[4]}/{$fields[5]} R{$fields[6]} (LI:{$fields[8]}, SI:{$fields[9]}, kods: {$fields[10]}) - <strong>{$fields[2]}</strong></p>";

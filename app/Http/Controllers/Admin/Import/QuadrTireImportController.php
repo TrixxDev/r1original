@@ -31,10 +31,12 @@ class QuadrTireImportController extends Controller
                 $fields = explode("\t",$row);
 
                 $tire = Quadr::where('article', $fields[2])->first();
+                $new = false;
 
                 if ($tire === null)
                 {
                     $tire = new Quadr();
+                    $new = true;
                 }
 
                 $brand = Quadrbrand::where('title', 'like', '%' . $fields[3] . '%')->first();
@@ -93,7 +95,7 @@ class QuadrTireImportController extends Controller
 
                 $duell = @$fields[29];
 
-                if ($tire_id !== null) {
+                if ($new === false) {
                     $out .= "<p>Labojam izmēru: \"{$brand->title} {$tread->title}\" {$fields[4]}/{$fields[5]} R{$fields[6]} (LI:{$fields[8]}, SI:{$fields[9]}, kods: {$fields[16]}) - <strong>{$fields[2]}</strong></p>";
                 } else {
                     $out .= "<p>Pievienojam izmēru: \"{$brand->title} {$tread->title}\" {$fields[4]}/{$fields[5]} R{$fields[6]} (LI:{$fields[8]}, SI:{$fields[9]}, kods: {$fields[16]}) - <strong>{$fields[2]}</strong></p>";
