@@ -384,6 +384,27 @@
                           @endforeach
                       </div>
                     </div>
+                      <div class="spacer" style="width: 100%; height: 1px; background: #65c2a5; margin-bottom: 10px;"></div>
+                      <table id="tires-table" class="table table-striped rims-sorter tires-table table-hover tablesorter">
+                        <tbody id="tires-table-body">
+                        <tr class="tire-table-row" style="height: 35px;line-height: 35px;cursor:pointer;font-size: 14px;" onclick="window.open('https://wheels2020.com/index.php?cat=all&amp;lang=EN&amp;size=16&amp;holes=5&amp;range=112&amp;et=<%3D+25&amp;design=&amp;color=&amp;select_wheels=Search', '_blank')">
+                          <th scope="row" class="tire-table-checkbox"></th>
+                          <td class="table-tire-name-cell" style="color: blue; text-decoration: underline">
+                            Pasūtīt no noliktavas &gt;&gt;&gt;
+                          </td>
+                          <td class="text-center"></td>
+                          <td class="text-center hidden-sm-down"></td>
+                          <td class="text-center hidden-sm-down"></td>
+                          <td class="text-center hidden-sm-down"></td>
+                          <td class="hidden-sm-down text-center"></td>
+                          <td id="store-price" class="text-center store-price"></td>
+                          <td id="sale-price" class="text-center tire-price-red sale-price"></td>
+                          <td class="hidden-sm-down text-center"></td>
+                          <td class="shopping-cart-col"></td>
+                          <td class="dot-availability text-center"></td>
+                        </tr>
+                        </tbody>
+                      </table>
                       {{-- LIST VIEW --}}
                       <div id="js-product-list">
                         <div class="products row hide-price title-flip">
@@ -500,6 +521,34 @@
                                 $index++;
                               @endphp
                               @endforeach
+                              </tbody>
+                            </table>
+                            <table id="tires-table" class="table table-striped rims-sorter tires-table table-hover tablesorter">
+                              <tbody id="tires-table-body">
+                              <tr class="tire-table-row" style="height: 35px;line-height: 35px;cursor:pointer;font-size: 14px;"
+                                @if (!$currentEt && !$currentEt2)
+                                  onclick="window.open('https://wheels2020.com/index.php?cat=all&lang=EN&size={{ $currentDia }}&holes={{ $currentSkr }}&range={{ $currentPcd }}&et=&design=&color=&select_wheels=Search', '_blank')"
+                                @elseif ($currentEt <= 25)
+                                  onclick="window.open('https://wheels2020.com/index.php?cat=all&lang=EN&size={{ $currentDia }}&holes={{ $currentSkr }}&range={{ $currentPcd }}&et=>+25&design=&color=&select_wheels=Search', '_blank')"
+                                @elseif ($currentEt > 25)
+                                  onclick="window.open('https://wheels2020.com/index.php?cat=all&lang=EN&size={{ $currentDia }}&holes={{ $currentSkr }}&range={{ $currentPcd }}&et=<%3D+25&design=&color=&select_wheels=Search', '_blank')"
+                                @endif
+                              >
+                                <th scope="row" class="tire-table-checkbox"></th>
+                                <td class="table-tire-name-cell" style="color: blue; text-decoration: underline">
+                                    Pasūtīt no noliktavas >>>
+                                </td>
+                                <td class="text-center"></td>
+                                <td class="text-center hidden-sm-down"></td>
+                                <td class="text-center hidden-sm-down"></td>
+                                <td class="text-center hidden-sm-down"></td>
+                                <td class="hidden-sm-down text-center"></td>
+                                <td id="store-price" class="text-center store-price"></td>
+                                <td id="sale-price" class="text-center tire-price-red sale-price"></td>
+                                <td class="hidden-sm-down text-center"></td>
+                                <td class="shopping-cart-col"></td>
+                                <td class="dot-availability text-center"></td>
+                              </tr>
                               </tbody>
                             </table>
                         </div>
