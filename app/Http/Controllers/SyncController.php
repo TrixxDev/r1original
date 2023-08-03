@@ -930,7 +930,16 @@
         }
         $rim->available = 0;
         $rim->skr = $item->NumberOfBolts;
-        $rim->pcd = $item->BoltCircle;
+
+        if ($item->BoltCircle == '139,7') {
+          $pcd = '139.7';
+        } else if ($item->BoltCircle == '114,3') {
+          $pcd = '114.3';
+        } else {
+          $pcd = $item->BoltCircle;
+        }
+
+        $rim->pcd = $pcd;
         $rim->et = $item->Offset;
         $rim->color = $item->Color;
         $rim->article = $item->ArticleId;
@@ -2569,6 +2578,10 @@
             $position->comment = $item['Radial_Diagonal'];
             $position->visible_users = 1;
             $position->visible_list = 1;
+            if (strpos($item['Specification'], 'VISUAL DEFECT') !== false) {
+              $position->visible_users = 0;
+              $position->visible_list = 0;
+            }
             $position->available = 1;
             $position->article = $article;
             $position->quantity = 0;
