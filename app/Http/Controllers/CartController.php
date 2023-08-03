@@ -719,7 +719,8 @@ class CartController extends Controller
                   $delivery_price = intval(rtrim(strval($details->delivery_price), '0'));
                   $out .= '<td style="text-align: center;">€ ' . ((int) $details->price + $delivery_price) . '</td>';
                 } elseif ($details->fit_price > 0) {
-                  $out .= '<td style="text-align: center;">€ ' . ((int) $details->price + (int) substr($details->fit_price, 0, 2)) . '</td>';
+                  $fit_price = intval(rtrim(strval($details->fit_price), '0'));
+                  $out .= '<td style="text-align: center;">€ ' . ((int) $details->price + $fit_price) . '</td>';
                 } else {
                   $out .= '<td style="text-align: center;">€ ' . $details->price . '</td>';
                 }
