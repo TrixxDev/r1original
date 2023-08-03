@@ -387,7 +387,7 @@
                         <table id="tires-table" class="table table-striped rims-sorter tires-table table-hover tablesorter">
                           <tbody id="tires-table-body">
                           <tr class="tire-table-row" style="height: 35px;line-height: 35px;cursor:pointer;font-size: 14px;"
-                              @if (!$currentEt && !$currentEt2)
+                              @if ($currentEt == 'Visi' && $currentEt2 == 'Visi')
                               onclick="window.open('https://wheels2020.com/index.php?cat=all&lang=EN&size={{ $currentDia }}&holes={{ $currentSkr }}&range={{ $currentPcd }}&et=&design=&color=&select_wheels=Search', '_blank')"
                               @elseif ($currentEt <= 25)
                               onclick="window.open('https://wheels2020.com/index.php?cat=all&lang=EN&size={{ $currentDia }}&holes={{ $currentSkr }}&range={{ $currentPcd }}&et=>+25&design=&color=&select_wheels=Search', '_blank')"
@@ -534,7 +534,7 @@
                             <table id="tires-table" class="table table-striped rims-sorter tires-table table-hover tablesorter">
                               <tbody id="tires-table-body">
                               <tr class="tire-table-row" style="height: 35px;line-height: 35px;cursor:pointer;font-size: 14px;"
-                                @if (!$currentEt && !$currentEt2)
+                                @if ($currentEt == 'Visi' && $currentEt2 == 'Visi')
                                   onclick="window.open('https://wheels2020.com/index.php?cat=all&lang=EN&size={{ $currentDia }}&holes={{ $currentSkr }}&range={{ $currentPcd }}&et=&design=&color=&select_wheels=Search', '_blank')"
                                 @elseif ($currentEt <= 25)
                                   onclick="window.open('https://wheels2020.com/index.php?cat=all&lang=EN&size={{ $currentDia }}&holes={{ $currentSkr }}&range={{ $currentPcd }}&et=>+25&design=&color=&select_wheels=Search', '_blank')"
