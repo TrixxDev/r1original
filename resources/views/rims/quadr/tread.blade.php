@@ -89,7 +89,7 @@
                       </thead>
                       <tbody>
                       <tr>
-                        <th>Augstums</th>
+                        <th>Diametrs</th>
                         <td>{{ $currRim->d3 }}</td>
                       </tr>
                       <tr>
