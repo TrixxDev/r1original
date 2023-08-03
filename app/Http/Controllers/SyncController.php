@@ -2659,12 +2659,21 @@
             $price2 = $item['price'] + 15;
             Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
           }
-          if ($item['price'] > 200) {
+          if ($item['price'] >= 200 && $item['price'] < 500) {
             $price1 = ($item['price'] + 15) / 70 * 100;
             $price2 = $item['price'] + 20;
             Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
           }
-
+          if ($item['price'] >= 500 && $item['price'] < 1000) {
+            $price1 = ($item['price'] + 30) / 70 * 100;
+            $price2 = $item['price'] + 50;
+            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
+          }
+          if ($item['price'] > 1000) {
+            $price1 = ($item['price'] + 50) / 70 * 100;
+            $price2 = ($item['price'] * 1.07);
+            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
+          }
         }
 
         if (Bigstock::where('article', $item['product_no'])->exists()) {
