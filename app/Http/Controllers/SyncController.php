@@ -2464,7 +2464,18 @@
       $updated = 0;
       foreach ($tires as $item) {
 
-        if (Bigtire::where('article', $item['product_no'])->exists()) continue;
+        $article = $item['product_no'];
+
+        if (Bigtire::where('article', $item['product_no'])->exists()) {
+          if (strpos($item['Specification'], 'VISUAL DEFECT') !== false) {
+            $position = SyncController::getByArticle($article);
+            $position->visible_users = 0;
+            $position->visible_list = 0;
+            $position->save();
+          }
+
+          continue;
+        }
 
         $type = $item['segment_description'];
 
@@ -2473,8 +2484,6 @@
           if ($item['enabled'] == 'YES') {
 
             if ($type === 'CONSTR') $type = 'IND';
-
-            $article = $item['product_no'];
 
             $size = $item['Size'];
             $size = str_replace(" ", "", $size);
