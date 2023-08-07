@@ -18,13 +18,9 @@
     <link rel="icon" type="image/vnd.microsoft.icon" href="{{ asset('img/favicon.ico?1515662352') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico?1515662352') }}">
     <link rel="stylesheet" href="{{ asset('css/theme.css?rev=' . time()) }}" type="text/css" media="all">
-    <link rel="stylesheet" href="{{ asset('css/productcomments.css?rev=' . time()) }}" type="text/css" media="all">
     <link rel="stylesheet" href="{{ asset('css/jquery-ui.min.css?rev=' . time()) }}" type="text/css" media="all">
     <link rel="stylesheet" href="{{ asset('css/jquery.ui.theme.min.css?rev=' . time()) }}" type="text/css" media="all">
-    <link rel="stylesheet" href="{{ asset('css/jquery.fancybox.css?rev=' . time()) }}" type="text/css" media="all">
-    <link rel="stylesheet" href="{{ asset('css/homeslider.css?rev=' . time()) }}" type="text/css" media="all">
     <link rel="stylesheet" href="{{ asset('css/custom.css?rev=' . time()) }}" type="text/css" media="all">
-    <link rel="stylesheet" href="{{ asset('css/combinationstab.css?rev=' . time()) }}" type="text/css" media="all">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
@@ -864,15 +860,10 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 <script src="{{ asset('js/scrollTo.js') }}"></script>
-<script type="text/javascript" src="{{ asset('js/responsiveslides.min.js?rev=' . time()) }}"></script>
-<script type="text/javascript" src="{{ asset('js/jquery.fancybox.js?rev=' . time()) }}"></script>
-<script type="text/javascript" src="{{ asset('js/jquery.tablesorter.min.js?rev=' . time()) }}"></script>
 @if (\Route::currentRouteName() != 'pieraksts')
   <script type="text/javascript" src="{{ asset('js/jquery.tablesorter.min.js?rev=' . time()) }}"></script>
   <script type="text/javascript" src="{{ asset('js/atc.js?rev=' . time()) }}"></script>
 @endif
-<script type="text/javascript" src="{{ asset('js/homeslider.js?rev=' . time()) }}"></script>
-{{-- <script src="{{ asset('js/pusher-js.js') }}"></script> --}}
 <script type="text/javascript" src="{{ asset('js/custom.js?rev=' . time()) }}"></script>
 <script type="text/javascript" src="{{ asset('js/cart.js?rev=' . time()) }}"></script>
 {{--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>--}}
