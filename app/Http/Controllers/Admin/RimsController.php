@@ -234,7 +234,7 @@ class RimsController extends Controller
       $rim->d1 = ($request->d1 === null) ? '' : $request->d1;
       $rim->d3 = ($request->d3 === null) ? '' : $request->d3;
       $rim->price1 = ($request->price1 === null) ? '' : $request->price1;
-      $rim->price2 = ($request->price2 === null) ? '' : $request->price2;
+      $rim->price3 = ($request->price2 === null) ? '' : $request->price3;
       $rim->skr = ($request->skr === null) ? '' : $request->skr;
       $rim->pcd = ($request->pcd === null) ? '' : $request->pcd;
       $rim->et = ($request->et === null) ? '' : $request->et;
@@ -269,7 +269,7 @@ class RimsController extends Controller
       $rim->d1 = $request->d1;
       $rim->d3 = $request->d3;
       $rim->price1 = $request->price1;
-      $rim->price2 = $request->price2;
+      $rim->price3 = $request->price2;
       $rim->skr = $request->skr;
       $rim->pcd = $request->pcd;
       $rim->et = $request->et;
