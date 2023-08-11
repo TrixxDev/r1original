@@ -170,7 +170,12 @@ class RimsController extends Controller
 
   public function rims_tread($brand, $tread, $rim)
   {
+    $slug = $brand;
+
     $brand = Rimbrand::where('title', $brand)->first();
+    if (is_null($brand)) {
+      $brand = Rimbrand::where('slug', $slug)->first();
+    }
 
     $rims = Rim::selectRaw('rims.*, rim_makes.*, rim_brands.*,
                                                 rim_brands.title as brands_title,
