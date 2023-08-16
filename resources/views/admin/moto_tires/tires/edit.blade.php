@@ -148,16 +148,16 @@
                           </div>
                         @endif
                         <div class="form-group row">
-                          <label class="col-md-3 col-form-label" for="article">Duell artikuls</label>
+                          <label class="col-md-3 col-form-label" for="duellarticle">Duell artikuls</label>
                           <div class="col-md-9">
-                            <input class="form-control" id="article" type="text" @if ($duellstock) value="{{ $duellstock->article }}" @endif name="article" placeholder="Duell artikuls">
+                            <input class="form-control" id="duellarticle" type="text" @if ($duellstock) value="{{ $duellstock->article }}" @endif name="duellarticle" placeholder="Duell artikuls">
                           </div>
                         </div>
                         @if ($duellstock)
                           <div class="form-group row">
-                            <label class="col-md-3 col-form-label" for="quantity">Duell atlikums</label>
+                            <label class="col-md-3 col-form-label" for="duellquantity">Duell atlikums</label>
                             <div class="col-md-9">
-                              <input class="form-control" id="quantity" type="number" style="cursor: default;" readonly value="{{ $duellstock->quantity }}">
+                              <input class="form-control" id="duellquantity" type="number" style="cursor: default;" readonly value="{{ $duellstock->quantity }}">
                             </div>
                           </div>
                         @endif
