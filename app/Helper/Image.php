@@ -113,37 +113,30 @@
 
     public static function showBanners(){
 
+      if (Self::countBanners() == 0) {
+        return false;
+      }
+      $banners = Bannerimage::where('enabled', 1)->get();
+
       $return = '';
+      $return .= '<div class="sliding-banner sliding-banner--v2">';
+      $return .= '<div class="sliding-banner__content">';
 
-      if (!isset($_COOKIE['disable_scrolling'])) {
-        if (Self::countBanners() == 0) {
-          return false;
+      for ($i = 0; $i < count($banners); $i++) {
+        $return .= '<div class="sliding-banner__part1 sliding-banner__part1--image">';
+        $return .= '<span class="sliding-banner__part1_bg" style="background-color:transparent"></span>';
+        $return .= '<img class="banner-image" src="/storage/banners/' . $banners[$i]->name . '">';
+        if (!empty($banners[$i]->url)) {
+          $return .= '<a href="' . url('//' . $banners[$i]->url) . '" class="sliding-banner__link"></a>';
         }
-        $banners = Bannerimage::where('enabled', 1)->get();
-        $count = count($banners);
-        $maxBanners = 8;
-        if ($count == 3) {
-          $maxBanners = 12;
-        }
-
-        $return = '';
-        $return .= '<div id="scroll-container">';
-        $return .= '<img class="closing_image" src="' . asset('images/close.png') . '">';
-        $return .= '<div class="scroll-content">';
-
-        for ($i = 0; $i < ($maxBanners / $count); $i++) {
-          foreach ($banners as $banner) {
-            if (!empty($banner->url)) {
-              $return .= '<a href="' . url('//' . $banner->url) . '"><img class="banner-image" src="/storage/banners/' . $banner->name . '"></a>';
-            } else {
-              $return .= '<img class="banner-image" src="/storage/banners/' . $banner->name . '">';
-            }
-          }
-        }
-
-        $return .= '</div>';
         $return .= '</div>';
       }
+
+      $return .= '</div>';
+      $return .= '<button class="close-button" data-close="" aria-label="Close modal" type="button">';
+      $return .= '<span aria-hidden="true">×</span>';
+      $return .= '</button>';
+      $return .= '</div>';
 
       return $return;
     }

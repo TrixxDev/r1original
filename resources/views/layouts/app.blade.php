@@ -769,83 +769,9 @@
 
     </footer>
 
-
-    @if (App\Helper\Image::countBanners() > 0 && !isset($_COOKIE['disable_scrolling']))
-    {!! \App\Helper\Image::showBanners() !!}
-
-    <script>
-      function setCookie(cname, cvalue, exdays) {
-        const d = new Date();
-        d.setTime(d.getTime() + (exdays*24*60*60*1000));
-        let expires = "expires="+ d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-      }
-
-      $(window).on('resize', function() {
-        let width = ($(this).width() - 23) + 'px';
-        $('img.closing_image').css('left', width);
-      });
-
-      $('img.closing_image').css('left', ($(window).width() - 23) + 'px').on('click', function() {
-        setCookie('disable_scrolling', 'true', 1);
-        $(this).remove();
-        $('#scroll-container').remove();
-        $('footer#footer').css('padding-bottom', '0px');
-      });
-    </script>
-
-    <style>
-
-      img.closing_image {
-        position: fixed;
-        bottom: 85px;
-        z-index: 3;
-        width: 20px;
-        height: 20px;
-        left: 1880px;
-        cursor: pointer;
-      }
-
-      footer {
-        padding-bottom: 80px;
-      }
-
-      #scroll-container {
-        position: fixed;
-        bottom: 0;
-        display: inline-flex;
-        z-index: 1;
-      }
-
-      .scroll-content {
-        display: flex;
-        white-space: nowrap;
-        animation: scroll 20s linear infinite;
-        height: 80px;
-        width: 100%;
-        overflow: hidden;
-      }
-
-      .scroll-content:hover {
-        animation-play-state: paused;
-      }
-
-      .scroll-content img {
-        width: 540px;
-        height: 80px;
-      }
-
-      @keyframes scroll {
-        0% {
-          transform: translateX(0);
-        }
-        100% {
-          transform: translateX(-50%);
-        }
-      }
-
-    </style>
-  @endif
+    @if (App\Helper\Image::countBanners() > 0)
+        {!! \App\Helper\Image::showBanners() !!}
+    @endif
 
 </main>
 <!-- Google tag (gtag.js) -->
@@ -865,6 +791,7 @@
   <script type="text/javascript" src="{{ asset('js/atc.js?rev=' . time()) }}"></script>
 @endif
 <script type="text/javascript" src="{{ asset('js/custom.js?rev=' . time()) }}"></script>
+<script src="{{ asset('js/banner_slider.min.js?rev=' . time()) }}"></script>
 <script type="text/javascript" src="{{ asset('js/cart.js?rev=' . time()) }}"></script>
 {{--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>--}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
@@ -957,7 +884,6 @@
 <script>
   var loggedIn = {{ auth()->check() ? 'true' : 'false' }};
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <script src="{{ asset('js/rlapp.js') }}"></script>
 </body>
 </html>
