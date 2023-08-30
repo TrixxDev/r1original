@@ -636,11 +636,6 @@
             </div>
             <div class="col-md-6">
 
-
-              <div class="payment-icons">
-                <img src="{{ asset('images/3.png') }}" alt="logo">
-              </div>
-
             </div>
 
 
