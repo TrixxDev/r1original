@@ -2241,7 +2241,8 @@
 
       foreach ($xml->item as $item) {
         $article = $item->code;
-        $quantity = intval($item->stock_amount);
+        $quantity = str_replace('>', '', $item->stock_amount);
+        $quantity = intval($quantity);
 
         $list = Autostock::where('article', $article)->where('itype', 'rz')->get();
 
