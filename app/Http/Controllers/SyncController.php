@@ -282,6 +282,10 @@
         $products = DB::table($tire_table)->get();
 
         foreach ($products as $product) {
+
+          $this->urs = 0;
+          $this->krs = 0;
+
 //          if ($product->$primary_key != '155300') continue;
           $product = app("App\\Models\\$tire_options[0]")->where($primary_key, $product->$primary_key)->first();
           $article = '';
