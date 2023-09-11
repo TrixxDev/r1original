@@ -24,7 +24,7 @@
         <div>
           Jūsu pieraksts:
           {{ $office->title }}, {{ $_weekDays[date('N', strtotime($slot->date))] }}, {{ date('d.m.Y', strtotime($slot->date)) }}, pl. {{ $time }} <br>
-          Automašīnai: {!! $info->vehicleMake !!} {!! $info->vehicleModel !!} <br>
+          Automašīnai: {!! $takenBy->car_brand !!} {!! $takenBy->car_model !!} <br>
           Vai vēlaties atcelt pierakstu?
         </div>
 

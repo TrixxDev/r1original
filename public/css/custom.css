@@ -3931,6 +3931,7 @@ tr.selected td a {
 
 .schedule-table {
   margin: 0 auto;
+  font-style: normal;
 }
 
 .schedule-table .col-md-7, .schedule-table .col-md-5 {
@@ -4022,26 +4023,720 @@ td.header-empty {
   text-decoration: none;
 }
 
-.schedule-table .table td, .schedule-table .table th {
-  border-top: 1px solid #0000001c;
+.table {
+    display: block!important;
+    margin-bottom: 0 !important;
 }
 
-.schedule-table .table td.available-slot.unavailable {
-  letter-spacing: -1.5px;
-  user-select: none;
-  background: #e0ffe0!important;
+.title {
+    text-align: center;
+    border-bottom: 2px solid black;
+    height: 35px;
 }
 
-.schedule-table .table thead th {
-  vertical-align: bottom;
-  border-bottom: 2px solid black;
-  border-top: none;
+.table:last-child .title {
+    border-right: 0;
 }
 
-.table-col-spacer {
-  border: none !important;
-  width: 1rem;
+.schedule-table .time {
+    width: 30%;
+    text-align: center;
+    height: 40px;
+    line-height: 40px;
 }
+
+.time-status {
+    width: 100%;
+    height: 26px;
+    align-items: center;
+}
+
+.reservations .time-status button {
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+}
+
+.reservations .grid:last-child .office:last-child .time-status button {
+    border-right: 1px solid black;
+}
+
+.status {
+    width: 100%;
+    text-align: center;
+    font-size: 13px;
+    border: none;
+    border-top: 1px solid #0000001c;
+    height: 26px;
+    padding: 0;
+    user-select: none;
+}
+
+.status:focus-visible {
+    outline: none;
+}
+
+.office {
+    border-right: 2px solid black;
+    user-select: none;
+}
+
+.office_2:last-child {
+    border-right: none;
+}
+
+.loader {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+}
+
+.loading {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgb(162 162 162 / 50%);
+    backdrop-filter: blur(2px);
+    z-index: 999999;
+    margin-top: 0px;
+    border: 1px solid rgba(0, 0, 21, .2);
+    text-align: center;
+    display: flex;
+    position: absolute;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+span.loading-bar {
+    width: 20vw;
+    height: 15px;
+    background: #0000001f;
+    margin-top: 25px;
+    border-radius: 5px;
+    border: 1px solid #363636;
+}
+
+.loading-progress-bar {
+    width: 0%;
+    max-width: 100%;
+    height: 13px;
+    background: #636363;
+    border-radius: 5px;
+}
+
+.removeScroll {
+    overflow-y: hidden!important;
+}
+
+.dashboard .text-sm {
+    font-size: 0.875rem;
+    line-height: 35px;
+    border-right: 2px solid black;
+    cursor: default;
+    user-select: none;
+    pointer-events: none;
+}
+
+.reservations_page .text-sm {
+    font-size: 0.875rem;
+    line-height: 35px;
+    border-right: 2px solid black;
+    cursor: pointer;
+}
+
+.reservations_page .title.text-sm:hover {
+    background: #e4e4e4;
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.grid {
+    display: grid;
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1,minmax(0,1fr));
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+}
+
+.grid-cols-3 {
+    grid-template-columns: repeat(3,minmax(0,1fr));
+}
+
+.grid-cols-4 {
+    grid-template-columns: repeat(4,minmax(0,1fr));
+}
+
+.grid-cols-5 {
+    grid-template-columns: repeat(5,minmax(0,1fr));
+}
+
+.grid-cols-6 {
+    grid-template-columns: repeat(6,minmax(0,1fr));
+}
+
+.time-slot {
+    background: white;
+    text-align: center;
+    width: 35%;
+    font-size: 13px;
+    user-select: none;
+    border-top: 1px solid #0000001c;
+    height: 26px;
+    line-height: 26px!important;
+}
+
+.time-slot .conditioner {
+    background: #37b2ff!important;
+}
+
+.available.moto.active.slot {
+    background: #317b04!important;
+}
+
+button.status.status.slot-free.discount, .discount-slot {
+    background: orange!important;
+}
+
+.available-slot {
+    background: #e0ffe0;
+    text-align: center;
+    width: 100%;
+    line-height: 23px;
+    cursor: pointer;
+}
+
+.schedule-table .slot {
+    height: 26px;
+    font-size: 13px;
+    border-top: 1px solid #0000001c;
+}
+
+.slot button {
+    height: 24px;
+    cursor: pointer;
+}
+
+.slot .taken-slot {
+    cursor: default;
+    font-size: 13px;
+}
+
+.slot button.free-slot-link {
+    width: 100%;
+    border: none;
+    background: #e0ffe0;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.taken-slot {
+    width: 100%;
+    font-size: 13px;
+    cursor: default;
+    line-height: 25px;
+}
+
+.time-status .closed-slot {
+    width: 100%;
+    margin-bottom: 0px;
+    font-size: 13px;
+    line-height: 33px;
+}
+
+.closed-slot {
+    line-height: 26px!important;
+}
+
+#mobile-slots-choice .time-slot.closed .unavailable.slot {
+    background: #c41b1b;
+    line-height: 38px;
+}
+
+.modal#reservation .modal-dialog {
+    font-style: normal;
+}
+
+#slotModal {
+    font-style: normal;
+}
+
+.reservation h3 {
+    margin-top: 0.5rem;
+    margin-left: 8px;
+}
+
+.schedule-table.reservations_page .status, .schedule-table.reservations_page .slot {
+    height: 35px;
+    cursor: pointer;
+}
+
+.schedule-table.reservations_page .time-status {
+    height: 35px;
+    cursor: default;
+}
+
+.schedule-table.reservations_page .time-slot {
+    height: 35px;
+    line-height: 34px!important;
+    cursor: default!important;
+    user-select: none!important;
+    pointer-events: none!important;
+}
+
+.schedule-table.reservations_page .taken-slot {
+    line-height: 33px;
+}
+
+.schedule-table.reservations_page button.status.slot-free, .schedule-table.dashboard span.slot-gray {
+    background: #d9d9d9;
+}
+
+div.reservation div.time-list .time-slot .selected {
+    background-color: #c50909!important;
+}
+
+.schedule-table.reservations_page button.status.taken-slot-admin {
+    color: black;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    background: #e0ffe0;
+}
+
+.schedule-table.reservations_page .text-red {
+    color: red!important;
+}
+
+.extra-options {
+    margin: 20px 0 0 0!important;
+}
+
+.schedule-table.reservations_page .extra-options .flex {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.schedule-table.reservations_page .extra-options .btn {
+    width: 215px;
+}
+
+.queue_edit {
+    font-style: normal;
+}
+
+.queue_edit .modal-body .row {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+#queueModal .bg-light {
+    align-items: center;
+    padding: 5px 0px;
+}
+
+.toast.show {
+    display: block;
+    opacity: 1;
+}
+
+.toast {
+    max-width: 350px;
+    overflow: hidden;
+    font-size: .875rem;
+    background-color: rgba(255,255,255,.85);
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.1);
+    box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,.1);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    border-radius: 0.25rem;
+}
+
+.toast.fade {
+    transition: opacity .15s linear;
+}
+
+.toast-header {
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    color: #6c757d;
+    background-color: rgba(255,255,255,.85);
+    background-clip: padding-box;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+}
+
+.toast .mr-auto, .mx-auto {
+    margin-right: auto!important;
+}
+
+.toast .small, small {
+    font-size: 80%;
+    font-weight: 400;
+}
+
+.toast-body {
+    padding: 0.75rem;
+}
+
+#toasts {
+    min-height: 0;
+    position: fixed;
+    right: 20px;
+    top: 20px;
+    width: 310px;
+    z-index: 999999;
+}
+
+.loading {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgb(162 162 162 / 50%);
+    backdrop-filter: blur(2px);
+    z-index: 999999;
+    margin-top: 0px;
+    border: 1px solid rgba(0, 0, 21, .2);
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+}
+
+.rims-with-select-row {
+    margin-bottom: 0!important;
+}
+
+div.w {
+    position: relative;
+    max-width: 670px;
+    margin: 0 auto;
+}
+
+div.reservation {
+    margin: 16px 0;
+}
+
+div.reservation div.time-list {
+    display: grid;
+    grid-gap: 5px;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+div.reservation div.time-list .time-slot {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    font-size: 15px;
+    color: #fff;
+    font-weight: 600;
+    background: white;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none!important;
+    /* margin: 15px 6px; */
+}
+
+.slot.unavailable {
+    background: #d8d8d8;
+}
+
+div.reservation div.time-list .available {
+    background-color: #49c200;
+}
+
+div.reservation div.time-list .available.discount {
+    background-color: orange;
+}
+
+.available.slot.active {
+    font-size: 17px;
+}
+
+.time-slot .slot {
+    height: 41px;
+}
+
+.slot span {
+    font-size: 13px;
+}
+
+.slot .time-span {
+    font-size: 16px;
+}
+
+.sliding-banner {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-justify-content: flex-start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+    background-color: #000;
+    z-index: 1111;
+    opacity: 0;
+    transition: opacity 1s;
+    margin-top: -80px;
+}
+
+.sliding-banner.sliding-banner--v2 {
+    background: 0 0
+}
+
+.sliding-banner .close-button {
+    position: absolute;
+    bottom: 100%;
+    left: 5px;
+    background: 0 0;
+    border: none;
+    font-size: 35px;
+    color: #c6c6c6;
+    line-height: 1;
+    cursor: pointer
+}
+
+@media (min-width: 1025px) {
+    .sliding-banner .close-button {
+        right:5px;
+        left: auto
+    }
+}
+
+.sliding-banner--slide .sliding-banner__content,.sliding-banner--slide .sliding-banner__top-bar-image {
+    -webkit-animation: sliding-banner 7s linear infinite;
+    animation: sliding-banner 7s linear infinite
+}
+
+.sliding-banner--visible {
+    opacity: 1;
+    -webkit-transform: none;
+    -ms-transform: none;
+    transform: none
+}
+
+.sliding-banner__top-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 9px;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-justify-content: flex-start;
+    -ms-flex-pack: start;
+    justify-content: flex-start
+}
+
+.sliding-banner__top-bar-image {
+    position: relative;
+    background: #fff url(../images/dist/mmk-sliding-banner-top.png) repeat left center/cover;
+    width: 47px;
+    -webkit-flex: 0 0 47px;
+    -ms-flex: 0 0 47px;
+    flex: 0 0 47px
+}
+
+.sliding-banner__content {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    position: relative;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto
+}
+
+.sliding-banner__content p {
+    margin: 0
+}
+
+.sliding-banner__part1 {
+    position: relative;
+    -webkit-align-self: stretch;
+    -ms-flex-item-align: stretch;
+    align-self: stretch;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center
+}
+
+.sliding-banner__part1 .sliding-banner__part1_bg {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: url(../images/dist/mmk-sliding-banner-bg.jpg) no-repeat center/cover;
+    z-index: -1
+}
+
+.sliding-banner--v2 .sliding-banner__part1 .sliding-banner__part1_bg {
+    background: no-repeat center/cover
+}
+
+.sliding-banner__part1 p {
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 30px;
+    line-height: 1;
+    white-space: nowrap;
+    font-family: "Bebas Neue","Open Sans"
+}
+
+.sliding-banner__part1 img {
+    width: 540px;
+    height: 80px;
+}
+
+@media (min-width: 768px) {
+    .sliding-banner__part1 {
+        padding:0;
+    }
+
+    .sliding-banner__part1 p {
+        font-size: 34px
+    }
+}
+
+.sliding-banner__part1 strong {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    color: #000;
+    font-size: 40px;
+    margin: 0 5px
+}
+
+@media (min-width: 768px) {
+    .sliding-banner__part1 strong {
+        font-size:48px;
+        padding: 5px
+    }
+}
+
+.sliding-banner__part1 strong::before {
+    display: block;
+    content: "";
+    position: absolute;
+    background-color: #ff0;
+    top: -3px;
+    bottom: 1px;
+    left: -3px;
+    right: -3px;
+    z-index: -1
+}
+
+.sliding-banner__part1--image {
+    padding: 0
+}
+
+.sliding-banner__part2 {
+    background-color: #ff0;
+    padding: 5px;
+    -webkit-align-self: stretch;
+    -ms-flex-item-align: stretch;
+    align-self: stretch;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center
+}
+
+.sliding-banner__part2 p {
+    color: #000;
+    font-size: 15px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    line-height: 1.1;
+    font-family: "Bebas Neue","Open Sans"
+}
+
+@media (min-width: 768px) {
+    .sliding-banner__part2 {
+        padding:10px
+    }
+
+    .sliding-banner__part2 p {
+        font-size: 18px
+    }
+}
+
+@-webkit-keyframes sliding-banner {
+    0% {
+        -webkit-transform: none;
+        transform: none
+    }
+
+    100% {
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%)
+    }
+}
+
+@keyframes sliding-banner {
+    0% {
+        -webkit-transform: none;
+        transform: none
+    }
+
+    100% {
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%)
+    }
+}
+
+.sliding-banner__link {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0
+}
+
+.sliding-banner:hover .sliding-banner__content{
+    -webkit-animation-play-state: paused;
+    -moz-animation-play-state: paused;
+    -o-animation-play-state: paused;
+    animation-play-state: paused;
+    cursor: pointer;
+}
+
+.sliding-banner--visible ~ footer {
+    padding-bottom: 54px;
+}
+
 
 .free-slot-link:hover {
   background: #90dd90;
@@ -5988,6 +6683,13 @@ a.season-select-link:nth-child(2) {
 }
 
 a.season-select-link:hover {
+    background: #59c0a8;
+    color: white;
+}
+
+a.season-select-link:focus {
+    outline: none;
+    text-decoration: none;
     background: #59c0a8;
     color: white;
 }

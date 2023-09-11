@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" class="">
-<head>
+<head lang="lv">
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>R1 Riepu Serviss</title>
@@ -12,15 +11,12 @@
     <meta name="description" content="R1Riepas">
     <meta name="keywords" content="riepas, diski, kondicionieris, montāža, balansēšana, riepu diski">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
     <link rel="icon" type="image/vnd.microsoft.icon" href="{{ asset('img/favicon.ico?1515662352') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico?1515662352') }}">
-    <link rel="stylesheet" href="{{ asset('css/theme.css?rev=' . time()) }}" type="text/css" media="all">
-    <link rel="stylesheet" href="{{ asset('css/jquery-ui.min.css?rev=' . time()) }}" type="text/css" media="all">
-    <link rel="stylesheet" href="{{ asset('css/jquery.ui.theme.min.css?rev=' . time()) }}" type="text/css" media="all">
-    <link rel="stylesheet" href="{{ asset('css/custom.css?rev=' . time()) }}" type="text/css" media="all">
+    <link rel="stylesheet" href="{{ asset('css/theme.css?rev=' . time()) }}" media="all">
+    <link rel="stylesheet" href="{{ asset('css/jquery-ui.min.css?rev=' . time()) }}" media="all">
+    <link rel="stylesheet" href="{{ asset('css/jquery.ui.theme.min.css?rev=' . time()) }}" media="all">
+    <link rel="stylesheet" href="{{ asset('css/custom.css?rev=' . time()) }}" media="all">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
@@ -30,7 +26,7 @@
     <script src="{{ asset('js/loginToggle.js?rev=' . time()) }}"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="{{asset('css/magiczoomplus.css?rev=' . time())}}"/>
+    <link rel="stylesheet" href="{{asset('css/magiczoomplus.css?rev=' . time())}}"/>
     <script src="{{asset('js/magic.js')}}"></script>
   <script>
       toastr.options = {
@@ -51,7 +47,7 @@
         "hideMethod": "fadeOut"
       }
     </script>
-    <script type="text/javascript">
+    <script>
       (function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
         t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
@@ -104,7 +100,7 @@
                             </div>
 
                             <div class="top-banner-info-in">
-                                <table border="0">
+                                <table style="border: none;">
                                     <thead>
                                     <tr>
                                         <th>Ulbroka</th>
@@ -120,12 +116,11 @@
                                 </table>
 
                                 <!-- Karte Popup -->
-                                <div class="modal fade" id="popup-1" tabindex="-1" aria-labelledby="kartePopup" aria-hidden="true">
+                                <div class="modal fade" id="popup-1" tabindex="-1" aria-hidden="true">
                                   <div class="modal-dialog">
                                     <div class="modal-content">
                                       <div class="modal-body">
                                         <a class="popup-close cls-btn" aria-label="close" data-dismiss="modal" href="#" data-target="#popup-1" data-dismiss="modal">x</a>
-                                        <div id="map"></div>
                                       </div>
                                     </div>
                                   </div>
@@ -434,7 +429,7 @@
                                                   Lielās riepas
                                             </a>
                                         </li>
-                                        <li class="category" id="category-18">
+                                        <li class="category" id="category-19">
                                           <a class="dropdown-item dropdown-submenu"
                                              href="{{ route('radzes') }}"
                                              data-depth="1">
@@ -552,14 +547,14 @@
                                                 Riepu izmēru kalkulators
                                             </a>
                                         </li>
-                                        <li class="cms-page" id="cms-page-13">
+                                        <li class="cms-page" id="cms-page-14">
                                           <a class="dropdown-item dropdown-submenu"
                                              href="{{ url('/riepu-atruma-indeksu-tabula') }}"
                                              data-depth="1">
                                               LI un SI indeksu tabula
                                           </a>
                                         </li>
-{{--                                        <li class="cms-page" id="cms-page-13">--}}
+{{--                                        <li class="cms-page" id="cms-page-15">--}}
 {{--                                            <a class="dropdown-item dropdown-submenu"--}}
 {{--                                               href="{{ route('moto_trans') }}"--}}
 {{--                                               data-depth="1">--}}
@@ -659,7 +654,6 @@
                     <div class="col-md-4 links">
                         <div class="row">
                             <div class="col-md-6 wrapper">
-                                <h3 class="h3 hidden-sm-down"></h3>
                                 <div class="title clearfix hidden-md-up" data-target="#footer_sub_menu_58482"
                                      data-toggle="collapse">
                                     <span class="h3"></span>
@@ -695,7 +689,6 @@
                                 </ul>
                             </div>
                             <div class="col-md-6 wrapper">
-                                <h3 class="h3 hidden-sm-down"></h3>
                                 <div class="title clearfix hidden-md-up" data-target="#footer_sub_menu_8206"
                                      data-toggle="collapse">
                                     <span class="h3"></span>
@@ -742,7 +735,7 @@
                                 </a>
                             </li>
                         </ul>
-			<a href="https://www.salidzini.lv/" target="_blank"><img border="0" alt="Salidzini.lv logotips" id="salidzini-banner" title="Interneta veikali. Labākā cena" src="https://static.salidzini.lv/images/logo_button.gif"/></a>
+			<a href="https://www.salidzini.lv/" target="_blank"><img style="border: none;" alt="Salidzini.lv logotips" id="salidzini-banner" title="Interneta veikali. Labākā cena" src="https://static.salidzini.lv/images/logo_button.gif"/></a>
                     </div>
 
 
@@ -782,12 +775,12 @@
 <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 <script src="{{ asset('js/scrollTo.js') }}"></script>
 @if (\Route::currentRouteName() != 'pieraksts')
-  <script type="text/javascript" src="{{ asset('js/jquery.tablesorter.min.js?rev=' . time()) }}"></script>
-  <script type="text/javascript" src="{{ asset('js/atc.js?rev=' . time()) }}"></script>
+  <script src="{{ asset('js/jquery.tablesorter.min.js?rev=' . time()) }}"></script>
+  <script src="{{ asset('js/atc.js?rev=' . time()) }}"></script>
 @endif
-<script type="text/javascript" src="{{ asset('js/custom.js?rev=' . time()) }}"></script>
+<script src="{{ asset('js/custom.min.js?rev=' . time()) }}"></script>
 <script src="{{ asset('js/banner_slider.min.js?rev=' . time()) }}"></script>
-<script type="text/javascript" src="{{ asset('js/cart.js?rev=' . time()) }}"></script>
+<script src="{{ asset('js/cart.js?rev=' . time()) }}"></script>
 {{--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>--}}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <div id="blockcart-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -806,7 +799,7 @@
                             <div class="col-md-6 modal-image-preview">
                                 <!-- NOT WORKING like needed | RDP -->
                                 {{-- IMAGE INSIDE MODAL--}}
-                                  <img style="width: 100%;" src alt="riepas_attēls">
+                                  <img style="width: 100%;" alt="riepas_attēls">
 {{--                                @if ($tire->image)--}}
 {{--                                  <img src="{{ $tire->image }}">--}}
 {{--                                @else--}}
@@ -880,5 +873,6 @@
   var loggedIn = {{ auth()->check() ? 'true' : 'false' }};
 </script>
 <script src="{{ asset('js/rlapp.js') }}"></script>
+<script src="{{ asset('js/toast.js') }}"></script>
 </body>
 </html>

@@ -30,6 +30,8 @@ use App\Http\Controllers\EmailController as Mailer;
 class CartController extends Controller
 {
 
+    public float $radiusBorder = 360.7;
+
   /**
      * Create a new controller instance.
      *
@@ -96,6 +98,38 @@ class CartController extends Controller
               1 => config('app.settings.fitting_autotire_21_one'),
               2 => config('app.settings.fitting_autotire_21_two'),
               4 => config('app.settings.fitting_autotire_21_four'),
+            ],
+          ],
+          'fitting_suv' => [
+            16 => [
+              1 => config('app.settings.fitting_suv_autotire_16_one'),
+              2 => config('app.settings.fitting_suv_autotire_16_two'),
+              4 => config('app.settings.fitting_suv_autotire_16_four'),
+            ],
+            17 => [
+              1 => config('app.settings.fitting_suv_autotire_17_one'),
+              2 => config('app.settings.fitting_suv_autotire_17_two'),
+              4 => config('app.settings.fitting_suv_autotire_17_four'),
+            ],
+            18 => [
+              1 => config('app.settings.fitting_suv_autotire_17_one'),
+              2 => config('app.settings.fitting_suv_autotire_17_two'),
+              4 => config('app.settings.fitting_suv_autotire_17_four'),
+            ],
+            19 => [
+              1 => config('app.settings.fitting_suv_autotire_19_one'),
+              2 => config('app.settings.fitting_suv_autotire_19_two'),
+              4 => config('app.settings.fitting_suv_autotire_19_four'),
+            ],
+            20 => [
+              1 => config('app.settings.fitting_suv_autotire_19_one'),
+              2 => config('app.settings.fitting_suv_autotire_19_two'),
+              4 => config('app.settings.fitting_suv_autotire_19_four'),
+            ],
+            21 => [
+              1 => config('app.settings.fitting_suv_autotire_21_one'),
+              2 => config('app.settings.fitting_suv_autotire_21_two'),
+              4 => config('app.settings.fitting_suv_autotire_21_four'),
             ],
           ]
         ],
@@ -383,7 +417,17 @@ class CartController extends Controller
               $catCount = [];
 
               foreach (Cart::content() as $key => $item) {
+                $width = $item->options->tire['d1'];
+                $height = $item->options->tire['d2'];
                 $size = $item->options->tire['d3'];
+
+                $radius = (($width * ($height/100)) * 2) + ($size * 25.4);
+                $radius = round($radius, 2);
+                $radius = $radius / 2;
+
+                $suvTire = false;
+                if ($radius >= $this->radiusBorder) $suvTire = true;
+
                 $item = str_replace('App\\Models\\', '', $item->associatedModel);
                 array_push($catCount, $item);
                 $cats = [
@@ -401,11 +445,20 @@ class CartController extends Controller
               }
 
               if ($cat == 'Autotire') {
-                if ($size <= 16) {
-                  Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][16][$data->total_items]);
+                if (!$suvTire) {
+                  if ($size <= 16) {
+                    Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][16][$data->total_items]);
+                  } else {
+                    Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$size][$data->total_items]);
+                  }
                 } else {
-                  Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$size][$data->total_items]);
+                  if ($size <= 16) {
+                    Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting_suv'][16][$data->total_items]);
+                  } else {
+                    Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting_suv'][$size][$data->total_items]);
+                  }
                 }
+
 //                dd($cat, $size, $data->total_items, Self::options()[$cat]['fitting'][$size][$data->total_items]);
               } else {
                 Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$data->total_items]);

@@ -8,6 +8,7 @@ class Workingday extends Model
 {
 
     protected $primaryKey = 'workingday_id';
+    public $timestamps = false;
 
     public function fillWorkingHours(){
       // pagaidām neko nedara...

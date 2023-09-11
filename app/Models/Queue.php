@@ -368,7 +368,7 @@ class Queue extends Model
       }
     }
 
-    public function parseNotification($text, $date, $slotNum, $takenBy, $showTime2=false, $time){
+    public function parseNotification($text, $date, $slotNum, $takenBy, $time){
       $_weekDays = array(
         1=>'pirmdien',
         2=>'otrdien',
@@ -381,27 +381,11 @@ class Queue extends Model
 
       $office = Office::findOrFail($this->office_id);
 
-      $this->loadWorkingDay($date);
-
-      $day = $this->_workingDays[$date];
-      $start = Office::intervalByTime($day->opentime);
-
-//      if ($showTime2 != null) {
-//        if ($showTime2 == false) {
-//          $startTime = $start + $slotNum * ($day->slotSize);
-//        } else {
-//          $startTime = $start + $slotNum * $day->slotSize + ($day->slotSize/2);
-//        }
-//      } else {
-//        $startTime = $start + $slotNum * ($day->slotSize);
-//      }
-//      $time = Office::timeByInterval($startTime);
-
       $dateStamp = strtotime($date.' '.$time);
       $dayOfWeek = $_weekDays[date('N', $dateStamp)];
       $dateFmt = date('d.m.Y', $dateStamp);
 
-      switch ($takenBy->purpose){
+      switch ($takenBy->service){
         case 0:{
           $purpose = '';
           $purposeLong = '';
@@ -442,8 +426,8 @@ class Queue extends Model
       $outText = str_replace('%DAY%',ucfirst($dayOfWeek),$outText);
       $outText = str_replace('%DATE_LONG%',$dayOfWeek.', '.$dateFmt,$outText);
       $outText = str_replace('%OFFICE%',$office->title,$outText);
-      $outText = str_replace('%CARMAKE%',$takenBy->vehicleMake,$outText);
-      $outText = str_replace('%CARMODEL%',$takenBy->vehicleModel,$outText);
+      $outText = str_replace('%CARMAKE%',$takenBy->car_brand,$outText);
+      $outText = str_replace('%CARMODEL%',$takenBy->car_model,$outText);
       $outText = str_replace('%PURPOSE%',$purpose,$outText);
       $outText = str_replace('%PURPOSE_LONG%',$purposeLong,$outText);
       if (isset($takenBy->cancelId)) {

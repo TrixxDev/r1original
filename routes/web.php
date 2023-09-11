@@ -231,7 +231,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   Route::get('/rezervacijas/date={date}', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations'])->name('reservations.date');
   Route::get('/rezervacijas/', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations'])->name('reservations');
 
-  Route::match(['GET', 'POST'], '/rezervacijas/slot_ajax/{queue_id}/{date}/{slot_id}/{part}', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations_ajax'])->name('reservations_ajax');
+  Route::match(['GET', 'POST'], '/rezervacijas/editSlot', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations_ajax'])->name('reservations_ajax');
 
   Route::match(['GET', 'POST'],'/audits', [App\Http\Controllers\Admin\MainController::class, 'audits'])->name('audits');
   Route::get('/audit/{id}', [App\Http\Controllers\Admin\MainController::class, 'audit'])->name('audit');
@@ -405,16 +405,17 @@ Route::middleware('checksession')->group(function() {
   Route::post('/pieraksts/getSlotInfo', [App\Http\Controllers\Records\RecordController::class, 'getSlotInfo']);
   Route::post('/pieraksts/fillSlot', [App\Http\Controllers\Records\RecordController::class, 'fillSlot']);
   Route::post('/pieraksts/showMobileQueues', [App\Http\Controllers\Records\RecordController::class, 'showMobileQueues']);
-  Route::post('/pieraksts/fillSlotMobile', [App\Http\Controllers\Records\RecordController::class, 'fillSlotMobile']);
-  Route::post('/pieraksts/fillFiliale', [App\Http\Controllers\Records\RecordController::class, 'fillFiliale']);
-  Route::post('/pieraksts/fillDates', [App\Http\Controllers\Records\RecordController::class, 'fillDates']);
-  Route::post('/pieraksts/fillSlots', [App\Http\Controllers\Records\RecordController::class, 'fillSlots']);
 
   Route::middleware('auth')->group(function() {
     Route::get('/pieraksts/print/{office}/{date}', [App\Http\Controllers\Records\RecordController::class, 'reservations_print'])->name('pieraksts.print');
     Route::get('/pieraksts/rezervacijas/date={date}', [App\Http\Controllers\Records\RecordController::class, 'reservations'])->name('rezervacijas.date');
     Route::get('/pieraksts/rezervacijas', [App\Http\Controllers\Records\RecordController::class, 'reservations'])->name('rezervacijas');
+    Route::post('/pieraksts/rezervacijas/editSlot', [App\Http\Controllers\Admin\Records\RecordController::class, 'reservations_ajax']);
     Route::get('/pieraksts/darba-laiki', [App\Http\Controllers\Records\RecordController::class, 'times'])->name('laiki');
+    Route::post('/pieraksts/rezervacijas/getTimes', [App\Http\Controllers\Records\RecordController::class, 'getTimes']);
+    Route::post('/pieraksts/rezervacijas/changeTimes', [App\Http\Controllers\Records\RecordController::class, 'changeTime'])->name('changeTime');
+    Route::get('/pieraksts/rezervacijas/cancelTimeChanges', [App\Http\Controllers\Records\RecordController::class, 'cancelTimeChanges'])->name('cancelTimeChanges');
+    Route::get('/pieraksts/rezervacijas/saveTimeChanges', [App\Http\Controllers\Records\RecordController::class, 'saveTimeChanges'])->name('saveTimeChanges');
   });
 
 //

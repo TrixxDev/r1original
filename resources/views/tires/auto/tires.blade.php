@@ -689,18 +689,6 @@
                         $cbrand = $brand;
                         $stripe = 1;
                       @endphp
-                      {{--                    TIRES IMAGES--}}
-                      {{--                      <div class="image-list-item">--}}
-                      {{--                        <img src='/storage/app/public/auto/tread/215.png' style='width: 200px; height: 200px;'>--}}
-                      {{--                      </div>--}}
-                      {{--                      <div class="image-list-item">--}}
-                      {{--                        <img src='/storage/app/public/auto/tread/215.png' style='width: 200px; height: 200px;'>--}}
-                      {{--                      </div>--}}
-                      {{--                      <div class="image-list-item">--}}
-                      {{--                        <img src='/storage/app/public/auto/tread/215.png' style='width: 200px; height: 200px;'>--}}
-                      {{--                      </div>--}}
-
-                      {{-- TIRES TABLE --}}
                       <table id="tires-table"
                              class="table table-striped summer-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead sticky-table">
@@ -745,63 +733,6 @@
                       }
                         @endphp
                         @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif
-                        {{--                                            <article class="product_show_list cat-14 product-miniature js-product-miniature"--}}
-                        {{--                                                     id="{{ str_replace(" ", "", $brand) }}"--}}
-                        {{--                                                     data-id-product="{{ $tire->tire_id }}" data-id-product-attribute="{{ $tire->tire_id }}" itemscope=""--}}
-                        {{--                                                     itemtype="http://schema.org/Product" data-brand="{{ $tire->brand }}"--}}
-                        {{--                                                     data-atv="{{ $tire->d1 }}/{{ $tire->d2 }}R{{ $tire->d3 }}">--}}
-                        {{--                                                <div class="thumbnail-container">--}}
-                        {{--                                                    <a href="{{ route($current_url, [strtolower(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}"--}}
-                        {{--                                                       class="product-thumbnail">--}}
-                        {{--                                                    </a>--}}
-                        {{--                                                    <div class="product-description">--}}
-                        {{--                                                        <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]">--}}
-                        {{--                                                        <h1 class="h3 product-title" itemprop="name">--}}
-                        {{--                                                            <a data-toggle="tooltip" data-html="true"--}}
-                        {{--                                                                @if ($tire->image)--}}
-                        {{--                                                                    title="<img src='{{ $tire->image }}' style='width: 280px; height: 280px;'>"--}}
-                        {{--                                                                @else--}}
-                        {{--                                                                    title="<img src='{{ asset('img/p/en-default-home_default.jpg') }}'>"--}}
-                        {{--                                                                @endif--}}
-                        {{--                                                                href="{{ route($current_url, [strtolower(\Tires::getAutoTireBrand($tire->brand_id)->title), $tire->slug, $tire->tire_id]) }}"--}}
-                        {{--                                                                data-content="{{ $tire->title }}">--}}
-                        {{--                                                                <div class="product-title-hidden">{{ $tire->title }}</div>--}}
-                        {{--                                                            </a>--}}
-                        {{--                                                        </h1>--}}
-                        {{--                                                        <span class="tire_article" data-article="{{ $tire->article }}" style="display: none;"></span>--}}
-                        {{--                                                        <div class="product-price-and-shipping" data-content="{{ $tire->title }}">--}}
-                        {{--                                                        @if ($season === 2)--}}
-                        {{--                                                          <span class="table-cell">{{ $tire->type }}</span>--}}
-                        {{--                                                        @endif--}}
-                        {{--                                                        <span class="hidden-sm-down table-cell">--}}
-                        {{--                                                          <span data-toggle="tooltip" title="<span style='color: black'>Kravnesības indekss: 91 – 615 kg</span>">{{ $tire->li }}</span>--}}
-                        {{--                                                          <span data-toggle="tooltip" title="<span style='color: black'>{{ $tire->si }}</span>">{{ $tire->si }}</span>--}}
-                        {{--                                                        </span>--}}
-                        {{--                                                        <span data-toggle="tooltip" title="<span style='color: black'>RSC – Runflat System Component (nulles spiediena riepa)</span>" class="hidden-sm-down table-cell prod-code">{{ $tire->code }}</span>--}}
-                        {{--                                                        <span data-toggle="tooltip" title="<span style='color: black'>{{ $tire->eco }}</span>" class="hidden-sm-down table-cell fuel_efficiency">{{ $tire->eco }}</span>--}}
-                        {{--                                                        <span data-toggle="tooltip" title="<span style='color: black'>{{ $tire->wet }}</span>" class="hidden-sm-down table-cell wet_grip">{{ $tire->wet }}</span>--}}
-                        {{--                                                        <span data-toggle="tooltip" title="<span style='color: black'>{{ $tire->noise }}</span>" class="hidden-sm-down table-cell tire_noise">{{ $tire->noise }}</span>--}}
-                        {{--                                                        <span class="sr-only">Veikala cena</span>--}}
-                        {{--                                                        <span class="regular-price">€ {{ $tire->price1 }}</span>--}}
-                        {{--                                                        <span class="sr-only">Akcijas cena</span>--}}
-                        {{--                                                        <span itemprop="price" class="price">€ {{ $tire->price2 }}</span>--}}
-                        {{--                                                        <span class="table-cell notes">--}}
-                        {{--&nbsp;                                                          <span class="table-cell top40">Top 40</span>--}}
-                        {{--                                                        </span>--}}
-                        {{--                                                        <div class="clearfix atc_div">--}}
-                        {{--                                                            <button class="btn grid-cart-btn btn-primary" data-toggle="modal" @if (Auth::user()) data-target="#quick-popup" @else data-target="#blockcart-modal" @endif data-info="{{ $tire->tire_id }}"><i--}}
-                        {{--                                                                    class="material-icons">add_shopping_cart</i>--}}
-                        {{--                                                            </button>--}}
-                        {{--                                                            <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip"--}}
-                        {{--                                                                  data-html="true"--}}
-                        {{--                                                                  title="{{ $tire->stockAvailability }}">--}}
-                        {{--                                                                <span class="sort-order">{{ $tire->dotAvailable }}</span>--}}
-                        {{--                                                            </span>--}}
-                        {{--                                                        </div>--}}
-                        {{--                                                    </div>--}}
-                        {{--                                                    </div>--}}
-                        {{--                                                </div>--}}
-                        {{--                                            </article>--}}
                         <tr class="tire-table-row">
                           <th scope="row" class="tire-table-checkbox">
                             <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"

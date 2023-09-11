@@ -25,6 +25,7 @@ class RecordController extends Controller
   public $ursWpp = '120363130984594947@g.us';
   public $krsWpp = '120363150684433547@g.us';
   public $now;
+  public $timeStep = 15;
 
   public function __construct()
   {
