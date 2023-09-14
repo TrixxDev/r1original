@@ -145,7 +145,7 @@ class SmsSender {
     header("Cache-Control: no-cache");
     header("Pragma: no-cache");
 
-    $target = $data['ownerPhone'];
+    $target = $data['phone_number'];
 
     $sendString = '["'.$target.'","'.$smsText.'"]';
 

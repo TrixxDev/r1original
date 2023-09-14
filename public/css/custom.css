@@ -4494,7 +4494,7 @@ div.reservation div.time-list .available.discount {
     -ms-flex-pack: start;
     justify-content: flex-start;
     background-color: #000;
-    z-index: 1111;
+    z-index: 1049;
     opacity: 0;
     transition: opacity 1s;
     margin-top: -80px;
