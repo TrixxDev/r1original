@@ -121,7 +121,7 @@
                           @if (isset($tires) && count($tires) > 0)
                           <button class="btn btn-md btn-danger" style="margin-right: 10px;" onclick="if (confirm('Tiešām vēlies dzēst?') !== true) { return false; }">Dzēst</button>
                           @endif
-                          <button class="btn btn-md btn-primary new_tire"><a class="text-white" href="{{ route('admin.moto.tires.create', $tread->tread_id) }}">Pievienot</a></button>
+                          <a class="btn btn-md btn-primary new_tire text-white" href="{{ route('admin.moto.tires.create', $tread->tread_id) }}">Pievienot</a>
                         </div>
                         @endif
                         @php

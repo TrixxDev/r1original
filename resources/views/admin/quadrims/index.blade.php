@@ -116,7 +116,7 @@
             </div>
             @if (isset($tread))
               <div class="row justify-content-end tires-header">
-                <button class="btn btn-md btn-primary new_tire"><a class="text-white" href="{{ route('admin.quadrims.create', $tread->make_id) }}">Pievienot</a></button>
+                <a class="btn btn-md btn-primary new_tire text-white" href="{{ route('admin.quadrims.create', $tread->make_id) }}">Pievienot</a>
               </div>
             @endif
             <div class="row">
