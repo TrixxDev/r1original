@@ -83,7 +83,6 @@ $(document).ready(function() {
 
   $(document).on('click', '.time-status.discount', function() {
     let discount_text = $('button.discount-slot', this).text();
-    console.log(discount_text);
     if ($('div.alert.alert-warning.discount-alert').length === 0 ){
       $('.modal-dialog').find('.form-group.services')
         .prepend("<div class='alert alert-warning discount-alert' style='font-size: 14px;'><b>Šajā pieraksta laikā tiek piemērota atlaide (" + discount_text + ")</b></div>");
@@ -119,12 +118,15 @@ $(document).ready(function() {
           switch ($(this).val()) {
             case '1': {
               $('#reservation .rims_with').show();
-              $('#reservation .temp_save_nr').hide();
+              $('#reservation .temp_save_nr').hide().val('');
               break;
             }
             case '2': {
               $('#reservation .temp_save_nr').show();
               $('#reservation .rims_with').hide();
+              $('#reservation .rims_with input[name="rims_with_input"]').each(function () {
+                $(this).attr('selected', false).prop('selected', false);
+              });
               break;
             }
             default: {
