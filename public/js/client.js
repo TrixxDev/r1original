@@ -163,15 +163,6 @@ $(document).ready(function() {
 
   });
 
-  $(document).off('keyup').on('keyup', function(e) {
-    if (e.keyCode === 13) {
-      if ($('#submit-reservation').is(':visible')) {
-        $('#submit-reservation').click();
-      }
-      return false;
-    }
-  });
-
   $('#reservation').on('hide.bs.modal', function () {
     $('#reservation form').trigger('reset');
     $('#reservation .alert').remove();
