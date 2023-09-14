@@ -2075,14 +2075,14 @@ $(document).ready(function() {
     $('.modal-footer #close-modal').click();
   });
 
-  $(document).on('keypress', function(e) {
-    if ($('#reservation').is(':visible')) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        $('#submit-reservation').click();
-      }
-    }
-  });
+  // $(document).on('keypress', function(e) {
+  //   if ($('#reservation').is(':visible')) {
+  //     if (e.key === 'Enter') {
+  //       e.preventDefault();
+  //       $('#submit-reservation').click();
+  //     }
+  //   }
+  // });
 
   $('#reservation').on('hide.bs.modal', function () {
     $('#reservation form').trigger('reset');
