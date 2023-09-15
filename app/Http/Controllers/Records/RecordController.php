@@ -176,6 +176,14 @@
 
       $resultArray = (array) json_decode($slot->takenby);
 
+      $created_user = User::find($slot->createuser);
+      $edited_user = User::find($slot->edituser);
+
+      $slot->createuser = ($created_user) ? $created_user->fullName : '';
+      $slot->createtime = ($slot->createtime) ? $slot->createtime : '';
+      $slot->edituser = ($edited_user) ? $edited_user->fullName : '';
+      $slot->edittime = ($slot->edittime) ? $slot->edittime : '';
+
       if (!empty($resultArray)) {
         return $slot;
       } else {
