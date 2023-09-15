@@ -388,7 +388,7 @@ $(document).ready(function() {
         } else {
 
           $('.last-info').delete();
-          if (data.f_edittime == '') {
+          if (data.edittime == '') {
             $('<div class="last-info">Pieraksts izveidots no ' + data.is_mobile + '<br>Izveidots: ' + data.createtime + ' (' + data.createuser + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
           } else {
             $('<div class="last-info">Pieraksts izveidots no ' + data.is_mobile + '<br>Izveidots: ' + data.createtime + ' (' + data.createuser + ')<br>Labots: ' + data.edittime + ' (' + data.edituser + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
