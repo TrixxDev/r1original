@@ -165,6 +165,7 @@ $(document).ready(function() {
     let changeVal = $('#queueModal input[name="changeVal"]:checked').val();
     let newOpenTime = $('#queueModal select#f_opentime option:selected').val();
     let newCloseTime = $('#queueModal select#f_closetime option:selected').val();
+    let timeStep = $('#queueModal #f_timeinterval option:selected').val();
     let is_half = parseInt($('#queueModal input[name="queue"]:checked').val());
 
     let sendData = {
@@ -230,6 +231,9 @@ $(document).ready(function() {
       method: 'POST',
       data: {queue_id: queue_id, date: date},
       beforeSend: function() {
+        $('#queueModal #f_timeinterval option').each(function() {
+          $(this).removeAttr('selected').prop('selected', false);
+        });
         $('#queueModal #f_opentime').html('');
         $('#queueModal #f_closetime').html('');
         $('#queueModal #title').val('');
@@ -275,7 +279,11 @@ $(document).ready(function() {
               $('#queueModal #f_closetime option[value="' + data.timeclose + '"]').attr('selected', true).prop('selected', true);
             }
           }
-          timeStep = data.timeStep;
+          $('#queueModal #f_timeinterval option').each(function() {
+            if ($(this).val() == data.timeStep) {
+              $(this).attr('selected', true).prop('selected', true);
+            }
+          })
 
           oldOpenTime = $('#queueModal select#f_opentime option:selected').val();
           oldCloseTime = $('#queueModal select#f_closetime option:selected').val();
@@ -303,7 +311,7 @@ $(document).ready(function() {
     $.ajax({
       url: '/pieraksts/rezervacijas/changeTimes',
       method: 'POST',
-      data: {timeopen: timeopen, timeclose: timeclose, changeVal: changeVal, lastIorder: lastIorder, queue_id: queue_id, date: date},
+      data: {timeopen: timeopen, timeclose: timeclose, timeStep: timeStep, changeVal: changeVal, lastIorder: lastIorder, queue_id: queue_id, date: date},
       beforeSend: function() {
         $('#times-modal .times-modal-body').addClass('loading');
         $('#times-modal .loader').fadeIn();

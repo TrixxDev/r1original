@@ -580,9 +580,9 @@
       $offices = Office::all();
 
       $dayTitles = $this->dayTitles;
-      $timeStep = $this->timeStep;
+//      $timeStep = $this->timeStep;
 
-      return view('records.reservation', compact('workingDays', 'visibleDays', 'dayTitles', 'timeStep', 'dateRanges', 'timeRanges', 'isEqual', 'offices', 'currentDate'));
+      return view('records.reservation', compact('workingDays', 'visibleDays', 'dayTitles', 'dateRanges', 'timeRanges', 'isEqual', 'offices', 'currentDate'));
     }
 
     public function reservations_print($office_id, $date)
@@ -724,7 +724,7 @@
       } catch (\Exception $e) {
         dd($e->getMessage(), $e->getLine());
       }
-      //die;
+//      die;
       // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); //
       //$pdf->Cell($w[0],10,Office::timeByInterval($slotTime),1); // $pdf->Cell($w[1],10,$row['takenby'],1,0,'L'); // $pdf->ln(); // }
       // Closing line // $pdf->Cell(array_sum($w),0,'','T');
@@ -760,7 +760,7 @@
       $timeclose = Carbon::createFromTimeString($workingDay->timeclose)->format('H:i');
       $queue = Queue::where('queue_id', $request->queue_id)->first()->title;
       $_weekDay = $workingDay->weekday;
-      $timeStep = $this->timeStep;
+      $timeStep = $workingDay->timeStep;
 
       $is_half = ($workingDay->is_half === 1) ? 1 : 0;
 
@@ -843,6 +843,7 @@
         if ($is_opened !== 0) {
           $workingDay->timeopen = $item->newOpenTime;
           $workingDay->timeclose = $item->newCloseTime;
+          $workingDay->timeStep = $item->timeStep;
           $workingDay->is_half = $item->is_half;
           $workingDay->is_opened = $is_opened;
         } else {
@@ -889,6 +890,7 @@
           if ($is_opened !== 0) {
             $workingDay->timeopen = $item->newOpenTime;
             $workingDay->timeclose = $item->newCloseTime;
+            $workingDay->timeStep = $item->timeStep;
             $workingDay->is_half = $item->is_half;
             $workingDay->is_opened = $is_opened;
           } else {
@@ -934,6 +936,7 @@
           if ($is_opened !== 0) {
             $workingDay->timeopen = $item->newOpenTime;
             $workingDay->timeclose = $item->newCloseTime;
+            $workingDay->timeStep = $item->timeStep;
             $workingDay->is_half = $item->is_half;
             $workingDay->is_opened = $is_opened;
           } else {
@@ -976,6 +979,7 @@
         $workingDay->weekday = $equal->weekday;
         $workingDay->timeopen = $equal->timeopen;
         $workingDay->timeclose = $equal->timeclose;
+        $workingDay->timeStep = $equal->timeStep;
         $workingDay->is_half = $equal->is_half;
         $workingDay->is_opened = $equal->is_opened;
         $workingDay->save();

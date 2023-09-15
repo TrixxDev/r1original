@@ -757,33 +757,33 @@ $(document).ready(function() {
             location.reload();
           });
         } else {
-          if (!window.Notification) {
-            console.log('Browser does not support notifications.');
-          } else {
-            // check if permission is already granted
-            if (Notification.permission === 'granted') {
-              // show notification here
-              var notify = new Notification('Pasūtījumi', {
-                body: 'Ir izveidots jauns pasūtījums',
-                icon: 'https://r1riepas.lv/img/r1-riepas-logo-1515661637.jpg',
-              });
-            } else {
-              // request permission from user
-              Notification.requestPermission().then(function (p) {
-                if (p === 'granted') {
-                  // show notification here
-                  var notify = new Notification('Pasūtījumi', {
-                    body: 'Ir izveidots jauns pasūtījums',
-                    icon: 'https://r1riepas.lv/img/r1-riepas-logo-1515661637.jpg',
-                  });
-                } else {
-                  console.log('User blocked notifications.');
-                }
-              }).catch(function (err) {
-                console.error(err);
-              });
-            }
-          }
+          // if (!window.Notification) {
+          //   console.log('Browser does not support notifications.');
+          // } else {
+          //   // check if permission is already granted
+          //   if (Notification.permission === 'granted') {
+          //     // show notification here
+          //     var notify = new Notification('Pasūtījumi', {
+          //       body: 'Ir izveidots jauns pasūtījums',
+          //       icon: 'https://r1riepas.lv/img/r1-riepas-logo-1515661637.jpg',
+          //     });
+          //   } else {
+          //     // request permission from user
+          //     Notification.requestPermission().then(function (p) {
+          //       if (p === 'granted') {
+          //         // show notification here
+          //         var notify = new Notification('Pasūtījumi', {
+          //           body: 'Ir izveidots jauns pasūtījums',
+          //           icon: 'https://r1riepas.lv/img/r1-riepas-logo-1515661637.jpg',
+          //         });
+          //       } else {
+          //         console.log('User blocked notifications.');
+          //       }
+          //     }).catch(function (err) {
+          //       console.error(err);
+          //     });
+          //   }
+          // }
         }
 
       }

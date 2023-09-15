@@ -26,6 +26,7 @@
                                         @if ($workingDay->date == Date('Y-m-d', strtotime('+' . $day . ' days')))
                                             @php
                                                 $openTime1 = \App\Models\Workingday::select('timeopen')->where('date', $workingDay->date)->orderBy('timeopen', 'ASC')->first();
+                                                $timeStep = $workingDay->timeStep;
                                                 $opentime = \Carbon\Carbon::parse($workingDay->timeopen);
                                                 $openTime1 = \Carbon\Carbon::parse($openTime1->timeopen);
                                                 $closetime = \Carbon\Carbon::parse($workingDay->timeclose)->subMinutes($timeStep);

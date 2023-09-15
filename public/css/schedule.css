@@ -25,6 +25,7 @@ div.reservation div.time-list .time-slot {
   border-radius: 4px;
   text-align: center;
   text-decoration: none!important;
+    line-height: 21px!important;
   /*margin: 15px 6px;*/
 }
 
