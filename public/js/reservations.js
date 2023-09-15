@@ -382,12 +382,12 @@ $(document).ready(function() {
         });
 
         let takenby = JSON.parse(data.takenby);
+        $('.last-info').remove();
         if (takenby === false) {
           $('#record-modal #working_days, #record-modal #working_hours, #record-modal #office_queues').attr('disabled', 'true').prop('disabled', true);
           discount = data.discount;
         } else {
 
-          $('.last-info').remove();
           if (data.edittime == '') {
             $('<div class="last-info">Pieraksts izveidots no ' + data.is_mobile + '<br>Izveidots: ' + data.createtime + ' (' + data.createuser + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
           } else {
