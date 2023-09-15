@@ -179,10 +179,11 @@
       $created_user = User::find($slot->createuser);
       $edited_user = User::find($slot->edituser);
 
-      $slot->createuser = ($created_user) ? $created_user->fullName : '';
+      $slot->createuser = ($created_user) ? $created_user->fullName : 'Klients';
       $slot->createtime = ($slot->createtime) ? $slot->createtime : '';
       $slot->edituser = ($edited_user) ? $edited_user->fullName : '';
       $slot->edittime = ($slot->edittime) ? $slot->edittime : '';
+      $slot->is_mobile = ($slot->is_mobile === 1) ? 'mobilās ierīces' : 'datora';
 
       if (!empty($resultArray)) {
         return $slot;

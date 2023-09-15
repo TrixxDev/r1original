@@ -387,6 +387,13 @@ $(document).ready(function() {
           discount = data.discount;
         } else {
 
+          $('.last-info').delete();
+          if (data.f_edittime == '') {
+            $('<div class="last-info">Pieraksts izveidots no ' + data.is_mobile + '<br>Izveidots: ' + data.createtime + ' (' + data.createuser + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
+          } else {
+            $('<div class="last-info">Pieraksts izveidots no ' + data.is_mobile + '<br>Izveidots: ' + data.createtime + ' (' + data.createuser + ')<br>Labots: ' + data.edittime + ' (' + data.edituser + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
+          }
+
           $('#slotModal .check-input').on('input', function() {
             numNonEmptyInputs = $('#slotModal .check-input').filter(function() {
               return $(this).val().trim() !== ''; // Check if input value is non-empty
