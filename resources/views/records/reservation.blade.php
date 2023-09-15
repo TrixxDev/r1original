@@ -445,6 +445,17 @@
                                     </div>
                                     <div class="separator"></div>
                                     <div class="form-group row time ">
+                                        <label for="f_timeinterval" class="col-sm-3 col-form-label text-right">Laika intervāls</label>
+                                        <div class="col-3">
+                                            <select class="form-control" id="f_timeinterval">
+                                                @for ($i = 5; $i <= 30; $i+=5)
+                                                    <option value="{{ $i }}">{{ $i }}</option>
+                                                @endfor
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="separator"></div>
+                                    <div class="form-group row time ">
                                         <label for="f_date" class="col-sm-3 col-form-label text-right">Atv./Aizv. laiki:</label>
                                         <div class="col-3">
                                             <select class="form-control" id="f_opentime">
