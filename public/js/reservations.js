@@ -387,7 +387,7 @@ $(document).ready(function() {
           discount = data.discount;
         } else {
 
-          $('.last-info').delete();
+          $('.last-info').remove();
           if (data.edittime == '') {
             $('<div class="last-info">Pieraksts izveidots no ' + data.is_mobile + '<br>Izveidots: ' + data.createtime + ' (' + data.createuser + ')<br>Labots:</div>').insertAfter($('.modal#slotModal .form-group').last());
           } else {
