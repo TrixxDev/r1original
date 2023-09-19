@@ -81,9 +81,9 @@
                                                                             case 1:
                                                                                 $slotClass = 'taken-slot';
                                                                                 if ($slot->takenby !== null) {
-                                                                                  $content = '<div class="time-status inline-flex time-taken"><div class="time-slot">' . $currentTime . '</div><div class="slot taken-slot">' . \App\Http\Controllers\Records\RecordController::truncateCharacters(trim($takenBy->car_brand), 6, '&mldr;', 1) . ' xxxxx' . substr($takenBy->phone_number, -3, 3) . '</div></div>';
+                                                                                  $content = '<div class="slot taken-slot">' . \App\Http\Controllers\Records\RecordController::truncateCharacters(trim($takenBy->car_brand), 6, '&mldr;', 1) . ' xxxxx' . substr($takenBy->phone_number, -3, 3) . '</div>';
                                                                                 } else {
-                                                                                  $content = '<div class="time-status inline-flex time-taken"><div class="time-slot">' . $currentTime . '</div><div class="slot taken-slot">xxxxx</div></div>';
+                                                                                  $content = '<div class="slot taken-slot">xxxxx</div>';
                                                                                 }
                                                                                 if (date('Y-m-d') == $workingDay->date) {
                                                                                     if ($slot->takenby !== null) {
