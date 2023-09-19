@@ -63,7 +63,7 @@
                                                                                 $content = '<div class="slot free-slot-link available-slot">Brīvs</div>';
                                                                                 if ($slot->comment !== null) {
                                                                                     $slotClass = 'time-free discount';
-                                                                                    $content = '<div class="time-status inline-flex time-free discount"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link discount-slot available-slot">' . $slot->comment . '</button></div>';
+                                                                                    $content = '<button class="status free-slot-link discount-slot available-slot">' . $slot->comment . '</button>';
                                                                                 }
                                                                                 if (date('Y-m-d') == $workingDay->date) {
                                                                                     $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'time-free' : 'slot-gray';
@@ -124,6 +124,8 @@
                                                                                 if (date('Y-m-d') == $workingDay->date) {
                                                                                   $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-taken' : $slotClass;
                                                                                   $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                                                } else {
+                                                                                  $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                                                 }
                                                                             } else {
                                                                                 if (date('Y-m-d') == $workingDay->date) {
@@ -137,7 +139,7 @@
                                                                                     if ($i >= 0) {
                                                                                       $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot">Aizņemts</div></div>';
                                                                                     } else {
-                                                                                      $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status"></button></div>';
+                                                                                      $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
                                                                                     }
                                                                                   }
                                                                                 } else {
@@ -161,6 +163,8 @@
                                                                                 if (date('Y-m-d') == $workingDay->date) {
                                                                                   $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-taken' : $slotClass;
                                                                                   $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                                                } else {
+                                                                                  $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                                                 }
                                                                             } else {
                                                                                 if (date('Y-m-d') == $workingDay->date) {
@@ -174,7 +178,7 @@
                                                                                     if ($i >= 0) {
                                                                                       $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot">Aizņemts</div></div>';
                                                                                     } else {
-                                                                                      $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status"></button></div>';
+                                                                                      $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
                                                                                     }
                                                                                   }
                                                                                 } else {
@@ -182,13 +186,13 @@
                                                                                         if ($i >= 0) {
                                                                                           $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
                                                                                         } else {
-                                                                                          $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status"></button></div>';
+                                                                                          $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
                                                                                         }
                                                                                     } else {
                                                                                         if ($i >= 0) {
                                                                                           $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
                                                                                         } else {
-                                                                                          $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status"></button></div>';
+                                                                                          $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
                                                                                         }
                                                                                     }
                                                                                 }
