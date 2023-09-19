@@ -262,12 +262,20 @@
 
 <div id="mobile_top_menu_wrapper" class="row hidden-md-up" style="display: none;">
 
+    <a class="nav-dropdown-button navbar-item navbar-link-btn" href="{{ route('sale-tires') }}">Akcijas</a>
+
   <button class="nav-dropdown-button navbar-item" onclick="showRiepasDropdown()">Riepas <span class="material-icons riepas">keyboard_arrow_down</span></button>
 
     <div class="dropdown-options riepas">
-      <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ route('vasaras-riepas') }}">Vasaras Riepas</a>
-      </div>
+        @if ((int) env('SEASON') === 1)
+        <div class="nav-dropdown-link">
+            <a class="dropdown-item" href="{{ route('vasaras-riepas') }}">Vasaras Riepas</a>
+        </div>
+        @else
+        <div class="nav-dropdown-link">
+            <a class="dropdown-item" href="{{ route('ziemas-riepas') }}">Ziemas Riepas</a>
+        </div>
+        @endif
 
       <div class="nav-dropdown-link">
         <a class="dropdown-item" href="{{ route('motociklu-riepas') }}">Motociklu Riepas</a>
@@ -277,9 +285,15 @@
         <a class="dropdown-item" href="{{ route('kvadraciklu-riepas') }}">Kvadraciklu Riepas</a>
       </div>
 
-      <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ route('ziemas-riepas') }}">Ziemas Riepas</a>
-      </div>
+        @if ((int) env('SEASON') === 1)
+            <div class="nav-dropdown-link">
+                <a class="dropdown-item" href="{{ route('ziemas-riepas') }}">Ziemas Riepas</a>
+            </div>
+        @else
+            <div class="nav-dropdown-link">
+                <a class="dropdown-item" href="{{ route('vasaras-riepas') }}">Vasaras Riepas</a>
+            </div>
+        @endif
 
       <div class="nav-dropdown-link">
         <a class="dropdown-item" href="{{ route('lielas-riepas') }}">Lielās riepas</a>

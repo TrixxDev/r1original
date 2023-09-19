@@ -6451,3 +6451,9 @@ a.season-select-link:focus {
     padding-left: 15px;
     padding-top: 10px;
 }
+
+hr.admin-comments {
+    margin-top: -5px;
+    margin-bottom: 6px;
+    border-top: 1px solid #cbcbcb;
+}

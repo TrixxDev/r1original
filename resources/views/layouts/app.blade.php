@@ -380,6 +380,11 @@
                     <div class="menu js-top-menu position-static hidden-sm-down"
                          id="_desktop_top_menu">
                         <ul class="top-menu" id="top-menu" data-depth="0">
+                            <li class="category" id="cms-category-100">
+                                <a class="dropdown-item" href="{{ route('sale-tires') }}">
+                                    Akcijas
+                                </a>
+                            </li>
                             <li class="category" id="category-12">
                                 <a class="dropdown-item" href="#" data-depth="0">
 
@@ -395,6 +400,7 @@
                                 <div class="popover sub-menu js-sub-menu collapse" id="top_sub_menu_26942"
                                      style="display: none; top: 130px;">
                                     <ul class="top-menu" data-depth="1">
+                                        @if ((int) env('SEASON') === 1)
                                         <li class="category" id="category-14">
                                             <a class="dropdown-item dropdown-submenu"
                                                href="{{ route('vasaras-riepas') }}"
@@ -402,6 +408,15 @@
                                                 Vasaras riepas
                                             </a>
                                         </li>
+                                        @else
+                                        <li class="category" id="category-13">
+                                            <a class="dropdown-item dropdown-submenu"
+                                               href="{{ route('ziemas-riepas') }}"
+                                               data-depth="1">
+                                                Ziemas riepas
+                                            </a>
+                                        </li>
+                                        @endif
                                         <li class="category" id="category-17">
                                           <a class="dropdown-item dropdown-submenu"
                                              href="{{ route('motociklu-riepas') }}"
@@ -416,13 +431,23 @@
                                                 Kvadraciklu riepas
                                             </a>
                                         </li>
+                                        @if ((int) env('SEASON') === 1)
                                         <li class="category" id="category-13">
-                                          <a class="dropdown-item dropdown-submenu"
-                                             href="{{ route('ziemas-riepas') }}"
-                                             data-depth="1">
-                                            Ziemas riepas
-                                          </a>
+                                            <a class="dropdown-item dropdown-submenu"
+                                               href="{{ route('ziemas-riepas') }}"
+                                               data-depth="1">
+                                                Ziemas riepas
+                                            </a>
                                         </li>
+                                        @else
+                                        <li class="category" id="category-14">
+                                            <a class="dropdown-item dropdown-submenu"
+                                               href="{{ route('vasaras-riepas') }}"
+                                               data-depth="1">
+                                                Vasaras riepas
+                                            </a>
+                                        </li>
+                                        @endif
                                         <li class="category" id="category-18">
                                             <a class="dropdown-item dropdown-submenu"
                                                href="{{ route('lielas-riepas') }}"
@@ -568,14 +593,6 @@
                             </li>
                             <li class="category" id="cms-category-4">
                               <a class="dropdown-item" href="{{ route('pieraksts') }}">
-
-                                    <span class="float-xs-right hidden-md-up">
-                                        <span data-target="#top_sub_menu_50733" data-toggle="collapse"
-                                              class="navbar-toggler collapse-icons">
-                                          <i class="material-icons add"></i>
-                                          <i class="material-icons remove"></i>
-                                        </span>
-                                    </span>
                                 E-Pieraksts
                               </a>
                             </li>

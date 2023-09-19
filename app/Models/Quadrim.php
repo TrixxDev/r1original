@@ -190,6 +190,9 @@
 //          $availability .= '<br><p>' . $stock_name . ': 0</p>';
 //        }
 //      }
+        if ($rim->acomment !== null) {
+          $availability .= '<br><hr class="admin-comments"><p><b>Piezīmes:</b> </p><br><p>' . $rim->acomment . '</p>';
+        }
       } else {
         $dot = $this->getDotAvailableAttribute();
         if ($dot === 'red') {
