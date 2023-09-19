@@ -296,18 +296,6 @@
                       $index = 0;
                     @endphp
                     @foreach ($tires as $tire)
-{{--                      @php--}}
-{{--                        $tire->includeStock = true;--}}
-{{--                        $brand = $tire->fullSize;--}}
-{{--                        if ($cbrand!=$brand){--}}
-{{--                            echo '<h4 class="custom_brand_name ' . str_replace([" ", "x", "/", "-"], "", $brand) . '"--}}
-{{--                            style="display: block;">' . $brand . '</h4>';--}}
-{{--                            $cbrand = $brand;--}}
-{{--                            $stripe = 1;--}}
-{{--                        } else {--}}
-{{--                            $brand = str_replace(" ", "", $brand);--}}
-{{--                        }--}}
-{{--                      @endphp--}}
                       @php
                         $brand = $tire->fullSize;
                         $tire->includeStock = true;
@@ -446,7 +434,7 @@
                           <td class="text-center">{{$tire->code}}</td>
                           <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
                           <td id="sale-price" class="text-center tire-price-red sale-price">€ {{ $tire->price2 }}</td>
-                          <td class="hidden-sm-down text-center"></td>
+                          <td class="hidden-sm-down text-center @if($tire->comment == 'Izpārdošana!' || $tire->priceoffer == 1){{ 'sellout' }}@endif">{{$tire->comment}}</td>
 
                           <td class="shopping-cart-col">
                             <div class="clearfix atc_div text-right">

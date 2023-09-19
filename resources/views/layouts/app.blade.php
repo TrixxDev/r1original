@@ -57,7 +57,7 @@
     @livewireStyles
 </head>
 
-<body id="@yield('body-title')" class="@yield('title')">
+<body id="@yield('body-title')" class="@yield('title')" style="background-image: url('@if ((int) env('SEASON') === 1) /images/cover.png @else /images/cover1.png @endif')">
 <div id="toasts"></div>
 <div class="modal" id="timeout" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">

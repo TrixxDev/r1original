@@ -17,6 +17,19 @@ $(document).ready(function() {
   let current_url;
   let tire_count;
 
+  $(document).on('change', '#seasonChange', function() {
+    let season = $('#seasonChange option:selected').val();
+
+    $.ajax({
+      url: '/changeSeason',
+      data: {season: season},
+      method: 'POST',
+      success: function(data) {
+        if (data === 'okey') window.location.reload();
+      }
+    });
+  });
+
   $(document).on('click', 'button.edit-banner', function(e) {
     e.preventDefault();
     let url = $(this).parent().parent().find('.banner-link').text();

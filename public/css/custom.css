@@ -16,9 +16,11 @@ input:focus, textarea:focus, select:focus, button:focus{
 }
 
 body {
-  background: url(../images/cover.png) no-repeat fixed top center;
-  background-size: cover;
-  font-family: 'Arimo', Arial, sans-serif;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-attachment: fixed;
+    font-family: 'Arimo', Arial, sans-serif;
 }
 
 main {
@@ -4023,11 +4025,6 @@ td.header-empty {
   text-decoration: none;
 }
 
-.table {
-    display: block!important;
-    margin-bottom: 0 !important;
-}
-
 .title {
     text-align: center;
     border-bottom: 2px solid black;
@@ -6437,4 +6434,20 @@ a.season-select-link:focus {
     text-decoration: none;
     background: #59c0a8;
     color: white;
+}
+
+.sale-positions {
+    margin-top: 15px;
+}
+
+.sale-positions .flipped-title {
+    margin-left: -15px;
+    font-size: 22px;
+}
+
+.sale-positions section#products:not(:first-child) {
+    border-top: 1px solid black;
+    margin-left: -15px;
+    padding-left: 15px;
+    padding-top: 10px;
 }

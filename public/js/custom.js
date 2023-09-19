@@ -3348,3 +3348,15 @@ $('.r1-select.select-title.select-rim-center').on('change', function(){
     $(this).val(newVal);
   });
 });
+
+// Atlaides preces
+
+$('.category-search').on('submit', function(e) {
+  e.preventDefault();
+  let category = $(this).find('select.tire-category option:selected').val();
+  if (category === 'Visi') {
+    window.location.href = "/akcijas";
+  } else {
+    window.location.href = "/akcijas/category/" + category;
+  }
+});

@@ -396,6 +396,13 @@ Route::middleware('checksession')->group(function() {
   Route::post('/radzes/search/ajax', [App\Http\Controllers\StudsController::class, 'studs_ajax'])->name('radzes-ajax');
   Route::get('/radzes/search', [App\Http\Controllers\StudsController::class, 'studs_search'])->name('radzes-meklet');
   Route::get('/radzes/getBrandList', [App\Http\Controllers\StudsController::class, 'studs_getBrands']);
+
+  //SALE POSITIONS
+  Route::get('/akcijas', [App\Http\Controllers\TopTireController::class, 'index'])->name('sale-tires');
+  Route::get('/akcijas/category/{ct}', [App\Http\Controllers\TopTireController::class, 'filter'])->name('sale-tires-search');
+
+  Route::post('/changeSeason', [App\Http\Controllers\TopTireController::class, 'changeSeason']);
+
 // Noklusējuma lapas
 
 // Pieraksts

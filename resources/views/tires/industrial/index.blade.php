@@ -476,7 +476,7 @@
 
                         <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
                         <td id="sale-price" class="text-center tire-price-red">€ {{ $tire->price3 }}</td>
-                        <td class="hidden-sm-down text-center">{{ $tire->comment }}</td>
+                        <td class="hidden-sm-down text-center @if($tire->comment == 'Izpārdošana!' || $tire->priceoffer == 1){{ 'sellout' }}@endif">{{$tire->comment}}</td>
 
                         <td class="shopping-cart-col">
                           <div class="clearfix atc_div text-right">

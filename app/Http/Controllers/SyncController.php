@@ -217,14 +217,22 @@
           if (isset($stores[1])) {
             $this->urs = $stores[1];
             $this->urs = str_replace('Noliktava: ', '', $this->urs);
-            $product->urs_quantity = intval($this->urs);
+            if ($this->urs > 0) {
+              $product->urs_quantity = intval($this->urs);
+            } else {
+              $product->urs_quantity = 0;
+            }
           } else {
             $product->urs_quantity = 0;
           }
           if (isset($stores[2])) {
             $this->krs = $stores[2];
             $this->krs = str_replace('Veikals: ', '', $this->krs);
-            $product->krs_quantity = intval($this->krs);
+            if ($this->krs > 0) {
+              $product->krs_quantity = intval($this->krs);
+            } else {
+              $product->krs_quantity = 0;
+            }
           } else {
             $product->krs_quantity = 0;
           }
@@ -239,7 +247,7 @@
           $product->save();
         }
 
-        $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND k.ArticleId = '" . $article . "'";
+        $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
         $result = $this->accrual->query($sql);
         if ($result->rowCount()) {
           foreach ($result as $rows) {
@@ -247,8 +255,16 @@
             $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
             if ($rows['Deleted'] == 1) {
               $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+              $product->priceoffer = 0;
+              if ($product->comment == env('SALE_TEXT')) {
+                $product->comment = '';
+              }
             } else {
               $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
+              $product->priceoffer = 1;
+              if (empty($product->comment)) {
+                $product->comment = env('SALE_TEXT');
+              }
             }
           }
           $product->price1 = $veikala_cena;
@@ -263,6 +279,10 @@
               set_time_limit(0);
               $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
               $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+              $product->priceoffer = 0;
+              if ($product->comment == env('SALE_TEXT')) {
+                $product->comment = '';
+              }
             }
             $product->price1 = $veikala_cena;
             $product->price2 = $akcijas_cena;
@@ -307,14 +327,22 @@
             if (isset($stores[1])) {
               $this->urs = $stores[1];
               $this->urs = str_replace('Noliktava: ', '', $this->urs);
-              $product->urs_quantity = intval($this->urs);
+              if ($this->urs > 0) {
+                $product->urs_quantity = intval($this->urs);
+              } else {
+                $product->urs_quantity = 0;
+              }
             } else {
               $product->urs_quantity = 0;
             }
             if (isset($stores[2])) {
               $this->krs = $stores[2];
               $this->krs = str_replace('Veikals: ', '', $this->krs);
-              $product->krs_quantity = intval($this->krs);
+              if ($this->krs > 0) {
+                $product->krs_quantity = intval($this->krs);
+              } else {
+                $product->krs_quantity = 0;
+              }
             } else {
               $product->krs_quantity = 0;
             }
@@ -329,7 +357,7 @@
             $product->save();
           }
 
-          $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND k.ArticleId = '" . $article . "'";
+          $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND and u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
           //$sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.ArticleId = '141309'";
           $result = $this->accrual->query($sql);
           if ($result->rowCount()) {
@@ -338,8 +366,16 @@
               $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
               if ($rows['Deleted'] == 1) {
                 $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+                $product->priceoffer = 0;
+                if ($product->comment == env('SALE_TEXT')) {
+                  $product->comment = '';
+                }
               } else {
                 $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
+                $product->priceoffer = 1;
+                if (empty($product->comment)) {
+                  $product->comment = env('SALE_TEXT');
+                }
               }
             }
             $product->price1 = $veikala_cena;
@@ -354,6 +390,10 @@
                 set_time_limit(0);
                 $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
                 $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+                $product->priceoffer = 0;
+                if ($product->comment == env('SALE_TEXT')) {
+                  $product->comment = '';
+                }
               }
               $product->price1 = $veikala_cena;
               $product->price2 = $akcijas_cena;

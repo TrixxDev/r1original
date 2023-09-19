@@ -22,10 +22,18 @@ class Env {
 
         // If key does not exist, add it
         if (!$keyPosition || !$endOfLinePosition || !$oldLine) {
-          $str .= $envKey . '="' . $envValue . '"';
+          if (is_integer($envValue)) {
+            $str .= $envKey . '=' . $envValue;
+          } else {
+            $str .= $envKey . '="' . $envValue . '"';
+          }
           $str .= "\n";
         } else {
-          $str = str_replace($oldLine, $envKey . '="' . $envValue . '"', $str);
+          if (is_integer($envValue)) {
+            $str = str_replace($oldLine, $envKey . '=' . $envValue, $str);
+          } else {
+            $str = str_replace($oldLine, $envKey . '="' . $envValue . '"', $str);
+          }
         }
 
       }
