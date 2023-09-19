@@ -15,7 +15,7 @@
                 $stripe = 1;
             @endphp
             <table id="tires-table" class="table table-striped rims-sorter tires-table table-hover tablesorter">
-                <thead class="tires-thead sticky-top">
+                <thead class="tires-thead sticky-table">
                 <tr>
                     <th scope="col"></th>
                     <th scope="col">Nosaukums</th>

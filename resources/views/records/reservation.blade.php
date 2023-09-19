@@ -60,8 +60,8 @@
                                                             @for ($i = $opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep; $i <= $numberOfSteps; $i++)
 
                                                                 @php
-                                                                    $halfAcService = \App\Models\Service::where('f_ac', 1)->first();
-                                                                    $halfMotoService = \App\Models\Service::where('f_moto', 1)->first();
+                                                                    $halfAcService = \App\Models\Service::where('f_ac', 1)->where('enabled', 1)->first();
+                                                                    $halfMotoService = \App\Models\Service::where('f_moto', 1)->where('enabled', 1)->first();
                                                                     $slot = \App\Models\Slot::where('queue_id', $workingDay->queue_id)->where('date', $workingDay->date)->where('iorder', $i)->first();
                                                                     $currentTime = $opentime->copy()->addMinutes($timeStep * $i)->format('H:i');
                                                                 @endphp
@@ -70,13 +70,12 @@
                                                                     @switch ($slot->status)
                                                                         @case(0)
                                                                         @php
-                                                                            if ($slot->comment) {
-                                                                              $slotClass = 'time-discount';
-                                                                              $content = '<button class="status status slot-free discount">' . $slot->comment . '</button>';
-                                                                            } else {
                                                                               $slotClass = 'time-free';
                                                                               $content = '<button class="status status slot-free"></button>';
-                                                                            }
+                                                                              if ($slot->comment !== null) {
+                                                                                  $slotClass = 'time-discount';
+                                                                                  $content = '<button class="slot status slot-free discount">' . $slot->comment . '</button>';
+                                                                              }
                                                                             //$content = '<button class="bg-green-400 text-sm hover:bg-green-600 text-white py-2 px-4 status">Brīvs</button>';
                                                                         @endphp
                                                                         @break
@@ -142,6 +141,10 @@
                                                                             @php
                                                                                 $slotClass = 'time-free';
                                                                                 $content = '<button class="status status slot-free"></button>';
+                                                                                if ($slot->comment !== null) {
+                                                                                  $slotClass = 'time-discount';
+                                                                                  $content = '<button class="slot status slot-free discount">' . $slot->comment . '</button>';
+                                                                                }
                                                                                 //$content = '<button class="bg-green-400 text-sm hover:bg-green-600 text-white py-2 px-4 status">Brīvs</button>';
                                                                             @endphp
                                                                             @break

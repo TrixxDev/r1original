@@ -448,12 +448,16 @@ class CartController extends Controller
                 if (!$suvTire) {
                   if ($size <= 16) {
                     Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][16][$data->total_items]);
+                  } else if ($size >= 21) {
+                    Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][21][$data->total_items]);
                   } else {
                     Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting'][$size][$data->total_items]);
                   }
                 } else {
                   if ($size <= 16) {
                     Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting_suv'][16][$data->total_items]);
+                  } else if ($size >= 21) {
+                    Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting_suv'][21][$data->total_items]);
                   } else {
                     Session::put('cartOptions.fitting_price', Self::options()[$cat]['fitting_suv'][$size][$data->total_items]);
                   }
