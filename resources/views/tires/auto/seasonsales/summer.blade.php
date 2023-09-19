@@ -72,13 +72,13 @@
                                        class="tire-table-checkbox">
                             </th>
 
-                            <td class="table-tire-name-cell">
+                            <td class="table-tire-name-cell" data-link="{{ route('vasaras-riepas') }}">
                                 <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                                   title='{!! App\Helper\Image::show('auto', $tire->make_id) !!}'
-                                   href="{{ route($summerURL, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"
-                                   data-content="{{ $tire->fullName }}"
-                                   data-article="{{ $tire->article }}"
-                                   data-quantity="{{ (new \App\Http\Controllers\AutoTireController(new \Illuminate\Http\Request()))->cartQty }}">
+                                    title='{!! App\Helper\Image::show('auto', $tire->make_id) !!}'
+                                    href="{{ route($summerURL, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"
+                                    data-content="{{ $tire->fullName }}"
+                                    data-article="{{ $tire->article }}"
+                                    data-quantity="{{ (new \App\Http\Controllers\AutoTireController(new \Illuminate\Http\Request()))->cartQty }}">
                                     <div class="table-link-title">{{ $tire->title }}</div>
                                 </a>
                             </td>

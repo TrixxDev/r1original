@@ -2412,8 +2412,15 @@ $('.tire-table-checkbox').children().each(function(key, value){
     if (!admin) {
       const tire_id = $(this).data('info');
 
+      let ajaxUrl = url;
+
+      let tire_name = $(this).parent().parent().parent().find('.table-tire-name-cell');
+      if (tire_name.attr('data-link')) {
+        ajaxUrl = tire_name.attr('data-link');
+      }
+
       $.ajax({
-        url: url + '/ajax',
+        url: ajaxUrl + '/ajax',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         method: 'POST',
         data: { tire_id: tire_id },

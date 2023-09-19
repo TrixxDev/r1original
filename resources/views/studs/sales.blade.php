@@ -32,7 +32,7 @@
                                    class="tire-table-checkbox">
                         </th>
 
-                        <td class="table-tire-name-cell">
+                        <td class="table-tire-name-cell" data-link="{{ route('radzes') }}">
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link" title='{!! App\Helper\Image::show('studs', $stud->make_id) !!}'
                                href="{{ route('radze', [$stud->brand, strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
                                data-content="{{ $stud->fullName }}"

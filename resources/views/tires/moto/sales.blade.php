@@ -51,7 +51,7 @@
                                        class="tire-table-checkbox">
                             </th>
 
-                            <td class="table-tire-name-cell">
+                            <td class="table-tire-name-cell" data-link="{{ route('motociklu-riepas') }}">
                                 <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                                    title='{!! App\Helper\Image::show('moto', $tire->make_id) !!}'
                                    href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
