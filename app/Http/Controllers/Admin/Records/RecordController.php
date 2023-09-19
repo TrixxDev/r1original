@@ -733,6 +733,7 @@ class RecordController extends Controller
         // Vajag uztaisīt IF'u ar pārbaudi uz to vai ir emptyData, lai returnā padotu dažādus datus
       }
     } else {
+      if (!$slot) $slot = new Slot;
       $slot->timestamps = false;
       $slot->queue_id = $dopParams['queue_id'];
       $slot->date = $dopParams['date'];
