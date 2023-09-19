@@ -682,6 +682,8 @@ $(document).ready(function() {
           }
           if (slot.find('div.slot').length > 0) {
             slot.find('div.slot').remove();
+          } else if (slot.find('span.slot').length > 0) {
+            slot.find('span.slot').remove();
           } else {
             slot.find('button.status').remove();
           }
