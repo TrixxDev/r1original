@@ -402,17 +402,7 @@ $(document).ready(function() {
             $('<div class="last-info">Pieraksts izveidots no ' + data.is_mobile + '<br>Izveidots: ' + data.createtime + ' (' + data.createuser + ')<br>Labots: ' + data.edittime + ' (' + data.edituser + ')</div>').insertAfter($('.modal#slotModal .form-group').last());
           }
 
-          $('#slotModal .check-input').on('input', function() {
-            numNonEmptyInputs = $('#slotModal .check-input').filter(function() {
-              return $(this).val().trim() !== ''; // Check if input value is non-empty
-            }).length;
 
-            if (numNonEmptyInputs > 0) {
-              $('#slotModal #f_date, #slotModal #f_time, #slotModal #f_office').removeAttr('disabled').prop('disabled', false).removeAttr('style');
-            } else {
-              $('#slotModal #f_date, #slotModal #f_time, #slotModal #f_office').attr('disabled', true).attr('style', 'background: #f6f6f6').prop('disabled', true);
-            }
-          });
 
           $('#record-modal #working_days, #record-modal #working_hours, #record-modal #office_queues').removeAttr('disabled').prop('disabled', false);
           $('#slotModal #f_car').val(takenby.car_brand);
@@ -431,12 +421,7 @@ $(document).ready(function() {
           discount = data.comment;
         }
 
-        if (data.office_id && data.takenby == 'false') {
-          $('#slotModal #f_date, #slotModal #f_time, #slotModal #f_office').attr('disabled', true).prop('disabled', true).attr('style', 'background: #f6f6f6');
-          empty_slot = true;
-        } else {
-          empty_slot = false;
-        }
+        empty_slot = !!(data.office_id && data.takenby == 'false');
 
         if (discount) {
           let found = false;
@@ -618,24 +603,6 @@ $(document).ready(function() {
       default: {
         $('.rims-with-select-row').hide();
         $('.temp_save_nr').hide();
-      }
-    }
-  }).on('change', '#slotModal #f_status', function() {
-    switch ($('option:selected', this).val()) {
-      case '0':
-      case '3': {
-        $('#slotModal #f_date, #slotModal #f_time, #slotModal #f_office').attr('disabled', true).prop('disabled', true).attr('style', 'background: #f6f6f6');
-        break;
-      }
-      default: {
-
-        if (empty_slot === true) {
-          $('#slotModal #f_date, #slotModal #f_time, #slotModal #f_office').attr('disabled', true).prop('disabled', true).attr('style', 'background: #f6f6f6');
-        } else {
-          $('#slotModal #f_date, #slotModal #f_time, #slotModal #f_office').removeAttr('disabled').prop('disabled', false).removeAttr('style');
-          // if (numNonEmptyInputs)
-        }
-        break;
       }
     }
   });

@@ -50,6 +50,8 @@
 
                                                 $numberOfSteps = ceil($opentime->diffInMinutes($closetime) / $timeStep);
 
+                                                $startSlot = $opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep;
+
                                                 $workingOffice = \App\Models\Office::where('office_id', $workingDay->office_id)->first();
                                             @endphp
                                             @if ($workingOffice->office_id == $office->office_id)
@@ -57,13 +59,13 @@
                                                     @if ($workingDay->is_opened == 1)
                                                         <div class="table office_{{ $workingOffice->office_id }}" @if ($workingDay->is_half) data-half="1" @endif data-queue-id="{{ $workingDay->queue_id }}">
                                                             <div class="title text-sm">{{ $workingOffice->title }}</div>
-                                                            @for ($i = $opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep; $i <= $numberOfSteps; $i++)
-
+                                                            @for ($i = $startSlot; $i <= $numberOfSteps; $i++)
                                                                 @php
                                                                     $halfAcService = \App\Models\Service::where('f_ac', 1)->where('enabled', 1)->first();
                                                                     $halfMotoService = \App\Models\Service::where('f_moto', 1)->where('enabled', 1)->first();
                                                                     $slot = \App\Models\Slot::where('queue_id', $workingDay->queue_id)->where('date', $workingDay->date)->where('iorder', $i)->first();
                                                                     $currentTime = $opentime->copy()->addMinutes($timeStep * $i)->format('H:i');
+
                                                                 @endphp
 
                                                                 @if (!is_null($slot))
@@ -206,33 +208,45 @@
                                                                     @endif
                                                                     @if ($i % 2 == 1)
                                                                         @if ($slot)
-                                                                            <div class="time-status inline-flex time-taken" data-iorder="{{ $i }}">
+                                                                            <div class="time-status flex time-taken" data-iorder="{{ $i }}">
                                                                                 <div class="time-slot">{{ $currentTime }}</div>{!! $content !!}
                                                                             </div>
                                                                         @else
-                                                                            <div class="time-status inline-flex {{ $slotClass }}" data-iorder="{{ $i }}">
-                                                                                <div class="time-slot">{{ $currentTime }}</div><button class="slot status slot-free"></button>
+                                                                            @if ($i >= 0)
+                                                                            <div class="time-status flex {{ $slotClass }}" data-iorder="{{ $i }}">
+                                                                                <div class="time-slot">{{ $currentTime }}</div><button class="slot status slot-free" style="background: #bfbfbf"></button>
                                                                             </div>
+                                                                            @else
+                                                                            <div class="time-status flex time-free" data-iorder="{{ $i }}">
+                                                                                <div class="time-slot"></div><div style="cursor: default" class="slot status"></div>
+                                                                            </div>
+                                                                            @endif
                                                                         @endif
                                                                     @else
                                                                         @if ($slot)
-                                                                            <div class="time-status inline-flex time-taken" data-iorder="{{ $i }}">
+                                                                            <div class="time-status flex time-taken" data-iorder="{{ $i }}">
                                                                                 <div class="time-slot">{{ $currentTime }}</div>{!! $content !!}
                                                                             </div>
                                                                         @else
-                                                                            <div class="time-status inline-flex {{ $slotClass }}" data-iorder="{{ $i }}">
+                                                                            @if ($i >= 0)
+                                                                            <div class="time-status flex {{ $slotClass }}" data-iorder="{{ $i }}">
                                                                                 <div class="time-slot">{{ $currentTime }}</div><button class="slot status slot-free"></button>
                                                                             </div>
+                                                                            @else
+                                                                            <div class="time-status flex time-free" data-iorder="{{ $i }}">
+                                                                                <div class="time-slot"></div><div style="cursor: default" class="slot status"></div>
+                                                                            </div>
+                                                                            @endif
                                                                         @endif
                                                                     @endif
                                                                 @else
                                                                     @if ($i >= 0)
-                                                                        <div class="time-status inline-flex {{ $slotClass }}" data-iorder="{{ $i }}">
+                                                                        <div class="time-status flex {{ $slotClass }}" data-iorder="{{ $i }}">
                                                                             <div class="time-slot">{{ $currentTime }}</div>{!! $content !!}
                                                                         </div>
                                                                     @else
-                                                                        <div class="time-status inline-flex {{ $slotClass }}" data-iorder="{{ $i }}">
-                                                                            <div class="time-slot">{{ $currentTime }}</div><div class="slot status"></div>
+                                                                        <div class="time-status flex time-disabled" data-iorder="{{ $i }}">
+                                                                            <div class="time-slot"></div><div style="cursor: default" class="slot status"></div>
                                                                         </div>
                                                                     @endif
                                                                 @endif

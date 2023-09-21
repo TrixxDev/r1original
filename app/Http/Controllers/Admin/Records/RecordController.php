@@ -660,14 +660,18 @@ class RecordController extends Controller
         } else {
           if ($move_slot) {
 
+            $newIorder = Slot::getSlotNumber($dopParams['new_time'], $dopParams['new_date'], $dopParams['new_queue']);
+            if (!is_numeric($newIorder)) return json_encode(['failed' => true, 'failed_msg' => $newIorder]);
+
             $is_slot_taken = Slot::where('date', $dopParams['new_date'])
               ->where('queue_id', $dopParams['new_queue'])
-              ->where('iorder', $iorder)
+              ->where('iorder', $newIorder)
               ->where('takenby', '!=', NULL)
               ->where('status', 1)
               ->count();
 
             if ($is_slot_taken) return json_encode(['failed' => true, 'failed_msg' => 'Laiks ' . $dopParams['new_time'] . ' ir aizņemts!']);
+
 
             // Ja slots ir jāpārvieto
             $slot_id = $slot->slot_id;
@@ -679,7 +683,7 @@ class RecordController extends Controller
             $slot->timestamps = false;
             $slot->queue_id = $dopParams['new_queue'];
             $slot->date = $dopParams['new_date'];
-            $slot->iorder = $iorder;
+            $slot->iorder = $newIorder;
             $slot->status = 1;
             $slot->takenby = $newFormData;
             $slot->comment = $discount;
@@ -689,7 +693,7 @@ class RecordController extends Controller
             $slot->edituser = Auth::user() ? Auth::user()->id : 0;
             $slot->save();
 
-            return json_encode(['status' => 1, 'moved_slot_admin' => true, 'new_iorder' => (string) $iorder]);
+            return json_encode(['status' => 1, 'moved_slot_admin' => true, 'new_iorder' => (string) $newIorder]);
           } else {
             // Ja slots nav jāpārvieto
             $slot_id = $slot->slot_id;

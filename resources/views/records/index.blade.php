@@ -123,37 +123,37 @@
                                                                             if ($slot) {
                                                                                 if (date('Y-m-d') == $workingDay->date) {
                                                                                   $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-taken' : $slotClass;
-                                                                                  $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                                                  $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                                                 } else {
-                                                                                  $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                                                  $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                                                 }
                                                                             } else {
                                                                                 if (date('Y-m-d') == $workingDay->date) {
                                                                                   if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
                                                                                     if ($halfMotoService) {
-                                                                                        $content = '<div class="time-status inline-flex time-free" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
+                                                                                        $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
                                                                                     } else {
-                                                                                        $content = '<div class="time-status inline-flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot"></div></div>';
+                                                                                        $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot"></div></div>';
                                                                                     }
                                                                                   } else {
                                                                                     if ($i >= 0) {
-                                                                                      $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot">Aizņemts</div></div>';
+                                                                                      $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot">Aizņemts</div></div>';
                                                                                     } else {
-                                                                                      $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
+                                                                                      $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                                                     }
                                                                                   }
                                                                                 } else {
                                                                                     if ($halfMotoService) {
                                                                                         if ($i >= 0) {
-                                                                                          $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
+                                                                                          $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
                                                                                         } else {
-                                                                                          $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status"></button></div>';
+                                                                                          $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                                                         }
                                                                                     } else {
                                                                                         if ($i >= 0) {
-                                                                                          $content = '<div class="time-status inline-flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot"></div></div>';
+                                                                                          $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot"></div></div>';
                                                                                         } else {
-                                                                                          $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
+                                                                                          $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                                                         }
                                                                                     }
                                                                                 }
@@ -162,37 +162,37 @@
                                                                             if ($slot) {
                                                                                 if (date('Y-m-d') == $workingDay->date) {
                                                                                   $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-taken' : $slotClass;
-                                                                                  $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                                                  $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                                                 } else {
-                                                                                  $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                                                  $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                                                 }
                                                                             } else {
                                                                                 if (date('Y-m-d') == $workingDay->date) {
                                                                                   if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
                                                                                     if ($halfAcService) {
-                                                                                        $content = '<div class="time-status inline-flex time-free" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
+                                                                                        $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
                                                                                     } else {
-                                                                                        $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
+                                                                                        $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
                                                                                     }
                                                                                   } else {
                                                                                     if ($i >= 0) {
-                                                                                      $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot">Aizņemts</div></div>';
+                                                                                      $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot">Aizņemts</div></div>';
                                                                                     } else {
-                                                                                      $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
+                                                                                      $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                                                     }
                                                                                   }
                                                                                 } else {
                                                                                     if ($halfAcService) {
                                                                                         if ($i >= 0) {
-                                                                                          $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
+                                                                                          $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
                                                                                         } else {
-                                                                                          $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
+                                                                                          $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
                                                                                         }
                                                                                     } else {
                                                                                         if ($i >= 0) {
-                                                                                          $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
+                                                                                          $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
                                                                                         } else {
-                                                                                          $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
+                                                                                          $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                                                         }
                                                                                     }
                                                                                 }
@@ -200,9 +200,9 @@
                                                                         }
                                                                     } else {
                                                                         if ($i >= 0) {
-                                                                            $content = '<div class="time-status inline-flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                                            $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                                         } else {
-                                                                            $content = '<div class="time-status inline-flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status"></button></div>';
+                                                                            $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                                         }
                                                                     }
                                                                 @endphp
@@ -391,7 +391,7 @@
     {{--        <div class="relative w-full max-w-4xl max-h-full">--}}
     {{--            <!-- Modal content -->--}}
     {{--            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">--}}
-    {{--                <button type="button" class="close-modal absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white">--}}
+    {{--                <button type="button" class="close-modal absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto flex items-center dark:hover:bg-gray-800 dark:hover:text-white">--}}
     {{--                    <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>--}}
     {{--                    <span class="sr-only">Close modal</span>--}}
     {{--                </button>--}}
@@ -463,7 +463,7 @@
 
     {{--                        </div>--}}
     {{--                        <div class="flex">--}}
-    {{--                            <button type="button" class="close-modal text-white bg-yellow-800 hover:bg-yellow-900 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-xs px-3 py-1.5 mr-2 text-center inline-flex items-center dark:bg-yellow-300 dark:text-gray-800 dark:hover:bg-yellow-400 dark:focus:ring-yellow-800" aria-label="Close">--}}
+    {{--                            <button type="button" class="close-modal text-white bg-yellow-800 hover:bg-yellow-900 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-xs px-3 py-1.5 mr-2 text-center flex items-center dark:bg-yellow-300 dark:text-gray-800 dark:hover:bg-yellow-400 dark:focus:ring-yellow-800" aria-label="Close">--}}
     {{--                                Aizvērt--}}
     {{--                            </button>--}}
     {{--                        </div>--}}

@@ -44,8 +44,8 @@
     public $dayTitles;
     public $timeStep = 15;
 
-    public $startTime = '09:00';
-    public $closeTime = '19:00';
+    public $startTime = '07:00';
+    public $closeTime = '21:00';
   /**
    * Create a new controller instance.
    *
@@ -805,7 +805,7 @@
       }
 
       $start = Carbon::createFromTimeString($item->newOpenTime);
-      $end = Carbon::createFromTimeString($item->oldCloseTime)->subMinutes($this->timeStep);
+      $end = Carbon::createFromTimeString($item->oldCloseTime)->subMinutes($item->timeStep);
 
 
       if ($item->changeVal == 1) {

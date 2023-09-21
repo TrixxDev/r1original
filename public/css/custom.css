@@ -6457,3 +6457,11 @@ hr.admin-comments {
     margin-bottom: 6px;
     border-top: 1px solid #cbcbcb;
 }
+
+.toast {
+    background: rgba(255,255,255,.85)!important;
+}
+
+.flex {
+    display: flex;
+}
