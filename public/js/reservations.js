@@ -209,9 +209,9 @@ $(document).ready(function() {
               'message': data.message,
             })
           }
+          window.location.reload();
         },
         complete: function() {
-          window.location.reload();
 
         }
       });
@@ -293,7 +293,6 @@ $(document).ready(function() {
       complete: function() {
 
         setTimeout(function() {
-          window.location.reload();
           // $('#queueModal .loader-block').hide();
         }, 1000);
       }
@@ -319,7 +318,6 @@ $(document).ready(function() {
         $('#times-modal .loader').fadeIn();
       },
       success: function(data) {
-        window.location.reload();
         // data = JSON.parse(data);
         //
         // let resData = {};
@@ -330,6 +328,7 @@ $(document).ready(function() {
         //
         // socket.send(JSON.stringify(resData));
 
+        window.location.reload();
       }
     });
 
@@ -444,10 +443,10 @@ $(document).ready(function() {
           $('.reservation_edit .select-discount-option option').first().attr('selected', true).prop('selected', true);
           $('.reservation_edit .select-discount-option').next().html('').hide();
         }
+        window.location.reload();
       },
       complete: function() {
         setTimeout(function() {
-          window.location.reload();
           // $('#slotModal .loader-block').hide();
         }, 1000);
       }
@@ -576,11 +575,11 @@ $(document).ready(function() {
 
         socket.send(JSON.stringify(wsData));
 
+        window.location.reload();
       },
       complete: function() {
 
         setTimeout(function() {
-          window.location.reload();
           // $('#slotModal #service .form-check').each(function() {
           //   $(this).find('input').removeAttr('checked');
           // });
