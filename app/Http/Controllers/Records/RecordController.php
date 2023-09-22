@@ -631,7 +631,7 @@
 
           foreach (range(($opentime->diffInMinutes($closetime) / $this->timeStep - $openTime1->diffInMinutes($closetime) / $this->timeStep), $numberOfSteps) as $i) {
             $slotNumber = $i;
-            $currentTime = $opentime->copy()->addMinutes($this->timeStep * $slotNumber)->format('H:i');
+            $currentTime = $opentime->copy()->addMinutes($this->timeStep * $i)->format('H:i');
             $slot = Slot::where('date', $date)->where('queue_id', $workingDay->queue_id)->where('iorder', $slotNumber)->first();
 
             $slots[] = ['content' => $slot, 'queue_id' => $workingDay->queue_id, 'iorder' => $i, 'time' => $currentTime];
@@ -668,7 +668,7 @@
         foreach ($slots as $slot) {
           $vars = ['takenBy', 'device', 'phone', 'storageBin', 'createduser', 'editeduser', 'created', 'edited', 'lastAction', 'lastAction', 'purpose', 'slotText'];
           foreach ($vars as $var) $$var = null;
-          $currentTime = $opentime->copy()->addMinutes($this->timeStep * $slot['iorder'])->format('H:i');
+          $currentTime = $slot['time'];
           $queue_id = $slot['queue_id'];
           $slot = $slot['content'];
           if (!is_null($slot)) {
