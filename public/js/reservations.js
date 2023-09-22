@@ -211,6 +211,7 @@ $(document).ready(function() {
           }
         },
         complete: function() {
+          window.location.reload();
 
         }
       });
@@ -292,7 +293,8 @@ $(document).ready(function() {
       complete: function() {
 
         setTimeout(function() {
-          $('#queueModal .loader-block').hide();
+          window.location.reload();
+          // $('#queueModal .loader-block').hide();
         }, 1000);
       }
     });
@@ -317,15 +319,16 @@ $(document).ready(function() {
         $('#times-modal .loader').fadeIn();
       },
       success: function(data) {
-        data = JSON.parse(data);
-
-        let resData = {};
-        resData.times = data;
-        resData.times.queue_id = queue_id;
-        resData.times.date = date;
-        resData.times.changeVal = changeVal;
-
-        socket.send(JSON.stringify(resData));
+        window.location.reload();
+        // data = JSON.parse(data);
+        //
+        // let resData = {};
+        // resData.times = data;
+        // resData.times.queue_id = queue_id;
+        // resData.times.date = date;
+        // resData.times.changeVal = changeVal;
+        //
+        // socket.send(JSON.stringify(resData));
 
       }
     });
@@ -444,7 +447,8 @@ $(document).ready(function() {
       },
       complete: function() {
         setTimeout(function() {
-          $('#slotModal .loader-block').hide();
+          window.location.reload();
+          // $('#slotModal .loader-block').hide();
         }, 1000);
       }
     });
@@ -576,12 +580,13 @@ $(document).ready(function() {
       complete: function() {
 
         setTimeout(function() {
-          $('#slotModal #service .form-check').each(function() {
-            $(this).find('input').removeAttr('checked');
-          });
-          $('#slotModal .loader-block').hide();
-          $('#slotModal form').trigger('reset');
-          $('#slotModal').modal('hide');
+          window.location.reload();
+          // $('#slotModal #service .form-check').each(function() {
+          //   $(this).find('input').removeAttr('checked');
+          // });
+          // $('#slotModal .loader-block').hide();
+          // $('#slotModal form').trigger('reset');
+          // $('#slotModal').modal('hide');
         }, 1000);
       }
     });
