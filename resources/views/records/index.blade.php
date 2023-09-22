@@ -125,13 +125,13 @@
                                                                                   $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-taken' : $slotClass;
                                                                                   $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                                                 } else {
-                                                                                  $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                                                  $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                                                 }
                                                                             } else {
                                                                                 if (date('Y-m-d') == $workingDay->date) {
                                                                                   if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
                                                                                     if ($halfMotoService) {
-                                                                                        $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
+                                                                                        $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
                                                                                     } else {
                                                                                         $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot"></div></div>';
                                                                                     }
