@@ -630,10 +630,11 @@
           $numberOfSteps = ceil($opentime->diffInMinutes($closetime) / $this->timeStep);
 
           foreach (range(($opentime->diffInMinutes($closetime) / $this->timeStep - $openTime1->diffInMinutes($closetime) / $this->timeStep), $numberOfSteps) as $i) {
-            $slotNumber = $i;
+            $slotNumber = ($i >= 0) ?? $i ;
+            $currentTime = $opentime->copy()->addMinutes($this->timeStep * $slotNumber)->format('H:i');
             $slot = Slot::where('date', $date)->where('queue_id', $workingDay->queue_id)->where('iorder', $slotNumber)->first();
 
-            $slots[] = ['content' => $slot, 'queue_id' => $workingDay->queue_id, 'iorder' => $i];
+            $slots[] = ['content' => $slot, 'queue_id' => $workingDay->queue_id, 'iorder' => $i, 'time' => $currentTime];
 
           }
         }
