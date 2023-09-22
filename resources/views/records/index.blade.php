@@ -69,12 +69,12 @@
                                                                                     $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'time-free' : 'slot-gray';
                                                                                     $content = $slotClass === 'time-free'
                                                                                         ? '<div class="slot free-slot-link available-slot">Brīvs</div>'
-                                                                                        : '<div class="slot unavailable taken-slot">Aizņemts</div>';
+                                                                                        : '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
                                                                                         if ($slot->comment !== null) {
                                                                                             $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'time-free discount' : 'slot-gray';
                                                                                             $content = $slotClass === 'time-free discount'
                                                                                                 ? '<button class="status free-slot-link discount-slot available-slot">' . $slot->comment . '</button>'
-                                                                                                : '<div class="slot unavailable taken-slot">Aizņemts</div>';
+                                                                                                : '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
                                                                                         }
                                                                                 }
                                                                                 break;
@@ -95,7 +95,7 @@
                                                                                       $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'taken-slot' : 'slot-gray';
                                                                                       $content = $slotClass === 'taken-slot'
                                                                                         ? '<div class="slot taken-slot">xxxxx</div>'
-                                                                                        : '<div class="slot unavailable taken-slot">Aizņemts</div>';
+                                                                                        : '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
                                                                                     }
                                                                                 }
                                                                                 break;
@@ -113,7 +113,7 @@
                                                                                 $content = '<button class="status free-slot-link available-slot">Brīvs</button>';
                                                                             } else {
                                                                                 $slotClass = 'time-taken';
-                                                                                $content = '<div class="slot unavailable taken-slot">Aizņemts</div>';
+                                                                                $content = '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
                                                                             }
                                                                         }
                                                                     }

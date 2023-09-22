@@ -542,255 +542,256 @@ $(document).ready(function() {
   }
 
   // Listen for WebSocket messages
-  socket.addEventListener('message', function(event) {
-    const data = JSON.parse(event.data);
-
-    if (!data.times && !data.timeChangedState) {
-      let slot = $('.schedule-table.dashboard .grid[data-date="' + data.wsParams.date + '"] .table[data-queue-id="' + data.wsParams.queue_id + '"] .time-status[data-iorder="' + data.wsParams.iorder + '"]');
-      let mobile_slot = $('#mobile-slots-choice .time-list[data-date="' + data.wsParams.date + '"] .time-slot[data-queue-id="' + data.wsParams.queue_id + '"][data-iorder="' + data.wsParams.iorder + '"]');
-
-      if (!isNaN(data.wsParams.plate) || data.wsParams.plate != null) {
-        plate = data.wsParams.plate;
-      } else {
-        plate = '';
-      }
-
-      if (data.new_slot_client) {
-        slot.removeClass('time-free').addClass('time-taken').find('button').fadeOut().remove();
-        let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
-        slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
-
-        mobile_slot.find('.slot').removeClass('active').removeClass('available').addClass('unavailable');
-        mobile_slot.find('.slot-text').html('Aizņemts');
-
-      } else if (data.slot_admin.edited_slot_admin) {
-
-        if (data.dopParams.new_date !== data.dopParams.date || data.dopParams.new_queue !== data.dopParams.queue_id || data.dopParams.new_time !== data.dopParams.time) {
-          slot = $('.schedule-table.dashboard .grid[data-date="' + data.dopParams.new_date + '"] .table[data-queue-id="' + data.dopParams.new_queue + '"] .time-status[data-iorder="' + data.dopParams.new_iorder + '"]');
-          mobile_slot = $('#mobile-slots-choice .time-list[data-date="' + data.wsParams.new_date + '"] .time-slot[data-queue-id="' + data.wsParams.new_queue + '"][data-iorder="' + data.wsParams.new_iorder + '"]');
-        }
-
-        if (data.status == 0) {
-          if (data.wsParams.discount !== null) {
-            slot.addClass('discount');
-            slot.find('button.status').addClass('discount-slot').text(data.wsParams.discount);
-          }
-        } else if (data.status == 1) {
-          if (plate === null) plate = '';
-          if (slot.hasClass('time-taken')) {
-            slot.find('div.slot').fadeOut().remove();
-            let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
-            slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
-          } else if (slot.hasClass('time-free')) {
-            slot.removeClass('time-free').addClass('time-taken').find('button').fadeOut().remove();
-            let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
-            slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
-          } else if (slot.hasClass('time-offer')) {
-            slot.removeClass('time-offer').addClass('time-taken').find('button').fadeOut().remove();
-            let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
-            slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
-          } else if (slot.hasClass('time-closed')) {
-            slot.removeClass('time-closed').addClass('time-taken').find('span').fadeOut().remove();
-            let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
-            slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
-          } else if (slot.hasClass('time-gray')) {
-            slot.removeClass('time-gray').addClass('time-taken').find('span').fadeOut().remove();
-            let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
-            slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
-          }
-        } else if (data.status == 3) {
-          // Desktop version
-          if (slot.hasClass('time-free')) {
-            slot.removeClass('time-free').addClass('time-closed').find('button').fadeOut().remove();
-            slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
-          } else if (slot.hasClass('time-taken')) {
-            slot.removeClass('time-taken').addClass('time-closed').find('div.slot').fadeOut().remove();
-            slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
-          } else if (slot.hasClass('time-offer')) {
-            slot.removeClass('time-offer').addClass('time-closed').find('div.slot').fadeOut().remove();
-            slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
-          } else if (slot.hasClass('time-gray')) {
-            slot.removeClass('time-gray').addClass('time-closed').find('div.slot').fadeOut().remove();
-            slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
-          }
-
-          // Mobile version
-
-        }
-      } else if (data.slot_admin.moved_slot_admin) {
-        if (data.status == 2) {
-          console.log('status - 2, data - ' + data.dopParams.new_iorder);
-        } else if (data.status == 1) {
-          let new_slot = $('.schedule-table.dashboard .grid[data-date="' + data.dopParams.new_date + '"] .table[data-queue-id="' + data.dopParams.new_queue + '"] .time-status[data-iorder="' + data.dopParams.new_iorder + '"]');
-
-          let old_slot_classes = slot.prop('classList');
-          let new_slot_classes = new_slot.prop('classList');
-
-          let old_slot_button = slot.find('div.slot').clone();
-          let new_slot_button = new_slot.find('button').clone();
-
-          new_slot.find('button').first().remove();
-          slot.find('div.slot').first().remove();
-          new_slot.append(old_slot_button).hide().fadeIn();
-          slot.append(new_slot_button).hide().fadeIn();
-
-          new_slot.attr('data-old-classes', old_slot_classes);
-          slot.attr('data-new-classes', new_slot_classes);
-          new_slot.removeAttr('class').attr('class', new_slot.attr('data-old-classes')).removeAttr('data-old-classes');
-          slot.removeAttr('class').attr('class', slot.attr('data-new-classes')).removeAttr('data-new-classes');
-
-          // let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
-          // if (data.dopParams.edited === true) {
-          //     if (slot.find('span').length > 0) {
-          //         slot.find('span').first().remove();
-          //         new_slot.attr('class', 'time-status time-taken inline-flex').append('<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;">' + successText + '</span>').hide().fadeIn();
-          //     } else if (slot.find('button').length > 0) {
-          //         // slot.find('button').first().remove();
-          //     }
-          // } else {
-          //     if (slot.find('span').length > 0) {
-          //         slot.find('span').first().remove();
-          //         new_slot.attr('class', 'time-status time-taken inline-flex').append('<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;">' + successText + '</span>').hide().fadeIn();
-          //     } else if (slot.find('button').length > 0) {
-          //         // slot.find('button').first().remove();
-          //     }
-          // }
-
-          iorder = data.dopParams.new_iorder;
-          queue_id = data.dopParams.new_queue;
-          date = data.dopParams.new_date;
-          time = data.dopParams.new_time;
-          office = data.dopParams.new_office;
-          slot = new_slot;
-        } else {
-
-        }
-      } else if (data.slot_admin.deleted_slot_admin) {
-        if (data.status == 2) {
-          slot.removeClass('time-taken').addClass('time-offer');
-          slot.find('span').remove();
-          slot.append('<button class="bg-orange-500 hover:bg-orange-200 text-black py-2 px-4 status">' + data.comment.comment + '</button>').hide().fadeIn();
-        } else {
-          if (slot.hasClass('time-taken')) {
-            slot.removeClass('time-taken').addClass('time-free');
-          } else if (slot.hasClass('time-closed')) {
-            slot.removeClass('time-closed').addClass('time-free');
-          } else if (slot.hasClass('time-gray')) {
-            slot.removeClass('time-gray').addClass('time-free');
-          } else if (slot.hasClass('discount')) {
-            slot.removeClass('discount');
-          }
-          if (slot.find('div.slot').length > 0) {
-            slot.find('div.slot').remove();
-          } else if (slot.find('span.slot').length > 0) {
-            slot.find('span.slot').remove();
-          } else {
-            slot.find('button.status').remove();
-          }
-          slot.append('<button class="status free-slot-link available-slot">Brīvs</button>').hide().fadeIn();
-        }
-      }
-    } else if (data.timeChangedState === 1) {
-      $('#toasts .toast').each(function() {
-        $(this).fadeOut(function() {
-          $(this).remove();
-        });
-      });
-      $.toast({
-        autoDismiss: false,
-        title: 'Paziņojums',
-        message: 'Notika izmaiņas darba laikos, atjaunojiet lapu<br><button onclick="location.reload()" class="btn btn-success" style="margin-top: 5px;">Pārlādēt</button>'
-      });
-    } else {
-      if (data.times.changeVal) {
-
-        let action;
-        let closedTime = false;
-        if (data.times.newCloseTime > data.times.oldCloseTime) {
-          action = 'add';
-        } else if (data.times.newCloseTime === data.times.oldCloseTime) {
-          action = null;
-        } else {
-          action = 'remove';
-        }
-
-        let newCloseTime = data.times.newCloseTime;
-        let oldCloseTime = data.times.oldCloseTime;
-
-        // Convert the time strings to Date objects for easier manipulation
-        let startTime = new Date('2000-01-01T' + newCloseTime + ':00');
-        let endTime = new Date('2000-01-01T' + oldCloseTime + ':00');
-
-        // Define the time step in milliseconds (15 minutes)
-        let timeStep = data.times.timeStep * 60 * 1000;
-
-        let times = [];
-
-        // Start the loop from the start time and increment by the time step
-        for (let currentTime = startTime; currentTime < endTime; currentTime.setTime(currentTime.getTime() + timeStep)) {
-          // Get the current time in the desired format (e.g., HH:mm)
-          let formattedTime = currentTime.getHours() + ':' + ('0' + currentTime.getMinutes()).slice(-2);
-
-          // Add the formatted time to the array
-          times.push(formattedTime);
-        }
-
-        // $('.grid[data-date="' + data.times.date + '"] .table[data-queue-id="' + data.times.queue_id + '"] .time-status .time-slot').each(function() {
-        //     if (times.includes($(this).html())) {
-        //         $(this).parent().fadeOut(function() {
-        //             $(this).remove();
-        //         })
-        //     }
-        // });
-
-        if (times.includes($('.modal#reservation .timeOfDay').html()) && $('.modal#reservation').is(':visible')) {
-          closedTime = true;
-          $('.modal#reservation #submit-reservation').remove();
-          $('.modal#reservation #close-modal').text('Aizvērt');
-          $('.modal#reservation .reservation-modal-body .container-fluid').slideUp();
-
-          let alertMessage = '<div class="container-fluid"><div class="row"><div class="col-md-12">' +
-            '<div class="alert alert-warning">Atvainojamies, darba laiks saīsinājās, lūgums izvēlēties citu pieraksta laiku</div>' +
-            '</div></div></div>';
-
-          $(alertMessage).insertAfter($('.modal#reservation .reservation-modal-body .container-fluid'));
-
-          $('.modal#reservation #close-modal').one('click', function() {
-            location.reload();
-          });
-        } else {
-          // if (!window.Notification) {
-          //   console.log('Browser does not support notifications.');
-          // } else {
-          //   // check if permission is already granted
-          //   if (Notification.permission === 'granted') {
-          //     // show notification here
-          //     var notify = new Notification('Pasūtījumi', {
-          //       body: 'Ir izveidots jauns pasūtījums',
-          //       icon: 'https://r1riepas.lv/img/r1-riepas-logo-1515661637.jpg',
-          //     });
-          //   } else {
-          //     // request permission from user
-          //     Notification.requestPermission().then(function (p) {
-          //       if (p === 'granted') {
-          //         // show notification here
-          //         var notify = new Notification('Pasūtījumi', {
-          //           body: 'Ir izveidots jauns pasūtījums',
-          //           icon: 'https://r1riepas.lv/img/r1-riepas-logo-1515661637.jpg',
-          //         });
-          //       } else {
-          //         console.log('User blocked notifications.');
-          //       }
-          //     }).catch(function (err) {
-          //       console.error(err);
-          //     });
-          //   }
-          // }
-        }
-
-      }
-    }
-  });
+  // socket.addEventListener('message', function(event) {
+  //   const data = JSON.parse(event.data);
+  //
+  //   if (!data.times && !data.timeChangedState) {
+  //     let slot = $('.schedule-table.dashboard .grid[data-date="' + data.wsParams.date + '"] .table[data-queue-id="' + data.wsParams.queue_id + '"] .time-status[data-iorder="' + data.wsParams.iorder + '"]');
+  //     let mobile_slot = $('#mobile-slots-choice .time-list[data-date="' + data.wsParams.date + '"] .time-slot[data-queue-id="' + data.wsParams.queue_id + '"][data-iorder="' + data.wsParams.iorder + '"]');
+  //
+  //     if (!isNaN(data.wsParams.plate) || data.wsParams.plate != null) {
+  //       plate = data.wsParams.plate;
+  //     } else {
+  //       plate = '';
+  //     }
+  //
+  //     if (data.new_slot_client) {
+  //       slot.removeClass('time-free').addClass('time-taken').find('button').fadeOut().remove();
+  //       let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
+  //       slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
+  //
+  //       mobile_slot.find('.slot').removeClass('active').removeClass('available').addClass('unavailable');
+  //       mobile_slot.find('.slot-text').html('Aizņemts');
+  //
+  //     } else if (data.slot_admin.edited_slot_admin) {
+  //
+  //       if (data.dopParams.new_date !== data.dopParams.date || data.dopParams.new_queue !== data.dopParams.queue_id || data.dopParams.new_time !== data.dopParams.time) {
+  //         slot = $('.schedule-table.dashboard .grid[data-date="' + data.dopParams.new_date + '"] .table[data-queue-id="' + data.dopParams.new_queue + '"] .time-status[data-iorder="' + data.dopParams.new_iorder + '"]');
+  //         mobile_slot = $('#mobile-slots-choice .time-list[data-date="' + data.wsParams.new_date + '"] .time-slot[data-queue-id="' + data.wsParams.new_queue + '"][data-iorder="' + data.wsParams.new_iorder + '"]');
+  //       }
+  //
+  //       if (data.status == 0) {
+  //         if (data.wsParams.discount !== null) {
+  //           slot.addClass('discount');
+  //           slot.find('button.status').addClass('discount-slot').text(data.wsParams.discount);
+  //         }
+  //       } else if (data.status == 1) {
+  //         if (plate === null) plate = '';
+  //         if (slot.hasClass('time-taken')) {
+  //           slot.find('div.slot').fadeOut().remove();
+  //           let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
+  //           slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
+  //         } else if (slot.hasClass('time-free')) {
+  //           slot.removeClass('time-free').addClass('time-taken').find('button').fadeOut().remove();
+  //           let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
+  //           slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
+  //         } else if (slot.hasClass('time-offer')) {
+  //           slot.removeClass('time-offer').addClass('time-taken').find('button').fadeOut().remove();
+  //           let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
+  //           slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
+  //         } else if (slot.hasClass('time-closed')) {
+  //           slot.removeClass('time-closed').addClass('time-taken').find('span').fadeOut().remove();
+  //           let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
+  //           slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
+  //         } else if (slot.hasClass('time-gray')) {
+  //           slot.removeClass('time-gray').addClass('time-taken').find('span').fadeOut().remove();
+  //           let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
+  //           slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
+  //         }
+  //       } else if (data.status == 3) {
+  //         // Desktop version
+  //         if (slot.hasClass('time-free')) {
+  //           slot.removeClass('time-free').addClass('time-closed').find('button').fadeOut().remove();
+  //           slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
+  //         } else if (slot.hasClass('time-taken')) {
+  //           slot.removeClass('time-taken').addClass('time-closed').find('div.slot').fadeOut().remove();
+  //           slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
+  //         } else if (slot.hasClass('time-offer')) {
+  //           slot.removeClass('time-offer').addClass('time-closed').find('div.slot').fadeOut().remove();
+  //           slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
+  //         } else if (slot.hasClass('time-gray')) {
+  //           slot.removeClass('time-gray').addClass('time-closed').find('div.slot').fadeOut().remove();
+  //           slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
+  //         }
+  //
+  //         // Mobile version
+  //
+  //       }
+  //     } else if (data.slot_admin.moved_slot_admin) {
+  //       if (data.status == 2) {
+  //         console.log('status - 2, data - ' + data.dopParams.new_iorder);
+  //       } else if (data.status == 1) {
+  //         let new_slot = $('.schedule-table.dashboard .grid[data-date="' + data.dopParams.new_date + '"] .table[data-queue-id="' + data.dopParams.new_queue + '"] .time-status[data-iorder="' + data.dopParams.new_iorder + '"]');
+  //
+  //         let old_slot_classes = slot.prop('classList');
+  //         let new_slot_classes = new_slot.prop('classList');
+  //
+  //         let old_slot_button = slot.find('div.slot').clone();
+  //         let new_slot_button = new_slot.find('button.status, div.slot').clone();
+  //         console.log(new_slot_button);
+  //
+  //         new_slot.find('.slot').first().remove();
+  //         slot.find('div.slot').first().remove();
+  //         new_slot.append(old_slot_button).hide().fadeIn();
+  //         slot.append(new_slot_button).hide().fadeIn();
+  //
+  //         new_slot.attr('data-old-classes', old_slot_classes);
+  //         slot.attr('data-new-classes', new_slot_classes);
+  //         new_slot.removeAttr('class').attr('class', new_slot.attr('data-old-classes')).removeAttr('data-old-classes');
+  //         slot.removeAttr('class').attr('class', slot.attr('data-new-classes')).removeAttr('data-new-classes');
+  //
+  //         // let successText = truncateCharacters($.trim(data.wsParams.car_brand), 8, '&mldr;', 1) + ' xxxxx' + plate;
+  //         // if (data.dopParams.edited === true) {
+  //         //     if (slot.find('span').length > 0) {
+  //         //         slot.find('span').first().remove();
+  //         //         new_slot.attr('class', 'time-status time-taken inline-flex').append('<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;">' + successText + '</span>').hide().fadeIn();
+  //         //     } else if (slot.find('button').length > 0) {
+  //         //         // slot.find('button').first().remove();
+  //         //     }
+  //         // } else {
+  //         //     if (slot.find('span').length > 0) {
+  //         //         slot.find('span').first().remove();
+  //         //         new_slot.attr('class', 'time-status time-taken inline-flex').append('<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;">' + successText + '</span>').hide().fadeIn();
+  //         //     } else if (slot.find('button').length > 0) {
+  //         //         // slot.find('button').first().remove();
+  //         //     }
+  //         // }
+  //
+  //         iorder = data.dopParams.new_iorder;
+  //         queue_id = data.dopParams.new_queue;
+  //         date = data.dopParams.new_date;
+  //         time = data.dopParams.new_time;
+  //         office = data.dopParams.new_office;
+  //         slot = new_slot;
+  //       } else {
+  //
+  //       }
+  //     } else if (data.slot_admin.deleted_slot_admin) {
+  //       if (data.status == 2) {
+  //         slot.removeClass('time-taken').addClass('time-offer');
+  //         slot.find('span').remove();
+  //         slot.append('<button class="bg-orange-500 hover:bg-orange-200 text-black py-2 px-4 status">' + data.comment.comment + '</button>').hide().fadeIn();
+  //       } else {
+  //         if (slot.hasClass('time-taken')) {
+  //           slot.removeClass('time-taken').addClass('time-free');
+  //         } else if (slot.hasClass('time-closed')) {
+  //           slot.removeClass('time-closed').addClass('time-free');
+  //         } else if (slot.hasClass('time-gray')) {
+  //           slot.removeClass('time-gray').addClass('time-free');
+  //         } else if (slot.hasClass('discount')) {
+  //           slot.removeClass('discount');
+  //         }
+  //         if (slot.find('div.slot').length > 0) {
+  //           slot.find('div.slot').remove();
+  //         } else if (slot.find('span.slot').length > 0) {
+  //           slot.find('span.slot').remove();
+  //         } else {
+  //           slot.find('button.status').remove();
+  //         }
+  //         slot.append('<button class="status free-slot-link available-slot">Brīvs</button>').hide().fadeIn();
+  //       }
+  //     }
+  //   } else if (data.timeChangedState === 1) {
+  //     $('#toasts .toast').each(function() {
+  //       $(this).fadeOut(function() {
+  //         $(this).remove();
+  //       });
+  //     });
+  //     $.toast({
+  //       autoDismiss: false,
+  //       title: 'Paziņojums',
+  //       message: 'Notika izmaiņas darba laikos, atjaunojiet lapu<br><button onclick="location.reload()" class="btn btn-success" style="margin-top: 5px;">Pārlādēt</button>'
+  //     });
+  //   } else {
+  //     if (data.times.changeVal) {
+  //
+  //       let action;
+  //       let closedTime = false;
+  //       if (data.times.newCloseTime > data.times.oldCloseTime) {
+  //         action = 'add';
+  //       } else if (data.times.newCloseTime === data.times.oldCloseTime) {
+  //         action = null;
+  //       } else {
+  //         action = 'remove';
+  //       }
+  //
+  //       let newCloseTime = data.times.newCloseTime;
+  //       let oldCloseTime = data.times.oldCloseTime;
+  //
+  //       // Convert the time strings to Date objects for easier manipulation
+  //       let startTime = new Date('2000-01-01T' + newCloseTime + ':00');
+  //       let endTime = new Date('2000-01-01T' + oldCloseTime + ':00');
+  //
+  //       // Define the time step in milliseconds (15 minutes)
+  //       let timeStep = data.times.timeStep * 60 * 1000;
+  //
+  //       let times = [];
+  //
+  //       // Start the loop from the start time and increment by the time step
+  //       for (let currentTime = startTime; currentTime < endTime; currentTime.setTime(currentTime.getTime() + timeStep)) {
+  //         // Get the current time in the desired format (e.g., HH:mm)
+  //         let formattedTime = currentTime.getHours() + ':' + ('0' + currentTime.getMinutes()).slice(-2);
+  //
+  //         // Add the formatted time to the array
+  //         times.push(formattedTime);
+  //       }
+  //
+  //       // $('.grid[data-date="' + data.times.date + '"] .table[data-queue-id="' + data.times.queue_id + '"] .time-status .time-slot').each(function() {
+  //       //     if (times.includes($(this).html())) {
+  //       //         $(this).parent().fadeOut(function() {
+  //       //             $(this).remove();
+  //       //         })
+  //       //     }
+  //       // });
+  //
+  //       if (times.includes($('.modal#reservation .timeOfDay').html()) && $('.modal#reservation').is(':visible')) {
+  //         closedTime = true;
+  //         $('.modal#reservation #submit-reservation').remove();
+  //         $('.modal#reservation #close-modal').text('Aizvērt');
+  //         $('.modal#reservation .reservation-modal-body .container-fluid').slideUp();
+  //
+  //         let alertMessage = '<div class="container-fluid"><div class="row"><div class="col-md-12">' +
+  //           '<div class="alert alert-warning">Atvainojamies, darba laiks saīsinājās, lūgums izvēlēties citu pieraksta laiku</div>' +
+  //           '</div></div></div>';
+  //
+  //         $(alertMessage).insertAfter($('.modal#reservation .reservation-modal-body .container-fluid'));
+  //
+  //         $('.modal#reservation #close-modal').one('click', function() {
+  //           location.reload();
+  //         });
+  //       } else {
+  //         // if (!window.Notification) {
+  //         //   console.log('Browser does not support notifications.');
+  //         // } else {
+  //         //   // check if permission is already granted
+  //         //   if (Notification.permission === 'granted') {
+  //         //     // show notification here
+  //         //     var notify = new Notification('Pasūtījumi', {
+  //         //       body: 'Ir izveidots jauns pasūtījums',
+  //         //       icon: 'https://r1riepas.lv/img/r1-riepas-logo-1515661637.jpg',
+  //         //     });
+  //         //   } else {
+  //         //     // request permission from user
+  //         //     Notification.requestPermission().then(function (p) {
+  //         //       if (p === 'granted') {
+  //         //         // show notification here
+  //         //         var notify = new Notification('Pasūtījumi', {
+  //         //           body: 'Ir izveidots jauns pasūtījums',
+  //         //           icon: 'https://r1riepas.lv/img/r1-riepas-logo-1515661637.jpg',
+  //         //         });
+  //         //       } else {
+  //         //         console.log('User blocked notifications.');
+  //         //       }
+  //         //     }).catch(function (err) {
+  //         //       console.error(err);
+  //         //     });
+  //         //   }
+  //         // }
+  //       }
+  //
+  //     }
+  //   }
+  // });
 
 });
 

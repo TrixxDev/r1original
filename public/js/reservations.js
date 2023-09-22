@@ -614,92 +614,92 @@ $(document).ready(function() {
   }
 
   // Listen for WebSocket messages
-  socket.addEventListener('message', function(event) {
-    const data = JSON.parse(event.data);
-
-    if (!data.times) {
-      let slot = $('.schedule-table.reservations_page .grid[data-date="' + data.wsParams.date + '"] .table[data-queue-id="' + data.wsParams.queue_id + '"] .time-status[data-iorder="' + data.wsParams.iorder + '"]');
-      if (data.new_slot_client) {
-        slot.removeClass('time-free').removeClass('time-discount').addClass('time-taken').find('button').remove();
-        let successText = truncateCharacters($.trim(data.wsParams.car_brand) + ' ' + $.trim(data.wsParams.car_model),9,'&mldr;',1) + ' ' + data.wsParams.fullNumber;
-        slot.append('<button class="slot status taken-slot">' + successText + '</button>').hide().fadeIn();
-      } else if (data.slot_admin.edited_slot_admin) {
-        if (data.dopParams.new_date !== data.dopParams.date || data.dopParams.new_queue !== data.dopParams.queue_id || data.dopParams.new_time !== data.dopParams.time) {
-          slot = $('.schedule-table.reservations_page .grid[data-date="' + data.dopParams.new_date + '"] .table[data-queue-id="' + data.dopParams.new_queue + '"] .time-status[data-iorder="' + data.dopParams.new_iorder + '"]');
-        }
-        if (data.status == 3) {
-          slot.removeClass('time-free').removeClass('time-discount').removeClass('time-taken').addClass('time-closed').find('button').remove();
-          slot.append('<button class="slot status closed-slot">Slēgts</button>').hide().fadeIn();
-        } else if (data.status == 0) {
-          if (data.wsParams.discount) {
-            slot.removeClass('time-free').removeClass('time-taken').removeClass('time-closed').addClass('time-discount');
-            slot.find('button.slot').addClass('discount').html(data.wsParams.discount);
-          }
-        } else {
-          slot.removeClass('time-free').removeClass('time-discount').addClass('time-taken').find('button').remove();
-          let successText = truncateCharacters($.trim(data.wsParams.car_brand) + ' ' + $.trim(data.wsParams.car_model),9,'&mldr;',1) + ' ' + data.wsParams.fullNumber;
-          if ($.trim(successText).length === 0) successText = 'xxxxx';
-          if (slot.parent().attr('data-half') == 1) {
-            if (slot.attr('data-iorder') % 2 == 1) {
-              slot.append('<button class="slot status text-red taken-slot-admin">' + successText + '</button>').hide().fadeIn();
-            } else {
-              slot.append('<button class="slot status taken-slot-admin">' + successText + '</button>').hide().fadeIn();
-            }
-          } else {
-            slot.append('<button class="slot status taken-slot-admin">' + successText + '</button>').hide().fadeIn();
-          }
-        }
-      } else if (data.slot_admin.moved_slot_admin) {
-        let new_slot = $('.schedule-table.reservations_page .grid[data-date="' + data.dopParams.new_date + '"] .table[data-queue-id="' + data.dopParams.new_queue + '"] .time-status[data-iorder="' + data.dopParams.new_iorder + '"]');
-
-        let old_slot_classes = slot.prop('classList');
-        let new_slot_classes = new_slot.prop('classList');
-
-        let old_slot_button = slot.find('button').clone();
-        let new_slot_button = new_slot.find('button').clone();
-
-        new_slot.find('button').first().remove();
-        slot.find('button').first().remove();
-        new_slot.append(old_slot_button).hide().fadeIn();
-        slot.append(new_slot_button).hide().fadeIn();
-
-        new_slot.attr('data-old-classes', old_slot_classes);
-        slot.attr('data-new-classes', new_slot_classes);
-
-        new_slot.removeAttr('class').attr('class', new_slot.attr('data-old-classes')).removeAttr('data-old-classes');
-        slot.removeAttr('class').attr('class', slot.attr('data-new-classes')).removeAttr('data-new-classes');
-
-        if (data.dopParams.edited === true) {
-          let successText = truncateCharacters($.trim(data.wsParams.car_brand) + ' ' + $.trim(data.wsParams.car_model),9,'&mldr;',1) + ' ' + data.wsParams.fullNumber;
-
-          new_slot.find('button').remove();
-          new_slot.append('<button class="slot status taken-slot">' + successText + '</button>').fadeIn();
-        }
-
-        //.removeAttr('class').attr('class', new_slot.attr('data-old-classes')).removeAttr('data-old-classes')
-
-        iorder = data.dopParams.new_iorder;
-        queue_id = data.dopParams.new_queue;
-        date = data.dopParams.new_date;
-        time = data.dopParams.new_time;
-        office = data.dopParams.new_office;
-        slot = new_slot;
-      } else if (data.slot_admin.deleted_slot_admin) {
-        if (data.slot_admin.comment) {
-          slot.removeClass('time-taken').addClass('time-discount').find('button').remove();
-          slot.append('<button class="bg-orange-500 hover:bg-orange-200 text-black py-2 px-4 status">' + data.comment.comment + '</button>').fadeIn();
-        } else {
-          slot.removeClass('time-taken').removeClass('time-discount').addClass('time-free').find('button').remove();
-          slot.append('<button class="slot status slot-free"></button>').fadeIn();
-        }
-      }
-    } else {
-      if (data.times.changeVal) {
-
-      }
-    }
-
-  });
+  // socket.addEventListener('message', function(event) {
+  //   const data = JSON.parse(event.data);
+  //
+  //   if (!data.times) {
+  //     let slot = $('.schedule-table.reservations_page .grid[data-date="' + data.wsParams.date + '"] .table[data-queue-id="' + data.wsParams.queue_id + '"] .time-status[data-iorder="' + data.wsParams.iorder + '"]');
+  //     if (data.new_slot_client) {
+  //       slot.removeClass('time-free').removeClass('time-discount').addClass('time-taken').find('button').remove();
+  //       let successText = truncateCharacters($.trim(data.wsParams.car_brand) + ' ' + $.trim(data.wsParams.car_model),9,'&mldr;',1) + ' ' + data.wsParams.fullNumber;
+  //       slot.append('<button class="slot status taken-slot">' + successText + '</button>').hide().fadeIn();
+  //     } else if (data.slot_admin.edited_slot_admin) {
+  //       if (data.dopParams.new_date !== data.dopParams.date || data.dopParams.new_queue !== data.dopParams.queue_id || data.dopParams.new_time !== data.dopParams.time) {
+  //         slot = $('.schedule-table.reservations_page .grid[data-date="' + data.dopParams.new_date + '"] .table[data-queue-id="' + data.dopParams.new_queue + '"] .time-status[data-iorder="' + data.dopParams.new_iorder + '"]');
+  //       }
+  //       if (data.status == 3) {
+  //         slot.removeClass('time-free').removeClass('time-discount').removeClass('time-taken').addClass('time-closed').find('button').remove();
+  //         slot.append('<button class="slot status closed-slot">Slēgts</button>').hide().fadeIn();
+  //       } else if (data.status == 0) {
+  //         if (data.wsParams.discount) {
+  //           slot.removeClass('time-free').removeClass('time-taken').removeClass('time-closed').addClass('time-discount');
+  //           slot.find('button.slot').addClass('discount').html(data.wsParams.discount);
+  //         }
+  //       } else {
+  //         slot.removeClass('time-free').removeClass('time-discount').addClass('time-taken').find('button').remove();
+  //         let successText = truncateCharacters($.trim(data.wsParams.car_brand) + ' ' + $.trim(data.wsParams.car_model),9,'&mldr;',1) + ' ' + data.wsParams.fullNumber;
+  //         if ($.trim(successText).length === 0) successText = 'xxxxx';
+  //         if (slot.parent().attr('data-half') == 1) {
+  //           if (slot.attr('data-iorder') % 2 == 1) {
+  //             slot.append('<button class="slot status text-red taken-slot-admin">' + successText + '</button>').hide().fadeIn();
+  //           } else {
+  //             slot.append('<button class="slot status taken-slot-admin">' + successText + '</button>').hide().fadeIn();
+  //           }
+  //         } else {
+  //           slot.append('<button class="slot status taken-slot-admin">' + successText + '</button>').hide().fadeIn();
+  //         }
+  //       }
+  //     } else if (data.slot_admin.moved_slot_admin) {
+  //       let new_slot = $('.schedule-table.reservations_page .grid[data-date="' + data.dopParams.new_date + '"] .table[data-queue-id="' + data.dopParams.new_queue + '"] .time-status[data-iorder="' + data.dopParams.new_iorder + '"]');
+  //
+  //       let old_slot_classes = slot.prop('classList');
+  //       let new_slot_classes = new_slot.prop('classList');
+  //
+  //       let old_slot_button = slot.find('button').clone();
+  //       let new_slot_button = new_slot.find('button').clone();
+  //
+  //       new_slot.find('button').first().remove();
+  //       slot.find('button').first().remove();
+  //       new_slot.append(old_slot_button).hide().fadeIn();
+  //       slot.append(new_slot_button).hide().fadeIn();
+  //
+  //       new_slot.attr('data-old-classes', old_slot_classes);
+  //       slot.attr('data-new-classes', new_slot_classes);
+  //
+  //       new_slot.removeAttr('class').attr('class', new_slot.attr('data-old-classes')).removeAttr('data-old-classes');
+  //       slot.removeAttr('class').attr('class', slot.attr('data-new-classes')).removeAttr('data-new-classes');
+  //
+  //       if (data.dopParams.edited === true) {
+  //         let successText = truncateCharacters($.trim(data.wsParams.car_brand) + ' ' + $.trim(data.wsParams.car_model),9,'&mldr;',1) + ' ' + data.wsParams.fullNumber;
+  //
+  //         new_slot.find('button').remove();
+  //         new_slot.append('<button class="slot status taken-slot">' + successText + '</button>').fadeIn();
+  //       }
+  //
+  //       //.removeAttr('class').attr('class', new_slot.attr('data-old-classes')).removeAttr('data-old-classes')
+  //
+  //       iorder = data.dopParams.new_iorder;
+  //       queue_id = data.dopParams.new_queue;
+  //       date = data.dopParams.new_date;
+  //       time = data.dopParams.new_time;
+  //       office = data.dopParams.new_office;
+  //       slot = new_slot;
+  //     } else if (data.slot_admin.deleted_slot_admin) {
+  //       if (data.slot_admin.comment) {
+  //         slot.removeClass('time-taken').addClass('time-discount').find('button').remove();
+  //         slot.append('<button class="bg-orange-500 hover:bg-orange-200 text-black py-2 px-4 status">' + data.comment.comment + '</button>').fadeIn();
+  //       } else {
+  //         slot.removeClass('time-taken').removeClass('time-discount').addClass('time-free').find('button').remove();
+  //         slot.append('<button class="slot status slot-free"></button>').fadeIn();
+  //       }
+  //     }
+  //   } else {
+  //     if (data.times.changeVal) {
+  //
+  //     }
+  //   }
+  //
+  // });
 
 });
 

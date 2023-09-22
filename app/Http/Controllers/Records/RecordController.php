@@ -457,7 +457,8 @@
                         if (Carbon::parse($currentTime)->subHour() >= Carbon::now()) {
                           // Modify content for AC and moto slots if today and within the hour
                           if ($workingDay->is_half) {
-                            $service = $oddMinutes ? Service::where('f_ac', 1)->first() : Service::where('f_moto', 1)->first();
+                            $service = $oddMinutes ? Service::where('f_ac', 1)->where('enabled', 1)->first() : Service::where('f_moto', 1)->where('enabled', 1)->first();
+                            if (!$service && ($i % 2 == 1)) $free_slot_content = $taken_slot_content;
                           }
 
                           $content = $service && ($service->f_ac || $service->f_moto) ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
@@ -466,12 +467,12 @@
                         }
                       } else {
                         if ($workingDay->is_half) {
-                          $service = $oddMinutes ? Service::where('f_ac', 1)->first() : Service::where('f_moto', 1)->first();
+                          $service = $oddMinutes ? Service::where('f_ac', 1)->where('enabled', 1)->first() : Service::where('f_moto', 1)->where('enabled', 1)->first();
                         }
-                        $content = $service ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
+                        if ($i >= 0) $content = $service ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
                       }
                     }
-                    $slots[$workingDay->date][] = ['content' => $content, 'queue_id' => $workingDay->queue_id, 'iorder' => $i];
+                    $slots[$workingDay->date][] = ['content' => $content, 'queue_id' => $workingDay->queue_id, 'iorder' => $i, 'time' => $currentTime];
                   }
                 }
               } else {
@@ -482,6 +483,7 @@
                       . '</div>',
                     'queue_id' => 1,
                     'iorder' => 0,
+                    'time' => '',
                   ],
                   1 => [
                     'content' => '<div class="time-slot closed">'
@@ -489,6 +491,7 @@
                       . '</div>',
                     'queue_id' => 1,
                     'iorder' => 1,
+                    'time' => '',
                   ],
                   2 => [
                     'content' => '<div class="time-slot closed">'
@@ -496,6 +499,7 @@
                       . '</div>',
                     'queue_id' => 1,
                     'iorder' => 2,
+                    'time' => '',
                   ],
                   3 => [
                     'content' => '<div class="time-slot closed">'
@@ -503,6 +507,7 @@
                       . '</div>',
                     'queue_id' => 1,
                     'iorder' => 3,
+                    'time' => '',
                   ]
                 ];
               }
@@ -511,10 +516,14 @@
 
         }
 
-
         try {
+          $slots[$daysToShow[$day]] = array_filter($slots[$daysToShow[$day]], function ($slot) {
+            return $slot['iorder'] >= 0;
+          });
+
+          // Now, sort the remaining slots
           usort($slots[$daysToShow[$day]], function ($a, $b) {
-            $queueComparison = $a['iorder'] - $b['iorder'];
+            $queueComparison = strcmp($a['time'], $b['time']);
 
             if ($queueComparison == 0) {
               return $a['queue_id'] - $b['queue_id'];
