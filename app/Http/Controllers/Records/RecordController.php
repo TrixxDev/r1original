@@ -630,7 +630,7 @@
           $numberOfSteps = ceil($opentime->diffInMinutes($closetime) / $this->timeStep);
 
           foreach (range(($opentime->diffInMinutes($closetime) / $this->timeStep - $openTime1->diffInMinutes($closetime) / $this->timeStep), $numberOfSteps) as $i) {
-            $slotNumber = ($i >= 0) ?? $i ;
+            $slotNumber = $i;
             $currentTime = $opentime->copy()->addMinutes($this->timeStep * $slotNumber)->format('H:i');
             $slot = Slot::where('date', $date)->where('queue_id', $workingDay->queue_id)->where('iorder', $slotNumber)->first();
 
@@ -650,8 +650,13 @@
       $sheet->setCellValue('I1', 'Labots');
       $sheet->setCellValue('J1', 'Pēdējā darbība');
       try {
+        $slots = array_filter($slots, function ($slot) {
+          return $slot['iorder'] >= 0;
+        });
+
+        // Now, sort the remaining slots
         usort($slots, function ($a, $b) {
-          $queueComparison = $a['iorder'] - $b['iorder'];
+          $queueComparison = strcmp($a['time'], $b['time']);
 
           if ($queueComparison == 0) {
             return $a['queue_id'] - $b['queue_id'];
