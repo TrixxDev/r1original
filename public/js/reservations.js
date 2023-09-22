@@ -443,7 +443,6 @@ $(document).ready(function() {
           $('.reservation_edit .select-discount-option option').first().attr('selected', true).prop('selected', true);
           $('.reservation_edit .select-discount-option').next().html('').hide();
         }
-        window.location.reload();
       },
       complete: function() {
         setTimeout(function() {
