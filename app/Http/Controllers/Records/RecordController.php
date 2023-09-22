@@ -468,8 +468,10 @@
                       } else {
                         if ($workingDay->is_half) {
                           $service = $oddMinutes ? Service::where('f_ac', 1)->where('enabled', 1)->first() : Service::where('f_moto', 1)->where('enabled', 1)->first();
+                          if (!$service && ($i % 2 == 1)) $free_slot_content = $taken_slot_content;
                         }
-                        if ($i >= 0) $content = $service ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
+
+                        $content = $service ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
                       }
                     }
                     $slots[$workingDay->date][] = ['content' => $content, 'queue_id' => $workingDay->queue_id, 'iorder' => $i, 'time' => $currentTime];
