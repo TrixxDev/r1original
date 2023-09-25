@@ -49,6 +49,15 @@
                             <li id="service_{{ $service->service_id }}" class="services list-group-item d-flex justify-content-between align-items-center">
                                 <span class="service_title" data-desc="{{ $service->pdf_title }}" @if (!is_null($service->f_save)) data-save="1" @endif>{{ $service->title }}</span>
                                 <div class="options" style="display: inline-flex; align-items: center;">
+                                    @if ($service->f_ac !== NULL)
+                                      <span style="margin-right: 5px;">Pusrindā</span>
+                                      <input type="checkbox" class="service_active" data-service-id="{{ $service->service_id }}" @if ($service->f_ac !== 0) checked @endif name="f_ac">
+                                    @endif
+                                    @if ($service->f_moto !== NULL)
+                                      <span style="margin-right: 5px;">Pusrindā</span>
+                                      <input type="checkbox" class="service_active" data-service-id="{{ $service->service_id }}" @if ($service->f_moto !== 0) checked @endif name="f_moto">
+                                    @endif
+                                    <span style="margin: 0 5px;">Ieslēgts</span>
                                     <input type="checkbox" class="service_enable" data-service-id="{{ $service->service_id }}" @if ($service->enabled) checked @endif name="service_enable">
                                     <a href="{{ route('admin.settings.services.edit', $service->service_id) }}" style="margin-left: 10px;" class="edit badge bg-primary rounded-pill service-edit">Labot</a>
                                     <a href="{{ route('admin.settings.services.destroy', $service->service_id) }}" style="margin-left: 10px;" class="destroy badge bg-primary rounded-pill service-delete">Dzēst</a>

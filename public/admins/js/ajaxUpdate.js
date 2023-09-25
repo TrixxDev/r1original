@@ -110,6 +110,29 @@ $(document).ready(function() {
     });
   });
 
+  $('.services-list input.service_active').on('change', function(e) {
+    e.preventDefault();
+    let service_id = $(this).data('service-id');
+    let enabled = ($(this).prop('checked') === true) ? 1 : 0;
+    $.ajax({
+      method: 'POST',
+      url: '/admin/settings/services/' + service_id + '/active',
+      data: {enabled: enabled},
+      dataType: 'json',
+      beforeSend: function() {
+        $('.services-list input.service_active').attr('disabled', true);
+      },
+      success: function(data) {
+        if (data.error) {
+          alert(data.error);
+        }
+      },
+      complete: function() {
+        $('.services-list input.service_active').removeAttr('disabled');
+      }
+    });
+  });
+
   function changeBrands() {
     $('#tread_select').attr('disabled', true);
     $('.brand-settings input[name=brand-id], .make-settings input[name=brand-id]').val(brand_id);

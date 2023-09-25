@@ -241,6 +241,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   Route::get('/settings/services', [App\Http\Controllers\Admin\SettingsController::class, 'services'])->name('settings.services');
   Route::post('/settings/services/add', [App\Http\Controllers\Admin\SettingsController::class, 'services_store'])->name('settings.services.add');
   Route::post('/settings/services/{id}/enable', [App\Http\Controllers\Admin\SettingsController::class, 'services_enable'])->name('settings.services.enable');
+  Route::post('/settings/services/{id}/active', [App\Http\Controllers\Admin\SettingsController::class, 'services_active'])->name('settings.services.active');
   Route::post('/settings/services/{id}/edit', [App\Http\Controllers\Admin\SettingsController::class, 'services_edit'])->name('settings.services.edit');
   Route::get('/settings/services/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'services_destroy'])->name('settings.services.destroy');
 

@@ -54,6 +54,21 @@
       }
     }
 
+    public function services_active(Request $request, $id)
+    {
+      $service = Service::where('service_id', $id)->first();
+      $service->timestamps = false;
+      if ($service->f_ac !== NULL) {
+        $service->f_ac = $request->enabled;
+      }
+      if ($service->f_moto !== NULL) {
+        $service->f_moto = $request->enabled;
+      }
+      if (!$service->save()) {
+        echo json_encode(['error' => 'Notika kļūda']);
+      }
+    }
+
     public function services_edit(Request $request, $id)
     {
       $service = Service::find($id);
