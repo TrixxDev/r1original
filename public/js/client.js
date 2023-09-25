@@ -173,7 +173,11 @@ $(document).ready(function() {
     $('body').removeClass('removeScroll');
   }).on('show.bs.modal', function() {
     $('body').addClass('removeScroll');
-  });
+  }).on('keypress', function(e) {
+    if (e.keyCode === 13) {
+      $('#submit-reservation', this).click();
+    }
+  });;
 
   $('#reservation button#submit-reservation').on('click', function(e) {
     e.preventDefault();
@@ -249,6 +253,7 @@ $(document).ready(function() {
               $('<div class="modal-body finish">' + data.message + '</div><div class="modal-footer finish-footer"><button type="button" class="btn btn-secondary" id="close-modal" style="margin-right: 10px;">Aizvērt</button></div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
               slot.removeClass('time-free').removeClass('time-offer').addClass('time-taken');
               slot.find('button').fadeOut().remove();
+              slot.append('<div class="slot taken-slot">' + successText + '</div>').fadeIn();
               $('#brand, #model, #phone, #email').removeAttr('placeholder');
               $('#reservation form').trigger('reset');
               $('#reservation .rims_with, #reservation .temp_save_nr').hide();
