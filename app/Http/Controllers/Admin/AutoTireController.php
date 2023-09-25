@@ -427,7 +427,12 @@ class AutoTireController extends Controller
             $fileNameMed   = $id . '-n';
             $fileNameLarge   = $id . '-o';
 //            dd($image);
-            Image::make($image->getRealPath())->save('storage/auto/tread/' . $fileName . '.jpg');
+
+            $watermark = Image::make('img/r1-riepas-logo-1515661637.jpg')->opacity(50);
+
+            $imageDefault = Image::make($image->getRealPath());
+            $imageDefault->insert($watermark, 'bottom-right', 10, 10);
+            $imageDefault->save('storage/auto/tread/' . $fileName . '.jpg');
             Image::make($image->getRealPath())
               ->resize(100, 100, function($constraint) {
                 $constraint->aspectRatio();
@@ -436,10 +441,12 @@ class AutoTireController extends Controller
               ->resize(200, 200, function($constraint) {
                 $constraint->aspectRatio();
               })->save('storage/auto/tread/' . $fileNameMed . '.jpg');
-            Image::make($image->getRealPath())
+            $imageLarge = Image::make($image->getRealPath())
               ->resize(1500, 1500, function($constraint) {
                 $constraint->aspectRatio();
-              })->save('storage/auto/tread/' . $fileNameLarge . '.jpg');
+              });
+            $imageLarge->insert($watermark, 'bottom-right', 10, 10);
+            $imageLarge->save('storage/auto/tread/' . $fileNameLarge . '.jpg');
         }
         return redirect()->back();
     }
