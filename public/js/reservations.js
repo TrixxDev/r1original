@@ -443,6 +443,24 @@ $(document).ready(function() {
           $('.reservation_edit .select-discount-option option').first().attr('selected', true).prop('selected', true);
           $('.reservation_edit .select-discount-option').next().html('').hide();
         }
+
+        $('.reservation_edit .reservationOption').each(function() {
+          if (date == data.date) {
+            $(this).parent().show();
+            $(this).on('click', function() {
+              if ($(this).is(':checked')) {
+                $('.reservation_edit .reservationOption').attr('disabled', true).prop('disabled', true);
+                $(this).attr('disabled', false).prop('disabled', false);
+              } else {
+                $('.reservation_edit .reservationOption').attr('disabled', false).prop('disabled', false);
+              }
+            })
+          } else {
+            $(this).parent().hide();
+          }
+        });
+
+
       },
       complete: function() {
         setTimeout(function() {
@@ -495,14 +513,16 @@ $(document).ready(function() {
     let temp_nr = $('#slotModal .temp_save_nr input#save_nr').val() || '';
     let plate = parseInt(phone.substr(-3)) || '';
     let lic_plate = isNaN(plate) ? '' : plate;
+    let license_plate = $('#slotModal #f_plate').val();
     let user_comment = $('#slotModal #f_comment').val();
     let email = $('#slotModal #f_email').val();
     let new_date = $('#slotModal #f_date option:selected').val();
     let new_time = $('#slotModal #f_time option:selected').val();
     let new_queue = $('#slotModal #f_office option:selected').val();
     let status = $('#slotModal #f_status option:selected').val();
+    let f_statuscase = $('.reservationOption[type=checkbox]:checked').val();
 
-    let formData = `car_brand=${car_brand}&car_model=${car_model}&rimsWith=${rimsWith}&temp_nr=${temp_nr}&lic_plate=${lic_plate}&service=${service}&user_comment=${user_comment}&name=${name}&phone_number=${phone}&email=${email}&status=${status}&slotcomment=${discount}`;
+    let formData = `car_brand=${car_brand}&car_model=${car_model}&rimsWith=${rimsWith}&temp_nr=${temp_nr}&lic_plate=${license_plate}&service=${service}&user_comment=${user_comment}&name=${name}&phone_number=${phone}&email=${email}&status=${status}&slotcomment=${discount}`;
 
     let dopParams = {
       iorder: iorder,
@@ -518,7 +538,7 @@ $(document).ready(function() {
     $.ajax({
       url: '/pieraksts/rezervacijas/editSlot',
       method: 'POST',
-      data: {formData: formData, dopParams: dopParams},
+      data: {formData: formData, dopParams: dopParams, f_statuscase: f_statuscase},
       beforeSend: function() {
         $('#slotModal .loader-block').show();
       },

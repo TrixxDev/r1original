@@ -547,8 +547,87 @@ class RecordController extends Controller
     }, []);
 
     $result = json_decode(json_encode($result), FALSE);
+    $f_statuscase = (int) $request->input('f_statuscase');
+
+    $today = date('Y-m-d');
 
     $slot = Slot::where('date', $dopParams['date'])->where('queue_id', $dopParams['queue_id'])->where('iorder', $dopParams['iorder'])->first();
+
+    if (!is_null($f_statuscase)) {
+
+      $targetDate = $dopParams['new_date'];
+      $f_time = $dopParams['new_time'];
+
+      if ($today == $dopParams['date'] && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
+        $newOffice = $dopParams['office'];
+        $service = Service::where('service_id', $result->service)->first();
+        $vehicle = str_replace(' ', '%20', $result->car_brand);
+        $model = str_replace(' ', '%20', $result->car_model);
+        if (!is_null($service)) $service = str_replace(' ', '%20', $service->pdf_title);
+        $vehiclePlate = str_replace(' ', '%20', $result->lic_plate);
+
+        if (!empty($form->rimsWith)) {
+          if ($form->rimsWith == 1) {
+            $append = '%20-%20Riepas%20bez%20diskiem';
+          } else {
+            $append = '%20-%20Riepas%20ar%20diskiem';
+          }
+        } else {
+          $append = '';
+        }
+
+        if ($targetDate) {
+          if ($today == $targetDate) {
+            $dateText = 'šodien';
+          } else {
+            $dateText = $targetDate;
+          }
+        } else {
+          $dateText = 'šodien';
+        }
+
+        if ($f_statuscase) {
+          switch ($f_statuscase) {
+            case 1: {
+              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
+              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
+              break;
+            }
+            case 2: {
+              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . ',%20' . $dateText . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
+              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . ',%20' . $dateText . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
+              break;
+            }
+            case 3: {
+              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate;
+              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate;
+              break;
+            }
+          }
+
+          if ($newOffice == 1) {
+
+            $cURLConnection = curl_init();
+
+            curl_setopt($cURLConnection, CURLOPT_URL, $ursUrl);
+            curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+            curl_exec($cURLConnection);
+
+            curl_close($cURLConnection);
+          } else {
+            $cURLConnection = curl_init();
+
+            curl_setopt($cURLConnection, CURLOPT_URL, $krsUrl);
+            curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+            curl_exec($cURLConnection);
+
+            curl_close($cURLConnection);
+          }
+        }
+      }
+    }
 
     if ($result->status == 0) {
       if (!is_null($slot)) {
@@ -589,7 +668,6 @@ class RecordController extends Controller
         }
       }
     } else if ($result->status == 1) {
-      // ... (slot creation, editing, moving logic)
 
       $dopParams = $request->dopParams;
       $workingDay = Workingday::where('date', $dopParams['date'])->where('queue_id', $dopParams['queue_id'])->first();
