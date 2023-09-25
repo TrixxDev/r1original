@@ -248,6 +248,7 @@
       $tire->price2 = ($request->price2 === null) ? '' : $request->price2;
       $tire->code = ($request->code === null) ? '' : $request->code;
       $tire->comment = ($request->comment === null) ? '' : $request->comment;
+      $tire->acomment = ($request->acomment === null) ? '' : $request->acomment;
       $tire->is_camera = ($request->is_camera === 'off') ? 'off' : $request->is_camera;
       $tire->article = ($request->article === null) ? '' : $request->article;
       $tire->quantity = ($request->quantity === null) ? '' : $request->quantity;
@@ -316,7 +317,7 @@
       $tire->price1 = $request->price1;
       $tire->price2 = $request->price2;
       $tire->code = $request->code;
-      $tire->comment = $request->comment;
+      $tire->acomment = $request->acomment;
       $tire->is_camera = $request->is_camera;
       $tire->article = $request->article;
       $tire->quantity = $request->quantity;

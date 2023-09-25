@@ -80,6 +80,12 @@
               </div>
             </div>
             <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="information">Informācija</label>
+              <div class="col-md-9">
+                <input class="form-control" id="information" type="text" @if ($rim->acomment) value="{{ $rim->acomment }}" @endif name="acomment" placeholder="Informācija">
+              </div>
+            </div>
+            <div class="form-group row">
               <label class="col-md-3 col-form-label" for="article">Artikuls</label>
               <div class="col-md-9">
                 <input class="form-control" id="article" type="text" @if ($rim->article) value="{{ $rim->article }}" @endif name="article" placeholder="Artikuls">

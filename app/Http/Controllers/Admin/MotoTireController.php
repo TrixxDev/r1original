@@ -249,6 +249,7 @@
       $tire->price1 = ($request->price1 === null) ? '' : $request->price1;
       $tire->price2 = ($request->price2 === null) ? '' : $request->price2;
       $tire->comment = ($request->comment === null) ? '' : $request->comment;
+      $tire->acomment = ($request->acomment === null) ? '' : $request->acomment;
       $tire->code = ($request->code === null) ? '' : $request->code;
 //      $tire->eco = ($request->eco === null) ? '' : $request->eco;
 //      $tire->wet = ($request->wet === null) ? '' : $request->wet;
@@ -311,6 +312,7 @@
       $tire->price1 = $request->price1;
       $tire->price2 = $request->price2;
       $tire->comment = $request->comment;
+      $tire->acomment = $request->acomment;
       $tire->code = $request->code;
 //      $tire->eco = $request->eco;
 //      $tire->wet = $request->wet;
