@@ -645,8 +645,6 @@ class RecordController extends Controller
 
               curl_close($cURLConnection);
 
-              sleep(5);
-
               $cURLConnection = curl_init();
 
               curl_setopt($cURLConnection, CURLOPT_URL, $krsUrl);
@@ -668,8 +666,6 @@ class RecordController extends Controller
               curl_exec($cURLConnection);
 
               curl_close($cURLConnection);
-
-              sleep(5);
 
               $cURLConnection = curl_init();
 
