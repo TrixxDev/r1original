@@ -140,6 +140,7 @@
 
       $this->loadWorkingDays();
       $offices = Office::all();
+      $services = Service::where('enabled', 1)->get();
 
       $visibleDays = 7;
       $daysToShow = [];
@@ -153,7 +154,7 @@
       $dayTitles = $this->dayTitles;
       $timeStep = $this->timeStep;
 
-      return view('records.index', compact('workingDays', 'visibleDays', 'dayTitles', 'timeStep', 'offices'));
+      return view('records.index', compact('workingDays', 'visibleDays', 'dayTitles', 'timeStep', 'offices', 'services'));
     }
 
     public function fillFiliale()

@@ -524,37 +524,14 @@
                                                 <label for="service"><span class="validate" style="color: red;">*</span>Es vēlos:</label>
                                             </div>
                                             <div class="col-md-8" id="service">
+                                              @foreach ($services as $service)
                                                 <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="serviceOption" id="serviceOption1" value="1" title="">
-                                                    <label class="form-check-label" for="serviceOption1">
-                                                        Samainīt riepas vai riteņus, kuri man būs līdzi
-                                                    </label>
-                                                    <div id="service-option-selection"></div>
+                                                  <input class="form-check-input" type="radio" name="serviceOption" id="serviceOption{{ $service->service_id }}" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif @if ($service->f_ac == 1) data-ac="1" @endif @if ($service->f_moto == 1) data-moto="1" @endif value="{{ $service->service_id }}">
+                                                  <label class="form-check-label" for="serviceOption{{ $service->service_id }}">
+                                                    {{ $service->title }}
+                                                  </label>
                                                 </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="serviceOption" id="serviceOption2" data-save="1" value="2" title="">
-                                                    <label class="form-check-label" for="serviceOption2">
-                                                        Samainīt riepas vai riteņus, kuri glabājas pie jums
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="serviceOption" id="serviceOption3" value="3" title="">
-                                                    <label class="form-check-label" for="serviceOption3">
-                                                        Samainīt riepas vai riteņus, kurus vēlos pie jums nopirkt
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="serviceOption" id="serviceOption6" data-ac="1" value="6" title="">
-                                                    <label class="form-check-label" for="serviceOption6">
-                                                        Kondicionieru uzpilde
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="serviceOption" id="serviceOption8" data-moto="1" value="8" title="">
-                                                    <label class="form-check-label" for="serviceOption8">
-                                                        Moto montāža
-                                                    </label>
-                                                </div>
+                                              @endforeach
                                             </div>
                                         </div>
                                     </div>
