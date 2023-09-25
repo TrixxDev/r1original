@@ -557,9 +557,10 @@ class RecordController extends Controller
 
       $targetDate = $dopParams['new_date'];
       $f_time = $dopParams['new_time'];
+      $newOffice = Office::where('office_id', Queue::where('queue_id', $dopParams['new_queue'])->first()->office_id)->first()->office_id;
 
       if ($today == $dopParams['date'] && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
-        $newOffice = $dopParams['office'];
+        $office = $dopParams['office'];
         $service = Service::where('service_id', $result->service)->first();
         $vehicle = str_replace(' ', '%20', $result->car_brand);
         $model = str_replace(' ', '%20', $result->car_model);
@@ -588,42 +589,97 @@ class RecordController extends Controller
 
         if ($f_statuscase) {
           switch ($f_statuscase) {
-            case 1: {
-              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
-              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
-              break;
-            }
-            case 2: {
-              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . ',%20' . $dateText . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
-              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . ',%20' . $dateText . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
-              break;
-            }
-            case 3: {
-              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate;
-              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate;
-              break;
-            }
+            case 1:
+              {
+                $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
+                $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
+                break;
+              }
+            case 2:
+              {
+                $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . ',%20' . $dateText . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
+                $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Labots%20pieraksts%20-%20' . $f_time . ',%20' . $dateText . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
+                break;
+              }
+            case 3:
+              {
+                $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate;
+                $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate;
+                break;
+              }
           }
 
-          if ($newOffice == 1) {
+          if ($office == $newOffice) {
+            if ($office == 1) {
 
-            $cURLConnection = curl_init();
+              $cURLConnection = curl_init();
 
-            curl_setopt($cURLConnection, CURLOPT_URL, $ursUrl);
-            curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+              curl_setopt($cURLConnection, CURLOPT_URL, $ursUrl);
+              curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
 
-            curl_exec($cURLConnection);
+              curl_exec($cURLConnection);
 
-            curl_close($cURLConnection);
+              curl_close($cURLConnection);
+            } else {
+              $cURLConnection = curl_init();
+
+              curl_setopt($cURLConnection, CURLOPT_URL, $krsUrl);
+              curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+              curl_exec($cURLConnection);
+
+              curl_close($cURLConnection);
+            }
           } else {
-            $cURLConnection = curl_init();
+            if ($office == 1 && $f_statuscase == 2) {
 
-            curl_setopt($cURLConnection, CURLOPT_URL, $krsUrl);
-            curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate;
+              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
 
-            curl_exec($cURLConnection);
+              $cURLConnection = curl_init();
 
-            curl_close($cURLConnection);
+              curl_setopt($cURLConnection, CURLOPT_URL, $ursUrl);
+              curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+              curl_exec($cURLConnection);
+
+              curl_close($cURLConnection);
+
+              sleep(5);
+
+              $cURLConnection = curl_init();
+
+              curl_setopt($cURLConnection, CURLOPT_URL, $krsUrl);
+              curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+              curl_exec($cURLConnection);
+
+              curl_close($cURLConnection);
+            } else if ($office == 2 && $f_statuscase == 2) {
+
+              $ursUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append;
+              $krsUrl = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $f_time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate;
+
+              $cURLConnection = curl_init();
+
+              curl_setopt($cURLConnection, CURLOPT_URL, $krsUrl);
+              curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+              curl_exec($cURLConnection);
+
+              curl_close($cURLConnection);
+
+              sleep(5);
+
+              $cURLConnection = curl_init();
+
+              curl_setopt($cURLConnection, CURLOPT_URL, $ursUrl);
+              curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+              curl_exec($cURLConnection);
+
+              curl_close($cURLConnection);
+            }
           }
         }
       }
