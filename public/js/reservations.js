@@ -445,6 +445,7 @@ $(document).ready(function() {
         }
 
         $('.reservation_edit .reservationOption').each(function() {
+          if (!data.date) data.date = date;
           if (date == data.date) {
             $(this).parent().show();
             $(this).on('click', function() {
