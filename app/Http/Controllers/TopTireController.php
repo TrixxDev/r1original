@@ -23,6 +23,8 @@ class TopTireController extends Controller
 
   public function __construct() {
 
+    set_time_limit(0);
+
     $codes = Code::all();
 
     foreach ($codes as $code) {
