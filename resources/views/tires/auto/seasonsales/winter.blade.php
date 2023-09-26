@@ -9,6 +9,7 @@
                     $index = 0;
                 @endphp
                 @foreach ($tires as $tire)
+                    @if ($tire->season == 2)
                     @php
                         $brand = $tire->fullSize;
                         $tire->includeStock = true;
@@ -180,9 +181,10 @@
                         @php
                             $index++;
                         @endphp
-                        @endforeach
-                        </tbody>
-                    </table>
+                        @endif
+                    @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

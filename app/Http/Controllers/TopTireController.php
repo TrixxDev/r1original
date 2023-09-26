@@ -32,11 +32,15 @@ class TopTireController extends Controller
     }
 
     if ((int) env('SEASON') === 1) {
-      if ($this->autoTiresSummer() !== null) array_push($this->categories, ['name' => 'Vasaras riepas', 'class' => 'autoTiresSummer']);
-      if ($this->autoTiresWinter() !== null) array_push($this->categories, ['name' => 'Ziemas riepas', 'class' => 'autoTiresWinter']);
+      if ($this->autoTires() !== null) {
+        array_push($this->categories, ['name' => 'Vasaras riepas', 'class' => 'autoTiresSummer']);
+        array_push($this->categories, ['name' => 'Ziemas riepas', 'class' => 'autoTiresSummer']);
+      }
     } else {
-      if ($this->autoTiresWinter() !== null) array_push($this->categories, ['name' => 'Ziemas riepas', 'class' => 'autoTiresWinter']);
-      if ($this->autoTiresSummer() !== null) array_push($this->categories, ['name' => 'Vasaras riepas', 'class' => 'autoTiresSummer']);
+      if ($this->autoTires() !== null) {
+        array_push($this->categories, ['name' => 'Ziemas riepas', 'class' => 'autoTiresWinter']);
+        array_push($this->categories, ['name' => 'Vasaras riepas', 'class' => 'autoTiresSummer']);
+      }
     }
 
     if ($this->alloyRims() !== null) array_push($this->categories, ['name' => 'Lietie diski', 'class' => 'alloyRims']);
@@ -53,6 +57,25 @@ class TopTireController extends Controller
 
   public function index() {
     return view('sales');
+  }
+
+  public function autoTires()
+  {
+    $tires = Autotire::leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+                      ->where('auto_tires.priceoffer', 1)
+                      ->where('auto_tires.visible_users', '<>', 0)
+                      ->orderBy('auto_tires.d3', 'ASC')
+                      ->orderBy('auto_tires.d1', 'ASC')
+                      ->orderBy('auto_tires.d2', 'ASC')
+                      ->orderBy('auto_tires.price2', 'DESC')
+                      ->groupBy('tire_id')
+                      ->get();
+
+    if ($tires->count() > 0) {
+      return view('tires.auto.sales', compact('tires'));
+    } else {
+      return null;
+    }
   }
 
   public function autoTiresSummer()
