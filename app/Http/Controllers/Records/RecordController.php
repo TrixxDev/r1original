@@ -1030,21 +1030,11 @@
 
       if ($request->post()) {
         if ($takenBy !== null) {
-          if ($takenBy->cancelId == $id) {
-            $slot->status = 0;
-            $slot->takenby = '';
-            $slot->createtime = NULL;
-            $slot->createuser = -1;
-            $slot->edittime = NULL;
-            $slot->edituser = -1;
-            $slot->is_mobile = 0;
-          }
-        }
-
-        if ($slot->save()) {
+          $deletedSlot = $slot;
+          if ($slot->delete()) {
 
             if ($takenBy->email) {
-              $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $slot->date, $slot->iorder, $takenBy, $time);
+              $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $deletedSlot->date, $deletedSlot->iorder, $takenBy, $time);
 
               $mailer = new Mailer();
               $mailer->addRecipient($takenBy->email);
@@ -1055,9 +1045,9 @@
               $mailer->send();
             }
 
-            $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleCancelSMS'], $slot->date, $slot->iorder, $takenBy, $time);
+            $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleCancelSMS'], $deletedSlot->date, $deletedSlot->iorder, $takenBy, $time);
 
-            (new SmsSender)->sendSchedule((array) $takenBy, $smsText, $slot);
+            (new SmsSender)->sendSchedule((array) $takenBy, $smsText, $deletedSlot);
             if ($date == $slot->date) {
 
               $vehicle = str_replace(' ', '%20', $takenBy->car_brand);
@@ -1086,11 +1076,12 @@
               }
             }
 
-          Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Atcelts pieraksts', $slot);
-          return redirect(route('pieraksts'))->with('success', 'Atcelšana ir izdevusies');
-        } else {
-          Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Neizdevās atcelt pierakstu', $slot);
-          return redirect(route('pieraksts'))->with('danger', 'Notikusi kļūda');
+            Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $deletedSlot->slot_id, 0, 'Atcelts pieraksts', $deletedSlot);
+            return redirect(route('pieraksts'))->with('success', 'Atcelšana ir izdevusies');
+          } else {
+            Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Neizdevās atcelt pierakstu', $slot);
+            return redirect(route('pieraksts'))->with('danger', 'Notikusi kļūda');
+          }
         }
       }
 
