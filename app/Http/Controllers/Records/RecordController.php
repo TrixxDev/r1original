@@ -1030,52 +1030,53 @@
 
       if ($request->post()) {
         if ($takenBy !== null) {
-
-          if ($takenBy->email) {
-            $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $slot->date, $slot->iorder, $takenBy, $time);
-
-            $mailer = new Mailer();
-            $mailer->addRecipient($takenBy->email);
-            $bcc = 'karlis@r1riepas.lv';
-            if ($bcc) $mailer->addBCC($bcc);
-            $mailer->subject = 'Tava rezervacija R1 riepu servisā ATCELTA';
-            $mailer->message = $mailText;
-            $mailer->send();
-          }
-
-          $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleCancelSMS'], $slot->date, $slot->iorder, $takenBy, $time);
-
-          (new SmsSender)->sendSchedule((array) $takenBy, $smsText, $slot);
-          if ($date == $slot->date) {
-
-            $vehicle = str_replace(' ', '%20', $takenBy->car_brand);
-            $model = str_replace(' ', '%20', $takenBy->car_model);
-            $vehiclePlate = str_replace(' ', '%20', $takenBy->lic_plate);
-
-            if ($office->office_id == 1) {
-
-              $cURLConnection = curl_init();
-
-              curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate);
-              curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-
-              curl_exec($cURLConnection);
-
-              curl_close($cURLConnection);
-            } else {
-              $cURLConnection = curl_init();
-
-              curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate);
-              curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-
-              curl_exec($cURLConnection);
-
-              curl_close($cURLConnection);
-            }
-          }
-
+          $deletedSlot = $slot;
           if ($slot->delete()) {
-            Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Atcelts pieraksts', $slot);
+
+            if ($takenBy->email) {
+              $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $deletedSlot->date, $deletedSlot->iorder, $takenBy, $time);
+
+              $mailer = new Mailer();
+              $mailer->addRecipient($takenBy->email);
+              $bcc = 'karlis@r1riepas.lv';
+              if ($bcc) $mailer->addBCC($bcc);
+              $mailer->subject = 'Tava rezervacija R1 riepu servisā ATCELTA';
+              $mailer->message = $mailText;
+              $mailer->send();
+            }
+
+            $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleCancelSMS'], $deletedSlot->date, $deletedSlot->iorder, $takenBy, $time);
+
+            (new SmsSender)->sendSchedule((array) $takenBy, $smsText, $deletedSlot);
+            if ($date == $slot->date) {
+
+              $vehicle = str_replace(' ', '%20', $takenBy->car_brand);
+              $model = str_replace(' ', '%20', $takenBy->car_model);
+              $vehiclePlate = str_replace(' ', '%20', $takenBy->lic_plate);
+
+              if ($office->office_id == 1) {
+
+                $cURLConnection = curl_init();
+
+                curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate);
+                curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+                curl_exec($cURLConnection);
+
+                curl_close($cURLConnection);
+              } else {
+                $cURLConnection = curl_init();
+
+                curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate);
+                curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+                curl_exec($cURLConnection);
+
+                curl_close($cURLConnection);
+              }
+            }
+
+            Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $deletedSlot->slot_id, 0, 'Atcelts pieraksts', $deletedSlot);
             return redirect(route('pieraksts'))->with('success', 'Atcelšana ir izdevusies');
           } else {
             Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Neizdevās atcelt pierakstu', $slot);
