@@ -338,6 +338,13 @@ $(document).ready(function() {
 
     $('#slotModal .loader-block').show();
 
+    let today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed, so we add 1
+    const day = String(today.getDate()).padStart(2, '0');
+
+    today = `${year}-${month}-${day}`;
+
     slot = $(this).parent();
     iorder = slot.attr('data-iorder');
     queue_id = slot.parent().attr('data-queue-id');
@@ -445,8 +452,7 @@ $(document).ready(function() {
         }
 
         $('.reservation_edit .reservationOption').each(function() {
-          if (!data.date) data.date = date;
-          if (date == data.date) {
+          if (date == today) {
             $(this).parent().show();
             $(this).on('click', function() {
               if ($(this).is(':checked')) {
