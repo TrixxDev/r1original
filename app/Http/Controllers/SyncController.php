@@ -299,109 +299,109 @@
       foreach ($this->tire_tables as $tire_table => $tire_options) {
         $primary_key = app("App\\Models\\$tire_options[0]")->getKeyName();
 
-        $products = DB::table($tire_table)->get();
+        DB::table($tire_table)->orderBy($primary_key)->chunk(20, function($products) use (&$tire_options, &$primary_key) {
+          foreach ($products as $product) {
 
-        foreach ($products as $product) {
+            $this->urs = 0;
+            $this->krs = 0;
 
-          $this->urs = 0;
-          $this->krs = 0;
+            //          if ($product->$primary_key != '155300') continue;
+            $product = app("App\\Models\\$tire_options[0]")->where($primary_key, $product->$primary_key)->first();
+            $article = '';
 
-//          if ($product->$primary_key != '155300') continue;
-          $product = app("App\\Models\\$tire_options[0]")->where($primary_key, $product->$primary_key)->first();
-          $article = '';
+            $sql = "SELECT ArticleId as ArtikulaId, Deleted FROM katdetal WHERE Deleted = 0 AND Artikuls = '" . $product->article . "'";
+            $result = $this->accrual->query($sql);
 
-          $sql = "SELECT ArticleId as ArtikulaId, Deleted FROM katdetal WHERE Deleted = 0 AND Artikuls = '" . $product->article . "'";
-          $result = $this->accrual->query($sql);
+            foreach ($result as $row) {
+              $article = $row['ArtikulaId'];
+            }
 
-          foreach ($result as $row) {
-            $article = $row['ArtikulaId'];
-          }
+            $productInfo = $this->getAccrualInventory($product->article);
+            if (isset($productInfo[$product->article])) {
+              $total = intval($productInfo[$product->article]);
+              $product->quantity = $total;
 
-          $productInfo = $this->getAccrualInventory($product->article);
-          if (isset($productInfo[$product->article])) {
-            $total = intval($productInfo[$product->article]);
-            $product->quantity = $total;
+              $stores = $productInfo['_stores'][$product->article];
 
-            $stores = $productInfo['_stores'][$product->article];
-
-            if (isset($stores[1])) {
-              $this->urs = $stores[1];
-              $this->urs = str_replace('Noliktava: ', '', $this->urs);
-              if ($this->urs > 0) {
-                $product->urs_quantity = intval($this->urs);
+              if (isset($stores[1])) {
+                $this->urs = $stores[1];
+                $this->urs = str_replace('Noliktava: ', '', $this->urs);
+                if ($this->urs > 0) {
+                  $product->urs_quantity = intval($this->urs);
+                } else {
+                  $product->urs_quantity = 0;
+                }
               } else {
                 $product->urs_quantity = 0;
               }
-            } else {
-              $product->urs_quantity = 0;
-            }
-            if (isset($stores[2])) {
-              $this->krs = $stores[2];
-              $this->krs = str_replace('Veikals: ', '', $this->krs);
-              if ($this->krs > 0) {
-                $product->krs_quantity = intval($this->krs);
+              if (isset($stores[2])) {
+                $this->krs = $stores[2];
+                $this->krs = str_replace('Veikals: ', '', $this->krs);
+                if ($this->krs > 0) {
+                  $product->krs_quantity = intval($this->krs);
+                } else {
+                  $product->krs_quantity = 0;
+                }
               } else {
                 $product->krs_quantity = 0;
               }
+
+              $product->updated_at = date('Y-m-d H:i:s');
+              $product->save();
             } else {
+              $product->quantity = 0;
+              $product->urs_quantity = 0;
               $product->krs_quantity = 0;
+              $product->updated_at = date('Y-m-d H:i:s');
+              $product->save();
             }
 
-            $product->updated_at = date('Y-m-d H:i:s');
-            $product->save();
-          } else {
-            $product->quantity = 0;
-            $product->urs_quantity = 0;
-            $product->krs_quantity = 0;
-            $product->updated_at = date('Y-m-d H:i:s');
-            $product->save();
-          }
-
-          $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
-          //$sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.ArticleId = '141309'";
-          $result = $this->accrual->query($sql);
-          if ($result->rowCount()) {
-            foreach ($result as $rows) {
-              set_time_limit(0);
-              $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-              if ($rows['Deleted'] == 1) {
-                $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-                $product->priceoffer = 0;
-                if ($product->comment == env('SALE_TEXT')) {
-                  $product->comment = '';
-                }
-              } else {
-                $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
-                $product->priceoffer = 1;
-                if (empty($product->comment)) {
-                  $product->comment = env('SALE_TEXT');
-                }
-              }
-            }
-            $product->price1 = $veikala_cena;
-            $product->price2 = $akcijas_cena;
-            $product->updated_at = date('Y-m-d H:i:s');
-            $product->save();
-          } else {
-            $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
+            $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
+            //$sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.ArticleId = '141309'";
             $result = $this->accrual->query($sql);
             if ($result->rowCount()) {
               foreach ($result as $rows) {
                 set_time_limit(0);
                 $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-                $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-                $product->priceoffer = 0;
-                if ($product->comment == env('SALE_TEXT')) {
-                  $product->comment = '';
+                if ($rows['Deleted'] == 1) {
+                  $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+                  $product->priceoffer = 0;
+                  if ($product->comment == env('SALE_TEXT')) {
+                    $product->comment = '';
+                  }
+                } else {
+                  $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
+                  $product->priceoffer = 1;
+                  if (empty($product->comment)) {
+                    $product->comment = env('SALE_TEXT');
+                  }
                 }
               }
               $product->price1 = $veikala_cena;
               $product->price2 = $akcijas_cena;
               $product->updated_at = date('Y-m-d H:i:s');
               $product->save();
+            } else {
+              $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
+              $result = $this->accrual->query($sql);
+              if ($result->rowCount()) {
+                foreach ($result as $rows) {
+                  set_time_limit(0);
+                  $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
+                  $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+                  $product->priceoffer = 0;
+                  if ($product->comment == env('SALE_TEXT')) {
+                    $product->comment = '';
+                  }
+                }
+                $product->price1 = $veikala_cena;
+                $product->price2 = $akcijas_cena;
+                $product->updated_at = date('Y-m-d H:i:s');
+                $product->save();
+              }
             }
           }
-        }
+        });
       }
     }
 
