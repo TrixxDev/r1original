@@ -19,7 +19,7 @@ $(document).ready(function() {
   );
 
   // Connect to the WebSocket server
-  const socket = new WebSocket('ws://r1riepas.lv:3500');
+  // const socket = new WebSocket('ws://r1riepas.lv:3500');
 
   function truncateCharacters(text, limit, ellipsis = '...', strip = 0) {
     if (text.length > limit) {
@@ -134,7 +134,7 @@ $(document).ready(function() {
           let resData = {};
           resData.timeChangedState = 1;
 
-          socket.send(JSON.stringify(resData));
+          // socket.send(JSON.stringify(resData));
           window.location.href = '/pieraksts/rezervacijas';
         }
       });
@@ -217,7 +217,7 @@ $(document).ready(function() {
       });
     }, 1000);
 
-    socket.send(JSON.stringify(sendData));
+    // socket.send(JSON.stringify(sendData));
   });
 
   $('.grid .table .title').on('click', function() {
@@ -592,7 +592,7 @@ $(document).ready(function() {
           status: data.status,
         };
 
-        socket.send(JSON.stringify(wsData));
+        // socket.send(JSON.stringify(wsData));
 
         window.location.reload();
       },

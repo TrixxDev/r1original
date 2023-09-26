@@ -19,7 +19,7 @@ $(document).ready(function() {
   );
 
   // Connect to the WebSocket server
-  const socket = new WebSocket('ws://r1riepas.lv:3500');
+  // const socket = new WebSocket('ws://r1riepas.lv:3500');
 
   function truncateCharacters(text, limit, ellipsis = '...', strip = 0) {
     if (text.length > limit) {
@@ -274,7 +274,7 @@ $(document).ready(function() {
                 new_slot_client: data.new_slot_client,
               };
 
-              socket.send(JSON.stringify(wsData));
+              // socket.send(JSON.stringify(wsData));
               //
               // slot.find('button').fadeOut().remove();
               // let successText = truncateCharacters($.trim(car_brand),8,'&mldr;',1) + ' xxxxx' + plate;
@@ -513,7 +513,7 @@ $(document).ready(function() {
                 new_slot_client: data.new_slot_client,
               };
 
-              socket.send(JSON.stringify(wsData));
+              // socket.send(JSON.stringify(wsData));
               //
               // slot.find('button').fadeOut().remove();
               // let successText = truncateCharacters($.trim(car_brand),8,'&mldr;',1) + ' xxxxx' + plate;
