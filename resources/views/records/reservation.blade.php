@@ -40,23 +40,43 @@
                             @foreach (\App\Models\Office::all() as $office)
                                 <div class="col-md-{{ round(12 / $queue_sum * $office->queue_count) }} grid grid-cols-{{ $office->queue_count }}" style="@if ($office->office_id == 1){{'border-right: 2px solid black;'}}@endif" data-date="{{ date('Y-m-d', strtotime($date.' 00:00:00')) }}">
                                     @foreach ($workingDays as $workingDay)
+                                      @php
+                                        //$timeStep = $workingDay->timeStep;
+                                        $opentime = \Carbon\Carbon::parse($workingDay->timeopen);
+                                        $openTime1 = \App\Models\NewWorkingDay::select('timeopen')->where('date', $workingDay->date)->where('office_id', $office->office_id)->orderBy('timeopen', 'ASC')->first();
+                                        $openTime1 = \Carbon\Carbon::parse($openTime1->timeopen);
+                                        $closetime = \Carbon\Carbon::parse($workingDay->timeclose)->subMinutes($timeStep);
+
+                                        $startSlot = $opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep;
+
+                                        if ($workingDay->office_id === $office->office_id) {
+                                          $startSlotArray[$workingDay->date][$office->office_id][$workingDay->queue_id] = $startSlot;
+                                        }
+                                      @endphp
+                                    @endforeach
+                                    @foreach ($workingDays as $workingDay)
                                         @if ($workingDay->date == Date('Y-m-d', $strtotime))
                                             @php
-                                                $openTime1 = \App\Models\NewWorkingDay::select('timeopen')->where('date', $workingDay->date)->orderBy('timeopen', 'ASC')->first();
-                                                $timeStep = $workingDay->timeStep;
+                                                //$timeStep = $workingDay->timeStep;
                                                 $opentime = \Carbon\Carbon::parse($workingDay->timeopen);
+                                                $openTime1 = \App\Models\NewWorkingDay::select('timeopen')->where('date', $workingDay->date)->where('office_id', $office->office_id)->orderBy('timeopen', 'ASC')->first();
                                                 $openTime1 = \Carbon\Carbon::parse($openTime1->timeopen);
                                                 $closetime = \Carbon\Carbon::parse($workingDay->timeclose)->subMinutes($timeStep);
 
                                                 $numberOfSteps = ceil($opentime->diffInMinutes($closetime) / $timeStep);
-
-                                                $startSlot = $opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep;
 
                                                 $workingOffice = \App\Models\Office::where('office_id', $workingDay->office_id)->first();
                                             @endphp
                                             @if ($workingOffice->office_id == $office->office_id)
                                                 @if ($workingDay->weekday != 7)
                                                     @if ($workingDay->is_opened == 1)
+                                                        @php
+                                                          $smallestStart = array_filter($startSlotArray[$workingDay->date][$workingDay->office_id], function($value) {
+                                                            return $value < 0;
+                                                          });
+                                                          $smallestStart = (!empty($smallestStart)) ? max($smallestStart) : 0;
+                                                          $startSlot = ($opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep) - $smallestStart;
+                                                        @endphp
                                                         <div class="table office_{{ $workingOffice->office_id }}" @if ($workingDay->is_half) data-half="1" @endif data-queue-id="{{ $workingDay->queue_id }}">
                                                             <div class="title text-sm">{{ $workingOffice->title }}</div>
                                                             @for ($i = $startSlot; $i <= $numberOfSteps; $i++)

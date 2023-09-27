@@ -592,9 +592,9 @@
       $offices = Office::all();
 
       $dayTitles = $this->dayTitles;
-//      $timeStep = $this->timeStep;
+      $timeStep = $this->timeStep;
 
-      return view('records.reservation', compact('workingDays', 'visibleDays', 'dayTitles', 'dateRanges', 'timeRanges', 'isEqual', 'offices', 'currentDate'));
+      return view('records.reservation', compact('workingDays', 'visibleDays', 'dayTitles', 'dateRanges', 'timeRanges', 'isEqual', 'offices', 'currentDate', 'timeStep'));
     }
 
     public function reservations_print($office_id, $date)
