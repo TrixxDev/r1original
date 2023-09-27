@@ -299,7 +299,7 @@
       foreach ($this->tire_tables as $tire_table => $tire_options) {
         $primary_key = app("App\\Models\\$tire_options[0]")->getKeyName();
 
-        DB::table($tire_table)->orderBy($primary_key)->chunk(20, function($products) use (&$tire_options, &$primary_key) {
+        DB::table($tire_table)->orderBy($primary_key)->chunk(1000, function($products) use (&$tire_options, &$primary_key) {
           foreach ($products as $product) {
 
             $this->urs = 0;
@@ -402,6 +402,8 @@
             }
           }
         });
+
+        DB::table($tire_table)->whereNull('article')->where('article', '=', '')->update(['quantity' => 0, 'urs_quantity' => 0, 'krs_quantity' => 0]);
       }
     }
 
