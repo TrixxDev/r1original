@@ -237,132 +237,132 @@ $(document).ready(function() {
     }
   });
 
-  $('#mobile-submit-reservation').on('click', function () {
-    let car = $('#mobile-brand').val();
-    let carModel = $('#mobile-model').val();
-    let licPlate = $('#mobile-reg_nr').val();
-    let filiale = $('#mobile-filiale input[name="filiale"]:checked').val();
-    let date = $('section#mobile-main input[name=date][type=hidden]').val();
-    let purpose = $('#mobile-service select[name="serviceOption"]').val();
-    let comment = $('#mobile-comment').val();
-    let name = $('#mobile-name').val();
-    let phone = $('#mobile-phone').val();
-    let email = $('#mobile-email').val();
-    let rimsWith = $('.rims-with-mobile input[name="rims_with_input"]:checked').val();
-    let storageBin = $('#mobile_storage_bin').val();
-    let slot_id = $('section#mobile-main input[name=slotNumber][type=hidden]').val();
-    let slotPart = $('section#mobile-main input[name=part][type=hidden]').val();
-
-
-
-    $.ajax({
-      url: '/pieraksts/fillSlotMobile',
-      method: 'POST',
-      dataType: 'JSON',
-      data: {
-        'car': car,
-        'carModel': carModel,
-        'licPlate': licPlate,
-        'slot_id': slot_id,
-        'purpose': purpose,
-        'comment': comment,
-        'name': name,
-        'phone': phone,
-        'email': email,
-        'slot_time': slot_time,
-        'filiale': filiale,
-        'date': date,
-        'storageBin': storageBin,
-        'rims_with': rimsWith,
-        'slotPart': slotPart
-      },
-      success: function (data) {
-        if (data.error) {
-          if (data.error.brand) $('#mobile-brand').attr('placeholder', data.error.brand);
-          if (data.error.model) $('#mobile-model').attr('placeholder', data.error.model);
-          if (data.error.reg_nr) $('#mobile-reg_nr').attr('placeholder', data.error.reg_nr);
-          if (data.error.phone) $('#mobile-phone').attr('placeholder', data.error.phone);
-          if (data.error.wrongPhone) {
-            if ($('.phone-error').length == 0) {
-              $('<div class="alert alert-danger phone-error">' + data.error.wrongPhone + '</div>').insertAfter('.mobile-body .form-group:last')
-            }
-          } else {
-            $('.mobile-body .phone-error').remove();
-          }
-          if (data.error.email) $('#mobile-email').attr('placeholder', data.error.email);
-          if (data.error.emptyEmail) {
-            if ($('.email-error').length == 0) {
-              $('<div class="alert alert-danger email-error">' + data.error.emptyEmail + '</div>').insertAfter('.mobile-body .form-group:last')
-            }
-          } else {
-            $('.mobile-body .email-error').remove();
-          }
-          if (data.error.brand) {
-            $('html, body').animate({
-              scrollTop: $(".auto-model").offset().top
-            });
-          } else if (data.error.model) {
-            $('html, body').animate({
-              scrollTop: $(".auto-model").offset().top
-            });
-          } else if (data.error.filiale) {
-            $('select[name="filiale"]').addClass('required-input');
-            $('html, body').animate({
-              scrollTop: $(".reservation-filiale").offset().top
-            });
-          } else if (data.error.reservationDate) {
-            $('select[name="reservation-date"]').addClass('required-input');
-            $('html, body').animate({
-              scrollTop: $(".hidden-dates").offset().top
-            });
-          } else if (data.error.slotId) {
-            $('select[name="reservation-time"]').addClass('required-input');
-            $('html, body').animate({
-              scrollTop: $(".hidden-times").offset().top
-            });
-          } else if (data.error.purpose) {
-            $('select[name="serviceOption"]').addClass('required-input');
-            $('html, body').animate({
-              scrollTop: $('.purpose').offset().top
-            });
-          } else if (data.error.phone) {
-            $('html, body').animate({
-              scrollTop: $(".phone-number").offset().top
-            });
-          } else if (data.error.email) {
-            $('html, body').animate({
-              scrollTop: $(".client-email").offset().top
-            });
-          }
-        } else if (data.success) {
-          $('html, body').animate({
-            scrollTop: $("section#mobile-main").offset().top
-          });
-          $('.mobile-reservation-modal-body .mobile-body').slideUp();
-          $('.mobile-reservation-modal-body .mobile-body-success .alert').append(data.success);
-          $('.mobile-reservation-modal-body .mobile-body-success').slideDown();
-          $('#mobile-submit-reservation').slideToggle();
-          $('#mobile-close-modal').slideToggle().on('click', function () {
-            $(this).slideToggle();
-            $('#mobile-submit-reservation').slideToggle();
-            $('section#mobile-main form').trigger('reset');
-            $('.hidden-dates').slideUp();
-            $('.hidden-times').slideUp();
-            $('.mobile-body-success').slideUp();
-            $('.mobile-reservation-modal-body .mobile-body').slideDown();
-            $('.mobile-reservation-modal-body .mobile-body-success .alert').text('');
-          });
-        } else if (data.taken) {
-          $('html, body').animate({
-            scrollTop: $("section#mobile-main").offset().top
-          });
-          $('.mobile-reservation-modal-body .mobile-body').slideUp();
-          $('.mobile-reservation-modal-body .mobile-body-success .alert').append(data.taken);
-          $('.mobile-reservation-modal-body .mobile-body-success').slideDown();
-        }
-      }
-    });
-  });
+  // $('#mobile-submit-reservation').on('click', function () {
+  //   let car = $('#mobile-brand').val();
+  //   let carModel = $('#mobile-model').val();
+  //   let licPlate = $('#mobile-reg_nr').val();
+  //   let filiale = $('#mobile-filiale input[name="filiale"]:checked').val();
+  //   let date = $('section#mobile-main input[name=date][type=hidden]').val();
+  //   let purpose = $('#mobile-service select[name="serviceOption"]').val();
+  //   let comment = $('#mobile-comment').val();
+  //   let name = $('#mobile-name').val();
+  //   let phone = $('#mobile-phone').val();
+  //   let email = $('#mobile-email').val();
+  //   let rimsWith = $('.rims-with-mobile input[name="rims_with_input"]:checked').val();
+  //   let storageBin = $('#mobile_storage_bin').val();
+  //   let slot_id = $('section#mobile-main input[name=slotNumber][type=hidden]').val();
+  //   let slotPart = $('section#mobile-main input[name=part][type=hidden]').val();
+  //
+  //
+  //
+  //   $.ajax({
+  //     url: '/pieraksts/fillSlotMobile',
+  //     method: 'POST',
+  //     dataType: 'JSON',
+  //     data: {
+  //       'car': car,
+  //       'carModel': carModel,
+  //       'licPlate': licPlate,
+  //       'slot_id': slot_id,
+  //       'purpose': purpose,
+  //       'comment': comment,
+  //       'name': name,
+  //       'phone': phone,
+  //       'email': email,
+  //       'slot_time': slot_time,
+  //       'filiale': filiale,
+  //       'date': date,
+  //       'storageBin': storageBin,
+  //       'rims_with': rimsWith,
+  //       'slotPart': slotPart
+  //     },
+  //     success: function (data) {
+  //       if (data.error) {
+  //         if (data.error.brand) $('#mobile-brand').attr('placeholder', data.error.brand);
+  //         if (data.error.model) $('#mobile-model').attr('placeholder', data.error.model);
+  //         if (data.error.reg_nr) $('#mobile-reg_nr').attr('placeholder', data.error.reg_nr);
+  //         if (data.error.phone) $('#mobile-phone').attr('placeholder', data.error.phone);
+  //         if (data.error.wrongPhone) {
+  //           if ($('.phone-error').length == 0) {
+  //             $('<div class="alert alert-danger phone-error">' + data.error.wrongPhone + '</div>').insertAfter('.mobile-body .form-group:last')
+  //           }
+  //         } else {
+  //           $('.mobile-body .phone-error').remove();
+  //         }
+  //         if (data.error.email) $('#mobile-email').attr('placeholder', data.error.email);
+  //         if (data.error.emptyEmail) {
+  //           if ($('.email-error').length == 0) {
+  //             $('<div class="alert alert-danger email-error">' + data.error.emptyEmail + '</div>').insertAfter('.mobile-body .form-group:last')
+  //           }
+  //         } else {
+  //           $('.mobile-body .email-error').remove();
+  //         }
+  //         if (data.error.brand) {
+  //           $('html, body').animate({
+  //             scrollTop: $(".auto-model").offset().top
+  //           });
+  //         } else if (data.error.model) {
+  //           $('html, body').animate({
+  //             scrollTop: $(".auto-model").offset().top
+  //           });
+  //         } else if (data.error.filiale) {
+  //           $('select[name="filiale"]').addClass('required-input');
+  //           $('html, body').animate({
+  //             scrollTop: $(".reservation-filiale").offset().top
+  //           });
+  //         } else if (data.error.reservationDate) {
+  //           $('select[name="reservation-date"]').addClass('required-input');
+  //           $('html, body').animate({
+  //             scrollTop: $(".hidden-dates").offset().top
+  //           });
+  //         } else if (data.error.slotId) {
+  //           $('select[name="reservation-time"]').addClass('required-input');
+  //           $('html, body').animate({
+  //             scrollTop: $(".hidden-times").offset().top
+  //           });
+  //         } else if (data.error.purpose) {
+  //           $('select[name="serviceOption"]').addClass('required-input');
+  //           $('html, body').animate({
+  //             scrollTop: $('.purpose').offset().top
+  //           });
+  //         } else if (data.error.phone) {
+  //           $('html, body').animate({
+  //             scrollTop: $(".phone-number").offset().top
+  //           });
+  //         } else if (data.error.email) {
+  //           $('html, body').animate({
+  //             scrollTop: $(".client-email").offset().top
+  //           });
+  //         }
+  //       } else if (data.success) {
+  //         $('html, body').animate({
+  //           scrollTop: $("section#mobile-main").offset().top
+  //         });
+  //         $('.mobile-reservation-modal-body .mobile-body').slideUp();
+  //         $('.mobile-reservation-modal-body .mobile-body-success .alert').append(data.success);
+  //         $('.mobile-reservation-modal-body .mobile-body-success').slideDown();
+  //         $('#mobile-submit-reservation').slideToggle();
+  //         $('#mobile-close-modal').slideToggle().on('click', function () {
+  //           $(this).slideToggle();
+  //           $('#mobile-submit-reservation').slideToggle();
+  //           $('section#mobile-main form').trigger('reset');
+  //           $('.hidden-dates').slideUp();
+  //           $('.hidden-times').slideUp();
+  //           $('.mobile-body-success').slideUp();
+  //           $('.mobile-reservation-modal-body .mobile-body').slideDown();
+  //           $('.mobile-reservation-modal-body .mobile-body-success .alert').text('');
+  //         });
+  //       } else if (data.taken) {
+  //         $('html, body').animate({
+  //           scrollTop: $("section#mobile-main").offset().top
+  //         });
+  //         $('.mobile-reservation-modal-body .mobile-body').slideUp();
+  //         $('.mobile-reservation-modal-body .mobile-body-success .alert').append(data.taken);
+  //         $('.mobile-reservation-modal-body .mobile-body-success').slideDown();
+  //       }
+  //     }
+  //   });
+  // });
 });
 
 $('[data-toggle="tooltip"]').tooltip({

@@ -448,7 +448,7 @@ $(document).ready(function() {
     };
 
     $.ajax({
-      url: '/fillSlot',
+      url: '/pieraksts/fillSlot',
       method: 'POST',
       data: {formData: formData, dopParams: dopParams},
       beforeSend: function () {
