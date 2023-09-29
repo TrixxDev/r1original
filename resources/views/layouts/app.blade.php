@@ -58,7 +58,7 @@
     @livewireStyles
 </head>
 
-<body id="@yield('body-title')" class="@yield('title')" style="background-image: url('@if ((int) config('season') === 1) /images/cover.webp @else /images/cover1.webp @endif')">
+<body id="@yield('body-title')" class="@yield('title')" style="background-image: url('@if ((int) env('SEASON') === 1) /images/cover.webp @else /images/cover1.webp @endif')">
 <div id="toasts"></div>
 <main>
     <header id="header">
