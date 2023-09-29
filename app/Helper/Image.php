@@ -125,7 +125,7 @@
       for ($i = 0; $i < count($banners); $i++) {
         $return .= '<div class="sliding-banner__part1 sliding-banner__part1--image">';
         $return .= '<span class="sliding-banner__part1_bg" style="background-color:transparent"></span>';
-        $return .= '<img class="banner-image" src="/storage/banners/' . $banners[$i]->name . '">';
+        $return .= '<img class="banner-image" alt="r1_banner_' . $banners[$i]->name . '" src="/storage/banners/' . $banners[$i]->name . '">';
         if (!empty($banners[$i]->url)) {
           $return .= '<a href="' . url('//' . $banners[$i]->url) . '" class="sliding-banner__link"></a>';
         }
