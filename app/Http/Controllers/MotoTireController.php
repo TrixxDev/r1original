@@ -98,7 +98,8 @@ class MotoTireController extends Controller
                                               $query->where('d2', $this->d2);
                                             })->when($this->d3, function($query) {
                                               $query->where('d3', $this->d3);
-                                            })->where('moto_tires.visible_users', '<>', 0)
+                                            })->groupBy('moto_tires.article')
+                                            ->where('moto_tires.visible_users', '<>', 0)
                                             ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
                                             ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
                                             ->orderByRaw('cast(d2 as decimal(7,2)) ASC')

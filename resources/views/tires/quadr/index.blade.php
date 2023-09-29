@@ -401,8 +401,8 @@
                           </th>
 
                           <td class="table-tire-name-cell">
-                            <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                               title='{!! App\Helper\Image::show('quadr', $tire->make_id) !!}'
+                            <a class="tire-table-link tippy"
+                               data-tippy-content="<div><img data-src='{{ App\Helper\Image::showAd('quadr', $tire->make_id) }}'></div>"
                                href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
                                data-content="{{ $tire->fullName }}"
                                data-article="{{ $tire->article }}"

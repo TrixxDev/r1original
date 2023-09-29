@@ -82,7 +82,8 @@ class QuadTireController extends Controller
                             $query->where('d2', $this->d2);
                           })->when($this->d3, function($query) {
                             $query->where('d3', $this->d3);
-                          })->where('quadr_tires.visible_users', '<>', 0)
+                          })->groupBy('quadr_tires.article')
+                          ->where('quadr_tires.visible_users', '<>', 0)
                           ->orderBy('d3', 'ASC')
                           ->orderBy('d1', 'ASC')
                           ->orderBy('d2', 'ASC')
