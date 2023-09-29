@@ -37,7 +37,7 @@
 
         // INDUSTRIAL TIRES
         case 'big':
-          $dir = $path . '/industrial/tread/' . $image . '-o.jpg';
+          $dir = $path . '/industrial/tread/' . $image . '-1o.jpg';
           break;
         case 'big-rim':
           $dir = $path . '/industrialrims/tread/' . $image . '.jpg';
