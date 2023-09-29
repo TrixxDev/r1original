@@ -124,14 +124,15 @@ class AutoTireController extends Controller
 
   public function tires() {
 
-    $tires = Autotire::with('tread')
+    $tires = Autotire::leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
       ->when($this->d1, function($query) {
         $query->where('d1', $this->d1);
       })->when($this->d2, function($query) {
         $query->where('d2', $this->d2);
       })->when($this->d3, function($query) {
         $query->where('d3', $this->d3);
-      })->where('auto_tires.visible_users', '<>', 0)
+      })->where('auto_treads.season', $this->season)
+      ->where('auto_tires.visible_users', '<>', 0)
       ->orderBy('d3', 'ASC')
       ->orderBy('d1', 'ASC')
       ->orderBy('d2', 'ASC')
