@@ -574,8 +574,7 @@
                     @endphp
                     @if($tire->price1)
                       <a
-                        href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->tread->brand_id)->b_title), strtolower(str_replace('/', '_', $tire->tread->t_title)), $tire->tire_id]) }}"
-                        class="grid-view-link"
+                          href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"                        class="grid-view-link"
                         data-article="{{ $tire->article }}">
                         <div class="tire-image-card sort-order">
                           <div class="text-center image-grid-overflow">
@@ -742,8 +741,7 @@
                           <td class="table-tire-name-cell">
                             <a class="tire-table-link tippy"
                                data-tippy-content="<div><img data-src='{{ App\Helper\Image::showAd('auto', $tire->make_id) }}'></div>"
-                               href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->tread->brand_id)->b_title), strtolower(str_replace('/', '_', $tire->tread->t_title)), $tire->tire_id]) }}"
-                               data-content="{{ $tire->fullName }}"
+                               href="{{ route($current_url, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"                               data-content="{{ $tire->fullName }}"
                                data-article="{{ $tire->article }}"
                                data-quantity="{{ $cartQty }}">
                               <div class="table-link-title">{{ $tire->title }}</div>
