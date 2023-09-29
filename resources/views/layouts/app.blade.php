@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<head lang="lv">
+<html lang="lv">
+<head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>R1 Riepu Serviss</title>
@@ -59,19 +60,6 @@
 
 <body id="@yield('body-title')" class="@yield('title')" style="background-image: url('@if ((int) env('SEASON') === 1) /images/cover.png @else /images/cover1.png @endif')">
 <div id="toasts"></div>
-<div class="modal" id="timeout" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-body text-center">
-        <h4>Jūsu sessijas laiks iet uz beigām</h4>
-        <h3>Atlikušais laiks - <span class="time" data-start="03:00"></span></h3>
-      </div>
-      <div class="modal-footer" style="">
-        <button type="button" class="btn btn-primary" id="stay" style="width: 100%;">Palikt</button>
-      </div>
-    </div>
-  </div>
-</div>
 <main>
     <header id="header">
         <div class="header-banner">
@@ -796,7 +784,9 @@
   <script src="{{ asset('js/jquery.tablesorter.min.js?rev=' . time()) }}"></script>
   <script src="{{ asset('js/atc.js?rev=' . time()) }}"></script>
 @endif
-<script src="{{ asset('js/custom.min.js?rev=' . time()) }}"></script>
+<script src="https://unpkg.com/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://unpkg.com/tippy.js@4.3.5/umd/index.all.min.js"></script>
+<script src="{{ asset('js/custom.js?rev=' . time()) }}"></script>
 <script src="{{ asset('js/banner_slider.min.js?rev=' . time()) }}"></script>
 <script src="{{ asset('js/cart.js?rev=' . time()) }}"></script>
 {{--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>--}}
@@ -890,7 +880,6 @@
 <script>
   var loggedIn = {{ auth()->check() ? 'true' : 'false' }};
 </script>
-<script src="{{ asset('js/rlapp.js') }}"></script>
 <script src="{{ asset('js/toast.js') }}"></script>
 </body>
 </html>

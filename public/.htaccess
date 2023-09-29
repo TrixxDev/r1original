@@ -28,3 +28,7 @@
         Deny from all
     </Files>
 </IfModule>
+
+Header unset ETag
+FileETag None
+Header set Cache-Control "max-age=2678400"

@@ -162,9 +162,9 @@
           $img = str_replace('.jpg', '.png', $img);
         }
         if (empty($style)) {
-          return '<img class="grid-tire-image" src=' . asset($img) . '>';
+          return '<img class="grid-tire-image" loading="lazy" src=' . asset($img) . '>';
         } else {
-          return '<img class="grid-tire-image" style="' . $style . '" src=' . asset($img) . '>';
+          return '<img class="grid-tire-image" loading="lazy" style="' . $style . '" src=' . asset($img) . '>';
         }
       } else {
         if (empty($style)) {

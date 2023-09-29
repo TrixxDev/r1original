@@ -3367,3 +3367,22 @@ $('.category-search').on('submit', function(e) {
     window.location.href = "/akcijas/category/" + category;
   }
 });
+
+$(document).ready(function() {
+  $(document).on('mouseenter', '.tippy', function(e) {
+    tippy(this, {
+      touchHold: true,
+      hideOnClick: false,
+      placement: 'bottom-start',
+      arrow: false,
+      animateFill: false,
+      animation: 'shift-away',
+      // // In ES5 as you don't have a transpilation step(?):
+      onShow: function(instance) {
+        let img = instance.popper.querySelector('img');
+        img.style = 'width: 280px; height: 280px; background: #fff url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x;';
+        img.src = img.dataset.src;
+      }
+    });
+  });
+})

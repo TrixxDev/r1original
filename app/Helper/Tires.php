@@ -117,36 +117,14 @@ class Tires
         return $brand_list;
     }
 
-    public static function getAutoTiresD1($season = 1) {
+    public static function getAutoTiresSize($column, $season = 1) {
         return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-                         ->select('d1')
-                         ->whereRaw('d1 <> ""')
+                         ->select($column)
+                         ->where($column, '<>', '""')
                          ->where('auto_tires.visible_users', '<>', 0)
                          ->where('auto_treads.season', $season)
-                         ->orderBy('d1')
-                         ->groupBy('d1')
-                         ->get();
-    }
-
-    public static function getAutoTiresD2($season = 1) {
-        return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-                         ->select('d2')
-                         ->whereRaw('d2 <> ""')
-                         ->where('auto_tires.visible_users', '<>', 0)
-                         ->where('auto_treads.season', $season)
-                         ->orderBy('d2')
-                         ->groupBy('d2')
-                         ->get();
-    }
-
-    public static function getAutoTiresD3($season = 1) {
-        return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-                         ->select('d3')
-                         ->whereRaw('d3 <> ""')
-                         ->where('auto_tires.visible_users', '<>', 0)
-                         ->where('auto_treads.season', $season)
-                         ->orderBy('d3')
-                         ->groupBy('d3')
+                         ->orderBy($column)
+                         ->groupBy($column)
                          ->get();
     }
 

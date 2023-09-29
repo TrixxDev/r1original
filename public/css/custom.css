@@ -6465,3 +6465,10 @@ hr.admin-comments {
 .flex {
     display: flex;
 }
+
+.tippy-tooltip {
+    background: #fff url('/images/ui-bg_flat_75_ffffff_40x100.png') 50% 50% repeat-x!important;
+    border-radius: 4px!important;
+    border: 2px solid #aaa!important;
+    padding: 0px;
+}

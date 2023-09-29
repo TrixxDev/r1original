@@ -69,16 +69,16 @@ class AutoTireController extends Controller
 
     $this->brands = $this->tires_getBrands();
 
-    $this->autoTiresD1 = Tires::getAutoTiresD1($this->season);
-    $this->autoTiresD2 = Tires::getAutoTiresD2($this->season);
-    $this->autoTiresD3 = Tires::getAutoTiresD3($this->season);
+    $this->autoTiresD1 = Tires::getAutoTiresSize('d1', $this->season);
+    $this->autoTiresD2 = Tires::getAutoTiresSize('d2', $this->season);
+    $this->autoTiresD3 = Tires::getAutoTiresSize('d3', $this->season);
 
     $this->currBrand = ($request->brand == 'Visi') ? 'Visi' : $request->brand;
     $this->currBrand = ($this->currBrand === NULL) ? 'Visi' : $request->brand;
 
     $this->d1 = ($request->d1 == 'Visi') ? 'Visi' : $request->d1;
     $this->d2 = ($request->d2 == 'Visi') ? 'Visi' : $request->d2;
-    $this->d3 = ($request->d3 == NULL) ? '16' : $request->d3;
+    $this->d3 = ($request->d3 == NULL) ? 16 : $request->d3;
 
     $this->types = ($request->types) ? $request->types : [];
     $this->code = ($request->code) ? $request->code : [];
@@ -124,36 +124,22 @@ class AutoTireController extends Controller
 
   public function tires() {
 
-    $tires = Autotire::leftJoin('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+    $tires = Autotire::with('tread')
       ->when($this->d1, function($query) {
         $query->where('d1', $this->d1);
       })->when($this->d2, function($query) {
         $query->where('d2', $this->d2);
       })->when($this->d3, function($query) {
         $query->where('d3', $this->d3);
-      })->where('auto_treads.season', $this->season)
-      ->where('auto_tires.visible_users', '<>', 0)
+      })->where('auto_tires.visible_users', '<>', 0)
       ->orderBy('d3', 'ASC')
       ->orderBy('d1', 'ASC')
       ->orderBy('d2', 'ASC')
       ->orderBy('price2', 'DESC')
-      ->groupBy('tire_id')
-      ->paginate();
-//        $codes = Code::all()->toArray();
-    $codes = Code::all();
+      ->groupBy('article')
+      ->simplePaginate();
 
-    $code_array = [];
-
-    foreach ($codes as $code) {
-      $code_array[$code->name] = $code->explanation;
-    }
-
-
-//        if (in_array('RSC', $code_names)){
-//          dd('ir');
-//        } else {
-//          dd('nav');
-//        }
+    $code_array = $this->code_array;
 
     return view('tires.auto.tires', compact('tires', 'code_array'));
   }
@@ -431,30 +417,15 @@ class AutoTireController extends Controller
 
   public function tires_getBrands()
   {
-    $brands = [];
+    $brands = Autobrand::join('auto_treads', 'auto_brands.brand_id', '=', 'auto_treads.brand_id')
+      ->join('auto_tires', 'auto_treads.tread_id', '=', 'auto_tires.make_id')
+      ->where('auto_tires.visible_users', '<>', 0)
+      ->where('auto_treads.season', $this->season)
+      ->distinct()
+      ->pluck('auto_brands.title', 'auto_brands.brand_id')
+      ->sort(SORT_NATURAL | SORT_FLAG_CASE);
 
-    foreach (Autobrand::all() as $brand) {
-      $treads = Autotread::where('brand_id', $brand->brand_id)->where('season', $this->season)->get();
-      foreach ($treads as $tread) {
-        $tire = Autotire::where('make_id', $tread->tread_id)->where('visible_users', '<>', 0)->first();
-        if (!$tire) continue;
-        $brand_id = $tread->brand_id;
-        array_push($brands, $brand_id);
-      }
-    }
-
-    $brands = array_unique($brands);
-    $brands = array_values($brands);
-    $brand_list = [];
-    foreach ($brands as $brand) {
-      $brand = Autobrand::where('brand_id', $brand)->first();
-      $brand_list[$brand->brand_id] = ucwords(strtolower($brand->title));
-    }
-
-//      asort($brand_list);
-    asort($brand_list, SORT_NATURAL | SORT_FLAG_CASE);
-
-    return $brand_list;
+    return $brands->all();
   }
 
 }
