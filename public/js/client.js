@@ -115,6 +115,7 @@ $(document).ready(function() {
 
       $('#reservation #service .form-check').each(function() {
         $(this).find('input').on('click', function() {
+          $('span.service-error').remove();
           switch ($(this).val()) {
             case '1': {
               $('#reservation .rims_with').show();
@@ -136,6 +137,11 @@ $(document).ready(function() {
         })
       });
 
+      $('#reservation .rims_with input[name="rims_with_input"]').each(function() {
+        $(this).on('input', function() {
+          $('.rimsWith_error').remove();
+        })
+      })
 
       if ($(slot).attr('data-moto') === 'true') {
         $.each($('#reservation #service .form-check'), function(index, value) {
@@ -219,6 +225,7 @@ $(document).ready(function() {
           let text = '';
           $.each(data, function(index, value) {
             if (index === 'errors') {
+              $('span.service-error, div.rimsWith_error').remove();
               $.each(value, function(index, item) {
                 if (index == 'car_brand') {
                   $('#brand').attr('placeholder', 'Jābūt aizpildītam!');
@@ -229,8 +236,11 @@ $(document).ready(function() {
                 if (index == 'lic_plate') {
                   $('#reg_nr').attr('placeholder', 'Jābūt aizpildītam!');
                 }
-                if (index == 'lic_plate') {
-                  $('#lic_plate').attr('placeholder', 'Jābūt aizpildītam!');
+                if (index == 'service') {
+                  $('<span class="service-error" style="color: red; opacity: 0.5;">Jāizvēlas viens no pakalpojumiem!</span>').appendTo($('.services #service'));
+                }
+                if (index == 'rimsWith') {
+                  $('<div class="rimsWith_error"><div class="col-sm-3"></div><div class="col-sm-9"><span class="service-error" style="color: red; opacity: 0.5;">Jāizvēlas viena no opcijām!</span></div></div>').appendTo($('.rims_with'));
                 }
                 if (index == 'phone_number') {
                   $('#phone').attr('placeholder', 'Jābūt aizpildītam!');

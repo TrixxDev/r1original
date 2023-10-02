@@ -239,7 +239,9 @@
       if (empty($result->car_brand)) $errors['car_brand'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Ievadiet auto marku!</li>';
       if (empty($result->car_model)) $errors['car_model'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Ievadiet auto modeli!</li>';
       if (empty($result->lic_plate)) $errors['lic_plate'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Ievadiet auto reģistrācijas numuru!</li>';
-      if (empty($result->service)) $errors['service'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Izvēlieties pakalpojumu!</li>';
+      if ($result->service === 'undefined') $errors['service'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Jāizvēlas viens no pakalpojumiem!</li>';
+
+      if ($result->service == 1 && $result->rimsWith === 'undefined') $errors['rimsWith'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Jāizvēlas viena no opcijām!</li>';
 
       if (!empty($result->email)) {
         if (!filter_var($result->email, FILTER_VALIDATE_EMAIL)) {
