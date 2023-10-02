@@ -460,7 +460,7 @@ $(document).ready(function() {
     $.ajax({
       url: '/pieraksts/fillSlot',
       method: 'POST',
-      data: {formData: formData, dopParams: dopParams},
+      data: {formData: formData, dopParams: dopParams, from_mobile: 1},
       beforeSend: function () {
         $('#reservation .loader-block').show();
       },

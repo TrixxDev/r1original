@@ -278,6 +278,9 @@
       $slot->takenby = json_encode($result);
       $slot->createtime = date('Y-m-d H:i:s');
       $slot->createuser = $userID;
+      if ($request->input('from_mobile')) {
+        $slot->is_mobile = $request->input('from_mobile');
+      }
 
       if ($slot->save()) {
         $returnMessage = 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama īsziņā.';
