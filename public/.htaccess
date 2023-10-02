@@ -27,8 +27,12 @@
         Order allow,deny
         Deny from all
     </Files>
-</IfModule>
 
-Header unset ETag
-FileETag None
-Header set Cache-Control "max-age=2678400"
+    # Set Cache-Control and ETag headers for all URLs except 'pieraksts' and 'pieraksts/rezervacijas'
+    RewriteCond %{REQUEST_URI} !^/pieraksts(/|$)
+    RewriteCond %{REQUEST_URI} !^/pieraksts/rezervacijas(/|$)
+    Header unset ETag
+    FileETag None
+    Header set Cache-Control "max-age=2678400"
+
+</IfModule>

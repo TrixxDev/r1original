@@ -154,9 +154,9 @@
                         </div>
                         @endif
                         <div class="form-group row">
-                          <label class="col-md-3 col-form-label" for="article">Duell artikuls</label>
+                          <label class="col-md-3 col-form-label" for="duellarticle">Duell artikuls</label>
                           <div class="col-md-9">
-                            <input class="form-control" id="article" type="text" @if ($duellstock) value="{{ $duellstock->article }}" @endif name="article" placeholder="Duell artikuls">
+                            <input class="form-control" id="duellarticle" type="text" @if ($duellstock) value="{{ $duellstock->article }}" @endif name="duellarticle" placeholder="Duell artikuls">
                           </div>
                         </div>
                         @if ($duellstock)
@@ -168,9 +168,9 @@
                         </div>
                         @endif
                         <div class="form-group row">
-                          <label class="col-md-3 col-form-label" for="article">Starco artikuls</label>
+                          <label class="col-md-3 col-form-label" for="starcoarticle">Starco artikuls</label>
                           <div class="col-md-9">
-                            <input class="form-control" id="article" type="text" @if ($starcostock) value="{{ $starcostock->article }}" @endif name="article" placeholder="Starco artikuls">
+                            <input class="form-control" id="starcoarticle" type="text" @if ($starcostock) value="{{ $starcostock->article }}" @endif name="starcoarticle" placeholder="Starco artikuls">
                           </div>
                         </div>
                         @if ($starcostock)
