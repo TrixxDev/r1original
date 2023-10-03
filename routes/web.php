@@ -328,6 +328,7 @@ Route::middleware('checksession')->group(function() {
 // Ziemas riepas
   Route::get('/ziemas-riepas/', [App\Http\Controllers\AutoTireController::class, 'tires'])->name('ziemas-riepas');
   Route::post('/ziemas-riepas', [App\Http\Controllers\AutoTireController::class, 'tires_search'])->name('ziemas-riepas');
+  Route::get('/ziemas-riepas/search/api/getSizes/{season}', [App\Http\Controllers\AutoTireController::class, 'get_sizes']);
   Route::get('/ziemas-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\AutoTireController::class, 'tires_tread'])->name('ziemas-riepa');
   Route::post('/ziemas-riepas/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('ziemas-riepas-ajax');
   Route::post('/ziemas-riepas/search/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('ziemas-riepas-ajax');
@@ -337,6 +338,7 @@ Route::middleware('checksession')->group(function() {
 // Vasaras riepas
   Route::get('/vasaras-riepas', [App\Http\Controllers\AutoTireController::class, 'tires'])->name('vasaras-riepas');
   Route::post('/vasaras-riepas', [App\Http\Controllers\AutoTireController::class, 'tires_search'])->name('vasaras-riepas');
+  Route::get('/vasaras-riepas/search/api/getSizes/{season}', [App\Http\Controllers\AutoTireController::class, 'get_sizes']);
   Route::get('/vasaras-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\AutoTireController::class, 'tires_tread'])->name('vasaras-riepa');
   Route::post('/vasaras-riepas/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('vasaras-riepas-ajax');
   Route::post('/vasaras-riepas/search/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('vasaras-riepas-ajax');
