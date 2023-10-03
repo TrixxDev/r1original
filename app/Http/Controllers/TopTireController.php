@@ -98,9 +98,8 @@ class TopTireController extends Controller
       ->where('rims.priceoffer', 1)
       ->where('rims.visible_users', '<>', 0)
       ->groupBy('rims.article')
-      ->orderBy('quantity', 'DESC')
-      //            ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
-      //            ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+//      ->orderBy('quantity', 'DESC')
+      ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
       ->orderBy('price3', 'DESC')
       ->get();
 
