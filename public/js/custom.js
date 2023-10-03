@@ -3400,6 +3400,18 @@ if ($('body').hasClass('category-ziemas-riepas')) {
   });
 }
 
+if ($('body').hasClass('category-vasaras-riepas')) {
+
+  $.ajax({
+    url: '/ziemas-riepas/search/api/getSizes/1',
+    success: function(data) {
+      $.each(data, function(index, item) {
+        $('<option value="' + item.tire_size + '">' + item.tire_size + '</option>').appendTo('select.r1-select-input');
+      });
+    }
+  });
+}
+
 $('.r1-select-input').select2(({
   language: 'lv',
   maximumSelectionLength: 1,
