@@ -59,7 +59,7 @@
                            href="{{ route('lietais-disks', [\Str::slug($rim->brandTitle), strtolower(str_replace('/', '_', $rim->treadTitle)), $rim->rim_id]) }}"
                            data-content="{{ $rim->fullName }}"
                            data-article="{{ $rim->article }}"
-                           data-quantity="{{ (new \App\Http\Controllers\RimsController(new \Illuminate\Http\Request()))->cartQty }}">
+                           data-quantity="{{ $cartQty }}">
                             {{ $rim->fullTitle }}
                         </a>
                     </td>

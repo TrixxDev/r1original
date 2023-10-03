@@ -33,6 +33,40 @@ class Autotire extends Model
         return $this->d1 . '/' . $this->d2 . ' R' . $this->d3;
     }
 
+    public function getSizeTitleAttribute()
+    {
+      $this->_includeStock = true;
+
+      $brand = $this->getFullSizeAttribute();
+      return '<h4 class="tire-brand-name">' . $brand . '</h4>';
+    }
+
+    public function getCodeExplainAttribute()
+    {
+      $code_array = [];
+
+      $return = '';
+
+      $codes = Code::all();
+
+      foreach ($codes as $code) {
+        $code_array[$code->name] = $code->explanation;
+      }
+
+      $codes = explode(' ', $this->code);
+      foreach ($codes as $code) {
+        if (isset($code_array[$code])) {
+          $return .= $code_array[$code] . '<br>';
+        }
+      }
+
+      if (strpos($this->code, 'DOT') !== false) {
+        $return .= $code_array['DOT'];
+      }
+
+      return $return;
+    }
+
     public function getOfferPriceAttribute()
     {
         if ($this->price2 == null) {

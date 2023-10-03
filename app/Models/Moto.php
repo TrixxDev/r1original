@@ -46,6 +46,32 @@ class Moto extends Model
         }
     }
 
+    public function getCodeExplainAttribute()
+    {
+      $code_array = [];
+
+      $return = '';
+
+      $codes = Code::all();
+
+      foreach ($codes as $code) {
+        $code_array[$code->name] = $code->explanation;
+      }
+
+      $codes = explode(' ', $this->code);
+      foreach ($codes as $code) {
+        if (isset($code_array[$code])) {
+          $return .= $code_array[$code] . '<br>';
+        }
+      }
+
+      if (strpos($this->code, 'DOT') !== false) {
+        $return .= $code_array['DOT'];
+      }
+
+      return $return;
+    }
+
     public function getOfferPriceAttribute()
     {
         if ($this->price2 == null) {

@@ -1,125 +1,113 @@
 <section id="products">
-    <div id="">
-        <div id="js-product-list">
-            <span class="text-uppercase flipped-title tire-brand-name" style="color:black;">Motociklu riepas</span>
-            <div class="products row hide-price title-flip">
+  <div id="">
+    <div id="js-product-list">
+      <span class="text-uppercase flipped-title tire-brand-name" style="color:black;">Motociklu riepas</span>
+      <div class="products row hide-price title-flip">
 
-                @php
-                    $cbrand = '';
-                    $index = 0;
-                @endphp
-                @foreach ($tires as $tire)
-                    @php
-                        if (!$tire->tread) continue;
-                        $brand = $tire->fullSize;
-                        $tire->includeStock = true;
-                        if ($cbrand!=$brand){
-                        echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
-                    @endphp
+        @php
+          $cbrand = '';
+          $index = 0;
+        @endphp
+        @foreach ($tires as $tire)
+          @php
+            if (!$tire->tread) continue;
+            $brand = $tire->fullSize;
+            $tire->includeStock = true;
+            if ($cbrand!=$brand){
+            echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
+          @endphp
 
-                    {{--LIST VIEW--}}
-                    <table id="tires-table" class="table table-striped moto-sorter tires-table table-hover tablesorter">
-                        <thead class="tires-thead sticky-table">
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
-                            <th scope="col" class="hidden-sm-down text-center">Tips</th>
-                            <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
-                            <th scope="col" class="hidden-sm-down text-center">Kods</th>
+          {{--LIST VIEW--}}
+          <table id="tires-table" class="table table-striped moto-sorter tires-table table-hover tablesorter">
+            <thead class="tires-thead sticky-table">
+            <tr>
+              <th scope="col"></th>
+              <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
+              <th scope="col" class="hidden-sm-down text-center">Tips</th>
+              <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
+              <th scope="col" class="hidden-sm-down text-center">Kods</th>
 
-                            <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
-                            <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
-                            <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
-                            <th scope="col"></th>
-                            <th scope="col">
-                                <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
-                            </th>
+              <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
+              <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+              <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
+              <th scope="col"></th>
+              <th scope="col">
+                <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
+              </th>
 
-                        </tr>
-                        </thead>
-                        <tbody id="tires-table-body">
-                        @php
-                            $cbrand = $brand;
-                            $stripe = 1;
-                          }
-                        @endphp
-                        @if ($loop->last) <h4 class="tire-brand-name">{!! $brand !!}</h4> @endif
+            </tr>
+            </thead>
+            <tbody id="tires-table-body">
+            @php
+              $cbrand = $brand;
+              $stripe = 1;
+            }
+            @endphp
+            @if ($loop->last) <h4 class="tire-brand-name">{!! $brand !!}</h4> @endif
 
-                        <tr class="tire-table-row">
-                            <th scope="row" class="tire-table-checkbox">
-                                <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
-                                       class="tire-table-checkbox">
-                            </th>
+            <tr class="tire-table-row">
+              <th scope="row" class="tire-table-checkbox">
+                <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
+                       class="tire-table-checkbox">
+              </th>
 
-                            <td class="table-tire-name-cell" data-link="{{ route('motociklu-riepas') }}">
-                                <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                                   title='{!! App\Helper\Image::show('moto', $tire->make_id) !!}'
-                                   href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
-                                   data-content="{{ $tire->fullName }}"
-                                   data-article="{{ $tire->article }}"
-                                   data-quantity="{{ (new \App\Http\Controllers\MotoTireController(new \Illuminate\Http\Request()))->cartQty }}">
-                                    <div class="table-link-title">{{ $tire->title }}</div>
-                                </a>
-                            </td>
+              <td class="table-tire-name-cell" data-link="{{ route('motociklu-riepas') }}">
+                <a class="tire-table-link tippy"
+                   data-tippy-content="<div><img data-src='{{ App\Helper\Image::showAd('moto', $tire->make_id) }}'></div>"
+                   href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
+                   data-content="{{ $tire->fullName }}" data-article="{{ $tire->article }}" data-quantity="{{ $cartQty }}">
+                  <div class="table-link-title">{{ $tire->title }}</div>
+                </a>
+              </td>
 
-                            <td class="hidden-sm-down text-center">
+              <td class="hidden-sm-down text-center">
                           <span data-toggle="tooltip"
                                 title="<span style='color: black'>@if (isset($tire->typeDesc[1])) {{ $tire->typeDesc[1] }} @endif</span>">{{ $tire->motoType }}
                               </span>
-                            </td>
+              </td>
 
-                            <td class="hidden-sm-down text-center">
+              <td class="hidden-sm-down text-center">
                           <span data-toggle="tooltip"
                                 title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}
                           </span>
-                            </td>
+              </td>
 
-                            <td class="hidden-sm-down text-center">
-                            <span data-toggle="tooltip" title="<span style='color: black'>
-                                                @php $codes = explode(' ', $tire->code); @endphp
-                            @foreach ($codes as $code)
-                            @if (isset($code_array[$code]))
-                            {!! $code_array[$code] . '<br>' !!}
-                            @endif
-                            @endforeach
-                            @if (strpos($tire->code, 'DOT') !== false)
-                            {!! $code_array['DOT'] !!}
-                            @endif
-                                    </span>" class="hidden-sm-down table-cell prod-code">{{ $tire->code }}
+              <td class="hidden-sm-down text-center">
+                            <span data-toggle="tooltip" title="{!! $tire->codeExplain !!}" class="hidden-sm-down table-cell prod-code">{{ $tire->code }}
                                     </span>
 
-                            </td>
+              </td>
 
-                            <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
-                            <td id="sale-price" class="text-center tire-price-red sellout">€ {{ $tire->price2 }}</td>
-                            <td class="hidden-sm-down text-center sellout">{{$tire->comment}}</td>
+              <td id="store-price" class="text-center store-price">€ {{ $tire->price1 }}</td>
+              <td id="sale-price" class="text-center tire-price-red sellout">€ {{ $tire->price2 }}</td>
+              <td class="hidden-sm-down text-center sellout">{{$tire->comment}}</td>
 
-                            <td class="shopping-cart-col">
-                                <div class="clearfix atc_div text-right">
-                                    <button class="cart-shopping-button" data-toggle="modal"
-                                            @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
-                                            @endif data-info="{{ $tire->tire_id }}"><i
-                                                class="material-icons">add_shopping_cart</i>
-                                    </button>
-                                </div>
-                            </td>
+              <td class="shopping-cart-col">
+                <div class="clearfix atc_div text-right">
+                  <button class="cart-shopping-button" data-toggle="modal"
+                          @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
+                          @endif data-info="{{ $tire->tire_id }}"><i
+                        class="material-icons">add_shopping_cart</i>
+                  </button>
+                </div>
+              </td>
 
-                            <td class="dot-availability text-center">
+              <td class="dot-availability text-center">
 
                             <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip"
                                   data-html="true"
                                   title="{{ $tire->stockAvailability }}">
                               <span class="sort-order">{{ $tire->dotAvailable }}</span>
                             </span>
-                            </td>
+              </td>
 
-                        </tr>
-                        @php
-                            $index++;
-                        @endphp
-                        @endforeach
-                        </tbody>
-                    </table>
-            </div>
-        </div>
+            </tr>
+            @php
+              $index++;
+            @endphp
+            @endforeach
+            </tbody>
+          </table>
+      </div>
+    </div>
 </section>

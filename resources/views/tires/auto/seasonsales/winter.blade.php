@@ -79,7 +79,7 @@
                                     href="{{ route($winterURL, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"
                                     data-content="{{ $tire->fullName }}"
                                     data-article="{{ $tire->article }}"
-                                    data-quantity="{{ (new \App\Http\Controllers\AutoTireController(new \Illuminate\Http\Request()))->cartQty }}">
+                                    data-quantity="4">
                                     <div class="table-link-title">{{ $tire->title }}</div>
                                 </a>
                             </td>
@@ -129,16 +129,11 @@
                             </td>
 
                             <td class="hidden-sm-down text-center">
-                            <span data-toggle="tooltip" title="<span style='color: black'>
-                            @php $codes = explode(' ', $tire->code); @endphp
-                                @foreach ($codes as $code1)
-                                    @if (isset($code_array[$code1]))
-                                        {!! $code_array[$code1] . '<br>' !!}
-                                    @endif
-                                @endforeach
-                                @if (strpos($tire->code, 'DOT') !== false) {!! $code_array['DOT'] !!}
-                            @endif
-                            </span>" class="hidden-sm-down table-cell prod-code">{{ $tire->code }}</span>
+                              <span data-toggle="tooltip"
+                                    title="<span style='color: black'>{!! $tire->codeExplain !!}</span>"
+                                    class="hidden-sm-down table-cell prod-code">
+                                  {{ $tire->code }}
+                              </span>
                             </td>
 
                             <td class="hidden-sm-down text-center">

@@ -37,7 +37,7 @@
                                href="{{ route('radze', [$stud->brand, strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
                                data-content="{{ $stud->fullName }}"
                                data-article="{{ $stud->article }}"
-                               data-quantity="{{ (new \App\Http\Controllers\StudsController(new \Illuminate\Http\Request()))->cartQty }}">
+                               data-quantity="{{ $cartQty }}">
                                 <div class="table-link-title">{{ $stud->fullName }}</div>
                             </a>
                         </td>

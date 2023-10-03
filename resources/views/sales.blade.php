@@ -49,7 +49,13 @@
                 </div>
                 <div id="content-wrapper" class="col-md-12 col-lg-9">
                     <section id="main" class="sale-positions">
-                        {{ (new \App\Http\Controllers\TopTireController)->autoTires() }}
+                        @if ((int) env('SEASON') === 1)
+                          {{ (new \App\Http\Controllers\TopTireController)->autoTiresSummer() }}
+                          {{ (new \App\Http\Controllers\TopTireController)->autoTiresWinter() }}
+                        @else
+                          {{ (new \App\Http\Controllers\TopTireController)->autoTiresWinter() }}
+                          {{ (new \App\Http\Controllers\TopTireController)->autoTiresSummer() }}
+                        @endif
                         {{ (new \App\Http\Controllers\TopTireController)->alloyRims() }}
                         {{ (new \App\Http\Controllers\TopTireController)->motoTires() }}
                         {{ (new \App\Http\Controllers\TopTireController)->quadrTires() }}

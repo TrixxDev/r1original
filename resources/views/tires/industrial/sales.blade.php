@@ -66,7 +66,7 @@
                                    href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
                                    data-content="{{ $tire->fullName }}"
                                    data-article="{{ $tire->article }}"
-                                   data-quantity="{{ (new \App\Http\Controllers\BigTireController(new \Illuminate\Http\Request()))->cartQty }}">
+                                   data-quantity="{{ $cartQty }}">
                                     <div class="table-link-title">{{ $tire->title }}</div>
                                 </a>
                             </td>

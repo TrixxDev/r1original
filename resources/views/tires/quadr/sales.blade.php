@@ -49,7 +49,7 @@
                                    href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
                                    data-content="{{ $tire->fullName }}"
                                    data-article="{{ $tire->article }}"
-                                   data-quantity="{{ (new \App\Http\Controllers\QuadTireController(new \Illuminate\Http\Request()))->cartQty }}">
+                                   data-quantity="{{ $cartQty }}">
                                     {{ $tire->title }}
                                 </a>
                             </td>
