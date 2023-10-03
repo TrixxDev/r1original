@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Helper\Tires;
-use App\Models\Quadr;
 use Illuminate\Http\Request;
 use App\Models\Moto;
 use App\Models\Motobrand;
@@ -13,7 +12,6 @@ use Cart;
 use Illuminate\Support\Facades\DB;
 use View;
 use Auth;
-use DB;
 
 class MotoTireController extends Controller
 {
