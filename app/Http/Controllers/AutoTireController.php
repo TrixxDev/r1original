@@ -168,6 +168,34 @@ class AutoTireController extends Controller
     echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
   }
 
+  public function splitInput($input) {
+    $input = str_replace(',', '.', $input);
+    $d3_suffix = '';
+
+    if (substr($input, -1) === 'C') {
+      $input = substr($input, 0, -1);
+      $d3_suffix = 'C';
+    }
+
+    if (preg_match('/^(\d{2})(\d{2}\.\d{1,2})(\d{2})$/', $input, $matches)) {
+      $d1 = $matches[1];
+      $d2 = $matches[2];
+      $d3 = $matches[3] . $d3_suffix;
+    } else {
+      if (preg_match('/^(\d{3})(\d{2})(\d{2})$/', $input, $matches)) {
+        $d1 = $matches[1];
+        $d2 = $matches[2];
+        $d3 = $matches[3] . $d3_suffix;
+      } else {
+        $d1 = 1;
+        $d2 = 1;
+        $d3 = 1;
+      }
+    }
+
+    return compact('d1', 'd2', 'd3');
+  }
+
   public function tires_find(Request $request) {
 
     DB::enableQueryLog();
@@ -176,9 +204,9 @@ class AutoTireController extends Controller
 
     $this->currBrand = ($request->brand == 'Visi') ? '' : $request->brand;
 
-    $this->d1 = ($this->d1 == 'Visi') ? '' : $request->d1;
-    $this->d2 = ($this->d2 == 'Visi') ? '' : $request->d2;
-    $this->d3 = ($this->d3 == 'Visi') ? '' : $request->d3;
+    $this->d1 = $d1 = ($this->d1 == 'Visi') ? '' : $request->d1;
+    $this->d2 = $d2 = ($this->d2 == 'Visi') ? '' : $request->d2;
+    $this->d3 = $d3 = ($this->d3 == 'Visi') ? '' : $request->d3;
 
 //    if ($request->availability) {
 //      $this->filterCount += 1;
@@ -186,6 +214,15 @@ class AutoTireController extends Controller
 //    } else {
 //      $this->availability = [];
 //    }
+
+    $fastsearch = $request->fastsearch;
+
+    if ($fastsearch) {
+      $splited = $this->splitInput($fastsearch);
+      $this->d1 = $d1 = $splited['d1'];
+      $this->d2 = $d2 = $splited['d2'];
+      $this->d3 = $d3 = $splited['d3'];
+    }
 
     if ($request->types) {
       $this->filterCount += 1;
@@ -288,7 +325,7 @@ class AutoTireController extends Controller
 //    dd(DB::getQueryLog());
 
     return view('tires.auto.tires',
-            ['tires' => $tires, 'filterCount' => $this->filterCount, ]
+            ['tires' => $tires, 'filterCount' => $this->filterCount, 'fastsearch' => $fastsearch, 'd1' => $d1, 'd2' => $d2, 'd3' => $d3 ]
     );
 //    'availability' => $this->availability
   }
@@ -414,6 +451,23 @@ class AutoTireController extends Controller
     return view('tires.auto.autotread',
       compact('tires', 'currTire', 'currBrand')
     );
+  }
+
+  public function get_sizes($season)
+  {
+    try {
+      $tireSizes = Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+        ->select(DB::raw('CONCAT(D1, D2, D3) as tire_size'))
+        ->where('auto_tires.visible_users', '<>', 0)
+        ->where('auto_treads.season', $season)
+        ->groupBy('auto_tires.article')
+        ->distinct()
+        ->get();
+
+      return response()->json($tireSizes, 200);
+    } catch (\Exception $e) {
+      return response()->json(['error' => $e->getMessage()], 500);
+    }
   }
 
   public function tires_getBrands()

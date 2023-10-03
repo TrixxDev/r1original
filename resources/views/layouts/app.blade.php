@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="{{ asset('css/custom.css?rev=' . time()) }}" media="all">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
     <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}">
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -29,6 +30,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <link rel="stylesheet" href="{{asset('css/magiczoomplus.css?rev=' . time())}}"/>
     <script src="{{asset('js/magic.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/i18n/lv.js"></script>
   <script>
       toastr.options = {
         "closeButton": true,

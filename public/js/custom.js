@@ -67,6 +67,7 @@ let selected_filiale = 0;
 let selected_date = 0;
 
 let sf_height = 0;
+let sizes = [];
 
 let public_url = '/storage/';
 const grozs_url = $('#_desktop_cart .desktop').data('url');
@@ -1452,7 +1453,7 @@ $('#_mobile_top_menu').on('click','.dropdown-item', function(event){
 //
 /* Filter and code input */
 $(document).ajaxStop(function() {
-  renderInput();
+  // renderInput();
   if(document.cookie.indexOf('show_list=true') === -1 && $('body').attr('id') !== 'search') {
     sortItemsInBrand();
     $('.custom_brand_name').removeClass('product_list_view');
@@ -1732,7 +1733,7 @@ function validateCode(str) {
     }
   }
 }
-renderInput();
+// renderInput();
 function selectElement(match, selector) {
   const $el = $((selector ? selector+' ' : '')+'.facet-dropdown .dropdown-menu a, '+(selector ? selector+' ' : '')+'.facet-dropdown > a > span[data-q]')
     .filter(function() {return $(this).text() == match || parseInt($(this).text()) == match})
@@ -1742,21 +1743,21 @@ function selectElement(match, selector) {
   $el.siblings().data('selected', false);
   $el.data('selected', true);
 }
-$('#search_filters .sidebar-top').find('section.facet[class*="facet--"]')
-  .filter(function () {
-    var cl_name = '';
-    $.each(this.className.split(' '), function(i, cl){
-      if(cl.indexOf('facet--') !== -1) {
-        cl_name = cl;
-      }
-    });
-    if (cl_name) {
-      $(this).addClass('facet-ind-'+$(this).index());
-      $('#search_filters .'+cl_name+' .facet-dropdown > a > span[data-q]').each(function() {
-        selectElement($(this).text(),'#search_filters .'+cl_name);
-      });
-    }
-  });
+// $('#search_filters .sidebar-top').find('section.facet[class*="facet--"]')
+//   .filter(function () {
+//     var cl_name = '';
+//     $.each(this.className.split(' '), function(i, cl){
+//       if(cl.indexOf('facet--') !== -1) {
+//         cl_name = cl;
+//       }
+//     });
+//     if (cl_name) {
+//       $(this).addClass('facet-ind-'+$(this).index());
+//       $('#search_filters .'+cl_name+' .facet-dropdown > a > span[data-q]').each(function() {
+//         selectElement($(this).text(),'#search_filters .'+cl_name);
+//       });
+//     }
+//   });
 var skip = !$('body').hasClass('category-id-21');
 $('.facet-dropdown > a > span').each(function() {
   if (skip) {
@@ -3386,3 +3387,21 @@ $(document).ready(function() {
     });
   });
 })
+
+if ($('body').hasClass('category-ziemas-riepas')) {
+
+  $.ajax({
+    url: '/ziemas-riepas/search/api/getSizes/2',
+    success: function(data) {
+      $.each(data, function(index, item) {
+        $('<option value="' + item.tire_size + '">' + item.tire_size + '</option>').appendTo('select.r1-select-input');
+      });
+    }
+  });
+}
+
+$('.r1-select-input').select2(({
+  language: 'lv',
+  maximumSelectionLength: 1,
+  data: sizes,
+}));
