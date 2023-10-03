@@ -211,8 +211,6 @@ class QuadTireController extends Controller
       $this->d1 = $d1 = $splited['d1'];
       $this->d2 = $d2 = $splited['d2'];
       $this->d3 = $d3 = $splited['d3'];
-
-      dd($splited);
     }
 
      if ($request->availability) {
