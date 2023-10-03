@@ -156,6 +156,42 @@ class QuadTireController extends Controller
         echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
     }
 
+  public function splitInput($input) {
+    $input = str_replace(',', '.', $input);
+
+    if (preg_match('/^(\d{2})(\d)(\d{2})$/', $input, $matches)) {
+      $d1 = $matches[1]; // 25
+      $d2 = $matches[2]; // 8
+      $d3 = $matches[3]; // 12
+    } else if (preg_match('/^(\d{2})(\d{2})(\d{2})$/', $input, $matches)) {
+      $d1 = $matches[1]; // 25
+      $d2 = $matches[2]; // 10
+      $d3 = $matches[3]; // 12
+    } else if (preg_match('/^(\d{2})((\d).(\d))(\d{2})$/', $input, $matches)) {
+      $d1 = $matches[1]; // 24
+      $d2 = $matches[2]; // 9.5
+      $d3 = $matches[5]; // 10
+    } else if (preg_match('/^(\d{2})((\d{2}).(\d))(\d{2})$/', $input, $matches)) {
+      $d1 = $matches[1]; // 23
+      $d2 = $matches[2]; // 10.5
+      $d3 = $matches[5]; // 12
+    } else if (preg_match('/^(\d{2})((\d).(\d))(\d)$/', $input, $matches)) {
+      $d1 = $matches[1]; // 16
+      $d2 = $matches[2]; // 6.5
+      $d3 = $matches[5]; // 8
+    } else if (preg_match('/^(\d{2})((\d{2}).(\d))(\d)$/', $input, $matches)) {
+      $d1 = $matches[1]; // 25
+      $d2 = $matches[2]; // 12.5
+      $d3 = $matches[5]; // 1
+    } else {
+      $d1 = 1;
+      $d2 = 1;
+      $d3 = 1;
+    }
+
+    return compact('d1', 'd2', 'd3');
+  }
+
   public function tires_find(Request $request) {
 
     DB::enableQueryLog();
@@ -164,9 +200,20 @@ class QuadTireController extends Controller
 
     ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
 
-    ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
-    ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
-    ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
+    $this->d1 = $d1 = ($this->d1 == 'Visi') ? '' : $request->d1;
+    $this->d2 = $d2 = ($this->d2 == 'Visi') ? '' : $request->d2;
+    $this->d3 = $d3 = ($this->d3 == 'Visi') ? '' : $request->d3;
+
+    $fastsearch = $request->fastsearch;
+
+    if ($fastsearch) {
+      $splited = $this->splitInput($fastsearch);
+      $this->d1 = $d1 = $splited['d1'];
+      $this->d2 = $d2 = $splited['d2'];
+      $this->d3 = $d3 = $splited['d3'];
+
+      dd($splited);
+    }
 
      if ($request->availability) {
        $this->filterCount += 1;
@@ -222,8 +269,23 @@ class QuadTireController extends Controller
 //    dd(DB::getQueryLog());
 
     return view('tires.quadr.index',
-      ['tires' => $tires, 'filterCount' => $this->filterCount, 'availability' => $this->availability]
+      ['tires' => $tires, 'filterCount' => $this->filterCount, 'availability' => $this->availability, 'd1' => $d1, 'd2' => $d2, 'd3' => $d3]
     );
+  }
+
+  public function get_sizes()
+  {
+    try {
+      $tireSizes = Quadr::select(DB::raw('CONCAT(D1, D2, D3) as tire_size'))
+        ->where('quadr_tires.visible_users', '<>', 0)
+        ->groupBy('quadr_tires.article')
+        ->distinct()
+        ->get();
+
+      return response()->json($tireSizes, 200);
+    } catch (\Exception $e) {
+      return response()->json(['error' => $e->getMessage()], 500);
+    }
   }
 
   public function tires_getBrands()

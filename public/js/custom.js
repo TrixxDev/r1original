@@ -3427,7 +3427,7 @@ if ($('body').hasClass('category-motociklu-riepas')) {
 if ($('body').hasClass('category-kvadraciklu-riepas')) {
 
   $.ajax({
-    url: '/kvadraciklu-riepas/search/api/getSizes',
+    url: '/kvadru-riepas/search/api/getSizes',
     success: function(data) {
       $.each(data, function(index, item) {
         $('<option value="' + item.tire_size + '">' + item.tire_size + '</option>').appendTo('select.r1-select-input');
