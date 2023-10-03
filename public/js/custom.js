@@ -3412,6 +3412,30 @@ if ($('body').hasClass('category-vasaras-riepas')) {
   });
 }
 
+if ($('body').hasClass('category-motociklu-riepas')) {
+
+  $.ajax({
+    url: '/motociklu-riepas/search/api/getSizes',
+    success: function(data) {
+      $.each(data, function(index, item) {
+        $('<option value="' + item.tire_size + '">' + item.tire_size + '</option>').appendTo('select.r1-select-input');
+      });
+    }
+  });
+}
+
+if ($('body').hasClass('category-kvadraciklu-riepas')) {
+
+  $.ajax({
+    url: '/kvadraciklu-riepas/search/api/getSizes',
+    success: function(data) {
+      $.each(data, function(index, item) {
+        $('<option value="' + item.tire_size + '">' + item.tire_size + '</option>').appendTo('select.r1-select-input');
+      });
+    }
+  });
+}
+
 $('.r1-select-input').select2(({
   language: 'lv',
   maximumSelectionLength: 1,

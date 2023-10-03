@@ -85,6 +85,13 @@
                         </div>
                       </div>
 
+                      <div style="width: 100%; margin-top: -15px;">
+                        <div class="form-group facet mb-0">
+                          <h1 class="h6 facet-title">Ātrā meklēšana</h1>
+                          <select class="r1-select-input" multiple="multiple" name="fastsearch"></select>
+                        </div>
+                      </div>
+
                       <section class="facet clearfix">
                         <input style="display: none;" type="text" value="" id="autofind_atr">
                         <button id="autofind_sub" type="submit">Meklēt <i class="material-icons search"></i>

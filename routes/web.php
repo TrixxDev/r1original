@@ -348,6 +348,7 @@ Route::middleware('checksession')->group(function() {
 // Kvadraciklu riepas
   Route::get('/kvadru-riepas', [App\Http\Controllers\QuadTireController::class, 'index'])->name('kvadraciklu-riepas');
   Route::post('/kvadru-riepas', [App\Http\Controllers\QuadTireController::class, 'tires_search'])->name('kvadraciklu-riepas');
+  Route::get('/kvadru-riepas/search/api/getSizes', [App\Http\Controllers\QuadTireController::class, 'get_sizes']);
   Route::get('/kvadru-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\QuadTireController::class, 'tires_tread'])->name('kvadraciklu-riepa');
   Route::post('/kvadru-riepas/ajax', [App\Http\Controllers\QuadTireController::class, 'tires_ajax'])->name('kvadraciklu-riepas-ajax');
   Route::post('/kvadru-riepas/search/ajax', [App\Http\Controllers\QuadTireController::class, 'tires_ajax'])->name('kvadraciklu-riepas-ajax');
@@ -356,6 +357,7 @@ Route::middleware('checksession')->group(function() {
 // Motociklu riepas
   Route::get('/motociklu-riepas', [App\Http\Controllers\MotoTireController::class, 'index'])->name('motociklu-riepas');
   Route::post('/motociklu-riepas', [App\Http\Controllers\MotoTireController::class, 'tires_search'])->name('motociklu-riepas');
+  Route::get('/motociklu-riepas/search/api/getSizes', [App\Http\Controllers\MotoTireController::class, 'get_sizes']);
   Route::get('/motociklu-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\MotoTireController::class, 'tires_tread'])->name('motociklu-riepa');
   Route::post('/motociklu-riepas/ajax', [App\Http\Controllers\MotoTireController::class, 'tires_ajax'])->name('motociklu-riepas-ajax');
   Route::post('/motociklu-riepas/search/ajax', [App\Http\Controllers\MotoTireController::class, 'tires_ajax'])->name('motociklu-riepas-ajax');

@@ -10,6 +10,7 @@ use App\Models\Motobrand;
 use App\Models\Mototread;
 use App\Models\Code;
 use Cart;
+use Illuminate\Support\Facades\DB;
 use View;
 use Auth;
 use DB;
@@ -172,6 +173,36 @@ class MotoTireController extends Controller
         echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
     }
 
+  public function splitInput($input) {
+    $input = str_replace(',', '.', $input);
+
+    $europeanPattern = '/^(\d{3})(\d{2})(\d{2})$/';
+
+    $fractionalPattern = '/^([\d.]+)(\d{2})$/';
+
+    $americanPattern = '/^([A-Z]+\d{2})(\d{2})$/';
+
+    if (preg_match($europeanPattern, $input, $matches)) {
+      $d1 = $matches[1];
+      $d2 = $matches[2];
+      $d3 = $matches[3];
+    } elseif (preg_match($fractionalPattern, $input, $matches)) {
+      $d1 = $matches[1];
+      $d2 = '';
+      $d3 = $matches[2];
+    } elseif (preg_match($americanPattern, $input, $matches)) {
+      $d1 = $matches[1];
+      $d2 = '';
+      $d3 = $matches[2];
+    } else {
+      $d1 = 1;
+      $d2 = 1;
+      $d3 = 1;
+    }
+
+    return compact('d1', 'd2', 'd3');
+  }
+
   public function tires_find(Request $request) {
 
       DB::enableQueryLog();
@@ -182,9 +213,18 @@ class MotoTireController extends Controller
 
       $types = (new Moto)->types();
 
-      ($this->d1 == 'Visi') ? $this->d1 = '' : $this->d1 = $request->d1;
-      ($this->d2 == 'Visi') ? $this->d2 = '' : $this->d2 = $request->d2;
-      ($this->d3 == 'Visi') ? $this->d3 = '' : $this->d3 = $request->d3;
+    $this->d1 = $d1 = ($this->d1 == 'Visi') ? '' : $request->d1;
+    $this->d2 = $d2 = ($this->d2 == 'Visi') ? '' : $request->d2;
+    $this->d3 = $d3 = ($this->d3 == 'Visi') ? '' : $request->d3;
+
+    $fastsearch = $request->fastsearch;
+
+    if ($fastsearch) {
+      $splited = $this->splitInput($fastsearch);
+      $this->d1 = $d1 = $splited['d1'];
+      $this->d2 = $d2 = $splited['d2'];
+      $this->d3 = $d3 = $splited['d3'];
+    }
 
     if ($request->availability) {
       $this->filterCount += 1;
@@ -232,8 +272,23 @@ class MotoTireController extends Controller
 //      dd(DB::getQueryLog());
 
       return view('tires.moto.index',
-        ['tires' => $tires, 'filterCount' => $this->filterCount, 'availability' => $this->availability]
+        ['tires' => $tires, 'filterCount' => $this->filterCount, 'availability' => $this->availability, 'd1' => $d1, 'd2' => $d2, 'd3' => $d3]
       );
+  }
+
+  public function get_sizes()
+  {
+    try {
+      $tireSizes = Moto::select(DB::raw('CONCAT(D1, D2, D3) as tire_size'))
+        ->where('moto_tires.visible_users', '<>', 0)
+        ->groupBy('moto_tires.article')
+        ->distinct()
+        ->get();
+
+      return response()->json($tireSizes, 200);
+    } catch (\Exception $e) {
+      return response()->json(['error' => $e->getMessage()], 500);
+    }
   }
 
   public function tires_getBrands()
