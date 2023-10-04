@@ -3463,3 +3463,7 @@ $(window).on('load', function() {
   $('body').addClass('wait-loading');
   $('.loading-block').fadeIn();
 });
+
+$(window).on('popstate', function() {
+  location.reload();
+});
