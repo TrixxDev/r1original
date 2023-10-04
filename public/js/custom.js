@@ -3441,3 +3441,9 @@ $('.r1-select-input').select2(({
   maximumSelectionLength: 1,
   data: sizes,
 }));
+
+$("select.r1-select-input").on("change", function () {
+  $('.select2-container').removeClass('select2-container--focus').removeClass('select2-container--open');
+  $('textarea.select2-search__field').blur();
+  $('#search_filters_wrapper form').submit();
+});
