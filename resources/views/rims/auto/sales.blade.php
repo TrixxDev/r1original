@@ -82,8 +82,8 @@
             </td>
 
             <td id="store-price" class="text-center store-price">€ {{$rim->price1}}</td>
-            <td id="sale-price" class="text-center tire-price-red sale-price">€ {{$rim->price3}}</td>
-            <td class="hidden-sm-down text-center">{{$rim->comment}}</td>
+            <td id="sale-price" class="text-center sellout">€ {{$rim->price3}}</td>
+            <td class="hidden-sm-down text-center sellout">{{ $rim->comment }}</td>
 
             <td class="shopping-cart-col">
               <div class="clearfix atc_div text-right">
