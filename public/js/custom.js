@@ -3453,5 +3453,5 @@ $('.r1-select-input').select2(({
 $("select.r1-select-input").on("change", function () {
   $('.select2-container').removeClass('select2-container--focus').removeClass('select2-container--open');
   $('textarea.select2-search__field').blur();
-  $('#search_filters_wrapper form').submit();
+  $('#search_filters_wrapper form')[0].submit();
 });
