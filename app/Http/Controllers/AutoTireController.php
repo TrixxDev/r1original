@@ -460,9 +460,15 @@ class AutoTireController extends Controller
         ->select(DB::raw('CONCAT(D1, D2, D3) as tire_size'))
         ->where('auto_tires.visible_users', '<>', 0)
         ->where('auto_treads.season', $season)
+        ->orderBy('d3', 'ASC')
+        ->orderBy('d1', 'ASC')
+        ->orderBy('d2', 'ASC')
         ->groupBy('auto_tires.article')
         ->distinct()
-        ->get();
+        ->get()
+        ->filter(function($value) {
+          return $value->tire_size != null;
+        });
 
       return response()->json($tireSizes, 200);
     } catch (\Exception $e) {

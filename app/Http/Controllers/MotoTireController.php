@@ -280,8 +280,15 @@ class MotoTireController extends Controller
       $tireSizes = Moto::select(DB::raw('CONCAT(D1, D2, D3) as tire_size'))
         ->where('moto_tires.visible_users', '<>', 0)
         ->groupBy('moto_tires.article')
+        ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+        ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+        ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
         ->distinct()
-        ->get();
+        ->get()
+        ->filter(function($value) {
+          return $value->tire_size != null;
+        });
+
 
       return response()->json($tireSizes, 200);
     } catch (\Exception $e) {
