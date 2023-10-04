@@ -284,10 +284,7 @@ class MotoTireController extends Controller
         ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
         ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
         ->distinct()
-        ->get()
-        ->filter(function($value) {
-          return $value->tire_size != null;
-        });
+        ->get();
 
 
       return response()->json($tireSizes, 200);

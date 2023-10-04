@@ -465,10 +465,7 @@ class AutoTireController extends Controller
         ->orderBy('d2', 'ASC')
         ->groupBy('auto_tires.article')
         ->distinct()
-        ->get()
-        ->filter(function($value) {
-          return $value->tire_size != null;
-        });
+        ->get();
 
       return response()->json($tireSizes, 200);
     } catch (\Exception $e) {
