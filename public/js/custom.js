@@ -3455,3 +3455,11 @@ $("select.r1-select-input").on("change", function () {
   $('textarea.select2-search__field').blur();
   $('#search_filters_wrapper form')[0].submit();
 });
+
+$(window).on('load', function() {
+  $('.loading-block').fadeOut();
+  $('body').removeClass('wait-loading');
+}).on('beforeunload', function() {
+  $('body').addClass('wait-loading');
+  $('.loading-block').fadeIn();
+});
