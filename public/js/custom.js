@@ -3462,8 +3462,65 @@ $(window).on('load', function() {
 }).on('beforeunload', function() {
   $('body').addClass('wait-loading');
   $('.loading-block').fadeIn();
+}).on('unload', function() {
+  $('.loading-block').fadeOut();
+  $('body').removeClass('wait-loading');
 });
 
-$(window).on('popstate', function() {
-  location.reload();
-});
+// (()=>{
+//   const ndt = () => +new Date(),
+//     anim = (f) => (window.requestAnimationFrame && requestAnimationFrame(f)) || setTimeout(f, 16),
+//     fader = (el, time, out, last, flex = false) => {
+//       if (!el.style.opacity) el.style.opacity = out ? '1' : '0';
+//       const op = el.dataset.op ?? '1';
+//       hide = () => {
+//         el.style.display = 'none';
+//         el.style.opacity = '0';
+//       },
+//         show = (done) => {
+//           el.style.display = !flex ? 'block' : 'flex';
+//           if (done) el.style.opacity = op;
+//         },
+//         calc = (o, t) => out ? o - t : o + t,
+//         tick = () => {
+//           el.style.opacity = calc(+el.style.opacity, (ndt() - last) / time);
+//           last = ndt();
+//           const o = +el.style.opacity,
+//             a = out && o > 0 || !out && o < +op;
+//           console.log('opacity', o)
+//           if (!a) return out ? hide() : show(true);
+//           anim(tick);
+//         };
+//       if (!out) show(false);
+//       tick();
+//     };
+//   HTMLElement.prototype.fadeIn = function (time, flex = false) {
+//     fader(this, time, false, ndt(), flex);
+//     return this;
+//   };
+//   HTMLElement.prototype.fadeOut = function (time) {
+//     fader(this, time, true, ndt());
+//     return this;
+//   };
+// })();
+//
+// document.addEventListener('readystatechange', function () {
+//   if (document.readyState === 'complete') {
+//     const target = document.querySelector('.loading-block');
+//
+//     target.fadeOut(1000);
+//     document.querySelector('.wait-loading').classList.remove('wait-loading');
+//   } else if (document.readyState === 'interactive') {
+//     const target = document.querySelector('.loading-block');
+//
+//     target.fadeIn(1000);
+//     document.querySelector('body').classList.add('wait-loading');
+//   }
+// });
+//
+// window.onbeforeunload = function() {
+//   const target = document.querySelector('.loading-block');
+//
+//   target.fadeIn(1000);
+//   document.querySelector('body').classList.add('wait-loading');
+// }
