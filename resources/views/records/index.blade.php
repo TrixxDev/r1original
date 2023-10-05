@@ -213,7 +213,6 @@
                                   @else
                                     <div class="table office_{{ $workingOffice->office_id }}" data-queue-id="{{ $workingDay->queue_id }}">
                                       <div class="title text-sm">{{ $workingOffice->title }}</div>
-                                      <div class="slot closed-slot">Slēgts</div>
                                     </div>
                                   @endif
                                 @else
