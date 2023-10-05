@@ -84,6 +84,7 @@ class QuadrTireImportController extends Controller
                 $tire->price2 = @$fields[16];
 
                 $tire->comment = @$fields[20];
+                $tire->acomment = @$fields[30];
                 $tire->code = @$fields[12];
 
                 $tire->quantity = 0;
