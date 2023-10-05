@@ -13,238 +13,221 @@
                 <div class="schedule-table dashboard">
                     @include('components.calendar')
                     @for ($day = 0; $day <= $visibleDays; $day++)
-                        @php
-                            $date = Date('d.m.Y', strtotime('+' . $day . ' days'));
-                            $dayOfWeek = $dayTitles[date('N', strtotime($date.' 00:00:00'))];
-                        @endphp
-                        <h1 style="font-size: 1.7em; margin-top: 20px;">{{ $dayOfWeek }}, {{ Date('d.m.Y', strtotime('+' . $day . ' days')) }}</h1>
-                        <div class="row">
-                            @php $queue_sum = \App\Models\Office::sum('queue_count'); @endphp
-                            @foreach (\App\Models\Office::all() as $office)
-                                <div class="col-md-{{ round(12 / $queue_sum * $office->queue_count) }} grid grid-cols-{{ $office->queue_count }}" style="@if ($office->office_id == 1){{'border-right: 2px solid black;'}}@endif" data-date="{{ date('Y-m-d', strtotime($date.' 00:00:00')) }}">
-                                    @foreach ($workingDays as $workingDay)
-                                      @php
-                                      //$timeStep = $workingDay->timeStep;
-                                      $opentime = \Carbon\Carbon::parse($workingDay->timeopen);
-                                      $openTime1 = \App\Models\Workingday::select('timeopen')->where('date', $workingDay->date)->where('office_id', $office->office_id)->orderBy('timeopen', 'ASC')->first();
-                                      $openTime1 = \Carbon\Carbon::parse($openTime1->timeopen);
-                                      $closetime = \Carbon\Carbon::parse($workingDay->timeclose)->subMinutes($timeStep);
+                    @php
+                      $date = Date('d.m.Y', strtotime('+' . $day . ' days'));
+                      $dayOfWeek = $dayTitles[date('N', strtotime($date.' 00:00:00'))];
+                    @endphp
+                    <h1 style="font-size: 1.7em; margin-top: 20px;">{{ $dayOfWeek }}, {{ Date('d.m.Y', strtotime('+' . $day . ' days')) }}</h1>
+                    <div class="row">
+                      @php $queue_sum = \App\Models\Office::sum('queue_count'); @endphp
+                      @foreach (\App\Models\Office::all() as $office)
+                        <div class="col-md-{{ round(12 / $queue_sum * $office->queue_count) }} grid grid-cols-{{ $office->queue_count }}" style="@if ($office->office_id == 1){{'border-right: 2px solid black;'}}@endif" data-date="{{ date('Y-m-d', strtotime($date.' 00:00:00')) }}">
+                          @foreach ($workingDays as $workingDay)
+                            @if ($workingDay->date == Date('Y-m-d', strtotime('+' . $day . ' days')))
+                              @php
+                                $openTime1 = \App\Models\Workingday::select('timeopen')->where('date', $workingDay->date)->orderBy('timeopen', 'ASC')->first();
+                                $timeStep = $workingDay->timeStep;
+                                $opentime = \Carbon\Carbon::parse($workingDay->timeopen);
+                                $openTime1 = \Carbon\Carbon::parse($openTime1->timeopen);
+                                $closetime = \Carbon\Carbon::parse($workingDay->timeclose)->subMinutes($timeStep);
 
-                                      $startSlot = $opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep;
+                                //$timeStep = $workingDay->timestep;
 
-                                      $startSlotArray[$workingDay->date][$workingDay->office_id][$workingDay->queue_id] = $startSlot;
-                                    @endphp
-                                    @endforeach
-                                    @foreach ($workingDays as $workingDay)
-                                        @if ($workingDay->date == Date('Y-m-d', strtotime('+' . $day . ' days')))
-                                            @php
-                                                //$timeStep = $workingDay->timeStep;
-                                                $opentime = \Carbon\Carbon::parse($workingDay->timeopen);
-                                                $openTime1 = \App\Models\Workingday::select('timeopen')->where('date', $workingDay->date)->where('office_id', $office->office_id)->orderBy('timeopen', 'ASC')->first();
-                                                $openTime1 = \Carbon\Carbon::parse($openTime1->timeopen);
-                                                $closetime = \Carbon\Carbon::parse($workingDay->timeclose)->subMinutes($timeStep);
+                                $numberOfSteps = ceil($opentime->diffInMinutes($closetime) / $timeStep);
 
-                                                $numberOfSteps = ceil($opentime->diffInMinutes($closetime) / $timeStep);
+                                $workingOffice = \App\Models\Office::where('office_id', $workingDay->office_id)->first();
+                              @endphp
+                              @if ($workingOffice->office_id == $office->office_id)
+                                @if ($workingDay->weekday != 7)
+                                  @if ($workingDay->is_opened == 1)
+                                    <div class="table office_{{ $workingOffice->office_id }}" data-queue-id="{{ $workingDay->queue_id }}">
+                                      <div class="title text-sm">{{ $workingOffice->title }}</div>
+                                      @for ($i = $opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep; $i <= $numberOfSteps; $i++)
+                                        @php
+                                          $halfAcService = \App\Models\Service::where('f_ac', 1)->where('enabled', 1)->first();
+                                          $halfMotoService = \App\Models\Service::where('f_moto', 1)->where('enabled', 1)->first();
+                                          $slot = \App\Models\Slot::where('queue_id', $workingDay->queue_id)->where('date', $workingDay->date)->where('iorder', $i)->first();
+                                          $currentTime = $opentime->copy()->addMinutes($timeStep * $i)->format('H:i');
+                                        @endphp
 
-                                                $workingOffice = \App\Models\Office::where('office_id', $workingDay->office_id)->first();
-                                            @endphp
-                                            @if ($workingOffice->office_id == $office->office_id)
-                                                @if ($workingDay->weekday != 7)
-                                                    @if ($workingDay->is_opened == 1)
-                                                        @php
-                                                          $smallestStart = array_filter($startSlotArray[$workingDay->date][$workingDay->office_id], function($value) {
-                                                            return $value < 0;
-                                                          });
-                                                          $smallestStart = (!empty($smallestStart)) ? max($smallestStart) : 0;
-                                                          $startSlot = ($opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep) - $smallestStart;
-                                                        @endphp
-                                                        <div class="table office_{{ $workingOffice->office_id }}" data-queue-id="{{ $workingDay->queue_id }}">
-                                                            <div class="title text-sm">{{ $workingOffice->title }}</div>
-                                                            @for ($i = $startSlot; $i <= $numberOfSteps; $i++)
-                                                                @php
-                                                                    $halfAcService = \App\Models\Service::where('f_ac', 1)->where('enabled', 1)->first();
-                                                                    $halfMotoService = \App\Models\Service::where('f_moto', 1)->where('enabled', 1)->first();
-                                                                    $slot = \App\Models\Slot::where('queue_id', $workingDay->queue_id)->where('date', $workingDay->date)->where('iorder', $i)->first();
-                                                                    $currentTime = $opentime->copy()->addMinutes($timeStep * $i)->format('H:i');
-                                                                @endphp
+                                        @php
+                                          $takenBy = null;
+                                          if (!is_null($slot)) {
+                                              if ($slot->status === 1) {
+                                                  $takenBy = json_decode($slot->takenby);
+                                              }
 
-                                                                @php
-                                                                    $takenBy = null;
-                                                                    if (!is_null($slot)) {
-                                                                        if ($slot->status === 1) {
-                                                                            $takenBy = json_decode($slot->takenby);
-                                                                        }
+                                              switch ($slot->status) {
+                                                  case 0:
+                                                      $slotClass = 'time-free';
+                                                      $content = '<div class="slot free-slot-link available-slot">Brīvs</div>';
+                                                      if ($slot->comment !== null) {
+                                                          $slotClass = 'time-free discount';
+                                                          $content = '<button class="status free-slot-link discount-slot available-slot">' . $slot->comment . '</button>';
+                                                      }
+                                                      if (date('Y-m-d') == $workingDay->date) {
+                                                          $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'time-free' : 'slot-gray';
+                                                          $content = $slotClass === 'time-free'
+                                                              ? '<div class="slot free-slot-link available-slot">Brīvs</div>'
+                                                              : '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
+                                                              if ($slot->comment !== null) {
+                                                                  $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'time-free discount' : 'slot-gray';
+                                                                  $content = $slotClass === 'time-free discount'
+                                                                      ? '<button class="status free-slot-link discount-slot available-slot">' . $slot->comment . '</button>'
+                                                                      : '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
+                                                              }
+                                                      }
+                                                      break;
+                                                  case 1:
+                                                      $slotClass = 'taken-slot';
+                                                      if ($slot->takenby !== null) {
+                                                        $content = '<div class="slot taken-slot">' . \App\Http\Controllers\Records\RecordController::truncateCharacters(trim($takenBy->car_brand), 6, '&mldr;', 1) . ' xxxxx' . substr($takenBy->phone_number, -3, 3) . '</div>';
+                                                      } else {
+                                                        $content = '<div class="slot taken-slot">xxxxx</div>';
+                                                      }
+                                                      if (date('Y-m-d') == $workingDay->date) {
+                                                          if ($slot->takenby !== null) {
+                                                            $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'taken-slot' : 'slot-gray';
+                                                            $content = $slotClass === 'taken-slot'
+                                                              ? '<div class="slot taken-slot">' . \App\Http\Controllers\Records\RecordController::truncateCharacters(trim($takenBy->car_brand), 6, '&mldr;', 1) . ' xxxxx' . substr($takenBy->phone_number, -3, 3) . '</div>'
+                                                              : '<div class="slot unavailable taken-slot">' . \App\Http\Controllers\Records\RecordController::truncateCharacters(trim($takenBy->car_brand), 6, '&mldr;', 1) . ' xxxxx' . substr($takenBy->phone_number, -3, 3) . '</div>';
+                                                          } else {
+                                                            $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'taken-slot' : 'slot-gray';
+                                                            $content = $slotClass === 'taken-slot'
+                                                              ? '<div class="slot taken-slot">xxxxx</div>'
+                                                              : '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
+                                                          }
+                                                      }
+                                                      break;
+                                                  case 3:
+                                                      $slotClass = 'time-closed';
+                                                      $content = '<div class="slot closed-slot">Slēgts</div>';
+                                                      break;
+                                              }
+                                          } else {
+                                              $slotClass = 'time-free';
+                                              $content = '<button class="status free-slot-link available-slot">Brīvs</button>';
+                                              if (date('Y-m-d') == $workingDay->date) {
+                                                  if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
+                                                      $slotClass = 'time-free';
+                                                      $content = '<button class="status free-slot-link available-slot">Brīvs</button>';
+                                                  } else {
+                                                      $slotClass = 'time-taken';
+                                                      $content = '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
+                                                  }
+                                              }
+                                          }
 
-                                                                        switch ($slot->status) {
-                                                                            case 0:
-                                                                                $slotClass = 'time-free';
-                                                                                $content = '<div class="slot free-slot-link available-slot">Brīvs</div>';
-                                                                                if ($slot->comment !== null) {
-                                                                                    $slotClass = 'time-free discount';
-                                                                                    $content = '<button class="status free-slot-link discount-slot available-slot">' . $slot->comment . '</button>';
-                                                                                }
-                                                                                if (date('Y-m-d') == $workingDay->date) {
-                                                                                    $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'time-free' : 'slot-gray';
-                                                                                    $content = $slotClass === 'time-free'
-                                                                                        ? '<div class="slot free-slot-link available-slot">Brīvs</div>'
-                                                                                        : '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
-                                                                                        if ($slot->comment !== null) {
-                                                                                            $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'time-free discount' : 'slot-gray';
-                                                                                            $content = $slotClass === 'time-free discount'
-                                                                                                ? '<button class="status free-slot-link discount-slot available-slot">' . $slot->comment . '</button>'
-                                                                                                : '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
-                                                                                        }
-                                                                                }
-                                                                                break;
-                                                                            case 1:
-                                                                                $slotClass = 'taken-slot';
-                                                                                if ($slot->takenby !== null) {
-                                                                                  $content = '<div class="slot taken-slot">' . \App\Http\Controllers\Records\RecordController::truncateCharacters(trim($takenBy->car_brand), 6, '&mldr;', 1) . ' xxxxx' . substr($takenBy->phone_number, -3, 3) . '</div>';
-                                                                                } else {
-                                                                                  $content = '<div class="slot taken-slot">xxxxx</div>';
-                                                                                }
-                                                                                if (date('Y-m-d') == $workingDay->date) {
-                                                                                    if ($slot->takenby !== null) {
-                                                                                      $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'taken-slot' : 'slot-gray';
-                                                                                      $content = $slotClass === 'taken-slot'
-                                                                                        ? '<div class="slot taken-slot">' . \App\Http\Controllers\Records\RecordController::truncateCharacters(trim($takenBy->car_brand), 6, '&mldr;', 1) . ' xxxxx' . substr($takenBy->phone_number, -3, 3) . '</div>'
-                                                                                        : '<div class="slot unavailable taken-slot">' . \App\Http\Controllers\Records\RecordController::truncateCharacters(trim($takenBy->car_brand), 6, '&mldr;', 1) . ' xxxxx' . substr($takenBy->phone_number, -3, 3) . '</div>';
-                                                                                    } else {
-                                                                                      $slotClass = \Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now() ? 'taken-slot' : 'slot-gray';
-                                                                                      $content = $slotClass === 'taken-slot'
-                                                                                        ? '<div class="slot taken-slot">xxxxx</div>'
-                                                                                        : '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
-                                                                                    }
-                                                                                }
-                                                                                break;
-                                                                            case 3:
-                                                                                $slotClass = 'time-closed';
-                                                                                $content = '<div class="slot closed-slot">Slēgts</div>';
-                                                                                break;
-                                                                        }
-                                                                    } else {
-                                                                        $slotClass = 'time-free';
-                                                                        $content = '<button class="status free-slot-link available-slot">Brīvs</button>';
-                                                                        if (date('Y-m-d') == $workingDay->date) {
-                                                                            if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
-                                                                                $slotClass = 'time-free';
-                                                                                $content = '<button class="status free-slot-link available-slot">Brīvs</button>';
-                                                                            } else {
-                                                                                $slotClass = 'time-taken';
-                                                                                $content = '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
-                                                                            }
-                                                                        }
-                                                                    }
+                                          if ($workingDay->is_half) {
+                                              if ($i % 2 == 1) {
+                                                  if ($slot) {
+                                                      if (date('Y-m-d') == $workingDay->date) {
+                                                        $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-taken' : $slotClass;
+                                                        $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                      } else {
+                                                        $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                      }
+                                                  } else {
+                                                      if (date('Y-m-d') == $workingDay->date) {
+                                                        if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
+                                                          if ($halfMotoService) {
+                                                              $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
+                                                          } else {
+                                                              $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot"></div></div>';
+                                                          }
+                                                        } else {
+                                                          if ($i >= 0) {
+                                                            $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot">Aizņemts</div></div>';
+                                                          } else {
+                                                            $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
+                                                          }
+                                                        }
+                                                      } else {
+                                                          if ($halfMotoService) {
+                                                              if ($i >= 0) {
+                                                                $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
+                                                              } else {
+                                                                $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
+                                                              }
+                                                          } else {
+                                                              if ($i >= 0) {
+                                                                $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot"></div></div>';
+                                                              } else {
+                                                                $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
+                                                              }
+                                                          }
+                                                      }
+                                                  }
+                                              } else {
+                                                  if ($slot) {
+                                                      if (date('Y-m-d') == $workingDay->date) {
+                                                        $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-taken' : $slotClass;
+                                                        $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                      } else {
+                                                        $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                                      }
+                                                  } else {
+                                                      if (date('Y-m-d') == $workingDay->date) {
+                                                        if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
+                                                          if ($halfAcService) {
+                                                              $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
+                                                          } else {
+                                                              $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
+                                                          }
+                                                        } else {
+                                                          if ($i >= 0) {
+                                                            $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot">Aizņemts</div></div>';
+                                                          } else {
+                                                            $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
+                                                          }
+                                                        }
+                                                      } else {
+                                                          if ($halfAcService) {
+                                                              if ($i >= 0) {
+                                                                $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
+                                                              } else {
+                                                                $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
+                                                              }
+                                                          } else {
+                                                              if ($i >= 0) {
+                                                                $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
+                                                              } else {
+                                                                $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
+                                                              }
+                                                          }
+                                                      }
+                                                  }
+                                              }
+                                          } else {
+                                              if ($i >= 0) {
+                                                  $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
+                                              } else {
+                                                  $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
+                                              }
+                                          }
+                                        @endphp
 
-                                                                    if ($workingDay->is_half) {
-                                                                        if ($i % 2 == 1) {
-                                                                            if ($slot) {
-                                                                                if (date('Y-m-d') == $workingDay->date) {
-                                                                                  $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-taken' : $slotClass;
-                                                                                  $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
-                                                                                } else {
-                                                                                  $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
-                                                                                }
-                                                                            } else {
-                                                                                if (date('Y-m-d') == $workingDay->date) {
-                                                                                  if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
-                                                                                    if ($halfMotoService) {
-                                                                                        $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
-                                                                                    } else {
-                                                                                        $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot"></div></div>';
-                                                                                    }
-                                                                                  } else {
-                                                                                    if ($i >= 0) {
-                                                                                      $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot">Aizņemts</div></div>';
-                                                                                    } else {
-                                                                                      $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
-                                                                                    }
-                                                                                  }
-                                                                                } else {
-                                                                                    if ($halfMotoService) {
-                                                                                        if ($i >= 0) {
-                                                                                          $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
-                                                                                        } else {
-                                                                                          $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
-                                                                                        }
-                                                                                    } else {
-                                                                                        if ($i >= 0) {
-                                                                                          $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot"></div></div>';
-                                                                                        } else {
-                                                                                          $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        } else {
-                                                                            if ($slot) {
-                                                                                if (date('Y-m-d') == $workingDay->date) {
-                                                                                  $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-taken' : $slotClass;
-                                                                                  $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
-                                                                                } else {
-                                                                                  $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
-                                                                                }
-                                                                            } else {
-                                                                                if (date('Y-m-d') == $workingDay->date) {
-                                                                                  if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
-                                                                                    if ($halfAcService) {
-                                                                                        $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
-                                                                                    } else {
-                                                                                        $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
-                                                                                    }
-                                                                                  } else {
-                                                                                    if ($i >= 0) {
-                                                                                      $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot">Aizņemts</div></div>';
-                                                                                    } else {
-                                                                                      $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
-                                                                                    }
-                                                                                  }
-                                                                                } else {
-                                                                                    if ($halfAcService) {
-                                                                                        if ($i >= 0) {
-                                                                                          $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
-                                                                                        } else {
-                                                                                          $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
-                                                                                        }
-                                                                                    } else {
-                                                                                        if ($i >= 0) {
-                                                                                          $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
-                                                                                        } else {
-                                                                                          $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
-                                                                                        }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    } else {
-                                                                        if ($i >= 0) {
-                                                                            $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
-                                                                        } else {
-                                                                            $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
-                                                                        }
-                                                                    }
-                                                                @endphp
-
-                                                                {!! $content !!}
-                                                            @endfor
-                                                        </div>
-                                                    @else
-                                                        <div class="table office_{{ $workingOffice->office_id }}" data-queue-id="{{ $workingDay->queue_id }}">
-                                                            <div class="title text-sm">{{ $workingOffice->title }}</div>
-                                                        </div>
-                                                    @endif
-                                                @else
-                                                    <div class="table" style="border-right: none;">
-                                                        <div class="slot closed-slot">Slēgts</div>
-                                                    </div>
-                                                @endif
-                                            @endif
-                                        @endif
-                                    @endforeach
-                                </div>
-                            @endforeach
+                                        {!! $content !!}
+                                      @endfor
+                                    </div>
+                                  @else
+                                    <div class="table office_{{ $workingOffice->office_id }}" data-queue-id="{{ $workingDay->queue_id }}">
+                                      <div class="title text-sm">{{ $workingOffice->title }}</div>
+                                      <div class="slot closed-slot">Slēgts</div>
+                                    </div>
+                                  @endif
+                                @else
+                                  <div class="table" style="border-right: none;">
+                                    <div class="slot closed-slot">Slēgts</div>
+                                  </div>
+                                @endif
+                              @endif
+                            @endif
+                          @endforeach
                         </div>
-                    @endfor
+                      @endforeach
+                    </div>
+                  @endfor
                 </div>
                 <section id="mobile-main">
                     <form method="POST">
