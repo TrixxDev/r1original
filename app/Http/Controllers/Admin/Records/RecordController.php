@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\Utility;
+use Illuminate\Support\Str;
 
 class RecordController extends Controller
 {
@@ -797,6 +798,7 @@ class RecordController extends Controller
       $formData = json_decode(json_encode($formDataArray), FALSE);
       if (isset($slot->takenby)) {
         $takenBy = (array) json_decode($slot->takenby);
+        if (!isset($takenBy['cancelId'])) $takenBy['cancelId'] = $this->getRandomHash() . str_replace(':', '', $dopParams['new_time']);
         $formData->cancelId = $takenBy['cancelId'];
       }
       $newFormData = json_encode($formData);
@@ -927,6 +929,47 @@ class RecordController extends Controller
       $slot->save();
       return json_encode(['status' => $result->status, 'edited_slot_admin' => true, 'new_iorder' => $dopParams['iorder']]);
     }
+  }
+
+  public function getRandomHash(): string
+  {
+    $value = Str::random(32);
+    $hash = hash('sha256', $value);
+
+    // check if hash is already taken
+    $isTaken = $this->isHashTaken($hash);
+    if ($isTaken) {
+      // if hash is taken, hash the value again
+      $hash = hash('sha256', $hash . $value);
+
+      // keep hashing until a unique hash is found
+      while ($this->isHashTaken($hash)) {
+        $hash = hash('sha256', $hash . $value);
+      }
+    }
+
+    return substr($hash, 0, 20);
+  }
+
+  public function isHashTaken($value): bool
+  {
+    static $takenHashes = []; // static variable to store taken numbers
+
+    $slots = Slot::select('takenby')->where('takenby', 'like', '%"cancelId":%')->get();
+    foreach ($slots as $slot) {
+      $takenBy = json_decode($slot->takenby);
+      if (!empty($takenBy)) {
+        if (property_exists($takenBy, 'cancelId')) {
+          $takenHashes[] = $takenBy->cancelId;
+        }
+      }
+    }
+
+    if (in_array($value, $takenHashes)) {
+      return true;
+    }
+
+    return false;
   }
 
 }
