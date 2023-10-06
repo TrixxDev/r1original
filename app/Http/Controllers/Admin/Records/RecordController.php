@@ -795,7 +795,7 @@ class RecordController extends Controller
 
 
       $formData = json_decode(json_encode($formDataArray), FALSE);
-      if ($slot) {
+      if (isset($slot->takenby)) {
         $takenBy = (array) json_decode($slot->takenby);
         $formData->cancelId = $takenBy['cancelId'];
       }
