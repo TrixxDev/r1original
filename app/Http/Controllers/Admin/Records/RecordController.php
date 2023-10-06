@@ -793,7 +793,10 @@ class RecordController extends Controller
         $move_slot = true;
       }
 
+      $takenBy = (array) json_decode($slot->takenby);
+
       $formData = json_decode(json_encode($formDataArray), FALSE);
+      $formData->cancelId = $takenBy['cancelId'];
       $newFormData = json_encode($formData);
       $discount = ($formData->slotcomment === 'null') ? null : $formData->slotcomment;
       unset($formData->service, $formData->status, $formData->slotcomment, $formDataArray['status'], $formDataArray['slotcomment']);
