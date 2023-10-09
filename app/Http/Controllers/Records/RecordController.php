@@ -702,7 +702,7 @@
               } else {
                 $service = Service::where('service_id', $takenBy->service)->first();
                 if (!empty($takenBy->rimsWith)) {
-                  if ($takenBy != 'undefined') {
+                  if ($takenBy->rimsWith != 'undefined') {
                     if ($takenBy->rimsWith == 1) {
                       $rimsWith = ' - Riepas bez diskiem';
                     } else {
