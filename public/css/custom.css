@@ -5852,7 +5852,7 @@ div#service-option-selection {
 .contact-card {
   padding: 10px;
   position: fixed;
-  left: 20px;
+  right: 20px;
   bottom: 20px;
   border: 1px solid #878787;
   width: fit-content;
