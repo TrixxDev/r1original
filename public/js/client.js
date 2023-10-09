@@ -443,6 +443,7 @@ $(document).ready(function() {
     plate = parseInt(plate);
     plate = $.trim(plate);
     let service = $('#mobile-reservation-form .purpose #mobile-service select[name="serviceOption"] option:selected').val();
+    if (service === 'Izvēlēties') service = 1;
     let user_comment = $('#mobile-reservation-form textarea#mobile-comment').val();
     let name = $('#mobile-reservation-form input#mobile-name').val();
     let email = $('#mobile-reservation-form input#mobile-email').val();
