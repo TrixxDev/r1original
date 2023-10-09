@@ -436,6 +436,7 @@ $(document).ready(function() {
     car_brand = $('#mobile-reservation-form input#mobile-brand').val();
     car_model = $('#mobile-reservation-form input#mobile-model').val();
     rimsWith = $('#mobile-reservation-form .rims-with-mobile input[name="rims_with_input"]:checked').val();
+    if (rimsWith === undefined) rimsWith = 1;
     temp_nr = $('#mobile-reservation-form .rims-storageBin input#mobile_storage_bin').val();
     phone = $('#mobile-reservation-form .phone-number input#mobile-phone').val();
     let lic_plate = $('#mobile-reservation-form input#mobile-reg_nr').val();
