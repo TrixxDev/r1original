@@ -702,12 +702,16 @@
               } else {
                 $service = Service::where('service_id', $takenBy->service)->first();
                 if (!empty($takenBy->rimsWith)) {
-                  if ($takenBy->rimsWith == 1) {
-                    $rimsWith = 'Riepas bez diskiem';
+                  if ($takenBy != 'undefined') {
+                    if ($takenBy->rimsWith == 1) {
+                      $rimsWith = ' - Riepas bez diskiem';
+                    } else {
+                      $rimsWith = ' - Riepas ar diskiem';
+                    }
                   } else {
-                    $rimsWith = 'Riepas ar diskiem';
+                    $rimsWith = '';
                   }
-                  $purpose = $service->pdf_title . ' - ' . $rimsWith;
+                  $purpose = $service->pdf_title . $rimsWith;
                 } else {
                   $purpose = $service->pdf_title;
                 }
