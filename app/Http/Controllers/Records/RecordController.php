@@ -594,12 +594,10 @@
       $dateRanges = CarbonPeriod::create($from, $to);
       $timeRanges = CarbonPeriod::create($start, $interval, $end);
 
-      $offices = Office::all();
-
       $dayTitles = $this->dayTitles;
       $timeStep = $this->timeStep;
 
-      return view('records.reservation', compact('workingDays', 'visibleDays', 'dayTitles', 'dateRanges', 'timeRanges', 'isEqual', 'offices', 'currentDate', 'timeStep'));
+      return view('records.reservation', compact('workingDays', 'visibleDays', 'dayTitles', 'dateRanges', 'timeRanges', 'isEqual', 'currentDate', 'timeStep'));
     }
 
     public function reservations_print($office_id, $date)

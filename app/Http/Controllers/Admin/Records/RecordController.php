@@ -552,7 +552,7 @@ class RecordController extends Controller
 
     $today = date('Y-m-d');
 
-    $slot = Slot::where('date', $dopParams['date'])->where('queue_id', $dopParams['queue_id'])->where('iorder', $dopParams['iorder'])->first();
+    $slot = Slot::where('date', $dopParams['date'])->where('queue_id', $dopParams['queue_id'])->where('iorder', $dopParams['iorder'])->groupBy('iorder')->first();
 
     if (!is_null($f_statuscase)) {
 

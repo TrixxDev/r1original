@@ -27,6 +27,11 @@
                 </a>
               </div>
             </div>
+            @php
+              $queue_sum = \App\Models\Office::sum('queue_count');
+              $halfAcService = \App\Models\Service::where('f_ac', 1)->where('enabled', 1)->first();
+              $halfMotoService = \App\Models\Service::where('f_moto', 1)->where('enabled', 1)->first();
+            @endphp
             @for ($day = 0; $day <= $visibleDays; $day++)
               @php
                 $strtotime = $currentDate;
@@ -36,7 +41,6 @@
               @endphp
               <h1 style="font-size: 1.7em; margin-top: 20px;">{{ $dayOfWeek }}, {{ $date }}</h1>
               <div class="row">
-                @php $queue_sum = \App\Models\Office::sum('queue_count'); @endphp
                 @foreach (\App\Models\Office::all() as $office)
                   <div class="col-md-{{ round(12 / $queue_sum * $office->queue_count) }} grid grid-cols-{{ $office->queue_count }}" style="@if ($office->office_id == 1){{'border-right: 2px solid black;'}}@endif" data-date="{{ date('Y-m-d', strtotime($date.' 00:00:00')) }}">
                     @foreach ($workingDays as $workingDay)
@@ -61,9 +65,7 @@
                                 <div class="title text-sm">{{ $workingOffice->title }}</div>
                                 @for ($i = $startSlot; $i <= $numberOfSteps; $i++)
                                   @php
-                                    $halfAcService = \App\Models\Service::where('f_ac', 1)->where('enabled', 1)->first();
-                                    $halfMotoService = \App\Models\Service::where('f_moto', 1)->where('enabled', 1)->first();
-                                    $slot = \App\Models\Slot::where('queue_id', $workingDay->queue_id)->where('date', $workingDay->date)->where('iorder', $i)->first();
+                                    $slot = \App\Models\Slot::select('status', 'takenby', 'comment')->where('queue_id', $workingDay->queue_id)->where('date', $workingDay->date)->where('iorder', $i)->groupBy('iorder')->first();
                                     $currentTime = $opentime->copy()->addMinutes($timeStep * $i)->format('H:i');
 
                                   @endphp

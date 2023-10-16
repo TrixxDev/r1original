@@ -13,7 +13,7 @@
               <div class="btn btn-danger" onclick="togglePrintDropdown()">Drukāt</div>
               <div class="dropdown-content print">
 
-                  @foreach ($offices as $office)
+                  @foreach (\App\Models\Office::all() as $office)
                       @php
                           $visibleDays2 = 6;
                           $workingDays = [];
