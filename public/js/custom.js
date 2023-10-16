@@ -3458,13 +3458,13 @@ $("select.r1-select-input").on("change", function () {
 
 $(window).on('load', function() {
   $('.loading-block').fadeOut();
-  $('body').removeClass('wait-loading');
+  // $('body').removeClass('wait-loading');
 }).on('beforeunload', function() {
-  $('body').addClass('wait-loading');
+  // $('body').addClass('wait-loading');
   $('.loading-block').fadeIn();
 }).on('unload', function() {
   $('.loading-block').fadeOut();
-  $('body').removeClass('wait-loading');
+  // $('body').removeClass('wait-loading');
 });
 
 // (()=>{
