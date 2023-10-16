@@ -291,11 +291,18 @@ $(document).ready(function() {
               // slot.append('<span class="bg-gray-300 text-gray py-2 px-4 status" style="cursor: default;">' + successText + '</span>').fadeIn();
             }
             if (index === 'alertMessage') {
-              let form = $('#reservation form');
-              $('#reservation .error-list').html('').fadeOut();
-              form.slideUp();
-              $('#reservation #warning-alert').slideDown();
-              $('#reservation #warning-alert .text-message').html(value);
+              $('#submit-reservation').removeAttr('disabled');
+              $('#close-modal').removeAttr('disabled');
+
+              $('.reservation-modal-body').slideUp();
+              $('#modalTitle').first().slideUp();
+              $('<h5 class="modal-title title-finish" id="modalTitle">Pieraksts</h5>').insertAfter('#modalTitle');
+              $('.reservation-modal-footer #submit-reservation').hide();
+              $('.reservation-modal-footer #close-modal').text('Aizvērt');
+              $('<div class="modal-body finish">' + data.alertMessage + '</div><div class="modal-footer finish-footer"><button type="button" class="btn btn-secondary" id="close-modal" style="margin-right: 10px;">Aizvērt</button></div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
+              $('#brand, #model, #phone, #email').removeAttr('placeholder');
+              $('#reservation form').trigger('reset');
+              $('#reservation .rims_with, #reservation .temp_save_nr').hide();
             }
           });
         }, 1000);
