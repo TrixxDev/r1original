@@ -80,15 +80,15 @@
 
     public function loadWorkingDays()
     {
-      $visibleDays = 14;
+      $visibleDays = 7;
 
       $daysToShow = [];
 
+      $workingDayCount = Office::sum('queue_count');
       for ($i = 0; $i <= $visibleDays; $i++) {
         $date = Date('Y-m-d', strtotime('+' . $i . ' days'));
         array_push($daysToShow, $date);
 
-        $workingDayCount = Office::sum('queue_count');
         $workingDay = Workingday::where('date', $date)->get();
         if (empty($workingDay->count()) || $workingDay->count() < $workingDayCount) {
           $l = 1;

@@ -12,6 +12,11 @@
                 <div id="content-wrapper" class="right-column col-lg-12">
                 <div class="schedule-table dashboard">
                     @include('components.calendar')
+                    @php
+                      $queue_sum = \App\Models\Office::sum('queue_count');
+                      $halfAcService = \App\Models\Service::where('f_ac', 1)->where('enabled', 1)->first();
+                      $halfMotoService = \App\Models\Service::where('f_moto', 1)->where('enabled', 1)->first();
+                    @endphp
                     @for ($day = 0; $day <= $visibleDays; $day++)
                     @php
                       $date = Date('d.m.Y', strtotime('+' . $day . ' days'));
@@ -19,7 +24,6 @@
                     @endphp
                     <h1 style="font-size: 1.7em; margin-top: 20px;">{{ $dayOfWeek }}, {{ Date('d.m.Y', strtotime('+' . $day . ' days')) }}</h1>
                     <div class="row">
-                      @php $queue_sum = \App\Models\Office::sum('queue_count'); @endphp
                       @foreach (\App\Models\Office::all() as $office)
                         <div class="col-md-{{ round(12 / $queue_sum * $office->queue_count) }} grid grid-cols-{{ $office->queue_count }}" style="@if ($office->office_id == 1){{'border-right: 2px solid black;'}}@endif" data-date="{{ date('Y-m-d', strtotime($date.' 00:00:00')) }}">
                           @foreach ($workingDays as $workingDay)
@@ -35,7 +39,7 @@
 
                                 $numberOfSteps = ceil($opentime->diffInMinutes($closetime) / $timeStep);
 
-                                $workingOffice = \App\Models\Office::where('office_id', $workingDay->office_id)->first();
+                                $workingOffice = \App\Models\Office::select('office_id', 'title')->where('office_id', $workingDay->office_id)->first();
                               @endphp
                               @if ($workingOffice->office_id == $office->office_id)
                                 @if ($workingDay->weekday != 7)
@@ -44,9 +48,7 @@
                                       <div class="title text-sm">{{ $workingOffice->title }}</div>
                                       @for ($i = $opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep; $i <= $numberOfSteps; $i++)
                                         @php
-                                          $halfAcService = \App\Models\Service::where('f_ac', 1)->where('enabled', 1)->first();
-                                          $halfMotoService = \App\Models\Service::where('f_moto', 1)->where('enabled', 1)->first();
-                                          $slot = \App\Models\Slot::where('queue_id', $workingDay->queue_id)->where('date', $workingDay->date)->where('iorder', $i)->first();
+                                          $slot = \App\Models\Slot::select('status', 'takenby', 'comment')->where('queue_id', $workingDay->queue_id)->where('date', $workingDay->date)->where('iorder', $i)->groupBy('iorder')->first();
                                           $currentTime = $opentime->copy()->addMinutes($timeStep * $i)->format('H:i');
                                         @endphp
 
