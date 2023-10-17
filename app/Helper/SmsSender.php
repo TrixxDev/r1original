@@ -4,7 +4,9 @@ namespace App\Helper;
 
 use App\Models\Audit;
 use App\Models\Office;
+use App\Models\Queue;
 use App\Models\Quickorder;
+use App\Models\Slot;
 use Exception;
 
 class SmsSender {
@@ -235,73 +237,28 @@ class SmsSender {
     header("Cache-Control: no-cache");
     header("Pragma: no-cache");
 
-    $officeList = Office::all();
-
     $date = date('Y-m-d',strtotime("+1 day"));
 
     echo 'Scheduling for: '.$date.'<br/>';
 
     $sendString = '';
-    foreach ($officeList as $office){
-      $office->loadQueues();
 
-      foreach ($office->_queues as $queue){
-        $queue->loadWorkingDay($date,true);
-        $queue->loadSlots($date,true);
-        $slotSizes[] = $queue->_workingDays[$date]->slotSize;
+    $slots = Slot::where('date', $date)->where('status', SLOT_STATUS_TAKEN)->groupBy('iorder')->get();
 
-        foreach ($queue->_slots[$date] as $slot){
+    foreach ($slots as $slot) {
+      $form = json_decode($slot->takenby);
 
-          $day = $queue->_workingDays[$date];
-          $start = Office::intervalByTime($day->opentime);
+      $queue = Queue::where('queue_id', $slot->queue_id)->groupBy('iorder')->first();
 
-          $slotPart = null;
+      $time = substr($form->cancelId, -4);
+      $time = $this->insertColon($time);
 
-          if ($slot->status==SLOT_STATUS_TAKEN){
-            $slotPart = 'a';
-          }
-
-          if ($queue->_workingDays[$date]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN){
-            $slotPart = 'b';
-          }
-
-          if ($slotPart != null) {
-            if ($slotPart == 'a') {
-              $startTime = $start + $slot->iorder * ($day->slotSize);
-              $secondarySlot = false;
-            } else {
-              $startTime = $start + $slot->iorder * $day->slotSize + ($day->slotSize/2);
-              $secondarySlot = true;
-            }
-          } else {
-            $startTime = $start + $slot->iorder * ($day->slotSize);
-            $secondarySlot = false;
-          }
-          $time = Office::timeByInterval($startTime);
-
-          if ($slot->status==SLOT_STATUS_TAKEN){
-            $form = json_decode($slot->takenby);
-            $smsText = $queue->parseNotification($queue->getOriginal()['notificationSMS'], $date, $slot->iorder, $form, $secondarySlot, $time);
-            $target = $this->isValidPhoneNumber($form->phone_number);
-            echo 'SMS: '.$form->phone_number.' ('.$target.') :'.nl2br($smsText).'<br/>'."\n";
-            if ($target){
-              if ($sendString!='') $sendString.=",";
-              $sendString .= '["'.$target.'","'.$smsText.'"]';
-            }
-          }
-
-          if ($queue->_workingDays[$date]->secondaryAvailable && $slot->status2==SLOT_STATUS_TAKEN){
-            $form = json_decode($slot->takenby2);
-            $smsText = $queue->parseNotification($queue->getOriginal()['notificationSMS'], $date, $slot->iorder, $form, $secondarySlot, $time);
-            $target = $this->isValidPhoneNumber($form->phone_number);
-            echo '*SMS: '.$form->phone_number.' ('.$target.') :'.$smsText.'<br/>'."\n";
-            if ($target){
-              if ($sendString!='') $sendString.=",";
-              $sendString .= '["'.$target.'","'.$smsText.'"]';
-            }
-          }
-        }
-
+      $smsText = $queue->parseNotification($queue->notificationSMS, $date, $slot->iorder, $form, $time);
+      $target = $this->isValidPhoneNumber($form->phone_number);
+      echo 'SMS: ' . $form->phone_number . ' (' . $target . ') :' . nl2br($smsText) . '<br/>' . "\n";
+      if ($target) {
+        if ($sendString != '') $sendString .= ",";
+        $sendString .= '["' . $target . '","' . $smsText . '"]';
       }
     }
     $sendString = '['.$sendString.']';
@@ -385,6 +342,20 @@ class SmsSender {
     }
 
     dd($result);
+  }
+
+  public function insertColon($number)
+  {
+    // Get the length of the string.
+    $length = strlen($number);
+
+    // If the length of the string is less than 3, then there is no need to insert a colon.
+    if ($length < 3) {
+      return false;
+    } else {
+      // Insert a colon at the second character of the string.
+      return substr($number, 0, 2) . ":" . substr($number, 2);
+    }
   }
 
 }

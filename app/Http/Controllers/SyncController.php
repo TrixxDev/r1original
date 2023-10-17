@@ -403,7 +403,7 @@
           }
         });
 
-        DB::table($tire_table)->whereNull('article')->where('article', '=', "''")->update(['quantity' => 0, 'urs_quantity' => 0, 'krs_quantity' => 0]);
+        DB::table($tire_table)->whereNull('article')->orWhere('article', '=', "''")->update(['quantity' => 0, 'urs_quantity' => 0, 'krs_quantity' => 0]);
       }
     }
 
