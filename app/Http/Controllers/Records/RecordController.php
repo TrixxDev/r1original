@@ -80,7 +80,7 @@
 
     public function loadWorkingDays()
     {
-      $visibleDays = 7;
+      $visibleDays = 14;
 
       $daysToShow = [];
 
@@ -142,7 +142,7 @@
       $offices = Office::all();
       $services = Service::where('enabled', 1)->get();
 
-      $visibleDays = 7;
+      $visibleDays = 14;
       $daysToShow = [];
 
       for ($i = 0; $i <= $visibleDays; $i++) {
@@ -358,7 +358,7 @@
       $this->loadWorkingDays();
       $office = Office::where('office_id', $request->office_id)->first();
 
-      $visibleDays = 7;
+      $visibleDays = 14;
       $daysToShow = [];
 
       for ($i = 0; $i <= $visibleDays; $i++) {
@@ -555,7 +555,7 @@
     public function reservations(Request $request) {
 
       $date = $request->date;
-      $visibleDays = 7;
+      $visibleDays = 14;
 
       if ($date == null) {
         $date = date('Y-m-d');
