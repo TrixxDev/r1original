@@ -378,7 +378,7 @@
         $date = Date('d.m.Y', strtotime('+' . $day . ' days'));
         $dayOfWeek = $dayTitles[date('N', strtotime($date.' 00:00:00'))];
 
-        $html .= '<h3>' . $office->title . '<br>' . $dayOfWeek . ' ' . $date . '</h3>';
+        $html .= '<div class="row" style="margin-left: -8px; margin-bottom: 10px; margin-top: 10px;"><div class="col-sm-6" style=""><span class="day-title">' . $office->title . '<br>' . $dayOfWeek . ' ' . $date . '</span></div><div class="col-sm-6"><button class="btn status-toggle btn-primary" style="text-align: center;border-radius: 5px;width: 100%;height: 42px;display: flex;font-size: 12px;justify-content: center;align-items: center;">Rādīt tikai brīvos laikus</button></div></div>';
         // grid-template-columns: repeat(' . $office->queue_count . ', 1fr)">
         $html .= '<div class="time-list"  data-date="' . date('Y-m-d', strtotime($date)) . '" style="margin-left: 8px;">';
         foreach ($workingDays as $workingDay) {

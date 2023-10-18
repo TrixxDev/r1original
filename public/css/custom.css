@@ -4379,9 +4379,10 @@ button.status.status.slot-free.discount, .discount-slot {
     font-style: normal;
 }
 
-.reservation h3 {
+.reservation span.day-title {
+    font-size: 1.125rem;
+    font-weight: bold;
     margin-top: 0.5rem;
-    margin-left: 8px;
 }
 
 .schedule-table.reservations_page .status, .schedule-table.reservations_page .slot {

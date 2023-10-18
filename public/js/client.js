@@ -342,6 +342,29 @@ $(document).ready(function() {
       },
       success: function(data) {
         $('#mobile-main #mobile-slots-choice .reservation').html(data);
+        $('#mobile-main #mobile-slots-choice .reservation button.status-toggle').click(function(e) {
+          e.preventDefault();
+          $('#mobile-main #mobile-slots-choice .reservation button.status-toggle').toggleClass("btn-primary btn-secondary").text(function(i, text) {
+            return text === "Rādīt tikai brīvos laikus" ? "Rādīt visus laikus" : "Rādīt tikai brīvos laikus";
+          });
+          if ($(this).hasClass('btn-secondary')) {
+            $('.reservation .time-list').each(function() {
+              $('.time-slot:not(.closed)', this).each(function() {
+                if ($(this).children().hasClass('unavailable')) {
+                  $(this).hide();
+                }
+              });
+            });
+          } else if ($(this).hasClass('btn-primary')) {
+            $('.reservation .time-list').each(function() {
+              $('.time-slot:not(.closed)', this).each(function() {
+                if ($(this).children().hasClass('unavailable')) {
+                  $(this).show();
+                }
+              });
+            });
+          }
+        });
         $('.reservation .time-list').each(function() {
           let __motoCount = $(this).find('.moto').first().length;
           let __acCount = $(this).find('.conditioner').first().length;
