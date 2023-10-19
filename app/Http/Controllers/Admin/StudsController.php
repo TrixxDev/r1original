@@ -212,7 +212,7 @@ class StudsController extends Controller {
     $stud->price2 = ($request->price2 === null) ? '' : $request->price2;
     $stud->comment = ($request->comment === null) ? '' : $request->comment;
     $stud->acomment = ($request->acomment === null) ? '' : $request->acomment;
-    $stud->article = ($request->article === null) ? '' : $request->article;
+    $stud->article = ($request->article === null) ? null : $request->article;
     $stud->quantity = ($request->quantity === null) ? '' : $request->quantity;
     $stud->visible_list = 1;
     $stud->visible_users = 1;
@@ -245,7 +245,7 @@ class StudsController extends Controller {
     $stud->price2 = $request->price2;
     $stud->comment = $request->comment;
     $stud->acomment = $request->acomment;
-    $stud->article = $request->article;
+    $stud->article = ($request->article === null) ? null : $request->article;
     $stud->quantity = $request->quantity;
     $stud->urs_quantity = $request->urs_quantity;
     $stud->krs_quantity = $request->krs_quantity;

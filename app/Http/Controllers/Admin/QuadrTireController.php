@@ -250,7 +250,7 @@
       $tire->comment = ($request->comment === null) ? '' : $request->comment;
       $tire->acomment = ($request->acomment === null) ? '' : $request->acomment;
       $tire->is_camera = ($request->is_camera === 'off') ? 'off' : $request->is_camera;
-      $tire->article = ($request->article === null) ? '' : $request->article;
+      $tire->article = ($request->article === null) ? null : $request->article;
       $tire->quantity = ($request->quantity === null) ? '' : $request->quantity;
       $tire->urs_quantity = ($request->urs_quantity === null) ? '' : $request->urs_quantity;
       $tire->krs_quantity = ($request->krs_quantity === null) ? '' : $request->krs_quantity;
@@ -319,7 +319,7 @@
       $tire->code = $request->code;
       $tire->acomment = $request->acomment;
       $tire->is_camera = $request->is_camera;
-      $tire->article = $request->article;
+      $tire->article = ($request->article === null) ? null : $request->article;
       $tire->quantity = $request->quantity;
       $tire->urs_quantity = $request->urs_quantity;
       $tire->krs_quantity = $request->krs_quantity;

@@ -251,7 +251,7 @@ class BigTireController extends Controller
         $tire->implemention = ($request->implemention === null) ? '' : $request->implemention;
         $tire->comment = ($request->comment === null) ? '' : $request->comment;
         $tire->acomment = ($request->acomment === null) ? '' : $request->acomment;
-        $tire->article = ($request->article === null) ? '' : $request->article;
+        $tire->article = ($request->article === null) ? null : $request->article;
         $tire->quantity = ($request->quantity === null) ? '' : $request->quantity;
         $tire->visible_list = 1;
         $tire->visible_users = 1;
@@ -319,7 +319,7 @@ class BigTireController extends Controller
         $tire->implemention = $request->implemention;
         $tire->comment = $request->comment;
         $tire->acomment = $request->acomment;
-        $tire->article = $request->article;
+        $tire->article = ($request->article === null) ? null : $request->article;
         $tire->quantity = $request->quantity;
         $tire->visible_list = 1;
         $tire->visible_users = 1;

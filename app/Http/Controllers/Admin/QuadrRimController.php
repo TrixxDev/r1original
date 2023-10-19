@@ -234,7 +234,7 @@
       $rim->color = ($request->color === null) ? '' : $request->color;
       $rim->comment = ($request->comment === null) ? '' : $request->comment;
       $rim->acomment = ($request->acomment === null) ? '' : $request->acomment;
-      $rim->article = ($request->article === null) ? '' : $request->article;
+      $rim->article = ($request->article === null) ? null : $request->article;
       $rim->quantity = ($request->quantity === null) ? '' : $request->quantity;
       $rim->visible_list = 1;
       $rim->visible_users = 1;
@@ -269,7 +269,7 @@
       $rim->color = $request->color;
       $rim->comment = $request->comment;
       $rim->acomment = $request->acomment;
-      $rim->article = $request->article;
+      $rim->article = ($request->article === null) ? null : $request->article;
       $rim->quantity = $request->quantity;
       $rim->urs_quantity = $request->urs_quantity;
       $rim->krs_quantity = $request->krs_quantity;
