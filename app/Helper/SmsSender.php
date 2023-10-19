@@ -250,8 +250,11 @@ class SmsSender {
 
       $queue = Queue::where('queue_id', $slot->queue_id)->groupBy('iorder')->first();
 
-      $time = substr($form->cancelId, -4);
-      $time = $this->insertColon($time);
+      $time = '';
+      if (isset($form->cancelId) && !empty($form->cancelId)) {
+        $time = substr($form->cancelId, -4);
+        $time = $this->insertColon($time);
+      }
 
       $smsText = $queue->parseNotification($queue->notificationSMS, $date, $slot->iorder, $form, $time);
       $target = $this->isValidPhoneNumber($form->phone_number);

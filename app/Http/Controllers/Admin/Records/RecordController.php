@@ -797,10 +797,8 @@ class RecordController extends Controller
 
 
       $formData = json_decode(json_encode($formDataArray), FALSE);
-      if (isset($slot->takenby)) {
-        $takenBy = (array) json_decode($slot->takenby);
-        if (!isset($takenBy['cancelId'])) $takenBy['cancelId'] = $this->getRandomHash() . str_replace(':', '', $dopParams['new_time']);
-        $formData->cancelId = $takenBy['cancelId'];
+      if (!isset($formData->cancelId)) {
+        $formData->cancelId = $this->getRandomHash() . str_replace(':', '', $dopParams['new_time']);
       }
       $newFormData = json_encode($formData);
       $discount = ($formData->slotcomment === 'null') ? null : $formData->slotcomment;
