@@ -135,7 +135,7 @@
                                                           if ($halfMotoService) {
                                                               $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
                                                           } else {
-                                                              $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot"></div></div>';
+                                                              $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot taken-slot">Aizņemts</div></div>';
                                                           }
                                                         } else {
                                                           if ($i >= 0) {
@@ -153,7 +153,7 @@
                                                               }
                                                           } else {
                                                               if ($i >= 0) {
-                                                                $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot"></div></div>';
+                                                                $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot taken-slot">Aizņemts</div></div>';
                                                               } else {
                                                                 $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                               }
