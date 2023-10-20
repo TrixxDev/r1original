@@ -243,7 +243,7 @@ class SmsSender {
 
     $sendString = '';
 
-    $slots = Slot::where('date', $date)->where('status', SLOT_STATUS_TAKEN)->groupBy('iorder')->get();
+    $slots = Slot::where('date', $date)->where('status', SLOT_STATUS_TAKEN)->get();
 
     foreach ($slots as $slot) {
       $form = json_decode($slot->takenby);
