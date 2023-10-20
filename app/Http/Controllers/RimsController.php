@@ -52,8 +52,8 @@ class RimsController extends Controller
 
     $this->currentForm = ($request->currentForm == 1) ? 1 : 2;
 
-    $this->currentWid = ($request->currentWid) ? $request->currentWid : 6.5;
-    $this->currentWid2 = ($request->currentWid2) ? $request->currentWid2 : 7.5;
+    $this->currentWid = ($request->currentWid) ? $request->currentWid : 6;
+    $this->currentWid2 = ($request->currentWid2) ? $request->currentWid2 : 8;
     $this->currentSkr = ($request->currentSkr) ? $request->currentSkr : 5;
     $this->currentPcd = ($request->currentPcd) ? $request->currentPcd : 112;
     $this->currentEt = ($request->currentEt) ? $request->currentEt : '';

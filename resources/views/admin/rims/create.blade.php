@@ -57,7 +57,7 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="pcd">Skrūvju attālums</label>
               <div class="col-md-9">
-                <input class="form-control" id="pcd" type="number" name="pcd" placeholder="Skrūvju attālums">
+                <input class="form-control" id="pcd" type="text" name="pcd" placeholder="Skrūvju attālums">
               </div>
             </div>
             <div class="form-group row">

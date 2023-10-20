@@ -52,7 +52,7 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="pcd">Skrūvju attālums</label>
               <div class="col-md-9">
-                <input class="form-control" id="pcd" type="number" @if ($rim->pcd) value="{{ $rim->pcd }}" @endif name="pcd" placeholder="Skrūvju attālums">
+                <input class="form-control" id="pcd" type="text" @if ($rim->pcd) value="{{ $rim->pcd }}" @endif name="pcd" placeholder="Skrūvju attālums">
               </div>
             </div>
             <div class="form-group row">
