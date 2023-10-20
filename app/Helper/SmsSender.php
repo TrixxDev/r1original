@@ -248,7 +248,7 @@ class SmsSender {
     foreach ($slots as $slot) {
       $form = json_decode($slot->takenby);
 
-      $queue = Queue::where('queue_id', $slot->queue_id)->groupBy('iorder')->first();
+      $queue = Queue::where('queue_id', $slot->queue_id)->first();
 
       $time = '';
       if (isset($form->cancelId) && !empty($form->cancelId)) {
