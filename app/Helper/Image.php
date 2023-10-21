@@ -125,7 +125,7 @@
       for ($i = 0; $i < count($banners); $i++) {
         $return .= '<div class="sliding-banner__part1 sliding-banner__part1--image">';
         $return .= '<span class="sliding-banner__part1_bg" style="background-color:transparent"></span>';
-        $return .= '<img class="banner-image" alt="r1_banner_' . $banners[$i]->name . '" src="/storage/banners/' . $banners[$i]->name . '">';
+        $return .= '<img loading="lazy" class="banner-image" alt="r1_banner_' . $banners[$i]->name . '" src="/storage/banners/' . $banners[$i]->name . '">';
         if (!empty($banners[$i]->url)) {
           $return .= '<a href="' . url('//' . $banners[$i]->url) . '" class="sliding-banner__link"></a>';
         }
@@ -147,9 +147,9 @@
         if (file_exists(str_replace('.jpg', '.png', Self::image('banners', $image)))) {
           $img = str_replace('.jpg', '.png', $img);
         }
-        return '<img class="banner-image" src="' . asset($img) . '">';
+        return '<img loading="lazy" class="banner-image" src="' . asset($img) . '">';
       } else {
-        return '<img src=' . asset('img/p/en-default-home_default.jpg') . '>';
+        return '<img loading="lazy" src=' . asset('img/p/en-default-home_default.jpg') . '>';
       }
     }
 
@@ -168,9 +168,9 @@
         }
       } else {
         if (empty($style)) {
-          return '<img class="grid-tire-image" src=' . asset('img/p/r1-logo.svg') . '>';
+          return '<img loading="lazy" class="grid-tire-image" src=' . asset('img/p/r1-logo.svg') . '>';
         } else {
-          return '<img class="grid-tire-image" style="' . $style . '" src=' . asset('img/p/r1-logo.svg') . '>';
+          return '<img loading="lazy" class="grid-tire-image" style="' . $style . '" src=' . asset('img/p/r1-logo.svg') . '>';
         }
       }
 

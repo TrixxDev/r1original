@@ -99,8 +99,7 @@
                     <div class="col-md-3 hidden-sm-down" id="_desktop_logo">
                         <a href="/">
 
-                            <img class="logo img-responsive" src="{{ asset('img/r1-riepas-logo-1515661637.jpg') }}"
-                                 alt="R1">
+                            <img loading="lazy" class="logo img-responsive" src="{{ asset('img/r1-riepas-logo-1515661637.jpg') }}" fetchpriority="high" alt="R1">
                         </a>
                     </div>
 
@@ -634,11 +633,11 @@
       <div class="contact-card-items">
 {{--        <img src="{{ asset('images/facebook.svg') }}" alt="facebook" style="background-color: white;">--}}
         <a aria-label="Chat on WhatsApp" target="_blank" href="https://wa.me/37128336677"><img src="{{ asset('images/whatsapp.svg') }}" alt="whatsapp" style="background-color: #25d366;"></a>
-        <a href="tel:67910555"><img src="{{ asset('images/phone.svg') }}" alt="phone" style="padding: 10px; background-color: #0d86ff; color: white;"></a>
+        <a href="tel:67910555"><img loading="lazy" src="{{ asset('images/phone.svg') }}" alt="phone" style="padding: 10px; background-color: #0d86ff; color: white;"></a>
       </div>
       <div id="toggle-contacts">
-        <img id="tc-phone" src="{{ asset('images/phone.svg') }}" alt="phone" style="padding: 10px; background-color: #0d86ff; color: white;">
-        <img id="tc-close" src="{{ asset('images/close.svg') }}" alt="phone" style="display: none;">
+        <img loading="lazy" id="tc-phone" src="{{ asset('images/phone.svg') }}" alt="phone" style="padding: 10px; background-color: #0d86ff; color: white;">
+        <img loading="lazy" id="tc-close" src="{{ asset('images/close.svg') }}" alt="phone" style="display: none;">
       </div>
     </div>
 
@@ -654,8 +653,8 @@
 
 
               <div class="footer-top-logo">
-                <img src="{{ asset('images/1.png') }}" alt="logo">
-                <img src="{{ asset('images/2.png') }}" alt="logo">
+                <img loading="lazy" src="{{ asset('images/1.png') }}" alt="logo">
+                <img loading="lazy" src="{{ asset('images/2.png') }}" alt="logo">
               </div>
 
             </div>
@@ -765,7 +764,7 @@
                                 </a>
                             </li>
                         </ul>
-			<a href="https://www.salidzini.lv/" target="_blank"><img style="border: none;" alt="Salidzini.lv logotips" id="salidzini-banner" title="Interneta veikali. Labākā cena" src="https://static.salidzini.lv/images/logo_button.gif"/></a>
+			<a href="https://www.salidzini.lv/" target="_blank"><img loading="lazy" style="border: none;" alt="Salidzini.lv logotips" id="salidzini-banner" title="Interneta veikali. Labākā cena" src="https://static.salidzini.lv/images/logo_button.gif"/></a>
                     </div>
 
 
@@ -831,7 +830,7 @@
                             <div class="col-md-6 modal-image-preview">
                                 <!-- NOT WORKING like needed | RDP -->
                                 {{-- IMAGE INSIDE MODAL--}}
-                                  <img style="width: 100%;" alt="riepas_attēls">
+                                  <img loading="lazy" style="width: 100%;" alt="riepas_attēls">
 {{--                                @if ($tire->image)--}}
 {{--                                  <img src="{{ $tire->image }}">--}}
 {{--                                @else--}}
@@ -915,7 +914,7 @@
   fbq('track', 'PageView');
 </script>
 <noscript>
-  <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=847896900037592&ev=PageView&noscript=1"/>
+  <img height="1" width="1" loading="lazy" style="display:none" src="https://www.facebook.com/tr?id=847896900037592&ev=PageView&noscript=1"/>
 </noscript>
 <!-- End Meta Pixel Code -->
 <script>

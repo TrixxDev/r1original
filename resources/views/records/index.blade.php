@@ -305,7 +305,7 @@
                                                 <div class="form-group rims-with-mobile" style="display: none;">
                                                     <div class="form-check">
                                                         <label class="form-check-label" for="rimsWith1">
-                                                            <img src="https://r1riepas.lv/images/bez_diskiem.jpg" alt="">
+                                                            <img loading="lazy" src="https://r1riepas.lv/images/bez_diskiem.jpg" alt="">
                                                         </label>
                                                         <br>
                                                         <input value="1" class="form-check-input" type="radio" name="rims_with_input" id="rimsWith1" title="">
@@ -313,7 +313,7 @@
                                                     </div>
                                                     <div class="form-check">
                                                         <label class="form-check-label" for="rimsWith2">
-                                                            <img src="https://r1riepas.lv/images/ar_diskiem.png" alt="">
+                                                            <img loading="lazy" src="https://r1riepas.lv/images/ar_diskiem.png" alt="">
                                                         </label>
                                                         <br>
                                                         <input value="2" class="form-check-input" type="radio" name="rims_with_input" id="rimsWith2" title="">
@@ -544,7 +544,7 @@
                                                 <label class="form-check-label" for="flexRadioDefault1">
                                                     Riepas bez diskiem
 
-                                                    <img class="rims-with-img" src="https://r1riepas.lv/images/bez_diskiem.jpg" alt="riepas_ar_diskiem">
+                                                    <img class="rims-with-img" loading="lazy" src="https://r1riepas.lv/images/bez_diskiem.jpg" alt="riepas_ar_diskiem">
                                                 </label>
                                             </div>
 
@@ -553,7 +553,7 @@
                                                 <label class="form-check-label" for="flexRadioDefault2">
                                                     Riepas ar Diskiem
 
-                                                    <img class="rims-with-img" src="https://r1riepas.lv/images/ar_diskiem.png" alt="riepas_ar_diskiem">
+                                                    <img class="rims-with-img" loading="lazy" src="https://r1riepas.lv/images/ar_diskiem.png" alt="riepas_ar_diskiem">
                                                 </label>
                                             </div>
 
