@@ -217,7 +217,7 @@
       $fmtDate = date('d.m.Y', strtotime($dopParams['date']));
 
       $office = Office::where('office_id', $dopParams['office'])->first();
-      $time = $dopParams['time'];
+      $time = strip_tags($dopParams['time']);
 
       $cancelId = $this->getRandomHash() . str_replace(':', '', $time);
 
