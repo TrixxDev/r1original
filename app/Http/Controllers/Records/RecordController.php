@@ -1035,8 +1035,27 @@
       $time = substr($id, -4);
       $time = $this->insertColon($time);
 
+      $_weekDays = [
+        1 => 'pirmdien',
+        2 => 'otrdien',
+        3 => 'trešdien',
+        4 => 'ceturtdien',
+        5 => 'piektdien',
+        6 => 'sestdien',
+        7 => 'svētdien',
+      ];
+
       if ($request->post()) {
         if ($takenBy !== null) {
+
+          $licPlateNr = substr($takenBy->lic_plate, -2);
+          $inputPlateNr = substr($request->input('deleteNr'), -2);
+
+          if ($licPlateNr != $inputPlateNr) {
+            $errorMessage = 'Numurs ievadīts nepareizi.<br>Mēģiniet vēlreiz vai sazinieties ar mums telefoniski.';
+            return view('records.cancel', compact('slot', '_weekDays', 'takenBy', 'time', 'office', 'errorMessage'));
+          }
+
           $deletedSlot = $slot;
           if ($slot->delete()) {
 
@@ -1091,16 +1110,6 @@
           }
         }
       }
-
-      $_weekDays = [
-        1 => 'pirmdien',
-        2 => 'otrdien',
-        3 => 'trešdien',
-        4 => 'ceturtdien',
-        5 => 'piektdien',
-        6 => 'sestdien',
-        7 => 'svētdien',
-      ];
 
       return view('records.cancel', compact('slot', '_weekDays', 'takenBy', 'time', 'office'));
     }
