@@ -786,8 +786,10 @@
 
     </footer>
 
-    @if (App\Helper\Image::countBanners() > 0)
-        {!! \App\Helper\Image::showBanners() !!}
+    @if (!\Illuminate\Support\Facades\Auth::check())
+        @if (App\Helper\Image::countBanners() > 0)
+            {!! \App\Helper\Image::showBanners() !!}
+        @endif
     @endif
 
 </main>
