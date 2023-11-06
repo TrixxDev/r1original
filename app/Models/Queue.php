@@ -381,7 +381,7 @@ class Queue extends Model
 
       $office = Office::findOrFail($this->office_id);
 
-      $dateStamp = strtotime($date.' '.$time);
+      $dateStamp = strtotime($date);
       $dayOfWeek = $_weekDays[date('N', $dateStamp)];
       $dateFmt = date('d.m.Y', $dateStamp);
 
