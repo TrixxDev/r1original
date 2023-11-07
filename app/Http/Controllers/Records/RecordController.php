@@ -311,7 +311,8 @@
         $model = str_replace(' ', '%20', $result->car_model);
         $service = str_replace(' ', '%20', $service->pdf_title);
         $vehiclePlate = str_replace(' ', '%20', $result->lic_plate);
-        $discount = (!empty($slot->comment)) ? '%20|%20(' . $slot->comment . ')' : '';
+        $discount = str_replace(' ', '%20', $slot->comment);
+        $discount = (!empty($slot->comment)) ? '%20|%20(' . $discount . ')' : '';
 
         if (!empty($rimsWith)) {
           if ($rimsWith == 1) {
