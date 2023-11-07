@@ -311,6 +311,7 @@
         $model = str_replace(' ', '%20', $result->car_model);
         $service = str_replace(' ', '%20', $service->pdf_title);
         $vehiclePlate = str_replace(' ', '%20', $result->lic_plate);
+        $discount = (!empty($slot->comment)) ? '%20|%20(' . $slot->comment . ')' : '';
 
         if (!empty($rimsWith)) {
           if ($rimsWith == 1) {
@@ -327,7 +328,7 @@
 
           $cURLConnection = curl_init();
 
-          $url = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment;
+          $url = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
 
           curl_setopt($cURLConnection, CURLOPT_URL, $url);
           curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
@@ -338,7 +339,7 @@
         } else {
           $cURLConnection = curl_init();
 
-          $url = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment;
+          $url = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
 
           curl_setopt($cURLConnection, CURLOPT_URL, $url);
           curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
