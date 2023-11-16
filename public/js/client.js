@@ -191,7 +191,7 @@ $(document).ready(function() {
     car_brand = $('#reservation input#brand').val().replace('&', '');
     car_model = $('#reservation input#model').val().replace('&', '');
     rimsWith = $('#reservation .rims_with input[name="rims_with_input"]:checked').val();
-    temp_nr = $('#reservation .temp_save_nr input#save_nr').val().replace('&', '');
+    temp_nr = $('#reservation .temp_save_nr input#save_nr').val();
     phone = $('#reservation input#phone').val().replace(' ', '');
     let lic_plate = $('#reservation input#reg_nr').val();
     let plate = phone.substr(-3);
@@ -467,7 +467,7 @@ $(document).ready(function() {
     car_model = $('#mobile-reservation-form input#mobile-model').val().replace('&', '');
     rimsWith = $('#mobile-reservation-form .rims-with-mobile input[name="rims_with_input"]:checked').val();
     if (rimsWith === undefined) rimsWith = 1;
-    temp_nr = $('#mobile-reservation-form .rims-storageBin input#mobile_storage_bin').val().replace('&', '');
+    temp_nr = $('#mobile-reservation-form .rims-storageBin input#mobile_storage_bin').val();
     phone = $('#mobile-reservation-form .phone-number input#mobile-phone').val().replace(' ', '');
     let lic_plate = $('#mobile-reservation-form input#mobile-reg_nr').val().replace('&', '');
     let plate = phone.substr(-3);
