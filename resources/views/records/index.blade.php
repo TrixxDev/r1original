@@ -293,11 +293,9 @@
                                                     <div id="mobile-service">
                                                         <select class="custom-select" name="serviceOption" required="required">
                                                             <option disabled="" class="disabled" selected="">Izvēlēties</option>
-                                                            <option value="1">Samainīt riepas vai riteņus, kuri man būs līdzi</option>
-                                                            <option value="2">Samainīt riepas vai riteņus, kuri glabājas pie jums</option>
-                                                            <option value="3">Samainīt riepas vai riteņus, kurus vēlos pie jums nopirkt</option>
-                                                            <option value="6" data-ac="1">Kondicionieru uzpilde</option>
-                                                            <option value="8" data-moto="1">Moto montāža</option>
+                                                            @foreach ($services as $service)
+                                                                <option value="{{ $service->service_id }}" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif @if ($service->f_ac == 1) data-ac="1" @endif @if ($service->f_moto == 1) data-moto="1" @endif>{{ $service->title }}</option>
+                                                            @endforeach
                                                         </select>
                                                     </div>
                                                 </div>
