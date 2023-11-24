@@ -850,25 +850,38 @@ class RecordController extends Controller
             if ($is_slot_taken) return json_encode(['failed' => true, 'failed_msg' => 'Laiks ' . $dopParams['new_time'] . ' ir aizņemts!']);
 
 
+            $new_slot = Slot::where('date', $dopParams['new_date'])
+              ->where('queue_id', $dopParams['new_queue'])
+              ->where('iorder', $newIorder)
+              ->first();
+
+//            dd(DB::getQueryLog(), $new_slot);
             // Ja slots ir jāpārvieto
             $slot_id = $slot->slot_id;
             $time_created = $slot->createtime;
             $user_created = $slot->createuser;
+            $newFormData = json_decode($slot->takenby);
+            $newCancelId = substr($newFormData->cancelId, 0, -4);
+            $newCancelId = $newCancelId . str_replace(':', '', $dopParams['new_time']);
+            $newFormData->cancelId = $newCancelId;
+            $newFormData = json_encode($newFormData);
+            if (!$new_slot) {
+              $new_slot = new Slot();
+            }
             $slot->delete();
-            $slot = new Slot();
-            $slot->slot_id = $slot_id;
-            $slot->timestamps = false;
-            $slot->queue_id = $dopParams['new_queue'];
-            $slot->date = $dopParams['new_date'];
-            $slot->iorder = $newIorder;
-            $slot->status = 1;
-            $slot->takenby = $newFormData;
-            $slot->comment = $discount;
-            $slot->createtime = $time_created;
-            $slot->createuser = $user_created;
-            $slot->edittime = now();
-            $slot->edituser = Auth::user() ? Auth::user()->id : 0;
-            $slot->save();
+//            $new_slot->slot_id = $slot_id;
+            $new_slot->timestamps = false;
+            $new_slot->queue_id = $dopParams['new_queue'];
+            $new_slot->date = $dopParams['new_date'];
+            $new_slot->iorder = $newIorder;
+            $new_slot->status = 1;
+            $new_slot->takenby = $newFormData;
+            $new_slot->createtime = $time_created;
+            $new_slot->createuser = $user_created;
+            $new_slot->edittime = now();
+            $new_slot->edituser = Auth::user() ? Auth::user()->id : 0;
+//            dd($new_slot);
+            $new_slot->save();
 
             return json_encode(['status' => 1, 'moved_slot_admin' => true, 'new_iorder' => (string) $newIorder]);
           } else {
