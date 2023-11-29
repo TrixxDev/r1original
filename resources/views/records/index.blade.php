@@ -126,7 +126,7 @@
                                                       if (date('Y-m-d') == $workingDay->date) {
                                                         if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
                                                           $slotClass = 'taken-slot';
-                                                          if ($slot->comment !== null) {
+                                                          if ($slot->comment !== null && !$slot->takenby) {
                                                             $slotClass = 'time-free';
                                                           }
                                                         }
