@@ -2291,7 +2291,7 @@ p {
   #header .header-top .menu>ul>li {
     margin-right: 15px;
   }
-  .schedule-table {
+  .schedule-table.dashboard {
     display: none;
   }
 
