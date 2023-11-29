@@ -124,7 +124,12 @@
                                               if ($i % 2 == 1) {
                                                   if ($slot) {
                                                       if (date('Y-m-d') == $workingDay->date) {
-                                                        $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-free' : $slotClass;
+                                                        if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
+                                                          $slotClass = 'taken-slot';
+                                                          if ($slot->comment !== null) {
+                                                            $slotClass = 'time-free';
+                                                          }
+                                                        }
                                                         $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                       } else {
                                                         $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
@@ -163,7 +168,12 @@
                                               } else {
                                                   if ($slot) {
                                                       if (date('Y-m-d') == $workingDay->date) {
-                                                        $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-free' : $slotClass;
+                                                        if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
+                                                          $slotClass = 'taken-slot';
+                                                          if ($slot->comment !== null) {
+                                                            $slotClass = 'time-free';
+                                                          }
+                                                        }
                                                         $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                       } else {
                                                         $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
