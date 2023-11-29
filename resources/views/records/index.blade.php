@@ -124,7 +124,7 @@
                                               if ($i % 2 == 1) {
                                                   if ($slot) {
                                                       if (date('Y-m-d') == $workingDay->date) {
-                                                        $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-taken' : $slotClass;
+                                                        $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'taken-slot' : $slotClass;
                                                         $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                       } else {
                                                         $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
@@ -135,7 +135,7 @@
                                                           if ($halfMotoService) {
                                                               $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
                                                           } else {
-                                                              $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot taken-slot">Aizņemts</div></div>';
+                                                              $content = '<div class="time-status flex time-taken-half" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot taken-slot">Aizņemts</div></div>';
                                                           }
                                                         } else {
                                                           if ($i >= 0) {
@@ -163,7 +163,7 @@
                                               } else {
                                                   if ($slot) {
                                                       if (date('Y-m-d') == $workingDay->date) {
-                                                        $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'time-taken' : $slotClass;
+                                                        $slotClass = (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) ? 'taken-slot' : $slotClass;
                                                         $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';
                                                       } else {
                                                         $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div>' . $content . '</div>';

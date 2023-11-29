@@ -268,12 +268,16 @@ $(document).ready(function() {
               $('#reservation form').trigger('reset');
               $('#reservation .rims_with, #reservation .temp_save_nr').hide();
 
-              let nextElement = document.querySelector('.time-status.taken-slot').nextElementSibling;
+              let elements = document.querySelectorAll('.time-status.taken-slot');
 
-              if (nextElement.classList.contains('time-taken-half')) {
-                nextElement.classList.remove('time-taken-half', 'taken-slot');
-                nextElement.classList.add('taken-slot');
-              }
+              elements.forEach(function(element) {
+                let nextElement = element.nextElementSibling;
+
+                if (nextElement && nextElement.classList.contains('time-taken-half')) {
+                  nextElement.classList.remove('time-taken-half', 'taken-slot');
+                  nextElement.classList.add('taken-slot');
+                }
+              });
 
               let wsParams = {
                 iorder: iorder,
@@ -586,12 +590,16 @@ $(document).ready(function() {
 
   });
 
-  let nextElement = document.querySelector('.time-status.taken-slot').nextElementSibling;
+  let elements = document.querySelectorAll('.time-status.taken-slot');
 
-  if (nextElement.classList.contains('time-taken-half')) {
-    nextElement.classList.remove('time-taken-half', 'taken-slot');
-    nextElement.classList.add('taken-slot');
-  }
+  elements.forEach(function(element) {
+    let nextElement = element.nextElementSibling;
+
+    if (nextElement && nextElement.classList.contains('time-taken-half')) {
+      nextElement.classList.remove('time-taken-half', 'taken-slot');
+      nextElement.classList.add('taken-slot');
+    }
+  });
 
 
   let plate;
