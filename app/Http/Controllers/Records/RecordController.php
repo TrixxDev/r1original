@@ -443,12 +443,12 @@
                           // Modify content for AC and moto slots if today and currently free
                           if ($workingDay->date == $today && $service && ($service->f_ac || $service->f_moto)) {
                             $content = $oddMinutes ? $ac_slot_content : $moto_slot_content;
-                            if ($offer_slot_content) {
+                            if (isset($offer_slot_content)) {
                               $content = $offer_slot_content;
                             }
                           } else {
                             $content = $free_slot_content;
-                            if ($offer_slot_content) {
+                            if (isset($offer_slot_content)) {
                               $content = $offer_slot_content;
                             }
                           }
