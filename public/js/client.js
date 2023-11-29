@@ -268,6 +268,13 @@ $(document).ready(function() {
               $('#reservation form').trigger('reset');
               $('#reservation .rims_with, #reservation .temp_save_nr').hide();
 
+              let nextElement = document.querySelector('.time-status.taken-slot').nextElementSibling;
+
+              if (nextElement.classList.contains('time-taken-half')) {
+                nextElement.classList.remove('time-taken-half', 'taken-slot');
+                nextElement.classList.add('taken-slot');
+              }
+
               let wsParams = {
                 iorder: iorder,
                 queue_id: queue_id,
@@ -578,6 +585,13 @@ $(document).ready(function() {
     });
 
   });
+
+  let nextElement = document.querySelector('.time-status.taken-slot').nextElementSibling;
+
+  if (nextElement.classList.contains('time-taken-half')) {
+    nextElement.classList.remove('time-taken-half', 'taken-slot');
+    nextElement.classList.add('taken-slot');
+  }
 
 
   let plate;

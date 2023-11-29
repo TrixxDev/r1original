@@ -80,7 +80,7 @@
 
     public function loadWorkingDays()
     {
-      $visibleDays = 14;
+      $visibleDays = 7;
 
       $daysToShow = [];
 
@@ -142,7 +142,7 @@
       $offices = Office::all();
       $services = Service::where('enabled', 1)->get();
 
-      $visibleDays = 14;
+      $visibleDays = 7;
       $daysToShow = [];
 
       for ($i = 0; $i <= $visibleDays; $i++) {
@@ -363,7 +363,7 @@
       $this->loadWorkingDays();
       $office = Office::where('office_id', $request->office_id)->first();
 
-      $visibleDays = 14;
+      $visibleDays = 7;
       $daysToShow = [];
 
       for ($i = 0; $i <= $visibleDays; $i++) {
@@ -1013,6 +1013,17 @@
         $workingDay->is_half = $equal->is_half;
         $workingDay->is_opened = $equal->is_opened;
         $workingDay->save();
+
+        $queue = Queue::where('queue_id', $workingDay->queue_id)->first();
+        $queue->timestamps = false;
+        if ($workingDay->weekday === 6) {
+          $queue->timeopen = $workingDay->wtimeopen;
+          $queue->timeclose = $workingDay->wtimeclose;
+        } else {
+          $queue->timeopen = $workingDay->timeopen;
+          $queue->timeclose = $workingDay->timeclose;
+        }
+        $queue->save();
       }
 
       return json_encode(['success' => true]);

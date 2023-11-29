@@ -728,6 +728,15 @@ class RecordController extends Controller
       if (!is_null($slot)) {
         if ($result->slotcomment === 'null') {
           $slot->delete();
+          $slot = new Slot;
+          $slot->queue_id = $dopParams['queue_id'];
+          $slot->date = $dopParams['date'];
+          $slot->iorder = $dopParams['iorder'];
+          $slot->status = 0;
+          $slot->takenby = null;
+          $slot->edittime = now();
+          $slot->edituser = Auth::user() ? Auth::user()->id : 0;
+          $slot->save();
           return json_encode(['status' => $result->status, 'deleted_slot_admin' => true, 'comment' => $result->slotcomment ?? '']);
         } else {
           $slot->delete();
@@ -746,16 +755,29 @@ class RecordController extends Controller
           return json_encode(['status' => $result->status, 'edited_slot_admin' => true, 'comment' => $result->slotcomment ?? '']);
         }
       } else {
-        if ($result->slotcomment) {
+        if ($result->slotcomment !== 'null') {
+          if ($result->slotcomment) {
+            $slot = new Slot;
+            $slot->queue_id = $dopParams['queue_id'];
+            $slot->date = $dopParams['date'];
+            $slot->iorder = $dopParams['iorder'];
+            $slot->status = 0;
+            $slot->takenby = null;
+            $slot->comment = $result->slotcomment;
+            $slot->createtime = now();
+            $slot->createuser = Auth::user() ? Auth::user()->id : 0;
+            $slot->edittime = now();
+            $slot->edituser = Auth::user() ? Auth::user()->id : 0;
+            $slot->save();
+            return json_encode(['status' => $result->status, 'edited_slot_admin' => true, 'comment' => $result->slotcomment ?? '']);
+          }
+        } else {
           $slot = new Slot;
           $slot->queue_id = $dopParams['queue_id'];
           $slot->date = $dopParams['date'];
           $slot->iorder = $dopParams['iorder'];
           $slot->status = 0;
           $slot->takenby = null;
-          $slot->comment = $result->slotcomment;
-          $slot->createtime = now();
-          $slot->createuser = Auth::user() ? Auth::user()->id : 0;
           $slot->edittime = now();
           $slot->edituser = Auth::user() ? Auth::user()->id : 0;
           $slot->save();

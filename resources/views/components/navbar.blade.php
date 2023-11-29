@@ -320,16 +320,7 @@
 
   <button class="nav-dropdown-button navbar-item" onclick="showServissDropdown()">Serviss <span class="material-icons serviss">keyboard_arrow_down</span></button>
 
-  <div class="dropdown-options serviss">
-
-      <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="/pakalpojumi">Pakalpojumi</a>
-      </div>
-
-      <div class="nav-dropdown-link">
-        <a class="dropdown-item" href="{{ url('kondicionieris') }}">Kondicionieru Uzpilde</a>
-      </div>
-    </div>
+  <a class="nav-dropdown-button navbar-item navbar-link-btn" href="/pakalpojumi">Pakalpojumi</a>
 
     <button class="nav-dropdown-button navbar-item" onclick="showInfoDropdown()">Info <span class="material-icons info">keyboard_arrow_down</span></button>
 
@@ -337,6 +328,10 @@
       <div class="dropdown-options">
         <div class="nav-dropdown-link">
           <a class="dropdown-item" href="{{ url('/kontakti') }}">Kontakti un darba laiks</a>
+        </div>
+
+        <div class="nav-dropdown-link">
+          <a class="dropdown-item" href="{{ url('kondicionieris') }}">Kondicionieru Uzpilde</a>
         </div>
 
         <div class="nav-dropdown-link">

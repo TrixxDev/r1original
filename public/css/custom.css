@@ -4112,6 +4112,12 @@ tr.selected td a {
   /*width: 300px;*/
 }
 
+.time-taken-half .taken-slot {
+    background: #e0ffe0;
+    text-align: center;
+    /*width: 300px;*/
+}
+
 .time-slot {
   background: white;
   text-align: center;

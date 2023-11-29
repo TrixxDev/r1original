@@ -509,37 +509,10 @@
 
                                 </div>
                             </li>
-                            <li class="category" id="cms-category-3">
-                                <a class="dropdown-item" href="#" data-depth="0">
-
-                                    <span class="float-xs-right hidden-md-up">
-                                    <span data-target="#top_sub_menu_6381" data-toggle="collapse" class="navbar-toggler collapse-icons">
-                                      <i class="material-icons add"></i>
-                                      <i class="material-icons remove"></i>
-                                    </span>
-                                    </span>
-                                    Serviss
-                                </a>
-                                <div class="popover sub-menu js-sub-menu collapse" id="top_sub_menu_6381"
-                                     style="display: none; top: 130px;">
-                                    <ul class="top-menu" data-depth="1">
-                                        <li class="cms-page" id="cms-page-8">
-                                            <a class="dropdown-item dropdown-submenu"
-                                               href="/pakalpojumi"
-                                               data-depth="1">
-                                                Pakalpojumi
-                                            </a>
-                                        </li>
-                                        <li class="cms-page" id="cms-page-9">
-                                            <a class="dropdown-item dropdown-submenu"
-                                               href="{{ url('kondicionieris') }}"
-                                               data-depth="1">
-                                                Kondicionieru uzpilde
-                                            </a>
-                                        </li>
-                                    </ul>
-
-                                </div>
+                            <li class="category" id="cms-category-4">
+                              <a class="dropdown-item" href="/pakalpojumi">
+                                Izcenojumi
+                              </a>
                             </li>
                             <li class="category" id="cms-category-2">
                                 <a class="dropdown-item" href="#" data-depth="0">
@@ -562,6 +535,13 @@
                                                data-depth="1">
                                                 Kontakti un darba laiks
                                             </a>
+                                        </li>
+                                        <li class="cms-page" id="cms-page-9">
+                                          <a class="dropdown-item dropdown-submenu"
+                                             href="{{ url('kondicionieris') }}"
+                                             data-depth="1">
+                                            Kondicionieru uzpilde
+                                          </a>
                                         </li>
                                         <li class="cms-page" id="cms-page-11">
                                             <a class="dropdown-item dropdown-submenu"

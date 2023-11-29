@@ -153,7 +153,7 @@
                                                               }
                                                           } else {
                                                               if ($i >= 0) {
-                                                                $content = '<div class="time-status flex time-taken" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot taken-slot">Aizņemts</div></div>';
+                                                                $content = '<div class="time-status flex time-taken-half" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="slot taken-slot">Aizņemts</div></div>';
                                                               } else {
                                                                 $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                               }
