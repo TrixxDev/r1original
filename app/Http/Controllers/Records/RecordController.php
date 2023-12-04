@@ -113,7 +113,7 @@
                 $workingDay->timeopen = $queue->wtimeopen;
                 $workingDay->timeclose = $queue->wtimeclose;
               }
-              $workingDay->is_opened = 1;
+              $workingDay->is_opened = ($queue->is_visible == 1) ? 1 : 0;
               if ($workingDay->weekday == 7) $workingDay->is_opened = 0;
               $workingDay->save();
               $newWorkingDay = $workingDay->replicate();
@@ -1023,6 +1023,7 @@
           $queue->timeopen = $workingDay->timeopen;
           $queue->timeclose = $workingDay->timeclose;
         }
+        $queue->is_visible = $workingDay->is_opened;
         $queue->save();
       }
 
