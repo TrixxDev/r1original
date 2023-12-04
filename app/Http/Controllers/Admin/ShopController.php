@@ -29,6 +29,7 @@ class ShopController extends Controller
     6 => 'Prece nav pieejama',
     7 => 'Klients atteicās',
     10 => 'Kļūdains pasūtījums',
+    11 => 'Klients nav sazvanāms',
     5 => 'Pabeigts'
 ];
 
