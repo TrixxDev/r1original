@@ -80,7 +80,7 @@
 
     public function loadWorkingDays()
     {
-      $visibleDays = 7;
+      $visibleDays = 14;
 
       $daysToShow = [];
 
