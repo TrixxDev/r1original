@@ -1017,8 +1017,8 @@
         $queue = Queue::where('queue_id', $workingDay->queue_id)->first();
         $queue->timestamps = false;
         if ($workingDay->weekday === 6) {
-          $queue->timeopen = $workingDay->wtimeopen;
-          $queue->timeclose = $workingDay->wtimeclose;
+          $queue->wtimeopen = $workingDay->timeopen;
+          $queue->wtimeclose = $workingDay->timeclose;
         } else {
           $queue->timeopen = $workingDay->timeopen;
           $queue->timeclose = $workingDay->timeclose;
