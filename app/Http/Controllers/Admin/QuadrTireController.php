@@ -317,6 +317,7 @@
       $tire->price1 = $request->price1;
       $tire->price2 = $request->price2;
       $tire->code = $request->code;
+      $tire->comment = $request->comment;
       $tire->acomment = $request->acomment;
       $tire->is_camera = $request->is_camera;
       $tire->article = ($request->article === null) ? null : $request->article;
