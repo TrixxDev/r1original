@@ -30,7 +30,7 @@
                         <div class="col-md-12 col-lg-8">
                           <div class="row">
                             <div class="col-sm-12 product-main-details">
-                              <h1 class="h1 mt-1" itemprop="name">{{ $tires[0]->brands_title.' '.$tires[0]->treads_title }}</h1>
+                              <h1 class="h1 mt-1" itemprop="name">{{ $currTire->b_title . ' ' . $currTire->t_title }}</h1>
                             </div>
                             <div class="col-sm-12 col-md-12 col-lg-6">
                               <div class="product-prices">

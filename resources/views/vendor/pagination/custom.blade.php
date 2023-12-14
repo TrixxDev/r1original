@@ -1,10 +1,6 @@
 @if ($paginator->hasPages())
     <div class="col-sm-12 col-md-12">
         <div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">
-            <div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">
-                {{($paginator->currentpage()-1)*$paginator->perpage()+1}} līdz {{$paginator->currentpage()*$paginator->perpage()}}
-                ieraksti no {{$paginator->total()}} ierakstiem
-            </div>
             <ul class="pagination">
 
             @if ($paginator->onFirstPage())
@@ -19,22 +15,22 @@
 
 
 
-            @foreach ($elements as $element)
+{{--            @foreach ($elements as $element)--}}
 
-                @if (is_array($element))
-                    @foreach ($element as $page => $url)
-                        @if ($page == $paginator->currentPage())
-                            <li class="paginate_button page-item active">
-                                <span aria-controls="DataTables_Table_0" style="pointer-events: none;" data-dt-idx="{{ $page }}" tabindex="0" class="page-link">{{ $page }}</span>
-                            </li>
-                        @else
-                            <li class="paginate_button page-item">
-                                <a href="{{ $url }}" aria-controls="DataTables_Table_0" data-dt-idx="{{ $page }}" tabindex="0" class="page-link">{{ $page }}</a>
-                            </li>
-                        @endif
-                    @endforeach
-                @endif
-            @endforeach
+{{--                @if (is_array($element))--}}
+{{--                    @foreach ($element as $page => $url)--}}
+{{--                        @if ($page == $paginator->currentPage())--}}
+{{--                            <li class="paginate_button page-item active">--}}
+{{--                                <span aria-controls="DataTables_Table_0" style="pointer-events: none;" data-dt-idx="{{ $page }}" tabindex="0" class="page-link">{{ $page }}</span>--}}
+{{--                            </li>--}}
+{{--                        @else--}}
+{{--                            <li class="paginate_button page-item">--}}
+{{--                                <a href="{{ $url }}" aria-controls="DataTables_Table_0" data-dt-idx="{{ $page }}" tabindex="0" class="page-link">{{ $page }}</a>--}}
+{{--                            </li>--}}
+{{--                        @endif--}}
+{{--                    @endforeach--}}
+{{--                @endif--}}
+{{--            @endforeach--}}
 
 
 

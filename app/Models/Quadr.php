@@ -232,8 +232,8 @@ class Quadr extends Model
 
     public function getTitleAttribute()
     {
-        $sql = DB::table('quadr_treads')->selectRaw('quadr_treads.*, quadr_treads.title as tread_title')
-            ->selectRaw('quadr_brands.*, quadr_brands.title as brand_title')
+        $sql = DB::table('quadr_treads')->selectRaw('quadr_treads.*, quadr_treads.t_title as tread_title')
+            ->selectRaw('quadr_brands.*, quadr_brands.b_title as brand_title')
             ->leftJoin('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
             ->where('quadr_treads.tread_id', $this->make_id)
             ->first();
@@ -246,7 +246,7 @@ class Quadr extends Model
 
     public function getLinkAttribute()
     {
-        $tire = Quadrtread::selectRaw('quadr_treads.*, quadr_treads.title as tread_title')
+        $tire = Quadrtread::selectRaw('quadr_treads.*, quadr_treads.t_title as tread_title')
             ->selectRaw('quadr_brands.*, quadr_brands.slug as brand_title')
             ->leftJoin('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
             ->where('quadr_treads.tread_id', $this->make_id)
@@ -267,8 +267,8 @@ class Quadr extends Model
 
     public function getBrandAttribute()
     {
-        $sql = DB::table('quadr_treads')->selectRaw('quadr_treads.*, quadr_treads.title as tread_title')
-            ->selectRaw('quadr_brands.*, quadr_brands.title as brand_title')
+        $sql = DB::table('quadr_treads')->selectRaw('quadr_treads.*, quadr_treads.t_title as tread_title')
+            ->selectRaw('quadr_brands.*, quadr_brands.b_title as brand_title')
             ->leftJoin('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
             ->where('quadr_treads.tread_id', $this->make_id)
             ->first();
@@ -278,6 +278,32 @@ class Quadr extends Model
             return $sql->brand_title;
         }
     }
+
+  public function getCodeExplainAttribute()
+  {
+    $code_array = [];
+
+    $return = '';
+
+    $codes = Code::all();
+
+    foreach ($codes as $code) {
+      $code_array[$code->name] = $code->explanation;
+    }
+
+    $codes = explode(' ', $this->code);
+    foreach ($codes as $code) {
+      if (isset($code_array[$code])) {
+        $return .= $code_array[$code] . '<br>';
+      }
+    }
+
+    if (strpos($this->code, 'DOT') !== false) {
+      $return .= $code_array['DOT'];
+    }
+
+    return $return;
+  }
 
     public function getStocksAttribute()
     {

@@ -353,38 +353,36 @@
           <tbody>
           {{--@php dd($tires) @endphp--}}
 
-          @foreach ($tires as $tire)
-    	    @php
-	    if (isset($tire->article)) {
-		  $tireObj = App\Models\Autotire::where('article', $tire->article)->first();
+            @foreach ($tires as $tire)
+              @php
+              if (isset($tire->article)) {
+                $tireObj = App\Models\Autotire::where('article', $tire->article)->first();
                 if (!$tireObj) $tireObj = App\Models\Moto::where('article', $tire->article)->first();
                 if (!$tireObj) $tireObj = App\Models\Quadr::where('article', $tire->article)->first();
-	    }
-
-
-	    @endphp
+              }
+              @endphp
+              <tr id="confirm-table">
+                <th style="border-color: #c6c6c6;" scope="row">{{$tire->tire_id}}</th>
+                @if (isset($tireObj))
+                  <td style="border-color: #c6c6c6;"><a target="_blank" href="{{ $tireObj->link }}">{!! $tireObj->fullName!!}</a></td>
+                @else
+                  <td style="border-color: #c6c6c6;">{!! $tire->title!!}</td>
+                @endif
+                <td style="border-color: #c6c6c6;">{{$tire->quantity}}</td>
+                <td style="border-color: #c6c6c6;">{{$tire->quantity}} x {{$tire->price}} &euro;</td>
+                <td style="border-color: #c6c6c6;">@php echo ($tire->quantity * $tire->price) @endphp &euro;</td>
+              </tr>
+            @endforeach
+	          @if ($order->fit_price != 0 || $order->delivery_price != 0)
             <tr id="confirm-table">
-              <th style="border-color: #c6c6c6;" scope="row">{{$tire->tire_id}}</th>
-	      @if (isset($tireObj))
-                <td style="border-color: #c6c6c6;"><a target="_blank" href="{{ $tireObj->link }}">{!! $tireObj->fullName!!}</a></td>
-              @else
-                <td style="border-color: #c6c6c6;">{!! $tire->title!!}</td>
-	      @endif
-	      <td style="border-color: #c6c6c6;">{{$tire->quantity}}</td>
-              <td style="border-color: #c6c6c6;">{{$tire->quantity}} x {{$tire->price}} &euro;</td>
-              <td style="border-color: #c6c6c6;">@php echo ($tire->quantity * $tire->price) @endphp &euro;</td>
+              <th style="border-color: #c6c6c6;" scope="row"></th>
+              @if ($order->fit_price != 0) <td style="border-color: #c6c6c6;" scope="row">Montāža</td> @endif
+              @if ($order->delivery_price != 0) <td style="border-color: #c6c6c6;" scope="row">Piegāde</td> @endif
+              <td style="border-color: #c6c6c6;" scope="row"></td>
+              <td style="border-color: #c6c6c6;" scope="row"></td>
+              <td style="border-color: #c6c6c6;">{{ ($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2) }} &euro;</td>
             </tr>
-          @endforeach
-	  @if ($order->fit_price != 0 || $order->delivery_price != 0)
-          <tr id="confirm-table">
-            <th style="border-color: #c6c6c6;" scope="row"></th>
-	    @if ($order->fit_price != 0) <td style="border-color: #c6c6c6;" scope="row">Montāža</td> @endif
-            @if ($order->delivery_price != 0) <td style="border-color: #c6c6c6;" scope="row">Piegāde</td> @endif
-            <td style="border-color: #c6c6c6;" scope="row"></td>
-            <td style="border-color: #c6c6c6;" scope="row"></td>
-            <td style="border-color: #c6c6c6;">{{ ($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2) }} &euro;</td>
-          </tr>
-	  @endif
+	          @endif
             <tr class="table-dark">
               <th style="border-color: #c6c6c6; text-align: right" colspan="4"></th>
               <th style="border-color: #c6c6c6;">{{$order->price + (($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2)) }} &euro;</th>

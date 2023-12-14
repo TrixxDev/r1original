@@ -397,7 +397,7 @@
                                 </a>
                             </li>
                             <li class="category" id="category-12">
-                                <a class="dropdown-item" href="#" data-depth="0">
+                                <a class="dropdown-item" href="#" onclick="return false;" data-depth="0">
 
                                     <span class="float-xs-right hidden-md-up">
                                         <span data-target="#top_sub_menu_26942" data-toggle="collapse"
@@ -478,7 +478,7 @@
                                 </div>
                             </li>
                             <li class="category" id="category-20">
-                                <a class="dropdown-item" href="#" data-depth="0">
+                                <a class="dropdown-item" href="#" onclick="return false;" data-depth="0">
 
                                     <span class="float-xs-right hidden-md-up">
                                         <span data-target="#top_sub_menu_6650" data-toggle="collapse" class="navbar-toggler collapse-icons">
@@ -515,7 +515,7 @@
                               </a>
                             </li>
                             <li class="category" id="cms-category-2">
-                                <a class="dropdown-item" href="#" data-depth="0">
+                                <a class="dropdown-item" href="#" onclick="return false;" data-depth="0">
 
                                     <span class="float-xs-right hidden-md-up">
                                         <span data-target="#top_sub_menu_50733" data-toggle="collapse"

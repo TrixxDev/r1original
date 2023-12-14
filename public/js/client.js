@@ -610,6 +610,8 @@ $(document).ready(function() {
     return hours + ':' + minutes;
   }
 
+
+
   // Listen for WebSocket messages
   // socket.addEventListener('message', function(event) {
   //   const data = JSON.parse(event.data);

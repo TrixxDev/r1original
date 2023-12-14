@@ -22,6 +22,14 @@ use Illuminate\Support\Facades\View as View;
 Auth::routes();
 Route::get('/register', function() { return abort(404); })->name('register');
 
+Route::prefix('api')->name('admin.')->group(function() {
+  Route::get('/tires/auto/{season}', [App\Http\Controllers\AutoTireController::class, 'api_tires']);
+  Route::get('/tires/moto', [App\Http\Controllers\MotoTireController::class, 'api_tires']);
+  Route::get('/tires/quadr', [App\Http\Controllers\QuadTireController::class, 'api_tires']);
+  Route::get('/tires/autoSplitInput/{input}', [App\Http\Controllers\AutoTireController::class, 'splitInput']);
+  Route::get('/tires/motoSplitInput/{input}', [App\Http\Controllers\MotoTireController::class, 'splitInput']);
+  Route::get('/tires/quadrSplitInput/{input}', [App\Http\Controllers\QuadTireController::class, 'splitInput']);
+});
 
 // Administrācijas panelis
 
@@ -412,6 +420,11 @@ Route::middleware('checksession')->group(function() {
 
 // Pieraksts
 
+  Route::get('/testpage', function() {
+    $dat = strtotime("2023-10-30 46");
+    return date('d.m.Y', $dat);
+  });
+
   Route::get('/pieraksts', [App\Http\Controllers\Records\RecordController::class, 'index'])->name('pieraksts');
   Route::match(['GET', 'POST'], '/pieraksts/cancel={id}', [App\Http\Controllers\Records\RecordController::class, 'cancelSlot'])->name('cancelSlot');
   Route::post('/pieraksts/getSlotInfo', [App\Http\Controllers\Records\RecordController::class, 'getSlotInfo']);
@@ -506,6 +519,22 @@ Route::middleware('checksession')->group(function() {
 
   Route::get('/analytics', function() {
     return view('analytics');
+  });
+
+  Route::get('/countSchedule', function() {
+    $group = '120363157143688336@g.us';
+    $slots = \App\Models\Slot::where('date', date('Y-m-d'))->where('status', 1)->count();
+
+    $text = ($slots > 1) ? 'mašīnas' : 'mašīna';
+
+    $cURLConnection = curl_init();
+    $url = 'http://api.textmebot.com/send.php?recipient=' . $group . '&apikey=d6nsRWNp1xpc&text=' . date('Y-m-d') . '%20-%20Pierakstā%20' . $slots . '%20' . $text;
+    curl_setopt($cURLConnection, CURLOPT_URL, $url);
+    curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+    curl_exec($cURLConnection);
+    curl_close($cURLConnection);
+
+    dd($slots);
   });
 
   //  ROUTES FOR TESTING PURPOSES

@@ -1328,64 +1328,64 @@ function showQuickBuyForm(id) {
   calcQuickBuyPrice();
 };
 
-$(document).ready(function() {
-
-  let $ids = [];
-
-  $('.tire-table-row, .tire-image-card').each(function() {
-    $(this).find('input[type=checkbox]').on('click', function() {
-      let $id = $(this).val();
-      let $product = $('input[type=checkbox][name="product_ids[]"][value="' + $id + '"]');
-      $product.attr('checked', this.checked).prop('checked', this.checked);
-      if ($(this).is(':checked')) {
-        $product.closest('.tire-table-row').addClass('selected');
-        $product.closest('.tire-image-card').addClass('selected');
-      } else {
-        $product.closest('.tire-table-row').removeClass('selected');
-        $product.closest('.tire-image-card').removeClass('selected');
-      }
-      // $(this).closest('.tire-table-row').toggleClass('selected');
-      $ids = $(document).find('input[type=checkbox][name="product_ids[]"]:checked').map(function() {
-        return $(this).val();
-      }).toArray();
-      $ids = $ids.filter(function(item, i, ids) {
-        return i == ids.indexOf(item);
-      });
-      $.each($ids, function(key, value) {
-      });
-      $ids = $ids.join(',');
-      const baseUrl = window.location.href.split('#')[0];
-      if ($ids.length) {
-        window.location.replace(baseUrl + '#|' + $ids);
-        $('input#show-selected-checkbox').prop( "disabled", false );
-      } else {
-        $('input#show-selected-checkbox').prop( "disabled", true );
-        let uri = window.location.toString();
-
-        if (uri.indexOf("#") > 0) {
-          let clean_uri = uri.substring(0,
-            uri.indexOf("#"));
-
-          window.history.replaceState({},
-            document.title, clean_uri);
-        }
-      }
-    });
-  });
-
-  let $hash = window.location.hash;
-
-  if ($hash) {
-    $hash = $hash.substring(2).split(',');
-    $.each($hash, function(key, value) {
-      let $product = $('input[type=checkbox][name="product_ids[]"][value="' + value + '"]');
-      $(document).find($product).attr('checked', true).prop('checked', true);
-      $(document).find($product).closest('.tire-table-row').addClass('selected')
-      $(document).find($product).closest('.tire-image-card').addClass('selected');
-    });
-  }
-
-});
+// $(document).ready(function() {
+//
+//   let $ids = [];
+//
+//   $('.tire-table-row, .tire-image-card').each(function() {
+//     $(this).find('input[type=checkbox]').on('click', function() {
+//       let $id = $(this).val();
+//       let $product = $('input[type=checkbox][name="product_ids[]"][value="' + $id + '"]');
+//       $product.attr('checked', this.checked).prop('checked', this.checked);
+//       if ($(this).is(':checked')) {
+//         $product.closest('.tire-table-row').addClass('selected');
+//         $product.closest('.tire-image-card').addClass('selected');
+//       } else {
+//         $product.closest('.tire-table-row').removeClass('selected');
+//         $product.closest('.tire-image-card').removeClass('selected');
+//       }
+//       // $(this).closest('.tire-table-row').toggleClass('selected');
+//       $ids = $(document).find('input[type=checkbox][name="product_ids[]"]:checked').map(function() {
+//         return $(this).val();
+//       }).toArray();
+//       $ids = $ids.filter(function(item, i, ids) {
+//         return i == ids.indexOf(item);
+//       });
+//       $.each($ids, function(key, value) {
+//       });
+//       $ids = $ids.join(',');
+//       const baseUrl = window.location.href.split('#')[0];
+//       if ($ids.length) {
+//         window.location.replace(baseUrl + '#|' + $ids);
+//         $('input#show-selected-checkbox').prop( "disabled", false );
+//       } else {
+//         $('input#show-selected-checkbox').prop( "disabled", true );
+//         let uri = window.location.toString();
+//
+//         if (uri.indexOf("#") > 0) {
+//           let clean_uri = uri.substring(0,
+//             uri.indexOf("#"));
+//
+//           window.history.replaceState({},
+//             document.title, clean_uri);
+//         }
+//       }
+//     });
+//   });
+//
+//   let $hash = window.location.hash;
+//
+//   if ($hash) {
+//     $hash = $hash.substring(2).split(',');
+//     $.each($hash, function(key, value) {
+//       let $product = $('input[type=checkbox][name="product_ids[]"][value="' + value + '"]');
+//       $(document).find($product).attr('checked', true).prop('checked', true);
+//       $(document).find($product).closest('.tire-table-row').addClass('selected')
+//       $(document).find($product).closest('.tire-image-card').addClass('selected');
+//     });
+//   }
+//
+// });
 
 // $(document).on('change', 'input[type="checkbox"][name="product_ids[]"]', function(){
 //
@@ -2372,37 +2372,6 @@ function checkCart() {
   });
 }
 
-let total_items = parseInt($('.label.js-subtotal').text().trim().replace(' Preces', ''));
-
-
-// console.log($('input[name="product_ids[]"]:checked'));
-// $('input[name="product_ids[]"]:checked').parent().parent().addClass('selected');
-// $(document).on('change', 'input[type="checkbox"][name="product_ids[]"]', function(){
-//   const $ids = $(document).find('input[type="checkbox"][name="product_ids[]"]:checked');
-//   let ids_str = '';
-//   $('.tire-table-row').removeClass('selected');
-//   $('.tire-image-card').removeClass('selected');
-//
-//   if ($ids.length) {
-//     $ids.each(function() {
-//       $(this).parents('.tire-table-row').addClass('selected');
-//       $(this).parents('.tire-image-card').addClass('selected');
-//     });
-//     ids_str = $.map($ids, function(id) {
-//       return $(id).val();
-//     }).join(',');
-//   }
-//   const baseUrl = window.location.href.split('#')[0];
-//   window.location.replace(baseUrl + '#|' + ids_str);
-// });
-
-// $.UrlExists = function(url) {
-//   var http = new XMLHttpRequest();
-//   http.open('HEAD', url, false);
-//   http.send();
-//   return http.status!=404;
-// }
-
 $('.tire-table-checkbox').children().each(function(key, value){
   // PARSE TO INT
   products.push(parseInt($(value).val()));
@@ -2538,173 +2507,6 @@ $('.tire-table-checkbox').children().each(function(key, value){
 
   })
 });
-
-if ($('button[data-target="#mobileFilterModal"]').is(':visible')) {
-  $('#mobileFilterModal #facet_availability').on('click', 'li label span input', function() {
-    if ($(this).is(':checked') == false) {
-      $(this).attr('checked', true).prop('checked', true);
-    } else {
-      $(this).attr('checked', false).prop('checked', false);
-    }
-    $('#mobileFilterModal button.close').click();
-  });
-  $('#mobileFilterModal #facet_availability').on('click', 'li label', function() {
-
-    let $colors = [];
-
-    let $el = $(this).find('input[type=checkbox]');
-
-    if ($el.is(':checked') == false) {
-      $el.attr('checked', true).prop('checked', true);
-    } else {
-      $el.attr('checked', false).prop('checked', false);
-    }
-    $('#mobileFilterModal button.close').click();
-
-    const $checked = $('#mobileFilterModal #facet_availability li label .custom-checkbox input:checked');
-
-    checkAvailabilities($colors, $checked);
-
-  });
-} else {
-  $('#search_filters_wrapper #facet_availability').on('click', 'li label', function() {
-
-    let $colors = [];
-
-    const $checked = $('#search_filters_wrapper #facet_availability li label .custom-checkbox input:checked');
-
-    checkAvailabilities($colors, $checked);
-
-  });
-}
-
-// $('#mobileFilterModal #facet_availability').on('click', 'li label', function() {
-//   let $colors = [];
-//   const $checked = $('#mobileFilterModal #facet_availability li label .custom-checkbox input:checked');
-//
-//   console.log($(this));
-//
-//   let $el = $('#mobileFilterModal #facet_availability li label[for=' + $(this).attr('for') + ']');
-//
-//   $('#mobileFilterModal #facet_availability').on('click', 'li label', function() {
-//     console.log($(this));
-//   });
-//
-//   checkAvailabilities($colors, $checked);
-//
-// });
-// } else {
-//   $('#facet_availability').on('click', 'li label', function() {
-//     let $colors = [];
-//     const $checked = $('#facet_availability li label .custom-checkbox input:checked');
-//
-//     checkAvailabilities($colors, $checked);
-//
-//   });
-// }
-
-function checkAvailabilities($colors, $checked)
-{
-  if ($checked.length === 0) {
-    $('.tires-table').each(function() {
-      $(this).children('#tires-table-body').children('tr').each(function() {
-        $(this).show();
-      });
-      $(this).show().prev().show();
-    });
-
-    $('.grid-view-link').each(function() {
-      $(this).show();
-    })
-
-    $('.tire-brand-name.grid-t').each(function(){
-      $(this).show();
-    })
-
-  }
-
-  $checked.each(function() {
-
-    let $id = $(this).attr('class');
-    $colors.push($id);
-    switch ($id) {
-      case 'green':
-      case 'yellow': {
-        $colors.push('half-' + $id);
-        break;
-      }
-    }
-    $colors = [...new Set($colors)];
-
-    $('.tires-table').each(function() {
-      $(this).children('#tires-table-body').children('tr').each(function() {
-        $(this).parent().parent().hide().prev().hide();
-        $(this).hide();
-        if ($colors.includes($(this).find('.dot .sort-order').text().toLowerCase())) {
-          $(this).show();
-        }
-      })
-      let length = $(this).children('#tires-table-body').children().filter(function() {
-        return $(this).css("display") !== "none";
-      }).length;
-      if (length !== 0) {
-        $(this).show().prev().show();
-      }
-    });
-
-
-
-    $('.row.grid-ex.pr-1').each(function(){
-      if($(this).find('a.grid-view-link:visible').length === 0) {
-
-      }
-    })
-
-    $('.grid-view-link').each(function() {
-
-      $(this).hide();
-
-      if ($colors.includes($(this).find('.grid-dot .sort-order').text().toLowerCase())) {
-        $(this).show();
-      }
-
-      let length = $(this).filter(function() {
-        return $(this).css("display") !== "none";
-      }).length;
-
-      if (length !== 0) {
-        $(this).show();
-      }
-
-    });
-  });
-}
-
-// SHOW LIST VIEW
-$('div.can-collapse span.show_list').on('click', function(){
-  $('#js-product-list').show();
-  $('.tire-image-container').hide();
-  $(this).addClass('active');
-  $('span.show_grid').removeClass('active');
-  localStorage.setItem("show_type", "list");
-});
-
-// SHOW GRID VIEW
-$('div.can-collapse span.show_grid').on('click', function(){
-  $('.tire-image-container').show();
-  $('#js-product-list').hide();
-  $(this).addClass('active');
-  $('span.show_list').removeClass('active');
-  localStorage.setItem("show_type", "grid");
-});
-
-// SHOW VIEW DEPENDING ON LOCAL STORAGE VALUE
-if (localStorage.getItem('show_type') == 'grid') {
-  $('div.can-collapse span.show_grid').click();
-}
-if (localStorage.getItem('show_type') == 'list') {
-  $('div.can-collapse span.show_list').click();
-}
 
 let showTires = false;
 let showDisc = false;
@@ -2878,20 +2680,6 @@ $(document).ready(function() {
     $('#tc-close').toggle();
   });
 
-  // $('#tires-table tbody tr').change(function() {
-  //   $('#show-selected-checkbox').attr('disabled', $('th.tire-table-checkbox input:checked').length == 0);
-  // });
-
-  if (!$('.row.grid-ex.pr-1').find('.green').length && !$('.row.grid-ex.pr-1').find('.half-green').length){
-    $('input#facet_availability_0').prop('disabled', true);
-  }
-  if (!$('.row.grid-ex.pr-1').find('.yellow').length && !$('.row.grid-ex.pr-1').find('.half-yellow').length){
-    $('input#facet_availability_1').prop('disabled', true);
-  }
-  if (!$('.row.grid-ex.pr-1').find('.red').length){
-    $('input#facet_availability_2').prop('disabled', true);
-  }
-
   $(document).scroll(function () {
     var y = $(this).scrollTop();
     if (y > 100) {
@@ -2901,80 +2689,74 @@ $(document).ready(function() {
     }
   });
 
-  if ($('section#products').is(':visible')) {
-    if (!$('.tire-table-row').length && !$('.grid-view-link').length) {
-      $('section#main').prepend('<div class="mt-1 alert alert-danger">Ar šādiem parametriem nav atrasta neviena pozīcija.</div>');
-    }
-  }
-
   const rows = $(".tire-table-row");
   const rowsGrid = $("a.grid-view-link");
 
-  $('.tire-table-checkbox').each(function(){
-    if($(this).is(':checked')){
-      $('input#show-selected-checkbox').prop( "disabled", false );
-    }
-  })
+  // $('.tire-table-checkbox').each(function(){
+  //   if($(this).is(':checked')){
+  //     $('input#show-selected-checkbox').prop( "disabled", false );
+  //   }
+  // })
 
-  $("#show-selected-checkbox").on("click",function() {
-    if ($(this).is(':checked')) {
-      // IF THERES NO CHECKBOX CHECKED
-      if (!window.location.hash.has(',atlase')) {
-        const linkHash = window.location.hash;
-        window.location.replace(linkHash + ',atlase');
-      }
-      rows.each(function() {
-        $(this).hide();
-        if ($(this).hasClass('selected')) {
-          $(this).show();
-        }
-      });
-      rowsGrid.each(function() {
-        $(this).hide();
-
-        if ($(this).children().hasClass('selected')) {
-          $(this).show();
-        } else {
-          $(this).hide();
-        }
-      });
-
-      $('.tires-table').each(function() {
-        $(this).children('#tires-table-body').each(function() {
-          let list_count = $(this).children('.tire-table-row').filter(function() {
-            return $(this).css('display') !== 'none';
-          }).length;
-          if (list_count == 0) {
-            $(this).parent().prev().hide();
-            $(this).parent().hide();
-          }
-        });
-      });
-
-      $('.grid-ex').each(function() {
-        let grid_count = $(this).children('.grid-view-link').filter(function() {
-          return $(this).css('display') !== 'none';
-        }).length;
-        if (grid_count == 0) {
-          $(this).prev().hide();
-          $(this).hide();
-        }
-      });
-
-    } else {
-      // IF THERES NO CHECKBOX CHECKED
-      if (window.location.hash.has(',atlase')) {
-        const baseUrl = window.location.href;
-        window.location.hash = window.location.hash.replace(',atlase', '');
-        // window.location.replace('atlase', '');
-      }
-
-      $('.grid-ex').show();
-      $('.tires-table, .tire-brand-name').show();
-      rows.show();
-      rowsGrid.show();
-    }
-  });
+  // $("#show-selected-checkbox").on("click",function() {
+  //   if ($(this).is(':checked')) {
+  //     // IF THERES NO CHECKBOX CHECKED
+  //     if (!window.location.hash.has(',atlase')) {
+  //       const linkHash = window.location.hash;
+  //       window.location.replace(linkHash + ',atlase');
+  //     }
+  //     rows.each(function() {
+  //       $(this).hide();
+  //       if ($(this).hasClass('selected')) {
+  //         $(this).show();
+  //       }
+  //     });
+  //     rowsGrid.each(function() {
+  //       $(this).hide();
+  //
+  //       if ($(this).children().hasClass('selected')) {
+  //         $(this).show();
+  //       } else {
+  //         $(this).hide();
+  //       }
+  //     });
+  //
+  //     $('.tires-table').each(function() {
+  //       $(this).children('#tires-table-body').each(function() {
+  //         let list_count = $(this).children('.tire-table-row').filter(function() {
+  //           return $(this).css('display') !== 'none';
+  //         }).length;
+  //         if (list_count == 0) {
+  //           $(this).parent().prev().hide();
+  //           $(this).parent().hide();
+  //         }
+  //       });
+  //     });
+  //
+  //     $('.grid-ex').each(function() {
+  //       let grid_count = $(this).children('.grid-view-link').filter(function() {
+  //         return $(this).css('display') !== 'none';
+  //       }).length;
+  //       if (grid_count == 0) {
+  //         $(this).prev().hide();
+  //         $(this).hide();
+  //       }
+  //     });
+  //
+  //   } else {
+  //     // IF THERES NO CHECKBOX CHECKED
+  //     if (window.location.hash.has(',atlase')) {
+  //       const baseUrl = window.location.href;
+  //       window.location.hash = window.location.hash.replace(',atlase', '');
+  //       // window.location.replace('atlase', '');
+  //     }
+  //
+  //     $('.grid-ex').show();
+  //     $('.tires-table, .tire-brand-name').show();
+  //     rows.show();
+  //     rowsGrid.show();
+  //   }
+  // });
 
   // if (window.location.hash.indexOf('o') != -1){
   //   $('#show-selected-checkbox').trigger('click');
@@ -3005,85 +2787,11 @@ $(document).ready(function() {
     $('div.can-collapse span.show_grid').click();
   }
 
-  if (window.location.hash.has(',atlase')) {
-    $('#show-selected-checkbox').click();
-  }
-
   $('a.dropdown-item.sizeCalc').on('click', function() {
     localStorage.setItem('calc', 'true');
   })
 
 });
-
-// var interval;
-//
-// function countdown() {
-//   clearInterval(interval);
-//   interval = setInterval( function() {
-//     var timer = $('#timeout .modal-body .time').data('start');
-//     timer = timer.split(':');
-//     var minutes = timer[0];
-//     var seconds = timer[1];
-//     seconds -= 1;
-//     if (minutes < 0) return;
-//     else if (seconds < 0 && minutes != 0) {
-//       minutes -= 1;
-//       seconds = 59;
-//       minutes = '0' + minutes;
-//     }
-//     else if (seconds < 10 && length.seconds != 2) seconds = '0' + seconds;
-//
-//     $('#timeout .modal-body .time').html(minutes + ':' + seconds);
-//
-//     if (minutes == 0 && seconds == 0) {
-//       clearInterval(interval);
-//       Swal.fire({
-//         title: 'Kļūda!',
-//         text: 'Sessijas laiks ir beidzies',
-//         icon: 'error',
-//         confirmButtonText: 'OK'
-//         }).then((result) => {
-//         if (result.isConfirmed) {
-//           window.location.href = '/logout';
-//         }
-//       });
-//     }
-//   }, 1000);
-// }
-
-// if (user) {
-//
-//   let sessionCheck;
-//
-//   function checkSession() {
-//     sessionCheck = setInterval(function() {
-//       $.get('/testing1', function(data) {
-//         if (data == 1) {
-//           $('#timeout').modal({
-//             keyboard: false,
-//             backdrop: false,
-//           }).modal('show');
-//           countdown();
-//           clearInterval(sessionCheck);
-//         }
-//       });
-//     }, 3000);
-//   }
-//
-//   checkSession();
-//
-//   $('#timeout #stay').on('click', function() {
-//     $.post('/testing1', function(data, status) {
-//       if (data == 1) {
-//         clearInterval(sessionCheck);
-//         clearInterval(interval);
-//         $('#timeout').modal('hide');
-//         $('#timeout .modal-body .time').html($('#timeout .modal-body .time').data('start'));
-//         checkSession();
-//       }
-//     });
-//   });
-// }
 
 $('.cart-card .checkout-buttons .form-check input[name=payment]').each(function() {
   $(this).on('change', function() {
@@ -3176,22 +2884,6 @@ $('.code-dropdown-btn').on('click', function() {
   }
 })
 
-$('.fuel-eco-dropdown-btn').on('click', function() {
-  if ($(this).find('span.fuel-efficiency-dropdown').text() == 'keyboard_arrow_up') {
-    localStorage.setItem('fuel-eco-dropdown', 'true');
-  } else {
-    localStorage.removeItem('fuel-eco-dropdown');
-  }
-})
-
-$('.wet-surface-dropdown-btn').on('click', function() {
-  if ($(this).find('span.wet-surface-dropdown').text() == 'keyboard_arrow_up') {
-    localStorage.setItem('wet-surface-dropdown', 'true');
-  } else {
-    localStorage.removeItem('wet-surface-dropdown');
-  }
-})
-
 $('.type-dropdown-btn').on('click', function() {
   if ($(this).find('span.type-dropdown').text() == 'keyboard_arrow_up') {
     localStorage.setItem('type-dropdown', 'true');
@@ -3231,14 +2923,6 @@ if (localStorage.getItem('type-dropdown') === 'true') {
 
 if (localStorage.getItem('code-dropdown') === 'true') {
   $('.code-dropdown-btn').click();
-}
-
-if (localStorage.getItem('fuel-eco-dropdown') === 'true') {
-  $('.fuel-eco-dropdown-btn').click();
-}
-
-if (localStorage.getItem('wet-surface-dropdown') === 'true') {
-  $('.wet-surface-dropdown-btn').click();
 }
 
 if (localStorage.getItem('implementions-dropdown') === 'true') {
@@ -3370,7 +3054,7 @@ $('.category-search').on('submit', function(e) {
 });
 
 $(document).ready(function() {
-  $(document).on('mouseenter', '.tippy', function(e) {
+  $(document).on('mouseenter', '.tippy.image', function(e) {
     tippy(this, {
       touchHold: true,
       hideOnClick: false,
@@ -3384,6 +3068,15 @@ $(document).ready(function() {
         img.style = 'width: 280px; height: 280px; background: #fff url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x;';
         img.src = img.dataset.src;
       }
+    });
+  }).on('mouseenter', '.tippy.lisi-tooltip', function() {
+    tippy(this, {
+      touchHold: true,
+      hideOnClick: false,
+      placement: 'top',
+      arrow: false,
+      animateFill: false,
+      animation: 'shift-away',
     });
   });
 })
@@ -3444,27 +3137,63 @@ if ($('body').hasClass('category-kvadraciklu-riepas')) {
   });
 }
 
-$('.r1-select-input').select2(({
-  language: 'lv',
-  maximumSelectionLength: 1,
-  data: sizes,
-}));
+// $('.r1-select-input').select2(({
+//   language: 'lv',
+//   maximumSelectionLength: 1,
+//   data: sizes,
+// }));
 
-$("select.r1-select-input").on("change", function () {
-  $('.select2-container').removeClass('select2-container--focus').removeClass('select2-container--open');
-  $('textarea.select2-search__field').blur();
-  $('#search_filters_wrapper form')[0].submit();
+// $("select.r1-select-input").on("change", function (e) {
+//   e.preventDefault();
+//   $('.select2-container').removeClass('select2-container--focus').removeClass('select2-container--open');
+//   $('textarea.select2-search__field').blur();
+//   $('#search_filters_wrapper form')[0].submit();
+// });
+
+let loadingBlock = document.querySelector('.loading-block');
+
+function fadeIn(element) {
+  let opacity = 0;
+  element.style.opacity = opacity;
+
+  function fadeInAnimation() {
+    if (opacity < 1) {
+      opacity += 0.1;
+      element.style.opacity = opacity;
+      requestAnimationFrame(fadeInAnimation);
+      element.style.display = "block";
+    }
+  }
+
+  fadeInAnimation();
+}
+
+function fadeOut(element) {
+  let opacity = 1;
+  element.style.opacity = opacity;
+
+  function fadeOutAnimation() {
+    if (opacity > 0) {
+      opacity -= 0.1;
+      element.style.opacity = opacity;
+      requestAnimationFrame(fadeOutAnimation);
+      element.style.display = "none";
+    }
+  }
+
+  fadeOutAnimation();
+}
+
+window.addEventListener('load', function() {
+  fadeOut(loadingBlock);
 });
 
-$(window).on('load', function() {
-  $('.loading-block').fadeOut();
-  // $('body').removeClass('wait-loading');
-}).on('beforeunload', function() {
-  // $('body').addClass('wait-loading');
-  $('.loading-block').fadeIn();
-}).on('unload', function() {
-  $('.loading-block').fadeOut();
-  // $('body').removeClass('wait-loading');
+window.addEventListener('beforeunload', function() {
+  fadeIn(loadingBlock);
+});
+
+window.addEventListener('unload', function() {
+  fadeOut(loadingBlock);
 });
 
 // (()=>{

@@ -17,7 +17,7 @@ input:focus, textarea:focus, select:focus, button:focus{
 
 body {
     background-size: cover;
-    background-repeat: no-repeat;
+    /*background-repeat: no-repeat;*/
     background-position: top center;
     background-attachment: fixed;
     font-family: 'Arimo', Arial, sans-serif;
@@ -6536,16 +6536,24 @@ div#service-option-selection {
     flex-direction: row;
     height: 40px;
     flex-wrap: nowrap;
-    margin-bottom: 10px;
-    border-top-left-radius: 15px;
-    border-top-right-radius: 15px;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
     border: 1px solid #59c0a8;
-    justify-content: space-between;
     align-items: center;
+    border-bottom: none;
 }
 
 a.season-select-link {
-    padding: 10px 38px;
+    width: 100%;
+    text-align: center;
+    height: 100%;
+    line-height: 38px;
+    border-bottom: 1px solid #59c0a8;
+}
+
+a.season-select-link.selected-link {
+    background: #59c0a8;
+    color: white;
 }
 
 a.season-select-link:nth-child(1) {
@@ -6604,4 +6612,40 @@ hr.admin-comments {
     border-radius: 4px!important;
     border: 2px solid #aaa!important;
     padding: 0px;
+}
+
+.fastsearch-modal {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+    background: #00000070;
+}
+
+.fastsearch-modal .modal-center {
+    width: 300px;
+}
+
+.fastsearch-modal .select2-container {
+    width: 100%!important;
+}
+
+section.facet ul {
+    margin-bottom: 0.5rem;
+}
+
+section.facet h1 {
+    margin: 0;
+}
+
+.select2-container--default .select2-selection--multiple {
+    border: 1px solid #59c0a8!important;
+    border-radius: 0!important;
+}
+
+.select2-container--default.select2-container--focus .select2-selection--multiple {
+    border: 1px solid #59c0a8!important;
 }

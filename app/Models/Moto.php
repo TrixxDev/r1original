@@ -415,12 +415,12 @@ class Moto extends Model
 
       $tipi = [];
 
-      $types = Self::select('type')->get();
+      $types = Self::select('type')->orderBy('type')->get();
       foreach ($types as $type) {
         switch ($type->type) {
           case 'CUSTOM':
           case 'Custom':
-          case 'ustom':
+          case 'custom':
             $tipi[$type->type] = 'Custom';
             break;
           case 'SCOOTER':

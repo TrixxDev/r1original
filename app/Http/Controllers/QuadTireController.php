@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Helper\Image;
 use App\Helper\Tires;
 use App\Models\Quadrbrand;
 use App\Models\Quadrtread;
 use Cart;
 use Illuminate\Http\Request;
 use App\Models\Quadr;
-use DB;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use View;
 use Auth;
 
@@ -84,9 +86,9 @@ class QuadTireController extends Controller
                             $query->where('d3', $this->d3);
                           })->groupBy('quadr_tires.article')
                           ->where('quadr_tires.visible_users', '<>', 0)
-                          ->orderBy('d3', 'ASC')
-                          ->orderBy('d1', 'ASC')
-                          ->orderBy('d2', 'ASC')
+                          ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+                          ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+                          ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
                           ->orderBy('price2', 'DESC')->paginate(80);
 
 //        dd(DB::getQueryLog());
@@ -99,41 +101,298 @@ class QuadTireController extends Controller
 
     public function tires_tread($brand, $tread, $tire)
     {
-        $brand = Quadrbrand::where('title', $brand)->first();
+        $brand = Quadrbrand::where('b_title', $brand)->first();
 
         $tread = str_replace('_', '/', $tread);
         $tread = str_replace('$1', '&', $tread);
-        $tread = Quadrtread::where('title', $tread)->first();
+        $tread = Quadrtread::where('t_title', $tread)->first();
 
 
-        $tires = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*,
-                                                quadr_brands.title as brands_title, quadr_treads.title as treads_title')
+        $tires = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*')
             ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
             ->join('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
             ->where('quadr_tires.visible_users', '<>', 0)
-            ->where('quadr_brands.title', $brand->title)
-            ->where('quadr_treads.title', $tread->title)
-            ->orderBy('d3', 'ASC')
-            ->orderBy('d1', 'ASC')
-            ->orderBy('d2', 'ASC')
+            ->where('quadr_tires.make_id', $tread->tread_id)
+            ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+            ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+            ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
             ->get();
 
-        $currTire = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*,
-                                                quadr_brands.title as brands_title, quadr_treads.title as treads_title')
+        $currTire = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*')
             ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
             ->join('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
-            ->where('quadr_brands.title', $brand->title)
-            ->where('quadr_treads.title', $tread->title)
             ->where('quadr_tires.tire_id', $tire)
             ->first();
 
-        $currBrand = Quadrbrand::where('brand_id', $tread->brand_id)->first();
+        $currBrand = Quadrbrand::where('brand_id', $brand->brand_id)->first();
 
         $currTire->includeStock = true;
 
         return view('tires.quadr.quadrtread',
             compact('tires', 'currTire', 'currBrand')
         );
+    }
+
+    public function api_tires(Request $request) {
+      try {
+
+        DB::enableQueryLog();
+
+        $html = '';
+
+        $page = ($request->page) ? (int) $request->page : 1; // Get the current page from the request, default to 1
+        $perPage = 80; // Number of items per page
+
+        $offset = ($page - 1) * $perPage;
+
+        $d1 = ($request->d1 == 'Visi') ? '' : $request->d1;
+        $d2 = ($request->d2 == 'Visi') ? '' : $request->d2;
+        $d3 = ($request->d3 == 'Visi') ? '' : $request->d3;
+
+        $this->availability = $availability = '';
+        if (isset($request->availability)) {
+          $availability = explode(' ', $request->availability);
+          $this->availability = $availability = implode('+', $availability);
+        }
+
+        $currBrand = ($request->brand == 'Ražotājs') ? '' : $request->brand;
+
+        $selectedTires = explode(',', $request->selected);
+        $show_selected = $request->show_selected;
+
+        $fastsearch = $request->fastsearch;
+
+        if ($fastsearch) {
+          $splited = $this->splitInput($fastsearch);
+          $this->d1 = $d1 = $splited['d1'];
+          $this->d2 = $d2 = $splited['d2'];
+          $this->d3 = $d3 = $splited['d3'];
+        }
+
+        $tires = Quadr::selectRaw('quadr_tires.*, quadr_tires.quantity as tire_quantity, quadr_treads.*, (SELECT SUM(quantity) FROM quadr_stock WHERE quadr_stock.tire_id = quadr_tires.tire_id) as stock_quantity')
+          ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
+          ->join('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
+          ->when($currBrand, function($query) use ($currBrand) {
+            $query->where('quadr_brands.b_title', $currBrand);
+          })->when($d1, function ($query) use ($d1) {
+            $query->where('d1', $d1);
+          })->when($d2, function ($query) use ($d2) {
+            $query->where('d2', $d2);
+          })->when($d3, function ($query) use ($d3) {
+            $query->where('d3', $d3);
+          })->when($availability, function ($query) use ($availability) {
+            switch ($availability) {
+              case 'green':
+                {
+                  $query->where('quadr_tires.quantity', '>', 0);
+                  break;
+                }
+              case 'green+yellow':
+                {
+                  $query->where(function ($query) {
+                    $query->where('quadr_tires.quantity', '>', 0)
+                      ->orWhere(function ($query) {
+                        $query->whereRaw('quadr_tires.tire_id IN (SELECT tire_id FROM quadr_stock WHERE quantity > 0)')
+                              ->where('quadr_tires.quantity', '=', 0);
+                      });
+                  });
+                  break;
+                }
+              case 'green+red':
+                {
+                  $query->where(function ($query) {
+                    $query->where('quadr_tires.quantity', '>', 0); // Green dot filter
+                    $query->orWhere(function ($query) {
+                      $query->where('quadr_tires.quantity', '=', 0); // Red dot filter
+                      $query->whereRaw('quadr_tires.tire_id NOT IN (SELECT tire_id FROM quadr_stock WHERE quantity > 0)');
+                    });
+                  });
+                  break;
+                }
+              case 'yellow':
+                {
+                  $query->where('quadr_tires.quantity', '<=', 0)->having('stock_quantity', '>', 0);
+                  break;
+                }
+              case 'yellow+red':
+                {
+                  $query->where('quadr_tires.quantity', '<=', 0)->having('stock_quantity', '>=', 0);
+                  break;
+                }
+              case 'red':
+                {
+                  $query->where('quadr_tires.quantity', '<=', 0)->having('stock_quantity', '<=', 0);
+                  break;
+                }
+            }
+          })->when($show_selected, function ($query) use ($selectedTires) {
+            $query->whereIn('tire_id', $selectedTires);
+          })->where('quadr_tires.visible_users', '<>', 0)
+          ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+          ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+          ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
+          ->orderBy('price2', 'DESC')
+          ->groupBy('quadr_tires.article');
+
+        $totalItems = count($tires->get());
+        $totalPages = ceil($totalItems / $perPage);
+
+        $tires = $tires->skip($offset)
+          ->take($perPage)
+          ->get();
+
+        $fullSize = '';
+        $loopIndex = 0;
+
+        if ($request->table_type === 'list') {
+          if ($tires->count() > 0) {
+
+            foreach ($tires as $index => $tire) {
+
+              $tire->includeStock = true;
+              $tire->fullName = $tire->getFullNameAttribute();
+              $tire->fullSize = $tire->getFullSizeAttribute();
+              $current_url = 'kvadraciklu-riepa';
+//              dd(Tires::getQuadrTireBrand($tire->brand_id), $tire);
+              $tire->getUrl = route($current_url, [Tires::getQuadrTireBrand($tire->brand_id)->b_title, strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]);
+              $tire->fullTitle = $tire->getTitleAttribute();
+              $tire->codeExplain = $tire->getCodeExplainAttribute();
+              $tire->dotAvailable = $tire->getDotAvailableAttribute();
+              $tire->stockAvailability = $tire->getStockAvailabilityAttribute();
+              $tire->stockCount = $tire->getStockCount();
+
+
+              if ($index === 0) {
+                $html .= '<span class="text-uppercase flipped-title tire-brand-name" style="color: black">Kvadraciklu riepas</span>';
+              }
+              $index++;
+              if ($fullSize !== $tire->fullSize) {
+                $loopIndex = 0;
+                $html .= '<table id="tires-table" class="table table-striped quadr-sorter tires-table table-hover tablesorter">';
+                $html .= '<thead class="tires-thead sticky-table">
+                        <tr>
+                          <th scope="col"></th>
+                          <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
+                          <th scope="col" class="hidden-sm-down text-center">Kods</th>
+
+                          <th id="store-price-button" scope="col" class="text-center">
+                            Veikala cena
+                          </th>
+
+                          <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+                          <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
+                          <th scope="col"></th>
+                          <th scope="col">
+                            <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
+                          </th>
+
+                        </tr>
+                        </thead>';
+                $html .= '<tbody id="tires-table-body">';
+                $html .= '<h4 class="tire-brand-name">' . $tire->fullSize . '</h4>';
+              }
+              $html .= '<tr class="tire-table-row" role="row">';
+              $html .= '<th scope="row" class="tire-table-checkbox"><input type="checkbox" value="' . $tire->tire_id . '" name="product_ids[]" class="tire-table-checkbox" title=""></th>';
+              $html .= '<td class="table-tire-name-cell"><a class="tire-table-link tippy image" data-tippy-content="<div><img data-src=\'http://localhost/storage/auto/tread/' . $tire->tread_id . '-o.jpg\'></div>" href="' . $tire->getUrl . '" data-content="' . $tire->fullName . '" data-article="' . $tire->article . '" data-quantity="4"><div class="table-link-title">' . $tire->fullTitle . '</div></a></td>';
+
+              $html .= '<td class="hidden-sm-down text-center"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px; text-align: left;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->codeExplain . '</span></div>">' . $tire->code . '</span></td>';
+              $html .= '<td id="store-price" class="text-center store-price">€ ' . $tire->price1 . '</td>';
+              $html .= '<td id="sale-price" class="text-center tire-price-red sale-price">€ ' . $tire->price2 . '</td>';
+              if ($tire->comment == 'Izpārdošana!' || $tire->priceoffer == 1) {
+                $html .= '<td class="hidden-sm-down text-center sellout">' . $tire->comment . '</td>';
+              } else {
+                $html .= '<td class="hidden-sm-down text-center">' . $tire->comment . '</td>';
+              }
+              $html .= '<td class="shopping-cart-col"><div class="clearfix atc_div text-right">';
+              if (\Illuminate\Support\Facades\Auth::check()) {
+                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+              } else {
+                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+              }
+              $html .= '</div></td>';
+              $html .= '<td class="dot-availability text-center"><span class="tippy lisi-tooltip dot ' . $tire->dotAvailable . '" data-tippy-content=\'<div style="padding: 5px; text-align: left;"><span style="color: black; font-size: 15px; line-height: 28px;">' . $tire->stockAvailability . '</span></div>\'></span></td>';
+              $html .= '</tr>';
+              $fullSize = $tire->fullSize;
+              if ($fullSize !== $tire->fullSize) {
+                $html .= '</tbody>';
+                $html .= '</table>';
+              }
+            }
+          }
+        } else if ($request->table_type === 'grid') {
+          $html .= '<div class="tire-image-container">';
+          $cbrand = '';
+          $index = 0;
+          foreach ($tires as $tire) {
+
+            $tire->fullSize = $tire->getFullSizeAttribute();
+            $current_url = 'kvadraciklu-riepa';
+            $tire->getUrl = route($current_url, [Tires::getQuadrTireBrand($tire->brand_id)->b_title, strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]);
+
+            $brand = $tire->fullSize;
+            $tire->includeStock = true;
+            if ($cbrand != $brand) {
+              $html .= '</div><h4 class="tire-brand-name grid-t" style="margin-left: 5px;">' . $brand;
+              if ($index == 0) {
+                $html .= ' <span class="tire-type-title">Kvadraciklu riepas</span>';
+              }
+              $html .= '<span style="margin: 0 auto;"></span>';
+              $html .= '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
+                                      Filtrs ()
+                                    </button></h4>
+                          <div class="row grid-ex pr-1" style="padding-left: 5px;">';
+              $cbrand = $brand;
+            }
+            $html .= '<a href="' . $tire->getUrl . '" class="grid-view-link" data-article="' . $tire->article . '">';
+            $html .= '<div class="tire-image-card sort-order">';
+            $html .= '<div class="text-center image-grid-overflow">';
+            $html .= Image::showGrid('auto', $tire->make_id);
+            $html .= '</div>';
+
+            $html .= '<div class="tire-list-caption">';
+
+            $html .= '<div class="card-title-text"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->title . '</span></div>">' . $tire->title . '</span></div>';
+
+            $html .= '<div class="tire-tread">';
+            $html .= '<b>' . $tire->fullSize . ' </b>';
+            $html .= '<span class="tire-image-code">' . $tire->code . '</span>';
+            $html .= '</div>';
+            $html .= '<div style="display: flex;">';
+            $html .= '<input type="checkbox" name="product_ids[]" value="' . $tire->tire_id . '" style="margin-right: 5px;">';
+            $html .= '<div class="rim-price-old" style="align-self: center;">€' . $tire->price1 . '</div>';
+            $html .= '<div class="rim-price-red" style="align-self: center;">€' . $tire->price2 . '</div>';
+            $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>">';
+            if (Auth::check()) {
+              $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#">';
+            } else {
+              $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#blockcart-modal">';
+            }
+            $html .= '<i class="material-icons">add_shopping_cart</i>';
+            $html .= '</button>';
+            $html .= '</span>';
+
+            $html .= '<span class="tippy lisi-tooltip grid-dot ' . $tire->dotAvailable . $tire->stockCount . '" data-tippy-content=\'<div style="padding: 5px;"><span style="color: black; font-size: 15px;">' . $tire->stockAvailability . '</span></div>\'></span>';
+            $html .= '<span class="sort-order" style="display: none;">' . $tire->dotAvailable . '</span>';
+            $html .= '</span>';
+            $html .= '</div>';
+            $html .= '</div>';
+            $html .= '</div>';
+            $html .= '</a>';
+          }
+          $index++;
+          $html .= '</div>';
+        }
+
+        if ($tires->count() <= 0) {
+          $html .= '<div class="container"><div class="col-md-12 mt-1 alert alert-danger">Ar šādiem parametriem nav atrasta neviena pozīcija.</div></div>';
+        }
+
+        $html .= $this->generatePagination($page, $totalPages, $offset, $perPage, $totalItems);
+
+        return response()->json($html, 200);
+      } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine()], 500);
+      }
     }
 
     public function tires_ajax(Request $request) {
@@ -194,81 +453,8 @@ class QuadTireController extends Controller
 
   public function tires_find(Request $request) {
 
-    DB::enableQueryLog();
 
-    $this->filterCount = 0;
-
-    ($request->brand == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->brand;
-
-    $this->d1 = $d1 = ($this->d1 == 'Visi') ? '' : $request->d1;
-    $this->d2 = $d2 = ($this->d2 == 'Visi') ? '' : $request->d2;
-    $this->d3 = $d3 = ($this->d3 == 'Visi') ? '' : $request->d3;
-
-    $fastsearch = $request->fastsearch;
-
-    if ($fastsearch) {
-      $splited = $this->splitInput($fastsearch);
-      $this->d1 = $d1 = $splited['d1'];
-      $this->d2 = $d2 = $splited['d2'];
-      $this->d3 = $d3 = $splited['d3'];
-    }
-
-     if ($request->availability) {
-       $this->filterCount += 1;
-       $this->availability = $request->availability;
-     } else {
-       $this->availability = [];
-     }
-
-    if ($request->types) {
-      $this->filterCount += 1;
-      $this->types = $request->types;
-    } else {
-      $this->types = '';
-    }
-
-    if ($request->code) {
-      $this->code = $request->code;
-      $this->filterCount += 1;
-    } else {
-      $this->code = '';
-    }
-    if ($request->fuel) {
-      $this->fuel = $request->fuel;
-      $this->filterCount += 1;
-    } else {
-      $this->fuel = '';
-    }
-    if ($request->wet) {
-      $this->wet = $request->wet;
-      $this->filterCount += 1;
-    } else {
-      $this->wet = '';
-    }
-
-    $tires = Quadr::select('quadr_tires.*', 'quadr_treads.*', 'quadr_treads.slug as tread_slug', 'quadr_brands.slug as brand_slug')
-                    ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
-                    ->join('quadr_brands', 'quadr_treads.brand_id', '=', 'quadr_brands.brand_id')
-                    ->when($this->currBrand, function($query) {
-                      $query->where('quadr_brands.slug', \Str::slug($this->currBrand));
-                    })->when($this->d1, function($query) {
-                      $query->where('d1', $this->d1);
-                    })->when($this->d2, function($query) {
-                      $query->where('d2', $this->d2);
-                    })->when($this->d3, function($query) {
-                      $query->where('d3', $this->d3);
-                    })->where('quadr_tires.visible_users', '<>', 0)
-                      ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
-                      ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
-                      ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
-                      ->orderBy('price2', 'DESC')
-                      ->groupBy('quadr_tires.tire_id')->paginate()->appends($request->query());
-//
-//    dd(DB::getQueryLog());
-
-    return view('tires.quadr.index',
-      ['tires' => $tires, 'filterCount' => $this->filterCount, 'availability' => $this->availability, 'd1' => $d1, 'd2' => $d2, 'd3' => $d3]
-    );
+    return view('tires.quadr.index');
   }
 
   public function get_sizes()
@@ -294,27 +480,116 @@ class QuadTireController extends Controller
     $brands = [];
 
     foreach (Quadrbrand::all() as $brand) {
-      $treads = Quadrtread::where('brand_id', $brand->brand_id)->get();
-      foreach ($treads as $tread) {
-        $tire = Quadr::where('make_id', $tread->tread_id)->where('visible_users', '<>', 0)->first();
-        if (!$tire) continue;
-        $brand_id = $tread->brand_id;
-        array_push($brands, $brand_id);
+      $treadIds = Quadrtread::where('brand_id', $brand->brand_id)->pluck('tread_id')->toArray();
+
+      $tire = Quadr::whereIn('make_id', $treadIds)
+        ->where('visible_users', '<>', 0)
+        ->first();
+
+      if ($tire) {
+        $brands[] = $brand->brand_id;
       }
     }
 
-    $brands = array_unique($brands);
-    $brands = array_values($brands);
-    $brand_list = [];
-    foreach ($brands as $brand) {
-      $brand = Quadrbrand::where('brand_id', $brand)->first();
-      $brand_list[$brand->brand_id] = ucwords(strtolower($brand->title));
+    $uniqueBrands = array_unique($brands);
+
+    $brandList = Quadrbrand::whereIn('brand_id', $uniqueBrands)
+      ->pluck('b_title', 'brand_id')
+      ->map(fn ($title) => ucwords(strtolower($title)))
+      ->sort(SORT_NATURAL | SORT_FLAG_CASE)
+      ->toArray();
+
+    return $brandList;
+  }
+
+  public function generatePagination($page, $totalPages, $offset, $perPage, $totalItems)
+  {
+    $html = '';
+
+    if ($totalPages > 1) {
+      $html .= '<div class="col-sm-12 col-md-12 pagination-col">';
+      $html .= '<div class="dataTables_paginate paging_simple_numbers" id="DataTables_Table_0_paginate">';
+      $html .= '<div class="dataTables_info" id="DataTables_Table_0_info" role="status" aria-live="polite">';
+      if (($offset + $perPage) > $totalItems) {
+        $html .= $offset + 1 . ' līdz ' . $totalItems . ' ieraksti no ' . $totalItems . ' ierakstiem';
+      } else {
+        $html .= $offset + 1 . ' līdz ' . ($offset + $perPage) . ' ieraksti no ' . $totalItems . ' ierakstiem';
+      }
+      $html .= '</div>';
+      $html .= '<ul class="pagination">';
+
+      // Previous button
+      $html .= '<li class="paginate_button page-item previous ';
+      $html .= ($page == 1) ? 'disabled' : '';
+      $html .= '">';
+      $html .= '<a href="#" class="page-link">Atpakaļ</a>';
+      $html .= '</li>';
+
+      // Page numbers
+      $visiblePages = 8; // Number of visible pages between first and last
+      $firstPages = 2; // Number of pages to show at the beginning
+      $lastPages = 2; // Number of pages to show at the end
+
+      // Display first pages
+      $startFirstPages = 1;
+      $endFirstPages = min($firstPages, $totalPages);
+
+      for ($i = $startFirstPages; $i <= $endFirstPages; $i++) {
+        $html .= '<li class="paginate_button page-item ';
+        $html .= ($i == $page) ? 'active' : '';
+        $html .= '">';
+        if ($i == $page) {
+          $html .= '<span style="pointer-events: none;" class="page-link">' . $i . '</span>';
+        } else {
+          $html .= '<a href="#" data-page="' . $i . '" class="page-link">' . $i . '</a>';
+        }
+        $html .= '</li>';
+      }
+
+      // Display pages between first and last
+      $startPage = max($firstPages + 1, min($page - floor($visiblePages / 2), $totalPages - $visiblePages + 1));
+      $endPage = min($totalPages, $startPage + $visiblePages - 1);
+
+      for ($i = $startPage; $i <= $endPage; $i++) {
+        $html .= '<li class="paginate_button page-item ';
+        $html .= ($i == $page) ? 'active' : '';
+        $html .= '">';
+        if ($i == $page) {
+          $html .= '<span style="pointer-events: none;" class="page-link">' . $i . '</span>';
+        } else {
+          $html .= '<a href="#" data-page="' . $i . '" class="page-link">' . $i . '</a>';
+        }
+        $html .= '</li>';
+      }
+
+      // Display last pages
+      $startLastPages = max($totalPages - $lastPages + 1, $endPage + 1);
+      for ($i = $startLastPages; $i <= $totalPages; $i++) {
+        $html .= '<li class="paginate_button page-item ';
+        $html .= ($i == $page) ? 'active' : '';
+        $html .= '">';
+        if ($i == $page) {
+          $html .= '<span style="pointer-events: none;" class="page-link">' . $i . '</span>';
+        } else {
+          $html .= '<a href="#" data-page="' . $i . '" class="page-link">' . $i . '</a>';
+        }
+        $html .= '</li>';
+      }
+
+      // Next button
+      $html .= '<li class="paginate_button page-item next ';
+      $html .= ($page == $totalPages) ? 'disabled' : '';
+      $html .= '">';
+      $html .= '<a href="#" class="page-link">Uz priekšu</a>';
+      $html .= '</li>';
+
+      $html .= '</ul>';
+      $html .= '</div>';
+      $html .= '</div>';
     }
 
-    //      asort($brand_list);
-    asort($brand_list, SORT_NATURAL | SORT_FLAG_CASE);
-
-    return $brand_list;
+    return $html;
   }
+
 
 }
