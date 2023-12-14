@@ -328,7 +328,7 @@ class MotoTireController extends Controller
             }
             $html .= '<tr class="tire-table-row" role="row">';
             $html .= '<th scope="row" class="tire-table-checkbox"><input type="checkbox" value="' . $tire->tire_id . '" name="product_ids[]" class="tire-table-checkbox" title=""></th>';
-            $html .= '<td class="table-tire-name-cell"><a class="tire-table-link tippy image" data-tippy-content="<div><img data-src=\'http://localhost/storage/auto/tread/' . $tire->tread_id . '-o.jpg\'></div>" href="' . $tire->getUrl . '" data-content="' . $tire->fullName . '" data-article="' . $tire->article . '" data-quantity="4"><div class="table-link-title">' . $tire->fullTitle . '</div></a></td>';
+            $html .= '<td class="table-tire-name-cell"><a class="tire-table-link tippy image" data-tippy-content="<div><img data-src=\'http://localhost/storage/moto/tread/' . $tire->tread_id . '-o.jpg\'></div>" href="' . $tire->getUrl . '" data-content="' . $tire->fullName . '" data-article="' . $tire->article . '" data-quantity="4"><div class="table-link-title">' . $tire->fullTitle . '</div></a></td>';
 
             $html .= '<td scope="col" class="hidden-sm-down text-center">';
             $html .= '<span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->typeDesc[1] . '</span></div>">' . $tire->motoType . '</span>';
@@ -387,7 +387,7 @@ class MotoTireController extends Controller
           $html .= '<a href="' . $tire->getUrl . '" class="grid-view-link" data-article="' . $tire->article . '">';
           $html .= '<div class="tire-image-card sort-order">';
           $html .= '<div class="text-center image-grid-overflow">';
-          $html .= Image::showGrid('auto', $tire->make_id);
+          $html .= Image::showGrid('moto', $tire->make_id);
           $html .= '</div>';
 
           $html .= '<div class="tire-list-caption">';
