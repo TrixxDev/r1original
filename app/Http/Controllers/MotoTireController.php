@@ -182,7 +182,7 @@ class MotoTireController extends Controller
         'trail' => ['moto_tires.type', '=', 'trail'],
       ];
 
-      $tires = Moto::selectRaw('moto_tires.*, moto_tires.quantity as tire_quantity, moto_treads.*, (SELECT SUM(quantity) FROM moto_stock WHERE moto_stock.tire_id = moto_tires.tire_id) as stock_quantity')
+      $tires = Moto::selectRaw('moto_tires.*, moto_treads.title as t_title, moto_tires.quantity as tire_quantity, moto_treads.*, (SELECT SUM(quantity) FROM moto_stock WHERE moto_stock.tire_id = moto_tires.tire_id) as stock_quantity')
         ->join('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
         ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
         ->when($currBrand, function ($query) use ($currBrand) {
