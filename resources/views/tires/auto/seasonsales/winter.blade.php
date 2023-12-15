@@ -165,7 +165,11 @@
                             </td>
 
                             <td class="dot-availability text-center">
-                            <td class="dot-availability text-center"><span class="tippy lisi-tooltip dot {{ $tire->dotAvailable }}" data-tippy-content='<div style="padding: 5px; text-align: left;"><span style="color: black; font-size: 15px; line-height: 28px;">{{ $tire->stockAvailability }}</span></div>'></span></td>
+                            <span class="dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip"
+                                  data-html="true"
+                                  title="{{ $tire->stockAvailability }}">
+                              <span class="sort-order">{{ $tire->dotAvailable }}</span>
+                            </span>
                             </td>
 
                         </tr>
