@@ -9,7 +9,6 @@
                     $index = 0;
                 @endphp
                 @foreach ($tires as $tire)
-                    @if ($tire->season == 2)
                     @php
                         $brand = $tire->fullSize;
                         $tire->includeStock = true;
@@ -170,7 +169,6 @@
                         @php
                             $index++;
                         @endphp
-                        @endif
                     @endforeach
                     </tbody>
                 </table>
