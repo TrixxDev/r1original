@@ -79,7 +79,7 @@ class TopTireController extends Controller
       ->orderBy('d1', 'ASC')
       ->orderBy('d2', 'ASC')
       ->orderBy('price2', 'DESC')
-      ->groupBy('tire_id')
+      ->groupBy('auto_tires.article')
       ->get();
 
     $cartQty = 4;
