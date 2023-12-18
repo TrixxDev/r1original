@@ -27,7 +27,7 @@
                                     <label class="col-md-2 col-form-label" for="brand_select">Brends: </label>
                                     <select name="brand" class="form-control col-md-3" data-model="quadr" id="brand_select">
                                         @foreach ($brands as $curr_brand)
-                                            <option value="{{ $curr_brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $curr_brand->brand_id) {{ 'selected' }} @endif >{{ ucwords(strtolower($curr_brand->title)) }}</option>
+                                            <option value="{{ $curr_brand->brand_id }}" @if (isset($tread->brand_id) && $tread->brand_id == $curr_brand->brand_id) {{ 'selected' }} @endif >{{ ucwords(strtolower($curr_brand->b_title)) }}</option>
                                         @endforeach
                                     </select>
                                     <form method="post" style="display: flex;">

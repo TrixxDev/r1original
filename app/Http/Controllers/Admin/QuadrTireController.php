@@ -89,8 +89,8 @@
         }
       }
 
-      $brands = Quadrbrand::orderBy('title', 'ASC')->get();
-      $treads = Quadrtread::orderBy('title', 'ASC')->get();
+      $brands = Quadrbrand::orderBy('b_title', 'ASC')->get();
+      $treads = Quadrtread::orderBy('t_title', 'ASC')->get();
 
       return view('admin.quadr_tires.index', compact('brands', 'treads'));
     }
@@ -101,11 +101,11 @@
       if ($request->post()) {
         if ($request->input('new-brand') == 'true') {
           if (empty($request->input('brand-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada brenda nosaukums!');
-          $brand = Quadrbrand::where('title', $request->input('brand-name'))->first();
+          $brand = Quadrbrand::where('b_title', $request->input('brand-name'))->first();
           if ($brand) return redirect($request->url())->with('danger', 'Brends ar šādu nosaukumu jau eksistē!');
           $brand = new Quadrbrand;
           $brand->timestamps = false;
-          $brand->title = $request->input('brand-name');
+          $brand->b_title = $request->input('brand-name');
           $brand->slug = Str::slug($brand->title);
           if ($brand->save()) {
             return redirect($request->url())->with('success', 'Brends ir pievienots!');
@@ -118,7 +118,7 @@
 //            if ($brand && $brand->title == $request->input('brand-name')) {
 //              return redirect(route('admin.auto.tires'))->with('danger', 'Brenda nosaukums nav mainīts, ievadīts tāds pats!');
 //            } else {
-          $brand->title = $request->input('brand-name');
+          $brand->b_title = $request->input('brand-name');
           $brand->slug = Str::slug($brand->title);
           if ($brand->save()) {
             return redirect($request->url())->with('success', 'Brenda nosaukums nomainīts!');
@@ -142,12 +142,12 @@
 
         if ($request->input('new-make') == 'true') {
           if (empty($request->input('make-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada modeļa nosaukums!');
-          $make = Quadrtread::where('title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
+          $make = Quadrtread::where('t_title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
           if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
           $make = new Quadrtread();
           $make->timestamps = false;
           $make->brand_id = $request->input('brand-id');
-          $make->title = $request->input('make-name');
+          $make->t_title = $request->input('make-name');
           $make->slug = Str::slug($make->title);
           if ($make->save()) {
             return redirect(route('admin.quadr.tires.search', $make->tread_id))->with('success', 'Modelis ir pievienots!');
@@ -160,7 +160,7 @@
 //            if ($make && $make->t_title == $request->input('make-name')) {
 //              return redirect($request->url())->with('danger', 'Modeļa nosaukums nav mainīts, ievadīts tāds pats!');
 //            } else {
-          $make->title = $request->input('make-name');
+          $make->t_title = $request->input('make-name');
           $make->slug = Str::slug($make->title);
           if ($make->save()) {
             return redirect($request->url())->with('success', 'Modeļa nosaukums nomainīts!');
@@ -211,8 +211,8 @@
       if (!$tread) return redirect(route('admin.quadr.tires'));
       $brand = Quadrbrand::where('brand_id', $tread->brand_id)->first();
       if (!$brand) return redirect(route('admin.quadr.tires'));
-      $brands = Quadrbrand::orderBy('title', 'ASC')->get();
-      $treads = Quadrtread::select('quadr_treads.*', 'quadr_treads.title as t_title')->orderBy('t_title', 'ASC')->get();
+      $brands = Quadrbrand::orderBy('b_title', 'ASC')->get();
+      $treads = Quadrtread::orderBy('t_title', 'ASC')->get();
 
       return view('admin.quadr_tires.index', compact('tires', 'tread', 'brands', 'brand', 'treads'));
     }
@@ -446,7 +446,7 @@
     {
       \Session::remove('search');
       if (is_numeric($paginate)) {
-        $brands = Quadrbrand::orderBy('title', 'ASC')->paginate($paginate);
+        $brands = Quadrbrand::orderBy('b_title', 'ASC')->paginate($paginate);
       } else {
         return redirect(route('admin.quadr.brands'));
       }
@@ -458,10 +458,10 @@
 
       if ($request->search) {
         \Session::put('search', $request->search);
-        $brands = Quadrbrand::orderBy('brand_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
+        $brands = Quadrbrand::orderBy('brand_id', 'DESC')->where('b_title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
       } else {
         if (\Session::has('search')) {
-          $brands = Quadrbrand::orderBy('brand_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
+          $brands = Quadrbrand::orderBy('brand_id', 'DESC')->where('b_title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
         } else {
           $brands = Quadrbrand::orderBy('brand_id', 'DESC')->paginate($paginate);
         }
@@ -478,12 +478,12 @@
     public function brand_store(Request $request)
     {
 
-      $brand = Quadrbrand::where('title', $request->brand_title)->first();
+      $brand = Quadrbrand::where('b_title', $request->brand_title)->first();
       if ($brand) return redirect($request->url())->with('danger', 'Brends ar šādu nosaukumu jau eksistē!');
 
       $brand = new Quadrbrand();
       $brand->timestamps = false;
-      $brand->title = $request->brand_title;
+      $brand->b_title = $request->brand_title;
       $brand->slug = \Str::slug($request->brand_title, '-');
       if ($brand->save()) {
         return redirect(route('admin.quadr.brands'))->with('success', 'Brends veiksmīgi pievienots!');
@@ -504,7 +504,7 @@
     {
       $brand = Quadrbrand::findOrFail($id);
       $brand->timestamps = false;
-      $brand->title = $request->brand_title;
+      $brand->b_title = $request->brand_title;
       $brand->slug = \Str::slug($request->brand_title, '-');
 
       $brand->save();
@@ -549,10 +549,10 @@
     {
       if ($request->search) {
         \Session::put('search', $request->search);
-        $treads = Quadrtread::orderBy('tread_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
+        $treads = Quadrtread::orderBy('tread_id', 'DESC')->where('t_title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
       } else {
         if (\Session::has('search')) {
-          $treads = Quadrtread::orderBy('tread_id', 'DESC')->where('title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
+          $treads = Quadrtread::orderBy('tread_id', 'DESC')->where('t_title', 'LIKE', '%' . \Session::get('search') . '%')->paginate($paginate);
         } else {
           $treads = Quadrtread::orderBy('tread_id', 'DESC')->paginate($paginate);
         }
@@ -563,7 +563,7 @@
 
     public function tread_add()
     {
-      $brands = Quadrbrand::orderBy('title', 'ASC')->get();
+      $brands = Quadrbrand::orderBy('b_title', 'ASC')->get();
 
       return view('admin.quadr_tires.treads.add', compact('brands'));
     }
@@ -572,7 +572,7 @@
     {
       $tread = new Quadrtread();
       $tread->timestamps = false;
-      $tread->title = $request->tread_title;
+      $tread->t_title = $request->tread_title;
       $tread->slug = \Str::slug($request->tread_title, '-');
       $tread->save();
 
@@ -613,7 +613,7 @@
     {
       $tread = Quadrtread::findOrFail($id);
       $tread->timestamps = false;
-      $tread->title = $request->tread_title;
+      $tread->t_title = $request->tread_title;
       $tread->slug = \Str::slug($request->tread_title, '-');
       $tread->brand_id = $request->tread_brand;
       $tread->t_comment = $request->tread_desc;
@@ -667,7 +667,7 @@
 
     public function ajaxUpdateTreads(Request $request)
     {
-      $treads = Quadrtread::with('tireCount')->select('quadr_treads.*', 'quadr_treads.title as t_title')->where('brand_id', $request->brand_id)->orderBy('title', 'ASC')->get();
+      $treads = Quadrtread::with('tireCount')->where('brand_id', $request->brand_id)->orderBy('t_title', 'ASC')->get();
       return json_encode($treads);
     }
 
