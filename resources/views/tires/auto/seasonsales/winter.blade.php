@@ -163,7 +163,9 @@
                                 </div>
                             </td>
 
-                            <td class="dot-availability text-center"><span class="tippy lisi-tooltip dot {{$tire->dotAvailable}}" data-tippy-content='<div style="padding: 5px; text-align: left;"><span style="color: black; font-size: 15px; line-height: 28px;">{{$tire->stockAvailability}}</span></div>'></span></td>
+                            <td class="dot-availability text-center">
+                                <span class="tippy lisi-tooltip dot {{$tire->dotAvailable}}" data-tippy-content='<div style="padding: 5px; text-align: left;"><span style="color: black; font-size: 15px; line-height: 28px;">{{$tire->stockAvailability}}</span></div>'></span>
+                            </td>
 
                         </tr>
                         @php
