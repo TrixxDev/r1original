@@ -204,6 +204,8 @@ class Autotire extends Model
           $this->tire_quantity = $this->krs_quantity;
         } else if ($this->urs_quantity <= 0 && $this->krs_quantity <= 0) {
           $this->tire_quantity = 0;
+        } else {
+          $this->tire_quantity = $this->urs_quantity + $this->krs_quantity;
         }
 
 //        $this->quantity = (int) $this->quantity;
