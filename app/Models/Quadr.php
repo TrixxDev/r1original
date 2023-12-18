@@ -363,7 +363,7 @@ class Quadr extends Model
             $availability .= '<br><p>' . $stock_name . ': 0</p>';
           }
         }
-        if ($tire->acomment !== null) {
+        if ($tire->acomment !== null || !empty($tire->acomment)) {
           $availability .= '<br><hr class="admin-comments"><p><b>Piezīmes:</b> </p><br><p>' . $tire->acomment . '</p>';
         }
       } else {
