@@ -105,8 +105,7 @@ class QuadTireController extends Controller
 
         $tread = str_replace('_', '/', $tread);
         $tread = str_replace('$1', '&', $tread);
-        $tread = Quadrtread::where('t_title', $tread)->first();
-
+        $tread = Quadrtread::where('t_title', $tread)->where('brand_id', $brand->brand_id)->first();
 
         $tires = Quadr::selectRaw('quadr_tires.*, quadr_treads.*, quadr_brands.*')
             ->join('quadr_treads', 'quadr_tires.make_id', '=', 'quadr_treads.tread_id')
