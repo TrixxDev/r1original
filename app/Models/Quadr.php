@@ -342,36 +342,36 @@ class Quadr extends Model
       ];
 
       if ($tire->urs_quantity >= 2) {
-        $availability = '<p>Ulbrokā: 2 un vairāk</p><br>';
+        $availability = '<span>Ulbrokā: 2 un vairāk</span><br>';
       } else {
-        $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
+        $availability = '<span>Ulbrokā: ' . $tire->urs_quantity . '</span><br>';
       }
       if ($tire->krs_quantity >= 2) {
-        $availability .= '<p>Kalnciema ielā: 2 un vairāk</p>';
+        $availability .= '<span>Kalnciema ielā: 2 un vairāk</span>';
       } else {
-        $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
+        $availability .= '<span>Kalnciema ielā: ' . $tire->krs_quantity . '</span>';
       }
 
-      if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
-        $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
-        $availability .= '<p>Kalnciema ielā: ' . $tire->krs_quantity . '</p>';
+      if (Auth::check()) {
+        $availability = '<span>Ulbrokā: ' . $tire->urs_quantity . '</span><br>';
+        $availability .= '<span>Kalnciema ielā: ' . $tire->krs_quantity . '</span>';
         foreach ($stock_names as $key => $stock_name) {
           $stock = Quadrstock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
           if ($stock && $stock->quantity > 0) {
-            $availability .= '<br><p>' . $stock_name . ': ' . $stock->quantity . '</p>';
+            $availability .= '<br><span>' . $stock_name . ': ' . $stock->quantity . '</span>';
           } else {
-            $availability .= '<br><p>' . $stock_name . ': 0</p>';
+            $availability .= '<br><span>' . $stock_name . ': 0</span>';
           }
         }
         if ($tire->acomment !== null || !empty($tire->acomment)) {
-          $availability .= '<br><hr class="admin-comments"><p><b>Piezīmes:</b> </p><br><p>' . $tire->acomment . '</p>';
+          $availability .= '<br><hr class="admin-comments"><span><b>Piezīmes:</b> </span><br><span>' . $tire->acomment . '</span>';
         }
       } else {
         $dot = $this->getDotAvailableAttribute();
         if ($dot === 'red') {
-          $availability = '<p style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</p>';
+          $availability = '<span style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</span>';
         } else if ($dot === 'yellow' || $dot === 'half-yellow') {
-          $availability = '<p style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
+          $availability = '<span style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</span>';
         }
       }
       $availability .= '';
