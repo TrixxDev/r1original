@@ -539,6 +539,18 @@ $(document).ready(function() {
       }
     });
 
+    const full = location.protocol + '//' + location.host;
+
+    $('.season-select-link').each(function() {
+
+      let link = new URL(full + '/' + $(this).attr('href').split('/')[1] + '/search?');
+      let searchParams = new URLSearchParams({ d1: window['d1'], d2: window['d2'], d3: window['d3'] }).toString();
+
+      let fullLink = link.href + searchParams;
+      $(this).attr('href', fullLink);
+
+    });
+
     newUrl = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['page'];
 
     if (pageLoaded === 1) {
