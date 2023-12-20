@@ -206,20 +206,20 @@
                               <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">MFS</a>
                             </label>
                           </li>
-                          <li data-label="CURRYEAR">
-                            <label class="facet-label" for="facet_for_curryear">
-                            <span class="custom-checkbox">
-                              <input id="facet_for_curryear" data-search-url=""
-                                     @if (in_array('CURRYEAR', $code)) checked="" @endif value="CURRYEAR"
-                                     data-for="prod-code" data-value="CURRYEAR"
-                                     type="checkbox">
-                              <span class="ps-shown-by-js">
-                                <i class="material-icons checkbox-checked"></i>
-                              </span>
-                            </span>
-                              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow"">Šī gada</a>
-                            </label>
-                          </li>
+{{--                          <li data-label="CURRYEAR">--}}
+{{--                            <label class="facet-label" for="facet_for_curryear">--}}
+{{--                            <span class="custom-checkbox">--}}
+{{--                              <input id="facet_for_curryear" data-search-url=""--}}
+{{--                                     @if (in_array('CURRYEAR', $code)) checked="" @endif value="CURRYEAR"--}}
+{{--                                     data-for="prod-code" data-value="CURRYEAR"--}}
+{{--                                     type="checkbox">--}}
+{{--                              <span class="ps-shown-by-js">--}}
+{{--                                <i class="material-icons checkbox-checked"></i>--}}
+{{--                              </span>--}}
+{{--                            </span>--}}
+{{--                              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow"">Šī gada</a>--}}
+{{--                            </label>--}}
+{{--                          </li>--}}
                         </ul>
                       </section>
 
@@ -875,20 +875,20 @@
                                             <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">MFS</a>
                                         </label>
                                     </li>
-                                    <li data-label="CURRYEAR">
-                                        <label class="facet-label" for="facet_for_curryear">
-                            <span class="custom-checkbox">
-                              <input id="facet_for_curryear" data-search-url=""
-                                     @if (in_array('CURRYEAR', $code)) checked="" @endif value="CURRYEAR"
-                                     data-for="prod-code" data-value="CURRYEAR"
-                                     type="checkbox">
-                              <span class="ps-shown-by-js">
-                                <i class="material-icons checkbox-checked"></i>
-                              </span>
-                            </span>
-                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow"">Šī gada</a>
-                                        </label>
-                                    </li>
+{{--                                    <li data-label="CURRYEAR">--}}
+{{--                                        <label class="facet-label" for="facet_for_curryear">--}}
+{{--                            <span class="custom-checkbox">--}}
+{{--                              <input id="facet_for_curryear" data-search-url=""--}}
+{{--                                     @if (in_array('CURRYEAR', $code)) checked="" @endif value="CURRYEAR"--}}
+{{--                                     data-for="prod-code" data-value="CURRYEAR"--}}
+{{--                                     type="checkbox">--}}
+{{--                              <span class="ps-shown-by-js">--}}
+{{--                                <i class="material-icons checkbox-checked"></i>--}}
+{{--                              </span>--}}
+{{--                            </span>--}}
+{{--                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow"">Šī gada</a>--}}
+{{--                                        </label>--}}
+{{--                                    </li>--}}
                                 </ul>
                             </section>
 
