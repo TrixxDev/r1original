@@ -73,13 +73,13 @@
                             </th>
 
                             <td class="table-tire-name-cell" data-link="{{ route('ziemas-riepas') }}">
-                                <a data-toggle="tooltip" data-html="true" class="tire-table-link"
-                                    title='{!! App\Helper\Image::show('auto', $tire->make_id) !!}'
-                                    href="{{ route($winterURL, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"
-                                    data-content="{{ $tire->fullName }}"
-                                    data-article="{{ $tire->article }}"
-                                    data-quantity="4">
-                                    <div class="table-link-title">{{ $tire->title }}</div>
+                                <a class="tire-table-link tippy image"
+                                   data-tippy-content="<div><img data-src='{{ App\Helper\Image::showAd('auto', $tire->make_id) }}'></div>"
+                                   href="{{ route($winterURL, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"
+                                   data-content="{{ $tire->fullName }}"
+                                   data-article="{{ $tire->article }}"
+                                   data-quantity="4">
+                                  <div class="table-link-title">{{ $tire->title }}</div>
                                 </a>
                             </td>
 

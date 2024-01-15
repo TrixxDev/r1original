@@ -270,11 +270,7 @@ $(document).ready(function() {
         });
         // Rādīt izvēlētos end
 
-        if (loaded === 0) {
-
           $(document).find('.tire-table-checkbox').children().each(function(key, value){
-            // PARSE TO INT
-            products.push(parseInt($(value).val()));
 
             // ON SHOPPING CART BUTTON CLICK
             $('#tires-table-body').on('click', '.cart-shopping-button', function() {
@@ -412,12 +408,10 @@ $(document).ready(function() {
 
             })
           });
-          loaded = 1;
-        }
 
         $('.tire-table-checkbox').each(function(){
           if($(this).is(':checked')){
-            $('input#show-selected-checkbox').prop( "disabled", false );
+            $('input#show-selected-checkbox:visible').prop( "disabled", false );
           }
         })
 

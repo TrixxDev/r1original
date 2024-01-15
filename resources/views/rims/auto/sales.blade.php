@@ -52,7 +52,7 @@
             </th>
 
             <td class="table-tire-name-cell">
-              <a class="tire-table-link tippy"
+              <a class="tire-table-link tippy image"
                  data-tippy-content="<div><img data-src='{!! App\Helper\Image::showAd('auto-rim', $rim->make_id) !!}'></div>"
                  href="{{ route('lietais-disks', [\Str::slug($rim->brandTitle), strtolower(str_replace('/', '_', $rim->treadTitle)), $rim->rim_id]) }}"
                  data-content="{{ $rim->fullName }}"

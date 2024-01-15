@@ -79,12 +79,15 @@ class RimsController extends Controller
     View::share('currentSkr', $this->currentSkr);
     View::share('currentDia', $this->currentDia);
     View::share('currentCenter', $this->currentCenter);
-    View::share('widths', $this->getRimOptions()['widths']);
-    View::share('offsets', $this->getRimOptions()['offsets']);
-    View::share('centers', $this->getRimOptions()['rim_center']);
-    View::share('diameters', $this->getRimOptions()['diameters']);
-    View::share('lugs', $this->getRimOptions()['lug_counts']);
-    View::share('studs_spread', $this->getRimOptions()['stud_spreads']);
+    $options = $this->getRimOptions();
+    View::share([
+      'widths' => $options['widths'],
+      'offsets' => $options['offsets'],
+      'centers' => $options['rim_center'],
+      'diameters' => $options['diameters'],
+      'lugs' => $options['lug_counts'],
+      'studs_spread' => $options['stud_spreads']
+    ]);
     View::share('makes', $this->getRimMakes());
     View::share('models', $this->getRimModels());
     View::share('cartQty', $this->cartQty);
@@ -110,9 +113,16 @@ class RimsController extends Controller
       })->when($this->currentDia, function($query) {
         $query->where('d3', $this->currentDia);
       })->where('rims.visible_users', '<>', 0)
+      ->where(function ($query) {
+        $query->where('rims.quantity', '>', 0)
+          ->orWhere(function ($query) {
+            $query->whereRaw('rims.rim_id IN (SELECT rim_id FROM rim_stock WHERE quantity > 0)')
+              ->where('rims.quantity', '=', 0);
+          });
+      })
       ->orderBy('quantity', 'DESC')
-//      ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
-//      ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+      ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+      ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
       ->orderBy('price3', 'DESC')
       ->paginate();
 
@@ -151,10 +161,17 @@ class RimsController extends Controller
         $query->where('rims.d3', $this->currentDia);
       })->when($this->currentCenter, function($query) {
         $query->where('rims.dc', $this->currentCenter);
+      })
+      ->where(function ($query) {
+        $query->where('rims.quantity', '>', 0)
+          ->orWhere(function ($query) {
+            $query->whereRaw('rims.rim_id IN (SELECT rim_id FROM rim_stock WHERE quantity > 0)')
+              ->where('rims.quantity', '=', 0);
+          });
       })->where('rims.visible_users', '<>', 0)
       ->orderBy('quantity', 'DESC')
-//      ->orderBy('d3', 'ASC')
-//      ->orderBy('d1', 'ASC')
+      ->orderBy('d3', 'ASC')
+      ->orderBy('d1', 'ASC')
       ->orderBy('price3', 'DESC')
       ->groupBy('rims.rim_id')->paginate()->appends($request->query());
 
@@ -184,10 +201,17 @@ class RimsController extends Controller
       ->join('rim_brands', 'rim_makes.brand_id', '=', 'rim_brands.brand_id')
       ->where('rim_brands.title', $brand->title)
       ->where('rim_makes.title', str_replace('_', '/', $tread))
+      ->where(function ($query) {
+        $query->where('rims.quantity', '>', 0)
+          ->orWhere(function ($query) {
+            $query->whereRaw('rims.rim_id IN (SELECT rim_id FROM rim_stock WHERE quantity > 0)')
+              ->where('rims.quantity', '=', 0);
+          });
+      })
       ->orderBy('quantity', 'DESC')
       ->orderBy('price3', 'DESC')
-//      ->orderBy('d3', 'ASC')
-//      ->orderBy('d1', 'ASC')
+      ->orderBy('d3', 'ASC')
+      ->orderBy('d1', 'ASC')
       ->get();
 
     $currRim = Rim::leftJoin('rim_makes', 'rims.make_id', '=', 'rim_makes.make_id')
@@ -285,62 +309,34 @@ class RimsController extends Controller
 
   public function getRimOptions()
   {
-    $rim_widths = [];
-    $rim_offsets = [];
-    $rim_diameters = [];
-    $rim_lug_count = [];
-    $rim_stud_spreads = [];
-    $rim_center = [];
+    $options = [
+      'widths' => [],
+      'offsets' => [],
+      'diameters' => [],
+      'lug_counts' => [],
+      'stud_spreads' => [],
+      'rim_center' => []
+    ];
+
+    $rimProperties = ['d1' => 'widths', 'et' => 'offsets', 'd3' => 'diameters', 'skr' => 'lug_counts', 'pcd' => 'stud_spreads', 'dc' => 'rim_center'];
 
     foreach (Rim::all() as $rim) {
-      array_push($rim_widths, $rim->d1);
-      array_push($rim_offsets, $rim->et);
-      array_push($rim_diameters, $rim->d3);
-      array_push($rim_lug_count, $rim->skr);
-      array_push($rim_stud_spreads, $rim->pcd);
-      array_push($rim_center, number_format((float) $rim->dc, 1, '.', ' '));
+      foreach ($rimProperties as $property => $optionKey) {
+        $value = $rim->$property;
+
+        if ($optionKey !== 'offsets' && empty($value)) continue;
+
+        if (!in_array($value, $options[$optionKey], true)) {
+          $options[$optionKey][] = $value;
+        }
+      }
     }
 
-    $rim_widths = array_unique($rim_widths);
-    $rim_widths = array_values($rim_widths);
-    $rim_widths = array_filter($rim_widths);
+    foreach ($options as &$optionValues) {
+      asort($optionValues, SORT_NATURAL | SORT_FLAG_CASE);
+    }
 
-    $rim_offsets = array_unique($rim_offsets);
-    $rim_offsets = array_values($rim_offsets);
-    $rim_offsets = array_filter($rim_offsets);
-
-    $rim_diameters = array_unique($rim_diameters);
-    $rim_diameters = array_values($rim_diameters);
-    $rim_diameters = array_filter($rim_diameters);
-
-    $rim_lug_count = array_unique($rim_lug_count);
-    $rim_lug_count = array_values($rim_lug_count);
-    $rim_lug_count = array_filter($rim_lug_count);
-
-    $rim_stud_spreads = array_unique($rim_stud_spreads);
-    $rim_stud_spreads = array_values($rim_stud_spreads);
-    $rim_stud_spreads = array_filter($rim_stud_spreads);
-
-    $rim_center = array_unique($rim_center);
-    $rim_center = array_values($rim_center);
-    $rim_center = array_filter($rim_center);
-    unset($rim_center[1]);
-
-    asort($rim_widths, SORT_NATURAL | SORT_FLAG_CASE);
-    asort($rim_offsets, SORT_NATURAL | SORT_FLAG_CASE);
-    asort($rim_diameters, SORT_NATURAL | SORT_FLAG_CASE);
-    asort($rim_lug_count, SORT_NATURAL | SORT_FLAG_CASE);
-    asort($rim_stud_spreads, SORT_NATURAL | SORT_FLAG_CASE);
-    asort($rim_center, SORT_NATURAL | SORT_FLAG_CASE);
-
-    return [
-      'widths' => $rim_widths,
-      'offsets' => $rim_offsets,
-      'diameters' => $rim_diameters,
-      'lug_counts' => $rim_lug_count,
-      'stud_spreads' => $rim_stud_spreads,
-      'rim_center' => $rim_center
-    ];
+    return $options;
   }
 
   public function getRimMakes()

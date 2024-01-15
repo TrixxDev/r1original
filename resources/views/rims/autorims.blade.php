@@ -250,47 +250,47 @@
                                   </label>
                                 </li>
                               </ul>
-                              <h1 class="h6 facet-title">Pieejamība</h1>
-                              <ul id="facet_availability" class="collapse">
-                                <li>
-                                  <label class="facet-label" for="facet_availability_0" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
-                                    <span class="custom-checkbox">
-                                      <input id="facet_availability_0" class="green" {{-- @if (in_array('green', $availability)) checked @endif --}} type="checkbox" name="availability[]"
-                                             data-search-url="#" value="green"
-                                             data-for="dot" data-value="green" data-color="green">
-                                      <span class="ps-shown-by-js">
-                                        <i class="material-icons checkbox-checked"></i>
-                                      </span>
-                                    </span>
-                                    Pieejams
-                                    <span class="dot green" style="float:right;margin-top: 3px;"></span>
-                                  </label>
-                                </li>
-                                <li>
-                                  <label class="facet-label" for="facet_availability_1" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
-                                    <span class="custom-checkbox">
-                                      <input id="facet_availability_1" class="yellow" {{-- @if (in_array('yellow', $availability)) checked @endif --}} type="checkbox" name="availability[]"
-                                             data-search-url="#" value="yellow"
-                                             data-for="dot" data-value="yellow" data-color="yellow">
-                                      <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
-                                    </span>
-                                    Pasūtāms
-                                    <span class="dot yellow" style="float:right;margin-top: 3px;"></span>
-                                  </label>
-                                </li>
-                                <li>
-                                  <label class="facet-label" for="facet_availability_2" style="width: 100%;text-align: left;cursor: pointer">
-                                    <span class="custom-checkbox">
-                                      <input id="facet_availability_2" class="red" {{-- @if (in_array('red', $availability)) checked @endif --}} type="checkbox" name="availability[]"
-                                     data-search-url="#" value="red"
-                                     data-for="dot" data-value="red" data-color="red">
-                                      <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
-                                    </span>
-                                    Zvaniet!
-                                    <span class="dot red" style="float:right;margin-top: 3px;"></span>
-                                  </label>
-                                </li>
-                              </ul>
+{{--                              <h1 class="h6 facet-title">Pieejamība</h1>--}}
+{{--                              <ul id="facet_availability" class="collapse">--}}
+{{--                                <li>--}}
+{{--                                  <label class="facet-label" for="facet_availability_0" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">--}}
+{{--                                    <span class="custom-checkbox">--}}
+{{--                                      <input id="facet_availability_0" class="green" --}}{{-- @if (in_array('green', $availability)) checked @endif --}}{{-- type="checkbox" name="availability[]"--}}
+{{--                                             data-search-url="#" value="green"--}}
+{{--                                             data-for="dot" data-value="green" data-color="green">--}}
+{{--                                      <span class="ps-shown-by-js">--}}
+{{--                                        <i class="material-icons checkbox-checked"></i>--}}
+{{--                                      </span>--}}
+{{--                                    </span>--}}
+{{--                                    Pieejams--}}
+{{--                                    <span class="dot green" style="float:right;margin-top: 3px;"></span>--}}
+{{--                                  </label>--}}
+{{--                                </li>--}}
+{{--                                <li>--}}
+{{--                                  <label class="facet-label" for="facet_availability_1" style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">--}}
+{{--                                    <span class="custom-checkbox">--}}
+{{--                                      <input id="facet_availability_1" class="yellow" --}}{{-- @if (in_array('yellow', $availability)) checked @endif --}}{{-- type="checkbox" name="availability[]"--}}
+{{--                                             data-search-url="#" value="yellow"--}}
+{{--                                             data-for="dot" data-value="yellow" data-color="yellow">--}}
+{{--                                      <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>--}}
+{{--                                    </span>--}}
+{{--                                    Pasūtāms--}}
+{{--                                    <span class="dot yellow" style="float:right;margin-top: 3px;"></span>--}}
+{{--                                  </label>--}}
+{{--                                </li>--}}
+{{--                                <li>--}}
+{{--                                  <label class="facet-label" for="facet_availability_2" style="width: 100%;text-align: left;cursor: pointer">--}}
+{{--                                    <span class="custom-checkbox">--}}
+{{--                                      <input id="facet_availability_2" class="red" --}}{{-- @if (in_array('red', $availability)) checked @endif --}}{{-- type="checkbox" name="availability[]"--}}
+{{--                                     data-search-url="#" value="red"--}}
+{{--                                     data-for="dot" data-value="red" data-color="red">--}}
+{{--                                      <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>--}}
+{{--                                    </span>--}}
+{{--                                    Zvaniet!--}}
+{{--                                    <span class="dot red" style="float:right;margin-top: 3px;"></span>--}}
+{{--                                  </label>--}}
+{{--                                </li>--}}
+{{--                              </ul>--}}
                             </section>
                           </div>
                         </div>
@@ -471,7 +471,7 @@
                                 </th>
 
                                 <td class="table-tire-name-cell">
-                                  <a class="tire-table-link tippy"
+                                  <a class="tire-table-link tippy image"
                                      data-tippy-content="<div><img data-src='{!! App\Helper\Image::showAd('auto-rim', $rim->make_id) !!}'></div>"
                                      href="{{ route('lietais-disks', [\Str::slug($rim->brandTitle), strtolower(str_replace('/', '_', $rim->treadTitle)), $rim->rim_id]) }}"
                                      data-content="{{ $rim->fullName }}"
