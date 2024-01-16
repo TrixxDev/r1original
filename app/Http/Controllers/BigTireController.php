@@ -120,9 +120,9 @@ class BigTireController extends Controller
           $query->where('d3', $this->d3);
         })->groupBy('big_tires.article')
         ->where('big_tires.visible_users', '<>', 0)
-        ->orderBy('d3', 'ASC')
-        ->orderBy('d1', 'ASC')
-        ->orderBy('d2', 'ASC')
+        ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+        ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+        ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
         ->orderBy('quantity', 'DESC')
         ->paginate();
 
@@ -172,9 +172,9 @@ class BigTireController extends Controller
       })->when($this->implemention, function($query) {
           $query->whereIn('big_tires.implemention', $this->implemention);
       })->where('visible_users', '<>', 0)
-        ->orderBy('d3', 'ASC')
-        ->orderBy('d1', 'ASC')
-        ->orderBy('d2', 'ASC')
+        ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+        ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+        ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
         ->orderBy('quantity', 'DESC')
         ->paginate()->appends($request->query());
 
