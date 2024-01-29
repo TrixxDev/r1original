@@ -374,9 +374,9 @@ class Moto extends Model
         ];
 
         if ($tire->urs_quantity >= 1) {
-          $availability = '<p>Ulbrokā: 1 un vairāk</p><br>';
+          $availability = '<p>Ulbrokā: 1 un vairāk</p>';
         } else {
-          $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
+          $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p>';
         }
         if ($tire->krs_quantity >= 1) {
           $availability .= '<p>Kalnciema ielā: 1 un vairāk</p>';
@@ -385,18 +385,18 @@ class Moto extends Model
         }
 
         if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
-          $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p><br>';
+          $availability = '<p>Ulbrokā: ' . $tire->urs_quantity . '</p>';
           $availability .= '<p>Kalnciema iela: ' . $tire->krs_quantity . '</p>';
           foreach ($stock_names as $key => $stock_name) {
             $stock = Motostock::where('itype', $key)->where('tire_id', $tire->tire_id)->orderBy('stock_id', 'DESC')->first();
             if ($stock && $stock->quantity > 0) {
-              $availability .= '<br><p>' . $stock_name . ': ' . $stock->quantity . '</p>';
+              $availability .= '<p>' . $stock_name . ': ' . $stock->quantity . '</p>';
             } else {
-              $availability .= '<br><p>' . $stock_name . ': 0</p>';
+              $availability .= '<p>' . $stock_name . ': 0</p>';
             }
           }
           if ($tire->acomment !== null) {
-            $availability .= '<br><hr class="admin-comments"><p><b>Piezīmes:</b> </p><br><p>' . $tire->acomment . '</p>';
+            $availability .= '<hr class="admin-comments"><p><b>Piezīmes:</b> </p><p>' . $tire->acomment . '</p>';
           }
         } else {
           $dot = $this->getDotAvailableAttribute();
