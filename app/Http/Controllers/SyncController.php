@@ -625,6 +625,35 @@
       return $stores;
     }
 
+    // Lattako token generation
+
+    public function getI3Token() {
+      $token_url = "api.latakko.eu/Token";
+
+      $curl = curl_init();
+      curl_setopt_array($curl, array(
+        CURLOPT_URL => $token_url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
+        CURLOPT_HTTPHEADER => array(
+          "cache-control: no-cache",
+          "content-type: application/x-www-form-urlencoded"
+        ),
+      ));
+      $response = curl_exec($curl);
+
+      curl_close($curl);
+
+      $token = json_decode($response);
+
+      return $token->access_token;
+    }
+
     // Lattako sync
 
     public function i3auto()
@@ -634,36 +663,8 @@
       $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
       $time_now = \Carbon\Carbon::now();
       if ($time_now->diff($sync_time)->invert == 1) {
-        $token_url = "api.latakko.eu/Token";
 
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => $token_url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-          CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "content-type: application/x-www-form-urlencoded"
-          ),
-        ));
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        curl_close($curl);
-
-        if (!$err)
-        {
-          $token = json_decode($response);
-        } else {
-          throw new \Exception($err);
-        }
-
-        $token_bearer = $token->access_token;
+        $token_bearer = $this->getI3Token();
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -815,42 +816,8 @@
       $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
       $time_now = \Carbon\Carbon::now();
       if ($time_now->diff($sync_time)->invert == 1) {
-        if (!isset($_COOKIE['i3-token'])) {
-          $token_url = "api.latakko.eu/Token";
-//        $token_url = "api.latakko.eu/Token";
 
-          $curl = curl_init();
-          curl_setopt_array($curl, array(
-            CURLOPT_URL => $token_url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-            CURLOPT_HTTPHEADER => array(
-              "cache-control: no-cache",
-              "content-type: application/x-www-form-urlencoded"
-            ),
-          ));
-          $response = curl_exec($curl);
-          $err = curl_error($curl);
-
-          curl_close($curl);
-
-          if (!$err)
-          {
-            $token = json_decode($response);
-          } else {
-            dd($err);
-          }
-
-          setcookie('i3-token', $token->access_token, time() + $token->expires_in, '/');
-          $token_bearer = $token->access_token;
-        } else {
-          $token_bearer = $_COOKIE['i3-token'];
-        }
+        $token_bearer = $this->getI3Token();
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -1079,36 +1046,8 @@
       $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
       $time_now = \Carbon\Carbon::now();
       if ($time_now->diff($sync_time)->invert == 1) {
-        $token_url = "api.latakko.eu/Token";
 
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => $token_url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-          CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "content-type: application/x-www-form-urlencoded"
-          ),
-        ));
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        curl_close($curl);
-
-        if (!$err)
-        {
-          $token = json_decode($response);
-        } else {
-          throw new \Exception($err);
-        }
-
-        $token_bearer = $token->access_token;
+        $token_bearer = $this->getI3Token();
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -1126,7 +1065,7 @@
         ));
         $response = curl_exec($curl);
 
-        $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
+        $filename = dirname(__DIR__, 3) . '/xml/i3-moto-articles.txt';
 
         file_put_contents($filename, $response);
         chmod($filename, 0775);
@@ -1143,13 +1082,12 @@
 
       Motostock::where('itype', 'i3')->update(['quantity' => 0]);
 
-      $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
+      $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-moto-articles.txt');
       $content = json_decode($content);
-
-      $out = '';
 
       foreach ($content as $item) {
 
+        if ($item->MainGroupName !== 'MC tires') continue;
         $counted++;
 
         $stock = Motostock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
@@ -1178,36 +1116,8 @@
       $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
       $time_now = \Carbon\Carbon::now();
       if ($time_now->diff($sync_time)->invert == 1) {
-        $token_url = "api.latakko.eu/Token";
 
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => $token_url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-          CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "content-type: application/x-www-form-urlencoded"
-          ),
-        ));
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        curl_close($curl);
-
-        if (!$err)
-        {
-          $token = json_decode($response);
-        } else {
-          throw new \Exception($err);
-        }
-
-        $token_bearer = $token->access_token;
+        $token_bearer = $this->getI3Token();
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -1773,41 +1683,8 @@
       $sync_time = \Carbon\Carbon::parse($sync->updated_at)->addHour();
       $time_now = \Carbon\Carbon::now();
       if ($time_now->diff($sync_time)->invert == 1) {
-        if (!isset($_COOKIE['i3-token'])) {
-//        $token_url = "api.latakko.eu/Token";
 
-          $curl = curl_init();
-          curl_setopt_array($curl, array(
-            CURLOPT_URL => env('I3_TOKEN_URL'),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-            CURLOPT_HTTPHEADER => array(
-              "cache-control: no-cache",
-              "content-type: application/x-www-form-urlencoded"
-            ),
-          ));
-          $response = curl_exec($curl);
-          $err = curl_error($curl);
-
-          curl_close($curl);
-
-          if (!$err)
-          {
-            $token = json_decode($response);
-          } else {
-            dd($err);
-          }
-
-          setcookie('i3-token', $token->access_token, time() + $token->expires_in, '/');
-          $token_bearer = $token->access_token;
-        } else {
-          $token_bearer = $_COOKIE['i3-token'];
-        }
+        $token_bearer = $this->getI3Token();
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -1986,41 +1863,8 @@
       $sync_time = \Carbon\Carbon::parse($sync->updated_at)->addHour();
       $time_now = \Carbon\Carbon::now();
       if ($time_now->diff($sync_time)->invert == 1) {
-        if (!isset($_COOKIE['i3-token'])) {
-//        $token_url = "api.latakko.eu/Token";
 
-          $curl = curl_init();
-          curl_setopt_array($curl, array(
-            CURLOPT_URL => env('I3_TOKEN_URL'),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-            CURLOPT_HTTPHEADER => array(
-              "cache-control: no-cache",
-              "content-type: application/x-www-form-urlencoded"
-            ),
-          ));
-          $response = curl_exec($curl);
-          $err = curl_error($curl);
-
-          curl_close($curl);
-
-          if (!$err)
-          {
-            $token = json_decode($response);
-          } else {
-            dd($err);
-          }
-
-          setcookie('i3-token', $token->access_token, time() + $token->expires_in, '/');
-          $token_bearer = $token->access_token;
-        } else {
-          $token_bearer = $_COOKIE['i3-token'];
-        }
+        $token_bearer = $this->getI3Token();
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
