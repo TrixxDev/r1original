@@ -1051,7 +1051,7 @@
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
-          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
+          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems&IncludeCarTyres=false&IncludeMotorcycleTyres=true&IncludeTruckTyres=false&IncludeEarthmoverTyres=false',
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
