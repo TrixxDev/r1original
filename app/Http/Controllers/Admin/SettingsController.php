@@ -232,6 +232,13 @@
                         <!-- Footer content -->
                     </footer>
                 </section>
+                <script>
+                    $('section#content').find('table').each(function() {
+                        if ($(this).parent().is('div')) {
+                            $(this).parent().addClass('pak-table');
+                        }
+                    })
+                </script>
             </div>
         </div>
         @include('components.right-sidebar')
@@ -301,6 +308,13 @@
                         <!-- Footer content -->
                     </footer>
                 </section>
+                <script>
+                    $('section#content').find('table').each(function() {
+                        if ($(this).parent().is('div')) {
+                            $(this).parent().addClass('pak-table');
+                        }
+                    })
+                </script>
             </div>
         </div>
         @include('components.right-sidebar')
