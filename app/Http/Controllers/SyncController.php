@@ -912,7 +912,7 @@
           $outPath = dirname(__DIR__, 3) . '/public/storage/rims/tread/' . $treadId . '-o.jpg';
 
           if (!file_exists($outPath)) {
-            Self::grab_image('https://api.latakko.eu/api/ArticleImages/' . $imageId, $outPath);
+            $this->grab_image('https://api.latakko.eu/api/ArticleImages/' . $imageId, $outPath);
           }
         }
 
@@ -1776,7 +1776,7 @@
           $outPath = dirname(__DIR__, 3) . '/public/storage/industrial/tread/' . $treadId . '-o.jpg';
 
           if (!file_exists($outPath)) {
-            Self::grab_image(env('I3_IMAGE_URL') . $imageId, $outPath);
+            $this->grab_image(env('I3_IMAGE_URL') . $imageId, $outPath);
           }
         }
 
@@ -1956,7 +1956,7 @@
           $outPath = dirname(__DIR__, 3) . '/public/storage/industrial/tread/' . $treadId . '-o.jpg';
 
           if (!file_exists($outPath)) {
-            Self::grab_image(env('I3_IMAGE_URL') . $imageId, $outPath);
+            $this->grab_image(env('I3_IMAGE_URL') . $imageId, $outPath);
           }
         }
 
@@ -2199,42 +2199,9 @@
       }
     }
 
-    private static function grab_image($url,$saveto){
+    private function grab_image($url,$saveto){
 
-      if (!isset($_COOKIE['i3-token'])) {
-        $token_url = "gd-api-test.barnstenit.se/Token";
-//        $token_url = "api.latakko.eu/Token";
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => $token_url,
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => "grant_type=password&username=" . env('I3_USERNAME') . "&password=" . env('I3_PASSWORD'),
-          CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "content-type: application/x-www-form-urlencoded"
-          ),
-        ));
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        curl_close($curl);
-
-        if (!$err)
-        {
-          $token = json_decode($response);
-        } else {
-          dd($err);
-        }
-
-        setcookie('i3-token', $token->access_token, time() + $token->expires_in, '/');
-      }
-      $token_bearer = $_COOKIE['i3-token'];
+      $token_bearer = $this->getI3Token();
 
       $curl = curl_init();
       curl_setopt_array($curl, array(
