@@ -319,8 +319,10 @@
 
         tinymce.init({
           selector: 'textarea#editor',
-          plugins: 'advlist autolink lists link image charmap preview anchor pagebreak',
+          plugins: 'powerpaste casechange searchreplace autolink directionality visualblocks visualchars image link media mediaembed codesample table charmap pagebreak nonbreaking anchor tableofcontents insertdatetime advlist lists checklist wordcount tinymcespellchecker editimage help formatpainter permanentpen charmap linkchecker emoticons advtable export autosave advcode fullscreen',
+          toolbar: 'undo redo print spellcheckdialog formatpainter | blocks fontfamily fontsize | bold italic underline forecolor backcolor | link image | alignleft aligncenter alignright alignjustify | code',
           toolbar_mode: 'floating',
+          advcode_inline: true,
         });
     </script>
     <script>
