@@ -1652,11 +1652,11 @@
         }
       }
 
-      $fullSize['d1'] = $d1;
-      $fullSize['sep1'] = $sep1;
-      $fullSize['d2'] = $d2;
-      $fullSize['sep2'] = $sep2;
-      $fullSize['d3'] = $d3;
+      $fullSize['d1'] = (!isset($d1)) ? null : $d1;
+      $fullSize['sep1'] = (!isset($sep1)) ? null : $sep1;
+      $fullSize['d2'] = (!isset($d2)) ? null : $d2;
+      $fullSize['sep2'] = (!isset($sep2)) ? null : $sep2;
+      $fullSize['d3'] = (!isset($d3)) ? null : $d3;
 
       return $fullSize;
     }
