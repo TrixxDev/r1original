@@ -3185,27 +3185,18 @@ function fadeOut(element) {
   fadeOutAnimation();
 }
 
-console.log(performance.getEntriesByType("navigation")[0]);
-
 window.addEventListener('load', function() {
-  // Check if the page is being loaded from the back-forward cache
-  if (performance.getEntriesByType("navigation")[0].type === 'back_forward') {
-    // Page is loaded from cache or a prerender
-    isPageLoadedFromCache = true;
-  }
   fadeOut(loadingBlock);
 });
 
 window.addEventListener('pageshow', function(event) {
-  // Check if the page is being loaded from the back-forward cache
-  if (isPageLoadedFromCache) {
-    fadeOut(loadingBlock);
-  }
+  fadeOut(loadingBlock);
 });
 
 window.addEventListener('beforeunload', function() {
   fadeIn(loadingBlock);
 });
+
 
 // (()=>{
 //   const ndt = () => +new Date(),
