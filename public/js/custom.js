@@ -3187,7 +3187,7 @@ function fadeOut(element) {
 
 window.addEventListener('load', function() {
   // Check if the page is being loaded from the back-forward cache
-  if (performance.getEntriesByType("navigation")[0].type || performance.getEntriesByType("navigation")[0].type === 'back_forward') {
+  if (performance.getEntriesByType("navigation")[0].type === 'back_forward') {
     // Page is loaded from cache or a prerender
     isPageLoadedFromCache = true;
   }
