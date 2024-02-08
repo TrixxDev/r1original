@@ -3151,6 +3151,7 @@ if ($('body').hasClass('category-kvadraciklu-riepas')) {
 // });
 
 let loadingBlock = document.querySelector('.loading-block');
+let isPageLoadedFromCache = false;
 
 function fadeIn(element) {
   let opacity = 0;
@@ -3185,15 +3186,18 @@ function fadeOut(element) {
 }
 
 window.addEventListener('load', function() {
+  // Check if the page is being loaded from the back-forward cache
+  if (!performance.navigation.type || performance.navigation.type === 2) {
+    // Page is loaded from cache or a prerender
+    isPageLoadedFromCache = true;
+  }
   fadeOut(loadingBlock);
 });
 
 window.addEventListener('pageshow', function(event) {
-  // Check if the page is being loaded from the bfcache (back-forward cache)
-  if (event.persisted) {
+  // Check if the page is being loaded from the back-forward cache
+  if (event.persisted && isPageLoadedFromCache) {
     fadeIn(loadingBlock);
-  } else {
-    fadeOut(loadingBlock);
   }
 });
 
