@@ -3188,12 +3188,17 @@ window.addEventListener('load', function() {
   fadeOut(loadingBlock);
 });
 
-window.addEventListener('beforeunload', function() {
-  fadeIn(loadingBlock);
+window.addEventListener('pageshow', function(event) {
+  // Check if the page is being loaded from the bfcache (back-forward cache)
+  if (event.persisted) {
+    fadeIn(loadingBlock);
+  } else {
+    fadeOut(loadingBlock);
+  }
 });
 
-window.addEventListener('unload', function() {
-  fadeOut(loadingBlock);
+window.addEventListener('beforeunload', function() {
+  fadeIn(loadingBlock);
 });
 
 // (()=>{
