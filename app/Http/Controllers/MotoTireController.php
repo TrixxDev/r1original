@@ -287,7 +287,7 @@ class MotoTireController extends Controller
             $tire->fullName = $tire->getFullNameAttribute();
             $tire->fullSize = $tire->getFullSizeAttribute();
             $current_url = 'motociklu-riepa';
-            $tire->getUrl = route($current_url, [Str::slug(Tires::getMotoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]);
+            $tire->getUrl = route($current_url, [Tires::getMotoTireBrand($tire->brand_id)->title, strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]);
             $tire->fullTitle = $tire->getTitleAttribute();
             $tire->lisiDesc = $tire->lisiDesc($tire->li, $tire->si);
             $tire->codeExplain = $tire->getCodeExplainAttribute();
