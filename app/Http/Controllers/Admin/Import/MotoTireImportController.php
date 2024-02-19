@@ -86,7 +86,7 @@ class MotoTireImportController extends Controller
                 $tire->price2 = @$fields[13];
 
                 $tire->comment = @$fields[14];
-                $tire->acomment = @$fields[19];
+                $tire->acomment = @$fields[20];
                 $tire->code = @$fields[9];
 
                 $tire->quantity = 0;
