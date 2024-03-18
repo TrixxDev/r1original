@@ -269,6 +269,8 @@
         return json_encode(['success' => false, 'alertMessage' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!', 'finished' => false]);
       } else if ($slot && !empty($slot->comment)) {
         $slot->status = 1;
+      } else {
+        $slot->status = 1;
       }
 
       $slot->timestamps = false;
