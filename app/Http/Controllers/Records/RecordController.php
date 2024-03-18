@@ -414,12 +414,6 @@
                       . '<div class="unavailable slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">Aizņemts</span></div>'
                       . '</div>';
 
-                    if ($slot && $slot->comment !== null) {
-                      $offer_slot_content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
-                        . '<div class="available discount active slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">' . $slot->comment . '</span></div>'
-                        . '</div>';
-                    }
-
                     $closed_slot_content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
                       . '<div class="unavailable slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">Slēgts</span></div>'
                       . '</div>';
@@ -440,20 +434,35 @@
                           }
 
                           // Modify content for AC and moto slots if today and currently free
-                          if ($workingDay->date == $today && $service && ($service->f_ac || $service->f_moto)) {
-                            $content = $oddMinutes ? $ac_slot_content : $moto_slot_content;
-                            if (isset($offer_slot_content)) {
-                              $content = $offer_slot_content;
+                          if ($workingDay->date == $today) {
+                            if (Carbon::parse($currentTime)->subHour() >= Carbon::now()) {
+                              $content = $free_slot_content;
+                              if ($service && ($service->f_ac || $service->f_moto)) {
+                                $content = $oddMinutes ? $ac_slot_content : $moto_slot_content;
+                                if (!is_null($slot->comment) && is_null($slot->takenby)) {
+                                  $content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                                    . '<div class="available discount active slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">' . $slot->comment . '</span></div>'
+                                    . '</div>';
+                                }
+                              } else if (!is_null($slot->comment) && is_null($slot->takenby)) {
+                                $content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                                  . '<div class="available discount active slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">' . $slot->comment . '</span></div>'
+                                  . '</div>';
+                              }
                             }
                           } else {
                             $content = $free_slot_content;
-                            if (isset($offer_slot_content)) {
-                              $content = $offer_slot_content;
+                            if (!is_null($slot->comment) && is_null($slot->takenby)) {
+                              $content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                                . '<div class="available discount active slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">' . $slot->comment . '</span></div>'
+                                . '</div>';
                             }
                           }
                           break;
                         case SLOT_STATUS_OFFER:
-                          $content = $offer_slot_content;
+                          $content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                            . '<div class="available discount active slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">' . $slot->comment . '</span></div>'
+                            . '</div>';
                           break;
                         case SLOT_STATUS_TAKEN:
                           $content = $taken_slot_content;
