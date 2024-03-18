@@ -125,7 +125,7 @@
                                                   if ($slot) {
                                                       if (date('Y-m-d') == $workingDay->date) {
                                                         if (\Carbon\Carbon::parse($currentTime)->subHour() >= \Carbon\Carbon::now()) {
-                                                          $slotClass = ($slot->edituser !== 0) ? 'time-free' : 'taken-slot';
+                                                          $slotClass = ($slot->edituser !== 0 && is_null($slot->takenby)) ? 'time-free' : 'taken-slot';
                                                           if ($slot->comment !== null && is_null($slot->takenby)) {
                                                             $slotClass = 'time-free';
                                                           }
