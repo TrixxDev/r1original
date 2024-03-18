@@ -269,9 +269,6 @@
         return json_encode(['success' => false, 'alertMessage' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!', 'finished' => false]);
       } else if ($slot && !empty($slot->comment)) {
         $slot->status = 1;
-      } else {
-        Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id,0, 'Neizdevās izveidot pierakstu', $slot);
-        return json_encode(['success' => false, 'alertMessage' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!', 'finished' => false]);
       }
 
       $slot->timestamps = false;
