@@ -31,6 +31,7 @@ class CartController extends Controller
 {
 
     public float $radiusBorder = 360.7;
+    public string $orderWpp = '120363248805017034@g.us';
 
   /**
      * Create a new controller instance.
@@ -842,6 +843,17 @@ class CartController extends Controller
 
       $data = $order;
       $data->info = unserialize($data->info);
+
+      $cURLConnection = curl_init();
+
+      $url = 'http://api.textmebot.com/send.php?recipient=' . $this->orderWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pasūtījums%20-%20Nr.%20' . $order_id;
+
+      curl_setopt($cURLConnection, CURLOPT_URL, $url);
+      curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+      curl_exec($cURLConnection);
+
+      curl_close($cURLConnection);
 
       $data->cart = Cart::content();
 
