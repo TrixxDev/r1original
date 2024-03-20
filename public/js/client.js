@@ -353,6 +353,9 @@ $(document).ready(function() {
       },
       success: function(data) {
         $('#mobile-main #mobile-slots-choice .reservation').html(data);
+        $('html, body').animate({
+          scrollTop: $('.reservation').offset().top
+        }, 'slow');
         $('#mobile-main #mobile-slots-choice .reservation button.status-toggle').click(function(e) {
           e.preventDefault();
           $('#mobile-main #mobile-slots-choice .reservation button.status-toggle').toggleClass("btn-primary btn-secondary").text(function(i, text) {
@@ -596,8 +599,8 @@ $(document).ready(function() {
     let nextElement = element.nextElementSibling;
 
     if (nextElement && nextElement.classList.contains('time-taken-half')) {
-      nextElement.classList.remove('time-taken-half', 'taken-slot');
-      nextElement.classList.add('taken-slot');
+      nextElement.classList.remove('time-taken-half', 'time-taken');
+      nextElement.classList.add('time-taken');
     }
   });
 

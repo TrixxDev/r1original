@@ -122,6 +122,7 @@ class AutoTireController extends Controller
         View::share('wet', $this->wet);
         View::share('noise', $this->noise);
 	      View::share('code_array', $this->code_array);
+	      View::share('codes', $this->tires_getCodes());
 	      View::share('filterCount', $this->filterCount);
 	      View::share('availability', explode(' ', $this->availability));
         View::share('cartQty', $this->cartQty);
@@ -150,6 +151,29 @@ class AutoTireController extends Controller
     return view('tires.auto.tires', compact('tires', 'code_array'));
   }
 
+  public function generateCombinations(array $array) {
+    foreach (array_pop($array) as $value) {
+      if (count($array)) {
+        foreach ($this->generateCombinations($array) as $combination) {
+          yield array_merge([$value], $combination);
+        };
+      } else {
+        yield [$value];
+      }
+    }
+  }
+
+  public function checkArrays($arrays) {
+
+    foreach ($arrays as $array) {
+      if (is_array($array)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   public function api_tires(Request $request, $season) {
     try {
 
@@ -173,6 +197,7 @@ class AutoTireController extends Controller
       $currBrand = ($request->brand == 'Ražotājs') ? '' : $request->brand;
 
       $selectedTires = explode(',', $request->selected);
+      $topTires = $request->top;
       $show_selected = $request->show_selected;
 
       $fastsearch = $request->fastsearch;
@@ -184,14 +209,75 @@ class AutoTireController extends Controller
         $this->d3 = $d3 = $splited['d3'];
       }
 
-      $this->code = $selectedCodes = explode(' ', $request->code);
+      if (!is_null($request->code)) {
+        $this->code = explode(' ', $request->code);
+        $categorizedCodes = [];
+        foreach ($this->code as $code) {
+          if ($code === 'SOUND') {
+            $categorizedCodes['SOUND'] = ['SOUND', 'ACOUSTIC', 'NCS', 'SCT'];
+          } elseif ($code === 'XL') {
+            $categorizedCodes['XL'] = ['XL', 'HL'];
+          } else {
+            $categorizedCodes[$code] = $code; // Other codes without subcategories
+          }
+        }
 
-      $codeConditions = [
-        'XL' => ['auto_tires.code', 'LIKE', '%XL%'],
-        'MFS' => ['auto_tires.code', 'LIKE', '%MFS%'],
-        'RSC' => ['auto_tires.code', 'LIKE', '%RSC%'],
-        'CURRYEAR' => ['auto_tires.code', 'LIKE', '%' . date('Y') . '%'],
-      ];
+        $this->code = $categorizedCodes;
+
+        $permutations = [];
+        $hasArrays = false; // Flag to check if we need permutations
+
+        $findLike = count($categorizedCodes) === 1;
+
+        foreach ($categorizedCodes as $key => $value) {
+          if (is_array($value)) { // If a code has an array of subcategories
+            $hasArrays = true;
+            $temp = [];
+
+            // Initial permutation if other codes present
+            if ($permutations) {
+              foreach ($permutations as $perm) {
+                foreach ($value as $subcategory) {
+                  $temp[] = $perm . '%' . $subcategory;
+                }
+              }
+            } else {
+              // First set of permutations
+              $temp = $value;
+            }
+
+            $permutations = $temp;
+
+          } else {
+            // Single codes without subcategories
+            if ($permutations) {
+              foreach($permutations as &$perm) {
+                $perm .= '%' . $value;
+              }
+            } else {
+              $permutations[] = $value;
+            }
+          }
+        }
+
+
+        if ($hasArrays) {
+          $codeCombinations = $permutations;
+        } else {
+          $codeCombinations = [implode('%', $categorizedCodes)];
+        }
+        //        $selectedCodes = [];
+//        foreach ($this->code as $codes) {
+//          $selectedCodes[$codes] = $codes;
+//        }
+//        if (isset($selectedCodes['SOUND'])) {
+//          $selectedCodes['SOUND'][] = 'SOUND';
+//          $selectedCodes['SOUND'][] = 'ACOUSTIC';
+//          $selectedCodes['SOUND'][] = 'NCS';
+//          $selectedCodes['SOUND'][] = 'SCT';
+//        }
+//        if (isset($selectedCodes['XL'])) $selectedCodes['XL'][] = 'HL';
+      }
 
       $this->type = $selectedTypes = explode(' ', $request->type);
 
@@ -288,24 +374,14 @@ class AutoTireController extends Controller
                 break;
               }
           }
-        })->when($this->code, function ($query) use ($codeConditions, $selectedCodes) {
-          $query->where(function ($query) use ($selectedCodes, $codeConditions) {
-            $firstCondition = true;
-
-            foreach ($selectedCodes as $code) {
-              if (isset($codeConditions[$code])) {
-                $condition = $codeConditions[$code];
-                if ($firstCondition) {
-                  $query->where(function ($query) use ($condition) {
-                    call_user_func_array([$query, 'where'], $condition);
-                  });
-                  $firstCondition = false;
-                } else {
-                  $query->orWhere(function ($query) use ($condition) {
-                    call_user_func_array([$query, 'where'], $condition);
-                  });
-                }
+        })->when($this->code, function ($query) use (&$codeCombinations, &$findLike) {
+          $query->where(function ($query) use ($codeCombinations, $findLike) {
+            if (count($codeCombinations) > 1) {
+              foreach ($codeCombinations as $combination) {
+                $query->orWhere('code', 'like', '%' . $combination . '%');
               }
+            } else {
+              $query->where('code', 'like', '%' . implode(' ', $codeCombinations) . '%');
             }
           });
         })->when($this->type, function ($query) use ($typeConditions, $selectedTypes) {
@@ -390,6 +466,8 @@ class AutoTireController extends Controller
           });
         })->when($show_selected, function ($query) use ($selectedTires) {
           $query->whereIn('tire_id', $selectedTires);
+        })->when($topTires, function ($query) {
+          $query->where('top', 1);
         })->where('auto_treads.season', $season)
         ->where('auto_tires.visible_users', '<>', 0)
         ->orderBy('d3', 'ASC')
@@ -398,7 +476,7 @@ class AutoTireController extends Controller
         ->orderBy('price2', 'DESC')
         ->groupBy('auto_tires.article');
 
-      $totalItems = count($tires->get());
+      $totalItems = $tires->count();
       $totalPages = ceil($totalItems / $perPage);
 
       $tires = $tires->skip($offset)
@@ -485,16 +563,16 @@ class AutoTireController extends Controller
             $html .= '<td class="hidden-sm-down text-center"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px; text-align: left;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->lisiDesc . '</span></div>">' . $tire->li . $tire->si . '</span></td>';
             if ($tire->season == 2) {
               $html .= '<td scope="col" class="hidden-sm-down text-center">';
-              if ($tire->type == 1) $html .= '<span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>Centrāleiropas tipa ziemas riepa</span></div>"><img src="/images/ms.png" alt="ms"></span>';
-              if ($tire->type == 2) $html .= '<span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>Radžojama</span></div>"><img src="/images/radzeb.png" alt="ms"></span>';
-              if ($tire->type == 3) $html .= '<span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>Ar radzēm</span></div>"><img src="/images/radzea.png" alt="ms"></span>';
-              if ($tire->type == 4) $html .= '<span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>Skandināvijas tipa ziemas riepa</span></div>"><img src="/images/parsla.png" alt="ms"></span>';
+              if ($tire->type == 1) $html .= '<span class="tippy lisi-tooltip type-explain" data-type="1" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>Centrāleiropas tipa ziemas riepa</span></div>"><img src="/images/ms.png" alt="ms"></span>';
+              if ($tire->type == 2) $html .= '<span class="tippy lisi-tooltip type-explain" data-type="2" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>Radžojama</span></div>"><img src="/images/radzeb.png" alt="ms"></span>';
+              if ($tire->type == 3) $html .= '<span class="tippy lisi-tooltip type-explain" data-type="3" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>Ar radzēm</span></div>"><img src="/images/radzea.png" alt="ms"></span>';
+              if ($tire->type == 4) $html .= '<span class="tippy lisi-tooltip type-explain" data-type="4" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>Skandināvijas tipa ziemas riepa</span></div>"><img src="/images/parsla.png" alt="ms"></span>';
               $html .= '</td>';
             }
-            $html .= '<td class="hidden-sm-down text-center"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px; text-align: left;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->codeExplain . '</span></div>">' . $tire->code . '</span></td>';
-            $html .= '<td class="hidden-sm-down text-center"><span>' . $tire->eco . '</span></td>';
-            $html .= '<td class="hidden-sm-down text-center"><span>' . $tire->wet . '</span></td>';
-            $html .= '<td class="hidden-sm-down text-center"><span>' . $tire->noise . '</span></td>';
+            $html .= '<td class="hidden-sm-down text-center"><span class="tippy lisi-tooltip code-explain" data-tippy-content="<div style=\'padding: 5px; text-align: left;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->codeExplain . '</span></div>">' . $tire->code . '</span></td>';
+            $html .= '<td class="hidden-sm-down text-center"><span class="fuel-explain">' . $tire->eco . '</span></td>';
+            $html .= '<td class="hidden-sm-down text-center"><span class="wet-explain">' . $tire->wet . '</span></td>';
+            $html .= '<td class="hidden-sm-down text-center"><span class="noise-explain">' . $tire->noise . '</span></td>';
             $html .= '<td id="store-price" class="text-center store-price">€ ' . $tire->price1 . '</td>';
             $html .= '<td id="sale-price" class="text-center tire-price-red sale-price">€ ' . $tire->price2 . '</td>';
             if ($tire->comment == 'Izpārdošana!' || $tire->priceoffer == 1) {
@@ -509,7 +587,7 @@ class AutoTireController extends Controller
               $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
             }
             $html .= '</div></td>';
-            $html .= '<td class="dot-availability text-center"><span class="tippy lisi-tooltip dot ' . $tire->dotAvailable . '" data-tippy-content=\'<div style="padding: 5px; text-align: left;"><span style="color: black; font-size: 15px; line-height: 28px;">' . $tire->stockAvailability . '</span></div>\'></span></td>';
+            $html .= '<td class="dot-availability text-center"><span class="tippy lisi-tooltip dot ' . $tire->dotAvailable . '" data-color="' . $tire->dotAvailable . '" data-tippy-content=\'<div style="padding: 5px; text-align: left;"><span style="color: black; font-size: 15px; line-height: 28px;">' . $tire->stockAvailability . '</span></div>\'></span></td>';
             $html .= '</tr>';
             $fullSize = $tire->fullSize;
             if ($fullSize !== $tire->fullSize) {
@@ -793,6 +871,34 @@ class AutoTireController extends Controller
     } catch (\Exception $e) {
       return response()->json(['error' => $e->getMessage()], 500);
     }
+  }
+
+  public function tires_getCodes()
+  {
+
+    $codes = Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+      ->selectRaw('MIN(code) AS code')
+      ->where('auto_tires.visible_users', '<>', 0)
+      ->where('auto_treads.season', 1)
+      ->where('code', 'NOT LIKE', '%DOT%')
+      ->where('code', 'NOT LIKE', '')
+      ->groupBy('code')
+      ->get();
+
+    $explodedCodes = [];
+    $uniqueCodes = [];
+
+    foreach ($codes as $codeString) {
+      $explodedCodes[] = explode(' ', $codeString->code);
+    }
+
+    foreach ($explodedCodes as $code) {
+      foreach ($code as $code1) {
+        $uniqueCodes[] = $code1;
+      }
+    }
+
+    return array_filter(array_unique($uniqueCodes));
   }
 
   public function tires_getBrands()
