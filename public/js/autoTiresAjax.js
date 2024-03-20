@@ -95,6 +95,8 @@ $(document).ready(function() {
     window['show_selected'] = '';
     window['fastsearch'] = '';
     window['fastsearchInput'] = '';
+    $('#search_filters #show-top-checkbox').attr('checked', true);
+    window['top_enabled'] = '&top=show';
     $('.custom-checkbox input').removeAttr('checked').prop('checked', false);
     window['page'] = '';
     selectedSize = true;
@@ -123,6 +125,8 @@ $(document).ready(function() {
     $('.custom-checkbox input').removeAttr('checked').prop('checked', false);
     window['fastsearchInput'] = $(this).val();
     window['fastsearch'] = '&fastsearch=' + window['fastsearchInput'];
+    $('#search_filters #show-top-checkbox').attr('checked', true);
+    window['top_enabled'] = '&top=show';
     window['page'] = '';
     selectedSize = true;
     pageNr = 1;
