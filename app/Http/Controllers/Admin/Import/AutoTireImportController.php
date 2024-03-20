@@ -113,8 +113,6 @@ class AutoTireImportController extends Controller
           $tire->acomment = @$fields[25];
           $tire->code = @$fields[10];
 
-          $tire->quantity = 0;
-
           $eco = trim(@$fields[22]);
           $wet = trim(@$fields[23]);
           $noise = trim(@$fields[24]);
