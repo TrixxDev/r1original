@@ -101,7 +101,7 @@ $(document).ready(function() {
     pageNr = 1;
     loadItems();
     if (window['top_enabled'].length <= 0) {
-      $('#search_filters #show-top-checkbox').trigger('click');
+      $('#search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
     }
   });
 
@@ -132,7 +132,7 @@ $(document).ready(function() {
     if ($(this).val().length > 0) {
       loadItems();
       if (window['top_enabled'].length <= 0) {
-        $('#search_filters #show-top-checkbox').trigger('click');
+        $('#search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
       }
     }
   });
