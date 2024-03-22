@@ -860,6 +860,16 @@
                     <div class="sidebar-bottom">
                       <section class="facet clearfix facet--availability" style="padding-top: 0">
                         <ul class="collapse">
+                            <li class="show-top-checkbox-li">
+                                <label class="facet-label" for="show-top-checkbox"
+                                       style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+                              <span class="custom-checkbox">
+                                <input type="checkbox" value="top" class="tire-top-checkbox" id="show-top-checkbox" @if (request()->top) checked @endif title="">
+                              <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
+                            </span>
+                                    <span>TOP 40</span>
+                                </label>
+                            </li>
                           <li class="show-selected-checkbox-li">
                             <label class="facet-label" for="show-selected-checkbox"
                                    style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
@@ -934,7 +944,7 @@
                         @endphp
 
                         <ul id="facet_code">
-                          <div class="row">
+                          <div class="row flex flex-codes">
                             <div class="col-md-6">
                               <li data-label="RSC">
                                 <label class="facet-label" for="facet_for_rsc">
@@ -1150,7 +1160,7 @@
 
                       @endif
 
-                      <div class="row">
+                      <div class="row flex flex-params">
                         <div class="col-md-4">
                           <section class="facet clearfix facet--8">
                             <h1 class="h6 facet-title facet-hover fuel-eco-dropdown-btn">
