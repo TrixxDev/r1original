@@ -103,7 +103,7 @@ $(document).ready(function() {
     let selectedOption = $('option:selected', this);
     let isLastOption = selectedOption.is(':last-child');
 
-    $('.reservation_edit #f_status option').removeAttr('selected').prop('selected', false).first().attr('selected', true).prop('selected', true);
+    // $('.reservation_edit #f_status option').removeAttr('selected').prop('selected', false).first().attr('selected', true).prop('selected', true);
 
     discountSelect = selectedOption;
 
