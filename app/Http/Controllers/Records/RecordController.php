@@ -596,6 +596,7 @@
         $workingDays = NewWorkingday::where('date', $date)->get();
         $daysToShow[] = $date;
         $visibleDays = 0;
+        array_pop($daysToShow);
       }
 
       $from = $daysToShow[0];
