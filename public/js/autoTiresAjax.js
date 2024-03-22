@@ -104,7 +104,7 @@ $(document).ready(function() {
       if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
         $('.mobile-filter-modal #search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
       } else {
-        $('#search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
+        $('#search_filters_wrapper #search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
       }
     }
   });
@@ -139,7 +139,7 @@ $(document).ready(function() {
         if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
           $('.mobile-filter-modal #search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
         } else {
-          $('#search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
+          $('#search_filters_wrapper #search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
         }
       }
     }
@@ -651,7 +651,7 @@ $(document).ready(function() {
           if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             $('.mobile-filter-modal #search_filters #show-top-checkbox').trigger('click');
           } else {
-            $('#search_filters #show-top-checkbox').trigger('click');
+            $('#search_filters_wrapper #search_filters #show-top-checkbox').trigger('click');
           }
           clickedTop = true;
         }
@@ -704,9 +704,9 @@ $(document).ready(function() {
       }
     } else {
       if (clickedTop) {
-        $('#search_filters #show-top-checkbox').attr('checked', true).prop('checked', true);
+        $('#search_filters_wrapper #search_filters #show-top-checkbox').attr('checked', true).prop('checked', true);
       } else {
-        $('#search_filters #show-top-checkbox').removeAttr('checked').removeProp('checked');
+        $('#search_filters_wrapper #search_filters #show-top-checkbox').removeAttr('checked').removeProp('checked');
       }
     }
 
