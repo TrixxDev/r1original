@@ -369,7 +369,7 @@ $(document).ready(function() {
 
                   const urlData = new URLSearchParams(calcData).toString();
 
-                  popCalc('/testing3',1060,650);
+                  popCalc('/testing3',1200,750);
 
 
                 }
