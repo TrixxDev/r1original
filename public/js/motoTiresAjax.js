@@ -294,7 +294,7 @@ $(document).ready(function() {
           products.push(parseInt($(value).val()));
 
           // ON SHOPPING CART BUTTON CLICK
-          $('#tires-table-body').on('click', '.cart-shopping-button', function() {
+          $('.moto-sorter.tires-table #tires-table-body').on('click', '.cart-shopping-button', function() {
 
               if (!admin) {
                 const tire_id = $(this).data('info');
