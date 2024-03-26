@@ -251,6 +251,7 @@ class ShopController extends Controller
 //    $data->surname = $names[1];
 //    $data->email = $request->email;
 
+    $order->admin_info = $request->admin_info;
     $order->status = $request->order_status;
     $order->edituser = Auth::user()->id;
 

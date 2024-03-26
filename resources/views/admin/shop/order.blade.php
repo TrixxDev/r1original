@@ -26,6 +26,14 @@
         </div>
       @endif
       <div class="form-group row">
+          <div class="col-sm-3"></div>
+          <div class="col-sm-6">
+              <button type="submit" form="orderUpdate" class="btn btn-primary ml-1 float-right">Saglabāt</button>
+              <a href="{{ URL::previous() }}" class="btn btn-secondary float-right">Atgriezties</a>
+          </div>
+          <div class="col-sm-3"></div>
+      </div>
+      <div class="form-group row">
         <label class="col-md-3 form-control-label text-left text-md-right">
           <h3>Pasūtījuma informācija</h3>
         </label>
@@ -37,6 +45,15 @@
       </div>
       <form id="orderUpdate" method="POST" action="{{ route('admin.order.update', $order->id) }}">
       @csrf
+      <div class="form-group row">
+          <label class="col-md-3 form-control-label text-left text-md-right">
+              Komentāri
+          </label>
+          <div class="col-md-6 col-sm">
+              <textarea name="admin_info" class="form-control" cols="30" rows="5">@if (!empty($order->admin_info)){{ $order->admin_info }}@endif</textarea>
+          </div>
+      </div>
+
       <div class="form-group row">
         <label class="col-md-3 form-control-label text-left text-md-right">
           Rēķina numurs
