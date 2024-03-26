@@ -14,6 +14,37 @@ $(document).ready(function() {
     });
   }
 
+  function addEntry(item) {
+    // Parse the JSON stored in allEntries
+    let existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+    if (existingEntries == null) existingEntries = [];
+
+    // Check if the entry already exists
+    // (Modify the criteria based on what constitutes a duplicate)
+    const isDuplicate = existingEntries.some(entry =>
+      entry.article === item.article &&
+      entry.user === item.user
+    );
+
+    if (isDuplicate) {
+      return false; // Entry already exists
+    }
+
+    // If not a duplicate, proceed with adding the entry
+    let entry = {
+      "article": item.article,
+      "qty": item.qty,
+      "user": item.user,
+      "prod": item.prod,
+      "price": item.price,
+    };
+
+    existingEntries.push(entry);
+    localStorage.setItem("allEntries", JSON.stringify(existingEntries));
+
+    return true; // If you want to return true on successful addition
+  }
+
   $('.loading-block-content').fadeIn();
 
   const pathParts = window.location.pathname.split('/');

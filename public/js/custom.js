@@ -11,9 +11,22 @@ $.fn.hasId = function(id) {
 };
 
 function addEntry(item) {
-  // Parse the JSON stored in allEntriesP
+  // Parse the JSON stored in allEntries
   let existingEntries = JSON.parse(localStorage.getItem("allEntries"));
-  if(existingEntries == null) existingEntries = [];
+  if (existingEntries == null) existingEntries = [];
+
+  // Check if the entry already exists
+  // (Modify the criteria based on what constitutes a duplicate)
+  const isDuplicate = existingEntries.some(entry =>
+    entry.article === item.article &&
+    entry.user === item.user
+  );
+
+  if (isDuplicate) {
+    return false; // Entry already exists
+  }
+
+  // If not a duplicate, proceed with adding the entry
   let entry = {
     "article": item.article,
     "qty": item.qty,
@@ -21,10 +34,12 @@ function addEntry(item) {
     "prod": item.prod,
     "price": item.price,
   };
-  // Save allEntries back to local storage
+
   existingEntries.push(entry);
   localStorage.setItem("allEntries", JSON.stringify(existingEntries));
-};
+
+  return true; // If you want to return true on successful addition
+}
 
 //const pusher = new Pusher('04c358afec27f4ba222f', {
 //  cluster: 'eu',
