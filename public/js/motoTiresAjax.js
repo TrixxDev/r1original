@@ -296,8 +296,6 @@ $(document).ready(function() {
           // ON SHOPPING CART BUTTON CLICK
           $('#tires-table-body').on('click', '.cart-shopping-button', function() {
 
-            if (shopping_button_count === 0) {
-
               if (!admin) {
                 const tire_id = $(this).data('info');
 
@@ -419,13 +417,10 @@ $(document).ready(function() {
 
                 const urlData = new URLSearchParams(calcData).toString();
 
-                popCalc('/testing3',950,650);
+                popCalc('/testing3',1060,650);
 
 
               }
-
-              shopping_button_count++;
-            }
 
           })
         });
