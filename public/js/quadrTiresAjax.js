@@ -273,7 +273,7 @@ $(document).ready(function() {
           $(document).find('.tire-table-checkbox').children().each(function(key, value){
 
             // ON SHOPPING CART BUTTON CLICK
-            $('#tires-table-body').on('click', '.cart-shopping-button', function() {
+            $('.quadr-sorter.tires-table #tires-table-body').on('click', '.cart-shopping-button', function() {
 
                 if (!admin) {
                   const tire_id = $(this).data('info');
