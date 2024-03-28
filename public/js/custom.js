@@ -237,6 +237,7 @@ $(document).ready(function() {
     slot_time = $('option:selected', this).data('time');
   });
 
+  $('#mobile-service select[name="serviceOption"] option.disabled').remove();
   $('#mobile-service select[name="serviceOption"]').on('change', function () {
     if ($(this).hasClass('required-input')) {
       $(this).removeClass('required-input');
