@@ -493,7 +493,7 @@ $(document).ready(function() {
             tire_noises.push($(this).parent().parent().find('.noise-explain').text().charAt(0));
 
             // ON SHOPPING CART BUTTON CLICK
-            $('#tires-table-body').on('click', '.cart-shopping-button', function() {
+            $(this).parent().parent().find('.cart-shopping-button').on('click', function() {
 
               if (!admin) {
                 const tire_id = $(this).data('info');
