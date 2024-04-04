@@ -617,7 +617,7 @@ class AutoTireController extends Controller
             $html .= '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
                                       Filtrs
                                     </button></h4>
-                          <div class="row grid-ex pr-1" style="padding-left: 5px;">';
+                          <div class="row grid-ex pr-1 mobile-tire-container" style="padding-left: 5px;">';
             $cbrand = $brand;
           }
           $html .= '<a href="' . $tire->getUrl . '" class="grid-view-link" data-article="' . $tire->article . '">';
@@ -639,6 +639,17 @@ class AutoTireController extends Controller
           $html .= '<input type="checkbox" name="product_ids[]" value="' . $tire->tire_id . '" style="margin-right: 5px;">';
           $html .= '<div class="rim-price-old" style="align-self: center;">€' . $tire->price1 . '</div>';
           $html .= '<div class="rim-price-red" style="align-self: center;">€' . $tire->price2 . '</div>';
+          if ($tire->season == 2) {
+            $html .= '<div class="hidden-sm-down text-center" style="display: none;">';
+            if ($tire->type == 1) $html .= '<span class="tippy lisi-tooltip type-explain" data-type="1"><img src="/images/ms.png" alt="ms"></span>';
+            if ($tire->type == 2) $html .= '<span class="tippy lisi-tooltip type-explain" data-type="2"><img src="/images/radzeb.png" alt="ms"></span>';
+            if ($tire->type == 3) $html .= '<span class="tippy lisi-tooltip type-explain" data-type="3"><img src="/images/radzea.png" alt="ms"></span>';
+            if ($tire->type == 4) $html .= '<span class="tippy lisi-tooltip type-explain" data-type="4"><img src="/images/parsla.png" alt="ms"></span>';
+            $html .= '</div>';
+          }
+          $html .= '<div class="hidden-sm-down text-center" style="display: none;"><span class="fuel-explain">' . $tire->eco . '</span></div>';
+          $html .= '<div class="hidden-sm-down text-center" style="display: none;"><span class="wet-explain">' . $tire->wet . '</span></div>';
+          $html .= '<div class="hidden-sm-down text-center" style="display: none;"><span class="noise-explain">' . $tire->noise . '</span></div>';
           $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>">';
           if (Auth::check()) {
             $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#">';
@@ -649,7 +660,7 @@ class AutoTireController extends Controller
           $html .= '</button>';
           $html .= '</span>';
 
-          $html .= '<span class="tippy lisi-tooltip grid-dot ' . $tire->dotAvailable . $tire->stockCount . '" data-tippy-content=\'<div style="padding: 5px;"><span style="color: black; font-size: 15px;">' . $tire->stockAvailability . '</span></div>\'></span>';
+          $html .= '<span class="tippy lisi-tooltip grid-dot ' . $tire->dotAvailable . $tire->stockCount . '" data-color="' . $tire->dotAvailable . '" data-tippy-content=\'<div style="padding: 5px;"><span style="color: black; font-size: 15px;">' . $tire->stockAvailability . '</span></div>\'></span>';
           $html .= '<span class="sort-order" style="display: none;">' . $tire->dotAvailable . '</span>';
           $html .= '</span>';
           $html .= '</div>';

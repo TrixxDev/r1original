@@ -240,8 +240,13 @@ $(document).ready(function() {
             $(this).removeAttr('checked').removeProp('checked');
             $(this).parent().parent().removeClass('selected');
           });
+          $(document).find('#js-product-list .mobile-tire-container .tire-list-caption input[type=checkbox]').each(function() {
+            $(this).removeAttr('checked').removeProp('checked');
+            $(this).parent().parent().parent().removeClass('selected');
+          });
           $.map(tires_array, function(value, index) {
             $('.tire-table-row .tire-table-checkbox input[value="' + value + '"]').attr('checked', true).prop('checked', true).parent().parent().toggleClass('selected');
+            $(document).find('#js-product-list .mobile-tire-container .tire-list-caption input[type=checkbox][value="' + value + '"]').attr('checked', true).prop('checked', true).parent().parent().parent().toggleClass('selected');
           });
         }
 
@@ -288,6 +293,30 @@ $(document).ready(function() {
           }
         });
         // Rādīt izvēlētos end
+
+        // Rādīt izvēlētos (saraksts) start
+        if ($('#js-product-list .mobile-tire-container').is(':visible')) {
+          $(document).find('#js-product-list .mobile-tire-container .tire-list-caption input[type=checkbox]').on('click', function () {
+            tires_array = [];
+            $(this).parent().parent().parent().toggleClass('selected');
+            $(document).find('#js-product-list .mobile-tire-container .tire-list-caption input[type=checkbox]:checked').each(function () {
+              tires_array.push($(this).val());
+            });
+
+            if (tires_array.length > 0) {
+              $('#show-selected-checkbox').removeAttr('disabled').prop('disabled', false);
+              window['selected_tires'] = '&selected=' + tires_array.join(',');
+            } else {
+              $('#show-selected-checkbox').attr('disabled', true).prop('disabled', true);
+              window['selected_tires'] = '';
+            }
+            newUrl = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['type'] + window['selected_tires'] + window['show_selected'] + window['page'];
+
+            if (pageLoaded === 1) {
+              history.pushState({prevUrl: document.referrer}, '', newUrl);
+            }
+          });
+        }
 
         $(document).find('.tire-table-checkbox').children().each(function(key, value){
           // PARSE TO INT

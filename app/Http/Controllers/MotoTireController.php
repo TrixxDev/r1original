@@ -381,7 +381,7 @@ class MotoTireController extends Controller
             $html .= '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
                                       Filtrs ()
                                     </button></h4>
-                          <div class="row grid-ex pr-1" style="padding-left: 5px;">';
+                          <div class="row grid-ex pr-1 mobile-tire-container" style="padding-left: 5px;">';
             $cbrand = $brand;
           }
           $html .= '<a href="' . $tire->getUrl . '" class="grid-view-link" data-article="' . $tire->article . '">';
