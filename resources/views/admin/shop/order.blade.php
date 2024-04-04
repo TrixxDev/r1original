@@ -29,7 +29,7 @@
           <div class="col-sm-3"></div>
           <div class="col-sm-6">
               <button type="submit" form="orderUpdate" class="btn btn-primary ml-1 float-right">Saglabāt</button>
-              <a href="{{ URL::previous() }}" class="btn btn-secondary float-right">Atgriezties</a>
+              <a href="{{ route('admin.orders') }}" class="btn btn-secondary float-right">Atgriezties</a>
           </div>
           <div class="col-sm-3"></div>
       </div>
@@ -412,7 +412,7 @@
         <div class="col-sm-3"></div>
         <div class="col-sm-6">
           <button type="submit" form="orderUpdate" class="btn btn-primary ml-1 float-right">Saglabāt</button>
-          <a href="{{ URL::previous() }}" class="btn btn-secondary float-right">Atgriezties</a>
+          <a href="{{ route('admin.orders') }}" class="btn btn-secondary float-right">Atgriezties</a>
         </div>
         <div class="col-sm-3"></div>
       </div>
