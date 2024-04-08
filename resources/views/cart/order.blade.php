@@ -72,7 +72,7 @@
 
                   <div class="form-group">
                     <label for="phone_number">Tālrunis<span class="required-field"> *</span></label>
-                    <input type="text" class="form-control" name="data[phone_number]" id="phone_number" value="@if (\Illuminate\Support\Facades\Session::has('cart.phone_number')){{\Illuminate\Support\Facades\Session::get('cart.phone_number')}}@endif" placeholder="Tālrunis" required>
+                    <input type="number" class="form-control" name="data[phone_number]" id="phone_number" value="@if (\Illuminate\Support\Facades\Session::has('cart.phone_number')){{\Illuminate\Support\Facades\Session::get('cart.phone_number')}}@endif" placeholder="Tālrunis" required>
                   </div>
 
                     <div class="reveal-if-active">
