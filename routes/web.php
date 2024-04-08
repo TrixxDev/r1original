@@ -26,6 +26,7 @@ Route::prefix('api')->name('admin.')->group(function() {
   Route::get('/tires/auto/{season}', [App\Http\Controllers\AutoTireController::class, 'api_tires']);
   Route::get('/tires/moto', [App\Http\Controllers\MotoTireController::class, 'api_tires']);
   Route::get('/tires/quadr', [App\Http\Controllers\QuadTireController::class, 'api_tires']);
+  Route::get('/rims/auto', [App\Http\Controllers\RimsController::class, 'api_tires']);
   Route::get('/tires/autoSplitInput/{input}', [App\Http\Controllers\AutoTireController::class, 'splitInput']);
   Route::get('/tires/motoSplitInput/{input}', [App\Http\Controllers\MotoTireController::class, 'splitInput']);
   Route::get('/tires/quadrSplitInput/{input}', [App\Http\Controllers\QuadTireController::class, 'splitInput']);
