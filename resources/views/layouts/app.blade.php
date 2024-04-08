@@ -61,7 +61,7 @@
     @livewireStyles
 </head>
 
-<body id="@yield('body-title')" class="@yield('title')" style="background-image: url(@if ((int) env('SEASON') === 1)'/images/cover3.jpg'@else'/images/cover.webp'@endif)">
+<body id="@yield('body-title')" class="@yield('title')" style="background-image: url(@if ((int) env('SEASON') === 1)'/images/cover.webp'@else'/images/cover.webp'@endif)">
 {{--<div class="loading-block"><div class="loading-content"><svg class="machine"xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 645 526">--}}
 {{--      <defs/>--}}
 {{--      <g>--}}
