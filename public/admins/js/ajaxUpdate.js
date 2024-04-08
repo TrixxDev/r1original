@@ -1448,3 +1448,18 @@ $('.tread_comment').on('click', '.brand-comment-edit-cancel[type=button]', funct
 });
 
 $('#orders_from, #orders_to').datepicker({ dateFormat: 'yy-mm-dd' });
+
+$(document).ready(function() {
+
+  $(document).on('mouseenter', '.tippy', function() {
+    tippy(this, {
+      touchHold: true,
+      hideOnClick: false,
+      placement: 'top',
+      arrow: false,
+      animateFill: false,
+      animation: 'shift-away',
+    });
+  });
+
+});

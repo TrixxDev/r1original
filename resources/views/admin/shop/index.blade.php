@@ -98,7 +98,13 @@
                             <td>{{ $order->id }}</td>
                             <td>{{ $item_count }}</td>
                             <td>{{ $item_sum }} €</td>
-                            <td>{{ $status_enum[$order->status] }}</td>
+                            <td>
+                                @if (!is_null($order->admin_info))
+                                    <span style="font-weight: bold;" class="tippy" data-tippy-content="{!! $order->admin_info !!}">{{ $status_enum[$order->status] }}</span>
+                                @else
+                                    <span>{{ $status_enum[$order->status] }}</span>
+                                @endif
+                            </td>
                             <td>{{ $pay_enum[$order->payment] }}</td>
                             <td>
                               @if (\App\Models\User::find($order->edituser))

@@ -266,6 +266,8 @@
         </footer>
       </div>
     </div>
+    <script src="https://unpkg.com/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://unpkg.com/tippy.js@4.3.5/umd/index.all.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="https://cdn.tiny.cloud/1/3nivlf7ukirc5znzq6r1m68qaf80subltkj10h3an5njfepn/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
