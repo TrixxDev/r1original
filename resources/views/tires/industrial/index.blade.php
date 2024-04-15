@@ -23,7 +23,7 @@
                   <div class="can-collapse">
 
                     <span class="show_list active" data-dismiss="modal"><i class="material-icons "></i>Saraksts</span>
-                    <span class="show_grid" data-dismiss="modal"><i class="material-icons "></i>Bildes</span>
+{{--                    <span class="show_grid" data-dismiss="modal"><i class="material-icons "></i>Bildes</span>--}}
 
                     <template id="facet-template">
                       <section class="facet clearfix">
