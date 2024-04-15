@@ -437,7 +437,7 @@
 
                           <td class="table-tire-name-cell">
                               <a class="tire-table-link tippy image"
-                                 data-tippy-content="<div><img data-src=\'https://r1riepas.lv/storage/industrial/tread/' . $tire->tread_id . '-o.jpg\'></div>"
+                                 data-tippy-content="<div><img data-src=\'https://r1riepas.lv/storage/industrial/tread/{{$tire->make_id}}-o.jpg\'></div>"
                                  href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
                                  data-content="{{ $tire->fullName }}"
                                  data-article="{{ $tire->article }}"
