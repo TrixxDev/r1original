@@ -414,8 +414,8 @@ sf_height = $('#search_filters').height();
 // SHOW LIST VIEW
 $('.category-lielas-riepas div.can-collapse span.show_list').on('click', function(){
   $(this).addClass('active');
-  $('#products .tire-image-container').hide();
-  $('#js-product-list').show();
+  $('.category-lielas-riepas #products .tire-image-container').hide();
+  $('.category-lielas-riepas #js-product-list').show();
   $('span.show_grid').removeClass('active');
   localStorage.setItem("show_type", "list");
 });
@@ -423,22 +423,22 @@ $('.category-lielas-riepas div.can-collapse span.show_list').on('click', functio
 // SHOW GRID VIEW
 $('.category-lielas-riepas div.can-collapse span.show_grid').on('click', function(){
   $(this).addClass('active');
-  $('#js-product-list').hide();
-  $('#products .tire-image-container').show();
+  $('.category-lielas-riepas #js-product-list').hide();
+  $('.category-lielas-riepas #products .tire-image-container').show();
   $('span.show_list').removeClass('active');
   localStorage.setItem("show_type", "grid");
 });
 
 // SHOW VIEW DEPENDING ON LOCAL STORAGE VALUE
 if (localStorage.getItem('show_type') === 'list') {
-  $('#products .tire-image-container').hide();
-  $('#js-product-list').show();
+  $('.category-lielas-riepas #products .tire-image-container').hide();
+  $('.category-lielas-riepas #js-product-list').show();
   $('span.show_list').addClass('active');
   $('span.show_grid').removeClass('active');
 }
 if (localStorage.getItem('show_type') === 'grid') {
-  $('#js-product-list').hide();
-  $('#products .tire-image-container').show();
+  $('.category-lielas-riepas #js-product-list').hide();
+  $('.category-lielas-riepas #products .tire-image-container').show();
   $('span.show_grid').addClass('active');
   $('span.show_list').removeClass('active');
 }
