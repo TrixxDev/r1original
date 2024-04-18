@@ -184,7 +184,6 @@
        <div class="col-md-2 col-sm">
         <select id="select" class="custom-select" name="shipping_city">
           <option value="1" @if (isset($userData->shipping_city) && $userData->shipping_city == 1) selected="" @endif>Rīga</option>
-          <option value="2" @if (isset($userData->shipping_city) && $userData->shipping_city == 2) selected="" @endif>Salaspils</option>
           <option value="3" @if (isset($userData->shipping_city) && $userData->shipping_city == 3) selected="" @endif>Cits</option>
         </select>
        </div>
