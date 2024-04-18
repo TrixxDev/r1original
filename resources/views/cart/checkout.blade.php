@@ -189,12 +189,14 @@
                     <hr>
                     <form method="post" class="checkout-buttons">
                       @csrf
+                      @if (!isset($user_data['shipping_city']) || $user_data['shipping_city'] == 1)
                       <div class="form-check">
                         <input type="radio" value="1" id="paymentCheck1" name="payment" checked>
                         <label for="paymentCheck1">
                           Apmaksa saņemšanas brīdī
                         </label>
                       </div>
+                      @endif
                       <div class="form-check">
                         <input type="radio" value="2" id="paymentCheck2" name="payment">
                         <label for="paymentCheck2">
