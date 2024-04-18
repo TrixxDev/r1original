@@ -172,7 +172,6 @@
                                       <div class="form-group">
                                         <select class="custom-select" name="data[shipping_city]">
                                           <option value="1" selected>Rīga</option>
-                                          <option value="2">Salaspils</option>
                                           <option value="3">Cits</option>
                                         </select>
                                       </div>
