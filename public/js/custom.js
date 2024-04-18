@@ -389,23 +389,27 @@ $('[data-toggle="tooltip"]').tooltip({
 });
 
 sf_height = $('#search_filters').height();
-// $('.show_list').click(function(){
-//   document.cookie = "show_list=true; expires=Thu, 30 Jan 2100 12:00:00 UTC; path=/";
-//   $('#js-product-list .product-miniature').addClass('product_show_list');
-//   $('.table-top').addClass('product_show_list');
-//   $('.custom_atv_name').addClass('product_show_list');
-//   $('.show_list').addClass('active');
-//   sortItemsInList();
-// });
+$('.show_list').click(function(){
+  document.cookie = "show_list=true; expires=Thu, 30 Jan 2100 12:00:00 UTC; path=/";
+  $('#js-product-list .product-miniature').addClass('product_show_list');
+  $('.table-top').addClass('product_show_list');
+  $('.custom_atv_name').addClass('product_show_list');
+  $('.show_list').addClass('active');
+  sortItemsInList();
+  $('#products .tire-image-container').hide();
+  $('#js-product-list').show();
+});
 
-// $('.show_grid').click(function(){
-//   document.cookie = "show_list=; expires=Thu, 30 Jan 1970 12:00:00 UTC; path=/";
-//   $('#js-product-list .product-miniature').removeClass('product_show_list');
-//   $('.table-top').removeClass('product_show_list');
-//   $('.custom_atv_name').removeClass('product_show_list');
-//   $('.show_list').removeClass('active');
-//   sortItemsInBrand();
-// });
+$('.show_grid').click(function(){
+  document.cookie = "show_list=; expires=Thu, 30 Jan 1970 12:00:00 UTC; path=/";
+  $('#js-product-list .product-miniature').removeClass('product_show_list');
+  $('.table-top').removeClass('product_show_list');
+  $('.custom_atv_name').removeClass('product_show_list');
+  $('.show_list').removeClass('active');
+  sortItemsInBrand();
+  $('#products .tire-image-container').show();
+  $('#js-product-list').hide();
+});
 
 function sortItemsInBrand() {
   var $brandP = $('.products').first();
@@ -501,11 +505,11 @@ $('#category.category-id-17 .facet--35 li').each(function(){
   }
 })
 // $('#quantity_wanted').off('change');
-// if ($('#category.category-id-21').length) {
-//   $('.show_grid').click();
-// } else {
-//   $('.show_list').click();
-// }
+if ($('#category.category-id-21').length) {
+  $('.show_grid').click();
+} else {
+  $('.show_list').click();
+}
 // if ($('#category.category-id-21').length) {
 //   $('#search_filters').addClass('auto');
 // } else {
