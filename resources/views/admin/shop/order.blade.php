@@ -119,7 +119,7 @@
           Vārds, uzvārds
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="name_suraname" type="text" value="{{$userData->name . ", " . $userData->surname}}">
+          <input class="form-control" name="name_suraname" type="text" value="{{$userData->name . " " . $userData->surname}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
