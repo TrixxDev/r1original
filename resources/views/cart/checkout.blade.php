@@ -53,7 +53,7 @@
                             {{ \App\Models\Office::findOrFail($user_data['fitting_address'])->shipping }}
                           @else
                             @if (isset($user_data['shipping_address']))
-                              {{ $user_data['shipping_address'] }}, @if ($user_data['shipping_city'] == 1) Rīga @elseif ($user_data['shipping_city'] == 2) Salaspils @else Cits @endif
+                              {{ $user_data['shipping_address'] }}, @if ($user_data['shipping_city'] == 1) Rīga @else Cits @endif
                             @else
                               {{ \App\Models\Office::findOrFail($user_data['fitting_address'])->shipping }}
                             @endif
@@ -189,12 +189,14 @@
                     <hr>
                     <form method="post" class="checkout-buttons">
                       @csrf
+                      @if ($user_data['shipping_city'] == 1)
                       <div class="form-check">
                         <input type="radio" value="1" id="paymentCheck1" name="payment" checked>
                         <label for="paymentCheck1">
                           Apmaksa saņemšanas brīdī
                         </label>
                       </div>
+                      @endif
                       <div class="form-check">
                         <input type="radio" value="2" id="paymentCheck2" name="payment">
                         <label for="paymentCheck2">
