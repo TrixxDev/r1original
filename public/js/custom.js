@@ -537,11 +537,11 @@ $('#category.category-id-17 .facet--35 li').each(function(){
   }
 })
 // $('#quantity_wanted').off('change');
-if ($('#category.category-id-21').length) {
-  $('.show_grid').click();
-} else {
-  $('.show_list').click();
-}
+// if ($('#category.category-id-21').length) {
+//   $('.show_grid').click();
+// } else {
+//   $('.show_list').click();
+// }
 // if ($('#category.category-id-21').length) {
 //   $('#search_filters').addClass('auto');
 // } else {
