@@ -389,27 +389,59 @@ $('[data-toggle="tooltip"]').tooltip({
 });
 
 sf_height = $('#search_filters').height();
-$('.show_list').click(function(){
-  document.cookie = "show_list=true; expires=Thu, 30 Jan 2100 12:00:00 UTC; path=/";
-  $('#js-product-list .product-miniature').addClass('product_show_list');
-  $('.table-top').addClass('product_show_list');
-  $('.custom_atv_name').addClass('product_show_list');
-  $('.show_list').addClass('active');
-  sortItemsInList();
+// $('.show_list').click(function(){
+//   document.cookie = "show_list=true; expires=Thu, 30 Jan 2100 12:00:00 UTC; path=/";
+//   $('#js-product-list .product-miniature').addClass('product_show_list');
+//   $('.table-top').addClass('product_show_list');
+//   $('.custom_atv_name').addClass('product_show_list');
+//   $('.show_list').addClass('active');
+//   sortItemsInList();
+//   $('#products .tire-image-container').hide();
+//   $('#js-product-list').show();
+// });
+//
+// $('.show_grid').click(function(){
+//   document.cookie = "show_list=; expires=Thu, 30 Jan 1970 12:00:00 UTC; path=/";
+//   $('#js-product-list .product-miniature').removeClass('product_show_list');
+//   $('.table-top').removeClass('product_show_list');
+//   $('.custom_atv_name').removeClass('product_show_list');
+//   $('.show_list').removeClass('active');
+//   sortItemsInBrand();
+//   $('#products .tire-image-container').show();
+//   $('#js-product-list').hide();
+// });
+
+// SHOW LIST VIEW
+$('.category-lielas-riepas div.can-collapse span.show_list').on('click', function(){
+  $(this).addClass('active');
   $('#products .tire-image-container').hide();
   $('#js-product-list').show();
+  $('span.show_grid').removeClass('active');
+  localStorage.setItem("show_type", "list");
 });
 
-$('.show_grid').click(function(){
-  document.cookie = "show_list=; expires=Thu, 30 Jan 1970 12:00:00 UTC; path=/";
-  $('#js-product-list .product-miniature').removeClass('product_show_list');
-  $('.table-top').removeClass('product_show_list');
-  $('.custom_atv_name').removeClass('product_show_list');
-  $('.show_list').removeClass('active');
-  sortItemsInBrand();
-  $('#products .tire-image-container').show();
+// SHOW GRID VIEW
+$('.category-lielas-riepas div.can-collapse span.show_grid').on('click', function(){
+  $(this).addClass('active');
   $('#js-product-list').hide();
+  $('#products .tire-image-container').show();
+  $('span.show_list').removeClass('active');
+  localStorage.setItem("show_type", "grid");
 });
+
+// SHOW VIEW DEPENDING ON LOCAL STORAGE VALUE
+if (localStorage.getItem('show_type') === 'list') {
+  $('#products .tire-image-container').hide();
+  $('#js-product-list').show();
+  $('span.show_list').addClass('active');
+  $('span.show_grid').removeClass('active');
+}
+if (localStorage.getItem('show_type') === 'grid') {
+  $('#js-product-list').hide();
+  $('#products .tire-image-container').show();
+  $('span.show_grid').addClass('active');
+  $('span.show_list').removeClass('active');
+}
 
 function sortItemsInBrand() {
   var $brandP = $('.products').first();
