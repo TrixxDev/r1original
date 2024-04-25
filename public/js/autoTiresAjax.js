@@ -51,7 +51,7 @@ $(document).ready(function() {
   let season;
   window['fastsearch'] = '';
   window['fastsearchInput'] = '';
-  let newUrl;
+  window['newUrl'] = '';
   window['availability'] = ($.urlParam('availability') !== null) ? '&availability=' + $.urlParam('availability') : '';
   window['code'] = ($.urlParam('code') !== null) ? '&code=' + $.urlParam('code') : '';
   window['type'] = ($.urlParam('type') !== null) ? '&type=' + $.urlParam('type') : '';
@@ -342,6 +342,16 @@ $(document).ready(function() {
     loadItems();
   });
 
+  $('.season-select .winter-tires-link').on('click', function (e) {
+    e.preventDefault();
+    window.location.href = '/ziemas-riepas/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
+  });
+
+  $('.season-select .summer-tires-link').on('click', function (e) {
+    e.preventDefault();
+    window.location.href = '/vasaras-riepas/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
+  })
+
   function loadItems()
   {
 
@@ -472,10 +482,10 @@ $(document).ready(function() {
               $('#show-selected-checkbox').attr('disabled', true).prop('disabled', true);
               window['selected_tires'] = '';
             }
-            newUrl = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
+            window['newUrl'] = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
 
             if (pageLoaded === 1) {
-              history.pushState({ prevUrl: document.referrer }, '', newUrl);
+              history.pushState({ prevUrl: document.referrer }, '', window['newUrl']);
             }
           });
           // Rādīt izvēlētos (saraksts) end
@@ -496,10 +506,10 @@ $(document).ready(function() {
                 $('#show-selected-checkbox').attr('disabled', true).prop('disabled', true);
                 window['selected_tires'] = '';
               }
-              newUrl = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
+              window['newUrl'] = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
 
               if (pageLoaded === 1) {
-                history.pushState({ prevUrl: document.referrer }, '', newUrl);
+                history.pushState({ prevUrl: document.referrer }, '', window['newUrl']);
               }
             });
 
@@ -843,21 +853,21 @@ $(document).ready(function() {
 
     const full = location.protocol + '//' + location.host;
 
-    $('.season-select-link').each(function() {
+    // $('.season-select-link').each(function() {
+    //
+    //   let link = new URL(full + '/' + $(this).attr('href').split('/')[1] + '/search?');
+    //   let searchParams = new URLSearchParams({ d1: window['d1'], d2: window['d2'], d3: window['d3'] }).toString();
+    //
+    //   let fullLink = link.href + searchParams;
+    //
+    //   $(this).attr('href', $(this).attr('href'));
+    //
+    // });
 
-      let link = new URL(full + '/' + $(this).attr('href').split('/')[1] + '/search?');
-      let searchParams = new URLSearchParams({ d1: window['d1'], d2: window['d2'], d3: window['d3'] }).toString();
-
-      let fullLink = link.href + searchParams;
-
-      $(this).attr('href', $(this).attr('href'));
-
-    });
-
-    newUrl = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
+    window['newUrl'] = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
 
     if (pageLoaded === 1) {
-      history.pushState({ prevUrl: document.referrer }, '', newUrl);
+      history.pushState({ prevUrl: document.referrer }, '', window['newUrl']);
     }
 
     pageLoaded = 1;

@@ -14,8 +14,8 @@
               <div id="search_filters" class="params">
                 <input type="hidden" id="facet_all_val" value="Visi">
                 <div class="season-select">
-                  <a href="{{ str_replace('ziemas', 'vasaras', request()->getRequestUri()) }}" class="summer-tires-link season-select-link @if ($season_title === 'vasaras-riepas'){{'selected-link'}}@endif">Vasara</a>
-                  <a href="{{ str_replace('vasaras', 'ziemas', request()->getRequestUri()) }}" class="winter-tires-link season-select-link @if ($season_title === 'ziemas-riepas'){{'selected-link'}}@endif">Ziema</a>
+                  <button class="summer-tires-link season-select-link @if ($season_title === 'vasaras-riepas'){{'selected-link'}}@endif">Vasara</button>
+                  <button class="winter-tires-link season-select-link @if ($season_title === 'ziemas-riepas'){{'selected-link'}}@endif">Ziema</button>
                 </div>
                 <div class="wrap" style="border-top-left-radius: 0px;border-top-right-radius: 0px;border-top: none;">
 

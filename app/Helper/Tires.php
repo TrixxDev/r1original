@@ -118,14 +118,14 @@ class Tires
     }
 
     public static function getAutoTiresSize($column, $season = 1) {
-        return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
-                         ->select($column)
-                         ->where($column, '<>', '""')
-                         ->where('auto_tires.visible_users', '<>', 0)
-                         ->where('auto_treads.season', $season)
-                         ->orderBy($column)
-                         ->groupBy($column)
-                         ->get();
+      return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
+        ->select($column)
+        ->where($column, '<>', '""')
+        ->where('auto_tires.visible_users', '<>', 0)
+        ->where('auto_treads.season', $season)
+        ->orderByRaw("CASE WHEN {$column} >= 100 THEN 0 ELSE 1 END, {$column}")
+        ->groupBy($column)
+        ->get();
     }
 
     public static function getQuadrTiresD1() {
