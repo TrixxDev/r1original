@@ -887,6 +887,7 @@ class RecordController extends Controller
             $newCancelId = $newCancelId . str_replace(':', '', $dopParams['new_time']);
             $newFormData->cancelId = $newCancelId;
             $newFormData = json_encode($newFormData);
+            $new_discount = $slot->comment;
             if (!$new_slot) {
               $new_slot = new Slot();
             }
@@ -898,6 +899,7 @@ class RecordController extends Controller
             $new_slot->iorder = $newIorder;
             $new_slot->status = 1;
             $new_slot->takenby = $newFormData;
+            $new_slot->comment = $new_discount;
             $new_slot->createtime = $time_created;
             $new_slot->createuser = $user_created;
             $new_slot->edittime = now();
