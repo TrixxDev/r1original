@@ -191,21 +191,21 @@
                       @csrf
                       @if (!isset($user_data['shipping_city']) || $user_data['shipping_city'] == 1)
                       <div class="form-check">
-                        <input type="radio" value="1" id="paymentCheck1" name="payment" checked>
+                        <input type="radio" value="1" id="paymentCheck1" name="payment" required checked>
                         <label for="paymentCheck1">
                           Apmaksa saņemšanas brīdī
                         </label>
                       </div>
                       @endif
                       <div class="form-check">
-                        <input type="radio" value="2" id="paymentCheck2" name="payment">
+                        <input type="radio" value="2" id="paymentCheck2" name="payment" required @if (isset($user_data['shipping_city']) && $user_data['shipping_city'] != 1) checked @endif>
                         <label for="paymentCheck2">
                           Bankas pārskaitījums
                         </label>
                       </div>
                       @if (count($cats) == 1 && !in_array('red', $dogs))
                       <div class="form-check">
-                        <input type="radio" value="3" id="paymentCheck3" name="payment" checked>
+                        <input type="radio" value="3" id="paymentCheck3" name="payment" required checked>
                         <label for="paymentCheck3">
                           Tiešsaistes apmaksa
                         </label>
