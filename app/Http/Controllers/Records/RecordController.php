@@ -438,7 +438,7 @@
 
                           // Modify content for AC and moto slots if today and currently free
                           if ($workingDay->date == $today) {
-                            if (Carbon::parse($currentTime)->subHour() >= Carbon::now()) {
+                            if (Carbon::parse($currentTime)->subMinutes(30) >= Carbon::now()) {
                               $content = $free_slot_content;
                               if ($service && ($service->f_ac || $service->f_moto)) {
                                 $content = $oddMinutes ? $ac_slot_content : $moto_slot_content;
@@ -476,7 +476,7 @@
                       }
                     } else {
                       if ($workingDay->date == $today) {
-                        if (Carbon::parse($currentTime)->subHour() >= Carbon::now()) {
+                        if (Carbon::parse($currentTime)->subMinutes(30) >= Carbon::now()) {
                           // Modify content for AC and moto slots if today and within the hour
                           if ($workingDay->is_half) {
                             $service = $oddMinutes ? Service::where('f_ac', 1)->where('enabled', 1)->first() : Service::where('f_moto', 1)->where('enabled', 1)->first();
