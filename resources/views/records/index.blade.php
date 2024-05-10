@@ -198,7 +198,7 @@
                                                               if ($i >= 0) {
                                                                 $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
                                                               } else {
-                                                                $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><div class="status"></div></div>';
+                                                                $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                               }
                                                           } else {
                                                               if ($i >= 0) {
