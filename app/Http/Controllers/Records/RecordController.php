@@ -1016,10 +1016,17 @@
 
           $slots = Slot::where('date', $workingDay->date)->where('queue_id', $workingDay->queue_id)->get();
 
-          foreach ($slots as $slot) {
-            $slot->iorder = $slot->iorder + ($newIorder);
-            $slot->save();
-          }
+//          if ($newOpenTime > $oldOpenTime) {
+//            foreach ($slots as $slot) {
+//              $slot->iorder = $slot->iorder + ($newIorder);
+//              $slot->save();
+//            }
+//          } else {
+//            foreach ($slots as $slot) {
+//              $slot->iorder = $slot->iorder - ($newIorder);
+//              $slot->save();
+//            }
+//          }
         }
 
         $workingDay->queue_id = $equal->queue_id;
