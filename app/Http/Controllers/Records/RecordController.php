@@ -1067,6 +1067,8 @@
         $workingDay->timeopen = $equal->timeopen;
         $workingDay->timeclose = $equal->timeclose;
         $workingDay->timeStep = $equal->timeStep;
+        $workingDay->ac_toggle = $equal->ac_toggle;
+        $workingDay->moto_toggle = $equal->moto_toggle;
         $workingDay->is_half = $equal->is_half;
         $workingDay->is_opened = $equal->is_opened;
         $workingDay->save();
