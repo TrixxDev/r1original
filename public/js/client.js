@@ -147,22 +147,22 @@ $(document).ready(function() {
         $.each($('#reservation #service .form-check'), function(index, value) {
           $(value).find('input').attr('disabled', true).prop('disabled', true).attr('checked', false).prop('checked', false);
         });
-        $('#reservation').find('input[data-moto]').removeAttr('disabled').prop('disabled', false).attr('checked', true).prop('checked', true);
+        $('#reservation').find('input[data-moto]').first().removeAttr('disabled').prop('disabled', false).attr('checked', true).prop('checked', true);
       } else if ($(slot).attr('data-ac') === 'true') {
         $.each($('#reservation #service .form-check'), function(index, value) {
           $(value).find('input').attr('disabled', true).prop('disabled', true).attr('checked', false).prop('checked', false);
         });
-        $('#reservation').find('input[data-ac]').removeAttr('disabled').prop('disabled', false).attr('checked', true).prop('checked', true);
+        $('#reservation').find('input[data-ac]').first().removeAttr('disabled').prop('disabled', false).attr('checked', true).prop('checked', true);
       } else {
         let __timeSlots = $(slot).parent().parent();
         $.each($('#reservation #service .form-check'), function(index, value) {
           $(value).find('input').attr('disabled', false).prop('disabled', false).attr('checked', false).prop('checked', false);
         });
         if ($(__timeSlots).find('.time-status[data-moto]').first().length > 0) {
-          $('#reservation #service').find('input[data-moto]').attr('disabled', true).prop('disabled', true);
+          $('#reservation #service').find('input[data-moto]').first().attr('disabled', true).prop('disabled', true);
         }
         if ($(__timeSlots).find('.time-status[data-ac]').first().length > 0) {
-          $('#reservation #service').find('input[data-ac]').attr('disabled', true).prop('disabled', true);
+          $('#reservation #service').find('input[data-ac]').first().attr('disabled', true).prop('disabled', true);
         }
       }
 
