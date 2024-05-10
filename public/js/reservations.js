@@ -247,6 +247,7 @@ $(document).ready(function() {
           $('#queueModal #all_working_days').parent().show();
         }
         $('#queueModal #fullQueue, #queueModal #halfQueue').removeAttr('checked').prop('checked', false);
+        $('#queueModal #ac_toggle, #queueModal #moto_toggle').removeAttr('checked').prop('checked', false);
       },
       success: function(data) {
 
@@ -266,6 +267,14 @@ $(document).ready(function() {
             $('#queueModal').find('#halfQueue').attr('checked', true).prop('checked', true);
           } else {
             $('#queueModal').find('#fullQueue').attr('checked', true).prop('checked', true);
+          }
+
+          if (data.ac_toggle == 1) {
+            $('#queueModal').find('input#ac_toggle').attr('checked', true).prop('checked', true);
+          }
+
+          if (data.moto_toggle == 1) {
+            $('#queueModal').find('input#moto_toggle').attr('checked', true).prop('checked', true);
           }
 
           $('#queueModal .f_day').text(day);

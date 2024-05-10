@@ -829,10 +829,12 @@
       $queue = Queue::where('queue_id', $request->queue_id)->first()->title;
       $_weekDay = $workingDay->weekday;
       $timeStep = $workingDay->timeStep;
+      $ac_toggle = ($workingDay->ac_toggle == 1) ? 1 : 0;
+      $moto_toggle = ($workingDay->moto_toggle == 1) ? 1 : 0;
 
       $is_half = ($workingDay->is_half === 1) ? 1 : 0;
 
-      return json_encode(['timeopen' => $timeopen, 'timeclose' => $timeclose, 'title' => $queue, 'timeStep' => $timeStep, 'is_half' => $is_half, 'weekday' => $_weekDay]);
+      return json_encode(['timeopen' => $timeopen, 'timeclose' => $timeclose, 'title' => $queue, 'timeStep' => $timeStep, 'is_half' => $is_half, 'ac_toggle' => $ac_toggle, 'moto_toggle' => $moto_toggle, 'weekday' => $_weekDay]);
     }
 
     public function cancelTimeChanges()
