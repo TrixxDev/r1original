@@ -167,6 +167,10 @@ $(document).ready(function() {
     let newCloseTime = $('#queueModal select#f_closetime option:selected').val();
     let timeStep = $('#queueModal #f_timeinterval option:selected').val();
     let is_half = parseInt($('#queueModal input[name="queue"]:checked').val());
+    let ac_toggle = $('#queueModal input[name="ac_toggle"]').attr('checked');
+    let moto_toggle = $('#queueModal input[name="moto_toggle"]').attr('checked');
+
+    console.log(ac_toggle, moto_toggle);
 
     let sendData = {
       'times': {
