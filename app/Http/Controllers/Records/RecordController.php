@@ -311,6 +311,9 @@
 
       (new SmsSender)->sendSchedule((array) $result, $smsText, $slot);
 
+      //The URLs that we want to send cURL requests to.
+      $urls = [];
+
       if ($today == $slot->date && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
         $service = Service::where('service_id', $result->service)->first();
         $vehicle = str_replace(' ', '%20', $result->car_brand);
@@ -333,41 +336,51 @@
 
 
         if ($office->office_id == 1) {
-
-          $cURLConnection = curl_init();
-
-          $url = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
-
-          curl_setopt($cURLConnection, CURLOPT_URL, $url);
-          curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-
-          curl_exec($cURLConnection);
-
-          curl_close($cURLConnection);
+          $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
         } else {
-          $cURLConnection = curl_init();
-
-          $url = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
-
-          curl_setopt($cURLConnection, CURLOPT_URL, $url);
-          curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-
-          curl_exec($cURLConnection);
-
-          curl_close($cURLConnection);
+          $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
         }
       }
 
       if ($result->service == 3) {
         $userComment = (!empty($result->user_comment)) ? ',%20' . str_replace(' ', '%20', $result->user_comment) : '';
-
-        $cURLConnection = curl_init();
-        $url = 'http://api.textmebot.com/send.php?recipient=' . $this->orderWpp . '&apikey=d6nsRWNp1xpc&text=' . $fmtDate . '%20' . $time . ',%20' . $result->phone_number . $userComment;
-        curl_setopt($cURLConnection, CURLOPT_URL, $url);
-        curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-        curl_exec($cURLConnection);
-        curl_close($cURLConnection);
+        $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->orderWpp . '&apikey=d6nsRWNp1xpc&text=' . $fmtDate . '%20' . $time . ',%20' . $result->phone_number . $userComment;
       }
+
+      //An array that will contain all of the information
+      //relating to each request.
+      $requests = [];
+
+      //Initiate a multiple cURL handle
+      $mh = curl_multi_init();
+
+      //Loop through each URL.
+      foreach($urls as $k => $url){
+        $requests[$k] = array();
+        $requests[$k]['url'] = $url;
+        //Create a normal cURL handle for this particular request.
+        $requests[$k]['curl_handle'] = curl_init($url);
+        //Configure the options for this request.
+        curl_setopt($requests[$k]['curl_handle'], CURLOPT_RETURNTRANSFER, true);
+        //Add our normal / single cURL handle to the cURL multi handle.
+        curl_multi_add_handle($mh, $requests[$k]['curl_handle']);
+      }
+
+      //Execute our requests using curl_multi_exec.
+      $stillRunning = false;
+      do {
+        curl_multi_exec($mh, $stillRunning);
+      } while ($stillRunning);
+
+      //Loop through the requests that we executed.
+      foreach($requests as $k => $reqs){
+        //Remove the handle from the multi handle.
+        curl_multi_remove_handle($mh, $reqs['curl_handle']);
+        //Close the handle.
+        curl_close($requests[$k]['curl_handle']);
+      }
+      //Close the multi handle.
+      curl_multi_close($mh);
 
       return json_encode(['success' => true, 'message' => $returnMessage, 'new_slot_client' => true]);
     }
