@@ -309,6 +309,19 @@
       }
 
       (new SmsSender)->sendSchedule((array) $result, $smsText, $slot);
+
+      if ($result->service == 3) {
+
+
+
+        $cURLConnection = curl_init();
+        $url = 'http://api.textmebot.com/send.php?recipient=' . $this->orderWpp . '&apikey=d6nsRWNp1xpc&text=' . $fmtDate . '%20' . $time . ',%20' . $result->phone_number . ',%20' . $result->user_comment;
+        curl_setopt($cURLConnection, CURLOPT_URL, $url);
+        curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+        curl_exec($cURLConnection);
+        curl_close($cURLConnection);
+      }
+
       if ($today == $slot->date && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
         $service = Service::where('service_id', $result->service)->first();
         $vehicle = str_replace(' ', '%20', $result->car_brand);
