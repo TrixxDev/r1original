@@ -38,8 +38,9 @@
     public $endSendWpp;
     public $ursWpp = '120363130984594947@g.us';
     public $krsWpp = '120363150684433547@g.us';
-//    public $ursWpp = '120363157143688336@g.us';
-//    public $krsWpp = '120363157143688336@g.us';
+    public $orderWpp = '120363248805017034@g.us';
+    //    public $ursWpp = '120363157143688336@g.us';
+    //    public $krsWpp = '120363157143688336@g.us';
     public $now;
     public $dayTitles;
     public $timeStep = 15;
