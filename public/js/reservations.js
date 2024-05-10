@@ -247,6 +247,7 @@ $(document).ready(function() {
           $('#queueModal #all_working_days').parent().show();
         }
         $('#queueModal #fullQueue, #queueModal #halfQueue').removeAttr('checked').prop('checked', false);
+        $('#queueModal .queue_services').hide();
         $('#queueModal #ac_toggle, #queueModal #moto_toggle').removeAttr('checked').prop('checked', false);
       },
       success: function(data) {
@@ -265,8 +266,10 @@ $(document).ready(function() {
           $('#queueModal #one_day').attr('checked', true).prop('checked', true);
           if (data.is_half === 1) {
             $('#queueModal').find('#halfQueue').attr('checked', true).prop('checked', true);
+            $('#queueModal .queue_services').show();
           } else {
             $('#queueModal').find('#fullQueue').attr('checked', true).prop('checked', true);
+            $('#queueModal .queue_services').hide();
           }
 
           if (data.ac_toggle == 1) {
