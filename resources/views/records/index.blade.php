@@ -14,8 +14,6 @@
                     @include('components.calendar')
                     @php
                       $queue_sum = \App\Models\Office::sum('queue_count');
-                      $halfAcService = \App\Models\Service::where('f_ac', 1)->where('enabled', 1)->first();
-                      $halfMotoService = \App\Models\Service::where('f_moto', 1)->where('enabled', 1)->first();
                     @endphp
                     @for ($day = 0; $day <= $visibleDays; $day++)
                     @php
@@ -34,6 +32,9 @@
                                 $opentime = \Carbon\Carbon::parse($workingDay->timeopen);
                                 $openTime1 = \Carbon\Carbon::parse($openTime1->timeopen);
                                 $closetime = \Carbon\Carbon::parse($workingDay->timeclose)->subMinutes($timeStep);
+
+                                $halfAcService = $workingDay->ac_toggle;
+                                $halfMotoService = $workingDay->moto_toggle;
 
                                 //$timeStep = $workingDay->timestep;
 
