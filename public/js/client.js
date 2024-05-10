@@ -147,7 +147,7 @@ $(document).ready(function() {
         $.each($('#reservation #service .form-check'), function(index, value) {
           $(value).find('input').attr('disabled', true).prop('disabled', true).attr('checked', false).prop('checked', false);
         });
-        $('#reservation').find('input[data-moto]').first().removeAttr('disabled').prop('disabled', false).attr('checked', true).prop('checked', true);
+        $('#reservation').find('input[data-moto]').removeAttr('disabled').prop('disabled', false).first().attr('checked', true).prop('checked', true);
       } else if ($(slot).attr('data-ac') === 'true') {
         $.each($('#reservation #service .form-check'), function(index, value) {
           $(value).find('input').attr('disabled', true).prop('disabled', true).attr('checked', false).prop('checked', false);
