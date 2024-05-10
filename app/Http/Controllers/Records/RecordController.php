@@ -848,6 +848,8 @@
         $workingDay->timeopen = $equal->timeopen;
         $workingDay->timeclose = $equal->timeclose;
         $workingDay->is_half = $equal->is_half;
+        $workingDay->ac_toggle = $equal->ac_toggle;
+        $workingDay->moto_toggle = $equal->moto_toggle;
         $workingDay->is_opened = $equal->is_opened;
         $workingDay->save();
       }
@@ -908,6 +910,9 @@
           }
         }
 
+        $workingDay->ac_toggle = $item->ac_toggle;
+        $workingDay->moto_toggle = $item->moto_toggle;
+
         if ($is_opened !== 0) {
           $workingDay->timeopen = $item->newOpenTime;
           $workingDay->timeclose = $item->newCloseTime;
@@ -955,6 +960,9 @@
             }
           }
 
+          $workingDay->ac_toggle = $item->ac_toggle;
+          $workingDay->moto_toggle = $item->moto_toggle;
+
           if ($is_opened !== 0) {
             $workingDay->timeopen = $item->newOpenTime;
             $workingDay->timeclose = $item->newCloseTime;
@@ -1001,6 +1009,8 @@
             }
           }
 
+          $workingDay->ac_toggle = $item->ac_toggle;
+          $workingDay->moto_toggle = $item->moto_toggle;
           if ($is_opened !== 0) {
             $workingDay->timeopen = $item->newOpenTime;
             $workingDay->timeclose = $item->newCloseTime;

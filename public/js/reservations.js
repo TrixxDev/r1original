@@ -170,8 +170,6 @@ $(document).ready(function() {
     let ac_toggle = ($('#queueModal input[name="ac_toggle"]').is(':checked') === true) ? 1 : null;
     let moto_toggle = ($('#queueModal input[name="moto_toggle"]').is(':checked') === true) ? 1 : null;
 
-    console.log(ac_toggle, moto_toggle);
-
     let sendData = {
       'times': {
         'changeVal': changeVal,
@@ -183,6 +181,8 @@ $(document).ready(function() {
         'queue_id': queue_id,
         'date': date,
         'is_half': (is_half === 2) ? 1 : null,
+        'ac_toggle': ac_toggle,
+        'moto_toggle': moto_toggle,
       }
     };
 
