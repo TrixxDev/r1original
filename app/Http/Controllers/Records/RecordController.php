@@ -342,7 +342,7 @@
         }
       }
 
-      if ($result->service == 3) {
+      if ($result->service == 3 || $result->service == 9) {
         $userComment = (!empty($result->user_comment)) ? ',%20' . str_replace(' ', '%20', $result->user_comment) : '';
         $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->orderWpp . '&apikey=d6nsRWNp1xpc&text=' . $fmtDate . '%20' . $time . ',%20' . $result->phone_number . $userComment;
       }
