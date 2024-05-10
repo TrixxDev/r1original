@@ -468,7 +468,7 @@ $(document).ready(function() {
       if (!$(this).attr('data-moto')) {
         $(this).attr('disabled', true).prop('disabled', true);
       } else {
-        $(this).attr('selected', true).prop('selected', true);
+        $(this).first().attr('selected', true).prop('selected', true);
       }
     });
   });
