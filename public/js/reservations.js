@@ -167,8 +167,8 @@ $(document).ready(function() {
     let newCloseTime = $('#queueModal select#f_closetime option:selected').val();
     let timeStep = $('#queueModal #f_timeinterval option:selected').val();
     let is_half = parseInt($('#queueModal input[name="queue"]:checked').val());
-    let ac_toggle = ($('#queueModal input[name="ac_toggle"]').is(':checked') === true) ? 1 : null;
-    let moto_toggle = ($('#queueModal input[name="moto_toggle"]').is(':checked') === true) ? 1 : null;
+    let ac_toggle = ($('#queueModal input[name="ac_toggle"]:visible').is(':checked') === true) ? 1 : null;
+    let moto_toggle = ($('#queueModal input[name="moto_toggle"]:visible').is(':checked') === true) ? 1 : null;
 
     let sendData = {
       'times': {
@@ -271,6 +271,14 @@ $(document).ready(function() {
             $('#queueModal').find('#fullQueue').attr('checked', true).prop('checked', true);
             $('#queueModal .queue_services').hide();
           }
+
+          $('#queueModal #halfQueue').on('click', function() {
+            $('#queueModal .queue_services').show();
+          });
+
+          $('#queueModal #fullQueue').on('click', function() {
+            $('#queueModal .queue_services').hide();
+          });
 
           if (data.ac_toggle == 1) {
             $('#queueModal').find('input#ac_toggle').attr('checked', true).prop('checked', true);
