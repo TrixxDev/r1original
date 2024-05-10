@@ -876,17 +876,10 @@
 
           $slots = Slot::where('date', $item->date)->where('queue_id', $item->queue_id)->get();
 
-//          if ($newOpenTime > $oldOpenTime) {
-//            foreach ($slots as $slot) {
-//              $slot->iorder = $slot->iorder + ($newIorder);
-//              $slot->save();
-//            }
-//          } else {
-//            foreach ($slots as $slot) {
-//              $slot->iorder = $slot->iorder - ($newIorder);
-//              $slot->save();
-//            }
-//          }
+          foreach ($slots as $slot) {
+            $slot->iorder = $slot->iorder + ($newIorder);
+            $slot->save();
+          }
         }
 
         if ($is_opened !== 0) {
