@@ -267,7 +267,7 @@
             }
           }
           $product->price1 = $veikala_cena;
-          $product->price3 = $akcijas_cena;
+          $product->price2 = $akcijas_cena;
           $product->updated_at = date('Y-m-d H:i:s');
           $product->save();
         } else {
@@ -282,7 +282,7 @@
             $product->comment = '';
           }
           $product->price1 = $veikala_cena;
-          $product->price3 = $akcijas_cena;
+          $product->price2 = $akcijas_cena;
           $product->updated_at = date('Y-m-d H:i:s');
           $product->save();
         }
@@ -374,7 +374,7 @@
                 }
               }
               $product->price1 = $veikala_cena;
-              $product->price3 = $akcijas_cena;
+              $product->price2 = $akcijas_cena;
               $product->updated_at = date('Y-m-d H:i:s');
               $product->save();
             } else {
@@ -391,7 +391,7 @@
                   }
                 }
                 $product->price1 = $veikala_cena;
-                $product->price3 = $akcijas_cena;
+                $product->price2 = $akcijas_cena;
                 $product->updated_at = date('Y-m-d H:i:s');
                 $product->save();
               }
