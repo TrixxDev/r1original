@@ -319,7 +319,7 @@ class RimsController extends Controller
           $html .= '<div style="display: flex;">';
           $html .= '<input type="checkbox" name="product_ids[]" value="' . $rim->rim_id . '" style="margin-right: 5px;">';
           $html .= '<div class="rim-price-old" style="align-self: center;">€' . $rim->price1 . '</div>';
-          $html .= '<div class="rim-price-red" style="align-self: center;">€' . $rim->price3 . '</div>';
+          $html .= '<div class="rim-price-red" style="align-self: center;">€' . $rim->price2 . '</div>';
           $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>">';
           if (Auth::check()) {
             $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $rim->rim_id . '" onclick="event.preventDefault()" data-target="#">';

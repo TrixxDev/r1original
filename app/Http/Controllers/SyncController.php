@@ -250,21 +250,20 @@
         $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
         $result = $this->accrual->query($sql);
         if ($result->rowCount()) {
-          foreach ($result as $rows) {
-            set_time_limit(0);
-            $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-            if ($rows['Deleted'] == 1) {
-              $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-              $product->priceoffer = 0;
-              if ($product->comment == env('SALE_TEXT')) {
-                $product->comment = '';
-              }
-            } else {
-              $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
-              $product->priceoffer = 1;
-              if (empty($product->comment)) {
-                $product->comment = env('SALE_TEXT');
-              }
+          $rows = $result->fetch();
+          set_time_limit(0);
+          $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
+          if ($rows['Deleted'] == 1) {
+            $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+            $product->priceoffer = 0;
+            if ($product->comment == env('SALE_TEXT')) {
+              $product->comment = '';
+            }
+          } else {
+            $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
+            $product->priceoffer = 1;
+            if (empty($product->comment)) {
+              $product->comment = env('SALE_TEXT');
             }
           }
           $product->price1 = $veikala_cena;
@@ -272,23 +271,20 @@
           $product->updated_at = date('Y-m-d H:i:s');
           $product->save();
         } else {
-          $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
+          $sql = "SELECT * FROM katalogs k WHERE k.Deleted = 0 AND k.ArticleId = '" . $article . "'";
           $result = $this->accrual->query($sql);
-          if ($result->rowCount()) {
-            foreach ($result as $rows) {
-              set_time_limit(0);
-              $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-              $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-              $product->priceoffer = 0;
-              if ($product->comment == env('SALE_TEXT')) {
-                $product->comment = '';
-              }
-            }
-            $product->price1 = $veikala_cena;
-            $product->price2 = $akcijas_cena;
-            $product->updated_at = date('Y-m-d H:i:s');
-            $product->save();
+          $rows = $result->fetch();
+          set_time_limit(0);
+          $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
+          $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+          $product->priceoffer = 0;
+          if ($product->comment == env('SALE_TEXT')) {
+            $product->comment = '';
           }
+          $product->price1 = $veikala_cena;
+          $product->price2 = $akcijas_cena;
+          $product->updated_at = date('Y-m-d H:i:s');
+          $product->save();
         }
       }
     }
