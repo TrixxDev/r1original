@@ -614,5 +614,5 @@
         </form>
     </div>
 
-<script src="{{ asset('js/client.js') }}"></script>
+<script src="{{ asset('js/client.js?rev=' . time()) }}"></script>
 @endsection

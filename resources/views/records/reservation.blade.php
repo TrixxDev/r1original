@@ -563,5 +563,5 @@
       </div>
     </div>
   </div>
-  <script src="{{ asset('js/reservations.js') }}"></script>
+  <script src="{{ asset('js/reservations.js?rev=' . time()) }}"></script>
 @endsection
