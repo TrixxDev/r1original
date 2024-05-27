@@ -216,6 +216,17 @@
                                       </div>
                                     </div>
                                     <hr class="separator">
+                                      <div class="card-block">
+                                          <div class="cart-summary-line">
+                                              <span class="label">Atlaižu kods</span>
+                                              <span class="value">@if (session('promo_error')) <span style="color: #ef7272">(Nepareizs kods)</span> @endif</span>
+                                          </div>
+
+                                          <div class="cart-summary-line">
+                                              <input type="text" class="form-control" name="data[promo_code]" @if (session('promo_error')) style="border: 1px solid #ef7272;" @endif value="" title="">
+                                          </div>
+                                      </div>
+                                    <hr class="separator">
                                     <div class="card-block">
                                       <div class="cart-summary-line cart-total">
                                         <span class="label">Pavisam kopā: (ar PVN)</span>

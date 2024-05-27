@@ -301,6 +301,11 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   // Montāžu/Piegāžu cenas
   Route::get('/settings/prices', [App\Http\Controllers\Admin\SettingsController::class, 'prices'])->name('settings.prices');
   Route::post('/settings/prices/{id}/update', [App\Http\Controllers\Admin\SettingsController::class, 'price_update'])->name('settings.prices.update');
+
+  Route::get('/promo', [App\Http\Controllers\Admin\PromoCodeController::class, 'index'])->name('promo.index');
+  Route::get('/promo/create', [App\Http\Controllers\Admin\PromoCodeController::class, 'create'])->name('promo.create');
+  Route::post('/promo/store', [App\Http\Controllers\Admin\PromoCodeController::class, 'store'])->name('promo.store');
+  Route::get('/promo/delete/{id}', [App\Http\Controllers\Admin\PromoCodeController::class, 'destroy'])->name('promo.delete');
 });
 
 Route::get('/sendSMS', function() {
@@ -517,6 +522,8 @@ Route::middleware('checksession')->group(function() {
 // Salidzini.lv / Kurpirkt.lv XML Ģenerators
   Route::get('/xml/salidzini', [App\Http\Controllers\Admin\SettingsController::class, 'salidzini'])->name('xml.salidzini');
   Route::get('/xml/kurpirkt', [App\Http\Controllers\Admin\SettingsController::class, 'kurpirkt'])->name('xml.kurpirkt');
+
+  Route::get('/checkPromos', [App\Http\Controllers\Admin\PromoCodeController::class, 'checkPromos']);
 
   Route::get('/analytics', function() {
     return view('analytics');

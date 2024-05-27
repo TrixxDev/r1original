@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Promo;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -119,6 +120,7 @@ class ShopController extends Controller
     $sheet->setCellValue('J1', 'Menedžeris');
     $sheet->setCellValue('K1', 'Preču grupas');
     $sheet->setCellValue('L1', 'Piegādes adrese');
+    $sheet->setCellValue('M1', 'Promo kods');
 
     $b = 2;
 
@@ -144,6 +146,15 @@ class ShopController extends Controller
       }
       $item_count = array_sum($item_count);
       $item_sum = array_sum($item_sum);
+      if ($order->used_promo != 0) {
+        $promo = Promo::where('promo_id', $order->used_promo)->first();
+        if ($promo->status === '1') {
+          $item_sum = $order->price * (1 - $promo->value / 100);
+        } else {
+          $item_sum = $order->price - $promo->value;
+        }
+        $item_sum = round($item_sum);
+      }
       if ($order->delivery_price > 0) {
         $item_sum = $item_sum + (int) substr($order->delivery_price, 0, -2);
       } else if ($order->fit_price > 0) {
@@ -169,6 +180,10 @@ class ShopController extends Controller
         }
       } else {
         $sheet->setCellValue('L' . $b, '');
+      }
+      if ($order->used_promo != 0){
+        $promo = Promo::where('promo_id', $order->used_promo)->first();
+        $sheet->setCellValue('M' . $b, $promo->code);
       }
 
       $b++;
@@ -231,7 +246,23 @@ class ShopController extends Controller
       $hasCompanyData = false;
     }
 
-    return view('admin.shop.order', compact('order', 'userData', 'tires', 'offices', 'status_enum', 'pay_enum'));
+    $promo = NULL;
+    if ($order->used_promo != 0) {
+      $promo = \App\Models\Promo::where('promo_id', $order->used_promo)->first();
+      if ($promo->status === '1') {
+        $item_sum = $order->price * (1 - $promo->value / 100);
+      } else {
+        $item_sum = $order->price - $promo->value;
+      }
+      $item_sum = round($item_sum);
+    }
+    if ($order->delivery_price > 0) {
+      $item_sum = $item_sum + (int) substr($order->delivery_price, 0, -2);
+    } else if ($order->fit_price > 0) {
+      $item_sum = $item_sum + (int) substr($order->fit_price, 0, -2);
+    }
+
+    return view('admin.shop.order', compact('order', 'userData', 'tires', 'offices', 'status_enum', 'pay_enum', 'item_sum', 'promo'));
 
   }
 

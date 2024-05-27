@@ -138,6 +138,7 @@
                     @endif
                     <h4>Pasūtītās preces</h4>
                     @foreach (\Cart::content() as $item)
+                      @if (\Session::has('cart.promo_code_perc')) {{ \Cart::setDiscount($item->rowId, \Session::get('cart.promo_code_perc')->value) }} @endif
                       <div class="cart-item-table cart-item-container">
                         <div class="item-name cart-item-name">
                           <a href="{{ $item->options->link }}" data-id_customization="0" style="text-transform: uppercase;">{{ strtoupper($item->options->tireObj->fullName) }}</a>
@@ -154,6 +155,24 @@
                         </div>
                       </div>
                     @endforeach
+                      @if (\Cart::discount() > 0 || !is_null($total))
+                      <div class="cart-item-table cart-item-container">
+                          <div class="item-name cart-item-name">
+                              Atlaižu kods
+                          </div>
+                          <div class="tire-price">
+                              <div class="price">
+                                  <span class="product-price">
+                                      @if ($total)
+                                          <strong>€ -{{ (int) substr(\Cart::subTotal(), 0, -3) - (int) substr($total, 0, -2) }}</strong>
+                                      @else
+                                          <strong>€ -{{ substr(\Cart::discount(), 0, -3) }}</strong>
+                                      @endif
+                                  </span>
+                              </div>
+                          </div>
+                      </div>
+                    @endif
                     @if (isset($user_data['fitting']) && $user_data['fitting'] == true)
                       <div class="cart-item-table cart-item-container">
                         <div class="item-name cart-item-name">
@@ -186,6 +205,35 @@
                         </div>
                       </div>
                     @endif
+                      <hr>
+                      <div class="cart-item-table cart-item-container">
+                          <div class="item-name cart-item-name">
+                              Kopā
+                          </div>
+                          <div class="tire-price">
+                              <div class="price">
+                            <span class="product-price">
+                                @if (isset($total))
+                                    @if (isset($user_data['fitting']) && $user_data['fitting'] == true)
+                                        <strong>€ {{ (int) substr($total, 0, -2) + (int) substr($user_data['fitting_price'], 0, -2) }}</strong>
+                                    @elseif (isset($user_data['shipping_city']))
+                                        <strong>€ {{ (int) substr($total, 0, -2) + (int) substr($user_data['delivery_price'], 0, -2) }}</strong>
+                                    @else
+                                        <strong>€ {{ substr($total, 0, -2) }}</strong>
+                                    @endif
+                                @else
+                                    @if (isset($user_data['fitting']) && $user_data['fitting'] == true)
+                                        <strong>€ {{ (int) substr(\Cart::subTotal(), 0, -3) + (int) substr($user_data['fitting_price'], 0, -2) }}</strong>
+                                    @elseif (isset($user_data['shipping_city']))
+                                        <strong>€ {{ (int) substr(\Cart::subTotal(), 0, -3) + (int) substr($user_data['delivery_price'], 0, -2) }}</strong>
+                                    @else
+                                        <strong>€ {{ substr(\Cart::subTotal(), 0, -3) }}</strong>
+                                    @endif
+                                @endif
+                            </span>
+                              </div>
+                          </div>
+                      </div>
                     <hr>
                     <form method="post" class="checkout-buttons">
                       @csrf

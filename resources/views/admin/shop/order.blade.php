@@ -97,7 +97,7 @@
           Kopsumma
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="total" type="text" disabled value="{{$order->price + (($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2)) }} &euro; - {{ $pay_enum[$order->payment] }}">
+          <input class="form-control" name="total" type="text" disabled value="{{ $item_sum }} &euro; - {{ $pay_enum[$order->payment] }}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
@@ -399,9 +399,32 @@
               <td style="border-color: #c6c6c6;">{{ ($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2) }} &euro;</td>
             </tr>
 	          @endif
+            @if ($order->used_promo != 0)
+            <tr>
+                <th style="border-color: #c6c6c6;" scope="row"></th>
+                <td style="border-color: #c6c6c6;" scope="row">
+                    @if ($promo->status === '1')
+                        Atlaižu kods (-{{ $promo->value }}%) (Kods - {{ $promo->code }})
+                    @else
+                        Atlaižu kods (-{{ $promo->value }} €) (Kods - {{ $promo->code }})
+                    @endif
+                </td>
+                <td style="border-color: #c6c6c6;" scope="row"></td>
+                <td style="border-color: #c6c6c6;" scope="row"></td>
+                <td style="border-color: #c6c6c6;" scope="row">
+                    @if ($promo->status === '1')
+                        -{{ $order->price - $item_sum }} €
+                    @else
+                        @if (!is_null($promo))
+                            -{{ $promo->value }} €
+                        @endif
+                    @endif
+                </td>
+            </tr>
+            @endif
             <tr class="table-dark">
               <th style="border-color: #c6c6c6; text-align: right" colspan="4"></th>
-              <th style="border-color: #c6c6c6;">{{$order->price + (($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2)) }} &euro;</th>
+              <th style="border-color: #c6c6c6;">{{ $item_sum }} &euro;</th>
             </tr>
           </tbody>
         </table>
