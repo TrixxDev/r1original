@@ -155,6 +155,11 @@
                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list"></use>
               </svg> Notikumu žurnāls</a>
           </li>
+          <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.promo.index') }}" target="_top">
+                  <svg class="c-sidebar-nav-icon">
+                      <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list"></use>
+                  </svg> Promo kodi</a>
+          </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.services') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list"></use>
