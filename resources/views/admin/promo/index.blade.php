@@ -84,7 +84,7 @@
                                                         @endif
                                                     </td>
                                                     <td style="width: 153px;">
-                                                        <a href="#" class="btn btn-warning">
+                                                        <a href="{{ route('admin.promo.edit', $promo->promo_id) }}" class="btn btn-warning">
                                                             <i class="fa-solid fa-pencil" style="color:#fff;"></i>
                                                         </a>
                                                         <a href="{{ route('admin.promo.delete', $promo->promo_id) }}" onclick="if(!confirm('Tiešām dzēst promo kodu?')) { return false; }" class="btn btn-danger">

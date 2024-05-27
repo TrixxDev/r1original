@@ -306,6 +306,8 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   Route::get('/promo/create', [App\Http\Controllers\Admin\PromoCodeController::class, 'create'])->name('promo.create');
   Route::post('/promo/store', [App\Http\Controllers\Admin\PromoCodeController::class, 'store'])->name('promo.store');
   Route::get('/promo/delete/{id}', [App\Http\Controllers\Admin\PromoCodeController::class, 'destroy'])->name('promo.delete');
+  Route::get('/promo/edit/{id}', [App\Http\Controllers\Admin\PromoCodeController::class, 'edit'])->name('promo.edit');
+  Route::get('/promo/update/{id}', [App\Http\Controllers\Admin\PromoCodeController::class, 'update'])->name('promo.update');
 });
 
 Route::get('/sendSMS', function() {
