@@ -815,7 +815,7 @@ class CartController extends Controller
                 $out .= '<td>Atlaižu kods</td>';
                 $out .= '<td></td>';
                 $out .= '<td></td>';
-                $out .= '<td>-' . ($details->price - $item_sum) . ' €</td>';
+                $out .= '<td style="text-align: center;">€ -' . ($details->price - $item_sum) . '</td>';
                 $out .= '</tr>';
               }
               if ($details->delivery_price > 0) {
