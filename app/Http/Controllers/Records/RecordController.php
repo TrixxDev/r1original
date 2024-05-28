@@ -503,10 +503,9 @@
                           break;
                         case SLOT_STATUS_TAKEN:
                           $content = $taken_slot_content;
-                          if ($workingDay->ac_toggle) {
+                          if ($i % 2 == 1 && $workingDay->ac_toggle) {
                             $content = $taken_ac_slot_content;
-                          }
-                          if ($workingDay->moto_toggle) {
+                          } else if ($i % 2 != 1 && $workingDay->moto_toggle) {
                             $content = $taken_moto_slot_content;
                           }
                           break;
