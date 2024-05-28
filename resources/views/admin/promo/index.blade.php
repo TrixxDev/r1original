@@ -33,6 +33,7 @@
                                                 <th scope="col">Var izmantot</th>
                                                 <th scope="col">Izmantots</th>
                                                 <th scope="col">Status</th>
+                                                <th scope="col">Izveidots</th>
                                                 <th scope="col">
                                                     <a href="{{ route('admin.promo.create') }}" class="btn btn-secondary" style="width: 100%;">Pievienot</a>
                                                 </th>
@@ -83,6 +84,7 @@
                                                             Beidzies
                                                         @endif
                                                     </td>
+                                                    <td>{{ $promo->created_at }}</td>
                                                     <td style="width: 153px;">
                                                         <a href="{{ route('admin.promo.edit', $promo->promo_id) }}" class="btn btn-warning">
                                                             <i class="fa-solid fa-pencil" style="color:#fff;"></i>
