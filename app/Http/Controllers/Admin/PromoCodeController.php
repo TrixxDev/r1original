@@ -114,4 +114,19 @@ class PromoCodeController extends Controller
     return 'Promo kodi atjaunoti';
   }
 
+  public function checkPromo(Request $request) {
+    $promo = Promo::where('code', $request->promo)->where('active', '1')->first();
+
+    if (!$promo) {
+      return 'false';
+    }
+    if (!is_null($promo->can_use)) {
+      if ($promo->used >= $promo->can_use) {
+        return 'false';
+      }
+    }
+    return 'true';
+
+  }
+
 }

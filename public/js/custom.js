@@ -3249,6 +3249,45 @@ window.addEventListener('beforeunload', function() {
   fadeIn(loadingBlock);
 });
 
+function checkPromo(promo) {
+
+  let url = '/checkPromo';
+
+  $.ajax({
+    url: url,
+    method: 'POST',
+    data: {promo: promo},
+    beforeSend: function() {
+      $('input[name="data[promo_code]"], .check_promo').attr('disabled', true).prop('disabled', true);
+      $('.check_promo span').text('Lūdzu, uzgaidiet...');
+      $('span.label.promo_validation').remove();
+    },
+    success: function(data) {
+      if (data === 'true') {
+        $('<span class="label promo_validation" style="color: green">Kods ir derīgs</span>').insertAfter($('input[name="data[promo_code]"]'));
+      } else {
+        $('<span class="label promo_validation" style="color: red">Kods nav derīgs</span>').insertAfter($('input[name="data[promo_code]"]'));
+      }
+    },
+    complete: function() {
+      $('input[name="data[promo_code]"], .check_promo').removeAttr('disabled').prop('disabled', false);
+      $('.check_promo span').text('Pārbaudīt');
+    }
+  })
+}
+
+// $('input[name="data[promo_code]"]').on('keyup', function() {
+//   if ($(this).val().length > 0) {
+//     console.log($(this).val().length);
+//   }
+// })
+
+$('button.check_promo').on('click', function() {
+
+  let promo = $('input[name="data[promo_code]"]').val();
+
+  checkPromo(promo);
+})
 
 // (()=>{
 //   const ndt = () => +new Date(),

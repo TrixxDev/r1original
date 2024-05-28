@@ -208,14 +208,14 @@ class CartController extends Controller
 
         if (!empty($request->data['promo_code']) && !is_null($request->data['promo_code'])) {
           $promo = Promo::where('code', $request->data['promo_code'])->where('active', '1')->first();
+          if (!$promo) {
+            Session::forget(['cart.promo_code_perc', 'cart.promo_code_val', 'cart.promo_value']);
+            return redirect()->refresh()->with('promo_error', 'error');
+          }
           if (!is_null($promo->can_use)) {
             if ($promo->used >= $promo->can_use) {
               return redirect()->refresh()->with('promo_error', 'error');
             }
-          }
-          if (!$promo) {
-            Session::forget(['cart.promo_code_perc', 'cart.promo_code_val', 'cart.promo_value']);
-            return redirect()->refresh()->with('promo_error', 'error');
           }
           if ($promo->status === '1') {
             Session::put('cart.promo_code_perc', $promo);

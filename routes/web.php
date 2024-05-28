@@ -526,6 +526,7 @@ Route::middleware('checksession')->group(function() {
   Route::get('/xml/kurpirkt', [App\Http\Controllers\Admin\SettingsController::class, 'kurpirkt'])->name('xml.kurpirkt');
 
   Route::get('/checkPromos', [App\Http\Controllers\Admin\PromoCodeController::class, 'checkPromos']);
+  Route::post('/checkPromo', [App\Http\Controllers\Admin\PromoCodeController::class, 'checkPromo']);
 
   Route::get('/analytics', function() {
     return view('analytics');

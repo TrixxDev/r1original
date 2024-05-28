@@ -219,11 +219,14 @@
                                       <div class="card-block">
                                           <div class="cart-summary-line">
                                               <span class="label">Atlaižu kods</span>
-                                              <span class="value">@if (session('promo_error')) <span style="color: #ef7272">(Nepareizs kods)</span> @endif</span>
+                                              <span class="value"></span>
                                           </div>
 
                                           <div class="cart-summary-line">
                                               <input type="text" class="form-control" name="data[promo_code]" @if (session('promo_error')) style="border: 1px solid #ef7272;" @endif value="" title="">
+                                              @if (session('promo_error'))<span class="label promo_validation" style="color: red">Kods nav derīgs</span>@endif
+                                              <br>
+                                              <button type="button" class="btn btn-primary btn-block check_promo"><span>Pārbaudīt</span></button>
                                           </div>
                                       </div>
                                     <hr class="separator">
