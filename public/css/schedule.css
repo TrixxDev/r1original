@@ -142,7 +142,7 @@ div.reservation div.time-list .available {
   background: #37b2ff!important;
 }
 
-.time-slot .unavailable.conditioner {
+.time-slot .unavailable.conditioner, .time-slot .unavailable.moto {
     background: #d8d8d8!important;
 }
 
