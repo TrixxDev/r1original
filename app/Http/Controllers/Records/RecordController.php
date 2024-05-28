@@ -443,6 +443,14 @@
                       . '<div class="unavailable slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">Aizņemts</span></div>'
                       . '</div>';
 
+                    $taken_ac_slot_content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                      . '<div class="unavailable conditioner slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">Aizņemts</span></div>'
+                      . '</div>';
+
+                    $taken_moto_slot_content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                      . '<div class="unavailable moto slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">Aizņemts</span></div>'
+                      . '</div>';
+
                     $closed_slot_content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
                       . '<div class="unavailable slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">Slēgts</span></div>'
                       . '</div>';
@@ -466,7 +474,7 @@
                           if ($workingDay->date == $today) {
                             if (Carbon::parse($currentTime)->subMinutes(10) >= Carbon::now()) {
                               $content = $free_slot_content;
-                              if ($service && ($service->f_ac || $service->f_moto)) {
+                              if ($workingDay->ac_toggle || $workingDay->moto_toggle) {
                                 $content = $oddMinutes ? $ac_slot_content : $moto_slot_content;
                                 if (!is_null($slot->comment) && is_null($slot->takenby)) {
                                   $content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
@@ -494,7 +502,13 @@
                             . '</div>';
                           break;
                         case SLOT_STATUS_TAKEN:
-                          $content = $taken_slot_content;
+                          if ($workingDay->ac_toggle) {
+                            $content = $taken_ac_slot_content;
+                          } else if ($workingDay->moto_toggle) {
+                            $content = $taken_moto_slot_content;
+                          } else {
+                            $content = $taken_slot_content;
+                          }
                           break;
                         case SLOT_STATUS_CLOSED:
                           $content = $closed_slot_content;
@@ -505,21 +519,21 @@
                         if (Carbon::parse($currentTime)->subMinutes(10) >= Carbon::now()) {
                           // Modify content for AC and moto slots if today and within the hour
                           if ($workingDay->is_half) {
-                            $service = $oddMinutes ? Service::where('f_ac', 1)->where('enabled', 1)->first() : Service::where('f_moto', 1)->where('enabled', 1)->first();
+                            $service = $oddMinutes ? $workingDay->ac_toggle : $workingDay->moto_toggle;
                             if (!$service && ($i % 2 == 1)) $free_slot_content = $taken_slot_content;
                           }
 
-                          $content = $service && ($service->f_ac || $service->f_moto) ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
+                          $content = $service && ($workingDay->ac_toggle || $workingDay->moto_toggle) ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
                         } else {
                           $content = $taken_slot_content;
                         }
                       } else {
                         if ($workingDay->is_half) {
-                          $service = $oddMinutes ? Service::where('f_ac', 1)->where('enabled', 1)->first() : Service::where('f_moto', 1)->where('enabled', 1)->first();
+                          $service = $oddMinutes ? $workingDay->ac_toggle : $workingDay->moto_toggle;
                           if (!$service && ($i % 2 == 1)) $free_slot_content = $taken_slot_content;
                         }
 
-                        $content = $service ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
+                        $content = $service && ($workingDay->ac_toggle || $workingDay->moto_toggle) ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
                       }
                     }
                     $slots[$workingDay->date][] = ['content' => $content, 'queue_id' => $workingDay->queue_id, 'iorder' => $i, 'time' => $currentTime];
