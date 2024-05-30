@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Promo;
+use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class PromoCodeController extends Controller
 {
@@ -117,15 +119,32 @@ class PromoCodeController extends Controller
   public function checkPromo(Request $request) {
     $promo = Promo::where('code', $request->promo)->where('active', '1')->first();
 
+    $data = [];
+
+    $total_price = (int) substr(Cart::subTotal(), 0, -3);
+
     if (!$promo) {
-      return 'false';
+      $data['success'] = 'false';
+      $data['discount_price'] = 'false';
+      return json_encode($data);
     }
     if (!is_null($promo->can_use)) {
       if ($promo->used >= $promo->can_use) {
-        return 'false';
+        $data['success'] = 'false';
+        $data['discount_price'] = 'false';
+        return json_encode($data);
       }
     }
-    return 'true';
+    if ($promo->status === '1') {
+      $item_sum = $total_price * (1 - $promo->value / 100);
+    } else {
+      $item_sum = $total_price - $promo->value;
+    }
+    $item_sum = round($item_sum);
+
+    $data['success'] = 'true';
+    $data['discount_price'] = $total_price - $item_sum;
+    return json_encode($data);
 
   }
 

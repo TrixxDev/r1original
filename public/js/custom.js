@@ -2305,6 +2305,7 @@ function checkShipping(qty = null) {
   $('.cart-grid input[name=fitting]').val(false);
   let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
   let shippingCity = parseInt($('.cart-delivery-option .custom-select option:selected').val());
+  let discount_price = 0;
   $.ajax({
     url: '/checkShipping',
     method: 'POST',
@@ -2312,19 +2313,20 @@ function checkShipping(qty = null) {
     success: function(data) {
       data = parseInt(data);
       let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+      if ($('#cart-subtotal-discount').is(':visible')) discount_price = parseInt($('#cart-subtotal-discount .value').html().trim().replace('€ ', ''));
       if (shippingCity === 1 || shippingCity === 2) {
         if (__total > 115) {
           $('#cart-subtotal-shipping #shipping_price').html('Bezmaksas');
-          $('.cart-total .value').html('€ ' + formatNumber(__total));
+          $('.cart-total .value').html('€ ' + formatNumber(__total + discount_price));
           $('input[name=delivery_price]').removeAttr('value');
         } else {
           $('#cart-subtotal-shipping #shipping_price').html('€ ' + data);
-          $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data)));
+          $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data + discount_price)));
           $('input[name=delivery_price]').val(data);
         }
       } else {
         $('#cart-subtotal-shipping #shipping_price').html('€ ' + data);
-        $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data)));
+        $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data + discount_price)));
         $('input[name=delivery_price]').val(data);
       }
       $('input[name=fitting_price]').removeAttr('value');
@@ -2336,6 +2338,8 @@ function checkFitting(qty = null) {
   let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
   let __items = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
   let needsFit = $('.cart-montage-choice .cart-delivery-options .cart-delivery-label input:checked').val();
+
+  let discount_price = 0;
 
   if (qty === null) {
     qty = __items;
@@ -2350,17 +2354,18 @@ function checkFitting(qty = null) {
     success: function(data) {
       let fittingPrice = parseInt(data.cartOptions.fitting_price);
       let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+      if ($('#cart-subtotal-discount').is(':visible')) discount_price = parseInt($('#cart-subtotal-discount .value').html().trim().replace('€ ', ''));
 
       $('.cart-grid input[name=delivery]').val(false);
       $('.cart-grid input[name=fitting]').val(true);
       $('#cart-subtotal-montage #shipping_price').html('€ ' + formatNumber(fittingPrice));
-      $('.cart-total .value').html('€ ' + formatNumber(__lastPrice + fittingPrice));
+      $('.cart-total .value').html('€ ' + formatNumber(__lastPrice + fittingPrice + discount_price));
       $('input[name=fitting_price]').val(fittingPrice);
       if (fittingPrice == 0) {
         $('.cart-grid input[name=delivery]').val(false);
         $('.cart-grid input[name=fitting]').val(false);
         $('#cart-subtotal-montage #shipping_price').html('Nav');
-        $('.cart-total .value').html('€ ' + formatNumber(__lastPrice));
+        $('.cart-total .value').html('€ ' + formatNumber(__lastPrice + discount_price));
         $('input[name=fitting_price]').removeAttr('value');
       }
       $('input[name=delivery_price]').removeAttr('value');
@@ -3252,6 +3257,7 @@ window.addEventListener('beforeunload', function() {
 function checkPromo(promo) {
 
   let url = '/checkPromo';
+  let success = false;
 
   $.ajax({
     url: url,
@@ -3263,15 +3269,28 @@ function checkPromo(promo) {
       $('span.label.promo_validation').remove();
     },
     success: function(data) {
-      if (data === 'true') {
-        $('<span class="label promo_validation" style="color: green">Kods ir derīgs</span>').insertAfter($('input[name="data[promo_code]"]'));
+      data = JSON.parse(data);
+      if (data.success === 'true') {
+        $('<span class="label promo_validation" style="color: green">Kods ir derīgs un pielietots</span>').insertAfter($('input[name="data[promo_code]"]'));
+        $('#cart-subtotal-discount').remove();
+        $('<div class="cart-summary-line" id="cart-subtotal-discount" style="display: block;"><span class="label">Atlaižu kods</span><span id="shipping_price" class="value">€ -' + data.discount_price + '</span><div><small class="value"></small></div></div>').insertAfter($('#cart-subtotal-shipping'));
+        let __lastPrice = parseInt($('.cart-total .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+
+        $('.cart-total .value').html('€ ' + formatNumber(__lastPrice - data.discount_price));
+        success = true;
       } else {
         $('<span class="label promo_validation" style="color: red">Kods nav derīgs</span>').insertAfter($('input[name="data[promo_code]"]'));
+        $('#cart-subtotal-discount').remove();
+        success = false;
       }
     },
     complete: function() {
-      $('input[name="data[promo_code]"], .check_promo').removeAttr('disabled').prop('disabled', false);
-      $('.check_promo span').text('Pārbaudīt');
+      if (success === false) {
+        $('input[name="data[promo_code]"], .check_promo').removeAttr('disabled').prop('disabled', false);
+        $('.check_promo span').text('Pārbaudīt');
+      } else {
+        $('.check_promo').remove();
+      }
     }
   })
 }
