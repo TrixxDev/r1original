@@ -282,6 +282,7 @@
       $slot->date = $dopParams['date'];
       $slot->iorder = $dopParams['iorder'];
       $slot->takenby = json_encode($result);
+      if (Auth::check()) $slot->comment = NULL;
       $slot->createtime = date('Y-m-d H:i:s');
       $slot->createuser = $userID;
       if ($request->input('from_mobile')) {

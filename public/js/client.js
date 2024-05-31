@@ -1,5 +1,14 @@
 $(document).ready(function() {
 
+  let user = $('.user-info .account').data('user');
+  let user_role = $('.user-info .account').data('role');
+  let admin = false;
+  $.each(user_role, function(key, value) {
+    if (value === 'administrators' || value === 'moderators') {
+      admin = true;
+    }
+  });
+
   $.fn.classChange = function(cb) {
     return $(this).each((_, el) => {
       new MutationObserver(mutations => {
@@ -81,13 +90,25 @@ $(document).ready(function() {
     $('#reservation #modalTitle').slideDown();
   });
 
-  $(document).on('click', '.time-status.discount', function() {
-    let discount_text = $('button.discount-slot', this).text();
-    if ($('div.alert.alert-warning.discount-alert').length === 0 ){
-      $('.modal-dialog').find('.form-group.services')
-        .prepend("<div class='alert alert-warning discount-alert' style='font-size: 14px;'><b>Šajā pieraksta laikā tiek piemērota atlaide (" + discount_text + ")</b></div>");
-    }
-  });
+  if (!admin) {
+    $(document).on('click', '.time-status.discount', function() {
+      let discount_text = $('button.discount-slot', this).text();
+      if ($('div.alert.alert-warning.discount-alert').length === 0 ){
+        $('.modal-dialog').find('.form-group.services')
+          .prepend("<div class='alert alert-warning discount-alert' style='font-size: 14px;'><b>Šajā pieraksta laikā tiek piemērota atlaide (" + discount_text + ")</b></div>");
+      }
+    });
+  } else {
+    $('.discount-slot').each(function() {
+      if ($(this).parent().data('moto')) {
+        $(this).text('Moto montāža').removeClass('discount-slot');
+      } else if ($(this).parent().data('ac')) {
+        $(this).text('Kondicioniera uzpilde').removeClass('discount-slot');
+      } else {
+        $(this).text('Brīvs').removeClass('discount-slot');
+      }
+    })
+  }
 
   $(document).on('click', '.time-status', function() {
 
