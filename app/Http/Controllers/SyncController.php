@@ -2503,6 +2503,11 @@
 
         if ($itam->article == $item['product_no']) {
 
+          if ($item['price'] == 0) {
+            $price1 = 0;
+            $price2 = 0;
+            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'visible_users' => 0, 'visible_list' => 0,  'updated_at' => date('Y-m-d H:i:s')]);
+          }
           if ($item['price'] < 100) {
             $price1 = ($item['price'] + 8) / 70 * 100;
             $price2 = $item['price'] + 10;
