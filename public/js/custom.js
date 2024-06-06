@@ -3285,10 +3285,11 @@ function checkPromo(promo) {
       }
     },
     complete: function() {
+      $('input[name="data[promo_code]"], .check_promo').removeAttr('disabled').prop('disabled', false);
       if (success === false) {
-        $('input[name="data[promo_code]"], .check_promo').removeAttr('disabled').prop('disabled', false);
         $('.check_promo span').text('Pārbaudīt');
       } else {
+        $('input[name="data[promo_code]"]').attr('readonly', 'readonly').prop('readonly', 'readonly');
         $('.check_promo').remove();
       }
     }
