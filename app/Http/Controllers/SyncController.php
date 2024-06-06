@@ -1712,7 +1712,7 @@
       $counted = 0;
       $updated = 0;
 
-      Bigstock::where('itype', 'i3')->where('type', 'agro')->update(['quantity' => 0]);
+      Bigstock::where('itype', 'i3')->where('type', 'agro')->update(['quantity' => 0, 'visible_users' => 0, 'visible_list' => 0]);
 
       $content = file_get_contents(dirname(__DIR__, 3) . '/public/storage/xml/i3-agro.txt');
       $content = json_decode($content);
