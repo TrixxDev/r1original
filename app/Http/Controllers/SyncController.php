@@ -2314,6 +2314,8 @@
 
       $initial = ["/[0-9.]+/", "/L/", "/S/", "/VF/", "/FI/", "/P/", "/SL/", "/DW/", "/IF/", "/CFO/"];
 
+      Bigtire::query()->update(['visible_users' => 0, 'visible_list' => 0]);
+
       $counted = 0;
       $updated = 0;
       foreach ($tires as $item) {
