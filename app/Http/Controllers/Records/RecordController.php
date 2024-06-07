@@ -1147,7 +1147,9 @@
           }
 
           $deletedSlot = $slot;
-          if ($slot->delete()) {
+          $slot->status = 0;
+          $slot->takenby = NULL;
+          if ($slot->save()) {
 
             if ($takenBy->email) {
               $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $deletedSlot->date, $deletedSlot->iorder, $takenBy, $time);
