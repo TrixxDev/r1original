@@ -247,6 +247,7 @@ class ShopController extends Controller
     }
 
     $promo = NULL;
+    $item_sum = round($order->price);
     if ($order->used_promo != 0) {
       $promo = \App\Models\Promo::where('promo_id', $order->used_promo)->first();
       if ($promo->status === '1') {
