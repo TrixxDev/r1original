@@ -1454,6 +1454,36 @@ function showQuickBuyForm(id) {
 //   const baseUrl = window.location.href.split('#')[0];
 //   window.location.replace(baseUrl + '#|' + ids_str);
 // });
+
+let previousUrl = document.referrer;
+
+function updateUrl(tires_array) {
+  if (tires_array.length > 0) {
+    history.pushState({ tires: tires_array, prevUrl: previousUrl }, '', '?selected=' + tires_array.join(','));
+  } else {
+    history.pushState({ prevUrl: previousUrl }, '', window.location.pathname);
+  }
+}
+
+$(document).find('th.tread-tire-table-checkbox').children().on('click', function() {
+  let tires_array = [];
+  $(this).parent().parent().toggleClass('selected');
+  $(document).find('th.tread-tire-table-checkbox').children(':checked').each(function() {
+    tires_array.push($(this).val());
+  });
+
+  updateUrl(tires_array);
+});
+
+window.addEventListener('popstate', function(event) {
+  if (event.state) {
+    if (event.state.prevUrl) {
+      // Redirect to the previous URL
+      window.location.href = event.state.prevUrl;
+    }
+  }
+});
+
 // $(document).on('change', 'input[type="checkbox"][name="product_ids2[]"]', function(){
 //   const $ids = $(document).find('input[type="checkbox"][name="product_ids2[]"]:checked');
 //   let ids_str = '';

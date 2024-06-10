@@ -91,8 +91,14 @@ class MotoTireController extends Controller
         return view('tires.moto.index');
     }
 
-    public function tires_tread($brand, $tread, $tire)
+    public function tires_tread(Request $request, $brand, $tread, $tire)
     {
+
+        $selectedTires = [];
+        if ($request->input('selected')) {
+          $selectedTires = explode(',', $request->input('selected'));
+        }
+
         $brand = Motobrand::where('title', $brand)->first();
 
         $tread = str_replace('_', '/', $tread);
@@ -128,7 +134,7 @@ class MotoTireController extends Controller
         $currTire->includeStock = true;
 
         return view('tires.moto.mototread',
-            compact('tires', 'currTire', 'currBrand')
+            compact('tires', 'currTire', 'currBrand', 'selectedTires')
         );
     }
 

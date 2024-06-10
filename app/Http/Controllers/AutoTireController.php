@@ -833,9 +833,14 @@ class AutoTireController extends Controller
     );
   }
 
-  public function tires_tread($brand, $tread, $tire) {
+  public function tires_tread(Request $request, $brand, $tread, $tire) {
 
     DB::enableQueryLog();
+
+    $selectedTires = [];
+    if ($request->input('selected')) {
+      $selectedTires = explode(',', $request->input('selected'));
+    }
 
     $brand = Autobrand::where('slug', $brand)->first();
 
@@ -860,7 +865,7 @@ class AutoTireController extends Controller
     $currTire->includeStock = true;
 
     return view('tires.auto.autotread',
-      compact('tires', 'currTire', 'currBrand')
+      compact('tires', 'currTire', 'currBrand', 'selectedTires')
     );
   }
 
