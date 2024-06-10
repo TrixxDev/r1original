@@ -26,6 +26,7 @@
                         <th scope="col">Uzvārds</th>
                         <th scope="col">Lietotājvārds</th>
                         <th scope="col">Grupa</th>
+                        <th scope="col">Iespējots</th>
                         <th scope="col">Darbības</th>
                       </tr>
                       </thead>
@@ -39,6 +40,9 @@
                             {{ ucfirst(implode(', ', array_map("ucfirst", $user->getRoleNames()->toArray()))) }}
                           </td>
                           <td>
+                            {{ ($user->enabled == 1) ? 'Aktīvs' : 'Neaktīvs' }}
+                          </td>
+                          <td>
                             <a class="btn btn-success" href="{{ route('admin.settings.users.edit', $user->id) }}">
                               <svg class="c-icon">
                                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
@@ -47,7 +51,11 @@
                             @if ($user->id !== Auth::user()->id)
                             <a onclick="if (!confirm('{{ ($user->enabled == 1) ? 'Deaktivizēt lietotāju?' : 'Aktivizēt lietotāju?' }}')) return false" class="btn {{ ($user->enabled == 1) ? 'btn-danger' : 'btn-warning' }}" href="{{ route('admin.settings.users.stateChange', $user->id) }}">
                               <svg class="c-icon">
-                                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
+                                @if ($user->enabled == 1)
+                                  <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-lock-locked"></use>
+                                @else
+                                  <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-lock-unlocked"></use>
+                                @endif
                               </svg>
                             </a>
                             @endif
