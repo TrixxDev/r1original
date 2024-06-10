@@ -45,7 +45,7 @@
                               </svg>
                             </a>
                             @if ($user->id !== Auth::user()->id)
-                            <a class="btn btn-danger" href="{{ route('admin.settings.users.destroy', $user->id) }}">
+                            <a onclick="if (!confirm('{{ ($user->enabled == 1) ? 'Deaktivizēt lietotāju?' : 'Aktivizēt lietotāju?' }}')) return false" class="btn {{ ($user->enabled == 1) ? 'btn-danger' : 'btn-warning' }}" href="{{ route('admin.settings.users.stateChange', $user->id) }}">
                               <svg class="c-icon">
                                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
                               </svg>

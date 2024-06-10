@@ -168,7 +168,7 @@
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.users') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
                 <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-lock-locked"></use>
-              </svg> Administratori</a>
+              </svg> Lietotāji</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.syncs') }}" target="_top">
               <svg class="c-sidebar-nav-icon">

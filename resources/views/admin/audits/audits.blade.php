@@ -58,6 +58,8 @@
                         <td>{{ $audit['audit_time'] }}</td>
                         @if (isset(unserialize($audit->audit_instance)->takenby))
                           <td>{{ trim($audit['audit_event']) . ' (' . unserialize($audit->audit_instance)->date . ' ' . (substr_replace(substr(json_decode(unserialize($audit->audit_instance)->takenby)->cancelId, -4), ':', 2, 0)) . ')' }}</td>
+                        @elseif ($audit->audit_classname == 'App\Models\Slot' && stripos($audit->audit_url, 'cancel') !== false)
+                          <td>{{ trim($audit['audit_event']) . ' (' . unserialize($audit->audit_instance)->date . ' ' . (substr_replace(substr($audit->audit_url, -4), ':', 2, 0)) . ')' }}</td>
                         @else
                           <td>{{ trim($audit['audit_event']) }}</td>
                         @endif

@@ -262,6 +262,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   Route::post('/settings/users/{id}/update', [App\Http\Controllers\Admin\SettingsController::class, 'users_update'])->name('settings.users.update');
   Route::match(['GET', 'POST'], '/settings/user/{id}/pwdChange', [App\Http\Controllers\Admin\SettingsController::class, 'user_pwdChange'])->name('settings.user.pwdChange');
   Route::get('/settings/users/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'users_destroy'])->name('settings.users.destroy');
+  Route::get('/settings/users/{id}/stateChange', [App\Http\Controllers\Admin\SettingsController::class, 'users_stateChange'])->name('settings.users.stateChange');
 
   // Lomas
   Route::get('/settings/roles', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('settings.roles');
