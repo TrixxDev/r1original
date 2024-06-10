@@ -2329,8 +2329,6 @@
             $position->visible_list = 0;
             $position->save();
           }
-
-          continue;
         }
 
         $type = $item['segment_description'];
