@@ -565,7 +565,7 @@ class RecordController extends Controller
         $service = Service::where('service_id', $result->service)->first();
         $vehicle = str_replace(' ', '%20', $result->car_brand);
         $model = str_replace(' ', '%20', $result->car_model);
-        $userComment = (!empty($result->user_comment)) ? '%20|%20Piezīmes%20-%20' . str_replace(' ', '%20', $result->user_comment) : '';
+        $userComment = (!empty($result->user_comment)) ? '%20|%20Piezīmes%20-%20' . str_replace([' ', "\n", "\r"], '%20', $result->user_comment) : '';
         if (!is_null($service)) $service = str_replace(' ', '%20', $service->pdf_title);
         $vehiclePlate = str_replace(' ', '%20', $result->lic_plate);
 
