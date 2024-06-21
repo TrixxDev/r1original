@@ -9,102 +9,72 @@
                     <section id="main">
                         <header class="page-header">
                             <h1>
-                                Jauna adrese
+                                Uzņēmuma rekvizīti
                             </h1>
                         </header>
                         <section id="content" class="page-content">
                             <aside id="notifications">
                                 <div class="container">
+                                @if (session('success'))
+                                  <article class="alert alert-success" role="alert" data-alert="warning">
+                                    <ul>
+                                      <li>{!! session('success') !!}</li>
+                                    </ul>
+                                  </article>
+                                @endif
                                 </div>
                             </aside>
                             <div class="address-form">
                                 <div class="js-address-form">
-                                    <form method="POST" action="//r1riepas.lv/index.php?controller=address&amp;id_address=0" data-id-address="0" data-refresh-url="//r1riepas.lv/index.php?controller=address&amp;ajax=1&amp;action=addressForm">
+                                    <form method="POST" action="{{ route('address_update') }}">
+                                    @csrf
                                         <section class="form-fields">
-                                            <input type="hidden" name="id_address" value="">
-                                            <input type="hidden" name="id_customer" value="">
-                                            <input type="hidden" name="back" value="">
-                                            <input type="hidden" name="token" value="d0c0c555cd02d9bf9638d852060175c8">
                                             <div class="form-group row ">
                                                 <label class="col-md-3 form-control-label">
-                                                    Aizstājvārds
+                                                    Uzņēmuma nosaukums
                                                 </label>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" name="alias" type="text" value="" maxlength="32">
+                                                    <input class="form-control" name="company" type="text" value="{{ Auth::user()->company_name }}" maxlength="100">
                                                 </div>
-                                                <div class="col-md-3 form-control-comment">
-                                                    Optional
-                                                </div>
-                                            </div>
-                                            <div class="form-group row ">
-                                                <label class="col-md-3 form-control-label required">
-                                                    Vārds
-                                                </label>
-                                                <div class="col-md-6">
-                                                    <input class="form-control" name="firstname" type="text" value="Edgars" maxlength="32" required="">
-                                                </div>
-                                                <div class="col-md-3 form-control-comment">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row ">
-                                                <label class="col-md-3 form-control-label required">
-                                                    Uzvārds
-                                                </label>
-                                                <div class="col-md-6">
-                                                    <input class="form-control" name="lastname" type="text" value="Indrikis" maxlength="32" required="">
-                                                </div>
-                                                <div class="col-md-3 form-control-comment">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row ">
-                                                <label class="col-md-3 form-control-label">
-                                                    Kompānija
-                                                </label>
-                                                <div class="col-md-6">
-                                                    <input class="form-control" name="company" type="text" value="" maxlength="255">
-                                                </div>
-                                                <div class="col-md-3 form-control-comment">
-                                                    Optional
-                                                </div>
+                                                <div class="col-md-3 form-control-comment"></div>
                                             </div>
                                             <div class="form-group row ">
                                                 <label class="col-md-3 form-control-label">
                                                     PVN numurs
                                                 </label>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" name="vat_number" type="text" value="">
+                                                    <input class="form-control" name="vat_number" type="text" maxlength="13" value="{{ Auth::user()->company_vat }}">
                                                 </div>
-                                                <div class="col-md-3 form-control-comment">
-                                                    Optional
-                                                </div>
+                                                <div class="col-md-3 form-control-comment"></div>
                                             </div>
                                             <div class="form-group row ">
                                                 <label class="col-md-3 form-control-label required">
                                                     Adrese
+                                                    <span class="required-field"> *</span>
                                                 </label>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" name="address1" type="text" value="" maxlength="128" required="">
+                                                    <input class="form-control @error('address') is-invalid @enderror" name="address" type="text" value="{{ Auth::user()->company_address }}" required="">
+                                                    @error('address')
+                                                    <span class="invalid-feedback" role="alert">
+                                                      <strong>{{ $message }}</strong>
+                                                    </span>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-3 form-control-comment">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row ">
-                                                <label class="col-md-3 form-control-label">
-                                                    Address Complement
-                                                </label>
-                                                <div class="col-md-6">
-                                                    <input class="form-control" name="address2" type="text" value="" maxlength="128">
-                                                </div>
-                                                <div class="col-md-3 form-control-comment">
-                                                    Optional
                                                 </div>
                                             </div>
                                             <div class="form-group row ">
                                                 <label class="col-md-3 form-control-label required">
                                                     Pasta indekss
+                                                    <span class="required-field"> *</span>
                                                 </label>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" name="postcode" type="text" value="" maxlength="12" required="">
+                                                    <input class="form-control @error('postcode') is-invalid @enderror" name="postcode" type="text" value="LV-{{ Auth::user()->company_postcode }}" maxlength="12" required="">
+                                                    @error('postcode')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                      </span>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-3 form-control-comment">
                                                 </div>
@@ -112,36 +82,17 @@
                                             <div class="form-group row ">
                                                 <label class="col-md-3 form-control-label required">
                                                     Pilsēta
+                                                    <span class="required-field"> *</span>
                                                 </label>
                                                 <div class="col-md-6">
-                                                    <input class="form-control" name="city" type="text" value="" maxlength="64" required="">
+                                                    <input class="form-control @error('city') is-invalid @enderror" name="city" type="text" value="{{ Auth::user()->company_city }}" maxlength="64" required="">
+                                                    @error('city')
+                                                    <span class="invalid-feedback" role="alert">
+                                                        <strong>{{ $message }}</strong>
+                                                      </span>
+                                                    @enderror
                                                 </div>
                                                 <div class="col-md-3 form-control-comment">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row ">
-                                                <label class="col-md-3 form-control-label required">
-                                                    Valsts
-                                                </label>
-                                                <div class="col-md-6">
-                                                    <select class="form-control form-control-select js-country" name="id_country" required="">
-                                                        <option value="" disabled="" selected="">-- please choose --</option>
-                                                        <option value="177">Krievija</option>
-                                                        <option value="125" selected="">Latvija</option>
-                                                    </select>
-                                                </div>
-                                                <div class="col-md-3 form-control-comment">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row ">
-                                                <label class="col-md-3 form-control-label">
-                                                    Telefons
-                                                </label>
-                                                <div class="col-md-6">
-                                                    <input class="form-control" name="phone" type="text" value="" maxlength="32">
-                                                </div>
-                                                <div class="col-md-3 form-control-comment">
-                                                    Optional
                                                 </div>
                                             </div>
                                         </section>
@@ -157,14 +108,14 @@
                             </div>
                         </section>
                         <footer class="page-footer">
-                            <a href="http://r1riepas.lv/index.php?controller=my-account" class="account-link">
-                                <i class="material-icons"></i>
-                                <span>Atpakaļ uz Jūsu kontu</span>
-                            </a>
-                            <a href="http://r1riepas.lv/index.php" class="account-link">
-                                <i class="material-icons"></i>
-                                <span>Sākumlapa</span>
-                            </a>
+                          <a href="{{ route('my-account') }}" class="account-link">
+                            <i class="material-icons"></i>
+                            <span>Atpakaļ uz Jūsu kontu</span>
+                          </a>
+                          <a href="{{ route('home') }}" class="account-link">
+                            <i class="material-icons"></i>
+                            <span>Sākumlapa</span>
+                          </a>
                         </footer>
                     </section>
                 </div>

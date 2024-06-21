@@ -244,9 +244,19 @@
                                     <hr class="separator">
                                   </div>
                                   @if (\Cart::count() > 0)
-                                    <div class="checkout text-sm-center card-block checkout-button">
-                                      <button type="submit" class="btn btn-primary btn-block"><span>Turpināt</span></button>
-                                    </div>
+                                      @if (Auth::check())
+                                            <div class="checkout text-sm-center card-block checkout-button">
+                                                <button type="submit" class="btn btn-primary btn-block"><span>Turpināt</span></button>
+                                            </div>
+                                        @else
+                                            <div class="checkout text-sm-center card-block checkout-button">
+                                                <div class="checkout-buttons">
+                                                    <a href="/login" class="btn btn-primary"><span>Ienākt</span></a>
+                                                    <a href="/register" class="btn btn-primary"><span>Reģistrēties</span></a>
+                                                </div>
+                                                <button type="submit" style="font-size: 15px;" class="btn btn-primary btn-block"><span>Pasūtīt nereģistrējoties</span></button>
+                                            </div>
+                                        @endif
                                   @else
                                     <div class="checkout text-sm-center card-block checkout-button">
                                       <button type="button" class="btn btn-primary disabled" disabled="">Noformēt pasūtījumu</button>

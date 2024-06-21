@@ -1,7 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\View as View;
+  use Gloudemans\Shoppingcart\Facades\Cart;
+  use Illuminate\Support\Facades\DB;
+  use Illuminate\Support\Facades\Route;
+  use Illuminate\Support\Facades\Session;
+  use Illuminate\Support\Facades\View as View;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,8 +22,11 @@ use Illuminate\Support\Facades\View as View;
   //return view('maintenance');
 //}
 
-Auth::routes();
-Route::get('/register', function() { return abort(404); })->name('register');
+Auth::routes(['verify' => true]);
+//Route::get('verify-sms', [App\Http\Controllers\Auth\VerificationController::class, 'showSmsVerificationForm'])->name('verification.notice');
+//Route::post('verify-sms', [App\Http\Controllers\Auth\VerificationController::class, 'verifySmsCode'])->name('verification.verify');
+//Route::post('resend-sms', [App\Http\Controllers\Auth\VerificationController::class, 'resendVerificationCode'])->name('verification.resend');
+//Route::get('/register', function() { return abort(404); })->name('register');
 
 Route::prefix('api')->name('admin.')->group(function() {
   Route::get('/tires/auto/{season}', [App\Http\Controllers\AutoTireController::class, 'api_tires']);
@@ -329,8 +335,13 @@ Route::middleware('checksession')->group(function() {
    require_once(dirname(__DIR__) . '/app/Paysera/callback.php');
   });
   Route::get('/logout', function() {
+    $user_email = Auth::user()->email;
+    Cart::store($user_email);
     Auth::logout();
     Session::flush();
+    DB::table('orders_history')->where('identifier', $user_email)->update(['instance' => Session::getId()]);
+    Cart::instance(Session::getId())->restore($user_email);
+    unset($user_email);
     return redirect()->back();
   })->name('logout');
 
@@ -467,12 +478,19 @@ Route::middleware('checksession')->group(function() {
 
 // Klienta daļa
 
-  Route::middleware('auth')->prefix('my-account')->group(function() {
-    Route::get('/', [App\Http\Controllers\HomeController::class, 'my_account'])->name('my-account');
-    Route::get('/identity', [App\Http\Controllers\HomeController::class, 'identity'])->name('identity');
-    Route::get('/address', [App\Http\Controllers\HomeController::class, 'address'])->name('address');
-    Route::get('/history', [App\Http\Controllers\HomeController::class, 'history'])->name('history');
-    Route::get('/order-slip', [App\Http\Controllers\HomeController::class, 'order_slip'])->name('order-slip');
+  Route::middleware(['auth', 'verified'])->prefix('my-account')->group(function() {
+    Route::get('/', [App\Http\Controllers\UserController::class, 'my_account'])->name('my-account');
+
+    Route::get('/identity', [App\Http\Controllers\UserController::class, 'identity'])->name('identity');
+    Route::post('/identity/update', [App\Http\Controllers\UserController::class, 'identity_update'])->name('identity_update');
+
+    Route::get('/address', [App\Http\Controllers\UserController::class, 'address'])->name('address');
+    Route::post('/address/update', [App\Http\Controllers\UserController::class, 'address_update'])->name('address_update');
+
+    Route::get('/history', [App\Http\Controllers\UserController::class, 'history'])->name('history');
+    Route::get('/history/{id}', [App\Http\Controllers\UserController::class, 'history_show'])->name('history.show');
+
+    Route::get('/order-slip', [App\Http\Controllers\UserController::class, 'order_slip'])->name('order-slip');
   });
 
 // Sinhronizācijas

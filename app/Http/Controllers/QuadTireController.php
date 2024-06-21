@@ -309,7 +309,7 @@ class QuadTireController extends Controller
                 $html .= '<td class="hidden-sm-down text-center">' . $tire->comment . '</td>';
               }
               $html .= '<td class="shopping-cart-col"><div class="clearfix atc_div text-right">';
-              if (\Illuminate\Support\Facades\Auth::check()) {
+              if (\Illuminate\Support\Facades\Auth::user()->hasRole('administrators')) {
                 $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
               } else {
                 $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
@@ -367,11 +367,11 @@ class QuadTireController extends Controller
             $html .= '<div class="rim-price-old" style="align-self: center;">€' . $tire->price1 . '</div>';
             $html .= '<div class="rim-price-red" style="align-self: center;">€' . $tire->price2 . '</div>';
             $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>">';
-            if (Auth::check()) {
-              $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#">';
-            } else {
-              $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#blockcart-modal">';
-            }
+            if (\Illuminate\Support\Facades\Auth::user()->hasRole('administrators')) {
+                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+              } else {
+                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+              }
             $html .= '<i class="material-icons">add_shopping_cart</i>';
             $html .= '</button>';
             $html .= '</span>';

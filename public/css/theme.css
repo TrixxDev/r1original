@@ -6520,7 +6520,7 @@ small.label, small.value {
   font-size: .6875rem;
   font-weight: 400;
   margin-left: 0;
-  padding: .625rem 1rem;
+  padding: 12px 1rem;
   text-transform: uppercase
 }
 

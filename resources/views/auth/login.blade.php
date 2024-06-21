@@ -152,13 +152,13 @@
                                     </footer>
                                 </form>
                             </section>
-                            <!--<hr>
+                            <hr>
                             <div class="no-account" style="text-align: center;">
                                 <a href="{{ route('register') }}"
                                    data-link-action="display-register-form">
                                     Jums nav konts? Izveidojiet to
                                 </a>
-                            </div>-->
+                            </div>
                         </section>
                         <footer class="page-footer">
 

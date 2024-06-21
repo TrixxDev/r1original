@@ -40,3 +40,45 @@ class VerificationController extends Controller
         $this->middleware('throttle:6,1')->only('verify', 'resend');
     }
 }
+
+
+//  namespace App\Http\Controllers\Auth;
+//
+//  use App\Http\Controllers\Controller;
+//  use App\Models\User;
+//  use App\Notifications\SendSmsVerificationCode;
+//  use Illuminate\Http\Request;
+//  use Illuminate\Support\Facades\Auth;
+//
+//  class VerificationController extends Controller
+//  {
+//    public function showSmsVerificationForm()
+//    {
+//      return view('auth.verify-sms');
+//    }
+//
+//    public function verifySmsCode(Request $request)
+//    {
+//      $request->validate(['sms_code' => 'required']);
+//
+//      $user = Auth::user();
+//
+//      if ($user->sms_verification_code === $request->sms_code) {
+//        $user->sms_verification_code = null; // Clear the code after verification
+//        $user->save();
+//
+//        return redirect()->route('home')->with('status', 'Jūsu numurs veiksmīgi verificējās.');
+//      }
+//
+//      return back()->withErrors(['sms_code' => 'Ievadītais kods ir nepareizs.']);
+//    }
+//
+//    public function resendVerificationCode()
+//    {
+//      $user = User::where('id', Auth::user()->id)->first();
+//      $user->sms_verification_code = rand(100000, 999999);
+//      $user->save();
+//
+//      $user->notify(new SendSmsVerificationCode($user->sms_verification_code)); // Send SMS with the code
+//    }
+//  }

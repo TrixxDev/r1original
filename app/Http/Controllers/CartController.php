@@ -372,6 +372,28 @@ class CartController extends Controller
 
         return view('cart.checkout', compact('user_data', 'cats', 'dogs', 'order_id', 'total'));
       }else {
+        if (Auth::check()) {
+          $user = Auth::user();
+          if (Session::has('person') && Session::get('person') != 1) {
+            if ($user->hasCompany()) {
+              Session::put([
+                'person' => 2,
+                'cart.company_registration_number' => 'test',
+                'cart.company_pvn_number' => $user->company_vat,
+                'cart.company_name' => $user->company_name,
+                'cart.company_address' => $user->company_address,
+              ]);
+            } else {
+              Session::forget(['cart.company_registration_number', 'cart.company_pvn_number', 'cart.company_name', 'cart.company_address']);
+            }
+          }
+          Session::put([
+            'cart.name' => $user->name,
+            'cart.surname' => $user->surname,
+            'cart.email' => $user->email,
+            'cart.phone_number' => $user->phone_number,
+          ]);
+        }
         if (!Session::exists('person')) Session::put('person', 1);
         return view('cart.order');
       }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Notifications\SendSmsVerificationCode;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -55,6 +56,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:40'],
             'surname' => ['required', 'string', 'max:40'],
             'email' => ['required', 'string', 'email', 'max:100', 'unique:users'],
+            'phone' => ['required', 'string', 'max:15'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ],[
             'name.required' => 'Lūdzu ievadiet jūsu vārdu!',
@@ -67,6 +69,9 @@ class RegisterController extends Controller
             'email.email' => 'Lūdzu ievadiet korektu e-pastu!',
             'email.max' => 'E-pasts nedrīkst būt garāks par :max rakstzīmēm!',
             'email.unique' => 'Lietotājs ar šādu e-pastu jau ir reģistrēts!',
+
+            'phone.required' => 'Lūdzu ievadiet jūsu kontakttālruni!',
+            'phone.max' => 'Kontakttālrunis nevar būt garāks par :max cipariem!',
 
             'password.required' => 'Lūdzu ievadiet paroli!',
             'password.min' => 'Minimālais paroles garums :min rakstzīmes!',
@@ -91,9 +96,13 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'surname' => $data['surname'],
             'email' => $data['email'],
+            'phone_number' => $data['phone'],
             'password' => Hash::make($data['password']),
+            'sms_verification_code' => rand(100000, 999999), // Generate a random 6-digit code
         ]);
         $user->assignRole($role);
+
+        $user->notify(new SendSmsVerificationCode($user->sms_verification_code)); // Send SMS with the code
 
         return $user;
     }

@@ -40,7 +40,7 @@ return [
 
         'connection' => null,
 
-        'table' => 'orders',
+        'table' => 'orders_history',
 
     ],
 

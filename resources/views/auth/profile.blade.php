@@ -26,14 +26,14 @@
                                     <a class="col-lg-4 col-md-6 col-sm-6 col-xs-12" id="identity-link" href="{{ route('identity') }}">
                                         <span class="link-item">
                                             <i class="material-icons"></i>
-                                            Informācija
+                                            Profila informācija
                                         </span>
                                     </a>
 
                                     <a class="col-lg-4 col-md-6 col-sm-6 col-xs-12" id="address-link" href="{{ route('address') }}">
                                         <span class="link-item">
                                             <i class="material-icons"></i>
-                                            Pievienot adresi
+                                            Rekvizīti
                                         </span>
                                     </a>
 
@@ -47,7 +47,7 @@
                                     <a class="col-lg-4 col-md-6 col-sm-6 col-xs-12" id="order-slips-link" href="{{ route('order-slip') }}">
                                         <span class="link-item">
                                             <i class="material-icons"></i>
-                                            Kredīta izraksti
+                                            Vēlmju saraksts
                                         </span>
                                     </a>
                                 </div>

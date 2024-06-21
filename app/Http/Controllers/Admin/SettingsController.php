@@ -95,7 +95,7 @@
     public function users()
     {
 
-      $users = User::role(['administrators', 'moderators'])->get();
+      $users = User::all();
 
       return view('admin.settings.users', compact('users'));
     }

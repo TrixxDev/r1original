@@ -165,31 +165,6 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function my_account()
-    {
-        return view('auth.profile');
-    }
-
-    public function identity()
-    {
-        return view('auth.sub.identity');
-    }
-
-    public function address()
-    {
-        return view('auth.sub.address');
-    }
-
-    public function history()
-    {
-        return view('auth.sub.history');
-    }
-
-    public function order_slip()
-    {
-        return view('auth.sub.order_slip');
-    }
-
     public function contacts()
     {
         return view('main.contacts');

@@ -70,6 +70,23 @@
                     </div>
                     <div class="form-group row ">
                       <label class="col-md-3 form-control-label required">
+                        Kontakttālrunis
+                      </label>
+                      <div class="col-md-6">
+                        <input id="email" type="text" class="form-control @error('phone') is-invalid @enderror"
+                               name="phone" value="{{ old('phone') }}" required autocomplete="phone">
+
+                        @error('phone')
+                        <span class="invalid-feedback" role="alert">
+                          <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
+                      </div>
+                      <div class="col-md-3 form-control-comment">
+                      </div>
+                    </div>
+                    <div class="form-group row ">
+                      <label class="col-md-3 form-control-label required">
                         Parole
                       </label>
                       <div class="col-md-6 password-show">
