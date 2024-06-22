@@ -138,10 +138,14 @@
                                                   } else {
                                                       if (date('Y-m-d') == $workingDay->date) {
                                                         if (\Carbon\Carbon::parse($currentTime)->subMinutes(10) >= \Carbon\Carbon::now()) {
-                                                          if (!is_null($halfMotoService)) {
+                                                          if ($i >= 0) {
+                                                            if (!is_null($halfMotoService)) {
                                                               $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
-                                                          } else {
+                                                            } else {
                                                               $content = '<div class="time-status flex time-taken-half" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><div class="slot taken-slot">Aizņemts</div></div>';
+                                                            }
+                                                          } else {
+                                                            $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                           }
                                                         } else {
                                                           if ($i >= 0) {
@@ -182,10 +186,14 @@
                                                   } else {
                                                       if (date('Y-m-d') == $workingDay->date) {
                                                         if (\Carbon\Carbon::parse($currentTime)->subMinutes(10) >= \Carbon\Carbon::now()) {
-                                                          if (!is_null($halfAcService)) {
-                                                              $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
+                                                          if ($i >= 0) {
+                                                            if (!is_null($halfAcService)) {
+                                                                $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
+                                                              } else {
+                                                                $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
+                                                              }
                                                           } else {
-                                                              $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
+                                                            $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                           }
                                                         } else {
                                                           if ($i >= 0) {
