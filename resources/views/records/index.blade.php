@@ -211,7 +211,7 @@
                                                               }
                                                           } else {
                                                               if ($i >= 0) {
-                                                                $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
+                                                                $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
                                                               } else {
                                                                 $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                               }
