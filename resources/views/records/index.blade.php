@@ -45,7 +45,7 @@
                               @if ($workingOffice->office_id == $office->office_id)
                                 @if ($workingDay->weekday != 7)
                                   @if ($workingDay->is_opened == 1)
-                                    <div class="table office_{{ $workingOffice->office_id }}" data-queue-id="{{ $workingDay->queue_id }}">
+                                    <div class="table office_{{ $workingOffice->office_id }}" data-queue-id="{{ $workingDay->queue_id }}" data-allow-all="@if (is_null($halfAcService) && is_null($halfMotoService)){{'true'}}@else{{'false'}}@endif">
                                       <div class="title text-sm">{{ $workingOffice->title }}</div>
                                       @for ($i = $opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep; $i <= $numberOfSteps; $i++)
                                         @php
