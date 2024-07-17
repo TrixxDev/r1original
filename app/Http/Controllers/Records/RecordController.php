@@ -1194,6 +1194,10 @@
               }
             }
 
+            if ($slot->comment === null) {
+              $slot->delete();
+            }
+
             Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $deletedSlot->slot_id, 0, 'Atcelts pieraksts', $deletedSlot);
             return redirect(route('pieraksts'))->with('success', 'Atcelšana ir izdevusies');
           } else {
