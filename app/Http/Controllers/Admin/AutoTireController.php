@@ -258,6 +258,7 @@ class AutoTireController extends Controller
         $tire->quantity = ($request->quantity === null) ? '' : $request->quantity;
         $tire->visible_list = 1;
         $tire->visible_users = 1;
+        $tire->top = 1;
         $tire->urs_quantity = ($request->urs_quantity === null) ? '' : $request->urs_quantity;
         $tire->krs_quantity = ($request->krs_quantity === null) ? '' : $request->krs_quantity;
 
@@ -717,5 +718,21 @@ class AutoTireController extends Controller
     public function ajaxUpdateTires()
     {
         return 123;
+    }
+
+    public function toggletop(Request $request)
+    {
+
+      $tire_id = $request->input()['tire_id'];
+
+      $tire = Autotire::where('tire_id', $tire_id)->first();
+      if (!$tire) return json_encode(['success' => false]);
+      $tire->top = ($tire->top == 0) ? 1 : 0;
+      if ($tire->save()) {
+        return json_encode(['success' => true]);
+      } else {
+        return json_encode(['success' => false]);
+      }
+
     }
 }

@@ -149,6 +149,7 @@
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 67.547px;">Slapjšs segums</th>
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 67.547px;">Skaļums</th>
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 67.547px;">Piezīmes</th>
+                                        <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 67.547px;">Top40</th>
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Username: activate to sort column ascending" style="width: 372.5px;">Artikuls</th>
                                         <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 322.391px;"></th>
                                     </tr>
@@ -157,7 +158,7 @@
                                     @if (isset($tires))
                                         @foreach ($tires as $tire)
                                             <tr role="row" class="odd">
-                                                <td><input type="checkbox" name="tire_id[]" value="{{ $tire->tire_id }}" ></td>
+                                                <td><input type="checkbox" class="tire_id" name="tire_id[]" value="{{ $tire->tire_id }}" ></td>
                                                 <td>{{ $tire->d1 }}</td>
                                                 <td>{{ $tire->d2 }}</td>
                                                 <td>{{ $tire->d3 }}</td>
@@ -207,6 +208,7 @@
                                                 <td>{{ $tire->wet }}</td>
                                                 <td>{{ $tire->noise }}</td>
                                                 <td>{{ $tire->comment }}</td>
+                                                <td style="text-align: center;"><input class="toggle-top40" type="checkbox" style="width: 30px; height: 30px;" @if ($tire->top) checked @endif></td>
                                                 <td>{{ $tire->article }}</td>
                                                 <td>
                                                     <a class="btn btn-success" href="{{ route('admin.auto.tire.edit', $tire->tire_id) }}">

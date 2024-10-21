@@ -30,6 +30,36 @@ $(document).ready(function() {
     });
   });
 
+  $(document).on('change', 'input.toggle-top40', function(e) {
+    e.preventDefault();
+
+    let tire_type = $('#brand_select').data('model');
+    let tire_id = $(this).parent().parent().find('.tire_id').val();
+
+    $.ajax({
+      method: 'POST',
+      url: '/admin/' + tire_type + '/toggleTop',
+      data: {'tire_id': tire_id},
+      dataType: 'json',
+      beforeSend: function() {
+        $('input.toggle-top40').attr('disabled', true).prop('disabled', true);
+      },
+      success: function(data) {
+        if (data.success !== true) {
+          if ($(this).is(':checked')) {
+            $(this).attr('checked', true).prop('checked', true);
+          } else {
+            $(this).attr('checked', false).prop('checked', false);
+          }
+        }
+        $(this).removeAttr('checked').prop('checked', false);
+      },
+      complete: function() {
+        $('input.toggle-top40').attr('disabled', false).prop('disabled', false);
+      }
+    });
+  });
+
   $(document).on('click', 'button.edit-banner', function(e) {
     e.preventDefault();
     let url = $(this).parent().parent().find('.banner-link').text();

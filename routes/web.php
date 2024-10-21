@@ -45,6 +45,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
 
   // Auto riepas
   Route::match(['GET', 'POST'], '/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'index'])->name('auto.tires');
+  Route::post('/auto/toggleTop', [App\Http\Controllers\Admin\AutoTireController::class, 'toggletop'])->name('auto.tires.toggletop');
   Route::get('/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_edit'])->name('auto.tire.edit');
   Route::post('/auto/edit/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_update'])->name('auto.tire.update');
   Route::get('/auto/delete/{id}', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_destroy'])->name('auto.tire.destroy');
