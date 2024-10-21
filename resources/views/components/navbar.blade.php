@@ -267,7 +267,7 @@
   <button class="nav-dropdown-button navbar-item" onclick="showRiepasDropdown()">Riepas <span class="material-icons riepas">keyboard_arrow_down</span></button>
 
     <div class="dropdown-options riepas">
-        @if ((int) config('season') === 1)
+        @if ((int) env('SEASON') === 2)
         <div class="nav-dropdown-link">
             <a class="dropdown-item" href="{{ route('ziemas-riepas') }}">Ziemas Riepas</a>
         </div>
@@ -285,7 +285,7 @@
         <a class="dropdown-item" href="{{ route('kvadraciklu-riepas') }}">Kvadraciklu Riepas</a>
       </div>
 
-        @if ((int) config('season') === 1)
+        @if ((int) env('SEASON') === 2)
             <div class="nav-dropdown-link">
                 <a class="dropdown-item" href="{{ route('vasaras-riepas') }}">Vasaras Riepas</a>
             </div>
