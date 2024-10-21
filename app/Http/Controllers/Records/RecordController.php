@@ -47,35 +47,35 @@
 
     public $startTime = '07:00';
     public $closeTime = '21:00';
-  /**
-   * Create a new controller instance.
-   *
-   * @return void
-   */
-  public function __construct()
-  {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
 
-//      $notification = 'Hello world!';
-//      broadcast(new NewNotification($notification))->toOthers();
+      //      $notification = 'Hello world!';
+      //      broadcast(new NewNotification($notification))->toOthers();
 
-    $this->timeToOpen = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 16, 00);
-    $this->timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 8, 45);
-    $this->startSendWpp = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 8, 00);
-    $this->endSendWpp = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 18, 00);
-    $this->now = \Carbon\Carbon::now();
-    $this->dayTitles = [
-      1 => 'Pirmdiena',
-      2 => 'Otrdiena',
-      3 => 'Trešdiena',
-      4 => 'Ceturtdiena',
-      5 => 'Piektdiena',
-      6 => 'Sestdiena',
-      7 => 'Svētdiena',
-    ];
+      $this->timeToOpen = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 16, 00);
+      $this->timeToClose = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 8, 45);
+      $this->startSendWpp = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 8, 00);
+      $this->endSendWpp = \Carbon\Carbon::create(date('Y'), date('m'), date('d'), 18, 00);
+      $this->now = \Carbon\Carbon::now();
+      $this->dayTitles = [
+        1 => 'Pirmdiena',
+        2 => 'Otrdiena',
+        3 => 'Trešdiena',
+        4 => 'Ceturtdiena',
+        5 => 'Piektdiena',
+        6 => 'Sestdiena',
+        7 => 'Svētdiena',
+      ];
 
-//      $hash = $this->getRandomHash();
-//
-//      dd($this->isHashTaken($hash));
+      //      $hash = $this->getRandomHash();
+      //
+      //      dd($this->isHashTaken($hash));
 
     }
 
@@ -163,43 +163,43 @@
       return Office::orderBy('office_id', 'DESC')->get();
     }
 
-  public function getSlotInfo(Request $request)
-  {
-    $date = $request->input('date');
-    $queue_id = $request->input('queue_id');
-    $slotNumber = $request->input('iorder');
+    public function getSlotInfo(Request $request)
+    {
+      $date = $request->input('date');
+      $queue_id = $request->input('queue_id');
+      $slotNumber = $request->input('iorder');
 
-    $workingDay = Workingday::where('date', $date)->where('queue_id', $queue_id)->first();
-    $office_id = Office::where('office_id', $workingDay->office_id)->first()->office_id;
+      $workingDay = Workingday::where('date', $date)->where('queue_id', $queue_id)->first();
+      $office_id = Office::where('office_id', $workingDay->office_id)->first()->office_id;
 
-    $slot = Slot::where('date', $date)->where('queue_id', $queue_id)->where('iorder', $slotNumber)->first();
+      $slot = Slot::where('date', $date)->where('queue_id', $queue_id)->where('iorder', $slotNumber)->first();
 
-    if ($slot) {
+      if ($slot) {
 
-      $resultArray = (array) json_decode($slot->takenby);
+        $resultArray = (array) json_decode($slot->takenby);
 
-      $created_user = User::find($slot->createuser);
-      $edited_user = User::find($slot->edituser);
+        $created_user = User::find($slot->createuser);
+        $edited_user = User::find($slot->edituser);
 
-      $slot->createuser = ($created_user) ? $created_user->fullName : 'Klients';
-      $slot->createtime = ($slot->createtime) ? $slot->createtime : '';
-      $slot->edituser = ($edited_user) ? $edited_user->fullName : '';
-      $slot->edittime = ($slot->edittime) ? $slot->edittime : '';
-      $slot->is_mobile = ($slot->is_mobile === 1) ? 'mobilās ierīces' : 'datora';
+        $slot->createuser = ($created_user) ? $created_user->fullName : 'Klients';
+        $slot->createtime = ($slot->createtime) ? $slot->createtime : '';
+        $slot->edituser = ($edited_user) ? $edited_user->fullName : '';
+        $slot->edittime = ($slot->edittime) ? $slot->edittime : '';
+        $slot->is_mobile = ($slot->is_mobile === 1) ? 'mobilās ierīces' : 'datora';
 
-      if (!empty($resultArray)) {
-        return $slot;
-      } else {
-        if ($slot->comment) {
-          return json_encode(['takenby' => 'false', 'office_id' => $office_id, 'discount' => $slot->comment]);
+        if (!empty($resultArray)) {
+          return $slot;
         } else {
-          return json_encode(['takenby' => 'false', 'office_id' => $office_id]);
+          if ($slot->comment) {
+            return json_encode(['takenby' => 'false', 'office_id' => $office_id, 'discount' => $slot->comment]);
+          } else {
+            return json_encode(['takenby' => 'false', 'office_id' => $office_id]);
+          }
         }
+      } else {
+        return json_encode(['takenby' => 'false', 'office_id' => $office_id]);
       }
-    } else {
-      return json_encode(['takenby' => 'false', 'office_id' => $office_id]);
     }
-  }
 
     public function fillSlot(Request $request)
     {
@@ -784,29 +784,29 @@
           $sheet->setCellValue('H' . $b, @$created);
           $sheet->setCellValue('I' . $b, @$edited);
           $sheet->setCellValue('J' . $b, @$lastAction);
-//          if (isset($discount) && $discount === true) {
-//            $spreadsheet
-//              ->getActiveSheet()
-//              ->getStyle("A$b:J$b")
-//              ->getFill()
-//              ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-//              ->getStartColor()
-//              ->setARGB('ffc000');
-//            $spreadsheet
-//              ->getActiveSheet()
-//              ->getStyle("A$b:J$b")
-//              ->getBorders()
-//              ->getVertical()
-//              ->setBorderStyle(Border::BORDER_THIN)
-//              ->setColor(new Color('DDD9C4'));
-//            $discount = false;
-//          }
+          //          if (isset($discount) && $discount === true) {
+          //            $spreadsheet
+          //              ->getActiveSheet()
+          //              ->getStyle("A$b:J$b")
+          //              ->getFill()
+          //              ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+          //              ->getStartColor()
+          //              ->setARGB('ffc000');
+          //            $spreadsheet
+          //              ->getActiveSheet()
+          //              ->getStyle("A$b:J$b")
+          //              ->getBorders()
+          //              ->getVertical()
+          //              ->setBorderStyle(Border::BORDER_THIN)
+          //              ->setColor(new Color('DDD9C4'));
+          //            $discount = false;
+          //          }
           $b++;
         }
       } catch (\Exception $e) {
         dd($e->getMessage(), $e->getLine());
       }
-//      die;
+      //      die;
       // Data; // foreach($slots2 as $row) // { // $queue = Queue::where('queue_id', $row['queue_id'])->first(); // $queue->loadWorkingDay($date); // $slotTime = $queue->getSlotTime($date, $row['iorder']); //
       //$pdf->Cell($w[0],10,Office::timeByInterval($slotTime),1); // $pdf->Cell($w[1],10,$row['takenby'],1,0,'L'); // $pdf->ln(); // }
       // Closing line // $pdf->Cell(array_sum($w),0,'','T');
@@ -1061,17 +1061,17 @@
 
           $slots = Slot::where('date', $workingDay->date)->where('queue_id', $workingDay->queue_id)->get();
 
-//          if ($newOpenTime > $oldOpenTime) {
-//            foreach ($slots as $slot) {
-//              $slot->iorder = $slot->iorder + ($newIorder);
-//              $slot->save();
-//            }
-//          } else {
-//            foreach ($slots as $slot) {
-//              $slot->iorder = $slot->iorder - ($newIorder);
-//              $slot->save();
-//            }
-//          }
+          //          if ($newOpenTime > $oldOpenTime) {
+          //            foreach ($slots as $slot) {
+          //              $slot->iorder = $slot->iorder + ($newIorder);
+          //              $slot->save();
+          //            }
+          //          } else {
+          //            foreach ($slots as $slot) {
+          //              $slot->iorder = $slot->iorder - ($newIorder);
+          //              $slot->save();
+          //            }
+          //          }
         }
 
         $workingDay->queue_id = $equal->queue_id;
@@ -1111,14 +1111,14 @@
       if (!$slot) return redirect(route('pieraksts'));
 
       if ($slot->date < $date) return redirect(route('pieraksts'))->with('warning', 'Jūsu pieraksts vairs nav aktuāls');
-//      if ($slot->date == $date && $this->timeToClose < $this->now) return redirect(route('pieraksts'))->with('warning', 'Pierakstu atcelt tiešsaistē iespējams līdz <b>8:45</b>, ja vēlaties mainīt pieraksta laiku vēlāk, zvaniet');
+      //      if ($slot->date == $date && $this->timeToClose < $this->now) return redirect(route('pieraksts'))->with('warning', 'Pierakstu atcelt tiešsaistē iespējams līdz <b>8:45</b>, ja vēlaties mainīt pieraksta laiku vēlāk, zvaniet');
 
       $queue = Queue::where('queue_id', $slot->queue_id)->first();
 
       $office = Office::where('office_id', $queue->office_id)->first();
-//      foreach ($office->_queues as $queue) {
-//        $queue->loadWorkingDay($slot->date,false);
-//      }
+      //      foreach ($office->_queues as $queue) {
+      //        $queue->loadWorkingDay($slot->date,false);
+      //      }
 
       $takenBy = json_decode($slot->takenby);
 
