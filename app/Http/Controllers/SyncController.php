@@ -2329,6 +2329,8 @@
             $position->visible_list = 0;
             $position->save();
           }
+
+//          continue;
         }
 
         $type = $item['segment_description'];
@@ -2497,8 +2499,6 @@
 
         if (Bigtire::where('article', $item['product_no'])->exists()) {
           $itam = Bigtire::where('article', $item['product_no'])->first();
-        } else {
-          continue;
         }
 
         if ($itam->article == $item['product_no']) {
@@ -2540,8 +2540,6 @@
           if (Bigtire::where('article', $item['product_no'])->exists()) {
             if ($stock->quantity == 0) Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0]);
           }
-        } else {
-          continue;
         }
 
       }

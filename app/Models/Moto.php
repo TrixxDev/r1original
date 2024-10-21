@@ -229,7 +229,7 @@ class Moto extends Model
                             return 'Zvaniet!';
                         }
                         default:{
-                            return 'Pieejams';
+                            return 'Pasūtāms';
                         }
                     }
                 } else {

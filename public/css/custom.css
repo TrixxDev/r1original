@@ -3390,7 +3390,7 @@ th.header {
   }
 
   .card.cart-summary .checkout .btn {
-    padding: 5px 16px!important;
+    padding: 5px 26px!important;
   }
 }
 
@@ -4073,7 +4073,7 @@ tr.selected td a {
     /*padding-right: 200px!important;*/
   }
   .card.cart-summary .checkout .btn {
-    padding: 5px 20px!important;
+    padding: 5px 34px!important;
   }
 
 }
