@@ -250,21 +250,20 @@
         $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
         $result = $this->accrual->query($sql);
         if ($result->rowCount()) {
-          foreach ($result as $rows) {
-            set_time_limit(0);
-            $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-            if ($rows['Deleted'] == 1) {
-              $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-              $product->priceoffer = 0;
-              if ($product->comment == env('SALE_TEXT')) {
-                $product->comment = '';
-              }
-            } else {
-              $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
-              $product->priceoffer = 1;
-              if (empty($product->comment)) {
-                $product->comment = env('SALE_TEXT');
-              }
+          $rows = $result->fetch();
+          set_time_limit(0);
+          $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
+          if ($rows['Deleted'] == 1) {
+            $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+            $product->priceoffer = 0;
+            if ($product->comment == env('SALE_TEXT')) {
+              $product->comment = '';
+            }
+          } else {
+            $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
+            $product->priceoffer = 1;
+            if (empty($product->comment)) {
+              $product->comment = env('SALE_TEXT');
             }
           }
           $product->price1 = $veikala_cena;
@@ -272,23 +271,20 @@
           $product->updated_at = date('Y-m-d H:i:s');
           $product->save();
         } else {
-          $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
+          $sql = "SELECT * FROM katalogs k WHERE k.Deleted = 0 AND k.ArticleId = '" . $article . "'";
           $result = $this->accrual->query($sql);
-          if ($result->rowCount()) {
-            foreach ($result as $rows) {
-              set_time_limit(0);
-              $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-              $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-              $product->priceoffer = 0;
-              if ($product->comment == env('SALE_TEXT')) {
-                $product->comment = '';
-              }
-            }
-            $product->price1 = $veikala_cena;
-            $product->price2 = $akcijas_cena;
-            $product->updated_at = date('Y-m-d H:i:s');
-            $product->save();
+          $rows = $result->fetch();
+          set_time_limit(0);
+          $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
+          $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
+          $product->priceoffer = 0;
+          if ($product->comment == env('SALE_TEXT')) {
+            $product->comment = '';
           }
+          $product->price1 = $veikala_cena;
+          $product->price2 = $akcijas_cena;
+          $product->updated_at = date('Y-m-d H:i:s');
+          $product->save();
         }
       }
     }
@@ -922,8 +918,8 @@
         $rim->dc = $item->CenterBore;
         $rim->used = 0;
         $rim->price1 = ceil((round(($item->NetPrice * 1.21), 2) + 15) / 0.7);
-        $rim->price2 = $item->Price;
-        $rim->price3 = floor(round($item->RetailPrice * 1.21, 2));
+        $rim->price2 = floor(round($item->RetailPrice * 1.21, 2));
+        $rim->price3 = $item->Price;
         $rim->offer = 0;
         $rim->priceOffer = 0;
         if ($newRim == true) {
@@ -1716,7 +1712,7 @@
       $counted = 0;
       $updated = 0;
 
-      Bigstock::where('itype', 'i3')->where('type', 'agro')->update(['quantity' => 0]);
+      Bigstock::where('itype', 'i3')->where('type', 'agro')->update(['quantity' => 0, 'visible_users' => 0, 'visible_list' => 0]);
 
       $content = file_get_contents(dirname(__DIR__, 3) . '/public/storage/xml/i3-agro.txt');
       $content = json_decode($content);
@@ -2318,6 +2314,8 @@
 
       $initial = ["/[0-9.]+/", "/L/", "/S/", "/VF/", "/FI/", "/P/", "/SL/", "/DW/", "/IF/", "/CFO/"];
 
+      Bigtire::query()->update(['visible_users' => 0, 'visible_list' => 0]);
+
       $counted = 0;
       $updated = 0;
       foreach ($tires as $item) {
@@ -2332,7 +2330,7 @@
             $position->save();
           }
 
-          continue;
+//          continue;
         }
 
         $type = $item['segment_description'];
@@ -2501,12 +2499,15 @@
 
         if (Bigtire::where('article', $item['product_no'])->exists()) {
           $itam = Bigtire::where('article', $item['product_no'])->first();
-        } else {
-          continue;
         }
 
         if ($itam->article == $item['product_no']) {
 
+          if ($item['price'] == 0) {
+            $price1 = 0;
+            $price2 = 0;
+            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'visible_users' => 0, 'visible_list' => 0,  'updated_at' => date('Y-m-d H:i:s')]);
+          }
           if ($item['price'] < 100) {
             $price1 = ($item['price'] + 8) / 70 * 100;
             $price2 = $item['price'] + 10;
@@ -2539,8 +2540,6 @@
           if (Bigtire::where('article', $item['product_no'])->exists()) {
             if ($stock->quantity == 0) Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0]);
           }
-        } else {
-          continue;
         }
 
       }

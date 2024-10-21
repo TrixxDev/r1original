@@ -26,6 +26,14 @@
         </div>
       @endif
       <div class="form-group row">
+          <div class="col-sm-3"></div>
+          <div class="col-sm-6">
+              <button type="submit" form="orderUpdate" class="btn btn-primary ml-1 float-right">Saglabāt</button>
+              <a href="{{ route('admin.orders') }}" class="btn btn-secondary float-right">Atgriezties</a>
+          </div>
+          <div class="col-sm-3"></div>
+      </div>
+      <div class="form-group row">
         <label class="col-md-3 form-control-label text-left text-md-right">
           <h3>Pasūtījuma informācija</h3>
         </label>
@@ -37,6 +45,15 @@
       </div>
       <form id="orderUpdate" method="POST" action="{{ route('admin.order.update', $order->id) }}">
       @csrf
+      <div class="form-group row">
+          <label class="col-md-3 form-control-label text-left text-md-right">
+              Komentāri
+          </label>
+          <div class="col-md-6 col-sm">
+              <textarea name="admin_info" class="form-control" cols="30" rows="5">@if (!empty($order->admin_info)){{ $order->admin_info }}@endif</textarea>
+          </div>
+      </div>
+
       <div class="form-group row">
         <label class="col-md-3 form-control-label text-left text-md-right">
           Rēķina numurs
@@ -80,7 +97,7 @@
           Kopsumma
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="total" type="text" disabled value="{{$order->price + (($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2)) }} &euro; - {{ $pay_enum[$order->payment] }}">
+          <input class="form-control" name="total" type="text" disabled value="{{ $item_sum }} &euro; - {{ $pay_enum[$order->payment] }}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
@@ -102,7 +119,7 @@
           Vārds, uzvārds
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="name_suraname" type="text" value="{{$userData->name . ", " . $userData->surname}}">
+          <input class="form-control" name="name_suraname" type="text" value="{{$userData->name . " " . $userData->surname}}">
         </div>
         <div class="col-md-3 form-control-comment">
         </div>
@@ -167,7 +184,6 @@
        <div class="col-md-2 col-sm">
         <select id="select" class="custom-select" name="shipping_city">
           <option value="1" @if (isset($userData->shipping_city) && $userData->shipping_city == 1) selected="" @endif>Rīga</option>
-          <option value="2" @if (isset($userData->shipping_city) && $userData->shipping_city == 2) selected="" @endif>Salaspils</option>
           <option value="3" @if (isset($userData->shipping_city) && $userData->shipping_city == 3) selected="" @endif>Cits</option>
         </select>
        </div>
@@ -383,9 +399,32 @@
               <td style="border-color: #c6c6c6;">{{ ($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2) }} &euro;</td>
             </tr>
 	          @endif
+            @if ($order->used_promo != 0)
+            <tr>
+                <th style="border-color: #c6c6c6;" scope="row"></th>
+                <td style="border-color: #c6c6c6;" scope="row">
+                    @if ($promo->status === '1')
+                        Atlaižu kods (-{{ $promo->value }}%) (Kods - {{ $promo->code }})
+                    @else
+                        Atlaižu kods (-{{ $promo->value }} €) (Kods - {{ $promo->code }})
+                    @endif
+                </td>
+                <td style="border-color: #c6c6c6;" scope="row"></td>
+                <td style="border-color: #c6c6c6;" scope="row"></td>
+                <td style="border-color: #c6c6c6;" scope="row">
+                    @if ($promo->status === '1')
+                        -{{ $order->price - $item_sum }} €
+                    @else
+                        @if (!is_null($promo))
+                            -{{ $promo->value }} €
+                        @endif
+                    @endif
+                </td>
+            </tr>
+            @endif
             <tr class="table-dark">
               <th style="border-color: #c6c6c6; text-align: right" colspan="4"></th>
-              <th style="border-color: #c6c6c6;">{{$order->price + (($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2)) }} &euro;</th>
+              <th style="border-color: #c6c6c6;">{{ $item_sum }} &euro;</th>
             </tr>
           </tbody>
         </table>
@@ -395,7 +434,7 @@
         <div class="col-sm-3"></div>
         <div class="col-sm-6">
           <button type="submit" form="orderUpdate" class="btn btn-primary ml-1 float-right">Saglabāt</button>
-          <a href="{{ URL::previous() }}" class="btn btn-secondary float-right">Atgriezties</a>
+          <a href="{{ route('admin.orders') }}" class="btn btn-secondary float-right">Atgriezties</a>
         </div>
         <div class="col-sm-3"></div>
       </div>

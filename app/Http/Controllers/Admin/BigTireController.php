@@ -402,9 +402,9 @@ class BigTireController extends Controller
         if ($request->hasFile('tread_image')) {
             $image      = $request->file('tread_image');
             $fileName   = $id;
-            $fileNameSmall   = $id . '-s';
-            $fileNameMed   = $id . '-n';
-            $fileNameLarge   = $id . '-o';
+            $fileNameSmall   = $id . '-1s';
+            $fileNameMed   = $id . '-1n';
+            $fileNameLarge   = $id . '-1o';
 //            dd($image);
 
             $watermark = Image::make('img/r1-riepas-logo-1515661637.jpg')->opacity(50);

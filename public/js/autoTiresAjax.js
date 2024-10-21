@@ -8,13 +8,50 @@ $(document).ready(function() {
     return decodeURI(results[1]) || 0;
   }
 
+  function unique(array) {
+    return $.grep(array, function(el, index) {
+      return index === $.inArray(el, array);
+    });
+  }
+
+  function addEntry(item) {
+    // Parse the JSON stored in allEntries
+    let existingEntries = JSON.parse(localStorage.getItem("allEntries"));
+    if (existingEntries == null) existingEntries = [];
+
+    // Check if the entry already exists
+    // (Modify the criteria based on what constitutes a duplicate)
+    const isDuplicate = existingEntries.some(entry =>
+      entry.article === item.article &&
+      entry.user === item.user
+    );
+
+    if (isDuplicate) {
+      return false; // Entry already exists
+    }
+
+    // If not a duplicate, proceed with adding the entry
+    let entry = {
+      "article": item.article,
+      "qty": item.qty,
+      "user": item.user,
+      "prod": item.prod,
+      "price": item.price,
+    };
+
+    existingEntries.push(entry);
+    localStorage.setItem("allEntries", JSON.stringify(existingEntries));
+
+    return true; // If you want to return true on successful addition
+  }
+
   $('.loading-block-content').fadeIn();
 
   const pathParts = window.location.pathname.split('/');
   let season;
   window['fastsearch'] = '';
   window['fastsearchInput'] = '';
-  let newUrl;
+  window['newUrl'] = '';
   window['availability'] = ($.urlParam('availability') !== null) ? '&availability=' + $.urlParam('availability') : '';
   window['code'] = ($.urlParam('code') !== null) ? '&code=' + $.urlParam('code') : '';
   window['type'] = ($.urlParam('type') !== null) ? '&type=' + $.urlParam('type') : '';
@@ -23,11 +60,13 @@ $(document).ready(function() {
   window['noise'] = ($.urlParam('noise') !== null) ? '&noise=' + $.urlParam('noise') : '';
   window['selected_tires'] = ($.urlParam('selected') !== null) ? '&selected=' + $.urlParam('selected') : '';
   window['table_type'] = '&table_type=list';
+  window['top_enabled'] = ($.urlParam('top') !== null) ? '&top=' + $.urlParam('top') : '';
   let pageNr = 1;
   window['page'] = ($.urlParam('page') !== null) ? '&page=' + $.urlParam('page') : '';
   let pageLoaded;
   let tires_array = [];
   window['show_selected'] = ($.urlParam('show_selected') !== null) ? '&show_selected=' + $.urlParam('show_selected') : '';
+  let clickedTop = ($.urlParam('top') !== null);
 
   // SHOW LIST VIEW
   $('div.can-collapse span.show_list').on('click', function(){
@@ -69,6 +108,7 @@ $(document).ready(function() {
   // })
 
   let brand;
+  let selectedSize = true;
   window['d1'] = 205;
   window['d2'] = 55;
   window['d3'] = 16;
@@ -81,15 +121,23 @@ $(document).ready(function() {
     window['fuelEco'] = '';
     window['wetRoad'] = '';
     window['noise'] = '';
-    $('#search_filters #show-selected-checkbox:visible').attr('checked', false).prop('checked', false).next().children().css('display', 'none');
+    $('#search_filters #show-selected-checkbox').attr('checked', false).prop('checked', false).next().children().css('display', 'none');
     window['selected_tires'] = '';
     window['show_selected'] = '';
     window['fastsearch'] = '';
     window['fastsearchInput'] = '';
-    $('.custom-checkbox input').removeAttr('checked').prop('checked', false);
+    $('.custom-checkbox input').not(':first').removeAttr('checked').prop('checked', false);
     window['page'] = '';
+    selectedSize = true;
     pageNr = 1;
     loadItems();
+    if (window['top_enabled'].length <= 0) {
+      if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+        $('.mobile-filter-modal #search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
+      } else {
+        $('#search_filters_wrapper #search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
+      }
+    }
   });
 
   $('select.r1-select-input').select2(({
@@ -107,15 +155,25 @@ $(document).ready(function() {
     window['fuelEco'] = '';
     window['wetRoad'] = '';
     window['noise'] = '';
-    $('#search_filters #show-selected-checkbox:visible').attr('checked', false).prop('checked', false).next().children().css('display', 'none');
+    $('#search_filters #show-selected-checkbox').attr('checked', false).prop('checked', false).next().children().css('display', 'none');
     window['selected_tires'] = '';
     window['show_selected'] = '';
-    $('.custom-checkbox input').removeAttr('checked').prop('checked', false);
+    $('.custom-checkbox input').not(':first').removeAttr('checked').prop('checked', false);
     window['fastsearchInput'] = $(this).val();
     window['fastsearch'] = '&fastsearch=' + window['fastsearchInput'];
     window['page'] = '';
+    selectedSize = true;
     pageNr = 1;
-    if ($(this).val().length > 0) loadItems();
+    if ($(this).val().length > 0) {
+      loadItems();
+      if (window['top_enabled'].length <= 0) {
+        if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+          $('.mobile-filter-modal #search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
+        } else {
+          $('#search_filters_wrapper #search_filters #show-top-checkbox').trigger('click').attr('checked', true).prop('checked', true);
+        }
+      }
+    }
   });
 
   function handlePaginationClick(pageId) {
@@ -146,17 +204,17 @@ $(document).ready(function() {
     handlePaginationClick(pageNr);
   });
 
-  $('ul#facet_availability:visible li label .custom-checkbox input').on('change', function() {
+  $('ul#facet_availability li label .custom-checkbox input').on('change', function() {
     let selectedColors = [];
 
     // Check which color checkboxes are checked and add them to the selectedColors array
-    if ($('ul#facet_availability:visible input.green').is(':checked')) {
+    if ($('ul#facet_availability input.green').is(':checked')) {
       selectedColors.push('green');
     }
-    if ($('ul#facet_availability:visible input.yellow').is(':checked')) {
+    if ($('ul#facet_availability input.yellow').is(':checked')) {
       selectedColors.push('yellow');
     }
-    if ($('ul#facet_availability:visible input.red').is(':checked')) {
+    if ($('ul#facet_availability input.red').is(':checked')) {
       selectedColors.push('red');
     }
 
@@ -168,11 +226,11 @@ $(document).ready(function() {
     loadItems();
   });
 
-  $('ul#facet_code:visible li label .custom-checkbox input').on('change', function() {
+  $('ul#facet_code li label .custom-checkbox input').on('change', function() {
     let selectedCodes = [];
 
     // Find all checked checkboxes with the class "custom-checkbox" and collect their values
-    $('ul#facet_code:visible input[data-for="prod-code"]:checked').each(function() {
+    $('ul#facet_code input[data-for="prod-code"]:checked').each(function() {
       selectedCodes.push($(this).val());
     });
 
@@ -184,11 +242,11 @@ $(document).ready(function() {
     loadItems();
   });
 
-  $('ul#facet_type:visible li label .custom-checkbox input').on('change', function() {
+  $('ul#facet_type li label .custom-checkbox input').on('change', function() {
     let selectedTypes = [];
 
     // Find all checked checkboxes with the class "custom-checkbox" and collect their values
-    $('ul#facet_type:visible input[data-for="prod-type"]:checked').each(function() {
+    $('ul#facet_type input[data-for="prod-type"]:checked').each(function() {
       selectedTypes.push($(this).val());
     });
 
@@ -200,11 +258,11 @@ $(document).ready(function() {
     loadItems();
   });
 
-  $('ul#facet_fuel_eco:visible li label .custom-checkbox input').on('change', function() {
+  $('ul#facet_fuel_eco li label .custom-checkbox input').on('change', function() {
     let selectedFuels = [];
 
     // Find all checked checkboxes with the class "custom-checkbox" and collect their values
-    $('ul#facet_fuel_eco:visible input[data-for="fuel_efficiency"]:checked').each(function() {
+    $('ul#facet_fuel_eco input[data-for="fuel_efficiency"]:checked').each(function() {
       selectedFuels.push($(this).val());
     });
 
@@ -216,11 +274,11 @@ $(document).ready(function() {
     loadItems();
   });
 
-  $('ul#facet_wet:visible li label .custom-checkbox input').on('change', function() {
+  $('ul#facet_wet li label .custom-checkbox input').on('change', function() {
     let selectedWet = [];
 
     // Find all checked checkboxes with the class "custom-checkbox" and collect their values
-    $('ul#facet_wet:visible input[data-for="wet_grip"]:checked').each(function() {
+    $('ul#facet_wet input[data-for="wet_grip"]:checked').each(function() {
       selectedWet.push($(this).val());
     });
 
@@ -232,11 +290,11 @@ $(document).ready(function() {
     loadItems();
   });
 
-  $('ul#facet_noise:visible li label .custom-checkbox input').on('change', function() {
+  $('ul#facet_noise li label .custom-checkbox input').on('change', function() {
     let selectedNoises = [];
 
     // Find all checked checkboxes with the class "custom-checkbox" and collect their values
-    $('ul#facet_noise:visible input[data-for="noise"]:checked').each(function() {
+    $('ul#facet_noise input[data-for="noise"]:checked').each(function() {
       selectedNoises.push($(this).val());
     });
 
@@ -248,7 +306,25 @@ $(document).ready(function() {
     loadItems();
   });
 
-  $('#search_filters #show-selected-checkbox:visible').on('click', function(e) {
+  $('#search_filters #show-top-checkbox').on('click', function(e) {
+    e.preventDefault();
+
+    $(this).attr('checked', function(i, value) {
+      if (value === undefined) {
+        window['top_enabled'] = '&top=show';
+        $(this).next().children().css('display', 'block');
+        return 'checked';
+      } else {
+        window['top_enabled'] = '';
+        $(this).next().children().css('display', 'none');
+        return null;
+      }
+    });
+
+    loadItems();
+  });
+
+  $('#search_filters #show-selected-checkbox').on('click', function(e) {
     e.preventDefault();
 
     $(this).attr('checked', function(i, value) {
@@ -266,8 +342,27 @@ $(document).ready(function() {
     loadItems();
   });
 
+  $('.season-select .winter-tires-link').on('click', function (e) {
+    e.preventDefault();
+    window.location.href = '/ziemas-riepas/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
+  });
+
+  $('.season-select .summer-tires-link').on('click', function (e) {
+    e.preventDefault();
+    window.location.href = '/vasaras-riepas/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
+  })
+
   function loadItems()
   {
+
+    let tire_availability = [];
+    let codes = [];
+    let tire_types = [];
+    let tire_fuels = [];
+    let tire_wets = [];
+    let tire_noises = [];
+
+    $('#show-top-checkbox').removeAttr('disabled').prop('disabled', false);
     $('.loading-block-content').fadeIn();
     season = (pathParts[1] === 'vasaras-riepas') ? 1 : 2;
 
@@ -298,10 +393,10 @@ $(document).ready(function() {
 
     brand = (brand === 'Ražotājs') ? '' : 'brand=' + brand + '&';
 
-    let url = '/api/tires/auto/' + season + '?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['fastsearch'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['table_type'] + window['page'];
+    let url = '/api/tires/auto/' + season + '?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['fastsearch'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['table_type'] + window['page'];
 
     if (pageLoaded === 0) {
-      url = '/api/tires/auto/' + season + '?' + brand + window['fastsearch'] + location.search.slice(1) + window['table_type'];
+      url = '/api/tires/auto/' + season + '?' + brand + window['fastsearch'] + location.search.slice(1) + window['table_type'] + window['top_enabled'];
     }
 
     let shopping_button_count = 0;
@@ -318,8 +413,13 @@ $(document).ready(function() {
             $(this).removeAttr('checked').removeProp('checked');
             $(this).parent().parent().removeClass('selected');
           });
+          $(document).find('#js-product-list .mobile-tire-container .tire-list-caption input[type=checkbox]').each(function() {
+            $(this).removeAttr('checked').removeProp('checked');
+            $(this).parent().parent().parent().removeClass('selected');
+          });
           $.map(tires_array, function(value, index) {
             $('.tire-table-row .tire-table-checkbox input[value="' + value + '"]').attr('checked', true).prop('checked', true).parent().parent().toggleClass('selected');
+            $(document).find('#js-product-list .mobile-tire-container .tire-list-caption input[type=checkbox][value="' + value + '"]').attr('checked', true).prop('checked', true).parent().parent().parent().toggleClass('selected');
           });
         }
 
@@ -367,7 +467,7 @@ $(document).ready(function() {
 
         $($('.pagination-col')).insertAfter($('#tires-table:last-child'));
 
-          // Rādīt izvēlētos start
+          // Rādīt izvēlētos (saraksts) start
           $(document).find('th.tire-table-checkbox').children().on('click', function() {
             tires_array = [];
             $(this).parent().parent().toggleClass('selected');
@@ -382,20 +482,56 @@ $(document).ready(function() {
               $('#show-selected-checkbox').attr('disabled', true).prop('disabled', true);
               window['selected_tires'] = '';
             }
-            newUrl = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['page'];
+            window['newUrl'] = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
 
             if (pageLoaded === 1) {
-              history.pushState({ prevUrl: document.referrer }, '', newUrl);
+              history.pushState({ prevUrl: document.referrer }, '', window['newUrl']);
             }
           });
-          // Rādīt izvēlētos end
+          // Rādīt izvēlētos (saraksts) end
 
-          $(document).find('.tire-table-checkbox').children().each(function(key, value){
+          // Rādīt izvēlētos (saraksts) start
+          if ($('#js-product-list .mobile-tire-container').is(':visible')) {
+            $(document).find('#js-product-list .mobile-tire-container .tire-list-caption input[type=checkbox]').on('click', function() {
+              tires_array = [];
+              $(this).parent().parent().parent().toggleClass('selected');
+              $(document).find('#js-product-list .mobile-tire-container .tire-list-caption input[type=checkbox]:checked').each(function() {
+                tires_array.push($(this).val());
+              });
 
-            // ON SHOPPING CART BUTTON CLICK
-            $('#tires-table-body').on('click', '.cart-shopping-button', function() {
+              if (tires_array.length > 0) {
+                $('#show-selected-checkbox').removeAttr('disabled').prop('disabled', false);
+                window['selected_tires'] = '&selected=' + tires_array.join(',');
+              } else {
+                $('#show-selected-checkbox').attr('disabled', true).prop('disabled', true);
+                window['selected_tires'] = '';
+              }
+              window['newUrl'] = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
 
-              if (shopping_button_count === 0) {
+              if (pageLoaded === 1) {
+                history.pushState({ prevUrl: document.referrer }, '', window['newUrl']);
+              }
+            });
+
+            $('#js-product-list .mobile-tire-container').children().each(function(){
+
+              let tire_codes = $(this).find('.tire-image-code').text();
+              if (tire_codes.includes('ACOUSTIC') || tire_codes.includes('NCS') || tire_codes.includes('SCT')) {
+                codes.push('SOUND');
+              }
+              if (tire_codes.includes('HL')) {
+                codes.push('XL');
+              }
+
+              tire_availability.push($(this).find('.grid-dot.green, .grid-dot.yellow, .grid-dot.red').data('color'));
+              codes.push(tire_codes);
+              tire_types.push($(this).find('.type-explain').data('type'));
+              tire_fuels.push($(this).find('.fuel-explain').text());
+              tire_wets.push($(this).find('.wet-explain').text());
+              tire_noises.push($(this).find('.noise-explain').text().charAt(0));
+
+              // ON SHOPPING CART BUTTON CLICK
+              $(this).parent().parent().find('.cart-shopping-button').on('click', function() {
 
                 if (!admin) {
                   const tire_id = $(this).data('info');
@@ -444,52 +580,25 @@ $(document).ready(function() {
                           });
                       }
 
-                      if (data.cart.options.image == 'stud') {
-                        // STUD IMAGE INSIDE MODAL
-                        $('.modal-product-info .product-name').html(data.cart.name);
+                      // TIRE IMAGE INSIDE MODAL
+                      $('.modal-product-info .product-name').html(data.cart.name);
+                      if (data.cart.options.tire.price2 != null) {
                         $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
-                        $('.modal-product-info .product-stud-length').html(data.cart.options.tire.stud_length);
-                        $('.modal-product-info .product-stud-count').html(data.cart.options.tire.stud_count);
-                        $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
-                        $('.cart-content .cart-products-total').html(total_sum);
-                        $('span.cart-products-count').html('(' + cart_quantity + ')');
-                        $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
-                        $('.blockcart.cart-preview .header').empty();
-                        $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
-                      } else if (data.cart.options.image == 'rims' || data.cart.options.image == 'quadrims') {
-                        // STUD IMAGE INSIDE MODAL
-                        $('.modal-product-info .product-name').html(data.cart.name);
-                        $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
-                        $('.modal-product-info .product-rim-width').html(data.cart.options.tire.d1);
-                        $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
-                        $('.modal-product-info .product-lug-distance').html(data.cart.options.tire.skr + 'x' + data.cart.options.tire.pcd);
-                        $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
-                        $('.cart-content .cart-products-total').html(total_sum);
-                        $('span.cart-products-count').html('(' + cart_quantity + ')');
-                        $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
-                        $('.blockcart.cart-preview .header').empty();
-                        $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
                       } else {
-                        // TIRE IMAGE INSIDE MODAL
-                        $('.modal-product-info .product-name').html(data.cart.name);
-                        if (data.cart.options.tire.price2 != null) {
-                          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
-                        } else {
-                          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price3)).attr('data-price', parseInt(data.cart.options.tire.price3));
-                        }
-                        $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
-                        $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
-                        $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
-                        $('.modal-product-info .product-type').html(data.cart.options.tire.d3);
-                        $('.modal-product-info .product-li').html(data.cart.options.tire.li);
-                        $('.modal-product-info .product-si').html(data.cart.options.tire.si);
-                        $('.cart-content .cart-products-total').html(total_sum);
-                        $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty')).attr('data-qty', parseInt(data.quantity));
-                        $('span.cart-products-count').html('(' + cart_quantity + ')');
-                        $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
-                        $('.blockcart.cart-preview .header').empty();
-                        $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+                        $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price3)).attr('data-price', parseInt(data.cart.options.tire.price3));
                       }
+                      $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
+                      $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
+                      $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
+                      $('.modal-product-info .product-type').html(data.cart.options.tire.d3);
+                      $('.modal-product-info .product-li').html(data.cart.options.tire.li);
+                      $('.modal-product-info .product-si').html(data.cart.options.tire.si);
+                      $('.cart-content .cart-products-total').html(total_sum);
+                      $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty')).attr('data-qty', parseInt(data.quantity));
+                      $('span.cart-products-count').html('(' + cart_quantity + ')');
+                      $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+                      $('.blockcart.cart-preview .header').empty();
+                      $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
 
                     }
                   });
@@ -518,43 +627,247 @@ $(document).ready(function() {
 
                   const urlData = new URLSearchParams(calcData).toString();
 
-                  popCalc('/testing3',950,650);
+                  popCalc('/testing3',1200,750);
 
 
                 }
 
-                shopping_button_count++;
+
+              })
+            });
+          }
+
+          $(document).find('.tire-table-checkbox').children().each(function(key, value){
+
+            let tire_codes = $(this).parent().parent().find('.code-explain').text();
+            if (tire_codes.includes('ACOUSTIC') || tire_codes.includes('NCS') || tire_codes.includes('SCT')) {
+              codes.push('SOUND');
+            }
+            if (tire_codes.includes('HL')) {
+              codes.push('XL');
+            }
+
+            tire_availability.push($(this).parent().parent().find('.dot.green, .dot.yellow, .dot.red').data('color'));
+            codes.push(tire_codes);
+            tire_types.push($(this).parent().parent().find('.type-explain').data('type'));
+            tire_fuels.push($(this).parent().parent().find('.fuel-explain').text());
+            tire_wets.push($(this).parent().parent().find('.wet-explain').text());
+            tire_noises.push($(this).parent().parent().find('.noise-explain').text().charAt(0));
+
+            // ON SHOPPING CART BUTTON CLICK
+            $(this).parent().parent().find('.cart-shopping-button').on('click', function() {
+
+              if (!admin) {
+                const tire_id = $(this).data('info');
+
+                let ajaxUrl = (season == 1) ? '/vasaras-riepas' : '/ziemas-riepas';
+
+                let tire_name = $(this).parent().parent().parent().find('.table-tire-name-cell');
+                if (tire_name.attr('data-link')) {
+                  ajaxUrl = tire_name.attr('data-link');
+                }
+
+                $.ajax({
+                  url: ajaxUrl + '/ajax',
+                  headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                  method: 'POST',
+                  data: { tire_id: tire_id },
+                  success: function(data)
+                  {
+                    data = JSON.parse(data);
+                    let cart_quantity = data.quantity;
+                    cart_quantity = parseInt(cart_quantity);
+                    let total_sum = data.total_sum;
+                    total_sum = parseInt(total_sum);
+
+                    if (typeof data.cart.options.tire.tread.tread_id === "undefined") {
+                      if (data.cart.options.tire.make_id){
+                        fetch(public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg',
+                          { method: 'GET' },)
+                          .then(res => {
+                            if (res.ok) {
+                              $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg');
+                            } else {
+                              $('.modal-image-preview img').attr('src', '/img/p/en-default-home_default.jpg');
+                            }
+                          });
+                      }
+                    } else {
+                      fetch(public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.tread.tread_id + '-o.jpg',
+                        { method: 'GET' },)
+                        .then(res => {
+                          if (res.ok) {
+                            $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.tread.tread_id + '-o.jpg');
+                          } else {
+                            $('.modal-image-preview img').attr('src', '/img/p/en-default-home_default.jpg');
+                          }
+                        });
+                    }
+
+                    // TIRE IMAGE INSIDE MODAL
+                    $('.modal-product-info .product-name').html(data.cart.name);
+                    if (data.cart.options.tire.price2 != null) {
+                      $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+                    } else {
+                      $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price3)).attr('data-price', parseInt(data.cart.options.tire.price3));
+                    }
+                    $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
+                    $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
+                    $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
+                    $('.modal-product-info .product-type').html(data.cart.options.tire.d3);
+                    $('.modal-product-info .product-li').html(data.cart.options.tire.li);
+                    $('.modal-product-info .product-si').html(data.cart.options.tire.si);
+                    $('.cart-content .cart-products-total').html(total_sum);
+                    $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty')).attr('data-qty', parseInt(data.quantity));
+                    $('span.cart-products-count').html('(' + cart_quantity + ')');
+                    $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
+                    $('.blockcart.cart-preview .header').empty();
+                    $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
+
+                  }
+                });
+              } else {
+                // IF ADMIN
+                const tire_data = $(this).parent().parent().parent();
+                // console.log('tire_data: ', tire_data);
+                let article = $('.table-tire-name-cell a', tire_data).data('article');
+                if (article.length == 0) article = 'no_article';
+                $('.popup input[name=prod]').val($('.table-tire-name-cell a', tire_data).data('content'));
+                $('.popup input[name=price]').val($('.tire-price-red', tire_data).html().replace('€ ', ''));
+                $('.popup input[name=qty]').val($('.table-tire-name-cell a', tire_data).data('quantity'));
+                $('.popup input[name=total]').val(parseInt($('.tire-price-red', tire_data).html().replace('€ ', '')) * $('.popup input[name=qty]').val());
+                $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
+                $('.popup input[name=article]').val($('.table-tire-name-cell a', tire_data).data('article'));
+
+                calcData = {
+                  'article': article,
+                  'qty': $('.table-tire-name-cell a', tire_data).data('quantity'),
+                  'user': user,
+                  'prod': $('.table-tire-name-cell a', tire_data).data('content'),
+                  'price': $('.tire-price-red', tire_data).html().replace('€', ''),
+                }
+
+                addEntry(calcData);
+
+                const urlData = new URLSearchParams(calcData).toString();
+
+                popCalc('/testing3',1200,750);
+
+
               }
+
 
             })
           });
 
+        let uniqueAvailabilityArray = unique(tire_availability);
+        let uniqueCodeArray = unique(codes);
+        let uniqueTypeArray = unique(tire_types);
+        let uniqueFuelArray = unique(tire_fuels);
+        let uniqueWetArray = unique(tire_wets);
+        let uniqueNoiseArray = unique(tire_noises);
+
+        if (selectedSize === true) {
+          $('ul#facet_availability .custom-checkbox input').attr('disabled', true).prop('disabled', true);
+          $('ul#facet_code .custom-checkbox input').attr('disabled', true).prop('disabled', true);
+          $('ul#facet_type .custom-checkbox input').attr('disabled', true).prop('disabled', true);
+          $('ul#facet_fuel_eco .custom-checkbox input').attr('disabled', true).prop('disabled', true);
+          $('ul#facet_wet .custom-checkbox input').attr('disabled', true).prop('disabled', true);
+          $('ul#facet_noise .custom-checkbox input').attr('disabled', true).prop('disabled', true);
+
+          $.each(uniqueAvailabilityArray, function(index, value) {
+            $('ul#facet_availability li').each(function() {
+              $(this).find('input[data-value="' + value + '"]').removeAttr('disabled').prop('disabled', false);
+            })
+          });
+
+          $.each(uniqueCodeArray, function(index, value) {
+            let text = value.split(' ');
+            $.each(text, function(index, value) {
+              $('ul#facet_code li').each(function() {
+                $(this).find('input[value="' + value + '"]').removeAttr('disabled').prop('disabled', false);
+              })
+            });
+          });
+
+          $.each(uniqueTypeArray, function(index, value) {
+            $('ul#facet_type li').each(function() {
+              $(this).find('input[value="' + value + '"]').removeAttr('disabled').prop('disabled', false);
+            })
+          });
+
+          $.each(uniqueFuelArray, function(index, value) {
+            $('ul#facet_fuel_eco li').each(function() {
+              $(this).find('input[value="' + value + '"]').removeAttr('disabled').prop('disabled', false);
+            })
+          });
+
+          $.each(uniqueWetArray, function(index, value) {
+            $('ul#facet_wet li').each(function() {
+              $(this).find('input[value="' + value + '"]').removeAttr('disabled').prop('disabled', false);
+            })
+          });
+
+          $.each(uniqueNoiseArray, function(index, value) {
+            $('ul#facet_noise li').each(function() {
+              $(this).find('input[value="' + value + '"]').removeAttr('disabled').prop('disabled', false);
+            })
+          });
+
+          $('ul#facet_availability .custom-checkbox input:checked').removeAttr('disabled').prop('disabled', false);
+          $('ul#facet_code .custom-checkbox input:checked').removeAttr('disabled').prop('disabled', false);
+          $('ul#facet_type .custom-checkbox input:checked').removeAttr('disabled').prop('disabled', false);
+          $('ul#facet_fuel_eco .custom-checkbox input:checked').removeAttr('disabled').prop('disabled', false);
+          $('ul#facet_wet .custom-checkbox input:checked').removeAttr('disabled').prop('disabled', false);
+          $('ul#facet_noise .custom-checkbox input:checked').removeAttr('disabled').prop('disabled', false);
+          selectedSize = false;
+        }
+
         $('.tire-table-checkbox').each(function(){
           if($(this).is(':checked')){
-            $('input#show-selected-checkbox:visible').prop( "disabled", false );
+            $('input#show-selected-checkbox').prop( "disabled", false );
           }
         })
 
         $('.loading-block-content').fadeOut();
+      },
+      complete() {
+        let perfEntries = performance.getEntriesByType('navigation');
+        if (perfEntries.length > 0) {
+          const latestNavigation = perfEntries[0];
+          if (latestNavigation.type === 'reload') {
+            return false;
+          }
+        }
+
+        if (clickedTop === false) {
+          if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $('.mobile-filter-modal #search_filters #show-top-checkbox').trigger('click');
+          } else {
+            $('#search_filters_wrapper #search_filters #show-top-checkbox').trigger('click');
+          }
+          clickedTop = true;
+        }
       }
     });
 
     const full = location.protocol + '//' + location.host;
 
-    $('.season-select-link').each(function() {
+    // $('.season-select-link').each(function() {
+    //
+    //   let link = new URL(full + '/' + $(this).attr('href').split('/')[1] + '/search?');
+    //   let searchParams = new URLSearchParams({ d1: window['d1'], d2: window['d2'], d3: window['d3'] }).toString();
+    //
+    //   let fullLink = link.href + searchParams;
+    //
+    //   $(this).attr('href', $(this).attr('href'));
+    //
+    // });
 
-      let link = new URL(full + '/' + $(this).attr('href').split('/')[1] + '/search?');
-      let searchParams = new URLSearchParams({ d1: window['d1'], d2: window['d2'], d3: window['d3'] }).toString();
-
-      let fullLink = link.href + searchParams;
-      $(this).attr('href', fullLink);
-
-    });
-
-    newUrl = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['page'];
+    window['newUrl'] = '/' + pathParts[1] + '/search?' + brand + 'd1=' + window['d1'] + '&d2=' + window['d2'] + '&d3=' + window['d3'] + window['availability'] + window['code'] + window['type'] + window['fuelEco'] + window['wetRoad'] + window['noise'] + window['selected_tires'] + window['show_selected'] + window['top_enabled'] + window['page'];
 
     if (pageLoaded === 1) {
-      history.pushState({ prevUrl: document.referrer }, '', newUrl);
+      history.pushState({ prevUrl: document.referrer }, '', window['newUrl']);
     }
 
     pageLoaded = 1;
@@ -575,6 +888,20 @@ $(document).ready(function() {
   }
 
   window.onpopstate = function (event) {
+
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+      if (clickedTop) {
+        $('.mobile-filter-modal #search_filters #show-top-checkbox').attr('checked', true).prop('checked', true);
+      } else {
+        $('.mobile-filter-modal #search_filters #show-top-checkbox').removeAttr('checked').removeProp('checked');
+      }
+    } else {
+      if (clickedTop) {
+        $('#search_filters_wrapper #search_filters #show-top-checkbox').attr('checked', true).prop('checked', true);
+      } else {
+        $('#search_filters_wrapper #search_filters #show-top-checkbox').removeAttr('checked').removeProp('checked');
+      }
+    }
 
     pageLoaded = 0;
     // Call your function to load items (assuming this is what loadItems() does)

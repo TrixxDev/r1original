@@ -103,7 +103,7 @@ $(document).ready(function() {
     let selectedOption = $('option:selected', this);
     let isLastOption = selectedOption.is(':last-child');
 
-    $('.reservation_edit #f_status option').removeAttr('selected').prop('selected', false).first().attr('selected', true).prop('selected', true);
+    // $('.reservation_edit #f_status option').removeAttr('selected').prop('selected', false).first().attr('selected', true).prop('selected', true);
 
     discountSelect = selectedOption;
 
@@ -167,6 +167,8 @@ $(document).ready(function() {
     let newCloseTime = $('#queueModal select#f_closetime option:selected').val();
     let timeStep = $('#queueModal #f_timeinterval option:selected').val();
     let is_half = parseInt($('#queueModal input[name="queue"]:checked').val());
+    let ac_toggle = ($('#queueModal input[name="ac_toggle"]:visible').is(':checked') === true) ? 1 : null;
+    let moto_toggle = ($('#queueModal input[name="moto_toggle"]:visible').is(':checked') === true) ? 1 : null;
 
     let sendData = {
       'times': {
@@ -179,6 +181,8 @@ $(document).ready(function() {
         'queue_id': queue_id,
         'date': date,
         'is_half': (is_half === 2) ? 1 : null,
+        'ac_toggle': ac_toggle,
+        'moto_toggle': moto_toggle,
       }
     };
 
@@ -243,6 +247,8 @@ $(document).ready(function() {
           $('#queueModal #all_working_days').parent().show();
         }
         $('#queueModal #fullQueue, #queueModal #halfQueue').removeAttr('checked').prop('checked', false);
+        $('#queueModal .queue_services').hide();
+        $('#queueModal #ac_toggle, #queueModal #moto_toggle').removeAttr('checked').prop('checked', false);
       },
       success: function(data) {
 
@@ -260,8 +266,26 @@ $(document).ready(function() {
           $('#queueModal #one_day').attr('checked', true).prop('checked', true);
           if (data.is_half === 1) {
             $('#queueModal').find('#halfQueue').attr('checked', true).prop('checked', true);
+            $('#queueModal .queue_services').show();
           } else {
             $('#queueModal').find('#fullQueue').attr('checked', true).prop('checked', true);
+            $('#queueModal .queue_services').hide();
+          }
+
+          $('#queueModal #halfQueue').on('click', function() {
+            $('#queueModal .queue_services').show();
+          });
+
+          $('#queueModal #fullQueue').on('click', function() {
+            $('#queueModal .queue_services').hide();
+          });
+
+          if (data.ac_toggle == 1) {
+            $('#queueModal').find('input#ac_toggle').attr('checked', true).prop('checked', true);
+          }
+
+          if (data.moto_toggle == 1) {
+            $('#queueModal').find('input#moto_toggle').attr('checked', true).prop('checked', true);
           }
 
           $('#queueModal .f_day').text(day);

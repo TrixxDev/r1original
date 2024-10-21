@@ -11,9 +11,22 @@ $.fn.hasId = function(id) {
 };
 
 function addEntry(item) {
-  // Parse the JSON stored in allEntriesP
+  // Parse the JSON stored in allEntries
   let existingEntries = JSON.parse(localStorage.getItem("allEntries"));
-  if(existingEntries == null) existingEntries = [];
+  if (existingEntries == null) existingEntries = [];
+
+  // Check if the entry already exists
+  // (Modify the criteria based on what constitutes a duplicate)
+  const isDuplicate = existingEntries.some(entry =>
+    entry.article === item.article &&
+    entry.user === item.user
+  );
+
+  if (isDuplicate) {
+    return false; // Entry already exists
+  }
+
+  // If not a duplicate, proceed with adding the entry
   let entry = {
     "article": item.article,
     "qty": item.qty,
@@ -21,10 +34,12 @@ function addEntry(item) {
     "prod": item.prod,
     "price": item.price,
   };
-  // Save allEntries back to local storage
+
   existingEntries.push(entry);
   localStorage.setItem("allEntries", JSON.stringify(existingEntries));
-};
+
+  return true; // If you want to return true on successful addition
+}
 
 //const pusher = new Pusher('04c358afec27f4ba222f', {
 //  cluster: 'eu',
@@ -222,6 +237,7 @@ $(document).ready(function() {
     slot_time = $('option:selected', this).data('time');
   });
 
+  $('#mobile-service select[name="serviceOption"] option.disabled').remove();
   $('#mobile-service select[name="serviceOption"]').on('change', function () {
     if ($(this).hasClass('required-input')) {
       $(this).removeClass('required-input');
@@ -380,8 +396,10 @@ sf_height = $('#search_filters').height();
 //   $('.custom_atv_name').addClass('product_show_list');
 //   $('.show_list').addClass('active');
 //   sortItemsInList();
+//   $('#products .tire-image-container').hide();
+//   $('#js-product-list').show();
 // });
-
+//
 // $('.show_grid').click(function(){
 //   document.cookie = "show_list=; expires=Thu, 30 Jan 1970 12:00:00 UTC; path=/";
 //   $('#js-product-list .product-miniature').removeClass('product_show_list');
@@ -389,7 +407,41 @@ sf_height = $('#search_filters').height();
 //   $('.custom_atv_name').removeClass('product_show_list');
 //   $('.show_list').removeClass('active');
 //   sortItemsInBrand();
+//   $('#products .tire-image-container').show();
+//   $('#js-product-list').hide();
 // });
+
+// SHOW LIST VIEW
+$('.category-lielas-riepas div.can-collapse span.show_list').on('click', function(){
+  $(this).addClass('active');
+  $('.category-lielas-riepas #products .tire-image-container').hide();
+  $('.category-lielas-riepas #js-product-list').show();
+  $('span.show_grid').removeClass('active');
+  localStorage.setItem("show_type", "list");
+});
+
+// SHOW GRID VIEW
+$('.category-lielas-riepas div.can-collapse span.show_grid').on('click', function(){
+  $(this).addClass('active');
+  $('.category-lielas-riepas #js-product-list').hide();
+  $('.category-lielas-riepas #products .tire-image-container').show();
+  $('span.show_list').removeClass('active');
+  localStorage.setItem("show_type", "grid");
+});
+
+// SHOW VIEW DEPENDING ON LOCAL STORAGE VALUE
+if (localStorage.getItem('show_type') === 'list') {
+  $('.category-lielas-riepas #products .tire-image-container').hide();
+  $('.category-lielas-riepas #js-product-list').show();
+  $('span.show_list').addClass('active');
+  $('span.show_grid').removeClass('active');
+}
+if (localStorage.getItem('show_type') === 'grid') {
+  $('.category-lielas-riepas #js-product-list').hide();
+  $('.category-lielas-riepas #products .tire-image-container').show();
+  $('span.show_grid').addClass('active');
+  $('span.show_list').removeClass('active');
+}
 
 function sortItemsInBrand() {
   var $brandP = $('.products').first();
@@ -1402,6 +1454,36 @@ function showQuickBuyForm(id) {
 //   const baseUrl = window.location.href.split('#')[0];
 //   window.location.replace(baseUrl + '#|' + ids_str);
 // });
+
+let previousUrl = document.referrer;
+
+function updateUrl(tires_array) {
+  if (tires_array.length > 0) {
+    history.pushState({ tires: tires_array, prevUrl: previousUrl }, '', '?selected=' + tires_array.join(','));
+  } else {
+    history.pushState({ prevUrl: previousUrl }, '', window.location.pathname);
+  }
+}
+
+$(document).find('th.tread-tire-table-checkbox').children().on('click', function() {
+  let tires_array = [];
+  $(this).parent().parent().toggleClass('selected');
+  $(document).find('th.tread-tire-table-checkbox').children(':checked').each(function() {
+    tires_array.push($(this).val());
+  });
+
+  updateUrl(tires_array);
+});
+
+window.addEventListener('popstate', function(event) {
+  if (event.state) {
+    if (event.state.prevUrl) {
+      // Redirect to the previous URL
+      window.location.href = event.state.prevUrl;
+    }
+  }
+});
+
 // $(document).on('change', 'input[type="checkbox"][name="product_ids2[]"]', function(){
 //   const $ids = $(document).find('input[type="checkbox"][name="product_ids2[]"]:checked');
 //   let ids_str = '';
@@ -2253,6 +2335,7 @@ function checkShipping(qty = null) {
   $('.cart-grid input[name=fitting]').val(false);
   let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
   let shippingCity = parseInt($('.cart-delivery-option .custom-select option:selected').val());
+  let discount_price = 0;
   $.ajax({
     url: '/checkShipping',
     method: 'POST',
@@ -2260,19 +2343,20 @@ function checkShipping(qty = null) {
     success: function(data) {
       data = parseInt(data);
       let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+      if ($('#cart-subtotal-discount').is(':visible')) discount_price = parseInt($('#cart-subtotal-discount .value').html().trim().replace('€ ', ''));
       if (shippingCity === 1 || shippingCity === 2) {
         if (__total > 115) {
           $('#cart-subtotal-shipping #shipping_price').html('Bezmaksas');
-          $('.cart-total .value').html('€ ' + formatNumber(__total));
+          $('.cart-total .value').html('€ ' + formatNumber(__total + discount_price));
           $('input[name=delivery_price]').removeAttr('value');
         } else {
           $('#cart-subtotal-shipping #shipping_price').html('€ ' + data);
-          $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data)));
+          $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data + discount_price)));
           $('input[name=delivery_price]').val(data);
         }
       } else {
         $('#cart-subtotal-shipping #shipping_price').html('€ ' + data);
-        $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data)));
+        $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data + discount_price)));
         $('input[name=delivery_price]').val(data);
       }
       $('input[name=fitting_price]').removeAttr('value');
@@ -2284,6 +2368,8 @@ function checkFitting(qty = null) {
   let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
   let __items = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
   let needsFit = $('.cart-montage-choice .cart-delivery-options .cart-delivery-label input:checked').val();
+
+  let discount_price = 0;
 
   if (qty === null) {
     qty = __items;
@@ -2298,17 +2384,18 @@ function checkFitting(qty = null) {
     success: function(data) {
       let fittingPrice = parseInt(data.cartOptions.fitting_price);
       let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+      if ($('#cart-subtotal-discount').is(':visible')) discount_price = parseInt($('#cart-subtotal-discount .value').html().trim().replace('€ ', ''));
 
       $('.cart-grid input[name=delivery]').val(false);
       $('.cart-grid input[name=fitting]').val(true);
       $('#cart-subtotal-montage #shipping_price').html('€ ' + formatNumber(fittingPrice));
-      $('.cart-total .value').html('€ ' + formatNumber(__lastPrice + fittingPrice));
+      $('.cart-total .value').html('€ ' + formatNumber(__lastPrice + fittingPrice + discount_price));
       $('input[name=fitting_price]').val(fittingPrice);
       if (fittingPrice == 0) {
         $('.cart-grid input[name=delivery]').val(false);
         $('.cart-grid input[name=fitting]').val(false);
         $('#cart-subtotal-montage #shipping_price').html('Nav');
-        $('.cart-total .value').html('€ ' + formatNumber(__lastPrice));
+        $('.cart-total .value').html('€ ' + formatNumber(__lastPrice + discount_price));
         $('input[name=fitting_price]').removeAttr('value');
       }
       $('input[name=delivery_price]').removeAttr('value');
@@ -3197,6 +3284,60 @@ window.addEventListener('beforeunload', function() {
   fadeIn(loadingBlock);
 });
 
+function checkPromo(promo) {
+
+  let url = '/checkPromo';
+  let success = false;
+
+  $.ajax({
+    url: url,
+    method: 'POST',
+    data: {promo: promo},
+    beforeSend: function() {
+      $('input[name="data[promo_code]"], .check_promo').attr('disabled', true).prop('disabled', true);
+      $('.check_promo span').text('Lūdzu, uzgaidiet...');
+      $('span.label.promo_validation').remove();
+    },
+    success: function(data) {
+      data = JSON.parse(data);
+      if (data.success === 'true') {
+        $('<span class="label promo_validation" style="color: green">Kods ir derīgs un pielietots</span>').insertAfter($('input[name="data[promo_code]"]'));
+        $('#cart-subtotal-discount').remove();
+        $('<div class="cart-summary-line" id="cart-subtotal-discount" style="display: block;"><span class="label">Atlaižu kods</span><span id="shipping_price" class="value">€ -' + data.discount_price + '</span><div><small class="value"></small></div></div>').insertAfter($('#cart-subtotal-shipping'));
+        let __lastPrice = parseInt($('.cart-total .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+
+        $('.cart-total .value').html('€ ' + formatNumber(__lastPrice - data.discount_price));
+        success = true;
+      } else {
+        $('<span class="label promo_validation" style="color: red">Kods nav derīgs</span>').insertAfter($('input[name="data[promo_code]"]'));
+        $('#cart-subtotal-discount').remove();
+        success = false;
+      }
+    },
+    complete: function() {
+      $('input[name="data[promo_code]"], .check_promo').removeAttr('disabled').prop('disabled', false);
+      if (success === false) {
+        $('.check_promo span').text('Pārbaudīt');
+      } else {
+        $('input[name="data[promo_code]"]').attr('readonly', 'readonly').prop('readonly', 'readonly');
+        $('.check_promo').remove();
+      }
+    }
+  })
+}
+
+// $('input[name="data[promo_code]"]').on('keyup', function() {
+//   if ($(this).val().length > 0) {
+//     console.log($(this).val().length);
+//   }
+// })
+
+$('button.check_promo').on('click', function() {
+
+  let promo = $('input[name="data[promo_code]"]').val();
+
+  checkPromo(promo);
+})
 
 // (()=>{
 //   const ndt = () => +new Date(),

@@ -99,8 +99,14 @@ class QuadTireController extends Controller
           );
     }
 
-    public function tires_tread($brand, $tread, $tire)
+    public function tires_tread(Request $request, $brand, $tread, $tire)
     {
+
+        $selectedTires = [];
+        if ($request->input('selected')) {
+          $selectedTires = explode(',', $request->input('selected'));
+        }
+
         $brand = Quadrbrand::where('b_title', $brand)->first();
 
         $tread = str_replace('_', '/', $tread);
@@ -128,7 +134,7 @@ class QuadTireController extends Controller
         $currTire->includeStock = true;
 
         return view('tires.quadr.quadrtread',
-            compact('tires', 'currTire', 'currBrand')
+            compact('tires', 'currTire', 'currBrand', 'selectedTires')
         );
     }
 
@@ -339,7 +345,7 @@ class QuadTireController extends Controller
               $html .= '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
                                       Filtrs ()
                                     </button></h4>
-                          <div class="row grid-ex pr-1" style="padding-left: 5px;">';
+                          <div class="row grid-ex pr-1 mobile-tire-container" style="padding-left: 5px;">';
               $cbrand = $brand;
             }
             $html .= '<a href="' . $tire->getUrl . '" class="grid-view-link" data-article="' . $tire->article . '">';

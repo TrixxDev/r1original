@@ -198,36 +198,36 @@ class Rim extends Model
     ];
 
     if ($rim->urs_quantity >= 4) {
-      $availability = '<p>Ulbrokā: 4 un vairāk</p><br>';
+      $availability = '<span>Ulbrokā: 4 un vairāk</span><br>';
     } else {
-      $availability = '<p>Ulbrokā: ' . $rim->urs_quantity . '</p><br>';
+      $availability = '<span>Ulbrokā: ' . $rim->urs_quantity . '</span><br>';
     }
     if ($rim->krs_quantity >= 4) {
-      $availability .= '<p>Kalnciema ielā: 4 un vairāk</p>';
+      $availability .= '<span>Kalnciema ielā: 4 un vairāk</span>';
     } else {
-      $availability .= '<p>Kalnciema ielā: ' . $rim->krs_quantity . '</p>';
+      $availability .= '<span>Kalnciema ielā: ' . $rim->krs_quantity . '</span>';
     }
 
     if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
-      $availability = '<p>Ulbrokā: ' . $rim->urs_quantity . '</p><br>';
-      $availability .= '<p>Kalnciema ielā: ' . $rim->krs_quantity . '</p>';
+      $availability = '<span>Ulbrokā: ' . $rim->urs_quantity . '</span><br>';
+      $availability .= '<span>Kalnciema ielā: ' . $rim->krs_quantity . '</span>';
       foreach ($stock_names as $key => $stock_name) {
         $stock = Rimstock::where('itype', $key)->where('rim_id', $rim->rim_id)->first();
         if ($stock && $stock->quantity > 0) {
-          $availability .= '<br><p>' . $stock_name . ': ' . $stock->quantity . '</p>';
+          $availability .= '<br><span>' . $stock_name . ': ' . $stock->quantity . '</span>';
         } else {
-          $availability .= '<br><p>' . $stock_name . ': 0</p>';
+          $availability .= '<br><span>' . $stock_name . ': 0</span>';
         }
       }
       if ($rim->acomment !== null) {
-        $availability .= '<br><hr class="admin-comments"><p><b>Piezīmes:</b> </p><br><p>' . $rim->acomment . '</p>';
+        $availability .= '<br><hr class="admin-comments"><span><b>Piezīmes:</b> </span><br><span>' . $rim->acomment . '</span>';
       }
     } else {
       $dot = $this->getDotAvailableAttribute();
       if ($dot === 'red') {
-        $availability = '<p style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</p>';
+        $availability = '<span style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</span>';
       } else if ($dot === 'yellow' || $dot === 'half-yellow') {
-        $availability = '<p style="text-align: center;">Diski pieejami partneru noliktavās<br>Piegāde 1 darbadienas laikā.</p>';
+        $availability = '<span style="text-align: center;">Diski pieejami partneru noliktavās<br>Piegāde 1 darbadienas laikā.</span>';
       }
     }
     $availability .= '';

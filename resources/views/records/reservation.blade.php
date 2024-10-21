@@ -29,8 +29,6 @@
             </div>
             @php
               $queue_sum = \App\Models\Office::sum('queue_count');
-              $halfAcService = \App\Models\Service::where('f_ac', 1)->where('enabled', 1)->first();
-              $halfMotoService = \App\Models\Service::where('f_moto', 1)->where('enabled', 1)->first();
             @endphp
             @for ($day = 0; $day <= $visibleDays; $day++)
               @php
@@ -51,6 +49,9 @@
                           $opentime = \Carbon\Carbon::parse($workingDay->timeopen);
                           $openTime1 = \Carbon\Carbon::parse($openTime1->timeopen);
                           $closetime = \Carbon\Carbon::parse($workingDay->timeclose)->subMinutes($timeStep);
+
+                          $halfAcService = $workingDay->ac_toggle;
+                          $halfMotoService = $workingDay->moto_toggle;
 
                           $numberOfSteps = ceil($opentime->diffInMinutes($closetime) / $timeStep);
 
@@ -89,7 +90,7 @@
                                         if ($slot->takenby !== null) {
                                             $takenBy = json_decode($slot->takenby);
                                             $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
-                                            $ac = (isset($service->f_ac) && $service->f_ac != 0) ? '*' : '';
+                                            $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
 
                                             $content = '<button class="slot status taken-slot">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
                                             if ($slot->edituser > -1) {
@@ -108,7 +109,7 @@
                                           $slotClass = 'time-taken';
                                           $takenBy = json_decode($slot->takenby);
                                           $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
-                                          $ac = (isset($service->f_ac) && $service->f_ac != 0) ? '*' : '';
+                                          $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
 
                                           $content = '<button class="slot status taken-slot">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
                                           if ($slot->edituser > -1) {
@@ -159,7 +160,7 @@
                                           if ($slot->takenby !== null) {
                                               $takenBy = json_decode($slot->takenby);
                                               $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
-                                              $ac = (isset($service->f_ac) && $service->f_ac != 0) ? '*' : '';
+                                              $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
 
                                               $content = '<button class="slot status ' . $className .  ' taken-slot">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
                                               if ($slot->edituser > -1) {
@@ -178,7 +179,7 @@
                                             $slotClass = 'time-taken';
                                             $takenBy = json_decode($slot->takenby);
                                             $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
-                                            $ac = (isset($service->f_ac) && $service->f_ac != 0) ? '*' : '';
+                                            $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
 
                                             $className = ($i % 2 == 1) ? 'text-red' : '';
                                             $content = '<button class="slot status ' . $className . ' taken-slot">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
@@ -531,6 +532,23 @@
                           </label>
                         </div>
                       </div>
+                        <div class="form-group col-md-3 text-right queue_services">
+                            <label for="queue_services"><span class="validate" style="color: red;">*</span>Pakalpojumi:</label>
+                        </div>
+                        <div class="col-md-8 queue_services" id="queue_services">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="ac_toggle" id="ac_toggle">
+                                <label class="form-check-label" for="ac_toggle">
+                                    Kondicionieru uzpilde
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="moto_toggle" id="moto_toggle">
+                                <label class="form-check-label" for="moto_toggle">
+                                    Motociklu montāža
+                                </label>
+                            </div>
+                        </div>
                     </div>
                   </form>
                 </div>
@@ -545,5 +563,5 @@
       </div>
     </div>
   </div>
-  <script src="{{ asset('js/reservations.js') }}"></script>
+  <script src="{{ asset('js/reservations.js?rev=' . time()) }}"></script>
 @endsection

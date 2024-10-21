@@ -435,16 +435,17 @@
                                  class="tire-table-checkbox">
                         </th>
 
-                        <td class="table-tire-name-cell">
-                          <a class="tire-table-link tippy"
-                             data-tippy-content="<div><img data-src='{{ App\Helper\Image::showAd('big', $tire->make_id) }}'></div>"
-                             href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
-                             data-content="{{ $tire->fullName }}"
-                             data-article="{{ $tire->article }}"
-                             data-quantity="{{ $cartQty }}">
-                            <div class="table-link-title">{{ $tire->title }}</div>
-                          </a>
-                        </td>
+                          <td class="table-tire-name-cell">
+                              <a class="tire-table-link tippy image"
+                                 data-tippy-content="<div><img data-src='{{ App\Helper\Image::showAd('big', $tire->make_id) }}'></div>"
+                                 href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
+                                 data-content="{{ $tire->fullName }}"
+                                 data-article="{{ $tire->article }}"
+                                 data-quantity="{{ $cartQty }}">
+                                  <div class="table-link-title">{{ $tire->title }}</div>
+                              </a>
+                          </td>
+
 {{--                           ass --}}
                         <td class="hidden-sm-down text-center">
                           @if (isset($code_array[$tire->axis]))

@@ -6543,34 +6543,42 @@ div#service-option-selection {
     border-bottom: none;
 }
 
-a.season-select-link {
+button.season-select-link {
     width: 100%;
     text-align: center;
     height: 100%;
+    cursor: pointer;
     line-height: 38px;
+    color: #59c0a8;
+    background: white;
     border-bottom: 1px solid #59c0a8;
 }
 
-a.season-select-link.selected-link {
+button.season-select-link.selected-link {
     background: #59c0a8;
     color: white;
 }
 
-a.season-select-link:nth-child(1) {
+button.season-select-link:nth-child(1) {
     border-top-left-radius: 15px;
     border-right: 1px solid #59c0a8;
+    border-top: none;
+    border-left: none;
 }
 
-a.season-select-link:nth-child(2) {
+button.season-select-link:nth-child(2) {
     border-top-right-radius: 15px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
 }
 
-a.season-select-link:hover {
+button.season-select-link:hover {
     background: #59c0a8;
     color: white;
 }
 
-a.season-select-link:focus {
+button.season-select-link:focus {
     outline: none;
     text-decoration: none;
     background: #59c0a8;
@@ -6648,4 +6656,16 @@ section.facet h1 {
 
 .select2-container--default.select2-container--focus .select2-selection--multiple {
     border: 1px solid #59c0a8!important;
+}
+
+.flex.flex-codes {
+    justify-content: space-between;
+}
+
+.flex.flex-params {
+    justify-content: space-between;
+}
+
+.cart-delivery-option .custom-select {
+    background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23636f83' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") no-repeat right 0.75rem center/8px 10px;
 }

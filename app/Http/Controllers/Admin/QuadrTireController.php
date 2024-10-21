@@ -37,12 +37,12 @@
       if ($request->post()) {
         if ($request->input('new-brand') == 'true') {
           if (empty($request->input('brand-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada brenda nosaukums!');
-          $brand = Quadrbrand::where('title', $request->input('brand-name'))->first();
+          $brand = Quadrbrand::where('b_title', $request->input('brand-name'))->first();
           if ($brand) return redirect($request->url())->with('danger', 'Brends ar šādu nosaukumu jau eksistē!');
           $brand = new Quadrbrand;
           $brand->timestamps = false;
-          $brand->title = $request->input('brand-name');
-          $brand->slug = Str::slug($brand->title);
+          $brand->b_title = $request->input('brand-name');
+          $brand->slug = Str::slug($brand->b_title);
           if ($brand->save()) {
             return redirect($request->url())->with('success', 'Brends ir pievienots!');
           } else {
@@ -51,11 +51,11 @@
         } else if ($request->input('edit-brand') == 'true') {
           $brand = Quadrbrand::where('brand_id', $request->input('brand-id'))->first();
           $brand->timestamps = false;
-          if ($brand && $brand->title == $request->input('brand-name')) {
+          if ($brand && $brand->b_title == $request->input('brand-name')) {
             return redirect($request->url())->with('danger', 'Brenda nosaukums nav mainīts, ievadīts tāds pats!');
           } else {
-            $brand->title = $request->input('brand-name');
-            $brand->slug = Str::slug($brand->title);
+            $brand->b_title = $request->input('brand-name');
+            $brand->slug = Str::slug($brand->b_title);
             if ($brand->save()) {
               return redirect($request->url())->with('success', 'Brenda nosaukums nomainīts!');
             } else {
@@ -74,12 +74,12 @@
 
         if ($request->input('new-make') == 'true') {
           if (empty($request->input('make-name'))) return redirect($request->url())->with('danger', 'Sākumā jāievada modeļa nosaukums!');
-          $make = Quadrtread::where('title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
+          $make = Quadrtread::where('t_title', $request->input('make-name'))->where('brand_id', $request->input('brand-id'))->first();
           if ($make) return redirect($request->url())->with('danger', 'Modelis ar šādu nosaukumu jau eksistē!');
           $make = new Quadrtread;
           $make->timestamps = false;
           $make->brand_id = $request->input('brand-id');
-          $make->title = $request->input('make-name');
+          $make->t_title = $request->input('make-name');
           $make->slug = Str::slug($make->t_title);
           if ($make->save()) {
             return redirect(route('admin.quadr.tires.search', $make->tread_id))->with('success', 'Modelis ir pievienots!');
@@ -106,7 +106,7 @@
           $brand = new Quadrbrand;
           $brand->timestamps = false;
           $brand->b_title = $request->input('brand-name');
-          $brand->slug = Str::slug($brand->title);
+          $brand->slug = Str::slug($brand->b_title);
           if ($brand->save()) {
             return redirect($request->url())->with('success', 'Brends ir pievienots!');
           } else {
@@ -119,7 +119,7 @@
 //              return redirect(route('admin.auto.tires'))->with('danger', 'Brenda nosaukums nav mainīts, ievadīts tāds pats!');
 //            } else {
           $brand->b_title = $request->input('brand-name');
-          $brand->slug = Str::slug($brand->title);
+          $brand->slug = Str::slug($brand->b_title);
           if ($brand->save()) {
             return redirect($request->url())->with('success', 'Brenda nosaukums nomainīts!');
           } else {
@@ -129,14 +129,10 @@
         } else if ($request->input('delete-brand') == 'true') {
           $brand = Quadrbrand::where('brand_id', $request->input('brand-id'))->first();
           if (!$brand) return redirect($request->url())->with('danger', 'Tāds brends neeksistē, nevaru izdzēst!');
-          if ($brand) {
-            if ($brand->delete()) {
-              redirect($request->url())->with('success', 'Brends veiksmīgi izdzēsts!');
-            } else {
-              redirect($request->url())->with('danger', 'Notika kļūda, brends nav izdzēsts!');
-            }
+          if ($brand->delete()) {
+            redirect($request->url())->with('success', 'Brends veiksmīgi izdzēsts!');
           } else {
-            redirect($request->url());
+            redirect($request->url())->with('danger', 'Notika kļūda, brends nav izdzēsts!');
           }
         }
 
@@ -148,7 +144,7 @@
           $make->timestamps = false;
           $make->brand_id = $request->input('brand-id');
           $make->t_title = $request->input('make-name');
-          $make->slug = Str::slug($make->title);
+          $make->slug = Str::slug($make->t_title);
           if ($make->save()) {
             return redirect(route('admin.quadr.tires.search', $make->tread_id))->with('success', 'Modelis ir pievienots!');
           } else {
@@ -161,7 +157,7 @@
 //              return redirect($request->url())->with('danger', 'Modeļa nosaukums nav mainīts, ievadīts tāds pats!');
 //            } else {
           $make->t_title = $request->input('make-name');
-          $make->slug = Str::slug($make->title);
+          $make->slug = Str::slug($make->t_title);
           if ($make->save()) {
             return redirect($request->url())->with('success', 'Modeļa nosaukums nomainīts!');
           } else {

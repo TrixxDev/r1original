@@ -20,7 +20,8 @@
                         <!-- Footer content -->
                     </footer>
                 </section>
-            </div>
+            <script>$('section#content').find('table').each(function() { if ($(this).parent().is('div')) { $(this).parent().addClass('pak-table') } })</script>
+	    </div>
         </div>
         @include('components.right-sidebar')
     </div>

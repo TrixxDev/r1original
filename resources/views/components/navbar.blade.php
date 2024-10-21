@@ -269,11 +269,11 @@
     <div class="dropdown-options riepas">
         @if ((int) config('season') === 1)
         <div class="nav-dropdown-link">
-            <a class="dropdown-item" href="{{ route('vasaras-riepas') }}">Vasaras Riepas</a>
+            <a class="dropdown-item" href="{{ route('ziemas-riepas') }}">Ziemas Riepas</a>
         </div>
         @else
         <div class="nav-dropdown-link">
-            <a class="dropdown-item" href="{{ route('ziemas-riepas') }}">Ziemas Riepas</a>
+            <a class="dropdown-item" href="{{ route('vasaras-riepas') }}">Vasaras Riepas</a>
         </div>
         @endif
 
@@ -287,11 +287,11 @@
 
         @if ((int) config('season') === 1)
             <div class="nav-dropdown-link">
-                <a class="dropdown-item" href="{{ route('ziemas-riepas') }}">Ziemas Riepas</a>
+                <a class="dropdown-item" href="{{ route('vasaras-riepas') }}">Vasaras Riepas</a>
             </div>
         @else
             <div class="nav-dropdown-link">
-                <a class="dropdown-item" href="{{ route('vasaras-riepas') }}">Vasaras Riepas</a>
+                <a class="dropdown-item" href="{{ route('ziemas-riepas') }}">Ziemas Riepas</a>
             </div>
         @endif
 

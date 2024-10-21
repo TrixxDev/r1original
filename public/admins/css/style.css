@@ -12515,13 +12515,13 @@ html:not([dir=rtl]) .c-switch-label .c-switch-slider::after {
 
 .table th, .table td {
   padding: .75rem;
-  vertical-align: top;
+  vertical-align: middle;
   border-top: 1px solid;
   border-top-color: #d8dbe0
 }
 
 .table thead th {
-  vertical-align: bottom;
+  vertical-align: middle;
   border-bottom: 2px solid;
   border-bottom-color: #d8dbe0
 }

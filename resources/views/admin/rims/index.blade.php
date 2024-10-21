@@ -144,7 +144,7 @@
                         <td>{{ $rim->d1 }}</td>
                         <td>{{ $rim->d3 }}</td>
                         <td>{{ $rim->price1 }}</td>
-                        <td style="color: red; font-weight: 500;">{{ $rim->price3 }}</td>
+                        <td style="color: red; font-weight: 500;">{{ $rim->price2 }}</td>
                         <td>{{ $rim->skr }}</td>
                         <td>{{ $rim->pcd }}</td>
                         <td>{{ $rim->et }}</td>

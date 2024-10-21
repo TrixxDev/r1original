@@ -26,6 +26,7 @@ Route::prefix('api')->name('admin.')->group(function() {
   Route::get('/tires/auto/{season}', [App\Http\Controllers\AutoTireController::class, 'api_tires']);
   Route::get('/tires/moto', [App\Http\Controllers\MotoTireController::class, 'api_tires']);
   Route::get('/tires/quadr', [App\Http\Controllers\QuadTireController::class, 'api_tires']);
+  Route::get('/rims/auto', [App\Http\Controllers\RimsController::class, 'api_tires']);
   Route::get('/tires/autoSplitInput/{input}', [App\Http\Controllers\AutoTireController::class, 'splitInput']);
   Route::get('/tires/motoSplitInput/{input}', [App\Http\Controllers\MotoTireController::class, 'splitInput']);
   Route::get('/tires/quadrSplitInput/{input}', [App\Http\Controllers\QuadTireController::class, 'splitInput']);
@@ -261,6 +262,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   Route::post('/settings/users/{id}/update', [App\Http\Controllers\Admin\SettingsController::class, 'users_update'])->name('settings.users.update');
   Route::match(['GET', 'POST'], '/settings/user/{id}/pwdChange', [App\Http\Controllers\Admin\SettingsController::class, 'user_pwdChange'])->name('settings.user.pwdChange');
   Route::get('/settings/users/{id}/delete', [App\Http\Controllers\Admin\SettingsController::class, 'users_destroy'])->name('settings.users.destroy');
+  Route::get('/settings/users/{id}/stateChange', [App\Http\Controllers\Admin\SettingsController::class, 'users_stateChange'])->name('settings.users.stateChange');
 
   // Lomas
   Route::get('/settings/roles', [App\Http\Controllers\Admin\RoleController::class, 'index'])->name('settings.roles');
@@ -300,6 +302,13 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   // Montāžu/Piegāžu cenas
   Route::get('/settings/prices', [App\Http\Controllers\Admin\SettingsController::class, 'prices'])->name('settings.prices');
   Route::post('/settings/prices/{id}/update', [App\Http\Controllers\Admin\SettingsController::class, 'price_update'])->name('settings.prices.update');
+
+  Route::get('/promo', [App\Http\Controllers\Admin\PromoCodeController::class, 'index'])->name('promo.index');
+  Route::get('/promo/create', [App\Http\Controllers\Admin\PromoCodeController::class, 'create'])->name('promo.create');
+  Route::post('/promo/store', [App\Http\Controllers\Admin\PromoCodeController::class, 'store'])->name('promo.store');
+  Route::get('/promo/delete/{id}', [App\Http\Controllers\Admin\PromoCodeController::class, 'destroy'])->name('promo.delete');
+  Route::get('/promo/edit/{id}', [App\Http\Controllers\Admin\PromoCodeController::class, 'edit'])->name('promo.edit');
+  Route::get('/promo/update/{id}', [App\Http\Controllers\Admin\PromoCodeController::class, 'update'])->name('promo.update');
 });
 
 Route::get('/sendSMS', function() {
@@ -516,6 +525,9 @@ Route::middleware('checksession')->group(function() {
 // Salidzini.lv / Kurpirkt.lv XML Ģenerators
   Route::get('/xml/salidzini', [App\Http\Controllers\Admin\SettingsController::class, 'salidzini'])->name('xml.salidzini');
   Route::get('/xml/kurpirkt', [App\Http\Controllers\Admin\SettingsController::class, 'kurpirkt'])->name('xml.kurpirkt');
+
+  Route::get('/checkPromos', [App\Http\Controllers\Admin\PromoCodeController::class, 'checkPromos']);
+  Route::post('/checkPromo', [App\Http\Controllers\Admin\PromoCodeController::class, 'checkPromo']);
 
   Route::get('/analytics', function() {
     return view('analytics');

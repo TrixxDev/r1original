@@ -6,6 +6,7 @@ use App\Models\Autotire;
 use App\Models\Moto;
 use App\Models\Order;
 use App\Models\Pdf;
+use App\Models\Promo;
 use App\Models\Quadr;
 use App\Models\Bigtire;
 use App\Models\Rim;
@@ -31,6 +32,8 @@ class CartController extends Controller
 {
 
     public float $radiusBorder = 360.7;
+    public string $orderWpp = '120363248805017034@g.us';
+    public ?int $promo_value = null;
 
   /**
      * Create a new controller instance.
@@ -203,6 +206,27 @@ class CartController extends Controller
 
         $amount = str_replace(['.', ','], '', Cart::subtotal());
 
+        if (!empty($request->data['promo_code']) && !is_null($request->data['promo_code'])) {
+          $promo = Promo::where('code', $request->data['promo_code'])->where('active', '1')->first();
+          if (!$promo) {
+            Session::forget(['cart.promo_code_perc', 'cart.promo_code_val', 'cart.promo_value']);
+            return redirect()->refresh()->with('promo_error', 'error');
+          }
+          if (!is_null($promo->can_use)) {
+            if ($promo->used >= $promo->can_use) {
+              return redirect()->refresh()->with('promo_error', 'error');
+            }
+          }
+          if ($promo->status === '1') {
+            Session::put('cart.promo_code_perc', $promo);
+          } else {
+            Session::put('cart.promo_code_val', $promo);
+            Session::put('cart.promo_value', $promo->value);
+          }
+        } else {
+          Session::forget('cart.promo_code');
+        }
+
         if (!$order) $order = new Order;
         $order->userId = 0;
         $order->userIp = 0;
@@ -216,6 +240,7 @@ class CartController extends Controller
         $order->delivery_price = (isset($delivery['delivery_price'])) ? $delivery['delivery_price'] : 0;
         $order->fit_price = (isset($fitting['fitting_price'])) ? $fitting['fitting_price'] : 0;
         $order->info = $cartData;
+        if (isset($promo)) $order->used_promo = $promo->promo_id;
 
         $order->save();
 
@@ -228,6 +253,14 @@ class CartController extends Controller
         Session::put('cart.user', (Auth::check()) ? Auth::user()->id : user_ip);
 
         return redirect(route('order'));
+      }
+      if (Session::has('cart.promo_code_perc')) {
+        Session::forget('cart.promo_code_perc');
+        foreach (Cart::content() as $item) {
+          Cart::setDiscount($item->rowId, 0);
+        }
+      } else if (Session::has('cart.promo_code_val')) {
+        Session::forget(['cart.promo_code_val', 'cart.promo_value']);
       }
         //dd(Cart::content());
       return view('cart.home');
@@ -253,16 +286,22 @@ class CartController extends Controller
 
         $amount = str_replace(['.', ','], '', Cart::subtotal());
         $amount1 = $amount;
-	if ($delivery_price > 0) {
-	  $amount1 = (int) $amount1 + (int) $delivery_price;
-	} elseif ($fit_price > 0) {
-	  $amount1 = (int) $amount1 + (int) $fit_price;
-	}
+        $total = null;
+        if (Session::has('cart.promo_code_val')) {
+          $primary_price = intval(substr($amount1, 0, -2) . '00');
+          $promo_price = intval(Session::get('cart.promo_value') . '00');
+          $amount1 = $total = intval($primary_price - $promo_price);
+        }
+        if ($delivery_price > 0) {
+          $amount1 = (int) $amount1 + (int) $delivery_price;
+        } elseif ($fit_price > 0) {
+          $amount1 = (int) $amount1 + (int) $fit_price;
+        }
 
         $email = Session::get('email');
         $order_id = $order->id;
 
-        $data = ['order_id' => $order_id, 'amount' => $amount1, 'email' => $email];
+        $data = ['order_id' => $order_id, 'amount' => intval(substr($amount1, 0, -2) . '00'), 'email' => $email];
 
         if (isset($request->pay)) {
           return $this->pay($data);
@@ -283,7 +322,7 @@ class CartController extends Controller
             'quantity' => $item->qty,
             'price' => (int) $item->price,
             'article' => $item->options->tire['article'],
-	  ];
+	        ];
 
           $i++;
 
@@ -331,7 +370,7 @@ class CartController extends Controller
         $cats = array_unique($cats);
         $dogs = array_unique($dogs);
 
-        return view('cart.checkout', compact('user_data', 'cats', 'dogs', 'order_id'));
+        return view('cart.checkout', compact('user_data', 'cats', 'dogs', 'order_id', 'total'));
       }else {
         if (!Session::exists('person')) Session::put('person', 1);
         return view('cart.order');
@@ -768,17 +807,32 @@ class CartController extends Controller
                 <td style="text-align: center;">€ ' . substr($details->delivery_price, 0, -2) . '</td>
               </tr>';
               }
+              $item_sum = $details->price;
+              if ($details->used_promo != 0) {
+                $promo = Promo::where('promo_id', $details->used_promo)->first();
+                if ($promo->status === '1') {
+                  $item_sum = $item_sum * (1 - $promo->value / 100);
+                } else {
+                  $item_sum = $item_sum - $promo->value;
+                }
+                $item_sum = round($item_sum);
+                $out .= '<tr>';
+                $out .= '<td>Atlaižu kods</td>';
+                $out .= '<td></td>';
+                $out .= '<td></td>';
+                $out .= '<td style="text-align: center;">€ -' . ($details->price - $item_sum) . '</td>';
+                $out .= '</tr>';
+              }
+              if ($details->delivery_price > 0) {
+                $item_sum = $item_sum + (int) substr($details->delivery_price, 0, -2);
+              } else if ($details->fit_price > 0) {
+                $item_sum = $item_sum + (int) substr($details->fit_price, 0, -2);
+              }
               $out .= '<tr>
                 <td></td>
                 <td style="text-align: center;"></td>
                 <td style="text-align: center;"><b>Kopā:</b></td>';
-                if ($details->delivery_price > 0) {
-                  $out .= '<td style="text-align: center;">€ ' . ((int) $details->price + substr($details->delivery_price, 0, -2)) . '</td>';
-                } elseif ($details->fit_price > 0) {
-                  $out .= '<td style="text-align: center;">€ ' . ((int) $details->price + substr($details->fit_price, 0, -2)) . '</td>';
-                } else {
-                  $out .= '<td style="text-align: center;">€ ' . $details->price . '</td>';
-                }
+                $out .= '<td style="text-align: center;">€ ' . $item_sum . '</td>';
               $out .= '</tr>
             </table>
           </div>
@@ -837,11 +891,28 @@ class CartController extends Controller
 	      $order->payment = 3;
       }
 
+      if ($order->used_promo > 0) {
+        $promo = Promo::where('promo_id', $order->used_promo)->first();
+        $promo->used++;
+        $promo->save();
+      }
+
       //dd($data);
       $order->save();
 
       $data = $order;
       $data->info = unserialize($data->info);
+
+      $cURLConnection = curl_init();
+
+      $url = 'http://api.textmebot.com/send.php?recipient=' . $this->orderWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pasūtījums%20-%20Nr.%20' . $order_id;
+
+      curl_setopt($cURLConnection, CURLOPT_URL, $url);
+      curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+
+      curl_exec($cURLConnection);
+
+      curl_close($cURLConnection);
 
       $data->cart = Cart::content();
 

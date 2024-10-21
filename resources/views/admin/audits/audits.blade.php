@@ -16,13 +16,13 @@
                       <div class="col-2">
                         <select name="model" class="form-control">
                           <option value="none" selected>Izvēlēties</option>
-                            @foreach ($models as $model_name => $model)
+                          @foreach ($models as $model_name => $model)
                             <optgroup label="{{ $model['title'] }}">
                               @foreach ($model['searchBy'] as $model_col => $model_title)
                                 <option @if ($modelname == $model_name . ';' . $model_col) selected @endif value="{{ $model_name }};{{ $model_col }}">{{ ucfirst($model_title) }}</option>
                               @endforeach
                             </optgroup>
-                            @endforeach
+                          @endforeach
                         </select>
                       </div>
                       <div class="col-3">
@@ -52,11 +52,17 @@
                     </tr>
                     </thead>
                     <tbody>
-                      @foreach ($audits as $audit)
+                    @foreach ($audits as $audit)
                       <tr style="cursor: pointer;" onclick="window.location.href='{{ route('admin.audit', $audit->id) }}'">
                         <td></td>
                         <td>{{ $audit['audit_time'] }}</td>
-                        <td>{{ trim($audit['audit_event']) }}</td>
+                        @if (isset(unserialize($audit->audit_instance)->takenby))
+                          <td>{{ trim($audit['audit_event']) . ' (' . unserialize($audit->audit_instance)->date . ' ' . (substr_replace(substr(json_decode(unserialize($audit->audit_instance)->takenby)->cancelId, -4), ':', 2, 0)) . ')' }}</td>
+                        @elseif ($audit->audit_classname == 'App\Models\Slot' && stripos($audit->audit_url, 'cancel') !== false)
+                          <td>{{ trim($audit['audit_event']) . ' (' . unserialize($audit->audit_instance)->date . ' ' . (substr_replace(substr($audit->audit_url, -4), ':', 2, 0)) . ')' }}</td>
+                        @else
+                          <td>{{ trim($audit['audit_event']) }}</td>
+                        @endif
                         <td align="center">{{ \App\Models\Audit::get_facility_name($audit['audit_facility']) }}</td>
                         <td align="center">
                           @if (App\Models\User::find($audit->audit_uid))
@@ -66,7 +72,7 @@
                           @endif
                         </td>
                       </tr>
-                      @endforeach
+                    @endforeach
                     </tbody>
                   </table>
                   {{ $audits->links() }}

@@ -27,10 +27,10 @@
 </thead>
 <tbody>
 <tr>
-<td>Pirm. - Piekt. <strong>9:00 - 19:00</strong></td>
+<td>Pirm. - Piekt. <strong>9:00 - 18:00</strong></td>
 </tr>
 <tr>
-<td>Sestdiena - <strong>9</strong><strong>:00 - 16:00</strong></td>
+<td>Svētdiena - <strong>9:00 - 15:00</strong></td>
 </tr>
 <tr>
 <td>Svētdiena - <strong>Slēgts</strong></td>
@@ -68,7 +68,7 @@
 <td>Pirm. - Piekt. <strong>9:00 - 19:00</strong></td>
 </tr>
 <tr>
-<td>Sestdiena - <strong>9</strong><strong>:00 - 16:00</strong></td>
+<td>Sestdiena - <strong>9:00 - 15:00</strong></td>
 </tr>
 <tr>
 <td>Svētdiena - <strong>Slēgts</strong></td>

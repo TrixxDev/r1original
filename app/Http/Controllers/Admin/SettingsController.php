@@ -95,7 +95,7 @@
     public function users()
     {
 
-      $users = User::role(['administrators', 'moderators'])->get();
+      $users = User::all();
 
       return view('admin.settings.users', compact('users'));
     }
@@ -181,6 +181,19 @@
       $user->delete();
 
       return redirect(route('admin.settings.users'))->withSuccess('Lietotājs veiksmīgi dzēsts!');
+    }
+
+    public function users_stateChange($id)
+    {
+      $user = User::findOrFail($id);
+      $user->enabled = ($user->enabled == 1) ? 0 : 1;
+      $user->save();
+
+      if ($user->enabled == 1) {
+        return redirect(route('admin.settings.users'))->withSuccess('Lietotājs aktivizēts!');
+      } else {
+        return redirect(route('admin.settings.users'))->withSuccess('Lietotājs deaktivizēts!');
+      }
     }
 
     // Lapas

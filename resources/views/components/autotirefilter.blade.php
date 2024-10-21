@@ -76,26 +76,26 @@
             </div>
         </div>
     </div>
-    <div class="wrap hidden-sm-down">
-        <div class="sidebar-bottom">
-            <section class="facet clearfix facet--availability" style="padding-top: 0">
-                <ul class="collapse">
-                    <li class="show-selected-checkbox-li">
-                        <label class="facet-label" for="show-selected-checkbox"
-                               style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+  <div class="wrap hidden-sm-down">
+    <div class="sidebar-bottom">
+      <section class="facet clearfix facet--availability" style="padding-top: 0">
+        <ul class="collapse">
+          <li class="show-selected-checkbox-li">
+            <label class="facet-label" for="show-selected-checkbox"
+                   style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                               <span class="custom-checkbox">
                                 <input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" @if (request()->show_selected) checked @endif title="" disabled>
                               <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                             </span>
-                            <span>Rādīt izvēlētos</span>
-                        </label>
-                    </li>
-                </ul>
-                <h1 class="h6 facet-title"><b>Pieejamība</b></h1>
-                <ul id="facet_availability" class="collapse">
-                    <li>
-                        <label class="facet-label" for="facet_availability_0"
-                               style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+              <span>Rādīt izvēlētos</span>
+            </label>
+          </li>
+        </ul>
+        <h1 class="h6 facet-title"><b>Pieejamība</b></h1>
+        <ul id="facet_availability" class="collapse">
+          <li>
+            <label class="facet-label" for="facet_availability_0"
+                   style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                             <span class="custom-checkbox">
                               <input id="facet_availability_0" class="green" @if (in_array('green', explode(' ', request()->availability))) checked @endif type="checkbox"
                                      data-search-url="#" value="green"
@@ -104,84 +104,137 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                            Pieejams
-                            <span class="dot green" style="float:right;margin-top: 3px;"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="facet-label" for="facet_availability_1"
-                               style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
+              Pieejams
+              <span class="dot green" style="float:right;margin-top: 3px;"></span>
+            </label>
+          </li>
+          <li>
+            <label class="facet-label" for="facet_availability_1"
+                   style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                             <span class="custom-checkbox">
                               <input id="facet_availability_1" class="yellow" @if (in_array('yellow', explode(' ', request()->availability))) checked @endif type="checkbox"
                                      data-search-url="#" value="yellow"
                                      data-for="dot" data-value="yellow" data-color="yellow">
                               <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                             </span>
-                            Pasūtāms
-                            <span class="dot yellow" style="float:right;margin-top: 3px;"></span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="facet-label" for="facet_availability_2"
-                               style="width: 100%;text-align: left;cursor: pointer">
+              Pasūtāms
+              <span class="dot yellow" style="float:right;margin-top: 3px;"></span>
+            </label>
+          </li>
+          <li>
+            <label class="facet-label" for="facet_availability_2"
+                   style="width: 100%;text-align: left;cursor: pointer">
                             <span class="custom-checkbox">
                               <input id="facet_availability_2" class="red" @if (in_array('red', explode(' ', request()->availability))) checked @endif type="checkbox"
                                      data-search-url="#" value="red"
                                      data-for="dot" data-value="red" data-color="red">
                               <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                             </span>
-                            Zvaniet!
-                            <span class="dot red" style="float:right;margin-top: 3px;"></span>
-                        </label>
-                    </li>
-                </ul>
-            </section>
+              Zvaniet!
+              <span class="dot red" style="float:right;margin-top: 3px;"></span>
+            </label>
+          </li>
+        </ul>
+      </section>
 
-            <section class="facet clearfix facet--4">
-                <h1 class="h6 facet-title facet-hover code-dropdown-btn"><b>Kods</b></h1>
-                <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
-                    <h1 class="h6 facet-title">Kods</h1>
-                    <span class="float-xs-right">
+      <section class="facet clearfix facet--4">
+        <h1 class="h6 facet-title facet-hover code-dropdown-btn"><b>Kods</b></h1>
+        <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
+          <h1 class="h6 facet-title">Kods</h1>
+          <span class="float-xs-right">
                           <span class="navbar-toggler collapse-icons">
                             <i class="material-icons add"></i>
                             <i class="material-icons remove"></i>
                           </span>
                         </span>
-                </div>
+        </div>
 
-                @php
-                    $code = explode(' ', request()->code);
-                @endphp
+        @php
+          $code = explode(' ', request()->code);
+        @endphp
 
-                <ul id="facet_code">
-                    <li data-label="XL">
-                        <label class="facet-label" for="facet_for_xl">
+        <ul id="facet_code">
+          <div class="row">
+            <div class="col-md-6">
+              <li data-label="RSC">
+                <label class="facet-label" for="facet_for_rsc">
+                                <span class="custom-checkbox">
+                                  <input id="facet_for_rsc" data-search-url=""
+                                         @if (in_array('RSC', $code)) checked="" @endif value="RSC"
+                                         data-for="prod-code" data-value="RSC" type="checkbox">
+                                  <span class="ps-shown-by-js">
+                                    <i class="material-icons checkbox-checked"></i>
+                                  </span>
+                                </span>
+                  <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>Run Flat (RSC)</b> - Šāda riepa ļauj pārvietoties arī tad, ja tā tikusi pārdurta</span></div>" tabindex="0">
+                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">RSC</a>
+                                        </span>
+                </label>
+              </li>
+              <li data-label="SEAL">
+                <label class="facet-label" for="facet_for_seal">
+                                <span class="custom-checkbox">
+                                  <input id="facet_for_seal" data-search-url=""
+                                         @if (in_array('SEAL', $code)) checked="" @endif value="SEAL"
+                                         data-for="prod-code" data-value="SEAL" type="checkbox">
+                                  <span class="ps-shown-by-js">
+                                    <i class="material-icons checkbox-checked"></i>
+                                  </span>
+                                </span>
+                  <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>Riepu blīvējums (SEAL)</b> ir gumijas slānis, kas tiek uzklāts uz riepas iekšpuses. Tas palīdz novērst gaisa noplūdi no riepas un aizsargā riepas karkasu no bojājumiem.</span></div>" tabindex="0">
+                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">SEAL</a>
+                                        </span>
+                </label>
+              </li>
+              <li data-label="SOUND">
+                <label class="facet-label" for="facet_for_sound">
+                                <span class="custom-checkbox">
+                                  <input id="facet_for_sound" data-search-url=""
+                                         @if (in_array('SOUND', $code)) checked="" @endif value="SOUND"
+                                         data-for="prod-code" data-value="SOUND" type="checkbox">
+                                  <span class="ps-shown-by-js">
+                                    <i class="material-icons checkbox-checked"></i>
+                                  </span>
+                                </span>
+                  <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>SOUND</b> - Riepu tehnoloģija, kas samazina troksni automobiļa salonā līdz pat 50%</span></div>" tabindex="0">
+                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">SOUND</a>
+                                        </span>
+                </label>
+              </li>
+              <li data-label="XL">
+                <label class="facet-label" for="facet_for_xl">
+                                <span class="custom-checkbox">
+                                  <input id="facet_for_xl" data-search-url=""
+                                         @if (in_array('XL', $code)) checked="" @endif value="XL"
+                                         data-for="prod-code" data-value="XL" type="checkbox">
+                                  <span class="ps-shown-by-js">
+                                    <i class="material-icons checkbox-checked"></i>
+                                  </span>
+                                </span>
+                  <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>EXTRA LOAD (XL)</b> - Riepa ar paaugstinātu kravnesību</span></div>" tabindex="0">
+                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">XL</a>
+                                    </span>
+                </label>
+              </li>
+            </div>
+            <div class="col-md-6">
+              <li data-label="ELECT">
+                <label class="facet-label" for="facet_for_elect">
                             <span class="custom-checkbox">
-                              <input id="facet_for_xl" data-search-url=""
-                                     @if (in_array('XL', $code)) checked="" @endif value="XL"
-                                     data-for="prod-code" data-value="XL" type="checkbox">
+                              <input id="facet_for_elect" data-search-url=""
+                                     @if (in_array('ELECT', $code)) checked="" @endif value="ELECT"
+                                     data-for="prod-code" data-value="ELECT" type="checkbox">
                               <span class="ps-shown-by-js">
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow" style="margin-top: 0px;">XL</a>
-                        </label>
-                    </li>
-                    <li data-label="RSC">
-                        <label class="facet-label" for="facet_for_rsc">
-                            <span class="custom-checkbox">
-                              <input id="facet_for_rsc" data-search-url=""
-                                     @if (in_array('RSC', $code)) checked="" @endif value="RSC"
-                                     data-for="prod-code" data-value="RSC" type="checkbox">
-                              <span class="ps-shown-by-js">
-                                <i class="material-icons checkbox-checked"></i>
-                              </span>
-                            </span>
-                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">RSC</a>
-                        </label>
-                    </li>
-                    <li data-label="MFS">
-                        <label class="facet-label" for="facet_for_mfs">
+                  <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>ELECT</b> - Riepas paredzētas elektroauto</span></div>" tabindex="0">
+                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">ELECT</a>
+                                    </span>
+                </label>
+              </li>
+              <li data-label="MFS">
+                <label class="facet-label" for="facet_for_mfs">
                             <span class="custom-checkbox">
                               <input id="facet_for_mfs" data-search-url=""
                                      @if (in_array('MFS', $code)) checked="" @endif value="MFS"
@@ -190,43 +243,78 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">MFS</a>
-                        </label>
-                    </li>
-{{--                    <li data-label="CURRYEAR">--}}
-{{--                        <label class="facet-label" for="facet_for_curryear">--}}
-{{--                            <span class="custom-checkbox">--}}
-{{--                              <input id="facet_for_curryear" data-search-url=""--}}
-{{--                                     @if (in_array('CURRYEAR', $code)) checked="" @endif value="CURRYEAR"--}}
-{{--                                     data-for="prod-code" data-value="CURRYEAR"--}}
-{{--                                     type="checkbox">--}}
-{{--                              <span class="ps-shown-by-js">--}}
-{{--                                <i class="material-icons checkbox-checked"></i>--}}
-{{--                              </span>--}}
-{{--                            </span>--}}
-{{--                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow"">Šī gada</a>--}}
-{{--                        </label>--}}
-{{--                    </li>--}}
-                </ul>
-            </section>
+                  <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>Maximum Flange Shield (MFS)</b> - Riepa ar diska aizsargmalu</span></div>" tabindex="0">
+                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">MFS</a>
+                                </span>
+                </label>
+              </li>
+              <li data-label="N0">
+                <label class="facet-label" for="facet_for_n0">
+                            <span class="custom-checkbox">
+                              <input id="facet_for_n0" data-search-url=""
+                                     @if (in_array('N0', $code)) checked="" @endif value="N0"
+                                     data-for="prod-code" data-value="N0" type="checkbox">
+                              <span class="ps-shown-by-js">
+                                <i class="material-icons checkbox-checked"></i>
+                              </span>
+                            </span>
+                  <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>N0</b> - Porsche ražotāja homologācija</span></div>" tabindex="0">
+                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">N0</a>
+                                    </span>
+                </label>
+              </li>
+              <li data-label="bmw">
+                <label class="facet-label" for="facet_for_bmw">
+                            <span class="custom-checkbox">
+                              <input id="facet_for_bmw" data-search-url=""
+                                     @if (in_array('*', $code)) checked="" @endif value="*"
+                                     data-for="prod-code" data-value="*" type="checkbox">
+                              <span class="ps-shown-by-js">
+                                <i class="material-icons checkbox-checked"></i>
+                              </span>
+                            </span>
+                  <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>(*)</b> - BMW ražotāja homologācija</span></div>" tabindex="0">
+                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">(*)</a>
+                                </span>
+                </label>
+              </li>
+            </div>
+          </div>
 
-            @if ($season_title == 'ziemas-riepas')
+          {{--                          <li data-label="CURRYEAR">--}}
+          {{--                            <label class="facet-label" for="facet_for_curryear">--}}
+          {{--                            <span class="custom-checkbox">--}}
+          {{--                              <input id="facet_for_curryear" data-search-url=""--}}
+          {{--                                     @if (in_array('CURRYEAR', $code)) checked="" @endif value="CURRYEAR"--}}
+          {{--                                     data-for="prod-code" data-value="CURRYEAR"--}}
+          {{--                                     type="checkbox">--}}
+          {{--                              <span class="ps-shown-by-js">--}}
+          {{--                                <i class="material-icons checkbox-checked"></i>--}}
+          {{--                              </span>--}}
+          {{--                            </span>--}}
+          {{--                              <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow"">Šī gada</a>--}}
+          {{--                            </label>--}}
+          {{--                          </li>--}}
+        </ul>
+      </section>
 
-                <section class="facet clearfix facet--4">
-                    <h1 class="h6 facet-title facet-hover type-dropdown-btn"><b>Tips</b></h1>
-                    <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
-                        <h1 class="h6 facet-title">Tips</h1>
-                        <span class="float-xs-right">
+      @if ($season_title == 'ziemas-riepas')
+
+        <section class="facet clearfix facet--4">
+          <h1 class="h6 facet-title facet-hover type-dropdown-btn"><b>Tips</b></h1>
+          <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
+            <h1 class="h6 facet-title">Tips</h1>
+            <span class="float-xs-right">
                           <span class="navbar-toggler collapse-icons">
                             <i class="material-icons add"></i>
                             <i class="material-icons remove"></i>
                           </span>
                         </span>
-                    </div>
+          </div>
 
-                    <ul id="facet_type">
-                        <li data-label="M+S">
-                            <label class="facet-label" for="facet_for_ms">
+          <ul id="facet_type">
+            <li data-label="M+S">
+              <label class="facet-label" for="facet_for_ms">
                             <span class="custom-checkbox">
                               <input id="facet_for_ms" data-search-url=""
                                      @if (in_array(1, explode(' ', request()->type))) checked="" @endif value="1"
@@ -235,11 +323,11 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow" style="margin-top: 0px;">M+S</a>
-                            </label>
-                        </li>
-                        <li data-label="Studdable">
-                            <label class="facet-label" for="facet_for_studdable">
+                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow" style="margin-top: 0px;">M+S</a>
+              </label>
+            </li>
+            <li data-label="Studdable">
+              <label class="facet-label" for="facet_for_studdable">
                             <span class="custom-checkbox">
                               <input id="facet_for_studdable" data-search-url=""
                                      @if (in_array(2, explode(' ', request()->type))) checked="" @endif value="2"
@@ -248,11 +336,11 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Radžojama</a>
-                            </label>
-                        </li>
-                        <li data-label="Studs">
-                            <label class="facet-label" for="facet_for_studs">
+                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Radžojama</a>
+              </label>
+            </li>
+            <li data-label="Studs">
+              <label class="facet-label" for="facet_for_studs">
                             <span class="custom-checkbox">
                               <input id="facet_for_studs" data-search-url=""
                                      @if (in_array(3, explode(' ', request()->type))) checked="" @endif value="3"
@@ -261,11 +349,11 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ar radzēm</a>
-                            </label>
-                        </li>
-                        <li data-label="Winter">
-                            <label class="facet-label" for="facet_for_winter">
+                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ar radzēm</a>
+              </label>
+            </li>
+            <li data-label="Winter">
+              <label class="facet-label" for="facet_for_winter">
                             <span class="custom-checkbox">
                               <input id="facet_for_winter" data-search-url=""
                                      @if (in_array(4, explode(' ', request()->type))) checked="" @endif value="4"
@@ -274,34 +362,34 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ziemas</a>
-                            </label>
-                        </li>
-                    </ul>
-                </section>
+                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ziemas</a>
+              </label>
+            </li>
+          </ul>
+        </section>
 
-            @endif
+      @endif
 
-            <div class="row">
-                <div class="col-md-4">
-                    <section class="facet clearfix facet--8">
-                        <h1 class="h6 facet-title facet-hover fuel-eco-dropdown-btn">
-                            <div class="icon-tire-fuel">
-                                <img src="https://i.imgur.com/77wfTHY.png" style="width: 80px; position: relative; left: -15px; top: 3px;">
-                            </div>
-                        </h1>
-                        <div class="title hidden-md-up" data-target="#facet_70638">
-                            <h1 class="h6 facet-title">Degvielas ekonomija</h1>
-                            <span class="float-xs-right">
+      <div class="row">
+        <div class="col-md-4">
+          <section class="facet clearfix facet--8">
+            <h1 class="h6 facet-title facet-hover fuel-eco-dropdown-btn">
+              <div class="icon-tire-fuel">
+                <img src="https://i.imgur.com/77wfTHY.png" style="width: 80px; position: relative; left: -15px; top: 3px;">
+              </div>
+            </h1>
+            <div class="title hidden-md-up" data-target="#facet_70638">
+              <h1 class="h6 facet-title">Degvielas ekonomija</h1>
+              <span class="float-xs-right">
                                 <span class="navbar-toggler collapse-icons">
                                   <i class="material-icons add"></i>
                                   <i class="material-icons remove"></i>
                                 </span>
                               </span>
-                        </div>
-                        <ul id="facet_fuel_eco" class="collapse">
-                            <li data-label="A">
-                                <label class="facet-label" for="facet_fuel_eco_a">
+            </div>
+            <ul id="facet_fuel_eco" class="collapse">
+              <li data-label="A">
+                <label class="facet-label" for="facet_fuel_eco_a">
                             <span class="custom-checkbox">
                               <input id="facet_fuel_eco_a" data-search-url=""
                                      @if (in_array('A', explode(' ', request()->fuel))) checked="" @endif value="A"
@@ -310,11 +398,11 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
-                                </label>
-                            </li>
-                            <li data-label="B">
-                                <label class="facet-label" for="facet_fuel_eco_b">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
+                </label>
+              </li>
+              <li data-label="B">
+                <label class="facet-label" for="facet_fuel_eco_b">
                             <span class="custom-checkbox">
                               <input id="facet_fuel_eco_b" data-search-url=""
                                      @if (in_array('B', explode(' ', request()->fuel))) checked="" @endif value="B"
@@ -323,11 +411,11 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
-                                </label>
-                            </li>
-                            <li data-label="C">
-                                <label class="facet-label" for="facet_fuel_eco_c">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
+                </label>
+              </li>
+              <li data-label="C">
+                <label class="facet-label" for="facet_fuel_eco_c">
                             <span class="custom-checkbox">
                               <input id="facet_fuel_eco_c" data-search-url=""
                                      @if (in_array('C', explode(' ', request()->fuel))) checked="" @endif value="C"
@@ -336,11 +424,11 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
-                                </label>
-                            </li>
-                            <li data-label="D">
-                                <label class="facet-label" for="facet_fuel_eco_d">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
+                </label>
+              </li>
+              <li data-label="D">
+                <label class="facet-label" for="facet_fuel_eco_d">
                             <span class="custom-checkbox">
                               <input id="facet_fuel_eco_d" data-search-url=""
                                      @if (in_array('D', explode(' ', request()->fuel))) checked="" @endif value="D"
@@ -349,11 +437,11 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">D</a>
-                                </label>
-                            </li>
-                            <li data-label="E">
-                                <label class="facet-label" for="facet_fuel_eco_e">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">D</a>
+                </label>
+              </li>
+              <li data-label="E">
+                <label class="facet-label" for="facet_fuel_eco_e">
                             <span class="custom-checkbox">
                               <input id="facet_fuel_eco_e" data-search-url=""
                                      @if (in_array('E', explode(' ', request()->fuel))) checked="" @endif value="E"
@@ -362,13 +450,13 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
-                                </label>
-                            </li>
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
+                </label>
+              </li>
 
 
-                            <li data-label="F">
-                                <label class="facet-label" for="facet_fuel_eco_f">
+              <li data-label="F">
+                <label class="facet-label" for="facet_fuel_eco_f">
                             <span class="custom-checkbox">
                               <input id="facet_fuel_eco_f" data-search-url=""
                                      @if (in_array('F', explode(' ', request()->fuel))) checked="" @endif value="F"
@@ -377,12 +465,12 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
-                                </label>
-                            </li>
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
+                </label>
+              </li>
 
-                            <li data-label="G">
-                                <label class="facet-label" for="facet_fuel_eco_g">
+              <li data-label="G">
+                <label class="facet-label" for="facet_fuel_eco_g">
                             <span class="custom-checkbox">
                               <input id="facet_fuel_eco_g" data-search-url=""
                                      @if (in_array('G', explode(' ', request()->fuel))) checked="" @endif value="G"
@@ -391,31 +479,31 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">G</a>
-                                </label>
-                            </li>
-                        </ul>
-                    </section>
-                </div>
-                <div class="col-md-4">
-                    <section class="facet clearfix facet--9">
-                        <h1 class="h6 facet-title facet-hover wet-surface-dropdown-btn">
-                            <div class="icon-tire-rain">
-                                <img style="width: 80px;position: relative;left: -15px;top: 3px;" src="https://i.imgur.com/TVeVuMf.png">
-                            </div>
-                        </h1>
-                        <div class="title hidden-md-up" data-target="#facet_8079">
-                            <h1 class="h6 facet-title">Slapjš segums</h1>
-                            <span class="float-xs-right">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">G</a>
+                </label>
+              </li>
+            </ul>
+          </section>
+        </div>
+        <div class="col-md-4">
+          <section class="facet clearfix facet--9">
+            <h1 class="h6 facet-title facet-hover wet-surface-dropdown-btn">
+              <div class="icon-tire-rain">
+                <img style="width: 80px;position: relative;left: -15px;top: 3px;" src="https://i.imgur.com/TVeVuMf.png">
+              </div>
+            </h1>
+            <div class="title hidden-md-up" data-target="#facet_8079">
+              <h1 class="h6 facet-title">Slapjš segums</h1>
+              <span class="float-xs-right">
                                 <span class="navbar-toggler collapse-icons">
                                   <i class="material-icons add"></i>
                                   <i class="material-icons remove"></i>
                                 </span>
                               </span>
-                        </div>
-                        <ul id="facet_wet" class="collapse">
-                            <li data-label="A">
-                                <label class="facet-label" for="facet_wet_a">
+            </div>
+            <ul id="facet_wet" class="collapse">
+              <li data-label="A">
+                <label class="facet-label" for="facet_wet_a">
                             <span class="custom-checkbox">
                               <input id="facet_wet_a" data-search-url=""
                                      @if (in_array('A', explode(' ', request()->wet))) checked="" @endif value="A"
@@ -425,11 +513,11 @@
                               </span>
                             </span>
 
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
-                                </label>
-                            </li>
-                            <li data-label="B">
-                                <label class="facet-label" for="facet_wet_b">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
+                </label>
+              </li>
+              <li data-label="B">
+                <label class="facet-label" for="facet_wet_b">
                             <span class="custom-checkbox">
                               <input id="facet_wet_b" data-search-url=""
                                      @if (in_array('B', explode(' ', request()->wet))) checked="" @endif value="B"
@@ -439,11 +527,11 @@
                               </span>
                             </span>
 
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
-                                </label>
-                            </li>
-                            <li data-label="C">
-                                <label class="facet-label" for="facet_wet_c">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
+                </label>
+              </li>
+              <li data-label="C">
+                <label class="facet-label" for="facet_wet_c">
                             <span class="custom-checkbox">
                               <input id="facet_wet_c" data-search-url=""
                                      @if (in_array('C', explode(' ', request()->wet))) checked="" @endif value="C"
@@ -453,11 +541,11 @@
                               </span>
                             </span>
 
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
-                                </label>
-                            </li>
-                            <li data-label="D">
-                                <label class="facet-label" for="facet_wet_d">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
+                </label>
+              </li>
+              <li data-label="D">
+                <label class="facet-label" for="facet_wet_d">
                             <span class="custom-checkbox">
                               <input id="facet_wet_d" data-search-url=""
                                      @if (in_array('D', explode(' ', request()->wet))) checked="" @endif value="D"
@@ -467,11 +555,11 @@
                               </span>
                             </span>
 
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">D</a>
-                                </label>
-                            </li>
-                            <li data-label="E">
-                                <label class="facet-label" for="facet_wet_e">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">D</a>
+                </label>
+              </li>
+              <li data-label="E">
+                <label class="facet-label" for="facet_wet_e">
                             <span class="custom-checkbox">
                               <input id="facet_wet_e" data-search-url=""
                                      @if (in_array('E', explode(' ', request()->wet))) checked="" @endif value="E"
@@ -481,11 +569,11 @@
                               </span>
                             </span>
 
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
-                                </label>
-                            </li>
-                            <li data-label="F">
-                                <label class="facet-label" for="facet_wet_f">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
+                </label>
+              </li>
+              <li data-label="F">
+                <label class="facet-label" for="facet_wet_f">
                             <span class="custom-checkbox">
                               <input id="facet_wet_f" data-search-url=""
                                      @if (in_array('F', explode(' ', request()->wet))) checked="" @endif value="F"
@@ -495,11 +583,11 @@
                               </span>
                             </span>
 
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
-                                </label>
-                            </li>
-                            <li data-label="G">
-                                <label class="facet-label" for="facet_wet_g">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
+                </label>
+              </li>
+              <li data-label="G">
+                <label class="facet-label" for="facet_wet_g">
                             <span class="custom-checkbox">
                               <input id="facet_wet_g" data-search-url=""
                                      @if (in_array('G', explode(' ', request()->wet))) checked="" @endif value="G"
@@ -509,31 +597,31 @@
                               </span>
                             </span>
 
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">G</a>
-                                </label>
-                            </li>
-                        </ul>
-                    </section>
-                </div>
-                <div class="col-md-4">
-                    <section class="facet clearfix facet--10">
-                        <div class="icon-tire-sound" title="Troksnis">
-                            <img style="width: 75px;position: relative;left: -5px;margin-bottom: 4px;" src="https://i.imgur.com/fjyPUVN.png">
-                        </div>
-                        <div class="title hidden-md-up" data-target="#facet_8079">
-                            <h1 class="h6 facet-title">Trokšņa līmenis</h1>
-                            <span class="float-xs-right">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">G</a>
+                </label>
+              </li>
+            </ul>
+          </section>
+        </div>
+        <div class="col-md-4">
+          <section class="facet clearfix facet--10">
+            <div class="icon-tire-sound" title="Troksnis">
+              <img style="width: 75px;position: relative;left: -5px;margin-bottom: 4px;" src="https://i.imgur.com/fjyPUVN.png">
+            </div>
+            <div class="title hidden-md-up" data-target="#facet_8079">
+              <h1 class="h6 facet-title">Trokšņa līmenis</h1>
+              <span class="float-xs-right">
                                 <span class="navbar-toggler collapse-icons">
                                   <i class="material-icons add"></i>
                                   <i class="material-icons remove"></i>
                                 </span>
                               </span>
-                        </div>
+            </div>
 
 
-                        <ul id="facet_noise" class="collapse">
-                            <li data-label="A">
-                                <label class="facet-label" for="facet_noise_a">
+            <ul id="facet_noise" class="collapse">
+              <li data-label="A">
+                <label class="facet-label" for="facet_noise_a">
                                   <span class="custom-checkbox">
                                     <input id="facet_noise_a" data-search-url=""
                                            @if (in_array('A', explode(' ', request()->noise))) checked="" @endif value="A"
@@ -542,11 +630,11 @@
                                       <i class="material-icons checkbox-checked"></i>
                                     </span>
                                   </span>
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
-                                </label>
-                            </li>
-                            <li data-label="B">
-                                <label class="facet-label" for="facet_noise_b">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
+                </label>
+              </li>
+              <li data-label="B">
+                <label class="facet-label" for="facet_noise_b">
                                   <span class="custom-checkbox">
                                     <input id="facet_noise_b" data-search-url=""
                                            @if (in_array('B', explode(' ', request()->noise))) checked="" @endif value="B"
@@ -555,11 +643,11 @@
                                       <i class="material-icons checkbox-checked"></i>
                                     </span>
                                   </span>
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
-                                </label>
-                            </li>
-                            <li data-label="C">
-                                <label class="facet-label" for="facet_noise_c">
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
+                </label>
+              </li>
+              <li data-label="C">
+                <label class="facet-label" for="facet_noise_c">
                                   <span class="custom-checkbox">
                                     <input id="facet_noise_c" data-search-url=""
                                            @if (in_array('C', explode(' ', request()->noise))) checked="" @endif value="C"
@@ -568,13 +656,14 @@
                                       <i class="material-icons checkbox-checked"></i>
                                     </span>
                                   </span>
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
-                                </label>
-                            </li>
-                        </ul>
-                    </section>
-                </div>
-            </div>
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
+                </label>
+              </li>
+            </ul>
+          </section>
         </div>
+      </div>
     </div>
+  </div>
+
 </div>

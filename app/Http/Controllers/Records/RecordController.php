@@ -38,8 +38,9 @@
     public $endSendWpp;
     public $ursWpp = '120363130984594947@g.us';
     public $krsWpp = '120363150684433547@g.us';
-//    public $ursWpp = '120363157143688336@g.us';
-//    public $krsWpp = '120363157143688336@g.us';
+    public $orderWpp = '120363248805017034@g.us';
+    //    public $ursWpp = '120363157143688336@g.us';
+    //    public $krsWpp = '120363157143688336@g.us';
     public $now;
     public $dayTitles;
     public $timeStep = 15;
@@ -267,11 +268,13 @@
       } else if ($slot && !empty($slot->comment) && !empty($slot->takenby)) {
         Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id,0, 'Neizdevās izveidot pierakstu', $slot);
         return json_encode(['success' => false, 'alertMessage' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!', 'finished' => false]);
+      } else if ($slot && !empty($slot->takenby)) {
+        Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id,0, 'Neizdevās izveidot pierakstu', $slot);
+        return json_encode(['success' => false, 'alertMessage' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!', 'finished' => false]);
       } else if ($slot && !empty($slot->comment)) {
         $slot->status = 1;
       } else {
-        Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id,0, 'Neizdevās izveidot pierakstu', $slot);
-        return json_encode(['success' => false, 'alertMessage' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!', 'finished' => false]);
+        $slot->status = 1;
       }
 
       $slot->timestamps = false;
@@ -279,6 +282,7 @@
       $slot->date = $dopParams['date'];
       $slot->iorder = $dopParams['iorder'];
       $slot->takenby = json_encode($result);
+      if (Auth::check()) $slot->comment = NULL;
       $slot->createtime = date('Y-m-d H:i:s');
       $slot->createuser = $userID;
       if ($request->input('from_mobile')) {
@@ -307,10 +311,14 @@
       }
 
       (new SmsSender)->sendSchedule((array) $result, $smsText, $slot);
+
+      //The URLs that we want to send cURL requests to.
+      $urls = [];
+
       if ($today == $slot->date && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
         $service = Service::where('service_id', $result->service)->first();
         $vehicle = str_replace(' ', '%20', $result->car_brand);
-        $userComment = (!empty($result->user_comment)) ? '%20|%20Piezīmes%20-%20' . str_replace(' ', '%20', $result->user_comment) : '';
+        $userComment = (!empty($result->user_comment)) ? '%20|%20Piezīmes%20-%20' . str_replace([' ', "\n", "\r"], '%20', $result->user_comment) : '';
         $model = str_replace(' ', '%20', $result->car_model);
         $service = str_replace(' ', '%20', $service->pdf_title);
         $vehiclePlate = str_replace(' ', '%20', $result->lic_plate);
@@ -329,30 +337,51 @@
 
 
         if ($office->office_id == 1) {
-
-          $cURLConnection = curl_init();
-
-          $url = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
-
-          curl_setopt($cURLConnection, CURLOPT_URL, $url);
-          curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-
-          curl_exec($cURLConnection);
-
-          curl_close($cURLConnection);
+          $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
         } else {
-          $cURLConnection = curl_init();
-
-          $url = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
-
-          curl_setopt($cURLConnection, CURLOPT_URL, $url);
-          curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-
-          curl_exec($cURLConnection);
-
-          curl_close($cURLConnection);
+          $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
         }
       }
+
+      if ($result->service == 3 || $result->service == 9) {
+        $userComment = (!empty($result->user_comment)) ? ',%20' . str_replace(' ', '%20', $result->user_comment) : '';
+        $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->orderWpp . '&apikey=d6nsRWNp1xpc&text=' . $fmtDate . '%20' . $time . ',%20' . $result->phone_number . $userComment;
+      }
+
+      //An array that will contain all of the information
+      //relating to each request.
+      $requests = [];
+
+      //Initiate a multiple cURL handle
+      $mh = curl_multi_init();
+
+      //Loop through each URL.
+      foreach($urls as $k => $url){
+        $requests[$k] = array();
+        $requests[$k]['url'] = $url;
+        //Create a normal cURL handle for this particular request.
+        $requests[$k]['curl_handle'] = curl_init($url);
+        //Configure the options for this request.
+        curl_setopt($requests[$k]['curl_handle'], CURLOPT_RETURNTRANSFER, true);
+        //Add our normal / single cURL handle to the cURL multi handle.
+        curl_multi_add_handle($mh, $requests[$k]['curl_handle']);
+      }
+
+      //Execute our requests using curl_multi_exec.
+      $stillRunning = false;
+      do {
+        curl_multi_exec($mh, $stillRunning);
+      } while ($stillRunning);
+
+      //Loop through the requests that we executed.
+      foreach($requests as $k => $reqs){
+        //Remove the handle from the multi handle.
+        curl_multi_remove_handle($mh, $reqs['curl_handle']);
+        //Close the handle.
+        curl_close($requests[$k]['curl_handle']);
+      }
+      //Close the multi handle.
+      curl_multi_close($mh);
 
       return json_encode(['success' => true, 'message' => $returnMessage, 'new_slot_client' => true]);
     }
@@ -415,11 +444,13 @@
                       . '<div class="unavailable slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">Aizņemts</span></div>'
                       . '</div>';
 
-                    if ($slot && $slot->comment !== null) {
-                      $offer_slot_content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
-                        . '<div class="available discount active slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">' . $slot->comment . '</span></div>'
-                        . '</div>';
-                    }
+                    $taken_ac_slot_content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                      . '<div class="unavailable conditioner slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">Aizņemts</span></div>'
+                      . '</div>';
+
+                    $taken_moto_slot_content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                      . '<div class="unavailable moto slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">Aizņemts</span></div>'
+                      . '</div>';
 
                     $closed_slot_content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
                       . '<div class="unavailable slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">Slēgts</span></div>'
@@ -441,23 +472,43 @@
                           }
 
                           // Modify content for AC and moto slots if today and currently free
-                          if ($workingDay->date == $today && $service && ($service->f_ac || $service->f_moto)) {
-                            $content = $oddMinutes ? $ac_slot_content : $moto_slot_content;
-                            if (isset($offer_slot_content)) {
-                              $content = $offer_slot_content;
+                          if ($workingDay->date == $today) {
+                            if (Carbon::parse($currentTime)->subMinutes(10) >= Carbon::now()) {
+                              $content = $free_slot_content;
+                              if ($workingDay->ac_toggle || $workingDay->moto_toggle) {
+                                $content = $oddMinutes ? $ac_slot_content : $moto_slot_content;
+                                if (!is_null($slot->comment) && is_null($slot->takenby)) {
+                                  $content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                                    . '<div class="available discount active slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">' . $slot->comment . '</span></div>'
+                                    . '</div>';
+                                }
+                              } else if (!is_null($slot->comment) && is_null($slot->takenby)) {
+                                $content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                                  . '<div class="available discount active slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">' . $slot->comment . '</span></div>'
+                                  . '</div>';
+                              }
                             }
                           } else {
                             $content = $free_slot_content;
-                            if (isset($offer_slot_content)) {
-                              $content = $offer_slot_content;
+                            if (!is_null($slot->comment) && is_null($slot->takenby)) {
+                              $content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                                . '<div class="available discount active slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">' . $slot->comment . '</span></div>'
+                                . '</div>';
                             }
                           }
                           break;
                         case SLOT_STATUS_OFFER:
-                          $content = $offer_slot_content;
+                          $content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
+                            . '<div class="available discount active slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">' . $slot->comment . '</span></div>'
+                            . '</div>';
                           break;
                         case SLOT_STATUS_TAKEN:
                           $content = $taken_slot_content;
+                          if ($i % 2 == 1 && $workingDay->moto_toggle) {
+                            $content = $taken_moto_slot_content;
+                          } else if ($i % 2 != 1 && $workingDay->ac_toggle) {
+                            $content = $taken_ac_slot_content;
+                          }
                           break;
                         case SLOT_STATUS_CLOSED:
                           $content = $closed_slot_content;
@@ -465,24 +516,24 @@
                       }
                     } else {
                       if ($workingDay->date == $today) {
-                        if (Carbon::parse($currentTime)->subHour() >= Carbon::now()) {
+                        if (Carbon::parse($currentTime)->subMinutes(10) >= Carbon::now()) {
                           // Modify content for AC and moto slots if today and within the hour
                           if ($workingDay->is_half) {
-                            $service = $oddMinutes ? Service::where('f_ac', 1)->where('enabled', 1)->first() : Service::where('f_moto', 1)->where('enabled', 1)->first();
+                            $service = $oddMinutes ? $workingDay->ac_toggle : $workingDay->moto_toggle;
                             if (!$service && ($i % 2 == 1)) $free_slot_content = $taken_slot_content;
                           }
 
-                          $content = $service && ($service->f_ac || $service->f_moto) ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
+                          $content = $service && ($workingDay->ac_toggle || $workingDay->moto_toggle) ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
                         } else {
                           $content = $taken_slot_content;
                         }
                       } else {
                         if ($workingDay->is_half) {
-                          $service = $oddMinutes ? Service::where('f_ac', 1)->where('enabled', 1)->first() : Service::where('f_moto', 1)->where('enabled', 1)->first();
+                          $service = $oddMinutes ? $workingDay->ac_toggle : $workingDay->moto_toggle;
                           if (!$service && ($i % 2 == 1)) $free_slot_content = $taken_slot_content;
                         }
 
-                        $content = $service ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
+                        $content = $service && ($workingDay->ac_toggle || $workingDay->moto_toggle) ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
                       }
                     }
                     $slots[$workingDay->date][] = ['content' => $content, 'queue_id' => $workingDay->queue_id, 'iorder' => $i, 'time' => $currentTime];
@@ -585,6 +636,7 @@
         $workingDays = NewWorkingday::where('date', $date)->get();
         $daysToShow[] = $date;
         $visibleDays = 0;
+        array_pop($daysToShow);
       }
 
       $from = $daysToShow[0];
@@ -791,10 +843,12 @@
       $queue = Queue::where('queue_id', $request->queue_id)->first()->title;
       $_weekDay = $workingDay->weekday;
       $timeStep = $workingDay->timeStep;
+      $ac_toggle = ($workingDay->ac_toggle == 1) ? 1 : 0;
+      $moto_toggle = ($workingDay->moto_toggle == 1) ? 1 : 0;
 
       $is_half = ($workingDay->is_half === 1) ? 1 : 0;
 
-      return json_encode(['timeopen' => $timeopen, 'timeclose' => $timeclose, 'title' => $queue, 'timeStep' => $timeStep, 'is_half' => $is_half, 'weekday' => $_weekDay]);
+      return json_encode(['timeopen' => $timeopen, 'timeclose' => $timeclose, 'title' => $queue, 'timeStep' => $timeStep, 'is_half' => $is_half, 'ac_toggle' => $ac_toggle, 'moto_toggle' => $moto_toggle, 'weekday' => $_weekDay]);
     }
 
     public function cancelTimeChanges()
@@ -810,6 +864,8 @@
         $workingDay->timeopen = $equal->timeopen;
         $workingDay->timeclose = $equal->timeclose;
         $workingDay->is_half = $equal->is_half;
+        $workingDay->ac_toggle = $equal->ac_toggle;
+        $workingDay->moto_toggle = $equal->moto_toggle;
         $workingDay->is_opened = $equal->is_opened;
         $workingDay->save();
       }
@@ -870,6 +926,9 @@
           }
         }
 
+        $workingDay->ac_toggle = $item->ac_toggle;
+        $workingDay->moto_toggle = $item->moto_toggle;
+
         if ($is_opened !== 0) {
           $workingDay->timeopen = $item->newOpenTime;
           $workingDay->timeclose = $item->newCloseTime;
@@ -917,6 +976,9 @@
             }
           }
 
+          $workingDay->ac_toggle = $item->ac_toggle;
+          $workingDay->moto_toggle = $item->moto_toggle;
+
           if ($is_opened !== 0) {
             $workingDay->timeopen = $item->newOpenTime;
             $workingDay->timeclose = $item->newCloseTime;
@@ -963,6 +1025,8 @@
             }
           }
 
+          $workingDay->ac_toggle = $item->ac_toggle;
+          $workingDay->moto_toggle = $item->moto_toggle;
           if ($is_opened !== 0) {
             $workingDay->timeopen = $item->newOpenTime;
             $workingDay->timeclose = $item->newCloseTime;
@@ -997,10 +1061,17 @@
 
           $slots = Slot::where('date', $workingDay->date)->where('queue_id', $workingDay->queue_id)->get();
 
-          foreach ($slots as $slot) {
-            $slot->iorder = $slot->iorder + ($newIorder);
-            $slot->save();
-          }
+//          if ($newOpenTime > $oldOpenTime) {
+//            foreach ($slots as $slot) {
+//              $slot->iorder = $slot->iorder + ($newIorder);
+//              $slot->save();
+//            }
+//          } else {
+//            foreach ($slots as $slot) {
+//              $slot->iorder = $slot->iorder - ($newIorder);
+//              $slot->save();
+//            }
+//          }
         }
 
         $workingDay->queue_id = $equal->queue_id;
@@ -1010,6 +1081,8 @@
         $workingDay->timeopen = $equal->timeopen;
         $workingDay->timeclose = $equal->timeclose;
         $workingDay->timeStep = $equal->timeStep;
+        $workingDay->ac_toggle = $equal->ac_toggle;
+        $workingDay->moto_toggle = $equal->moto_toggle;
         $workingDay->is_half = $equal->is_half;
         $workingDay->is_opened = $equal->is_opened;
         $workingDay->save();
@@ -1074,7 +1147,9 @@
           }
 
           $deletedSlot = $slot;
-          if ($slot->delete()) {
+          $slot->status = 0;
+          $slot->takenby = NULL;
+          if ($slot->save()) {
 
             if ($takenBy->email) {
               $mailText = $queue->parseNotification($queue->getOriginal()['notificationCancelEmail'], $deletedSlot->date, $deletedSlot->iorder, $takenBy, $time);
@@ -1117,6 +1192,10 @@
 
                 curl_close($cURLConnection);
               }
+            }
+
+            if ($slot->comment === null) {
+              $slot->delete();
             }
 
             Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $deletedSlot->slot_id, 0, 'Atcelts pieraksts', $deletedSlot);

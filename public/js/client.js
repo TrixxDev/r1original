@@ -1,5 +1,14 @@
 $(document).ready(function() {
 
+  let user = $('.user-info .account').data('user');
+  let user_role = $('.user-info .account').data('role');
+  let admin = false;
+  $.each(user_role, function(key, value) {
+    if (value === 'administrators' || value === 'moderators') {
+      admin = true;
+    }
+  });
+
   $.fn.classChange = function(cb) {
     return $(this).each((_, el) => {
       new MutationObserver(mutations => {
@@ -39,6 +48,7 @@ $(document).ready(function() {
   let date;
   let time;
   let office;
+  let allow_all_options;
   let slot;
   let car_brand;
   let phone;
@@ -81,13 +91,25 @@ $(document).ready(function() {
     $('#reservation #modalTitle').slideDown();
   });
 
-  $(document).on('click', '.time-status.discount', function() {
-    let discount_text = $('button.discount-slot', this).text();
-    if ($('div.alert.alert-warning.discount-alert').length === 0 ){
-      $('.modal-dialog').find('.form-group.services')
-        .prepend("<div class='alert alert-warning discount-alert' style='font-size: 14px;'><b>Šajā pieraksta laikā tiek piemērota atlaide (" + discount_text + ")</b></div>");
-    }
-  });
+  if (!admin) {
+    $(document).on('click', '.time-status.discount', function() {
+      let discount_text = $('button.discount-slot', this).text();
+      if ($('div.alert.alert-warning.discount-alert').length === 0 ){
+        $('.modal-dialog').find('.form-group.services')
+          .prepend("<div class='alert alert-warning discount-alert' style='font-size: 14px;'><b>Šajā pieraksta laikā tiek piemērota atlaide (" + discount_text + ")</b></div>");
+      }
+    });
+  } else {
+    $('.discount-slot').each(function() {
+      if ($(this).parent().data('moto')) {
+        $(this).text('Moto montāža').removeClass('discount-slot');
+      } else if ($(this).parent().data('ac')) {
+        $(this).text('Kondicioniera uzpilde').removeClass('discount-slot');
+      } else {
+        $(this).text('Brīvs').removeClass('discount-slot');
+      }
+    })
+  }
 
   $(document).on('click', '.time-status', function() {
 
@@ -98,6 +120,7 @@ $(document).ready(function() {
     date = $(this).parent().parent().attr('data-date');
     time = $(this).children('.time-slot').html();
     office = $(this).parent().attr('class').replace('table office_', '');
+    allow_all_options = $(this).parent().data('allow-all');
     slot = $(this);
 
     if ($(this).hasClass('time-free') || $(this).hasClass('time-offer')) {
@@ -143,27 +166,34 @@ $(document).ready(function() {
         })
       })
 
-      if ($(slot).attr('data-moto') === 'true') {
-        $.each($('#reservation #service .form-check'), function(index, value) {
-          $(value).find('input').attr('disabled', true).prop('disabled', true).attr('checked', false).prop('checked', false);
-        });
-        $('#reservation').find('input[data-moto]').removeAttr('disabled').prop('disabled', false).attr('checked', true).prop('checked', true);
-      } else if ($(slot).attr('data-ac') === 'true') {
-        $.each($('#reservation #service .form-check'), function(index, value) {
-          $(value).find('input').attr('disabled', true).prop('disabled', true).attr('checked', false).prop('checked', false);
-        });
-        $('#reservation').find('input[data-ac]').removeAttr('disabled').prop('disabled', false).attr('checked', true).prop('checked', true);
+
+      if (allow_all_options === false) {
+        if ($(slot).attr('data-moto') === 'true') {
+          $.each($('#reservation #service .form-check'), function(index, value) {
+            $(value).find('input').attr('disabled', true).prop('disabled', true).attr('checked', false).prop('checked', false);
+          });
+          $('#reservation').find('input[data-moto]').removeAttr('disabled').prop('disabled', false).first().attr('checked', true).prop('checked', true);
+        } else if ($(slot).attr('data-ac') === 'true') {
+          $.each($('#reservation #service .form-check'), function(index, value) {
+            $(value).find('input').attr('disabled', true).prop('disabled', true).attr('checked', false).prop('checked', false);
+          });
+          $('#reservation').find('input[data-ac]').removeAttr('disabled').prop('disabled', false).attr('checked', true).prop('checked', true);
+        } else {
+          let __timeSlots = $(slot).parent().parent();
+          $.each($('#reservation #service .form-check'), function(index, value) {
+            $(value).find('input').attr('disabled', false).prop('disabled', false).attr('checked', false).prop('checked', false);
+          });
+          if ($(__timeSlots).find('.time-status[data-moto]').first().length > 0) {
+            $('#reservation #service').find('input[data-moto]').attr('disabled', true).prop('disabled', true);
+          }
+          if ($(__timeSlots).find('.time-status[data-ac]').first().length > 0) {
+            $('#reservation #service').find('input[data-ac]').attr('disabled', true).prop('disabled', true);
+          }
+        }
       } else {
-        let __timeSlots = $(slot).parent().parent();
         $.each($('#reservation #service .form-check'), function(index, value) {
           $(value).find('input').attr('disabled', false).prop('disabled', false).attr('checked', false).prop('checked', false);
         });
-        if ($(__timeSlots).find('.time-status[data-moto]').first().length > 0) {
-          $('#reservation #service').find('input[data-moto]').attr('disabled', true).prop('disabled', true);
-        }
-        if ($(__timeSlots).find('.time-status[data-ac]').first().length > 0) {
-          $('#reservation #service').find('input[data-ac]').attr('disabled', true).prop('disabled', true);
-        }
       }
 
       $('#reservation .loader-block').hide();
@@ -353,6 +383,9 @@ $(document).ready(function() {
       },
       success: function(data) {
         $('#mobile-main #mobile-slots-choice .reservation').html(data);
+        $('html, body').animate({
+          scrollTop: $('.reservation').offset().top
+        }, 'slow');
         $('#mobile-main #mobile-slots-choice .reservation button.status-toggle').click(function(e) {
           e.preventDefault();
           $('#mobile-main #mobile-slots-choice .reservation button.status-toggle').toggleClass("btn-primary btn-secondary").text(function(i, text) {
@@ -465,7 +498,7 @@ $(document).ready(function() {
       if (!$(this).attr('data-moto')) {
         $(this).attr('disabled', true).prop('disabled', true);
       } else {
-        $(this).attr('selected', true).prop('selected', true);
+        $(this).first().attr('selected', true).prop('selected', true);
       }
     });
   });
@@ -596,8 +629,8 @@ $(document).ready(function() {
     let nextElement = element.nextElementSibling;
 
     if (nextElement && nextElement.classList.contains('time-taken-half')) {
-      nextElement.classList.remove('time-taken-half', 'taken-slot');
-      nextElement.classList.add('taken-slot');
+      nextElement.classList.remove('time-taken-half', 'time-taken');
+      nextElement.classList.add('time-taken');
     }
   });
 

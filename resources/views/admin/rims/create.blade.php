@@ -45,7 +45,7 @@
             <div class="form-group row">
               <label class="col-md-3 col-form-label" for="discount_price">Akcijas cena</label>
               <div class="col-md-9">
-                <input class="form-control" id="discount_price" type="number" name="price3" placeholder="Akcijas cena">
+                <input class="form-control" id="discount_price" type="number" name="price2" placeholder="Akcijas cena">
               </div>
             </div>
             <div class="form-group row">

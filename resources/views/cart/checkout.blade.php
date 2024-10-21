@@ -53,7 +53,7 @@
                             {{ \App\Models\Office::findOrFail($user_data['fitting_address'])->shipping }}
                           @else
                             @if (isset($user_data['shipping_address']))
-                              {{ $user_data['shipping_address'] }}, @if ($user_data['shipping_city'] == 1) Rīga @elseif ($user_data['shipping_city'] == 2) Salaspils @else Cits @endif
+                              {{ $user_data['shipping_address'] }}, @if ($user_data['shipping_city'] == 1) Rīga @else Cits @endif
                             @else
                               {{ \App\Models\Office::findOrFail($user_data['fitting_address'])->shipping }}
                             @endif
@@ -138,6 +138,7 @@
                     @endif
                     <h4>Pasūtītās preces</h4>
                     @foreach (\Cart::content() as $item)
+                      @if (\Session::has('cart.promo_code_perc')) {{ \Cart::setDiscount($item->rowId, \Session::get('cart.promo_code_perc')->value) }} @endif
                       <div class="cart-item-table cart-item-container">
                         <div class="item-name cart-item-name">
                           <a href="{{ $item->options->link }}" data-id_customization="0" style="text-transform: uppercase;">{{ strtoupper($item->options->tireObj->fullName) }}</a>
@@ -154,6 +155,24 @@
                         </div>
                       </div>
                     @endforeach
+                      @if (\Cart::discount() > 0 || !is_null($total))
+                      <div class="cart-item-table cart-item-container">
+                          <div class="item-name cart-item-name">
+                              Atlaižu kods
+                          </div>
+                          <div class="tire-price">
+                              <div class="price">
+                                  <span class="product-price">
+                                      @if ($total)
+                                          <strong>€ -{{ (int) substr(\Cart::subTotal(), 0, -3) - (int) substr($total, 0, -2) }}</strong>
+                                      @else
+                                          <strong>€ -{{ substr(\Cart::discount(), 0, -3) }}</strong>
+                                      @endif
+                                  </span>
+                              </div>
+                          </div>
+                      </div>
+                    @endif
                     @if (isset($user_data['fitting']) && $user_data['fitting'] == true)
                       <div class="cart-item-table cart-item-container">
                         <div class="item-name cart-item-name">
@@ -186,24 +205,55 @@
                         </div>
                       </div>
                     @endif
+                      <hr>
+                      <div class="cart-item-table cart-item-container">
+                          <div class="item-name cart-item-name">
+                              Kopā
+                          </div>
+                          <div class="tire-price">
+                              <div class="price">
+                            <span class="product-price">
+                                @if (isset($total))
+                                    @if (isset($user_data['fitting']) && $user_data['fitting'] == true)
+                                        <strong>€ {{ (int) substr($total, 0, -2) + (int) substr($user_data['fitting_price'], 0, -2) }}</strong>
+                                    @elseif (isset($user_data['shipping_city']))
+                                        <strong>€ {{ (int) substr($total, 0, -2) + (int) substr($user_data['delivery_price'], 0, -2) }}</strong>
+                                    @else
+                                        <strong>€ {{ substr($total, 0, -2) }}</strong>
+                                    @endif
+                                @else
+                                    @if (isset($user_data['fitting']) && $user_data['fitting'] == true)
+                                        <strong>€ {{ (int) substr(\Cart::subTotal(), 0, -3) + (int) substr($user_data['fitting_price'], 0, -2) }}</strong>
+                                    @elseif (isset($user_data['shipping_city']))
+                                        <strong>€ {{ (int) substr(\Cart::subTotal(), 0, -3) + (int) substr($user_data['delivery_price'], 0, -2) }}</strong>
+                                    @else
+                                        <strong>€ {{ substr(\Cart::subTotal(), 0, -3) }}</strong>
+                                    @endif
+                                @endif
+                            </span>
+                              </div>
+                          </div>
+                      </div>
                     <hr>
                     <form method="post" class="checkout-buttons">
                       @csrf
+                      @if (!isset($user_data['shipping_city']) || $user_data['shipping_city'] == 1)
                       <div class="form-check">
-                        <input type="radio" value="1" id="paymentCheck1" name="payment" checked>
+                        <input type="radio" value="1" id="paymentCheck1" name="payment" required checked>
                         <label for="paymentCheck1">
                           Apmaksa saņemšanas brīdī
                         </label>
                       </div>
+                      @endif
                       <div class="form-check">
-                        <input type="radio" value="2" id="paymentCheck2" name="payment">
+                        <input type="radio" value="2" id="paymentCheck2" name="payment" required @if (isset($user_data['shipping_city']) && $user_data['shipping_city'] != 1) checked @endif>
                         <label for="paymentCheck2">
                           Bankas pārskaitījums
                         </label>
                       </div>
                       @if (count($cats) == 1 && !in_array('red', $dogs))
                       <div class="form-check">
-                        <input type="radio" value="3" id="paymentCheck3" name="payment" checked>
+                        <input type="radio" value="3" id="paymentCheck3" name="payment" required checked>
                         <label for="paymentCheck3">
                           Tiešsaistes apmaksa
                         </label>

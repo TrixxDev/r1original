@@ -8,6 +8,7 @@ use App\Models\Autostock;
 use App\Models\Autotire;
 use App\Models\Autotread;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class AutoTireImportController extends Controller
@@ -23,6 +24,8 @@ class AutoTireImportController extends Controller
 
       $data = $request->rows;
       $rows = explode("\n", trim($data));
+
+      DB::table('auto_tires')->update(['top' => 1]);
 
       foreach ($rows as $idx => $row) {
 
@@ -110,8 +113,6 @@ class AutoTireImportController extends Controller
           $tire->acomment = @$fields[25];
           $tire->code = @$fields[10];
 
-          $tire->quantity = 0;
-
           $eco = trim(@$fields[22]);
           $wet = trim(@$fields[23]);
           $noise = trim(@$fields[24]);
@@ -120,7 +121,11 @@ class AutoTireImportController extends Controller
           $tire->wet = $wet;
           $tire->noise = $noise;
 
+          $tire->top = (@$fields[26] == 'X') ? 0 : 1;
+
           $tire->article = @$fields[2];
+
+//          dd($fields, $tire->getAttributes());
 
           $tire->save();
           $tire_id = $tire->tire_id;

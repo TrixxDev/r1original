@@ -565,7 +565,7 @@ class RecordController extends Controller
         $service = Service::where('service_id', $result->service)->first();
         $vehicle = str_replace(' ', '%20', $result->car_brand);
         $model = str_replace(' ', '%20', $result->car_model);
-        $userComment = (!empty($result->user_comment)) ? '%20|%20Piezīmes%20-%20' . str_replace(' ', '%20', $result->user_comment) : '';
+        $userComment = (!empty($result->user_comment)) ? '%20|%20Piezīmes%20-%20' . str_replace([' ', "\n", "\r"], '%20', $result->user_comment) : '';
         if (!is_null($service)) $service = str_replace(' ', '%20', $service->pdf_title);
         $vehiclePlate = str_replace(' ', '%20', $result->lic_plate);
 
@@ -728,15 +728,15 @@ class RecordController extends Controller
       if (!is_null($slot)) {
         if ($result->slotcomment === 'null') {
           $slot->delete();
-          $slot = new Slot;
-          $slot->queue_id = $dopParams['queue_id'];
-          $slot->date = $dopParams['date'];
-          $slot->iorder = $dopParams['iorder'];
-          $slot->status = 0;
-          $slot->takenby = null;
-          $slot->edittime = now();
-          $slot->edituser = Auth::user() ? Auth::user()->id : 0;
-          $slot->save();
+//          $slot = new Slot;
+//          $slot->queue_id = $dopParams['queue_id'];
+//          $slot->date = $dopParams['date'];
+//          $slot->iorder = $dopParams['iorder'];
+//          $slot->status = 0;
+//          $slot->takenby = null;
+//          $slot->edittime = now();
+//          $slot->edituser = Auth::user() ? Auth::user()->id : 0;
+//          $slot->save();
           return json_encode(['status' => $result->status, 'deleted_slot_admin' => true, 'comment' => $result->slotcomment ?? '']);
         } else {
           $slot->delete();
@@ -887,6 +887,7 @@ class RecordController extends Controller
             $newCancelId = $newCancelId . str_replace(':', '', $dopParams['new_time']);
             $newFormData->cancelId = $newCancelId;
             $newFormData = json_encode($newFormData);
+            $new_discount = $slot->comment;
             if (!$new_slot) {
               $new_slot = new Slot();
             }
@@ -898,6 +899,7 @@ class RecordController extends Controller
             $new_slot->iorder = $newIorder;
             $new_slot->status = 1;
             $new_slot->takenby = $newFormData;
+            $new_slot->comment = $new_discount;
             $new_slot->createtime = $time_created;
             $new_slot->createuser = $user_created;
             $new_slot->edittime = now();

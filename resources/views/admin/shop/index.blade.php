@@ -70,19 +70,28 @@
                       <tbody>
                         @foreach ($orders as $order)
                         @php
-			                    $item_count = [];
+                          $item_count = [];
                           $item_sum = [];
                           @$items = unserialize($order->info);
                           //unset($items['data']);
-			                    if (isset($items['items'])) {
-                            foreach ($items['items'] as $item) {
-                              if (!isset($item['quantity'])) continue;
-                              array_push($item_count, $item['quantity']);
-                              array_push($item_sum, ($item['price'] * $item['quantity']));
+                            if (isset($items['items'])) {
+                                foreach ($items['items'] as $item) {
+                                  if (!isset($item['quantity'])) continue;
+                                  array_push($item_count, $item['quantity']);
+                                  array_push($item_sum, ($item['price'] * $item['quantity']));
+                                }
                             }
-			                    }
                           $item_count = array_sum($item_count);
                           $item_sum = array_sum($item_sum);
+                          if ($order->used_promo != 0) {
+                              $promo = \App\Models\Promo::where('promo_id', $order->used_promo)->first();
+                              if ($promo->status === '1') {
+                                $item_sum = $item_sum * (1 - $promo->value / 100);
+                              } else {
+                                $item_sum = $item_sum - $promo->value;
+                              }
+                              $item_sum = round($item_sum);
+                          }
                           if ($order->delivery_price > 0) {
                             $item_sum = $item_sum + (int) substr($order->delivery_price, 0, -2);
                           } else if ($order->fit_price > 0) {
@@ -98,7 +107,13 @@
                             <td>{{ $order->id }}</td>
                             <td>{{ $item_count }}</td>
                             <td>{{ $item_sum }} €</td>
-                            <td>{{ $status_enum[$order->status] }}</td>
+                            <td>
+                                @if (!is_null($order->admin_info))
+                                    <span style="font-weight: bold;" class="tippy" data-tippy-content="{!! $order->admin_info !!}">{{ $status_enum[$order->status] }}</span>
+                                @else
+                                    <span>{{ $status_enum[$order->status] }}</span>
+                                @endif
+                            </td>
                             <td>{{ $pay_enum[$order->payment] }}</td>
                             <td>
                               @if (\App\Models\User::find($order->edituser))
