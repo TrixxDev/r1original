@@ -295,7 +295,7 @@ class MotoTireController extends Controller
             $current_url = 'motociklu-riepa';
             $tire->getUrl = route($current_url, [Tires::getMotoTireBrand($tire->brand_id)->title, strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]);
             $tire->fullTitle = $tire->getTitleAttribute();
-            $tire->lisiDesc = Tires::lisiDesc($tire->li, $tire->si);
+            $tire->lisiDesc = $tire->lisiDesc($tire->li, $tire->si);
             $tire->codeExplain = $tire->getCodeExplainAttribute();
             $tire->dotAvailable = $tire->getDotAvailableAttribute();
             $tire->stockAvailability = $tire->getStockAvailabilityAttribute();
@@ -402,7 +402,7 @@ class MotoTireController extends Controller
 
           $html .= '<div class="tire-tread">';
           $html .= '<b>' . $tire->fullSize . ' </b>';
-          $html .= '<span data-toggle="tooltip" title="<span style=\'color: black\'>' . Tires::lisiDesc($tire->li, $tire->si) . '</span>">' . $tire->li . $tire->si . ' </span>';
+          $html .= '<span data-toggle="tooltip" title="<span style=\'color: black\'>' . $tire->lisiDesc($tire->li, $tire->si) . '</span>">' . $tire->li . $tire->si . ' </span>';
           $html .= '<span class="tire-image-code">' . $tire->code . '</span>';
           $html .= '</div>';
           $html .= '<div style="display: flex;">';
