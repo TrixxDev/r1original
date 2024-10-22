@@ -2,6 +2,7 @@
 
 namespace App\Helper;
 
+use App\Models\Code;
 use App\Models\Rim;
 use App\Models\Rimbrand;
 use DB;
@@ -258,6 +259,18 @@ class Tires
             $result = $this->GCD($array[$i], $result);
 
         return $result;
+    }
+
+    public static function codeExplain($param)
+    {
+      $return = '';
+
+      $code = Code::where('name', $param)->first();
+      if (!$code) return $return;
+
+      $return = $code->explanation;
+
+      return $return;
     }
 
     /**

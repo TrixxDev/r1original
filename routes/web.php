@@ -22,7 +22,7 @@
   //return view('maintenance');
 //}
 
-Auth::routes(['verify' => true]);
+Auth::routes(['verify' => false]);
 //Route::get('verify-sms', [App\Http\Controllers\Auth\VerificationController::class, 'showSmsVerificationForm'])->name('verification.notice');
 //Route::post('verify-sms', [App\Http\Controllers\Auth\VerificationController::class, 'verifySmsCode'])->name('verification.verify');
 //Route::post('resend-sms', [App\Http\Controllers\Auth\VerificationController::class, 'resendVerificationCode'])->name('verification.resend');
@@ -511,6 +511,7 @@ Route::middleware('checksession')->group(function() {
   Route::get('/sync/duell-quadr', [App\Http\Controllers\SyncController::class, 'duellquadr'])->name('duellquadr');
   Route::get('/sync/rz-auto/show', [App\Http\Controllers\SyncController::class, 'rzautoshow']);
   Route::get('/sync/i3/show', [App\Http\Controllers\SyncController::class, 'i3show']);
+  Route::get('/sync/i3/autotires', [App\Http\Controllers\SyncController::class, 'i3showall']);
 
 // XML Ģenerēšana (Salidzini.lv/Kurpirkt.lv)
 

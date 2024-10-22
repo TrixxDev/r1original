@@ -7400,3 +7400,17 @@ section.facet h1 {
 .checkout-buttons .btn {
     font-size: 15px;
 }
+
+#left-column span.tippy.lisi-tooltip {
+    position: relative;
+    top: 2px;
+}
+
+.png-container {
+    overflow: hidden;
+}
+
+.png-container img {
+    filter: drop-shadow(0px 1000px 0);
+    transform: translateY(-1000px);
+}

@@ -127,34 +127,46 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                              Pieejams
-                              <span class="dot green" style="float:right;margin-top: 3px;"></span>
+                                <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>Riepas pieejamas mūsu noliktavās</span></div>" tabindex="0">
+                                    Pieejams
+                                </span>
+                                <span class="tippy lisi-tooltip" style="float: right;" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>Riepas pieejamas mūsu noliktavās</span></div>" tabindex="0">
+                                    <span class="dot green" style="float:right;margin-top: 3px;"></span>
+                                </span>
                             </label>
                           </li>
                           <li>
                             <label class="facet-label" for="facet_availability_1"
                                    style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
-                            <span class="custom-checkbox">
-                              <input id="facet_availability_1" class="yellow" @if (in_array('yellow', explode(' ', request()->availability))) checked @endif type="checkbox"
-                                     data-search-url="#" value="yellow"
-                                     data-for="dot" data-value="yellow" data-color="yellow">
-                              <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
-                            </span>
-                              Pasūtāms
-                              <span class="dot yellow" style="float:right;margin-top: 3px;"></span>
+                                <span class="custom-checkbox">
+                                  <input id="facet_availability_1" class="yellow" @if (in_array('yellow', explode(' ', request()->availability))) checked @endif type="checkbox"
+                                         data-search-url="#" value="yellow"
+                                         data-for="dot" data-value="yellow" data-color="yellow">
+                                  <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
+                                </span>
+                                <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>Riepas pieejamas ražotāju noliktavās<br>Piegāde 1-5 darbadienām.</span></div>" tabindex="0">
+                                    Pasūtāms
+                                </span>
+                                <span class="tippy lisi-tooltip" style="float: right;" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>Riepas pieejamas ražotāju noliktavās<br>Piegāde 1-5 darbadienām.</span></div>" tabindex="0">
+                                    <span class="dot yellow" style="float:right;margin-top: 3px;"></span>
+                                </span>
                             </label>
                           </li>
                           <li>
                             <label class="facet-label" for="facet_availability_2"
                                    style="width: 100%;text-align: left;cursor: pointer">
-                            <span class="custom-checkbox">
-                              <input id="facet_availability_2" class="red" @if (in_array('red', explode(' ', request()->availability))) checked @endif type="checkbox"
-                                     data-search-url="#" value="red"
-                                     data-for="dot" data-value="red" data-color="red">
-                              <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
-                            </span>
-                              Zvaniet!
-                              <span class="dot red" style="float:right;margin-top: 3px;"></span>
+                                <span class="custom-checkbox">
+                                  <input id="facet_availability_2" class="red" @if (in_array('red', explode(' ', request()->availability))) checked @endif type="checkbox"
+                                         data-search-url="#" value="red"
+                                         data-for="dot" data-value="red" data-color="red">
+                                  <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
+                                </span>
+                                <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>Nepieciešams pārbaudīt pieejamību.</span></div>" tabindex="0">
+                                  Zvaniet!
+                                </span>
+                                <span class="tippy lisi-tooltip" style="float: right;" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>Nepieciešams pārbaudīt pieejamību.</span></div>" tabindex="0">
+                                  <span class="dot red" style="float:right;margin-top: 3px;"></span>
+                                </span>
                             </label>
                           </li>
                         </ul>
@@ -336,6 +348,21 @@
                           </div>
 
                           <ul id="facet_type">
+                              <li data-label="Winter">
+                                  <label class="facet-label" for="facet_for_winter">
+                                    <span class="custom-checkbox">
+                                      <input id="facet_for_winter" data-search-url=""
+                                             @if (in_array(4, explode(' ', request()->type))) checked="" @endif value="4"
+                                             data-for="prod-type" data-value="Winter" type="checkbox">
+                                      <span class="ps-shown-by-js">
+                                        <i class="material-icons checkbox-checked"></i>
+                                      </span>
+                                    </span>
+                                    <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>{{ \App\Helper\Tires::codeExplain('ziemas tips') }}</span></div>" tabindex="0">
+                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ziemas <img src="/images/parsla.png"></a>
+                                    </span>
+                                  </label>
+                              </li>
                             <li data-label="M+S">
                               <label class="facet-label" for="facet_for_ms">
                             <span class="custom-checkbox">
@@ -346,46 +373,42 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow" style="margin-top: 0px;">M+S</a>
+                                  <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>{{ \App\Helper\Tires::codeExplain('ms tips') }}</span></div>" tabindex="0">
+                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">M+S <img src="/images/ms.png"></a>
+{{--                                      <div class="png-container">--}}
+{{--                                        <img src="https://hyacktire.com/_images/_icons/M+S-icon-blue_283x283.png">--}}
+{{--                                      </div>--}}
+                                </span>
                               </label>
                             </li>
+                              <li data-label="Studs">
+                                  <label class="facet-label" for="facet_for_studs">
+                                    <span class="custom-checkbox">
+                                      <input id="facet_for_studs" data-search-url=""
+                                             @if (in_array(3, explode(' ', request()->type))) checked="" @endif value="3"
+                                             data-for="prod-type" data-value="Studs" type="checkbox">
+                                      <span class="ps-shown-by-js">
+                                        <i class="material-icons checkbox-checked"></i>
+                                      </span>
+                                    </span>
+                                    <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>{{ \App\Helper\Tires::codeExplain('ar radzēm tips') }}</span></div>" tabindex="0">
+                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ar radzēm <img src="/images/radzea.png"></a>
+                                    </span>
+                                  </label>
+                              </li>
                             <li data-label="Studdable">
                               <label class="facet-label" for="facet_for_studdable">
-                            <span class="custom-checkbox">
-                              <input id="facet_for_studdable" data-search-url=""
-                                     @if (in_array(2, explode(' ', request()->type))) checked="" @endif value="2"
-                                     data-for="prod-type" data-value="Studdable" type="checkbox">
-                              <span class="ps-shown-by-js">
-                                <i class="material-icons checkbox-checked"></i>
-                              </span>
-                            </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Radžojama</a>
-                              </label>
-                            </li>
-                            <li data-label="Studs">
-                              <label class="facet-label" for="facet_for_studs">
-                            <span class="custom-checkbox">
-                              <input id="facet_for_studs" data-search-url=""
-                                     @if (in_array(3, explode(' ', request()->type))) checked="" @endif value="3"
-                                     data-for="prod-type" data-value="Studs" type="checkbox">
-                              <span class="ps-shown-by-js">
-                                <i class="material-icons checkbox-checked"></i>
-                              </span>
-                            </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ar radzēm</a>
-                              </label>
-                            </li>
-                            <li data-label="Winter">
-                              <label class="facet-label" for="facet_for_winter">
-                            <span class="custom-checkbox">
-                              <input id="facet_for_winter" data-search-url=""
-                                     @if (in_array(4, explode(' ', request()->type))) checked="" @endif value="4"
-                                     data-for="prod-type" data-value="Winter" type="checkbox">
-                              <span class="ps-shown-by-js">
-                                <i class="material-icons checkbox-checked"></i>
-                              </span>
-                            </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ziemas</a>
+                                <span class="custom-checkbox">
+                                  <input id="facet_for_studdable" data-search-url=""
+                                         @if (in_array(2, explode(' ', request()->type))) checked="" @endif value="2"
+                                         data-for="prod-type" data-value="Studdable" type="checkbox">
+                                  <span class="ps-shown-by-js">
+                                    <i class="material-icons checkbox-checked"></i>
+                                  </span>
+                                </span>
+                                <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>{{ \App\Helper\Tires::codeExplain('radžojamu tips') }}</span></div>" tabindex="0">
+                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Radžojama <img src="/images/radzeb.png" alt="ms"></a>
+                                </span>
                               </label>
                             </li>
                           </ul>
