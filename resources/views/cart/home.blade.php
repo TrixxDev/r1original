@@ -254,7 +254,7 @@
                                                     <a href="/login" class="btn btn-primary"><span>Ienākt</span></a>
                                                     <a href="/register" class="btn btn-primary"><span>Reģistrēties</span></a>
                                                 </div>
-                                                <button type="submit" style="font-size: 15px;" class="btn btn-primary btn-block"><span>Pasūtīt nereģistrējoties</span></button>
+                                                <button type="submit" style="font-size: 14px;" class="btn btn-primary btn-block"><span>Pasūtīt nereģistrējoties</span></button>
                                             </div>
                                         @endif
                                   @else
