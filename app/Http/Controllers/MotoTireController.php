@@ -10,10 +10,10 @@ use App\Models\Motobrand;
 use App\Models\Mototread;
 use App\Models\Code;
 use Cart;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use View;
-use Auth;
 
 class MotoTireController extends Controller
 {
@@ -351,8 +351,12 @@ class MotoTireController extends Controller
               $html .= '<td class="hidden-sm-down text-center">' . $tire->comment . '</td>';
             }
             $html .= '<td class="shopping-cart-col"><div class="clearfix atc_div text-right">';
-            if (\Illuminate\Support\Facades\Auth::user()->hasRole('administrators')) {
-              $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+            if (Auth::check()) {
+              if (Auth::user()->hasRole('administrators')) {
+                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+              } else {
+                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+              }
             } else {
               $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
             }
