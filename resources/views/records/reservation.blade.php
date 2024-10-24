@@ -14,7 +14,7 @@
               $yesterday = date('Y-m-d', strtotime("-1 days",$currentDate));
               $tomorrow = date('Y-m-d', strtotime("+1 days",$currentDate));
             @endphp
-            <div class="col-12" style="margin-top: 20px; padding-left: 10px;">
+            <div class="col-12 day-select">
               <div class="row">
                 <a href="{{ route('rezervacijas') }}">
                   <img class="icons" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAA2UlEQVR4nO2TMQrCQBBFn0JsBMtYW3iA4Am00ivoIQQbW6/gHTyDlV5AvIBFai0VbSx0ZWECQ8BsNkRBzIdpZt+fD7O78G+aSZWuGrAAjNQSqJc1vAGsZPBdykjPnqGCvdUE1mK+AkOgD5yltwVaRQPawF6MRyBSZ5H0jGK8AjrAQUwx0HUwXgE94CSGHRBmsKEwSYD1ZmoAXATeyH597ukGjN6BY/VCbAU5hicKlM/OmKSBKfAosk8l7X0CcxfoK5PXlwaNo34nIK0q4PMrMo5/kZf7fkAltF7Bq5Eyw69PvAAAAABJRU5ErkJggg==">
