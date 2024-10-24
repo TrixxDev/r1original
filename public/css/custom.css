@@ -2299,6 +2299,33 @@ p {
     display: block;
   }
 }
+
+/*@media only screen and (max-width : 767px) and (orientation : landscape) {*/
+/*    #header .header-nav {*/
+/*        margin-left: 128px;*/
+/*    }*/
+/*    #header .header-top .menu>ul>li {*/
+/*        margin-right: 15px;*/
+/*    }*/
+/*    .schedule-table.dashboard {*/
+/*        display: none!important;*/
+/*    }*/
+
+/*    #mobile-main {*/
+/*        display: block!important;*/
+/*    }*/
+/*}*/
+
+/*@media only screen and (max-width : 1024px) and (orientation : landscape) {*/
+/*    .schedule-table.dashboard {*/
+/*        display: block;*/
+/*    }*/
+
+/*    #mobile-main {*/
+/*        display: none;*/
+/*    }*/
+/*}*/
+
 @media (min-width: 1024px) {
   .schedule-table.dashboard {
     display: block;
@@ -2521,7 +2548,6 @@ h4.tire-brand-name.grid-t {
   }
 
   .records .main-content {
-    background: none !important;
     margin-bottom: 50px;
     padding: 0;
   }
