@@ -235,7 +235,7 @@
                           </div>
                       </div>
                     <hr>
-                    <form method="post">
+                    <form method="post" class="checkout-buttons" style="display: block!important;">
                       @csrf
                       @if (!isset($user_data['shipping_city']) || $user_data['shipping_city'] == 1)
                       <div class="form-check">
