@@ -438,6 +438,7 @@ $(document).ready(function() {
 
 
           $('#record-modal #working_days, #record-modal #working_hours, #record-modal #office_queues').removeAttr('disabled').prop('disabled', false);
+          $('#slotModal input[name="cancelId"]').val(takenby.cancelId);
           $('#slotModal #f_car').val(takenby.car_brand);
           $('#slotModal #f_model').val(takenby.car_model);
           $('#slotModal #f_plate').val(takenby.lic_plate);
@@ -535,6 +536,7 @@ $(document).ready(function() {
       }
     }
 
+    let cancelId = $('#slotModal input[name="cancelId"]').val();
     let car_brand = $('#slotModal #f_car').val();
     let car_model = $('#slotModal #f_model').val();
     let name = $('#slotModal #f_name').val();
@@ -553,7 +555,7 @@ $(document).ready(function() {
     let status = $('#slotModal #f_status option:selected').val();
     let f_statuscase = $('.reservationOption[type=checkbox]:checked').val();
 
-    let formData = `car_brand=${car_brand}&car_model=${car_model}&rimsWith=${rimsWith}&temp_nr=${temp_nr}&lic_plate=${license_plate}&service=${service}&user_comment=${user_comment}&name=${name}&phone_number=${phone}&email=${email}&status=${status}&slotcomment=${discount}`;
+    let formData = `car_brand=${car_brand}&car_model=${car_model}&rimsWith=${rimsWith}&temp_nr=${temp_nr}&lic_plate=${license_plate}&service=${service}&user_comment=${user_comment}&name=${name}&phone_number=${phone}&email=${email}&status=${status}&cancelId=${cancelId}&slotcomment=${discount}`;
 
     let dopParams = {
       iorder: iorder,

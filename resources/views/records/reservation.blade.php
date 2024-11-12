@@ -300,6 +300,7 @@
                     <input type="hidden" name="date">
                     <input type="hidden" name="slot">
                     <input type="hidden" name="part">
+                    <input type="hidden" name="cancelId">
                     <div class="form-group row time bg-light">
                       <label for="f_date" class="col-sm-3 col-form-label text-right">Datums un laiks:</label>
                       {{--                        <div class="col-3"><input type="text" class="form-control ui-datepicker" id="f_date"></div>--}}
