@@ -267,8 +267,8 @@ $(document).ready(function() {
 
                   // TIRE IMAGE INSIDE MODAL
                   $('.modal-product-info .product-name').html(data.cart.name);
-                  if (data.cart.options.tire.price2 != null) {
-                    $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
+                  if (data.cart.options.tire.price1 != null) {
+                    $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price1)).attr('data-price', parseInt(data.cart.options.tire.price1));
                   } else {
                     $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price3)).attr('data-price', parseInt(data.cart.options.tire.price3));
                   }
