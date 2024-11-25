@@ -42,7 +42,11 @@
                                           <div class="item-name cart-item-name">
                                               <a href="{{ $item->options->link }}" data-id_customization="0" style="text-transform: uppercase;">{{ strtoupper($item->options->tireObj->fullName) }}</a>
                                               <br>
-                                              <span class="item-price">€ {{ $item->options->tire['price2'] }}</span>
+                                              @if ($item->associatedModel == "App\Models\Rim")
+                                                <span class="item-price">€ {{ $item->options->tire['price3'] }}</span>
+                                              @else
+                                                <span class="item-price">€ {{ $item->options->tire['price2'] }}</span>
+                                              @endif
                                             <br>
                                           </div>
                                           <div class="qty-item">
