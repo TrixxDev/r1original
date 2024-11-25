@@ -924,18 +924,13 @@
         $rim->priceOffer = 0;
         if ($newRim == true) {
           $rim->comment = '';
-          if ($quantity >= 4) {
-            $rim->visible_users = 1;
-            $rim->visible_list = 1;
-          } else {
-            $rim->visible_users = 0;
-            $rim->visible_list = 0;
-          }
+        }
+        if ($quantity >= 4) {
+          $rim->visible_users = 1;
+          $rim->visible_list = 1;
         } else {
-          if ($quantity < 4) {
-            $rim->visible_users = 0;
-            $rim->visible_list = 0;
-          }
+          $rim->visible_users = 0;
+          $rim->visible_list = 0;
         }
         $rim->available = 0;
         $rim->skr = $item->NumberOfBolts;
@@ -971,14 +966,9 @@
         $stock->quantity = $quantity;
         $rimVisible = Rim::where('article', $stock->article)->first();
         if (!is_null($rimVisible)) {
-          if ($quantity > 0) {
-            if ($quantity > 4) {
-              $rimVisible->visible_users = 1;
-              $rimVisible->visible_list = 1;
-            } else {
-              $rimVisible->visible_users = 0;
-              $rimVisible->visible_list = 0;
-            }
+          if ($quantity >= 4) {
+            $rimVisible->visible_users = 1;
+            $rimVisible->visible_list = 1;
           } else {
             $rimVisible->visible_users = 0;
             $rimVisible->visible_list = 0;
