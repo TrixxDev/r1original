@@ -919,7 +919,7 @@
         $rim->used = 0;
         $rim->price1 = ceil((round(($item->NetPrice * 1.21), 2) + 15) / 0.7);
         $rim->price2 = $item->Price;
-        $rim->price3 = floor(round($item->RetailPrice * 1.21, 2));
+        $rim->price3 = floor(round($item->RetailPrice * 1.21, 2)) - 2;
         $rim->offer = 0;
         $rim->priceOffer = 0;
         if ($newRim == true) {
