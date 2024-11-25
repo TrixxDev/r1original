@@ -261,8 +261,12 @@ class RimsController extends Controller
               $html .= '<td class="hidden-sm-down text-center">' . $rim->comment . '</td>';
             }
             $html .= '<td class="shopping-cart-col"><div class="clearfix atc_div text-right">';
-            if (Auth::user()->hasRole('administrators')) {
-              $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#" data-info="' . $rim->rim_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+            if (Auth::check()) {
+              if (Auth::user()->hasRole('administrators')) {
+                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#" data-info="' . $rim->rim_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+              } else {
+                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $rim->rim_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+              }
             } else {
               $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $rim->rim_id . '"><i class="material-icons">add_shopping_cart</i></button>';
             }
