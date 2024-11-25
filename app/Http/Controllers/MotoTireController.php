@@ -414,8 +414,12 @@ class MotoTireController extends Controller
           $html .= '<div class="rim-price-old" style="align-self: center;">€' . $tire->price1 . '</div>';
           $html .= '<div class="rim-price-red" style="align-self: center;">€' . $tire->price2 . '</div>';
           $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>">';
-          if (\Illuminate\Support\Facades\Auth::user()->hasRole('administrators')) {
-            $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#">';
+          if (Auth::check()) {
+            if (\Illuminate\Support\Facades\Auth::user()->hasRole('administrators')) {
+              $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#">';
+            } else {
+              $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#blockcart-modal">';
+            }
           } else {
             $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#blockcart-modal">';
           }

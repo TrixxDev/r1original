@@ -371,11 +371,15 @@ class QuadTireController extends Controller
             $html .= '<div class="rim-price-old" style="align-self: center;">€' . $tire->price1 . '</div>';
             $html .= '<div class="rim-price-red" style="align-self: center;">€' . $tire->price2 . '</div>';
             $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>">';
-            if (\Illuminate\Support\Facades\Auth::user()->hasRole('administrators')) {
+            if (Auth::check()) {
+              if (\Illuminate\Support\Facades\Auth::user()->hasRole('administrators')) {
                 $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
               } else {
                 $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
               }
+            } else {
+              $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+            }
             $html .= '<i class="material-icons">add_shopping_cart</i>';
             $html .= '</button>';
             $html .= '</span>';
