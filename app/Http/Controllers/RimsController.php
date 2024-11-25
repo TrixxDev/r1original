@@ -512,7 +512,7 @@ class RimsController extends Controller
     }
 
     $quantity = Cart::count();
-    $total_sum = str_replace([',', '.00'], '', Cart::total());
+    $total_sum = str_replace([',', '.00'], '', Cart::subtotal());
     $bought = ($request->quantity) ? $request->quantity : $this->cartQty;
 
     echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
