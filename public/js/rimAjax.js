@@ -267,11 +267,7 @@ $(document).ready(function() {
 
                   // TIRE IMAGE INSIDE MODAL
                   $('.modal-product-info .product-name').html(data.cart.name);
-                  if (data.cart.options.tire.price1 != null) {
-                    $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price1)).attr('data-price', parseInt(data.cart.options.tire.price1));
-                  } else {
-                    $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price3)).attr('data-price', parseInt(data.cart.options.tire.price3));
-                  }
+                  $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price3)).attr('data-price', parseInt(data.cart.options.tire.price3));
                   $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
                   $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
                   $('.cart-content .cart-products-total').html(total_sum);
