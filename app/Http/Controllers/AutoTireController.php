@@ -473,8 +473,7 @@ class AutoTireController extends Controller
         ->orderBy('d3', 'ASC')
         ->orderBy('d1', 'ASC')
         ->orderBy('d2', 'ASC')
-        ->orderBy('price2', 'DESC')
-        ->groupBy('auto_tires.article');
+        ->orderBy('price2', 'DESC');
 
       $totalItems = $tires->count();
       $totalPages = ceil($totalItems / $perPage);
