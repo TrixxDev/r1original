@@ -2480,7 +2480,10 @@ $('.tire-table-checkbox').children().each(function(key, value){
         url: ajaxUrl + '/ajax',
         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         method: 'POST',
-        data: { tire_id: tire_id },
+        data: {
+          tire_id: ajaxUrl.includes('lietie-diski') ? undefined : tire_id,
+          rim_id: ajaxUrl.includes('lietie-diski') ? tire_id : undefined
+        },
         success: function(data)
         {
           data = JSON.parse(data);
