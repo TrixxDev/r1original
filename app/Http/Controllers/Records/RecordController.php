@@ -315,24 +315,33 @@
       //The URLs that we want to send cURL requests to.
       $urls = [];
 
-      if ($today == $slot->date && $this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
-        $service = Service::where('service_id', $result->service)->first();
-        $vehicle = str_replace(' ', '%20', $result->car_brand);
-        $userComment = (!empty($result->user_comment)) ? '%20|%20Piezīmes%20-%20' . str_replace([' ', "\n", "\r"], '%20', $result->user_comment) : '';
-        $model = str_replace(' ', '%20', $result->car_model);
-        $service = str_replace(' ', '%20', $service->pdf_title);
-        $vehiclePlate = str_replace(' ', '%20', $result->lic_plate);
-        $discount = str_replace(' ', '%20', $slot->comment);
-        $discount = (!empty($slot->comment)) ? '%20|%20(' . $discount . ')' : '';
+      if ($today == $slot->date) {
+        if ($this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
+          $service = Service::where('service_id', $result->service)->first();
+          $vehicle = str_replace(' ', '%20', $result->car_brand);
+          $userComment = (!empty($result->user_comment)) ? '%20|%20Piezīmes%20-%20' . str_replace([' ', "\n", "\r"], '%20', $result->user_comment) : '';
+          $model = str_replace(' ', '%20', $result->car_model);
+          $service = str_replace(' ', '%20', $service->pdf_title);
+          $vehiclePlate = str_replace(' ', '%20', $result->lic_plate);
+          $discount = str_replace(' ', '%20', $slot->comment);
+          $discount = (!empty($slot->comment)) ? '%20|%20(' . $discount . ')' : '';
 
-        if (!empty($rimsWith)) {
-          if ($rimsWith == 1) {
-            $append = '%20-%20Riepas%20bez%20diskiem';
+          if (!empty($rimsWith)) {
+            if ($rimsWith == 1) {
+              $append = '%20-%20Riepas%20bez%20diskiem';
+            } else {
+              $append = '%20-%20Riepas%20ar%20diskiem';
+            }
           } else {
-            $append = '%20-%20Riepas%20ar%20diskiem';
+            $append = '';
           }
-        } else {
-          $append = '';
+
+
+          if ($office->office_id == 1) {
+            $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
+          } else {
+            $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
+          }
         }
 
 
@@ -1167,30 +1176,32 @@
 
             (new SmsSender)->sendSchedule((array) $takenBy, $smsText, $deletedSlot);
             if ($date == $slot->date) {
+              if ($this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
 
-              $vehicle = str_replace(' ', '%20', $takenBy->car_brand);
-              $model = str_replace(' ', '%20', $takenBy->car_model);
-              $vehiclePlate = str_replace(' ', '%20', $takenBy->lic_plate);
+                $vehicle = str_replace(' ', '%20', $takenBy->car_brand);
+                $model = str_replace(' ', '%20', $takenBy->car_model);
+                $vehiclePlate = str_replace(' ', '%20', $takenBy->lic_plate);
 
-              if ($office->office_id == 1) {
+                if ($office->office_id == 1) {
 
-                $cURLConnection = curl_init();
+                  $cURLConnection = curl_init();
 
-                curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate);
-                curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+                  curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate);
+                  curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
 
-                curl_exec($cURLConnection);
+                  curl_exec($cURLConnection);
 
-                curl_close($cURLConnection);
-              } else {
-                $cURLConnection = curl_init();
+                  curl_close($cURLConnection);
+                } else {
+                  $cURLConnection = curl_init();
 
-                curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate);
-                curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
+                  curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate);
+                  curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
 
-                curl_exec($cURLConnection);
+                  curl_exec($cURLConnection);
 
-                curl_close($cURLConnection);
+                  curl_close($cURLConnection);
+                }
               }
             }
 
