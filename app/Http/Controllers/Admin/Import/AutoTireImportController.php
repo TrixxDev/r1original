@@ -25,8 +25,6 @@ class AutoTireImportController extends Controller
       $data = $request->rows;
       $rows = explode("\n", trim($data));
 
-      DB::table('auto_tires')->update(['top' => 1]);
-
       foreach ($rows as $idx => $row) {
 
         $row = trim($row);
