@@ -343,13 +343,6 @@
             $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
           }
         }
-
-
-        if ($office->office_id == 1) {
-          $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
-        } else {
-          $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
-        }
       }
 
       if ($result->service == 3 || $result->service == 9) {
