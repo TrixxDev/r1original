@@ -917,14 +917,18 @@
         if ($item->newOpenTime !== $item->oldOpenTime) {
           $newOpenTime = Carbon::createFromTimeString($item->newOpenTime);
           $oldOpenTime = Carbon::createFromTimeString($workingDay->timeopen);
-
-          $newIorder = $newOpenTime->diffInMinutes($end) / $this->timeStep - $oldOpenTime->diffInMinutes($end) / $this->timeStep;
-
-          $slots = Slot::where('date', $item->date)->where('queue_id', $item->queue_id)->get();
-
+          
+          // Сохраняем абсолютное время каждого слота
+          $slots = Slot::where('date', $item->date)
+                       ->where('queue_id', $item->queue_id)
+                       ->get();
+                       
           foreach ($slots as $slot) {
-            $slot->iorder = $slot->iorder + ($newIorder);
-            $slot->save();
+              // Получаем текущее время слота
+              $slotTime = $oldOpenTime->copy()->addMinutes($slot->iorder * $this->timeStep);
+              // Вычисляем новый iorder на основе абсолютного времени
+              $slot->iorder = $slotTime->diffInMinutes($newOpenTime) / $this->timeStep;
+              $slot->save();
           }
         }
 
@@ -967,14 +971,18 @@
           if ($item->newOpenTime !== $item->oldOpenTime) {
             $newOpenTime = Carbon::createFromTimeString($item->newOpenTime);
             $oldOpenTime = Carbon::createFromTimeString($workingDay->timeopen);
-
-            $newIorder = $newOpenTime->diffInMinutes($end) / $this->timeStep - $oldOpenTime->diffInMinutes($end) / $this->timeStep;
-
-            $slots = Slot::where('date', $item->date)->where('queue_id', $item->queue_id)->get();
-
+            
+            // Сохраняем абсолютное время каждого слота
+            $slots = Slot::where('date', $item->date)
+                         ->where('queue_id', $item->queue_id)
+                         ->get();
+                         
             foreach ($slots as $slot) {
-              $slot->iorder = $slot->iorder + ($newIorder);
-              $slot->save();
+                // Получаем текущее время слота
+                $slotTime = $oldOpenTime->copy()->addMinutes($slot->iorder * $this->timeStep);
+                // Вычисляем новый iorder на основе абсолютного времени
+                $slot->iorder = $slotTime->diffInMinutes($newOpenTime) / $this->timeStep;
+                $slot->save();
             }
           }
 
@@ -1016,14 +1024,18 @@
           if ($item->newOpenTime !== $item->oldOpenTime) {
             $newOpenTime = Carbon::createFromTimeString($item->newOpenTime);
             $oldOpenTime = Carbon::createFromTimeString($workingDay->timeopen);
-
-            $newIorder = $newOpenTime->diffInMinutes($end) / $this->timeStep - $oldOpenTime->diffInMinutes($end) / $this->timeStep;
-
-            $slots = Slot::where('date', $item->date)->where('queue_id', $item->queue_id)->get();
-
+            
+            // Сохраняем абсолютное время каждого слота
+            $slots = Slot::where('date', $item->date)
+                         ->where('queue_id', $item->queue_id)
+                         ->get();
+                         
             foreach ($slots as $slot) {
-              $slot->iorder = $slot->iorder + ($newIorder);
-              $slot->save();
+                // Получаем текущее время слота
+                $slotTime = $oldOpenTime->copy()->addMinutes($slot->iorder * $this->timeStep);
+                // Вычисляем новый iorder на основе абсолютного времени
+                $slot->iorder = $slotTime->diffInMinutes($newOpenTime) / $this->timeStep;
+                $slot->save();
             }
           }
 
