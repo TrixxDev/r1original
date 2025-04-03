@@ -652,342 +652,340 @@
 
     // Lattako sync
 
-    public function i3auto()
-    {
-
-      $sync = DB::table('sync_times')->where('name', 'i3-auto')->get();
-      $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
-      $time_now = \Carbon\Carbon::now();
-      if ($time_now->diff($sync_time)->invert == 1) {
-
-        $token_bearer = $this->getI3Token();
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "GET",
-          CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "authorization: Bearer " . $token_bearer,
-          ),
-        ));
-        $response = curl_exec($curl);
-
-        $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
-
-        file_put_contents($filename, $response);
-        chmod($filename, 0775);
-
-        $err = curl_error($curl);
-
-        if ($err) throw new \Exception($err);
-
-        curl_close($curl);
-      }
-
-      $counted = 0;
-      $updated = 0;
-
-      Autostock::where('itype', 'i3')->update(['quantity' => 0]);
-
-      $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
-      $content = json_decode($content);
-
-      $out = '';
-
-      foreach ($content as $item) {
-
-        $counted++;
-
-        $stock = Autostock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
-        if (!$stock) {
-          continue;
+        public function i3auto()
+        {
+            try {
+                $sync = DB::table('sync_times')->where('name', 'i3-auto')->get();
+                $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+                $time_now = \Carbon\Carbon::now();
+                
+                if ($time_now->diff($sync_time)->invert == 1) {
+                    // Iegūstam datus tikai tad, ja pagājusi stunda kopš pēdējās sinhronizācijas
+                    $token_bearer = $this->getI3Token();
+                    $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
+                    
+                    // Palielinām taimautu līdz 120 sekundēm
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'https://api.latakko.eu/api/Articles?IncludeCarTyres=true&IncludeMotorcycleTyres=false&IncludeTruckTyres=false&IncludeEarthmoverTyres=false&IncludeAlloyRims=false&OnlyLocalStockItems=true',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => "",
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 120, // Palielināts taimauts līdz 120 sekundēm
+                        CURLOPT_CONNECTTIMEOUT => 30, // Pievienots savienojuma taimauts
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => "GET",
+                        CURLOPT_HTTPHEADER => array(
+                            "cache-control: no-cache",
+                            "authorization: Bearer " . $token_bearer,
+                        ),
+                    ));
+                    
+                    $response = curl_exec($curl);
+                    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                    $err = curl_error($curl);
+                    curl_close($curl);
+                    
+                    if ($err) {
+                        throw new \Exception($err);
+                    }
+                    
+                    if ($httpcode != 200) {
+                        throw new \Exception("API atgrieza kļūdas kodu: " . $httpcode);
+                    }
+                    
+                    if (empty($response)) {
+                        throw new \Exception("Saņemta tukša atbilde no API");
+                    }
+                    
+                    // Pārbaudām, vai atbilde ir derīgs JSON
+                    $contentCheck = json_decode($response);
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        throw new \Exception("Saņemts nederīgs JSON formāts: " . json_last_error_msg());
+                    }
+                    
+                    // Saglabājam saņemtos datus failā
+                    file_put_contents($filename, $response);
+                    chmod($filename, 0775);
+                }
+                
+                // Nullējam daudzumu visām i3 precēm
+                Autostock::where('itype', 'i3')->update(['quantity' => 0]);
+                
+                // Pārbaudām, vai fails eksistē pirms lasīšanas
+                $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
+                if (!file_exists($filename)) {
+                    throw new \Exception("Datu fails nav atrasts: " . $filename);
+                }
+                
+                $content = file_get_contents($filename);
+                $content = json_decode($content);
+                
+                if (!is_array($content) && !is_object($content)) {
+                    throw new \Exception("Kļūda dekodējot JSON no faila");
+                }
+                
+                $counted = 0;
+                $updated = 0;
+                
+                foreach ($content as $item) {
+                    $counted++;
+                    
+                    $stock = Autostock::where('itype', 'i3')
+                            ->where('article', $item->ArticleId)
+                            ->orderBy('created_at', 'DESC')
+                            ->first();
+                            
+                    if (!$stock) {
+                        continue;
+                    }
+                    
+                    $quantity = intval($item->QuantityAvailable);
+                    $metadata = 'price: ' . round(($item->Price * 1.21), 2) . 
+                            '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . 
+                            '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+                    
+                    $stock->quantity = $quantity;
+                    $stock->metadata = $metadata;
+                    
+                    if ($stock->save()) {
+                        $updated++;
+                    }
+                }
+                
+                DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+                return "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)";
+                
+            } catch (\Exception $e) {
+                // Reģistrējam kļūdu žurnālā
+                \Log::error('Kļūda metodē i3auto: ' . $e->getMessage());
+                
+                // Produkcijā, iespējams, nevajadzētu rādīt detalizētu kļūdas ziņojumu, bet atgriezt vispārēju ziņojumu
+                return "Sinhronizācijas kļūda: " . $e->getMessage();
+            }
         }
 
-        $quantity = intval($item->QuantityAvailable);
-        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
-        $stock->quantity = $quantity;
-        $stock->metadata = $metadata;
-        if ($stock->save()) {
-          $updated++;
+        public function i3autoalloyrims()
+        {
+            try {
+                set_time_limit(0);
+
+                $sync = DB::table('sync_times')->where('name', 'i3-alloy-rims')->get();
+                $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+                $time_now = \Carbon\Carbon::now();
+                
+                if ($time_now->diff($sync_time)->invert == 1) {
+                    // Iegūstam datus tikai tad, ja pagājusi stunda kopš pēdējās sinhronizācijas
+                    $token_bearer = $this->getI3Token();
+                    $filename = dirname(__DIR__, 3) . '/public/storage/xml/i3-alloy-rims-articles.txt';
+                    
+                    // Palielinām taimautu līdz 120 sekundēm
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'https://api.latakko.eu/api/Articles?IncludeCarTyres=false&IncludeMotorcycleTyres=false&IncludeTruckTyres=false&IncludeEarthmoverTyres=false&IncludeAlloyRims=true&OnlyLocalStockItems=true',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => "",
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 120, // Palielināts taimauts līdz 120 sekundēm
+                        CURLOPT_CONNECTTIMEOUT => 30, // Pievienots savienojuma taimauts
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => "GET",
+                        CURLOPT_HTTPHEADER => array(
+                            "cache-control: no-cache",
+                            "authorization: Bearer " . $token_bearer,
+                        ),
+                    ));
+                    
+                    $response = curl_exec($curl);
+                    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                    $err = curl_error($curl);
+                    curl_close($curl);
+                    
+                    if ($err) {
+                        throw new \Exception($err);
+                    }
+                    
+                    if ($httpcode != 200) {
+                        throw new \Exception("API atgrieza kļūdas kodu: " . $httpcode);
+                    }
+                    
+                    if (empty($response)) {
+                        throw new \Exception("Saņemta tukša atbilde no API");
+                    }
+                    
+                    // Pārbaudām, vai atbilde ir derīgs JSON
+                    $contentCheck = json_decode($response);
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        throw new \Exception("Saņemts nederīgs JSON formāts: " . json_last_error_msg());
+                    }
+                    
+                    // Saglabājam saņemtos datus failā
+                    file_put_contents($filename, $response);
+                    chmod($filename, 0775);
+                }
+                
+                // Nullējam daudzumu visām i3 disku precēm
+                Rimstock::where('itype', 'i3')->update(['quantity' => 0]);
+                
+                // Pārbaudām, vai fails eksistē pirms lasīšanas
+                $filename = dirname(__DIR__, 3) . '/public/storage/xml/i3-alloy-rims-articles.txt';
+                if (!file_exists($filename)) {
+                    throw new \Exception("Datu fails nav atrasts: " . $filename);
+                }
+                
+                $content = file_get_contents($filename);
+                $content = json_decode($content);
+                
+                if (!is_array($content) && !is_object($content)) {
+                    throw new \Exception("Kļūda dekodējot JSON no faila");
+                }
+                
+                $counted = 0;
+                $updated = 0;
+                
+                $returnText = '';
+                
+                foreach ($content as $item) {
+                    $counted++;
+                    
+                    if (!$item->NumberOfBolts || !$item->BoltCircle || !$item->Diameter || !$item->RetailPrice) continue;
+                    
+                    $rim = Rim::where('article', $item->ArticleId)->first();
+                    $newRim = false;
+                    
+                    if ($rim == null) {
+                        $newRim = true;
+                        $rim = new Rim;
+                    }
+                    
+                    // Остальной код оставляем без изменений для обработки данных
+                    
+                    $rim->timestamps = false;
+                    
+                    $imageId = $item->ImageId;
+                    
+                    $brand = Rimbrand::where('title', $item->BrandName)->first();
+                    $tread = Rimmake::where('title', $item->PatternModelText)->first();
+                    
+                    if ($brand === null) {
+                        $brand = new Rimbrand;
+                        $brand->timestamps = false;
+                        $brand->title = $item->BrandName;
+                        $brand->slug = Str::slug($brand->title);
+                        $brand->save();
+                    }
+                    
+                    if ($tread === null) {
+                        $tread = new Rimmake;
+                        $tread->timestamps = false;
+                        $tread->brand_id = $brand->brand_id;
+                        $tread->title = $item->PatternModelText;
+                        $tread->slug = Str::slug($tread->title);
+                        $tread->save();
+                    } else {
+                        if ($tread->brand_id != $brand->brand_id) {
+                            $tread = new Rimmake;
+                            $tread->timestamps = false;
+                            $tread->brand_id = $brand->brand_id;
+                            $tread->title = $item->PatternModelText;
+                            $tread->slug = Str::slug($tread->title);
+                            $tread->save();
+                        }
+                    }
+                    
+                    $treadId = $tread->make_id;
+                    
+                    $quantity = intval($item->QuantityAvailable);
+                    if ($imageId != null) {
+                        $outPath = dirname(__DIR__, 3) . '/public/storage/rims/tread/' . $treadId . '-o.jpg';
+                        
+                        if (!file_exists($outPath)) {
+                            $this->grab_image('https://api.latakko.eu/api/ArticleImages/' . $imageId, $outPath);
+                        }
+                    }
+                    
+                    $rim->make_id = $treadId;
+                    $rim->d1 = $item->Width;
+                    $rim->d3 = $item->Diameter;
+                    $rim->dc = $item->CenterBore;
+                    $rim->used = 0;
+                    $rim->price1 = ceil((round(($item->NetPrice * 1.21), 2) + 15) / 0.7);
+                    $rim->price2 = $item->Price;
+                    $rim->price3 = floor(round($item->RetailPrice * 1.21, 2)) - 2;
+                    $rim->offer = 0;
+                    $rim->priceOffer = 0;
+                    if ($newRim == true) {
+                        $rim->comment = '';
+                    }
+                    if ($quantity >= 4) {
+                        $rim->visible_users = 1;
+                        $rim->visible_list = 1;
+                    } else {
+                        $rim->visible_users = 0;
+                        $rim->visible_list = 0;
+                    }
+                    $rim->available = 0;
+                    $rim->skr = $item->NumberOfBolts;
+                    
+                    if ($item->BoltCircle == '139,7') {
+                        $pcd = '139.7';
+                    } else if ($item->BoltCircle == '114,3' || $item->BoltCircle == '114') {
+                        $pcd = '114.3';
+                    } else {
+                        $pcd = $item->BoltCircle;
+                    }
+                    
+                    $rim->pcd = $pcd;
+                    $rim->et = $item->Offset;
+                    $rim->color = $item->Color;
+                    $rim->article = $item->ArticleId;
+                    $rim->quantity = 0;
+                    $rim->urs_quantity = 0;
+                    $rim->krs_quantity = 0;
+                    $rim->ordered = 0;
+                    $rim->reserved = 0;
+                    $rim->updated_at = Carbon::now()->format('Y-m-d H:i:s');
+                    
+                    $rim->save();
+                    
+                    $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+                    
+                    $stock = Rimstock::where('rim_id', $rim->rim_id)->first();
+                    
+                    if ($stock == null) $stock = new Rimstock;
+                    $stock->rim_id = $rim->rim_id;
+                    $stock->article = $rim->article;
+                    $stock->quantity = $quantity;
+                    $rimVisible = Rim::where('article', $stock->article)->first();
+                    if (!is_null($rimVisible)) {
+                        if ($quantity >= 4) {
+                            $rimVisible->visible_users = 1;
+                            $rimVisible->visible_list = 1;
+                        } else {
+                            $rimVisible->visible_users = 0;
+                            $rimVisible->visible_list = 0;
+                        }
+                    }
+                    $stock->itype = 'i3';
+                    $stock->metadata = $metadata;
+                    $rimVisible->save();
+                    if ($stock->save()) {
+                        $updated++;
+                    }
+                    $counted++;
+                }
+                
+                DB::table('sync_times')->where('name', 'i3-alloy-rims')->update(['updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
+                return "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)";
+                
+            } catch (\Exception $e) {
+                // Reģistrējam kļūdu žurnālā
+                \Log::error('Kļūda metodē i3autoalloyrims: ' . $e->getMessage());
+                
+                // Produkcijā, iespējams, nevajadzētu rādīt detalizētu kļūdas ziņojumu, bet atgriezt vispārēju ziņojumu
+                return "Sinhronizācijas kļūda: " . $e->getMessage();
+            }
         }
-
-      }
-
-      DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
-      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-
-
-      //        $stocks = Autostock::where('itype', 'i3')->get();
-      //        foreach ($stocks as $stock) {
-      //
-      //          $counted++;
-      //
-      //          if (!$err) {
-      //            $metadata = '';
-      //            $response = json_decode($response);
-      //            $metadata = '';
-      //            $response = (object) $response;
-      //            if (empty(get_object_vars($response)) || isset($response->Message)) continue;
-      //            echo '<br><pre>';
-      //            var_dump($response);
-      //            echo '</pre><br>';
-      //            var_dump(get_object_vars($response));
-      //            $stock->quantity = intval($response->QuantityAvailable);
-      //            $stock->metadata = $metadata;
-      //            if ($stock->save()) {
-      //              $updated++;
-      //            }
-
-      //            if (is_null($response)) {
-      //              var_dump($stock->);
-      //            }
-      //          } else {
-      //            throw new \Exception($err);
-      //          }
-      //
-      //
-      //        }
-
-      //        $url = "https://api.gummigrossen.se/api/Tyres?username=XmL_r1&password=M20h:2|5";
-      //
-      //        $opts = ['http' =>
-      //            [
-      //                'method'  => 'GET',
-      //                'timeout'  => 600,
-      //            ]
-      //        ];
-      //
-      //        set_time_limit(800);
-      //
-      //        $context  = stream_context_create($opts);
-      //        $xmlString = file_get_contents($url, false, $context);
-      //
-      //        file_put_contents('i3.auto.xml',$xmlString);
-      //
-      //        $xml = simplexml_load_string($xmlString);
-      //
-      //        unset($context);
-      //
-      //        echo "Auto riepas<br>";
-      //        Autostock::where('itype', 'i3')->update(['quantity' => 0]);
-      //
-      //        $updated = 0;
-      //        $counted = 0;
-      //        foreach ($xml->Item as $item){
-      //            $article = $item->stockcode;
-      //            $quantity = intval($item->qty_available);
-      //
-      //            $metadata = '';
-      //            $price = @$item->price; if ($price!='') $metadata.='price: '.$price.'; ';
-      //            $pkpcena = @$item->pkpcena; if ($pkpcena!='') $metadata.='pkpcena: '.$pkpcena.'; ';
-      //            $baseprice = @$item->Baseprice; if ($baseprice!='') $metadata.='Baseprice: '.$baseprice.'; ';
-      //
-      //            $list = Autostock::where('article', $article)->where('itype', 'i3')->get();
-      //
-      //            foreach ($list as $itam){
-      //                $itam->quantity = $quantity;
-      //                $itam->metadata = $metadata;
-      //                $itam->save();
-      //                $updated++;
-      //            }
-      //            $counted++;
-      //        }
-      //        DB::table('sync_times')->where('name', 'i3-auto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
-      //        echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-
-    }
-
-    public function i3autoalloyrims()
-    {
-
-      set_time_limit(0);
-
-      $sync = DB::table('sync_times')->where('name', 'i3-alloy-rims')->get();
-      $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
-      $time_now = \Carbon\Carbon::now();
-      if ($time_now->diff($sync_time)->invert == 1) {
-
-        $token_bearer = $this->getI3Token();
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?IncludeCarTyres=false&IncludeMotorcycleTyres=false&IncludeTruckTyres=false&IncludeEarthmoverTyres=false&IncludeAlloyRims=true&OnlyLocalStockItems=true',
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "GET",
-          CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "authorization: Bearer " . $token_bearer,
-          ),
-        ));
-        $response = curl_exec($curl);
-
-        $filename = dirname(__DIR__, 3) . '/public/storage/xml/i3-alloy-rims-articles.txt';
-
-        file_put_contents($filename, $response);
-        chmod($filename, 0775);
-
-        $err = curl_error($curl);
-
-        if ($err) throw new \Exception($err);
-
-        curl_close($curl);
-      }
-
-      $counted = 0;
-      $updated = 0;
-
-      Rimstock::where('itype', 'i3')->update(['quantity' => 0]);
-
-      $content = file_get_contents(dirname(__DIR__, 3) . '/public/storage/xml/i3-alloy-rims-articles.txt');
-      $content = json_decode($content);
-
-      $returnText = '';
-
-      foreach ($content as $item) {
-
-        $counted++;
-
-        if (!$item->NumberOfBolts || !$item->BoltCircle || !$item->Diameter || !$item->RetailPrice) continue;
-
-        $rim = Rim::where('article', $item->ArticleId)->first();
-        $newRim = false;
-
-        if ($rim == null) {
-          $newRim = true;
-          $rim = new Rim;
-        }
-
-
-
-        $rim->timestamps = false;
-
-        $imageId = $item->ImageId;
-
-        $brand = Rimbrand::where('title', $item->BrandName)->first();
-        $tread = Rimmake::where('title', $item->PatternModelText)->first();
-
-        if ($brand === null) {
-          $brand = new Rimbrand;
-          $brand->timestamps = false;
-          $brand->title = $item->BrandName;
-          $brand->slug = Str::slug($brand->title);
-          $brand->save();
-        }
-
-        if ($tread === null) {
-          $tread = new Rimmake;
-          $tread->timestamps = false;
-          $tread->brand_id = $brand->brand_id;
-          $tread->title = $item->PatternModelText;
-          $tread->slug = Str::slug($tread->title);
-          $tread->save();
-        } else {
-          if ($tread->brand_id != $brand->brand_id) {
-            $tread = new Rimmake;
-            $tread->timestamps = false;
-            $tread->brand_id = $brand->brand_id;
-            $tread->title = $item->PatternModelText;
-            $tread->slug = Str::slug($tread->title);
-            $tread->save();
-          }
-        }
-
-        $treadId = $tread->make_id;
-
-        $quantity = intval($item->QuantityAvailable);
-        if ($imageId != null) {
-          $outPath = dirname(__DIR__, 3) . '/public/storage/rims/tread/' . $treadId . '-o.jpg';
-
-          if (!file_exists($outPath)) {
-            $this->grab_image('https://api.latakko.eu/api/ArticleImages/' . $imageId, $outPath);
-          }
-        }
-
-        $rim->make_id = $treadId;
-        $rim->d1 = $item->Width;
-        $rim->d3 = $item->Diameter;
-        $rim->dc = $item->CenterBore;
-        $rim->used = 0;
-        $rim->price1 = ceil((round(($item->NetPrice * 1.21), 2) + 15) / 0.7);
-        $rim->price2 = $item->Price;
-        $rim->price3 = floor(round($item->RetailPrice * 1.21, 2)) - 2;
-        $rim->offer = 0;
-        $rim->priceOffer = 0;
-        if ($newRim == true) {
-          $rim->comment = '';
-        }
-        if ($quantity >= 4) {
-          $rim->visible_users = 1;
-          $rim->visible_list = 1;
-        } else {
-          $rim->visible_users = 0;
-          $rim->visible_list = 0;
-        }
-        $rim->available = 0;
-        $rim->skr = $item->NumberOfBolts;
-
-        if ($item->BoltCircle == '139,7') {
-          $pcd = '139.7';
-        } else if ($item->BoltCircle == '114,3') {
-          $pcd = '114.3';
-        } else {
-          $pcd = $item->BoltCircle;
-        }
-
-        $rim->pcd = $pcd;
-        $rim->et = $item->Offset;
-        $rim->color = $item->Color;
-        $rim->article = $item->ArticleId;
-        $rim->quantity = 0;
-        $rim->urs_quantity = 0;
-        $rim->krs_quantity = 0;
-        $rim->ordered = 0;
-        $rim->reserved = 0;
-        $rim->updated_at = Carbon::now()->format('Y-m-d H:i:s');
-
-        $rim->save();
-
-        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
-
-        $stock = Rimstock::where('rim_id', $rim->rim_id)->first();
-
-        if ($stock == null) $stock = new Rimstock;
-        $stock->rim_id = $rim->rim_id;
-        $stock->article = $rim->article;
-        $stock->quantity = $quantity;
-        $rimVisible = Rim::where('article', $stock->article)->first();
-        if (!is_null($rimVisible)) {
-          if ($quantity >= 4) {
-            $rimVisible->visible_users = 1;
-            $rimVisible->visible_list = 1;
-          } else {
-            $rimVisible->visible_users = 0;
-            $rimVisible->visible_list = 0;
-          }
-        }
-        $stock->itype = 'i3';
-        $stock->metadata = $metadata;
-        $rimVisible->save();
-        if ($stock->save()) {
-          $updated++;
-        }
-        $counted++;
-
-      }
-
-      DB::table('sync_times')->where('name', 'i3-alloy-rims')->update(['updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
-      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-
-    }
 
     public function i3show()
     {
@@ -1025,146 +1023,232 @@
       echo '<br>';
     }
 
-    public function i3moto()
-    {
-
-      $sync = DB::table('sync_times')->where('name', 'i3-moto')->get();
-      $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
-      $time_now = \Carbon\Carbon::now();
-      if ($time_now->diff($sync_time)->invert == 1) {
-
-        $token_bearer = $this->getI3Token();
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems&IncludeCarTyres=false&IncludeMotorcycleTyres=true&IncludeTruckTyres=false&IncludeEarthmoverTyres=false',
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "GET",
-          CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "authorization: Bearer " . $token_bearer,
-          ),
-        ));
-        $response = curl_exec($curl);
-
-        $filename = dirname(__DIR__, 3) . '/xml/i3-moto-articles.txt';
-
-        file_put_contents($filename, $response);
-        chmod($filename, 0775);
-
-        $err = curl_error($curl);
-
-        if ($err) throw new \Exception($err);
-
-        curl_close($curl);
-      }
-
-      $counted = 0;
-      $updated = 0;
-
-      Motostock::where('itype', 'i3')->update(['quantity' => 0]);
-
-      $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-moto-articles.txt');
-      $content = json_decode($content);
-
-      foreach ($content as $item) {
-
-        if ($item->MainGroupName !== 'MC tires') continue;
-        $counted++;
-
-        $stock = Motostock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
-        if (!$stock) {
-          continue;
+        public function i3moto()
+        {
+            try {
+                $sync = DB::table('sync_times')->where('name', 'i3-moto')->get();
+                $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+                $time_now = \Carbon\Carbon::now();
+                
+                if ($time_now->diff($sync_time)->invert == 1) {
+                    // Iegūstam datus tikai tad, ja pagājusi stunda kopš pēdējās sinhronizācijas
+                    $token_bearer = $this->getI3Token();
+                    $filename = dirname(__DIR__, 3) . '/xml/i3-moto-articles.txt';
+                    
+                    // Palielinām taimautu līdz 120 sekundēm
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems&IncludeCarTyres=false&IncludeMotorcycleTyres=true&IncludeTruckTyres=false&IncludeEarthmoverTyres=false',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => "",
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 120, // Palielināts taimauts līdz 120 sekundēm
+                        CURLOPT_CONNECTTIMEOUT => 30, // Pievienots savienojuma taimauts
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => "GET",
+                        CURLOPT_HTTPHEADER => array(
+                            "cache-control: no-cache",
+                            "authorization: Bearer " . $token_bearer,
+                        ),
+                    ));
+                    
+                    $response = curl_exec($curl);
+                    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                    $err = curl_error($curl);
+                    curl_close($curl);
+                    
+                    if ($err) {
+                        throw new \Exception($err);
+                    }
+                    
+                    if ($httpcode != 200) {
+                        throw new \Exception("API atgrieza kļūdas kodu: " . $httpcode);
+                    }
+                    
+                    if (empty($response)) {
+                        throw new \Exception("Saņemta tukša atbilde no API");
+                    }
+                    
+                    // Pārbaudām, vai atbilde ir derīgs JSON
+                    $contentCheck = json_decode($response);
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        throw new \Exception("Saņemts nederīgs JSON formāts: " . json_last_error_msg());
+                    }
+                    
+                    // Saglabājam saņemtos datus failā
+                    file_put_contents($filename, $response);
+                    chmod($filename, 0775);
+                }
+                
+                // Nullējam daudzumu visām moto i3 precēm
+                Motostock::where('itype', 'i3')->update(['quantity' => 0]);
+                
+                // Pārbaudām, vai fails eksistē pirms lasīšanas
+                $filename = dirname(__DIR__, 3) . '/xml/i3-moto-articles.txt';
+                if (!file_exists($filename)) {
+                    throw new \Exception("Datu fails nav atrasts: " . $filename);
+                }
+                
+                $content = file_get_contents($filename);
+                $content = json_decode($content);
+                
+                if (!is_array($content) && !is_object($content)) {
+                    throw new \Exception("Kļūda dekodējot JSON no faila");
+                }
+                
+                $counted = 0;
+                $updated = 0;
+                
+                foreach ($content as $item) {
+                    $counted++;
+                    
+                    $stock = Motostock::where('itype', 'i3')
+                            ->where('article', $item->ArticleId)
+                            ->orderBy('created_at', 'DESC')
+                            ->first();
+                            
+                    if (!$stock) {
+                        continue;
+                    }
+                    
+                    $quantity = intval($item->QuantityAvailable);
+                    $metadata = 'price: ' . round(($item->Price * 1.21), 2) . 
+                            '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . 
+                            '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+                    
+                    $stock->quantity = $quantity;
+                    $stock->metadata = $metadata;
+                    
+                    if ($stock->save()) {
+                        $updated++;
+                    }
+                }
+                
+                DB::table('sync_times')->where('name', 'i3-moto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+                return "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)";
+                
+            } catch (\Exception $e) {
+                // Reģistrējam kļūdu žurnālā
+                \Log::error('Kļūda metodē i3moto: ' . $e->getMessage());
+                
+                // Produkcijā, iespējams, nevajadzētu rādīt detalizētu kļūdas ziņojumu, bet atgriezt vispārēju ziņojumu
+                return "Sinhronizācijas kļūda: " . $e->getMessage();
+            }
         }
 
-        $quantity = intval($item->QuantityAvailable);
-        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
-        $stock->quantity = $quantity;
-        $stock->metadata = $metadata;
-        if ($stock->save()) {
-          $updated++;
+        public function i3quadr()
+        {
+            try {
+                $sync = DB::table('sync_times')->where('name', 'i3-quadr')->get();
+                $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
+                $time_now = \Carbon\Carbon::now();
+                
+                if ($time_now->diff($sync_time)->invert == 1) {
+                    // Iegūstam datus tikai tad, ja pagājusi stunda kopš pēdējās sinhronizācijas
+                    $token_bearer = $this->getI3Token();
+                    $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
+                    
+                    // Palielinām taimautu līdz 120 sekundēm
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => "",
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 120, // Palielināts taimauts līdz 120 sekundēm
+                        CURLOPT_CONNECTTIMEOUT => 30, // Pievienots savienojuma taimauts
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => "GET",
+                        CURLOPT_HTTPHEADER => array(
+                            "cache-control: no-cache",
+                            "authorization: Bearer " . $token_bearer,
+                        ),
+                    ));
+                    
+                    $response = curl_exec($curl);
+                    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                    $err = curl_error($curl);
+                    curl_close($curl);
+                    
+                    if ($err) {
+                        throw new \Exception($err);
+                    }
+                    
+                    if ($httpcode != 200) {
+                        throw new \Exception("API atgrieza kļūdas kodu: " . $httpcode);
+                    }
+                    
+                    if (empty($response)) {
+                        throw new \Exception("Saņemta tukša atbilde no API");
+                    }
+                    
+                    // Pārbaudām, vai atbilde ir derīgs JSON
+                    $contentCheck = json_decode($response);
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        throw new \Exception("Saņemts nederīgs JSON formāts: " . json_last_error_msg());
+                    }
+                    
+                    // Saglabājam saņemtos datus failā
+                    file_put_contents($filename, $response);
+                    chmod($filename, 0775);
+                }
+                
+                // Nullējam daudzumu visām quadr i3 precēm
+                Quadrstock::where('itype', 'i3')->update(['quantity' => 0]);
+                
+                // Pārbaudām, vai fails eksistē pirms lasīšanas
+                $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
+                if (!file_exists($filename)) {
+                    throw new \Exception("Datu fails nav atrasts: " . $filename);
+                }
+                
+                $content = file_get_contents($filename);
+                $content = json_decode($content);
+                
+                if (!is_array($content) && !is_object($content)) {
+                    throw new \Exception("Kļūda dekodējot JSON no faila");
+                }
+                
+                $counted = 0;
+                $updated = 0;
+                
+                foreach ($content as $item) {
+                    if ($item->MainGroupName !== 'ATV tires') continue;
+                    $counted++;
+                    
+                    $stock = Quadrstock::where('itype', 'i3')
+                            ->where('article', $item->ArticleId)
+                            ->orderBy('created_at', 'DESC')
+                            ->first();
+                            
+                    if (!$stock) {
+                        continue;
+                    }
+                    
+                    $quantity = intval($item->QuantityAvailable);
+                    $metadata = 'price: ' . round(($item->Price * 1.21), 2) . 
+                            '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . 
+                            '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
+                    
+                    $stock->quantity = $quantity;
+                    $stock->metadata = $metadata;
+                    
+                    if ($stock->save()) {
+                        $updated++;
+                    }
+                }
+                
+                DB::table('sync_times')->where('name', 'i3-quadr')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+                return "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)";
+                
+            } catch (\Exception $e) {
+                // Reģistrējam kļūdu žurnālā
+                \Log::error('Kļūda metodē i3quadr: ' . $e->getMessage());
+                
+                // Produkcijā, iespējams, nevajadzētu rādīt detalizētu kļūdas ziņojumu, bet atgriezt vispārēju ziņojumu
+                return "Sinhronizācijas kļūda: " . $e->getMessage();
+            }
         }
-
-      }
-
-      DB::table('sync_times')->where('name', 'i3-moto')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
-      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-    }
-
-    public function i3quadr()
-    {
-
-      $sync = DB::table('sync_times')->where('name', 'i3-quadr')->get();
-      $sync_time = \Carbon\Carbon::parse($sync[0]->updated_at)->addHour();
-      $time_now = \Carbon\Carbon::now();
-      if ($time_now->diff($sync_time)->invert == 1) {
-
-        $token_bearer = $this->getI3Token();
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => 'https://api.latakko.eu/api/Articles?OnlyStockItems',
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_TIMEOUT => 30,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "GET",
-          CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "authorization: Bearer " . $token_bearer,
-          ),
-        ));
-        $response = curl_exec($curl);
-
-        $filename = dirname(__DIR__, 3) . '/xml/i3-articles.txt';
-
-        file_put_contents($filename, $response);
-        chmod($filename, 0775);
-
-        $err = curl_error($curl);
-
-        if ($err) throw new \Exception($err);
-
-        curl_close($curl);
-      }
-
-      $counted = 0;
-      $updated = 0;
-
-      Quadrstock::where('itype', 'i3')->update(['quantity' => 0]);
-
-      $content = file_get_contents(dirname(__DIR__, 3) . '/xml/i3-articles.txt');
-      $content = json_decode($content);
-
-      $out = '';
-
-      foreach ($content as $item) {
-
-        $counted++;
-
-        $stock = Quadrstock::where('itype', 'i3')->where('article', $item->ArticleId)->orderBy('created_at', 'DESC')->first();
-        if (!$stock) {
-          continue;
-        }
-
-        $quantity = intval($item->QuantityAvailable);
-        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
-        $stock->quantity = $quantity;
-        $stock->metadata = $metadata;
-        if ($stock->save()) {
-          $updated++;
-        }
-
-      }
-
-      DB::table('sync_times')->where('name', 'i3-quadr')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
-      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-    }
 
     public function duellmoto()
     {
@@ -1661,185 +1745,221 @@
       return $returnText;
     }
 
-    public function i3agro()
-    {
-      set_time_limit(0);
+        public function i3agro()
+        {
+            try {
+                $sync = DB::table('sync_times')->where('name', 'i3-agro')->first();
+                $sync_time = \Carbon\Carbon::parse($sync->updated_at)->addHour();
+                $time_now = \Carbon\Carbon::now();
+                
+                if ($time_now->diff($sync_time)->invert == 1) {
+                    // Iegūstam datus tikai tad, ja pagājusi stunda kopš pēdējās sinhronizācijas
+                    $token_bearer = $this->getI3Token();
+                    $filename = dirname(__DIR__, 3) . '/public/storage/xml/i3-agro.txt';
+                    
+                    // Palielinām taimautu līdz 120 sekundēm
+                    $curl = curl_init();
+                    curl_setopt_array($curl, array(
+                        CURLOPT_URL => env('I3_AGRO_URL'),
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => "",
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 120, // Palielināts taimauts līdz 120 sekundēm
+                        CURLOPT_CONNECTTIMEOUT => 30, // Pievienots savienojuma taimauts
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => "GET",
+                        CURLOPT_HTTPHEADER => array(
+                            "cache-control: no-cache",
+                            "authorization: Bearer " . $token_bearer,
+                        ),
+                    ));
+                    
+                    $response = curl_exec($curl);
+                    $httpcode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+                    $err = curl_error($curl);
+                    curl_close($curl);
+                    
+                    if ($err) {
+                        throw new \Exception($err);
+                    }
+                    
+                    if ($httpcode != 200) {
+                        throw new \Exception("API atgrieza kļūdas kodu: " . $httpcode);
+                    }
+                    
+                    if (empty($response)) {
+                        throw new \Exception("Saņemta tukša atbilde no API");
+                    }
+                    
+                    // Pārbaudām, vai atbilde ir derīgs JSON
+                    $contentCheck = json_decode($response);
+                    if (json_last_error() !== JSON_ERROR_NONE) {
+                        throw new \Exception("Saņemts nederīgs JSON formāts: " . json_last_error_msg());
+                    }
+                    
+                    // Saglabājam saņemtos datus failā
+                    file_put_contents($filename, $response);
+                    chmod($filename, 0775);
+                }
+                
+                // Nullējam daudzumu visām agro i3 precēm
+                Bigstock::where('itype', 'i3')->where('type', 'agro')->update(['quantity' => 0, 'visible_users' => 0, 'visible_list' => 0]);
+                
+                // Pārbaudām, vai fails eksistē pirms lasīšanas
+                $filename = dirname(__DIR__, 3) . '/public/storage/xml/i3-agro.txt';
+                if (!file_exists($filename)) {
+                    throw new \Exception("Datu fails nav atrasts: " . $filename);
+                }
+                
+                $content = file_get_contents($filename);
+                $content = json_decode($content);
+                
+                if (!is_array($content) && !is_object($content)) {
+                    throw new \Exception("Kļūda dekodējot JSON no faila");
+                }
+                
+                $counted = 0;
+                $updated = 0;
+                
+                $returnText = '';
+                
+                foreach ($content as $item) {
+                    $counted++;
+                    
+                    $tire = Bigtire::where('article', $item->ArticleId)->first();
+                    $newTire = false;
+                    
+                    if ($tire == null) {
+                        $newTire = true;
+                        $tire = new Bigtire();
+                    }
+                    
+                    $tire->timestamps = false;
+                    
+                    $imageId = $item->ImageId;
+                    
+                    $brand = Bigbrand::where('title', $item->BrandName)->first();
+                    $tread = Bigtread::where('title', $item->PatternModelText)->first();
+                    
+                    if ($brand === null) {
+                        $brand = new Bigbrand;
+                        $brand->timestamps = false;
+                        $brand->title = $item->BrandName;
+                        $brand->slug = Str::slug($brand->title);
+                        $brand->save();
+                    }
 
-      $sync = DB::table('sync_times')->where('name', 'i3-agro')->first();
-      $sync_time = \Carbon\Carbon::parse($sync->updated_at)->addHour();
-      $time_now = \Carbon\Carbon::now();
-      if ($time_now->diff($sync_time)->invert == 1) {
+                    if ($tread === null) {
+                        $tread = new Bigtread;
+                        $tread->timestamps = false;
+                        $tread->brand_id = $brand->brand_id;
+                        $tread->title = $item->PatternModelText;
+                        $tread->slug = Str::slug($tread->title);
+                        $tread->save();
+                    } else {
+                        if ($tread->brand_id != $brand->brand_id) {
+                            $tread = new Bigtread;
+                            $tread->timestamps = false;
+                            $tread->brand_id = $brand->brand_id;
+                            $tread->title = $item->PatternModelText;
+                            $tread->slug = Str::slug($tread->title);
+                            $tread->save();
+                        }
+                    }
 
-        $token_bearer = $this->getI3Token();
+                    $treadId = $tread->tread_id;
 
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-          CURLOPT_URL => env('I3_AGRO_URL'),
-          CURLOPT_RETURNTRANSFER => true,
-          CURLOPT_ENCODING => "",
-          CURLOPT_MAXREDIRS => 10,
-          CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-          CURLOPT_CUSTOMREQUEST => "GET",
-          CURLOPT_HTTPHEADER => array(
-            "cache-control: no-cache",
-            "authorization: Bearer " . $token_bearer,
-          ),
-        ));
-        $response = curl_exec($curl);
+                    $quantity = intval($item->QuantityAvailable);
+                    if ($imageId != null) {
+                        $outPath = dirname(__DIR__, 3) . '/public/storage/industrial/tread/' . $treadId . '-o.jpg';
 
-        $filename = dirname(__DIR__, 3) . '/public/storage/xml/i3-agro.txt';
+                        if (!file_exists($outPath)) {
+                            $this->grab_image(env('I3_IMAGE_URL') . $imageId, $outPath);
+                        }
+                    }
 
-        file_put_contents($filename, $response);
-        chmod($filename, 0775);
 
-        $err = curl_error($curl);
+                    $sizes = $this->getBigSizes($item);
 
-        if ($err) throw new \Exception($err);
+                    $pr = $this->getAgroPr($item->ArticleText);
 
-        curl_close($curl);
-      }
+                    $tire->make_id = $treadId;
+                    $tire->d1 = $sizes['d1'];
+                    $tire->sep = $sizes['sep1'];
+                    $tire->d2 = $sizes['d2'];
+                    $tire->sep2 = $sizes['sep2'];
+                    $tire->d3 = $sizes['d3'];
+                    $tire->type = 'AGRO';
+    //        $tire->type = ($item->MainGroupName) ? 'AGRO' : 'IND';
+                    $tire->li = ($item->LoadIndex !== null) ? $item->LoadIndex : null;
+                    $tire->si = ($item->SpeedIndex !== null) ? $item->SpeedIndex : null;
+                    $tire->code = $pr; // PR
+                    $tire->price1 = ceil((round(($item->NetPrice * 1.21), 2) + 15) / 0.7);
+                    $tire->price2 = $item->Price;
+                    $tire->price3 = floor(round($item->RetailPrice * 1.21, 2));
+                    $tire->implemention = null;
+                    $tire->kind = null;
+                    $positionText = $item->PositionText;
+                    $parts = preg_split('/(?=[A-Z])/', $positionText);
+                    $positionText = implode(' ', $parts);
+                    $tire->axis = $positionText;
+                    $tire->conditions = null;
+                    $tire->visible_users = 1;
+                    $tire->visible_list = 1;
+                    $tire->available = 0;
+                    $tire->article = $item->ArticleId;
+                    $tire->quantity = 0;
+                    $tire->urs_quantity = 0;
+                    $tire->krs_quantity = 0;
+                    $tire->updated_at = Carbon::now()->format('Y-m-d H:i:s');
 
-      $counted = 0;
-      $updated = 0;
+                    $tire->save();
 
-      Bigstock::where('itype', 'i3')->where('type', 'agro')->update(['quantity' => 0, 'visible_users' => 0, 'visible_list' => 0]);
+                    $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
 
-      $content = file_get_contents(dirname(__DIR__, 3) . '/public/storage/xml/i3-agro.txt');
-      $content = json_decode($content);
+                    $stock = Bigstock::where('tire_id', $tire->tire_id)->first();
 
-      $returnText = '';
+                    if ($stock == null) $stock = new Bigstock();
+                    $stock->tire_id = $tire->tire_id;
+                    $stock->article = $tire->article;
+                    $stock->quantity = $quantity;
+    //        $tireVisible = Bigtire::where('article', $stock->article)->first();
+    //        if (!is_null($tireVisible)) {
+    //          if ($quantity > 0) {
+    //            if ($quantity > 4) {
+    //              $tireVisible->visible_users = 1;
+    //              $tireVisible->visible_list = 1;
+    //            } else {
+    //              $tireVisible->visible_users = 0;
+    //              $tireVisible->visible_list = 0;
+    //            }
+    //          } else {
+    //            $tireVisible->visible_users = 0;
+    //            $tireVisible->visible_list = 0;
+    //          }
+    //        }
+                    $stock->itype = 'i3';
+                    $stock->type = 'agro';
+                    $stock->metadata = $metadata;
+    //        $tireVisible->save();
+                    if ($stock->save()) {
+                        $updated++;
+                    }
+                    $counted++;
 
-      foreach ($content as $item) {
+                }
 
-        $counted++;
-
-        $tire = Bigtire::where('article', $item->ArticleId)->first();
-        $newTire = false;
-
-        if ($tire == null) {
-          $newTire = true;
-          $tire = new Bigtire();
+                DB::table('sync_times')->where('name', 'i3-agro')->update(['updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
+                return "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)";
+                
+            } catch (\Exception $e) {
+                // Reģistrējam kļūdu žurnālā
+                \Log::error('Kļūda metodē i3agro: ' . $e->getMessage());
+                
+                // Produkcijā, iespējams, nevajadzētu rādīt detalizētu kļūdas ziņojumu, bet atgriezt vispārēju ziņojumu
+                return "Sinhronizācijas kļūda: " . $e->getMessage();
+            }
         }
-
-        $tire->timestamps = false;
-
-        $imageId = $item->ImageId;
-
-        $brand = Bigbrand::where('title', $item->BrandName)->first();
-        $tread = Bigtread::where('title', $item->PatternModelText)->first();
-
-
-        if ($brand === null) {
-          $brand = new Bigbrand;
-          $brand->timestamps = false;
-          $brand->title = $item->BrandName;
-          $brand->slug = Str::slug($brand->title);
-          $brand->save();
-        }
-
-        if ($tread === null) {
-          $tread = new Bigtread;
-          $tread->timestamps = false;
-          $tread->brand_id = $brand->brand_id;
-          $tread->title = $item->PatternModelText;
-          $tread->slug = Str::slug($tread->title);
-          $tread->save();
-        } else {
-          if ($tread->brand_id != $brand->brand_id) {
-            $tread = new Bigtread;
-            $tread->timestamps = false;
-            $tread->brand_id = $brand->brand_id;
-            $tread->title = $item->PatternModelText;
-            $tread->slug = Str::slug($tread->title);
-            $tread->save();
-          }
-        }
-
-        $treadId = $tread->tread_id;
-
-        $quantity = intval($item->QuantityAvailable);
-        if ($imageId != null) {
-          $outPath = dirname(__DIR__, 3) . '/public/storage/industrial/tread/' . $treadId . '-o.jpg';
-
-          if (!file_exists($outPath)) {
-            $this->grab_image(env('I3_IMAGE_URL') . $imageId, $outPath);
-          }
-        }
-
-
-        $sizes = $this->getBigSizes($item);
-
-        $pr = $this->getAgroPr($item->ArticleText);
-
-        $tire->make_id = $treadId;
-        $tire->d1 = $sizes['d1'];
-        $tire->sep = $sizes['sep1'];
-        $tire->d2 = $sizes['d2'];
-        $tire->sep2 = $sizes['sep2'];
-        $tire->d3 = $sizes['d3'];
-        $tire->type = 'AGRO';
-//        $tire->type = ($item->MainGroupName) ? 'AGRO' : 'IND';
-        $tire->li = ($item->LoadIndex !== null) ? $item->LoadIndex : null;
-        $tire->si = ($item->SpeedIndex !== null) ? $item->SpeedIndex : null;
-        $tire->code = $pr; // PR
-        $tire->price1 = ceil((round(($item->NetPrice * 1.21), 2) + 15) / 0.7);
-        $tire->price2 = $item->Price;
-        $tire->price3 = floor(round($item->RetailPrice * 1.21, 2));
-        $tire->implemention = null;
-        $tire->kind = null;
-        $positionText = $item->PositionText;
-        $parts = preg_split('/(?=[A-Z])/', $positionText);
-        $positionText = implode(' ', $parts);
-        $tire->axis = $positionText;
-        $tire->conditions = null;
-        $tire->visible_users = 1;
-        $tire->visible_list = 1;
-        $tire->available = 0;
-        $tire->article = $item->ArticleId;
-        $tire->quantity = 0;
-        $tire->urs_quantity = 0;
-        $tire->krs_quantity = 0;
-        $tire->updated_at = Carbon::now()->format('Y-m-d H:i:s');
-
-        $tire->save();
-
-        $metadata = 'price: ' . round(($item->Price * 1.21), 2) . '; pkpcena: ' . round(($item->NetPrice * 1.21), 2) . '; Baseprice: ' . round(($item->RetailPrice * 1.21), 2) . ';';
-
-        $stock = Bigstock::where('tire_id', $tire->tire_id)->first();
-
-        if ($stock == null) $stock = new Bigstock();
-        $stock->tire_id = $tire->tire_id;
-        $stock->article = $tire->article;
-        $stock->quantity = $quantity;
-//        $tireVisible = Bigtire::where('article', $stock->article)->first();
-//        if (!is_null($tireVisible)) {
-//          if ($quantity > 0) {
-//            if ($quantity > 4) {
-//              $tireVisible->visible_users = 1;
-//              $tireVisible->visible_list = 1;
-//            } else {
-//              $tireVisible->visible_users = 0;
-//              $tireVisible->visible_list = 0;
-//            }
-//          } else {
-//            $tireVisible->visible_users = 0;
-//            $tireVisible->visible_list = 0;
-//          }
-//        }
-        $stock->itype = 'i3';
-        $stock->type = 'agro';
-        $stock->metadata = $metadata;
-//        $tireVisible->save();
-        if ($stock->save()) {
-          $updated++;
-        }
-        $counted++;
-
-      }
-
-      DB::table('sync_times')->where('name', 'i3-agro')->update(['updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
-      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
-    }
 
     public function i3big()
     {
