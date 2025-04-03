@@ -127,7 +127,7 @@
         $return .= '<span class="sliding-banner__part1_bg" style="background-color:transparent"></span>';
         $return .= '<img loading="lazy" class="banner-image" alt="r1_banner_' . $banners[$i]->name . '" src="/storage/banners/' . $banners[$i]->name . '">';
         if (!empty($banners[$i]->url)) {
-          $return .= '<a href="' . url('//' . $banners[$i]->url) . '" class="sliding-banner__link"></a>';
+          $return .= '<a href="' . url($banners[$i]->url) . '" class="sliding-banner__link"></a>';
         }
         $return .= '</div>';
       }
