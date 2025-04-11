@@ -4140,6 +4140,14 @@ tr.selected td a {
   /*width: 300px;*/
 }
 
+.taken-slot.time-taken-moto {
+    background: #27d765;
+}
+
+.taken-slot.time-taken-ac {
+    background: #f3ef72;
+}
+
 .time-taken-half .taken-slot {
     background: #e0ffe0;
     text-align: center;

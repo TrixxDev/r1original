@@ -87,18 +87,24 @@
                                       @case(1)
                                       @php
                                         $slotClass = 'time-taken';
+                                        $serviceSlotClass = '';
                                         if ($slot->takenby !== null) {
                                             $takenBy = json_decode($slot->takenby);
                                             $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
                                             $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
+                                            if ($service->service_id == 6) {
+                                                $serviceSlotClass = 'time-taken-ac';
+                                            } elseif ($service->service_id == 8 || $service->service_id == 9) {
+                                                $serviceSlotClass = 'time-taken-moto';
+                                            }
 
-                                            $content = '<button class="slot status taken-slot">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
+                                            $content = '<button class="slot status taken-slot ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
                                             if ($slot->edituser > -1) {
-                                                $content = '<button class="slot status taken-slot-admin">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
+                                                $content = '<button class="slot status taken-slot-admin ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
                                             }
                                             //$content = '<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;">'. \App\Http\Controllers\MainController::truncateCharacters(trim($takenBy->car_brand),6,'&mldr;',1) . ' xxxxx'.$plate.'</span>';
                                         } else {
-                                            $content = '<button class="slot status taken-slot-admin">xxxxx</button>';
+                                            $content = '<button class="slot status taken-slot-admin ' . $serviceSlotClass . '">xxxxx</button>';
                                         }
 
                                       @endphp
@@ -107,13 +113,19 @@
                                       @php
                                         if ($slot->takenby !== null) {
                                           $slotClass = 'time-taken';
+                                          $serviceSlotClass = '';
                                           $takenBy = json_decode($slot->takenby);
                                           $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
                                           $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
+                                          if ($service->service_id == 6) {
+                                              $serviceSlotClass = 'time-taken-ac';
+                                          } elseif ($service->service_id == 8 || $service->service_id == 9) {
+                                              $serviceSlotClass = 'time-taken-moto';
+                                          }
 
-                                          $content = '<button class="slot status taken-slot">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
+                                          $content = '<button class="slot status taken-slot ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
                                           if ($slot->edituser > -1) {
-                                            $content = '<button class="slot status taken-slot-admin">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
+                                            $content = '<button class="slot status taken-slot-admin ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
                                           }
                                           //$content = '<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;"></span>';
                                         } else {
@@ -156,19 +168,25 @@
                                         @case(1)
                                         @php
                                           $slotClass = 'time-taken';
+                                          $serviceSlotClass = '';
                                           $className = ($i % 2 == 1) ? 'text-red' : '';
                                           if ($slot->takenby !== null) {
                                               $takenBy = json_decode($slot->takenby);
                                               $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
                                               $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
+                                              if ($service->service_id == 6) {
+                                                  $serviceSlotClass = 'time-taken-ac';
+                                              } elseif ($service->service_id == 8 || $service->service_id == 9) {
+                                                  $serviceSlotClass = 'time-taken-moto';
+                                              }
 
-                                              $content = '<button class="slot status ' . $className .  ' taken-slot">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
+                                              $content = '<button class="slot status ' . $className .  ' taken-slot ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
                                               if ($slot->edituser > -1) {
-                                                  $content = '<button class="slot status ' . $className . ' taken-slot-admin">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
+                                                  $content = '<button class="slot status ' . $className . ' taken-slot-admin ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
                                               }
                                               //$content = '<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;">'. \App\Http\Controllers\MainController::truncateCharacters(trim($takenBy->car_brand),6,'&mldr;',1) . ' xxxxx'.$plate.'</span>';
                                           } else {
-                                              $content = '<button class="slot status ' . $className . ' taken-slot-admin">xxxxx</button>';
+                                              $content = '<button class="slot status ' . $className . ' taken-slot-admin ' . $serviceSlotClass . '">xxxxx</button>';
                                           }
 
                                         @endphp
@@ -177,14 +195,19 @@
                                         @php
                                           if ($slot->takenby !== null) {
                                             $slotClass = 'time-taken';
+                                            $serviceSlotClass = '';
                                             $takenBy = json_decode($slot->takenby);
                                             $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
                                             $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
-
+                                            if ($service->service_id == 6) {
+                                                $serviceSlotClass = 'time-taken-ac';
+                                            } elseif ($service->service_id == 8 || $service->service_id == 9) {
+                                                $serviceSlotClass = 'time-taken-moto';
+                                            }
                                             $className = ($i % 2 == 1) ? 'text-red' : '';
-                                            $content = '<button class="slot status ' . $className . ' taken-slot">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
+                                            $content = '<button class="slot status ' . $className . ' taken-slot ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
                                             if ($slot->edituser > -1) {
-                                              $content = '<button class="slot status ' . $className . ' taken-slot-admin">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
+                                              $content = '<button class="slot status ' . $className . ' taken-slot-admin ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
                                             }
                                             //$content = '<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;"></span>';
                                           } else {
