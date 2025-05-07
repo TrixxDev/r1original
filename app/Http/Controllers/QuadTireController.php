@@ -233,10 +233,10 @@ class QuadTireController extends Controller
           })->when($show_selected, function ($query) use ($selectedTires) {
             $query->whereIn('tire_id', $selectedTires);
           })->where('quadr_tires.visible_users', '<>', 0)
+          ->orderBy('price2', 'DESC')
           ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
           ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
           ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
-          ->orderBy('price2', 'DESC')
           ->groupBy('quadr_tires.article');
 
         $totalItems = count($tires->get());
