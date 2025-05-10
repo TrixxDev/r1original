@@ -233,10 +233,10 @@ class QuadTireController extends Controller
           })->when($show_selected, function ($query) use ($selectedTires) {
             $query->whereIn('tire_id', $selectedTires);
           })->where('quadr_tires.visible_users', '<>', 0)
-          ->orderBy('price2', 'DESC')
           ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
           ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
           ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
+          ->orderBy('price2', 'DESC')
           ->groupBy('quadr_tires.article');
 
         $totalItems = count($tires->get());
@@ -246,19 +246,32 @@ class QuadTireController extends Controller
           ->take($perPage)
           ->get();
 
-        $fullSize = '';
-        $loopIndex = 0;
-
+        $tiresGrouped = $tires->groupBy(function($tire) {
+          return $tire->getFullSizeAttribute();
+        });
         if ($request->table_type === 'list') {
-          if ($tires->count() > 0) {
-
-            foreach ($tires as $index => $tire) {
-
+          foreach ($tiresGrouped as $fullSize => $group) {
+            $group = $group->sortBy('price2', SORT_REGULAR, true);
+            $html .= '<table id="tires-table" class="table table-striped quadr-sorter tires-table table-hover tablesorter">';
+            $html .= '<thead class="tires-thead sticky-table">
+                        <tr>
+                          <th scope="col"></th>
+                          <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
+                          <th scope="col" class="hidden-sm-down text-center">Kods</th>
+                          <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
+                          <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+                          <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
+                          <th scope="col"></th>
+                          <th scope="col"><div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div></th>
+                        </tr>
+                        </thead>';
+            $html .= '<tbody id="tires-table-body">';
+            $html .= '<h4 class="tire-brand-name">' . $fullSize . '</h4>';
+            foreach ($group as $tire) {
               $tire->includeStock = true;
               $tire->fullName = $tire->getFullNameAttribute();
               $tire->fullSize = $tire->getFullSizeAttribute();
               $current_url = 'kvadraciklu-riepa';
-//              dd(Tires::getQuadrTireBrand($tire->brand_id), $tire);
               $tire->getUrl = route($current_url, [Tires::getQuadrTireBrand($tire->brand_id)->b_title, strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]);
               $tire->fullTitle = $tire->getTitleAttribute();
               $tire->codeExplain = $tire->getCodeExplainAttribute();
@@ -266,36 +279,6 @@ class QuadTireController extends Controller
               $tire->stockAvailability = $tire->getStockAvailabilityAttribute();
               $tire->stockCount = $tire->getStockCount();
 
-
-              if ($index === 0) {
-                $html .= '<span class="text-uppercase flipped-title tire-brand-name" style="color: black">Kvadraciklu riepas</span>';
-              }
-              $index++;
-              if ($fullSize !== $tire->fullSize) {
-                $loopIndex = 0;
-                $html .= '<table id="tires-table" class="table table-striped quadr-sorter tires-table table-hover tablesorter">';
-                $html .= '<thead class="tires-thead sticky-table">
-                        <tr>
-                          <th scope="col"></th>
-                          <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
-                          <th scope="col" class="hidden-sm-down text-center">Kods</th>
-
-                          <th id="store-price-button" scope="col" class="text-center">
-                            Veikala cena
-                          </th>
-
-                          <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
-                          <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
-                          <th scope="col"></th>
-                          <th scope="col">
-                            <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
-                          </th>
-
-                        </tr>
-                        </thead>';
-                $html .= '<tbody id="tires-table-body">';
-                $html .= '<h4 class="tire-brand-name">' . $tire->fullSize . '</h4>';
-              }
               $html .= '<tr class="tire-table-row" role="row">';
               $html .= '<th scope="row" class="tire-table-checkbox"><input type="checkbox" value="' . $tire->tire_id . '" name="product_ids[]" class="tire-table-checkbox" title=""></th>';
               $html .= '<td class="table-tire-name-cell"><a class="tire-table-link tippy image" data-tippy-content="<div><img data-src=\'https://r1riepas.lv/storage/quadr/tread/' . $tire->tread_id . '-o.jpg\'></div>" href="' . $tire->getUrl . '" data-content="' . $tire->fullName . '" data-article="' . $tire->article . '" data-quantity="4"><div class="table-link-title">' . $tire->fullTitle . '</div></a></td>';
@@ -321,79 +304,69 @@ class QuadTireController extends Controller
               $html .= '</div></td>';
               $html .= '<td class="dot-availability text-center"><span class="tippy lisi-tooltip dot ' . $tire->dotAvailable . '" data-tippy-content=\'<div style="padding: 5px; text-align: left;"><span style="color: black; font-size: 15px; line-height: 28px;">' . $tire->stockAvailability . '</span></div>\'></span></td>';
               $html .= '</tr>';
-              $fullSize = $tire->fullSize;
-              if ($fullSize !== $tire->fullSize) {
-                $html .= '</tbody>';
-                $html .= '</table>';
-              }
             }
+            $html .= '</tbody>';
+            $html .= '</table>';
           }
         } else if ($request->table_type === 'grid') {
-          $html .= '<div class="tire-image-container">';
-          $cbrand = '';
           $index = 0;
-          foreach ($tires as $tire) {
-
-            $tire->fullSize = $tire->getFullSizeAttribute();
-            $current_url = 'kvadraciklu-riepa';
-            $tire->getUrl = route($current_url, [Tires::getQuadrTireBrand($tire->brand_id)->b_title, strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]);
-
-            $brand = $tire->fullSize;
-            $tire->includeStock = true;
-            if ($cbrand != $brand) {
-              $html .= '</div><h4 class="tire-brand-name grid-t" style="margin-left: 5px;">' . $brand;
-              if ($index == 0) {
-                $html .= ' <span class="tire-type-title">Kvadraciklu riepas</span>';
-              }
-              $html .= '<span style="margin: 0 auto;"></span>';
-              $html .= '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-                                      Filtrs ()
-                                    </button></h4>
-                          <div class="row grid-ex pr-1 mobile-tire-container" style="padding-left: 5px;">';
-              $cbrand = $brand;
+          foreach ($tiresGrouped as $fullSize => $group) {
+            $group = $group->sortBy('price2', SORT_REGULAR, true);
+            $html .= '</div><h4 class="tire-brand-name grid-t" style="margin-left: 5px;">' . $fullSize;
+            if ($index == 0) {
+              $html .= ' <span class="tire-type-title">Kvadraciklu riepas</span>';
             }
-            $html .= '<a href="' . $tire->getUrl . '" class="grid-view-link" data-article="' . $tire->article . '">';
-            $html .= '<div class="tire-image-card sort-order">';
-            $html .= '<div class="text-center image-grid-overflow">';
-            $html .= Image::showGrid('quadr', $tire->make_id);
-            $html .= '</div>';
+            $html .= '<span style="margin: 0 auto;"></span>';
+            $html .= '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">Filtrs ()</button></h4><div class="row grid-ex pr-1 mobile-tire-container" style="padding-left: 5px;">';
+            foreach ($group as $tire) {
+              $tire->fullSize = $tire->getFullSizeAttribute();
+              $current_url = 'kvadraciklu-riepa';
+              $tire->getUrl = route($current_url, [Tires::getQuadrTireBrand($tire->brand_id)->b_title, strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]);
 
-            $html .= '<div class="tire-list-caption">';
+              $brand = $tire->fullSize;
+              $tire->includeStock = true;
+              $html .= '<a href="' . $tire->getUrl . '" class="grid-view-link" data-article="' . $tire->article . '">';
+              $html .= '<div class="tire-image-card sort-order">';
+              $html .= '<div class="text-center image-grid-overflow">';
+              $html .= Image::showGrid('quadr', $tire->make_id);
+              $html .= '</div>';
 
-            $html .= '<div class="card-title-text"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->title . '</span></div>">' . $tire->title . '</span></div>';
+              $html .= '<div class="tire-list-caption">';
 
-            $html .= '<div class="tire-tread">';
-            $html .= '<b>' . $tire->fullSize . ' </b>';
-            $html .= '<span class="tire-image-code">' . $tire->code . '</span>';
-            $html .= '</div>';
-            $html .= '<div style="display: flex;">';
-            $html .= '<input type="checkbox" name="product_ids[]" value="' . $tire->tire_id . '" style="margin-right: 5px;">';
-            $html .= '<div class="rim-price-old" style="align-self: center;">€' . $tire->price1 . '</div>';
-            $html .= '<div class="rim-price-red" style="align-self: center;">€' . $tire->price2 . '</div>';
-            $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>">';
-            if (Auth::check()) {
-              if (\Illuminate\Support\Facades\Auth::user()->hasRole('administrators')) {
-                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+              $html .= '<div class="card-title-text"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->title . '</span></div>">' . $tire->title . '</span></div>';
+
+              $html .= '<div class="tire-tread">';
+              $html .= '<b>' . $tire->fullSize . ' </b>';
+              $html .= '<span class="tire-image-code">' . $tire->code . '</span>';
+              $html .= '</div>';
+              $html .= '<div style="display: flex;">';
+              $html .= '<input type="checkbox" name="product_ids[]" value="' . $tire->tire_id . '" style="margin-right: 5px;">';
+              $html .= '<div class="rim-price-old" style="align-self: center;">€' . $tire->price1 . '</div>';
+              $html .= '<div class="rim-price-red" style="align-self: center;">€' . $tire->price2 . '</div>';
+              $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>">';
+              if (Auth::check()) {
+                if (\Illuminate\Support\Facades\Auth::user()->hasRole('administrators')) {
+                  $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>"><button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#"><i class="material-icons">add_shopping_cart</i></button></span>';
+                } else {
+                  $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>"><button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id .'" onclick="event.preventDefault()" data-target="#blockcart-modal"><i class="material-icons">add_shopping_cart</i></button></span>';
+                }
               } else {
-                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
+                $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>"><button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id .'" onclick="event.preventDefault()" data-target="#blockcart-modal"><i class="material-icons">add_shopping_cart</i></button></span>';
               }
-            } else {
-              $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
-            }
-            $html .= '<i class="material-icons">add_shopping_cart</i>';
-            $html .= '</button>';
-            $html .= '</span>';
+              $html .= '</button>';
+              $html .= '</span>';
 
-            $html .= '<span class="tippy lisi-tooltip grid-dot ' . $tire->dotAvailable . $tire->stockCount . '" data-tippy-content=\'<div style="padding: 5px;"><span style="color: black; font-size: 15px;">' . $tire->stockAvailability . '</span></div>\'></span>';
-            $html .= '<span class="sort-order" style="display: none;">' . $tire->dotAvailable . '</span>';
-            $html .= '</span>';
+              $html .= '<span class="tippy lisi-tooltip grid-dot ' . $tire->dotAvailable . $tire->stockCount . '" data-tippy-content=\'<div style="padding: 5px;"><span style="color: black; font-size: 15px;">' . $tire->stockAvailability . '</span></div>\'></span>';
+              $html .= '<span class="sort-order" style="display: none;">' . $tire->dotAvailable . '</span>';
+              $html .= '</span>';
+              $html .= '</div>';
+              $html .= '</div>';
+              $html .= '</div>';
+              $html .= '</a>';
+            }
+            $index++;
             $html .= '</div>';
-            $html .= '</div>';
-            $html .= '</div>';
-            $html .= '</a>';
           }
-          $index++;
-          $html .= '</div>';
         }
 
         if ($tires->count() <= 0) {
