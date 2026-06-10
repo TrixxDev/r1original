@@ -99,7 +99,16 @@ config/logging.php.save
 # Legacy / vendor copies in tree
 /var/
 
-# Internal dev notes (keep README*.md and DOCKER_*.md)
+# Dev-only folders and ops scripts
+/backend/
+/socket-server/
+DOCKER_ИНСТРУКЦИЯ.md
+README_SLOT_LOCKING.md
+delete_session_files.sh
+fix-permissions.sh
+rename_images.sh
+
+# Internal dev notes
 /АНАЛИЗ_*.md
 /БЫСТРЫЙ_*.md
 /ИНСТРУКЦИЯ_*.md
