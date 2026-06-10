@@ -9,7 +9,6 @@ use Closure;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
-use Gloudemans\Shoppingcart\Cart;
 
 class CheckSession
 {

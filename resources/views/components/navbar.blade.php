@@ -53,14 +53,13 @@
                     <i class="material-icons mobile-nav-burger__close" aria-hidden="true">close</i>
                 </button>
                 <div class="float-xs-right" id="_mobile_cart">
-                    <div class="blockcart cart-preview @if (\Cart::count()) active @else inactive @endif"
-                         data-refresh-url="//r1riepas.lv/index.php?fc=module&amp;module=ps_shoppingcart&amp;controller=ajax&amp;id_lang=2">
-                        @if (\Cart::count() > 0)
+                    <div class="blockcart cart-preview @if ($cartCount > 0) active @else inactive @endif">
+                        @if ($cartCount > 0)
                             <div class="header">
                                 <a rel="nofollow" href="{{ route('cart') }}">
                                     <i class="material-icons shopping-cart">shopping_cart</i>
                                     <span class="hidden-sm-down">Grozs:</span>
-                                    <span class="cart-products-count">({{ \Cart::count() }})</span>
+                                    <span class="cart-products-count">({{ $cartCount }})</span>
                                 </a>
                             </div>
                         @else

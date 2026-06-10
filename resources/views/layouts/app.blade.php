@@ -83,7 +83,6 @@
     <link rel="stylesheet" href="https://unpkg.com/select2@4.1.0-rc.0/dist/css/select2.min.css">
     <link rel="stylesheet" href="{{ \App\Helper\AssetHelper::v('css/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="{{ \App\Helper\AssetHelper::v('css/magiczoomplus.css') }}">
-    @livewireStyles
     @yield('json_ld')
     @include('components.seo.json-ld-organization')
 </head>

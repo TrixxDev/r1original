@@ -9,7 +9,6 @@ use App\Models\Moto;
 use App\Models\Motobrand;
 use App\Models\Mototread;
 use App\Models\Code;
-use Cart;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;

@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\ShopController;
 use App\Helper\Tires;
 use App\Models\Bigbrand;
 use App\Models\Bigtire;
 use App\Models\Bigtread;
 use App\Models\Code;
-use Cart;
 use Illuminate\Http\Request;
 use Auth;
 use Illuminate\Support\Facades\Cache;

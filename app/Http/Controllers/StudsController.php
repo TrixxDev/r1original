@@ -6,8 +6,10 @@ use App\Models\Studbrand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use View;
+use App\Events\CartUpdated;
+use App\Helper\Image;
 use App\Models\Stud;
-use Cart;
+use Illuminate\Support\Facades\Cookie;
 use Route;
 use Auth;
 
@@ -74,18 +76,47 @@ class StudsController extends Controller
       ->where('studs.visible_users', '<>', 0)
       ->first();
 
-    if ($request->quantity) {
-      $cart = CartController::addProduct($this->model, $stud->stud_id, $request->quantity);
-    } else {
-      $cart = CartController::addProduct($this->model, $stud->stud_id, $this->cartQty);
+    if (!$stud) {
+      return response()->json(['error' => 'Stud not found'], 404);
     }
 
-    $quantity = Cart::count();
-    //dd(Cart::subTotal());
-    $total_sum = str_replace([',', '.00'], '', Cart::subTotal());
-    $bought = ($request->quantity) ? $request->quantity : $this->cartQty;
+    $bought = $request->quantity ? (int) $request->quantity : $this->cartQty;
+    $cart = session()->get('cart', ['products' => []]);
 
-    echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
+    if (isset($cart['products'][$stud->stud_id])) {
+      $cart['products'][$stud->stud_id]['quantity'] += $bought;
+    } else {
+      $cart['products'][$stud->stud_id] = [
+        'id' => $stud->stud_id,
+        'name' => $stud->fullName,
+        'make_id' => $stud->make_id,
+        'type' => 'Radze',
+        'url' => $request->tire_url ?? $stud->link,
+        'image' => Image::image('studs', $stud->make_id),
+        'price' => $stud->price2,
+        'quantity' => $bought,
+        'availability' => $stud->dotAvailable,
+        'category' => $this->model,
+      ];
+    }
+
+    $totalSum = 0;
+    foreach ($cart['products'] as $product) {
+      $totalSum += $product['quantity'] * $product['price'];
+    }
+    $cart['total_sum'] = $totalSum;
+
+    session()->put('cart', $cart);
+    Cookie::queue('cart', json_encode($cart), 43200);
+    ShopController::updateCartInDatabase($totalSum);
+    event(new CartUpdated());
+
+    return response()->json([
+      'cart' => $cart,
+      'total_sum' => $totalSum,
+      'quantity' => array_sum(array_column($cart['products'], 'quantity')),
+      'bought' => $bought,
+    ]);
   }
 
   public function studs_find(Request $request) {

@@ -1302,37 +1302,6 @@ class ShopController extends Controller
         ]);
     }
 
-    // Статический метод для добавления товара в корзину (для совместимости с другими контроллерами)
-    public static function addProduct($model, $product_id, $quantity)
-    {
-        $cart = session()->get('cart', ['products' => [], 'total_sum' => 0]);
-
-        // Если товар уже есть в корзине, обновляем количество
-        if (isset($cart['products'][$product_id])) {
-            $cart['products'][$product_id]['quantity'] += $quantity;
-        } else {
-            // Получаем информацию о товаре
-            $product = $model::find($product_id);
-            if ($product) {
-                $cart['products'][$product_id] = [
-                    'name' => $product->name ?? $product->title ?? 'Unknown Product',
-                    'price' => $product->price ?? 0,
-                    'quantity' => $quantity,
-                    'image' => $product->image ?? null
-                ];
-            }
-        }
-
-        // Пересчитываем общую сумму
-        $cart['total_sum'] = 0;
-        foreach ($cart['products'] as $item) {
-            $cart['total_sum'] += $item['price'] * $item['quantity'];
-        }
-
-        session()->put('cart', $cart);
-        return $cart;
-    }
-
     private function emailText($order) {
         $orderDetails = Utility::decode_info($order->order_details);
         $carDetails = Utility::decode_info($order->car_details);

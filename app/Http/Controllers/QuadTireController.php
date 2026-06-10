@@ -6,7 +6,6 @@ use App\Helper\Image;
 use App\Helper\Tires;
 use App\Models\Quadrbrand;
 use App\Models\Quadrtread;
-use Cart;
 use Illuminate\Http\Request;
 use App\Models\Quadr;
 use Illuminate\Support\Facades\Auth;

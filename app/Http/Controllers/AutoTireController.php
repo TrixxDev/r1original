@@ -8,7 +8,6 @@ use App\Models\Autobrand;
 use App\Models\Autotire;
 use App\Models\Autotread;
 use App\Models\Code;
-use Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;

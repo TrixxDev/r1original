@@ -9,8 +9,10 @@
   use App\Models\Quadrimbrand;
   use App\Models\Quadrimmake;
   use Dflydev\DotAccessData\Data;
-  use Gloudemans\Shoppingcart\Facades\Cart;
+  use App\Events\CartUpdated;
+  use App\Helper\Image;
   use Illuminate\Http\Request;
+  use Illuminate\Support\Facades\Cookie;
   use Illuminate\Support\Facades\DB;
   use Illuminate\Support\Facades\View;
 
@@ -162,18 +164,49 @@
         ->where('quadrims.rim_id', $request->tire_id)
         ->first();
 
-      if ($request->quantity) {
-        $cart = CartController::addProduct($this->model, $rim->rim_id, $request->quantity);
-      } else {
-        $cart = CartController::addProduct($this->model, $rim->rim_id, $this->cartQty);
+      if (!$rim) {
+        return response()->json(['error' => 'Rim not found'], 404);
       }
 
-      $quantity = Cart::count();
-      $total_sum = str_replace([',', '.00'], '', Cart::total());
-      $bought = ($request->quantity) ? $request->quantity : $this->cartQty;
+      $bought = $request->quantity ? (int) $request->quantity : $this->cartQty;
+      $cart = session()->get('cart', ['products' => []]);
 
-      echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
+      if (isset($cart['products'][$rim->rim_id])) {
+        $cart['products'][$rim->rim_id]['quantity'] += $bought;
+      } else {
+        $cart['products'][$rim->rim_id] = [
+          'id' => $rim->rim_id,
+          'name' => $rim->fullName,
+          'make_id' => $rim->make_id,
+          'd1' => $rim->d1,
+          'd3' => $rim->d3,
+          'type' => 'Kvadraciklu disks',
+          'url' => $request->tire_url,
+          'image' => Image::image('quadr-rim', $rim->make_id),
+          'price' => $rim->price2,
+          'quantity' => $bought,
+          'availability' => $rim->dotAvailable,
+          'category' => $this->model,
+        ];
+      }
 
+      $totalSum = 0;
+      foreach ($cart['products'] as $product) {
+        $totalSum += $product['quantity'] * $product['price'];
+      }
+      $cart['total_sum'] = $totalSum;
+
+      session()->put('cart', $cart);
+      Cookie::queue('cart', json_encode($cart), 43200);
+      ShopController::updateCartInDatabase($totalSum);
+      event(new CartUpdated());
+
+      return response()->json([
+        'cart' => $cart,
+        'total_sum' => $totalSum,
+        'quantity' => array_sum(array_column($cart['products'], 'quantity')),
+        'bought' => $bought,
+      ]);
     }
 
     public function getRimOptions()

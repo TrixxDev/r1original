@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Promo;
-use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
 
 class PromoCodeController extends Controller
 {
@@ -121,7 +119,7 @@ class PromoCodeController extends Controller
 
     $data = [];
 
-    $total_price = (int) substr(Cart::subTotal(), 0, -3);
+    $total_price = (int) ($request->totalSum ?? session()->get('cart.total_sum', 0));
 
     if (!$promo) {
       $data['success'] = 'false';

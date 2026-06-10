@@ -6,6 +6,8 @@
   "license": "MIT",
   "require": {
     "php": "^7.3|^8.0",
+    "ext-curl": "*",
+    "ext-json": "*",
     "beyondcode/laravel-websockets": "*",
     "fideloper/proxy": "^4.4",
     "fruitcake/laravel-cors": "^3.0",
@@ -15,15 +17,12 @@
     "laravel/sanctum": "^2.11",
     "laravel/tinker": "^2.5",
     "laravel/ui": "^3.4",
-    "livewire/livewire": "^2.11",
     "phpmailer/phpmailer": "^6.8",
     "phpoffice/phpspreadsheet": "^1.28",
     "predis/predis": "^2.1",
     "pusher/pusher-php-server": "~3.0",
     "spatie/laravel-activitylog": "^3.17",
-    "spatie/laravel-permission": "*",
-    "ext-json": "*",
-    "ext-curl": "*"
+    "spatie/laravel-permission": "*"
   },
   "require-dev": {
     "facade/ignition": "^2.5",
