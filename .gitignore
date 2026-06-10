@@ -5,6 +5,7 @@
 /vendor
 /storage/framework/sessions/*
 .env
+.env1
 .env.backup
 .env.save
 .env.docker
@@ -47,8 +48,12 @@ r1.sql
 _analog_*
 _clients_*.csv
 _brand_tiers.json
+GDYR_*.csv
 _tmp_*
 _ssh_*
+_diff_report.txt
+__pycache__/
+*.pyc
 *.xlsx
 *.xls
 korekt_*.csv
@@ -75,3 +80,15 @@ config/logging.php.save
 
 # Legacy / vendor copies in tree
 /var/
+
+# Internal dev notes (keep README*.md and DOCKER_*.md)
+/АНАЛИЗ_*.md
+/БЫСТРЫЙ_*.md
+/ИНСТРУКЦИЯ_*.md
+/КАК_*.md
+/ПРОСТОЕ_*.md
+/РЕЗЮМЕ_*.md
+/РЕШЕНИЕ_*.md
+/СПИСОК_*.md
+/ФАЙЛЫ_*.md
+/ФИНАЛЬНЫЕ_*.md
