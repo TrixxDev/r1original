@@ -15,25 +15,40 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-/xml/
 /public/img/
 /public/images/*
 !/public/images/brand-logos/
 !/public/images/brand-logos/**
 /.idea/
-/public/starco.sync.xml
 /resources/views/pages/*
 /app/Http/Controllers/HomeController2.php
+/app/Http/Controllers/AutoTireController2.php
+/public/tests/
 /resources/views/testing33.blade.php
 /resources/views/pages/
 
 # Secrets and local credentials
-db_access.txt
+.ftpquota
+/db_access.txt
+
+# XML feeds, sync dumps, generated exports
+*.xml
+!phpunit.xml
+/xml/
+
+# Dev-only scripts (run locally, not deployed)
+/scripts/
+/tools/
+/postman/
 ШПАРГАЛКА_БД.txt
 public/brand-logos.zip
 public/megaparser.js
 public/RecordController.php
-public/rz.auto.xml
+public/migrate-sessions.php
+public/session-maintenance.php
+migrate-sessions.php
+.htaccess.backup
+public/.htaccess.backup
 *.pem
 *.key
 
