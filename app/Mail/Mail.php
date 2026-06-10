@@ -37,7 +37,7 @@ class Mail extends Mailable implements ShouldQueue
    */
   public function build()
   {
-    return $this->from(env('MAIL_USERNAME'), env('MAIL_FROM_NAME'))
+    return $this->from(config('mail.from.address') ?: env('MAIL_USERNAME'), config('mail.from.name') ?: env('MAIL_FROM_NAME'))
                 ->bcc(['karlis@r1riepas.lv', 'indrikis38@gmail.com'])
                 ->subject(env('MAIL_SUBJECT'))
                 ->html($this->htmlContent);

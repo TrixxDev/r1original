@@ -19,8 +19,8 @@
 
     public function __construct(){
       $this->id = -1;
-      $this->senderAddress = env('MAIL_USERNAME');
-      $this->senderName = env('MAIL_FROM_NAME');
+      $this->senderAddress = config('mail.from.address') ?: env('MAIL_USERNAME');
+      $this->senderName = config('mail.from.name') ?: env('MAIL_FROM_NAME');
       $this->recipients = [];
       $this->BCCs = [];
       $this->attachments=[];
@@ -41,36 +41,33 @@
 
     public function send()
     {
-//      Mail::to($this->recipients)->send(new \App\Mail\Mail($mailText));
-      EMail::send([], [], function ($message) {
+      try {
+        EMail::send([], [], function ($message) {
 
-        foreach ($this->recipients as $recipient){
-          $message->to($recipient['email'],trim($recipient['name']));
-        }
+          foreach ($this->recipients as $recipient){
+            $message->to($recipient['email'],trim($recipient['name']));
+          }
 
-        foreach ($this->BCCs as $recipient){
-          $message->bcc($recipient['email'],trim($recipient['name']));
-        }
-        $message->subject($this->subject);
-        $message->setBody($this->message, 'text/html');
-        $message->from($this->senderAddress, $this->senderName);
+          foreach ($this->BCCs as $recipient){
+            $message->bcc($recipient['email'],trim($recipient['name']));
+          }
+          $message->from($this->senderAddress, $this->senderName);
+          $message->subject($this->subject);
+          $message->setBody($this->message, 'text/html');
 
-        foreach ($this->attachmentStrings as $attachment) {
-          $message->attachData($attachment['data'], $attachment['name'], [
-            'mime' => $attachment['mime']
-          ]);
-        }
-
-        try {
-          Audit::audit(AUDIT_SEVERITY_INFO, AUDIT_FACILITY_MESSAGE, -1, 0, "Mail sent", $this);
-          return true;
-        } catch (Exception $e) {
-          Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, -1, 0, "Mail delivery failed: " . $e->getMessage(), $this);
-          return false;
-        }
-      });
-
-
+          foreach ($this->attachmentStrings as $attachment) {
+            $message->attachData($attachment['data'], $attachment['name'], [
+              'mime' => $attachment['mime']
+            ]);
+          }
+        });
+        
+        Audit::audit(AUDIT_SEVERITY_INFO, AUDIT_FACILITY_MESSAGE, -1, 0, "Mail sent", $this);
+        return true;
+      } catch (\Exception $e) {
+        Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, -1, 0, "Mail delivery failed: " . $e->getMessage(), $this);
+        return false;
+      }
     }
 
     public function _compare_skip(){
@@ -117,4 +114,5 @@
       return $changes;
     }
   }
+
 

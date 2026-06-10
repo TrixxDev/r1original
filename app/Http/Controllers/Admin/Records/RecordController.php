@@ -13,6 +13,8 @@ use App\Models\Slot;
 use App\Models\User;
 use App\Models\Workingday;
 use Carbon\Carbon;
+use App\Services\AppointmentNotifyService;
+use App\Services\WorkingDaysProvisioner;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Helper\Utility;
@@ -377,6 +379,8 @@ class RecordController extends Controller
         $slot->comment = $request->f_slotcomment;
         $slot->save();
 
+        (new AppointmentNotifyService)->notifyRecordCreated($slot->date, (int) $slot->queue_id, (int) $slot->iorder);
+
         $return['status'] = 1;
 
         $json = json_encode($return);
@@ -404,15 +408,18 @@ class RecordController extends Controller
         switch ($f_status) {
           case (0): {
             $slot->takenby = null;
+            $slot->cancel_id = null;
             break;
           }
           case (1): {
             $slot->takenby = json_encode(['ownerPhone' => 'xxxxx', 'plate' => null, 'vehicleMake' => null, 'vehicleModel' => null]);
+            $slot->cancel_id = null;
             break;
           }
         }
 
         $slot->save();
+        (new AppointmentNotifyService)->notifyRecordCreated($slot->date, (int) $slot->queue_id, (int) $slot->iorder);
       }
 
 
@@ -501,6 +508,8 @@ class RecordController extends Controller
     }
     $currentDate = strtotime($date);
 
+    app(WorkingDaysProvisioner::class)->ensure(max($visibleDays, WorkingDaysProvisioner::DEFAULT_HORIZON_DAYS));
+
     foreach ($offices as $office) {
       $office->loadQueues();
       foreach ($office->_queues as $queue){
@@ -541,13 +550,19 @@ class RecordController extends Controller
   public function reservations_ajax(Request $request)
   {
     $dopParams = $request->input('dopParams');
-    $result = array_reduce(explode('&', $request->input('formData')), function ($acc, $data) {
-      [$key, $value] = explode('=', $data);
-      $acc[$key] = $value;
-      return $acc;
-    }, []);
+    $rawFormData = $request->input('formData', '');
+    $formDataArray = [];
+    if (is_array($rawFormData)) {
+      $formDataArray = $rawFormData;
+    } else {
+      parse_str($rawFormData, $formDataArray);
+    }
 
-    $result = json_decode(json_encode($result), FALSE);
+    $result = json_decode(json_encode($formDataArray), FALSE);
+    // Protect against accidental double URL-encoding (e.g. "%25" shown instead of "%").
+    if (isset($result->slotcomment) && is_string($result->slotcomment) && $result->slotcomment !== 'null') {
+      $result->slotcomment = $this->maybeUrlDecode($result->slotcomment);
+    }
     $f_statuscase = (int) $request->input('f_statuscase');
 
     $today = date('Y-m-d');
@@ -737,6 +752,7 @@ class RecordController extends Controller
 //          $slot->edittime = now();
 //          $slot->edituser = Auth::user() ? Auth::user()->id : 0;
 //          $slot->save();
+          (new AppointmentNotifyService)->notifyRecordCreated($notifyDate, $notifyQueueId, $notifyIorder);
           return json_encode(['status' => $result->status, 'deleted_slot_admin' => true, 'comment' => $result->slotcomment ?? '']);
         } else {
           $slot->delete();
@@ -746,12 +762,14 @@ class RecordController extends Controller
           $slot->iorder = $dopParams['iorder'];
           $slot->status = 0;
           $slot->takenby = null;
+          $slot->cancel_id = null;
           $slot->comment = $result->slotcomment;
           $slot->createtime = now();
           $slot->createuser = Auth::user() ? Auth::user()->id : 0;
           $slot->edittime = now();
           $slot->edituser = Auth::user() ? Auth::user()->id : 0;
           $slot->save();
+          (new AppointmentNotifyService)->notifyRecordCreated($slot->date, (int) $slot->queue_id, (int) $slot->iorder);
           return json_encode(['status' => $result->status, 'edited_slot_admin' => true, 'comment' => $result->slotcomment ?? '']);
         }
       } else {
@@ -763,12 +781,14 @@ class RecordController extends Controller
             $slot->iorder = $dopParams['iorder'];
             $slot->status = 0;
             $slot->takenby = null;
+            $slot->cancel_id = null;
             $slot->comment = $result->slotcomment;
             $slot->createtime = now();
             $slot->createuser = Auth::user() ? Auth::user()->id : 0;
             $slot->edittime = now();
             $slot->edituser = Auth::user() ? Auth::user()->id : 0;
             $slot->save();
+            (new AppointmentNotifyService)->notifyRecordCreated($slot->date, (int) $slot->queue_id, (int) $slot->iorder);
             return json_encode(['status' => $result->status, 'edited_slot_admin' => true, 'comment' => $result->slotcomment ?? '']);
           }
         } else {
@@ -778,9 +798,11 @@ class RecordController extends Controller
           $slot->iorder = $dopParams['iorder'];
           $slot->status = 0;
           $slot->takenby = null;
+          $slot->cancel_id = null;
           $slot->edittime = now();
           $slot->edituser = Auth::user() ? Auth::user()->id : 0;
           $slot->save();
+          (new AppointmentNotifyService)->notifyRecordCreated($slot->date, (int) $slot->queue_id, (int) $slot->iorder);
           return json_encode(['status' => $result->status, 'edited_slot_admin' => true, 'comment' => $result->slotcomment ?? '']);
         }
       }
@@ -804,12 +826,7 @@ class RecordController extends Controller
 
       $emptyData = true; // All time data will be empty
 
-      $formDataArray = array_reduce(explode('&', $request->input('formData')), function ($acc, $data) {
-        [$key, $value] = explode('=', $data);
-        $acc[$key] = $value;
-        return $acc;
-      }, []);
-
+      // $formDataArray prepared earlier to preserve encoded values.
 
       $move_slot = false;
 
@@ -819,12 +836,96 @@ class RecordController extends Controller
 
 
       $formData = json_decode(json_encode($formDataArray), FALSE);
-      if (!isset($formData->cancelId)) {
-        $formData->cancelId = $this->getRandomHash() . str_replace(':', '', $dopParams['new_time']);
+      //if (!isset($formData->cancelId)) {
+      //  $formData->cancelId = $this->getRandomHash() . str_replace(':', '', $dopParams['new_time']);
+      //}
+      //$newFormData = json_encode($formData);
+      $timeForCancelId = $dopParams['new_time'] ?: ($dopParams['time'] ?? '');
+      $timeSuffix = preg_replace('/[^0-9]/', '', $timeForCancelId);
+      if (strlen($timeSuffix) !== 4) {
+        $timeSuffix = str_pad(substr($timeSuffix, -4), 4, '0', STR_PAD_LEFT);
       }
-      $newFormData = json_encode($formData);
+
+      $currentCancelId = null;
+      if (!empty($formData->cancelId)) {
+        $currentCancelId = $formData->cancelId;
+      } elseif (!empty($slot) && !empty($slot->takenby)) {
+        $takenPayload = json_decode($slot->takenby);
+        if ($takenPayload && isset($takenPayload->cancelId)) {
+          $currentCancelId = $takenPayload->cancelId;
+        }
+      }
+
+      $baseHash = null;
+      if ($currentCancelId && strlen($currentCancelId) > 4) {
+        $baseHash = substr($currentCancelId, 0, -4);
+      }
+      if (!$baseHash) {
+        $baseHash = $this->getRandomHash();
+      }
+
+      $formData->cancelId = $baseHash . $timeSuffix;
+      $excludeSlotId = (!empty($slot) && !empty($slot->slot_id)) ? (int) $slot->slot_id : null;
+      do {
+        $q = Slot::where('cancel_id', $formData->cancelId);
+        if ($excludeSlotId !== null) {
+          $q->where('slot_id', '!=', $excludeSlotId);
+        }
+        if (!$q->exists()) {
+          break;
+        }
+        $baseHash = $this->getRandomHash();
+        $formData->cancelId = $baseHash . $timeSuffix;
+      } while (true);
+
       $discount = ($formData->slotcomment === 'null') ? null : $formData->slotcomment;
-      unset($formData->service, $formData->status, $formData->slotcomment, $formDataArray['status'], $formDataArray['slotcomment']);
+      if (is_string($discount)) {
+        $discount = $this->maybeUrlDecode($discount);
+      }
+
+      // Car-info snapshot: store in dedicated Slot columns (not inside takenby).
+      $carInfoJson = null;
+      $carInfoVnr = null;
+      $carInfoFetchedAt = null;
+      $carInfoSource = null;
+      if (isset($formData->car_info_json)) {
+        $maxLen = 50000;
+        $json = $formData->car_info_json;
+        if (is_string($json) && $json !== '' && strlen($json) <= $maxLen) {
+          json_decode($json, true);
+          if (json_last_error() === JSON_ERROR_NONE) {
+            $carInfoJson = $json;
+            $carInfoSource = (isset($formData->car_info_source) && is_string($formData->car_info_source))
+              ? substr(trim($formData->car_info_source), 0, 32)
+              : 'api/car-info';
+
+            $rawVnr = (isset($formData->car_info_vnr) && is_string($formData->car_info_vnr)) ? $formData->car_info_vnr : ($formData->lic_plate ?? '');
+            $normalized = strtoupper(preg_replace('/[\s-]+/', '', trim((string) $rawVnr)));
+            if ($normalized !== '' && preg_match('/^[A-Z0-9]{2,16}$/', $normalized) === 1) {
+              $carInfoVnr = $normalized;
+            }
+
+            $rawFetched = (isset($formData->car_info_fetched_at) && is_string($formData->car_info_fetched_at)) ? trim($formData->car_info_fetched_at) : '';
+            if ($rawFetched !== '') {
+              try {
+                $carInfoFetchedAt = Carbon::parse($rawFetched)->toDateTimeString();
+              } catch (\Exception $_e) {
+                $carInfoFetchedAt = null;
+              }
+            }
+          }
+        }
+
+        // Never store car-info inside takenby going forward.
+        unset($formData->car_info_json, $formData->car_info_fetched_at, $formData->car_info_vnr, $formData->car_info_source);
+        unset($formDataArray['car_info_json'], $formDataArray['car_info_fetched_at'], $formDataArray['car_info_vnr'], $formDataArray['car_info_source']);
+      }
+
+      // Keep `service` inside takenby JSON (used by UI coloring/labels).
+      // Only strip fields that are stored elsewhere on the Slot itself.
+      unset($formData->status, $formData->slotcomment, $formDataArray['status'], $formDataArray['slotcomment']);
+      $newFormDataJson = json_encode($formData, JSON_UNESCAPED_UNICODE);
+      $cancelIdForSlot = !empty($formData->cancelId) ? (string) $formData->cancelId : null;
       foreach ($formData as $data) {
         if (!empty($data)) {
           // Check if form contains user data
@@ -847,16 +948,24 @@ class RecordController extends Controller
           $slot->iorder = $dopParams['iorder'];
           $slot->status = 1;
           $slot->takenby = null;
+          $slot->cancel_id = null;
           $slot->comment = $discount;
           $slot->createtime = $time_created;
           $slot->createuser = $user_created;
           $slot->edittime = now();
           $slot->edituser = Auth::user() ? Auth::user()->id : 0;
+          // Clear car-info columns for empty bookings.
+          $slot->car_info_json = null;
+          $slot->car_info_vnr = null;
+          $slot->car_info_fetched_at = null;
+          $slot->car_info_source = null;
           $slot->save();
 
+          (new AppointmentNotifyService)->notifyRecordCreated($slot->date, (int) $slot->queue_id, (int) $slot->iorder);
           return json_encode(['status' => 1, 'edited_slot_admin' => true, 'new_iorder' => (string) $iorder]);
 
         } else {
+	        $existingComment = $slot->comment ?? null;
           if ($move_slot) {
 
             $newIorder = Slot::getSlotNumber($dopParams['new_time'], $dopParams['new_date'], $dopParams['new_queue']);
@@ -882,12 +991,12 @@ class RecordController extends Controller
             $slot_id = $slot->slot_id;
             $time_created = $slot->createtime;
             $user_created = $slot->createuser;
-            $newFormData = json_decode($slot->takenby);
-            $newCancelId = substr($newFormData->cancelId, 0, -4);
-            $newCancelId = $newCancelId . str_replace(':', '', $dopParams['new_time']);
-            $newFormData->cancelId = $newCancelId;
-            $newFormData = json_encode($newFormData);
-            $new_discount = $slot->comment;
+            //$newFormData = json_decode($slot->takenby);
+            //$newCancelId = substr($newFormData->cancelId, 0, -4);
+            //$newCancelId = $newCancelId . str_replace(':', '', $dopParams['new_time']);
+            //$newFormData->cancelId = $newCancelId;
+            //$newFormData = json_encode($newFormData);
+            $new_discount = $existingComment;
             if (!$new_slot) {
               $new_slot = new Slot();
             }
@@ -898,15 +1007,23 @@ class RecordController extends Controller
             $new_slot->date = $dopParams['new_date'];
             $new_slot->iorder = $newIorder;
             $new_slot->status = 1;
-            $new_slot->takenby = $newFormData;
+            $new_slot->takenby = $newFormDataJson;
+            $new_slot->cancel_id = $cancelIdForSlot;
             $new_slot->comment = $new_discount;
             $new_slot->createtime = $time_created;
             $new_slot->createuser = $user_created;
             $new_slot->edittime = now();
             $new_slot->edituser = Auth::user() ? Auth::user()->id : 0;
+            if ($carInfoJson !== null) {
+              $new_slot->car_info_json = $carInfoJson;
+              $new_slot->car_info_vnr = $carInfoVnr;
+              $new_slot->car_info_fetched_at = $carInfoFetchedAt;
+              $new_slot->car_info_source = $carInfoSource;
+            }
 //            dd($new_slot);
             $new_slot->save();
 
+            (new AppointmentNotifyService)->notifyRecordCreated($dopParams['new_date'], (int) $dopParams['new_queue'], (int) $newIorder);
             return json_encode(['status' => 1, 'moved_slot_admin' => true, 'new_iorder' => (string) $newIorder]);
           } else {
             // Ja slots nav jāpārvieto
@@ -921,14 +1038,22 @@ class RecordController extends Controller
             $slot->date = $dopParams['date'];
             $slot->iorder = $dopParams['iorder'];
             $slot->status = 1;
-            $slot->takenby = $newFormData;
+            $slot->takenby = $newFormDataJson;
+            $slot->cancel_id = $cancelIdForSlot;
             $slot->comment = $discount;
             $slot->createtime = $time_created;
             $slot->createuser = $user_created;
             $slot->edittime = now();
             $slot->edituser = Auth::user() ? Auth::user()->id : 0;
+            if ($carInfoJson !== null) {
+              $slot->car_info_json = $carInfoJson;
+              $slot->car_info_vnr = $carInfoVnr;
+              $slot->car_info_fetched_at = $carInfoFetchedAt;
+              $slot->car_info_source = $carInfoSource;
+            }
             $slot->save();
 
+            (new AppointmentNotifyService)->notifyRecordCreated($slot->date, (int) $slot->queue_id, (int) $slot->iorder);
             return json_encode(['status' => 1, 'edited_slot_admin' => true, 'new_iorder' => (string) $iorder]);
           }
         }
@@ -939,13 +1064,26 @@ class RecordController extends Controller
         $slot->date = $dopParams['date'];
         $slot->iorder = $dopParams['iorder'];
         $slot->status = 1;
-        $slot->takenby = ($emptyData) ? null : $newFormData;
+        $slot->takenby = ($emptyData) ? null : $newFormDataJson;
+        $slot->cancel_id = $emptyData ? null : $cancelIdForSlot;
         $slot->comment = $discount;
         $slot->createtime = now();
         $slot->createuser = Auth::user() ? Auth::user()->id : 0;
         $slot->edittime = now();
         $slot->edituser = Auth::user() ? Auth::user()->id : 0;
+        if ($emptyData) {
+          $slot->car_info_json = null;
+          $slot->car_info_vnr = null;
+          $slot->car_info_fetched_at = null;
+          $slot->car_info_source = null;
+        } elseif ($carInfoJson !== null) {
+          $slot->car_info_json = $carInfoJson;
+          $slot->car_info_vnr = $carInfoVnr;
+          $slot->car_info_fetched_at = $carInfoFetchedAt;
+          $slot->car_info_source = $carInfoSource;
+        }
         $slot->save();
+        (new AppointmentNotifyService)->notifyRecordCreated($slot->date, (int) $slot->queue_id, (int) $slot->iorder);
         return json_encode(['status' => 1, 'edited_slot_admin' => true, 'new_iorder' => (string) $iorder]);
 
         // Vajag uztaisīt IF'u ar pārbaudi uz to vai ir emptyData, lai returnā padotu dažādus datus
@@ -958,11 +1096,13 @@ class RecordController extends Controller
       $slot->iorder = $dopParams['iorder'];
       $slot->status = 3;
       $slot->takenby = null;
+      $slot->cancel_id = null;
       $slot->createtime = now();
       $slot->createuser = Auth::user() ? Auth::user()->id : 0;
       $slot->edittime = now();
       $slot->edituser = Auth::user() ? Auth::user()->id : 0;
       $slot->save();
+      (new AppointmentNotifyService)->notifyRecordCreated($slot->date, (int) $slot->queue_id, (int) $slot->iorder);
       return json_encode(['status' => $result->status, 'edited_slot_admin' => true, 'new_iorder' => $dopParams['iorder']]);
     }
   }
@@ -972,40 +1112,18 @@ class RecordController extends Controller
     $value = Str::random(32);
     $hash = hash('sha256', $value);
 
-    // check if hash is already taken
-    $isTaken = $this->isHashTaken($hash);
-    if ($isTaken) {
-      // if hash is taken, hash the value again
-      $hash = hash('sha256', $hash . $value);
-
-      // keep hashing until a unique hash is found
-      while ($this->isHashTaken($hash)) {
-        $hash = hash('sha256', $hash . $value);
-      }
-    }
-
     return substr($hash, 0, 20);
   }
 
-  public function isHashTaken($value): bool
+  /**
+   * Decode only when the string looks URL-encoded (contains %XX).
+   * This avoids turning literal '+' into spaces for normal text.
+   */
+  private function maybeUrlDecode(?string $value): ?string
   {
-    static $takenHashes = []; // static variable to store taken numbers
-
-    $slots = Slot::select('takenby')->where('takenby', 'like', '%"cancelId":%')->get();
-    foreach ($slots as $slot) {
-      $takenBy = json_decode($slot->takenby);
-      if (!empty($takenBy)) {
-        if (property_exists($takenBy, 'cancelId')) {
-          $takenHashes[] = $takenBy->cancelId;
-        }
-      }
-    }
-
-    if (in_array($value, $takenHashes)) {
-      return true;
-    }
-
-    return false;
+    if ($value === null) return null;
+    if (preg_match('/%[0-9A-Fa-f]{2}/', $value) !== 1) return $value;
+    return urldecode($value);
   }
 
 }

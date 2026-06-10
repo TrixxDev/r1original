@@ -8,7 +8,7 @@
     <a data-toggle="tooltip" data-html="true" class="tire-table-link"
        title='{!! App\Helper\Image::show('moto', $tire->make_id) !!}'
        href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
-       data-content="{{ $tire->fullName }}" data-article="{{ $tire->article }}">
+       data-content="{{ $tire->fullName }}" data-article="{{ $tire->article }}" data-quantity="4">
       {{ $tire->title }}
     </a>
   </td>
@@ -48,8 +48,8 @@
   <td class="shopping-cart-col">
     <div class="clearfix atc_div text-right">
       <button class="cart-shopping-button" data-toggle="modal"
-              @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
-              @endif data-info="{{ $tire->tire_id }}"><i
+              @hasrole('administrators') data-target="#" @else data-target="#blockcart-modal"
+              @endhasrole data-info="{{ $tire->tire_id }}"><i
           class="material-icons">add_shopping_cart</i>
       </button>
     </div>

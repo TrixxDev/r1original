@@ -81,10 +81,10 @@
           <section class="facet clearfix facet--availability" style="padding-top: 0;">
             <ul class="collapse">
               <li class="show-selected-checkbox-li">
-                <label class="facet-label" for="show-selected-checkbox"
+                <label class="facet-label" for="show-selected-checkbox-mobile"
                        style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                           <span class="custom-checkbox">
-                            <input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces" disabled>
+                            <input type="checkbox" value="only_selected" class="show-selected-filter tire-table-checkbox" id="show-selected-checkbox-mobile" title="Rādīt tikai atzīmētās preces" @if (request()->show_selected) checked @endif disabled>
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>
@@ -142,13 +142,17 @@
                       </span>
             </div>
 
-            <ul id="facet_code" class="collapse">
+            <ul id="facet_type" class="collapse">
+              @php $selectedMotoTypes = \App\Models\Moto::parseTypeFilterParam(request()->type ?? null); @endphp
               @foreach ($types as $index => $value)
-                @php $index = strtolower($index); $value = strtolower($value) @endphp
-                <li data-label="{{ $index }}">
-                  <label class="facet-label" for="facet_for_{{ $index }}">
+                @php
+                  $typeSlug = str_replace(' ', '', strtolower($value));
+                  $typeInputId = preg_replace('/[^a-z0-9]+/', '', $typeSlug) ?: 'type';
+                @endphp
+                <li data-label="{{ $typeSlug }}">
+                  <label class="facet-label" for="facet_for_{{ $typeInputId }}">
                           <span class="custom-checkbox">
-                            <input id="facet_for_{{ $index }}" data-search-url="" @if (strpos(request()->type, $value) !== false) checked="" @endif value="{{ $value }}" data-for="prod-type" data-value="{{ $value }}" type="checkbox">
+                            <input id="facet_for_{{ $typeInputId }}" data-search-url="" @if (in_array($typeSlug, $selectedMotoTypes)) checked="" @endif value="{{ $value }}" data-for="prod-type" data-value="{{ $typeSlug }}" type="checkbox">
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>
@@ -157,8 +161,21 @@
                   </label>
                 </li>
               @endforeach
+              <li data-label="kamera">
+                <label class="facet-label" for="facet_for_kamera">
+                  <span class="custom-checkbox">
+                    <input id="facet_for_kamera" data-search-url="" @if (in_array((string) request()->camera, ['1', 'true'], true)) checked="" @endif value="1" data-for="prod-camera" data-value="1" type="checkbox">
+                    <span class="ps-shown-by-js">
+                      <i class="material-icons checkbox-checked"></i>
+                    </span>
+                  </span>
+                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Kamera</a>
+                </label>
+              </li>
             </ul>
           </section>
+
+          @include('components.moto-code-filter')
         </div>
       </div>
     </div>

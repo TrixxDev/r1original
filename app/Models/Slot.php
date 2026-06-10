@@ -16,6 +16,23 @@ class Slot extends Model
 
     public $timestamps = false;
 
+    /**
+     * Stable key for matching preloaded slots to the reservation grid (queue + day + order).
+     * Normalizes date strings vs Carbon and integer-ish ids so array lookups match the Blade loop.
+     */
+    public static function reservationGridKey($queueId, $date, $iorder): string
+    {
+        if ($date instanceof \DateTimeInterface) {
+            $d = $date->format('Y-m-d');
+        } elseif (is_string($date) && strlen($date) >= 10) {
+            $d = substr($date, 0, 10);
+        } else {
+            $d = (string) $date;
+        }
+
+        return (int) $queueId . '|' . $d . '|' . (int) $iorder;
+    }
+
     public function _compare_skip(){
       return array();
     }
@@ -80,7 +97,37 @@ class Slot extends Model
       $skip_attrs = $this->_compare_skip();
 
       $changes = array();
+//      $fillable = $this->fillable;
+//      $dates = $this->getDates();
+//      $available_attrs = array_merge($fillable, $dates);
+
+//      $available_attrs[] = $this->getKeyName();
+
+
       foreach ($this->getOriginal() as $attribute => $value){
+//	if (!in_array($attribute, $available_attrs)) {
+//		continue;
+//	}
+
+//	if (in_array($attribute, $skip_attrs)) {
+//		continue;
+//	}
+
+//	try {
+//		if (!empty($old_instance->getOriginal())) {
+//			$old_value = $old_instance->getOriginal()[$attribute] ?? null;
+
+//			if ($old_value !== $value) {
+//				$changes[$this->_compare_get_name($attribute, $this, $old_instance)] = 
+//					$this->_compare_get_values($attribute, $this, $old_instance);
+//			}
+//		} else {
+//			$changes[$this->_compare_get_name($attribute, $this, false)] = 
+//				$this->_compare_get_values($attribute, $this, false);
+//		}
+//	} catch (\Exception $e) {
+//		continue;
+//	}
         if (!empty($old_instance->getOriginal())) {
           if ($old_instance->getOriginal()[$attribute] != $value){
             // ir bijušas izmaiņas

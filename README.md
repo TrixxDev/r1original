@@ -1,62 +1,201 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# 🔒 Простая блокировка слотов для R1 Riepas
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Защита от двойных записей на один и тот же слот времени.
 
-## About Laravel
+## 🎯 Что это решает
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- ✅ Два пользователя не могут забронировать один слот
+- ✅ Резервация на 5 минут при клике
+- ✅ Предупреждения за 30 и 10 секунд до истечения
+- ✅ Возможность продлить сессию
+- ✅ Автоматическая отмена при закрытии страницы
+- ✅ Защита от race conditions
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Быстрый старт
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Запустить миграцию
+```bash
+php artisan migrate
+```
 
-## Learning Laravel
+### 2. Обновить RecordController
+Открыть `app/Http/Controllers/Records/RecordController.php` и следовать инструкциям из `БЫСТРЫЙ_СТАРТ.md`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 3. Очистить кеш
+```bash
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 4. Тестировать
+Открыть 2 браузера и попробовать забронировать один слот одновременно.
 
-## Laravel Sponsors
+## 📚 Документация
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+- **[БЫСТРЫЙ_СТАРТ.md](БЫСТРЫЙ_СТАРТ.md)** - Установка за 5 минут
+- **[ФИНАЛЬНЫЕ_ШАГИ.md](ФИНАЛЬНЫЕ_ШАГИ.md)** - Что осталось сделать
+- **[КАК_ЭТО_РАБОТАЕТ.md](КАК_ЭТО_РАБОТАЕТ.md)** - Схемы и объяснение
+- **[ПРОСТОЕ_РЕШЕНИЕ_БЛОКИРОВКИ.md](ПРОСТОЕ_РЕШЕНИЕ_БЛОКИРОВКИ.md)** - Подробное описание
+- **[СПИСОК_ФАЙЛОВ.md](СПИСОК_ФАЙЛОВ.md)** - Все файлы проекта
 
-### Premium Partners
+## 🎨 Как это выглядит
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
+### Предупреждение за 30 секунд:
+```
+┌─────────────────────────────────────┐
+│  Jūsu sesija beigsies pēc 00:30     │
+│  sekundēm. Vai vēlaties turpināt    │
+│  sesiju?                             │
+│                                      │
+│  [Iziet]  [Turpināt]                │
+└─────────────────────────────────────┘
+```
 
-## Contributing
+### Истечение времени:
+```
+┌─────────────────────────────────────┐
+│  Jūsu sesija internetbankā ir       │
+│  beigusies. Drošības nolūkos,       │
+│  lūdzu, aizveriet šo interneta      │
+│  pārlūkprogrammas logu.             │
+│                                      │
+│           [Labi]                     │
+└─────────────────────────────────────┘
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Слот занят:
+```
+┌─────────────────────────────────────┐
+│              😔                      │
+│         Слот занят                   │
+│                                      │
+│  Время 10:00 уже резервируется      │
+│  другим пользователем.              │
+│                                      │
+│  [Выбрать другое время]             │
+└─────────────────────────────────────┘
+```
 
-## Code of Conduct
+## 🏗️ Архитектура
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```
+Клик на слот
+    ↓
+AJAX → /pieraksts/reserve-slot
+    ↓
+SlotLockingController::reserve()
+    ↓
+SlotReservationService::reserveSlot()
+    ↓
+DB: lockForUpdate() + version check
+    ↓
+Резервация на 5 минут
+    ↓
+Открывается форма записи
+    ↓
+Таймер с предупреждениями
+    ↓
+Подтверждение → fillSlot()
+```
 
-## Security Vulnerabilities
+## 📁 Основные файлы
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```
+app/
+├── Http/Controllers/Records/
+│   └── SlotLockingController.php       # Контроллер
+└── Services/
+    └── SlotReservationService.php      # Бизнес-логика
 
-## License
+database/migrations/
+└── 2026_01_15_000001_add_slot_locking_fields.php
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+public/js/
+└── simple-slot-lock.js                 # Frontend
+
+routes/
+└── web.php                             # +3 маршрута
+
+resources/views/records/
+└── index.blade.php                     # +1 скрипт
+```
+
+## 🔧 Технологии
+
+- **Backend**: Laravel 8+, PHP 7.4+
+- **Frontend**: Vanilla JavaScript (ES6+)
+- **Database**: MySQL 5.7+
+- **Блокировка**: Оптимистичная (версионирование)
+
+## ⚙️ Настройки
+
+### Изменить время резервации:
+`app/Services/SlotReservationService.php`
+```php
+const RESERVATION_TIMEOUT = 5; // минут
+```
+
+### Изменить время предупреждений:
+`public/js/simple-slot-lock.js`
+```javascript
+if (totalSeconds === 30 || totalSeconds === 10) {
+    // Изменить на нужные значения
+}
+```
+
+## 🐛 Troubleshooting
+
+### Ошибка 404 на /pieraksts/reserve-slot
+```bash
+php artisan route:clear
+php artisan cache:clear
+```
+
+### Ошибка "Column 'version' not found"
+```bash
+php artisan migrate
+```
+
+### JavaScript не загружается
+Проверить что файл существует:
+```bash
+dir public\js\simple-slot-lock.js
+```
+
+### Модальные окна не появляются
+Открыть консоль браузера (F12) и проверить ошибки
+
+## 📊 Статистика
+
+- **Размер кода**: ~29 KB
+- **Строк кода**: ~920
+- **Файлов**: 6 (4 новых + 2 модифицированных)
+- **Время установки**: 5 минут
+- **Зависимости**: 0 (только Laravel)
+
+## 🎯 Преимущества решения
+
+1. **Простота** - Нет WebSocket, Node.js, Redis
+2. **Надежность** - Проверенная оптимистичная блокировка
+3. **Безопасность** - Защита от race conditions
+4. **UX** - Понятные модальные окна на латышском
+5. **Производительность** - Минимальная нагрузка на сервер
+
+## 📞 Поддержка
+
+При возникновении проблем:
+1. Проверить логи: `storage/logs/laravel.log`
+2. Проверить консоль браузера (F12)
+3. Проверить Network tab в DevTools
+4. Прочитать `ФИНАЛЬНЫЕ_ШАГИ.md`
+
+## 📄 Лицензия
+
+Проект для R1 Riepas
+
+---
+
+**Статус**: ✅ Готово к использованию  
+**Версия**: 1.0  
+**Дата**: 15.01.2026

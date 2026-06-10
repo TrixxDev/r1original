@@ -40,12 +40,12 @@
                           <td>
                             <a class="btn btn-success" href="{{ route('admin.settings.pages.edit', $page->id) }}">
                               <svg class="c-icon">
-                                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
+                                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-description"></use>
                               </svg>
                             </a>
                             <a class="btn btn-danger" href="{{ route('admin.settings.pages.destroy', $page->id) }}">
                               <svg class="c-icon">
-                                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
+                                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-trash"></use>
                               </svg>
                             </a>
                           </td>

@@ -1,5 +1,12 @@
 <head>
-  <title>Riepu izmēra kalkulators</title>
+  <title>Riepu izmēra kalkulators | R1 Riepu Serviss</title>
+  <meta name="description" content="Bezmaksas riepu izmēra kalkulators — aprēķiniet alternatīvos izmērus un spidometra nobīdi. Salīdziniet līdz trīs variantiem — R1 Riepu Serviss.">
+  <meta name="keywords" content="{{ config('seo.keywords.kalkulators') }}">
+  <link rel="canonical" href="{{ url('/kalkulators') }}">
+  <meta property="og:title" content="Riepu izmēra kalkulators | R1 Riepu Serviss">
+  <meta property="og:description" content="Bezmaksas riepu izmēra kalkulators — aprēķiniet alternatīvos izmērus un spidometra nobīdi. Salīdziniet līdz trīs variantiem — R1 Riepu Serviss.">
+  <meta property="og:url" content="{{ url('/kalkulators') }}">
+  <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="{{ asset('images/logo_big.png') }}">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <link rel="stylesheet" href="template/common/calc.css" type="text/css" media="screen">

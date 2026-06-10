@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
@@ -29,5 +30,28 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
+    }
+
+    /**
+     * Форма логина использует поле username (email или логин).
+     */
+    public function username()
+    {
+        return 'username';
+    }
+
+    /**
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        $login = (string) $request->input('username');
+        $field = (str_contains($login, '@') || $login === '') ? 'email' : 'username';
+
+        return [
+            $field => $login,
+            'password' => $request->input('password'),
+        ];
     }
 }

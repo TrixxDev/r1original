@@ -21,11 +21,20 @@ $(document).ready(function() {
     let season = $('#seasonChange option:selected').val();
 
     $.ajax({
-      url: '/changeSeason',
+      url: '/admin/changeSeason',
       data: {season: season},
       method: 'POST',
+      dataType: 'json',
       success: function(data) {
-        if (data === 'okey') window.location.reload();
+        if (data && data.success) {
+          window.location.reload();
+          return;
+        }
+
+        alert('Neizdevās nomainīt sezonu.');
+      },
+      error: function() {
+        alert('Neizdevās nomainīt sezonu.');
       }
     });
   });
@@ -381,6 +390,46 @@ $(document).ready(function() {
     $('.services_form .card-footer button').first().removeAttr('type').removeClass('service_add_button').addClass('service_edit_button');
   });
 
+  function getAccrualErrorMessage(xhr, data) {
+    if (data && data.error) {
+      return data.error;
+    }
+    if (xhr && xhr.responseJSON && xhr.responseJSON.error) {
+      return xhr.responseJSON.error;
+    }
+    if (xhr && xhr.responseText) {
+      try {
+        const response = JSON.parse(xhr.responseText);
+        if (response && response.error) {
+          return response.error;
+        }
+      } catch (e) {
+        if (xhr.responseText.trim() !== '') {
+          return xhr.responseText.trim();
+        }
+      }
+    }
+    return 'Sinhronizācijas kļūda!';
+  }
+
+  function showAccrualSyncError(errorMsg, $time) {
+    alert(errorMsg);
+    $('.logs').prepend(
+      '<p style="border-bottom: 1px solid #d8dbe0; color: #c0392b;">' +
+      '<strong>Accrual — kļūda!</strong><br>' + errorMsg + '<br>' + $time +
+      '</p>'
+    );
+  }
+
+  function showAccrualSyncSuccess(message, $time) {
+    $('.logs').prepend(
+      '<p style="border-bottom: 1px solid #d8dbe0; color: #27ae60;">' +
+      'Accrual - ' + message + '<br>' + $time +
+      '</p>'
+    );
+    $('.accrual_last_time').html($time);
+  }
+
   $('.card-body.btn').on('click', function() {
     let $btn_id = $(this).attr('id');
     $(this).attr('disabled', true).text('Sinhronizējās...').css('cursor', 'default');
@@ -403,8 +452,8 @@ $(document).ready(function() {
         $.ajax({
           url: '/sync/accrual',
           method: 'GET',
-          success: function(data) {
-
+          dataType: 'json',
+          success: function(data, textStatus, xhr) {
             let $date = new Date();
             const $year = $date.getFullYear();
             const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
@@ -412,14 +461,17 @@ $(document).ready(function() {
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
-
             const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
-            $('<p style="border-bottom: 1px solid #d8dbe0;">Accrual - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
-            $('.accrual_last_time').html($time);
+            if (data && data.error) {
+              showAccrualSyncError(data.error, $time);
+              return;
+            }
+
+            const message = (data && data.message) ? data.message : 'Done';
+            showAccrualSyncSuccess(message, $time);
           },
-          error: function() {
-
+          error: function(xhr) {
             let $date = new Date();
             const $year = $date.getFullYear();
             const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
@@ -427,11 +479,9 @@ $(document).ready(function() {
             const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
             const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
             const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
-
             const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
 
-            $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Accrual<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
-            $('.accrual_last_time').html($time);
+            showAccrualSyncError(getAccrualErrorMessage(xhr), $time);
           },
           complete: function() {
             $('#' + $btn_id).attr('disabled', false).text('Sinhronizēt').css('cursor', 'pointer');
@@ -839,6 +889,47 @@ $(document).ready(function() {
           }
         })
         $sync = 'Riepu zona auto riepas';
+        break;
+
+      case 'rg-auto':
+        $.ajax({
+          url: '/sync/rg-auto',
+          method: 'GET',
+          success: function(data) {
+
+            let $date = new Date();
+            const $year = $date.getFullYear();
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
+            const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
+            const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
+            const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
+
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+
+            $('<p style="border-bottom: 1px solid #d8dbe0;">Riepu Garāža - ' + data + '<br>' + $time + '</p>').prependTo($('.logs'));
+            $('.rg_last_time').html($time);
+          },
+          error: function() {
+
+            let $date = new Date();
+            const $year = $date.getFullYear();
+            const $month = ($date.getMonth() < 10) ? '0' + parseInt($date.getMonth() + 1) : $date.getMonth();
+            const $day = ($date.getDate() < 10) ? '0' + $date.getDate() : $date.getDate();
+            const $hours = ($date.getHours() < 10) ? '0' + $date.getHours() : $date.getHours();
+            const $mins = ($date.getMinutes() < 10) ? '0' + $date.getMinutes() : $date.getMinutes();
+            const $secs = ($date.getSeconds() < 10) ? '0' + $date.getSeconds() : $date.getSeconds();
+
+            const $time = '<b>' + $year + '-' + $month + '-' + $day + ' ' + $hours + ':' + $mins + ':' + $secs + '</b>';
+
+            $('.logs').prepend('<p style="border-bottom: 1px solid #d8dbe0">Riepu Garāža (ecom XML)<br>Sinhronizācijas kļūda!<br>' + $time + '</p>');
+            $('.rg_last_time').html($time);
+          },
+          complete: function() {
+            $('#' + $btn_id).attr('disabled', false).text('Sinhronizēt').css('cursor', 'pointer');
+          }
+        })
+        $sync = 'Riepu Garāža auto riepas';
         break;
 
       case 'starco-big': // GoodYear Auto riepu sinhronizācija - AJAX

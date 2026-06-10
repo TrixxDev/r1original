@@ -5,20 +5,23 @@
             <div class="products row hide-price title-flip">
                 @php
                     $cbrand = '';
-                    $index = 0;
                 @endphp
                 @foreach ($tires as $tire)
                     @php
                         $brand = $tire->fullSize;
-                        $tire->includeStock = true;
-                        if ($cbrand!=$brand){
-                        echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
                     @endphp
+                    @if ($cbrand != $brand)
+                        @if ($cbrand !== '')
+                            </tbody>
+                        </table>
+                        @endif
+                        @php $cbrand = $brand; @endphp
+                        <h4 class="tire-brand-name">{{ $brand }}</h4>
                     <table id="tires-table" class="table table-striped quadr-sorter tires-table table-hover tablesorter">
                         <thead class="tires-thead sticky-table">
                         <tr>
                             <th scope="col"></th>
-                            <th scope="col" class="table-tire-name-cell" style="width:50%;">Brends / modelis</th>
+                            <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
                             <th scope="col" class="text-center">Kods</th>
                             <th scope="col" id="store-price-button" class="text-center">Veikala cena</th>
                             <th scope="col" id="store-sale-button" class="text-center">Akcijas cena</th>
@@ -29,14 +32,7 @@
                         </tr>
                         </thead>
                         <tbody id="tires-table-body">
-                        @php
-                            $cbrand = $brand;
-                            $stripe = 1;
-                          } else {
-                              $brand = str_replace(" ", "", $brand);
-                          }
-                        @endphp
-                        @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif
+                    @endif
                         <tr class="tire-table-row">
                             <th scope="row" class="tire-table-checkbox">
                                 <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
@@ -46,11 +42,11 @@
                             <td class="table-tire-name-cell" data-link="{{ route('kvadraciklu-riepas') }}">
                                 <a data-toggle="tooltip" data-html="true" class="tire-table-link"
                                    title='{!! App\Helper\Image::show('quadr', $tire->make_id) !!}'
-                                   href="{{ route('kvadraciklu-riepa', [strtolower(\Tires::getQuadrTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
-                                   data-content="{{ $tire->fullName }}"
+                                   href="{{ route('kvadraciklu-riepa', [$tire->brand_slug, $tire->tread_slug, $tire->tire_id]) }}"
+                                   data-content="{{ $tire->sale_full_name }}"
                                    data-article="{{ $tire->article }}"
                                    data-quantity="{{ $cartQty }}">
-                                    {{ $tire->title }}
+                                    {{ $tire->sale_title }}
                                 </a>
                             </td>
 
@@ -70,20 +66,19 @@
                             </td>
 
                             <td class="dot-availability text-center">
-                            <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip"
+                            <span class="dot {{ $tire->sale_dot_available }}" data-toggle="tooltip"
                                   data-html="true"
-                                  title="{{ $tire->stockAvailability }}">
-                            <span class="sort-order">{{ $tire->dotAvailable }}</span>
+                                  title="{{ $tire->sale_stock_availability }}">
+                            <span class="sort-order">{{ $tire->sale_dot_available }}</span>
                             </span>
                             </td>
 
                         </tr>
-                        @php
-                            $index++;
-                        @endphp
                         @endforeach
+                        @if ($cbrand !== '')
                         </tbody>
                     </table>
+                        @endif
             </div>
         </div>
     </div>

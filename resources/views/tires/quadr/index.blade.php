@@ -2,6 +2,10 @@
 
 @section('body-title', 'category')
 @section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-2 category-kvadraciklu-riepas category-id-parent-12 category-depth-level-3')
+@section('meta_title', 'Kvadraciklu riepas | R1 Riepu Serviss')
+@section('meta_description', 'Kvadraciklu riepas — izvēlies izmērus un ražotājus R1 Riepu Serviss katalogā.')
+@section('meta_keywords', config('seo.keywords.quadr'))
+@section('canonical_url', route('kvadraciklu-riepas'))
 
 @section('content')
 
@@ -9,9 +13,7 @@
     <div class="row">
       <div class="main-content clearfix col-md-12 col-xl-12">
         <div id="left-column" class="col-md-12 col-lg-3">
-          <!-- begin D:\OpenServer\domains\r1old/themes/classic/modules/ps_facetedsearch/ps_facetedsearch.tpl -->
           <div id="search_filters_wrapper">
-{{--            <div id="search_filter_controls" class="hidden-md-up"></div>--}}
             <form method="get" action="{{ route('kvadraciklu-riepas-meklet') }}">
               <div id="search_filters" class="params">
                 <input type="hidden" id="facet_all_val" value="Visi">
@@ -97,7 +99,7 @@
                           <label class="facet-label" for="show-selected-checkbox"
                                  style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                           <span class="custom-checkbox">
-                            <input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces" disabled>
+                            <input type="checkbox" value="only_selected" class="show-selected-filter tire-table-checkbox" id="show-selected-checkbox" title="Rādīt tikai atzīmētās preces" @if (request()->show_selected) checked @endif disabled>
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>
@@ -175,14 +177,15 @@
         <div id="content-wrapper" class="col-md-12 col-lg-9">
           <section id="main">
             <section id="products" class="">
-              <div id="">
-                <div id="js-product-list">
-                  <div class="products row hide-price title-flip">
-
-                  </div>
+              <div id="js-product-list">
+                <div class="products row hide-price title-flip">
+                  @if (!empty($catalogListHtml ?? null))
+                    {!! $catalogListHtml !!}
+                  @endif
                 </div>
               </div>
             </section>
+            @include('components.quadtires.catalog-seo')
           </section>
         </div>
       </div>
@@ -204,7 +207,6 @@
         </div>
         <div class="modal-body">
           <div id="search_filters_wrapper">
-            {{--            <div id="search_filter_controls" class="hidden-md-up"></div>--}}
             <form method="get" action="{{ route('kvadraciklu-riepas-meklet') }}">
               <div id="search_filters" class="params">
                 <input type="hidden" id="facet_all_val" value="Visi">
@@ -298,12 +300,12 @@
                       <h1 class="h6 facet-title hidden-sm-down">Atlase</h1>
                       <ul class="collapse">
                         <li class="show-selected-checkbox-li">
-                          <label class="facet-label" for="show-selected-checkbox"
+                          <label class="facet-label" for="show-selected-checkbox-mobile"
                                  style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                           <span class="custom-checkbox">
-                            <input type="checkbox" value="only_selected" class="tire-table-checkbox"
-                                   id="show-selected-checkbox" name="product_ids[]" title="Rādīt tikai atzīmētās preces"
-                                   disabled>
+                            <input type="checkbox" value="only_selected" class="show-selected-filter tire-table-checkbox"
+                                   id="show-selected-checkbox-mobile" title="Rādīt tikai atzīmētās preces"
+                                   @if (request()->show_selected) checked @endif disabled>
                             <span class="ps-shown-by-js">
                               <i class="material-icons checkbox-checked"></i>
                             </span>
@@ -371,5 +373,7 @@
     </div>
   </div>
 
-  <script src="{{ asset('js/quadrTiresAjax.js?rev=' . time()) }}"></script>
+@push('scripts')
+  <script src="{{ \App\Helper\AssetHelper::v('js/quadrTiresAjax.js') }}" defer></script>
+@endpush
 @endsection

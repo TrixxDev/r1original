@@ -6,7 +6,8 @@
 /storage/framework/sessions/*
 .env
 .env.backup
-.env.example
+.env.save
+.env.docker
 .phpunit.result.cache
 docker-compose.override.yml
 Homestead.json
@@ -15,11 +16,62 @@ npm-debug.log
 yarn-error.log
 /xml/
 /public/img/
-/public/images/
-/.idea/inspectionProfiles/Project_Default.xml
+/public/images/*
+!/public/images/brand-logos/
+!/public/images/brand-logos/**
+/.idea/
 /public/starco.sync.xml
 /resources/views/pages/*
-/.idea/jsLibraryMappings.xml
 /app/Http/Controllers/HomeController2.php
 /resources/views/testing33.blade.php
 /resources/views/pages/
+
+# Secrets and local credentials
+db_access.txt
+ШПАРГАЛКА_БД.txt
+public/brand-logos.zip
+public/megaparser.js
+public/RecordController.php
+public/rz.auto.xml
+*.pem
+*.key
+
+# Debug / dumps / reports
+debug-*.log
+worker.log
+r1.sql
+*.html
+!resources/**/*.html
+
+# Data exports and temp analysis
+_analog_*
+_clients_*.csv
+_brand_tiers.json
+_tmp_*
+_ssh_*
+*.xlsx
+*.xls
+korekt_*.csv
+rg_xml.txt
+rekins.html
+.firecrawl/
+
+# Backups and duplicates
+*.bak
+*.save
+*.backup
+composer1.json
+composer1.lock
+app/Helper/Image.php.save
+app/Helper/Image.php.txt
+app/Http/Controllers/ShopController.php.1
+app/Http/Controllers/Admin/ShopController.backup.php
+app/Http/Controllers/Admin/Import/AutoTireImportController.php.save
+public/js/custom.js.bak
+public/js/custom.clone.js
+public/js/cart-unified-clone.js
+public/js/client_copy.js
+config/logging.php.save
+
+# Legacy / vendor copies in tree
+/var/

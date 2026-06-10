@@ -2,7 +2,10 @@
 
 @section('body-title', 'category')
 @section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-21 category-jauni-lietie-diski category-id-parent-20 category-depth-level-3')
-
+@section('meta_title', 'Lietie diski | R1 Riepu Serviss')
+@section('meta_description', 'Lietie diski ar filtriem pēc parametriem un ražotājiem. Riepas un diski — R1 Riepu Serviss katalogs.')
+@section('meta_keywords', config('seo.keywords.rims'))
+@section('canonical_url', route('lietie-diski'))
 
 @section('content')
 
@@ -32,43 +35,6 @@
                             </template>
                             {{-- Change from top to auto --}}
                             <div class="sidebar-top">
-                              <section class="facet clearfix">
-                                <h1 class="h6 facet-title">Marka</h1>
-                                <div class="title hidden-md-up" data-target="#facet_auto-make" data-toggle="collapse" aria-expanded="true">
-                                  <h1 class="h6 facet-title">Marka</h1>
-                                  <span class="float-xs-right">j
-                                  <span class="navbar-toggler collapse-icons">
-                                    <i class="material-icons add"></i>
-                                    <i class="material-icons remove"></i>
-                                  </span>
-                                </span>
-                                </div>
-                                <select name="" id="" class="r1-select select-title">
-                                  <option value="visi">Visi</option>
-                                  @foreach($makes as $make)
-                                    <option value="{{$make}}">{{$make}}</option>
-                                  @endforeach
-                                </select>
-
-                              </section>
-                              <section class="facet clearfix">
-                                <h1 class="h6 facet-title">Modelis</h1>
-                                <div class="title hidden-md-up" data-target="#facet_auto-model" data-toggle="collapse" aria-expanded="true">
-                                  <h1 class="h6 facet-title">Modelis</h1>
-                                  <span class="float-xs-right">
-                                  <span class="navbar-toggler collapse-icons">
-                                    <i class="material-icons add"></i>
-                                    <i class="material-icons remove"></i>
-                                  </span>
-                                </span>
-                                </div>
-                                <select name="" id="" class="r1-select select-title">
-                                  <option value="visi">Visi</option>
-                                  @foreach($models as $model)
-                                    <option value="{{$model}}">{{$model}}</option>
-                                  @endforeach
-                                </select>
-                              </section>
                               <section class="facet clearfix">
                                 <h1 class="h6 facet-title">Disku diametrs</h1>
                                 <div class="title hidden-md-up" data-target="#facet_auto-dia" data-toggle="collapse" aria-expanded="true">
@@ -325,8 +291,14 @@
                     <section id="products" class="">
                       {{-- LIST VIEW --}}
                         <div id="js-product-list">
-                            <div class="products row hide-price title-flip"></div>
-                        </div>
+                            <div class="products row hide-price title-flip">
+                              @if(isset($rims) && count($rims))
+                                <span class="text-uppercase flipped-title tire-brand-name" style="color:black;">Lietie diski</span>
+                                @include('rims.auto.list-table', ['rims' => $rims])
+                              @endif
+                            </div>
+                            <a href="https://www.wheelstock.eu/?filtered=1&attributes=349" target="_blank"><div class="alert alert-secondary" style="color: #383d41; background-color: #e2e3e5; border-color: #d6d8db;"><img src="https://images.iconfigurators.app/images/wheels/large/iconalloys-nuevo-wheel-5lug-satin-black-17x8-5-500_8683.png" style="width: 30px;"> Iet uz noliktavu</div></a>
+			</div>
                     </section>
                   </section>
               </div>
@@ -505,5 +477,7 @@
       </div>
     </div>
 
-<script src="{{ asset('js/rimAjax.js?rev=' . time()) }}"></script>
+@push('scripts')
+<script src="{{ \App\Helper\AssetHelper::v('js/rimAjax.js') }}" defer></script>
+@endpush
 @endsection

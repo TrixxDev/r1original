@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  # Laravel приложение
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: r1riepas_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./storage:/var/www/html/storage
+    ports:
+      - "8080:80"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+    networks:
+      - r1riepas
+    depends_on:
+      - db
+
+  # MySQL база данных
+  db:
+    image: mysql:5.7
+    container_name: r1riepas_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: r1
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: newr1
+      MYSQL_PASSWORD: J569klll
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - r1riepas
+
+  # phpMyAdmin (опционально)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: r1riepas_phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_USER: newr1
+      PMA_PASSWORD: J569klll
+    ports:
+      - "8081:80"
+    networks:
+      - r1riepas
+    depends_on:
+      - db
+
+networks:
+  r1riepas:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local

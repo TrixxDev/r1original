@@ -1,6 +1,5 @@
 $(document).ready(function() {
 
-    let mobile_nav_enabled = 0;
     let atributs;
     let menu_opened = 0;
 
@@ -31,41 +30,110 @@ $(document).ready(function() {
     //     }
     // })
 
-    // Mobile nav bar
+    // Mobile nav drawer
+    (function () {
+        const $burger = $('#menu-icon');
+        const $overlay = $('#mobile-nav-overlay');
+        const $drawer = $('#mobile-nav-drawer');
+        const $body = $('body');
+        let mobileNavOpen = false;
 
-    $('#menu-icon').on('click', function () {
-        if ($('#mobile_top_menu_wrapper').css('display') == 'none') {
-            $('#mobile_top_menu_wrapper').css('display', 'block');
-            $('section#wrapper').css('display', 'none');
-            mobile_nav_enabled = 1;
-        } else {
-            $('#mobile_top_menu_wrapper').css('display', 'none');
-            $('section#wrapper').css('display', 'block');
-            $('#mobile_top_menu_wrapper .category .popover').removeClass('in');
-            mobile_nav_enabled = 0;
+        if (!$burger.length || !$drawer.length) {
+            return;
         }
-    });
 
-    $('#mobile_top_menu_wrapper .category .dropdown-item').on('click', function () {
-        if ($(this).siblings('.popover').css('display') === 'block') {
-            $(this).siblings('.popover').css('display', 'none');
-        } else {
-            $('#mobile_top_menu_wrapper .category .popover').css('display', 'none');
-            $(this).siblings('.popover').css('display', 'block');
+        function closeAccordions() {
+            $drawer.find('.mobile-nav-toggle[aria-expanded="true"]').each(function () {
+                const $btn = $(this);
+                $btn.attr('aria-expanded', 'false');
+                $btn.next('.mobile-nav-submenu').hide();
+                $btn.find('.material-icons').text('keyboard_arrow_down');
+            });
         }
-    });
 
-    $('#_desktop_top_menu .category').on('mouseover', function() {
-        $('#_desktop_top_menu .category .popover').css('display', 'none');
-        $(this).children().last().css('display', 'block');
-        $(this).children().last().on('mouseover', function() {
-            $(this).css('display', 'block');
-        }).on('mouseout', function() {
-            $('#_desktop_top_menu .category .popover').css('display', 'none');
+        function setMobileNavOpen(open) {
+            mobileNavOpen = open;
+            $burger.attr('aria-expanded', open ? 'true' : 'false');
+            $burger.attr('aria-label', open ? 'Aizvērt izvēlni' : 'Atvērt izvēlni');
+            $burger.toggleClass('is-active', open);
+            $overlay.attr('aria-hidden', open ? 'false' : 'true').toggleClass('is-visible', open);
+            $drawer.attr('aria-hidden', open ? 'false' : 'true').toggleClass('is-open', open);
+            $body.toggleClass('mobile-nav-open', open);
+
+            if (!open) {
+                closeAccordions();
+            }
+        }
+
+        $burger.on('click', function () {
+            setMobileNavOpen(!mobileNavOpen);
         });
-    }).on('mouseout', function() {
-        $('#_desktop_top_menu .category .popover').css('display', 'none');
-    });
+
+        $overlay.on('click', function () {
+            setMobileNavOpen(false);
+        });
+
+        $drawer.find('.mobile-nav-drawer__close').on('click', function () {
+            setMobileNavOpen(false);
+        });
+
+        $drawer.on('click', '.mobile-nav-toggle', function () {
+            const $btn = $(this);
+            const expanded = $btn.attr('aria-expanded') === 'true';
+            const $sub = $btn.next('.mobile-nav-submenu');
+
+            $btn.closest('.mobile-nav-list').children('.mobile-nav-item').each(function () {
+                const $otherBtn = $(this).children('.mobile-nav-toggle');
+                if ($otherBtn.length && !$otherBtn.is($btn)) {
+                    $otherBtn.attr('aria-expanded', 'false').find('.material-icons').text('keyboard_arrow_down');
+                    $otherBtn.next('.mobile-nav-submenu').slideUp(200);
+                }
+            });
+
+            $btn.attr('aria-expanded', expanded ? 'false' : 'true');
+            $btn.find('.material-icons').text(expanded ? 'keyboard_arrow_down' : 'keyboard_arrow_up');
+            $sub.slideToggle(200);
+        });
+
+        $drawer.on('click', '.mobile-nav-link', function () {
+            setMobileNavOpen(false);
+        });
+
+        $(document).on('keydown', function (event) {
+            if (event.key === 'Escape' && mobileNavOpen) {
+                setMobileNavOpen(false);
+            }
+        });
+    })();
+
+    (function () {
+        const $menu = $('#_desktop_top_menu');
+        if (!$menu.length) {
+            return;
+        }
+
+        $menu.find('.category').each(function () {
+            const $item = $(this);
+            const $submenu = $item.children('.sub-menu').first();
+            if (!$submenu.length) {
+                return;
+            }
+
+            let hideTimer = null;
+
+            $item.on('mouseenter', function () {
+                window.clearTimeout(hideTimer);
+                $menu.find('.category .sub-menu').css('display', 'none');
+                $submenu.css('display', 'block');
+            });
+
+            $item.on('mouseleave', function () {
+                hideTimer = window.setTimeout(function () {
+                    $submenu.css('display', 'none');
+                }, 150);
+            });
+        });
+    })();
 
     $('.facet-dropdown').on('click', function() {
         const $size = $(this).children().first().val();

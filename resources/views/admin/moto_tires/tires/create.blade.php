@@ -85,6 +85,12 @@
               </div>
             </div>
             <div class="form-group row">
+              <label class="col-md-3 col-form-label" for="is_camera">Kamera</label>
+              <div class="col-md-9">
+                <input style="width: 2%;" class="form-control" id="is_camera" type="checkbox" name="is_camera" value="1">
+              </div>
+            </div>
+            <div class="form-group row">
               <label class="col-md-3 col-form-label" for="code">Kods</label>
               <div class="col-md-9">
                 <input class="form-control" id="code" type="text" name="code" placeholder="Kods">

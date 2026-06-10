@@ -21,4 +21,9 @@ class Utility {
        }
        return $result;
     }
+
+    public static function decode_info($data)
+    {
+      return json_decode($data);
+    }
 }

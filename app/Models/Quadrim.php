@@ -29,7 +29,10 @@
       if (!isset($rim->brand_title) || !isset($rim->tread_title)) {
         return false;
       } else {
-        return route('lietais-disks', [$rim->brand_title, str_replace('/', '_', $rim->tread_title), $this->rim_id]);
+        $brandSlug = \Illuminate\Support\Str::slug((string) $rim->brand_title);
+        $treadSegment = strtolower(str_replace('/', '_', (string) $rim->tread_title));
+
+        return route('kvadracikla-disks', [$brandSlug, $treadSegment, $this->rim_id]);
       }
     }
 
@@ -146,17 +149,12 @@
 
     public function getStockCount()
     {
-//    $stocks = Autostock::where('tire_id', $this->rim_id)->get();
-//
-//    $count=0;
-//
-//    foreach ($stocks as $stock) {
-//        if ($stock !== NULL && $stock->quantity >= 1) {
-//          $count += $stock->quantity;
-//        }
-//      }
-//
-//    return $count;
+      $main = max(0, (int) ($this->quantity ?? 0));
+      if ($main > 0) {
+        return $main;
+      }
+
+      return max(0, (int) ($this->urs_quantity ?? 0) + (int) ($this->krs_quantity ?? 0));
     }
 
     public function getStockAvailabilityAttribute()

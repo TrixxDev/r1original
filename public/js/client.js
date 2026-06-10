@@ -43,6 +43,289 @@ $(document).ready(function() {
     }
   });
 
+  function getCarInfoConfig() {
+    const $modal = $('#reservation');
+    return {
+      url: $modal.data('car-info-url') || '',
+      token: $modal.find('input[name="car_info_token"]').val() || ''
+    };
+  }
+  let carInfoConfig = getCarInfoConfig();
+
+  let carInfoRequestTimer;
+  const carInfoCache = new Map(); // vnr -> { marka, modelis, ts }
+  const carInfoInflight = new Map(); // vnr -> jqXHR
+  const carInfoSnapshot = new Map(); // vnr -> { json: string, fetchedAt: string }
+  const CAR_INFO_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+  let lastCarInfoVnr = '';
+  let fillSlotRequestSeq = 0;
+
+  function stripReservationModalFinish() {
+    $('.modal-body.finish, .modal-footer.finish-footer').remove();
+    $('.title-finish').remove();
+  }
+  // Serialize car-info requests: token is single-use, parallel requests cause 403
+  let carInfoRequestQueue = [];
+  let carInfoRequestInFlight = false;
+
+  function normalizePlate(raw) {
+    return $.trim(String(raw || ''))
+      .toUpperCase()
+      .replace(/[\s-]+/g, '');
+  }
+
+  function isValidPlate(vnr) {
+    // CSDD input guidance: enter registration number without spaces (e.g. AA1111).
+    // Plate type rules:
+    // - General motor vehicles (types A/B/C): 2 Latin letters + 1..4 digits (1..9999); digits may repeat (e.g. 1111).
+    // - Trailers: 1 Latin letter + 1..4 digits (1..9999) (some variants may include letters at the end)
+    // - Personalised plates: 2..8 symbols, Latin letters and Arabic numerals (or just letters);
+    //   letters/numbers in blocks (no A1B2-style interleaving).
+    if (!vnr) {
+      return false;
+    }
+
+    // Hard whitelist and length bounds (personalised max is 8 symbols on type A).
+    if (!/^[A-Z0-9]{2,8}$/.test(vnr)) {
+      return false;
+    }
+
+    // Must contain at least one letter (CSDD personalised allows letters-only; digits-only is not described).
+    if (!/[A-Z]/.test(vnr)) {
+      return false;
+    }
+
+    // Standard passenger vehicle plates (2 letters + 1..4 digits, numeric 1..9999)
+    const mStd = vnr.match(/^([A-Z]{2})(\d{1,4})$/);
+    if (mStd) {
+      const n = parseInt(mStd[2], 10);
+      return n >= 1 && n <= 9999;
+    }
+
+    // Trailer-like plates (1 letter + 1..4 digits, numeric 1..9999)
+    const mTrailer = vnr.match(/^([A-Z])(\d{1,4})$/);
+    if (mTrailer) {
+      const n = parseInt(mTrailer[2], 10);
+      return n >= 1 && n <= 9999;
+    }
+
+    // Personalised: either letters only, or letters+digits, or digits+letters (no interleaving).
+    return /^[A-Z]{2,8}$/.test(vnr) || /^[A-Z]+\d+$/.test(vnr) || /^\d+[A-Z]+$/.test(vnr);
+  }
+
+  function setRegNrValidity(valid) {
+    // Only style inputs that exist on the current page.
+    const $inputs = $('#reservation #reg_nr, #mobile-reg_nr');
+    const $existing = $inputs.filter(function() { return $(this).length > 0; });
+    if (valid) {
+      $existing.css('border-color', '');
+      return;
+    }
+    $existing.css('border-color', '#e11d48');
+    setTimeout(function() {
+      $existing.css('border-color', '');
+    }, 1200);
+  }
+
+  function applyCarInfoToForm(data) {
+    if (!data || typeof data !== 'object') {
+      return;
+    }
+    const marka = (data.MARKA ?? data.marka ?? '').toString();
+    const modelis = (data.MODELIS ?? data.modelis ?? '').toString();
+    if (marka) {
+      $('#brand').val(marka);
+      $('#mobile-brand').val(marka);
+    }
+    if (modelis) {
+      $('#model').val(modelis);
+      $('#mobile-model').val(modelis);
+    }
+  }
+
+  function processCarInfoQueue() {
+  if (carInfoRequestInFlight || carInfoRequestQueue.length === 0) return;
+  const item = carInfoRequestQueue.shift();
+  carInfoRequestInFlight = true;
+  carInfoConfig = getCarInfoConfig();
+  const jqXHR = $.ajax({
+    url: carInfoConfig.url,
+    method: 'POST',
+    data: { vnr: item.vnr },
+    headers: { 'X-Car-Info-Token': carInfoConfig.token }
+  });
+  jqXHR.done(function(data, _t, xhr) {
+    updateCarInfoTokenFromResponse(xhr);
+    item.resolve(data);
+  });
+  jqXHR.fail(function(xhr) {
+    updateCarInfoTokenFromResponse(xhr);
+    if (xhr && xhr.status === 403 && !item.retried) {
+      item.retried = true;
+      carInfoRequestQueue.unshift(item);
+    } else {
+      item.reject(xhr);
+    }
+  });
+  jqXHR.always(function() {
+    carInfoRequestInFlight = false;
+    processCarInfoQueue();
+  });
+}
+
+function performCarInfoRequest(vnr) {
+  const d = $.Deferred();
+  carInfoRequestQueue.push({ vnr: vnr, resolve: d.resolve, reject: d.reject });
+  processCarInfoQueue();
+  return d.promise();
+}
+
+  function fetchCarInfo(plate) {
+    carInfoConfig = getCarInfoConfig();
+    if (!carInfoConfig.url || !carInfoConfig.token) {
+      console.warn('Car info API is not configured on the page.');
+      return;
+    }
+
+    const vnr = normalizePlate(plate);
+    if (vnr.length < 3) {
+      return;
+    }
+    if (!isValidPlate(vnr)) {
+      setRegNrValidity(false);
+      return;
+    }
+    setRegNrValidity(true);
+
+    // Avoid duplicate calls for same value.
+    if (vnr === lastCarInfoVnr) {
+      const cachedSame = carInfoCache.get(vnr);
+      if (cachedSame && (Date.now() - cachedSame.ts) < CAR_INFO_CACHE_TTL_MS) {
+        applyCarInfoToForm({ MARKA: cachedSame.marka, MODELIS: cachedSame.modelis });
+      }
+      return;
+    }
+    lastCarInfoVnr = vnr;
+
+    // Cache hit.
+    const cached = carInfoCache.get(vnr);
+    if (cached && (Date.now() - cached.ts) < CAR_INFO_CACHE_TTL_MS) {
+      applyCarInfoToForm({ MARKA: cached.marka, MODELIS: cached.modelis });
+      return;
+    }
+
+    // Inflight dedupe.
+    if (carInfoInflight.has(vnr)) {
+      return;
+    }
+
+    const jqXHR = performCarInfoRequest(vnr);
+    carInfoInflight.set(vnr, jqXHR);
+    jqXHR.done(function(data) {
+      try {
+        const marka = (data && (data.MARKA ?? data.marka)) || '';
+        const modelis = (data && (data.MODELIS ?? data.modelis)) || '';
+        carInfoCache.set(vnr, { marka: String(marka || ''), modelis: String(modelis || ''), ts: Date.now() });
+        carInfoSnapshot.set(vnr, { json: JSON.stringify(data || {}), fetchedAt: new Date().toISOString() });
+      } catch (_e) {}
+      applyCarInfoToForm(data);
+    });
+
+    jqXHR.fail(function(xhr) {
+      console.warn('car-info error', xhr && xhr.status, xhr && xhr.responseText);
+    });
+    jqXHR.always(function() {
+      carInfoInflight.delete(vnr);
+    });
+  }
+
+  function ensureCarInfoSnapshotForPlate(plateRaw) {
+    const d = $.Deferred();
+    const vnr = normalizePlate(plateRaw);
+
+    if (!vnr || !isValidPlate(vnr)) {
+      setRegNrValidity(false);
+      return d.reject('invalid_plate').promise();
+    }
+    setRegNrValidity(true);
+
+    const existing = carInfoSnapshot.get(vnr);
+    if (existing && existing.json) {
+      return d.resolve(existing).promise();
+    }
+
+    carInfoConfig = getCarInfoConfig();
+    if (!carInfoConfig.url || !carInfoConfig.token) {
+      return d.reject('not_configured').promise();
+    }
+
+    // If a request is already in flight for this plate, wait for it.
+    if (carInfoInflight.has(vnr)) {
+      const inflight = carInfoInflight.get(vnr);
+      inflight
+        .done(function() {
+          const snap = carInfoSnapshot.get(vnr);
+          if (snap && snap.json) {
+            d.resolve(snap);
+          } else {
+            d.reject('no_snapshot');
+          }
+        })
+        .fail(function() {
+          d.reject('api_error');
+        });
+      return d.promise();
+    }
+
+    const jqXHR = performCarInfoRequest(vnr);
+    carInfoInflight.set(vnr, jqXHR);
+    jqXHR.always(function() {
+      carInfoInflight.delete(vnr);
+    });
+    jqXHR.done(function(data) {
+      try {
+        carInfoSnapshot.set(vnr, { json: JSON.stringify(data || {}), fetchedAt: new Date().toISOString() });
+      } catch (_e) {}
+      applyCarInfoToForm(data);
+    });
+
+    jqXHR.fail(function() {
+      console.warn('car-info error (ensure)');
+    });
+
+    jqXHR.done(function() {
+      const snap = carInfoSnapshot.get(vnr);
+      if (snap && snap.json) {
+        d.resolve(snap);
+      } else {
+        d.reject('no_snapshot');
+      }
+    });
+    jqXHR.fail(function() {
+      d.reject('api_error');
+    });
+
+    return d.promise();
+  }
+
+  function updateCarInfoTokenFromResponse(xhr) {
+    if (!xhr) {
+      return;
+    }
+    const nextToken = xhr.getResponseHeader('X-Car-Info-Token');
+    if (nextToken) {
+      carInfoConfig.token = nextToken;
+      $('#reservation input[name="car_info_token"]').val(nextToken);
+    }
+  }
+
+  function scheduleCarInfoLookup(plate) {
+    clearTimeout(carInfoRequestTimer);
+    carInfoRequestTimer = setTimeout(function() {
+      fetchCarInfo(plate);
+    }, 400);
+  }
+
   let iorder;
   let queue_id;
   let date;
@@ -89,6 +372,19 @@ $(document).ready(function() {
     $('.reservation-modal-footer #close-modal').text('Atcelt');
     $('#reservation #modalTitle.title-finish').remove();
     $('#reservation #modalTitle').slideDown();
+  });
+
+  $(document).on('blur', '#reservation #reg_nr', function() {
+    scheduleCarInfoLookup($(this).val());
+  });
+
+  $(document).on('blur', '#mobile-reservation-form #mobile-reg_nr', function() {
+    scheduleCarInfoLookup($(this).val());
+  });
+
+  // Also trigger lookup on input (debounced) so user doesn't need to blur
+  $(document).on('input', '#reservation #reg_nr, #mobile-reservation-form #mobile-reg_nr', function() {
+    scheduleCarInfoLookup($(this).val());
   });
 
   if (!admin) {
@@ -179,14 +475,18 @@ $(document).ready(function() {
           });
           $('#reservation').find('input[data-ac]').removeAttr('disabled').prop('disabled', false).attr('checked', true).prop('checked', true);
         } else {
-          let __timeSlots = $(slot).parent().parent();
+      let __timeSlots = $(slot).parent().parent();
           $.each($('#reservation #service .form-check'), function(index, value) {
             $(value).find('input').attr('disabled', false).prop('disabled', false).attr('checked', false).prop('checked', false);
           });
-          if ($(__timeSlots).find('.time-status[data-moto]').first().length > 0) {
+          
+          let motoSlots = $('[data-date="' + date + '"] .table.office_' + office + ' .time-free[data-moto="true"], [data-date="' + date + '"] .table.office_' + office + ' .time-offer[data-moto="true"]');
+          if (motoSlots.length > 0) {
             $('#reservation #service').find('input[data-moto]').attr('disabled', true).prop('disabled', true);
           }
-          if ($(__timeSlots).find('.time-status[data-ac]').first().length > 0) {
+          
+          let acSlots = $('[data-date="' + date + '"] .table.office_' + office + ' .time-free[data-ac="true"], [data-date="' + date + '"] .table.office_' + office + ' .time-offer[data-ac="true"]');
+          if (acSlots.length > 0) {
             $('#reservation #service').find('input[data-ac]').attr('disabled', true).prop('disabled', true);
           }
         }
@@ -194,10 +494,20 @@ $(document).ready(function() {
         $.each($('#reservation #service .form-check'), function(index, value) {
           $(value).find('input').attr('disabled', false).prop('disabled', false).attr('checked', false).prop('checked', false);
         });
+
+        let motoSlots = $('[data-date="' + date + '"] .table.office_' + office + ' .time-free[data-moto="true"], [data-date="' + date + '"] .table.office_' + office + ' .time-offer[data-moto="true"]');
+        if (motoSlots.length > 0) {
+          $('#reservation #service').find('input[data-moto]').attr('disabled', true).prop('disabled', true);
+        }
+        
+        let acSlots = $('[data-date="' + date + '"] .table.office_' + office + ' .time-free[data-ac="true"], [data-date="' + date + '"] .table.office_' + office + ' .time-offer[data-ac="true"]');
+        if (acSlots.length > 0) {
+          $('#reservation #service').find('input[data-ac]').attr('disabled', true).prop('disabled', true);
+        }
       }
 
       $('#reservation .loader-block').hide();
-    }, 1000);
+    }, 0);
 
   });
 
@@ -207,6 +517,14 @@ $(document).ready(function() {
     $('#reservation .rims_with, #reservation .temp_save_nr').hide();
     $('#brand, #model, #phone, #email').removeAttr('placeholder');
     $('body').removeClass('removeScroll');
+
+    $('.modal-body.finish, .modal-footer.finish-footer').remove();
+    $('.title-finish').remove();
+    $('.reservation-modal-body').show();
+    $('#modalTitle').first().show();
+    $('.reservation-modal-footer #submit-reservation').show();
+    $('.reservation-modal-footer #close-modal').text('Atcelt');
+    $('span.service-error, div.rimsWith_error').remove();
   }).on('show.bs.modal', function() {
     $('body').addClass('removeScroll');
   }).on('keypress', function(e) {
@@ -232,31 +550,96 @@ $(document).ready(function() {
     let name = $('#reservation input#name').val();
     let email = $('#reservation input#email').val();
 
-    let formData = 'car_brand=' + car_brand + '&car_model=' + car_model + '&rimsWith=' + rimsWith + '&temp_nr=' + temp_nr + '&lic_plate=' + lic_plate + '&service=' + service + '&user_comment=' + user_comment + '&name=' + name + '&phone_number=' + phone + '&email=' + email;
+    // Client-side validation (needed when Enter triggers submit).
+    // If the plate is invalid, the API snapshot call fails early and we never show service errors.
+    // Validate all required fields before calling ensureCarInfoSnapshotForPlate().
+    $('span.service-error, div.rimsWith_error').remove();
+    let hasError = false;
 
-    let dopParams = {
-      iorder: iorder,
-      queue_id: queue_id,
-      date: date,
-      time: time,
-      office: office,
-    };
+    const vnr = normalizePlate(lic_plate);
+    if (!vnr || !isValidPlate(vnr)) {
+      setRegNrValidity(false);
+      hasError = true;
+    } else {
+      setRegNrValidity(true);
+    }
 
-    $.ajax({
-      url: '/pieraksts/fillSlot',
-      method: 'POST',
-      data: {formData: formData, dopParams: dopParams},
-      beforeSend: function() {
-        $('#reservation .loader-block').show();
-      },
-      success: function(data) {
-        setTimeout(function() {
-          data = JSON.parse(data);
-          let text = '';
-          $.each(data, function(index, value) {
-            if (index === 'errors') {
+    if (!service) {
+      $('<span class="service-error" style="color: red; opacity: 0.5;">Jāizvēlas viens no pakalpojumiem!</span>')
+        .appendTo($('.services #service'));
+      hasError = true;
+    }
+
+    // Service 1 requires selecting "rims with/without".
+    if (String(service) === '1' && (rimsWith === undefined || rimsWith === null || String(rimsWith).trim() === '')) {
+      $('<div class="rimsWith_error"><div class="col-sm-3"></div><div class="col-sm-9"><span class="service-error" style="color: red; opacity: 0.5;">Jāizvēlas viena no opcijām!</span></div></div>')
+        .appendTo($('.rims_with'));
+      hasError = true;
+    }
+
+    if (hasError) {
+      return;
+    }
+
+    $('#reservation .loader-block').show();
+    $('#submit-reservation').attr('disabled', true);
+    $('#close-modal').attr('disabled', true);
+
+    const normalizedPlate = normalizePlate(lic_plate);
+
+    // Build & submit fillSlot request (optionally with car-info snapshot).
+    function submitFillSlot(carInfoSnap) {
+      const thisFillSeq = ++fillSlotRequestSeq;
+      let formDataPayload = {
+        car_brand: car_brand,
+        car_model: car_model,
+        rimsWith: rimsWith,
+        temp_nr: temp_nr,
+        lic_plate: lic_plate,
+        service: service,
+        user_comment: user_comment,
+        name: name,
+        phone_number: phone,
+        email: email,
+      };
+
+      if (carInfoSnap && carInfoSnap.json) {
+        formDataPayload.car_info_json = carInfoSnap.json;
+        formDataPayload.car_info_fetched_at = carInfoSnap.fetchedAt || '';
+        formDataPayload.car_info_vnr = normalizedPlate;
+        formDataPayload.car_info_source = 'api/car-info';
+      }
+
+      let formData = $.param(formDataPayload);
+
+      let dopParams = {
+        iorder: iorder,
+        queue_id: queue_id,
+        date: date,
+        time: time,
+        office: office,
+      };
+
+      $.ajax({
+        url: '/pieraksts/fillSlot',
+        method: 'POST',
+        data: {formData: formData, dopParams: dopParams},
+        success: function(data) {
+          var payloadImmediate = (typeof data === 'string') ? JSON.parse(data) : data;
+          if (thisFillSeq === fillSlotRequestSeq && payloadImmediate.message && payloadImmediate.success) {
+            if (window.simpleSlotLock && typeof window.simpleSlotLock.onFillSlotSuccess === 'function') {
+              window.simpleSlotLock.onFillSlotSuccess();
+            }
+          }
+          setTimeout(function() {
+            if (thisFillSeq !== fillSlotRequestSeq) {
+              return;
+            }
+            var payload = payloadImmediate;
+
+            if (payload.errors) {
               $('span.service-error, div.rimsWith_error').remove();
-              $.each(value, function(index, item) {
+              $.each(payload.errors, function(index, item) {
                 if (index == 'car_brand') {
                   $('#brand').attr('placeholder', 'Jābūt aizpildītam!');
                 }
@@ -278,8 +661,28 @@ $(document).ready(function() {
               });
               $('#submit-reservation').removeAttr('disabled');
               $('#close-modal').removeAttr('disabled');
+              return;
             }
-            if (index === 'message') {
+
+            stripReservationModalFinish();
+
+            if (payload.alertMessage) {
+              $('#submit-reservation').removeAttr('disabled');
+              $('#close-modal').removeAttr('disabled');
+
+              $('.reservation-modal-body').slideUp();
+              $('#modalTitle').first().slideUp();
+              $('<h5 class="modal-title title-finish" id="modalTitle">Pieraksts</h5>').insertAfter('#modalTitle');
+              $('.reservation-modal-footer #submit-reservation').hide();
+              $('.reservation-modal-footer #close-modal').text('Aizvērt');
+              $('<div class="modal-body finish">' + payload.alertMessage + '</div><div class="modal-footer finish-footer"><button type="button" class="btn btn-secondary" id="close-modal" style="margin-right: 10px;">Aizvērt</button></div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
+              $('#brand, #model, #phone, #email').removeAttr('placeholder');
+              $('#reservation form').trigger('reset');
+              $('#reservation .rims_with, #reservation .temp_save_nr').hide();
+              return;
+            }
+
+            if (payload.message && payload.success) {
               $('#submit-reservation').removeAttr('disabled');
               $('#close-modal').removeAttr('disabled');
 
@@ -290,7 +693,7 @@ $(document).ready(function() {
               $('<h5 class="modal-title title-finish" id="modalTitle">Pieraksts</h5>').insertAfter('#modalTitle');
               $('.reservation-modal-footer #submit-reservation').hide();
               $('.reservation-modal-footer #close-modal').text('Aizvērt');
-              $('<div class="modal-body finish">' + data.message + '</div><div class="modal-footer finish-footer"><button type="button" class="btn btn-secondary" id="close-modal" style="margin-right: 10px;">Aizvērt</button></div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
+              $('<div class="modal-body finish">' + payload.message + '</div><div class="modal-footer finish-footer"><button type="button" class="btn btn-secondary" id="close-modal" style="margin-right: 10px;">Aizvērt</button></div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
               slot.removeClass('time-free').removeClass('time-offer').addClass('time-taken');
               slot.find('button').fadeOut().remove();
               slot.append('<div class="slot taken-slot">' + successText + '</div>').fadeIn();
@@ -298,9 +701,11 @@ $(document).ready(function() {
               $('#reservation form').trigger('reset');
               $('#reservation .rims_with, #reservation .temp_save_nr').hide();
 
-              let elements = document.querySelectorAll('.time-status.taken-slot');
+              if (typeof window.r1TrackBookingConversion === 'function') {
+                window.r1TrackBookingConversion(payload.booking_event_id);
+              }
 
-              elements.forEach(function(element) {
+              document.querySelectorAll('.time-status.taken-slot').forEach(function(element) {
                 let nextElement = element.nextElementSibling;
 
                 if (nextElement && nextElement.classList.contains('time-taken-half')) {
@@ -322,38 +727,46 @@ $(document).ready(function() {
 
               let wsData = {
                 wsParams: wsParams,
-                new_slot_client: data.new_slot_client,
+                new_slot_client: payload.new_slot_client,
               };
-
-              // socket.send(JSON.stringify(wsData));
-              //
-              // slot.find('button').fadeOut().remove();
-              // let successText = truncateCharacters($.trim(car_brand),8,'&mldr;',1) + ' xxxxx' + plate;
-              // slot.append('<span class="bg-gray-300 text-gray py-2 px-4 status" style="cursor: default;">' + successText + '</span>').fadeIn();
             }
-            if (index === 'alertMessage') {
-              $('#submit-reservation').removeAttr('disabled');
-              $('#close-modal').removeAttr('disabled');
-
-              $('.reservation-modal-body').slideUp();
-              $('#modalTitle').first().slideUp();
-              $('<h5 class="modal-title title-finish" id="modalTitle">Pieraksts</h5>').insertAfter('#modalTitle');
-              $('.reservation-modal-footer #submit-reservation').hide();
-              $('.reservation-modal-footer #close-modal').text('Aizvērt');
-              $('<div class="modal-body finish">' + data.alertMessage + '</div><div class="modal-footer finish-footer"><button type="button" class="btn btn-secondary" id="close-modal" style="margin-right: 10px;">Aizvērt</button></div>').insertAfter($('#modalTitle').parent()).css('display', 'none').slideDown();
-              $('#brand, #model, #phone, #email').removeAttr('placeholder');
-              $('#reservation form').trigger('reset');
-              $('#reservation .rims_with, #reservation .temp_save_nr').hide();
-            }
-          });
-        }, 1000);
-      },
-      complete: function() {
-        setTimeout(function() {
+          }, 0);
+        },
+        complete: function() {
           $('#reservation .loader-block').hide();
-        }, 1000);
-      }
-    });
+        }
+      });
+    }
+
+    // If plate is empty, don't block submission with a car-info alert.
+    // Show same validation hint as backend does.
+    if (!normalizedPlate) {
+      $('#reg_nr').attr('placeholder', 'Jābūt aizpildītam!');
+      setRegNrValidity(false);
+      $('#submit-reservation').removeAttr('disabled');
+      $('#close-modal').removeAttr('disabled');
+      $('#reservation .loader-block').hide();
+      return;
+    }
+
+    // If plate is present but invalid, show inline invalid state and stop.
+    if (!isValidPlate(normalizedPlate)) {
+      setRegNrValidity(false);
+      $('#submit-reservation').removeAttr('disabled');
+      $('#close-modal').removeAttr('disabled');
+      $('#reservation .loader-block').hide();
+      return;
+    }
+
+    // Plate is valid => persist EXACT API response to DB.
+    ensureCarInfoSnapshotForPlate(lic_plate)
+      .done(function(snap) {
+        submitFillSlot(snap);
+      })
+      .fail(function() {
+  console.warn('car-info snapshot failed; proceeding without snapshot.');
+        submitFillSlot(null);
+      });
 
   });
 
@@ -523,38 +936,68 @@ $(document).ready(function() {
     let name = $('#mobile-reservation-form input#mobile-name').val();
     let email = $('#mobile-reservation-form input#mobile-email').val();
 
-    let formData = 'car_brand=' + car_brand + '&car_model=' + car_model + '&rimsWith=' + rimsWith + '&temp_nr=' + temp_nr + '&lic_plate=' + lic_plate + '&service=' + service + '&user_comment=' + user_comment + '&name=' + name + '&phone_number=' + phone + '&email=' + email;
+    $('#reservation .loader-block').show();
+    $('#mobile-submit-reservation').attr('disabled', true);
 
-    let dopParams = {
-      iorder: iorder,
-      queue_id: queue_id,
-      date: date,
-      time: time,
-      office: office,
-    };
+    const normalizedPlateMobile = normalizePlate(lic_plate);
 
-    $.ajax({
-      url: '/pieraksts/fillSlot',
-      method: 'POST',
-      data: {formData: formData, dopParams: dopParams, from_mobile: 1},
-      beforeSend: function () {
-        $('#reservation .loader-block').show();
-      },
-      success: function (data) {
-        setTimeout(function() {
-          data = JSON.parse(data);
-          let text = '';
-          $.each(data, function(index, value) {
-            if (index === 'errors') {
-              $.each(value, function(index, item) {
+    // Build & submit fillSlot request (optionally with car-info snapshot).
+    function submitFillSlotMobile(carInfoSnap) {
+      const thisFillSeq = ++fillSlotRequestSeq;
+      let formDataPayload = {
+        car_brand: car_brand,
+        car_model: car_model,
+        rimsWith: rimsWith,
+        temp_nr: temp_nr,
+        lic_plate: lic_plate,
+        service: service,
+        user_comment: user_comment,
+        name: name,
+        phone_number: phone,
+        email: email,
+      };
+
+      if (carInfoSnap && carInfoSnap.json) {
+        formDataPayload.car_info_json = carInfoSnap.json;
+        formDataPayload.car_info_fetched_at = carInfoSnap.fetchedAt || '';
+        formDataPayload.car_info_vnr = normalizedPlateMobile;
+        formDataPayload.car_info_source = 'api/car-info';
+      }
+
+      let formData = $.param(formDataPayload);
+
+      let dopParams = {
+        iorder: iorder,
+        queue_id: queue_id,
+        date: date,
+        time: time,
+        office: office,
+      };
+
+      $.ajax({
+        url: '/pieraksts/fillSlot',
+        method: 'POST',
+        data: {formData: formData, dopParams: dopParams, from_mobile: 1},
+        success: function (data) {
+          var payloadImmediate = (typeof data === 'string') ? JSON.parse(data) : data;
+          if (thisFillSeq === fillSlotRequestSeq && payloadImmediate.message && payloadImmediate.success) {
+            if (window.simpleSlotLock && typeof window.simpleSlotLock.onFillSlotSuccess === 'function') {
+              window.simpleSlotLock.onFillSlotSuccess();
+            }
+          }
+          setTimeout(function() {
+            if (thisFillSeq !== fillSlotRequestSeq) {
+              return;
+            }
+            var payload = payloadImmediate;
+
+            if (payload.errors) {
+              $.each(payload.errors, function(index, item) {
                 if (index == 'car_brand') {
                   $('#mobile-brand').attr('placeholder', 'Jābūt aizpildītam!');
                 }
                 if (index == 'car_model') {
                   $('#mobile-model').attr('placeholder', 'Jābūt aizpildītam!');
-                }
-                if (index == 'lic_plate') {
-                  $('#mobile-reg_nr').attr('placeholder', 'Jābūt aizpildītam!');
                 }
                 if (index == 'lic_plate') {
                   $('#mobile-reg_nr').attr('placeholder', 'Jābūt aizpildītam!');
@@ -565,13 +1008,25 @@ $(document).ready(function() {
               });
               $('#submit-reservation').removeAttr('disabled');
               $('#close-modal').removeAttr('disabled');
+              return;
             }
-            if (index === 'message') {
+
+            if (payload.alertMessage) {
               $('html, body').animate({
                 scrollTop: $("section#mobile-main").offset().top
               });
               $('.mobile-reservation-modal-body .mobile-body').slideUp();
-              $('.mobile-reservation-modal-body .mobile-body-success .alert').append(data.message);
+              $('.mobile-reservation-modal-body .mobile-body-success .alert').html(payload.alertMessage);
+              $('.mobile-reservation-modal-body .mobile-body-success').slideDown();
+              return;
+            }
+
+            if (payload.message && payload.success) {
+              $('html, body').animate({
+                scrollTop: $("section#mobile-main").offset().top
+              });
+              $('.mobile-reservation-modal-body .mobile-body').slideUp();
+              $('.mobile-reservation-modal-body .mobile-body-success .alert').html(payload.message);
               $('.mobile-reservation-modal-body .mobile-body-success').slideDown();
               $('#mobile-submit-reservation').slideToggle();
               $('#mobile-close-modal').slideToggle().on('click', function () {
@@ -596,41 +1051,58 @@ $(document).ready(function() {
 
               let wsData = {
                 wsParams: wsParams,
-                new_slot_client: data.new_slot_client,
+                new_slot_client: payload.new_slot_client,
               };
 
-              // socket.send(JSON.stringify(wsData));
-              //
-              // slot.find('button').fadeOut().remove();
-              // let successText = truncateCharacters($.trim(car_brand),8,'&mldr;',1) + ' xxxxx' + plate;
-              // slot.append('<span class="bg-gray-300 text-gray py-2 px-4 status" style="cursor: default;">' + successText + '</span>').fadeIn();
+              if (typeof window.r1TrackBookingConversion === 'function') {
+                window.r1TrackBookingConversion(payload.booking_event_id);
+              }
             }
-            if (index === 'alertMessage') {
-              $('html, body').animate({
-                scrollTop: $("section#mobile-main").offset().top
-              });
-              $('.mobile-reservation-modal-body .mobile-body').slideUp();
-              $('.mobile-reservation-modal-body .mobile-body-success .alert').append(data.alertMessage);
-              $('.mobile-reservation-modal-body .mobile-body-success').slideDown();
-            }
-          });
-        }, 1000);
-      },
-      complete() {
+          }, 0);
+        },
+        complete: function() {
+          $('#reservation .loader-block').hide();
+          $('#mobile-submit-reservation').removeAttr('disabled');
+        }
+      });
+    }
 
-      }
-    });
+    // If plate is empty, don't block submission with a car-info alert.
+    // Show same validation hint as backend does.
+    if (!normalizedPlateMobile) {
+      $('#mobile-reg_nr').attr('placeholder', 'Jābūt aizpildītam!');
+      setRegNrValidity(false);
+      $('#reservation .loader-block').hide();
+      $('#mobile-submit-reservation').removeAttr('disabled');
+      return;
+    }
+
+    // If plate is present but invalid, show inline invalid state and stop.
+    if (!isValidPlate(normalizedPlateMobile)) {
+      setRegNrValidity(false);
+      $('#reservation .loader-block').hide();
+      $('#mobile-submit-reservation').removeAttr('disabled');
+      return;
+    }
+
+    // Plate is valid => persist EXACT API response to DB.
+    ensureCarInfoSnapshotForPlate(lic_plate)
+      .done(function(snap) {
+        submitFillSlotMobile(snap);
+      })
+      .fail(function() {
+  console.warn('car-info snapshot failed (mobile); proceeding without snapshot.');
+        submitFillSlotMobile(null);
+      });
 
   });
 
-  let elements = document.querySelectorAll('.time-status.taken-slot');
-
-  elements.forEach(function(element) {
+  document.querySelectorAll('.time-status.taken-slot').forEach(function(element) {
     let nextElement = element.nextElementSibling;
 
     if (nextElement && nextElement.classList.contains('time-taken-half')) {
-      nextElement.classList.remove('time-taken-half', 'time-taken');
-      nextElement.classList.add('time-taken');
+      nextElement.classList.remove('time-taken-half', 'taken-slot');
+      nextElement.classList.add('taken-slot');
     }
   });
 
@@ -665,7 +1137,7 @@ $(document).ready(function() {
   //       slot.append('<div class="slot taken-slot">' + successText + '</div>').hide().fadeIn();
   //
   //       mobile_slot.find('.slot').removeClass('active').removeClass('available').addClass('unavailable');
-  //       mobile_slot.find('.slot-text').html('Aizņemts');
+  //       mobile_slot.find('.slot-text').html('Aizإ†emts');
   //
   //     } else if (data.slot_admin.edited_slot_admin) {
   //
@@ -706,16 +1178,16 @@ $(document).ready(function() {
   //         // Desktop version
   //         if (slot.hasClass('time-free')) {
   //           slot.removeClass('time-free').addClass('time-closed').find('button').fadeOut().remove();
-  //           slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
+  //           slot.append('<span class="slot closed-slot">Slؤ“gts</span>').hide().fadeIn();
   //         } else if (slot.hasClass('time-taken')) {
   //           slot.removeClass('time-taken').addClass('time-closed').find('div.slot').fadeOut().remove();
-  //           slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
+  //           slot.append('<span class="slot closed-slot">Slؤ“gts</span>').hide().fadeIn();
   //         } else if (slot.hasClass('time-offer')) {
   //           slot.removeClass('time-offer').addClass('time-closed').find('div.slot').fadeOut().remove();
-  //           slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
+  //           slot.append('<span class="slot closed-slot">Slؤ“gts</span>').hide().fadeIn();
   //         } else if (slot.hasClass('time-gray')) {
   //           slot.removeClass('time-gray').addClass('time-closed').find('div.slot').fadeOut().remove();
-  //           slot.append('<span class="slot closed-slot">Slēgts</span>').hide().fadeIn();
+  //           slot.append('<span class="slot closed-slot">Slؤ“gts</span>').hide().fadeIn();
   //         }
   //
   //         // Mobile version
@@ -792,7 +1264,7 @@ $(document).ready(function() {
   //         } else {
   //           slot.find('button.status').remove();
   //         }
-  //         slot.append('<button class="status free-slot-link available-slot">Brīvs</button>').hide().fadeIn();
+  //         slot.append('<button class="status free-slot-link available-slot">Brؤ«vs</button>').hide().fadeIn();
   //       }
   //     }
   //   } else if (data.timeChangedState === 1) {
@@ -803,8 +1275,8 @@ $(document).ready(function() {
   //     });
   //     $.toast({
   //       autoDismiss: false,
-  //       title: 'Paziņojums',
-  //       message: 'Notika izmaiņas darba laikos, atjaunojiet lapu<br><button onclick="location.reload()" class="btn btn-success" style="margin-top: 5px;">Pārlādēt</button>'
+  //       title: 'Paziإ†ojums',
+  //       message: 'Notika izmaiإ†as darba laikos, atjaunojiet lapu<br><button onclick="location.reload()" class="btn btn-success" style="margin-top: 5px;">Pؤپrlؤپdؤ“t</button>'
   //     });
   //   } else {
   //     if (data.times.changeVal) {
@@ -851,11 +1323,11 @@ $(document).ready(function() {
   //       if (times.includes($('.modal#reservation .timeOfDay').html()) && $('.modal#reservation').is(':visible')) {
   //         closedTime = true;
   //         $('.modal#reservation #submit-reservation').remove();
-  //         $('.modal#reservation #close-modal').text('Aizvērt');
+  //         $('.modal#reservation #close-modal').text('Aizvؤ“rt');
   //         $('.modal#reservation .reservation-modal-body .container-fluid').slideUp();
   //
   //         let alertMessage = '<div class="container-fluid"><div class="row"><div class="col-md-12">' +
-  //           '<div class="alert alert-warning">Atvainojamies, darba laiks saīsinājās, lūgums izvēlēties citu pieraksta laiku</div>' +
+  //           '<div class="alert alert-warning">Atvainojamies, darba laiks saؤ«sinؤپjies, lإ«gums izvؤ“lؤ“ties citu pieraksta laiku</div>' +
   //           '</div></div></div>';
   //
   //         $(alertMessage).insertAfter($('.modal#reservation .reservation-modal-body .container-fluid'));
@@ -870,8 +1342,8 @@ $(document).ready(function() {
   //         //   // check if permission is already granted
   //         //   if (Notification.permission === 'granted') {
   //         //     // show notification here
-  //         //     var notify = new Notification('Pasūtījumi', {
-  //         //       body: 'Ir izveidots jauns pasūtījums',
+  //         //     var notify = new Notification('Pasإ«tؤ«jumi', {
+  //         //       body: 'Ir izveidots jauns pasإ«tؤ«jums',
   //         //       icon: 'https://r1riepas.lv/img/r1-riepas-logo-1515661637.jpg',
   //         //     });
   //         //   } else {
@@ -879,8 +1351,8 @@ $(document).ready(function() {
   //         //     Notification.requestPermission().then(function (p) {
   //         //       if (p === 'granted') {
   //         //         // show notification here
-  //         //         var notify = new Notification('Pasūtījumi', {
-  //         //           body: 'Ir izveidots jauns pasūtījums',
+  //         //         var notify = new Notification('Pasإ«tؤ«jumi', {
+  //         //           body: 'Ir izveidots jauns pasإ«tؤ«jums',
   //         //           icon: 'https://r1riepas.lv/img/r1-riepas-logo-1515661637.jpg',
   //         //         });
   //         //       } else {

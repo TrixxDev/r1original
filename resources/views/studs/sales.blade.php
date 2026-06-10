@@ -34,11 +34,11 @@
 
                         <td class="table-tire-name-cell" data-link="{{ route('radzes') }}">
                             <a data-toggle="tooltip" data-html="true" class="tire-table-link" title='{!! App\Helper\Image::show('studs', $stud->make_id) !!}'
-                               href="{{ route('radze', [$stud->brand, strtolower(str_replace('/', '_', $stud->t_title)), $stud->stud_id]) }}"
-                               data-content="{{ $stud->fullName }}"
+                               href="{{ route('radze', [$stud->brand_slug, $stud->tread_slug, $stud->stud_id]) }}"
+                               data-content="{{ $stud->sale_full_name }}"
                                data-article="{{ $stud->article }}"
                                data-quantity="{{ $cartQty }}">
-                                <div class="table-link-title">{{ $stud->fullName }}</div>
+                                <div class="table-link-title">{{ $stud->sale_full_name }}</div>
                             </a>
                         </td>
 
@@ -59,10 +59,10 @@
                         </td>
 
                         <td class="dot-availability text-center">
-                            <span class="dot {{ $stud->dotAvailable }} {{ $stud->stockCount }}" data-toggle="tooltip"
+                            <span class="dot {{ $stud->sale_dot_available }}" data-toggle="tooltip"
                                   data-html="true"
-                                  title="{{ $stud->stockAvailability }}">
-                              <span class="sort-order">{{ $stud->dotAvailable }}</span>
+                                  title="{{ $stud->sale_stock_availability }}">
+                              <span class="sort-order">{{ $stud->sale_dot_available }}</span>
                             </span>
                         </td>
 

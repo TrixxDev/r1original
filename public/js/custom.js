@@ -138,7 +138,23 @@ $("#quick-popup").on("hide.bs.modal", function (e) {
 
 // Mobīlā versija pierakstam
 
-$(document).ready(function() {
+jQuery(document).ready(function($) {
+    // Удаляем все обработчики событий для элементов изменения количества товаров
+    // Это нужно для предотвращения конфликтов с cart-unified.js
+    $(document).off('click', '.js-increase-product-quantity');
+    $(document).off('click', '.js-decrease-product-quantity');
+    $(document).off('change', '.js-cart-line-product-quantity');
+    
+    $('.js-increase-product-quantity').off('click');
+    $('.js-decrease-product-quantity').off('click');
+    $('.js-cart-line-product-quantity').off('change');
+    
+    // Если был установлен обработчик на document, тоже его удаляем
+    $(document).off('click', '.bootstrap-touchspin-up');
+    $(document).off('click', '.bootstrap-touchspin-down');
+    $(document).off('change', '.input-group input[name=qty]');
+    
+    // Остальной код document.ready
 
 });
 
@@ -523,11 +539,11 @@ $('body').off('change', '#search_filters input[data-search-url]');
 $('body').on('change', '#search_filters input[data-search-url]', function (event) {
   filterTableByCodeType();
 });
-$('body').off('click', '#search_filters a.js-search-link');
-$('body').on('click', '#search_filters a.js-search-link', function (event) {
-  $(this).parent().find('input[data-search-url]').click();
+$('body').off('click', '#search_filters .js-search-link');
+$('body').on('click', '#search_filters .js-search-link', function (event) {
+  event.preventDefault();
+  $(this).closest('label').find('input[data-search-url]').first().trigger('click');
 });
-$('#search_filters .sidebar-bottom a.js-search-link').attr('href', 'javascript:;');
 $('.facet--27 input').click();
 $('#category.category-id-17 li[data-label="'+encodeURIComponent('F/R')+'"]').hide();
 var visible_facets = ['F', 'R'];
@@ -597,7 +613,7 @@ $('#category.category-id-17 .facet--35 li').each(function(){
 //     $('#search_filters .can-collapse').css('height', ($('#search_filters').hasClass('auto') ? hh+'px' : '300px'));
 //   if ($('#search_filters').hasClass('auto')) {
 //     var filters = allVal.indexOf($('#facet_auto-make .select-title span').text().replace(/^\s+|\s+$/g,'')) != -1 || allVal.indexOf($('#facet_auto-model .select-title span').text().replace(/^\s+|\s+$/g,'')) != -1
-//       ? null : car_cat[$('#facet_auto-make .select-title span').text().replace(/^\s+|\s+$/g,'')][$('#facet_auto-model .select-title span').text().replace(/^\s+|\s+$/g,'')];
+//       ? null : car_cat[$('#facet_auto-make .select-title span').text().replace(/^\s+|\s+$/g')][$('#facet_auto-model .select-title span').text().replace(/^\s+|\s+$/g')];
 //     if (filters && allVal.indexOf($('#facet_auto-dia .select-title > span').text().replace(/^\s+|\s+$/g,'')) != 1) {
 //       filters['dia'] = [];
 //       filters['dia'].push($('#facet_auto-dia .select-title > span').text().replace(/^\s+|\s+$/g,''));
@@ -723,7 +739,7 @@ $.UrlExists = function(url) {
 $('.tire-table-row, .tire-image-card').each(function(key, value) {
   products.push($(value).children().children().last().children().first().val());
   $(value).find('.grid-cart-btn').on('click', function() {
-    if (!user) {
+    if (!admin) {
       const tire_id = $(this).data('info');
 
       $.ajax({
@@ -833,7 +849,7 @@ $('.tire-table-row, .tire-image-card').each(function(key, value) {
 $('.tire-table-row, .tire-image-card').each(function(key, value) {
   products.push($(value).children().children().last().children().first().val());
   $(value).find('.grid-buy-btn').on('click', function() {
-    if (!user) {
+    if (!admin) {
       const tire_id = $(this).data('info');
 
       $.ajax({
@@ -974,194 +990,89 @@ $('.bootstrap-touchspin-down').on('click', function() {
 });
 
 //
-function ajaxChangeQty(tire_id, qty, price) {
-  $.ajax({
-    url: '/cart/ajaxChangeQty',
-    method: 'POST',
-    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-    data: { tire_id: tire_id, qty: qty },
-    success: function(data)
-    {
-      data = JSON.parse(data);
-      $('.cart-products-count').html('(' + data.total_items + ')');
-      $('#cart-subtotal-products .value').html('€ ' + data.total_sum.replace('.00', ''));
-      $('#cart-subtotal-products .js-subtotal').html(data.total_items + ' Preces');
-      // console.log($('#cart-subtotal-products .js-subtotal').text().replace(' Preces', ''));
-      $('.cart-total .value').html('€ ' + data.total_sum.replace('.00', ''));
-      $('.product-price[data-product-id=' + tire_id + ']').html('<strong>€ ' + (parseInt(price) * parseInt(qty)) + '</strong>');
-      $('.js-cart-line-product-quantity[data-product-id=' + tire_id + ']').val(parseInt(qty));
-      $('.cart-montage-choice .cart-delivery-options .cart-delivery-label').first().children('input').val(data.total_items);
-      $('.cart-montage-choice .cart-delivery-options .cart-delivery-label').first().children('span').html(data.total_items + ' Riepām');
-    }
-  });
-}
-//
-$('.js-cart-line-product-quantity').each(function(key, value) {
-  $(value).on('input', function() {
-    let item_id = $(this).data('product-id');
-    let qty = $(this).val();
-    if (qty <= 0) qty = 1;
-    let price = $(this).data('item-price');
-    $('#cart-subtotal-products .js-subtotal').html(qty + ' Preces');
 
-    ajaxChangeQty(item_id, qty, price);
-    let __total = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
-    if ($('.cart-delivery-option').is(':visible')) {
-      checkShipping(__total);
-    }
-    if ($('.cart-montage-choice').is(':visible')) {
-      checkFitting(__total);
-    }
-  })
+// //
+// $('.js-cart-line-product-quantity').each(function(key, value) {
+//   $(value).on('input', function() {
+//     let item_id = $(this).data('product-id');
+//     let qty = $(this).val();
+//     if (qty <= 0) qty = 1;
+//     let price = $(this).data('item-price');
+//     $('#cart-subtotal-products .js-subtotal').html(qty + ' Preces');
 
-  $(value).parent().children().last().children().first().on('click', function() {
-    let item = $(this).parent().siblings('.js-cart-line-product-quantity');
+//     ajaxChangeQty(item_id, qty, price);
+//     let __total = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
+//     if ($('.cart-delivery-option').is(':visible')) {
+//       checkShipping(__total);
+//     }
+//     if ($('.cart-montage-choice').is(':visible')) {
+//       checkFitting(__total);
+//     }
+//   })
 
-    let item_id = item.data('product-id');
-    let qty = parseInt(item.val()) + 1;
-    let price = item.data('item-price');
-    $('#cart-subtotal-products .js-subtotal').html(qty + ' Preces');
+//   $(value).parent().children().last().children().first().on('click', function() {
+//     let item = $(this).parent().siblings('.js-cart-line-product-quantity');
 
-    ajaxChangeQty(item_id, qty, price);
-    let __total = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
-    if ($('.cart-delivery-option').is(':visible')) {
-      checkShipping(__total);
-    }
-    if ($('.cart-montage-choice').is(':visible')) {
-      checkFitting(__total);
-    }
-  });
+//     let item_id = item.data('product-id');
+//     let qty = parseInt(item.val()) + 1;
+//     let price = item.data('item-price');
+//     $('#cart-subtotal-products .js-subtotal').html(qty + ' Preces');
 
-  $(value).parent().children().last().children().last().on('click', function() {
-    let item = $(this).parent().siblings('.js-cart-line-product-quantity');
+//     ajaxChangeQty(item_id, qty, price);
+//     let __total = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
+//     if ($('.cart-delivery-option').is(':visible')) {
+//       checkShipping(__total);
+//     }
+//     if ($('.cart-montage-choice').is(':visible')) {
+//       checkFitting(__total);
+//     }
+//   });
 
-    let item_id = item.data('product-id');
-    let qty = parseInt(item.val()) - 1;
-    if (qty <= 0) qty = 1;
-    let price = item.data('item-price');
-    $('#cart-subtotal-products .js-subtotal').html(qty + ' Preces');
+//   $(value).parent().children().last().children().last().on('click', function() {
+//     let item = $(this).parent().siblings('.js-cart-line-product-quantity');
 
-    ajaxChangeQty(item_id, qty, price);
-    let __total = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
-    if ($('.cart-delivery-option').is(':visible')) {
-      checkShipping(__total);
-    }
-    if ($('.cart-montage-choice').is(':visible')) {
-      checkFitting(__total);
-    }
-  });
-});
-//
-if (!admin) {
-  $('.add-to-cart').on('click', function() {
-    let tire_id = $(this).data('info');
-    let quantity = $('#quantity_wanted').val();
-    let tire_price = parseInt($('.current-price').children().last().attr('content')) * parseInt(quantity);
-    let cart_count = $('.cart-products-count').html().replace('(', '').replace(')', '');
-    $('#blockcart-modal span.cart-products-count').html('(' + (parseInt(cart_count) + parseInt(quantity)) + ')');
+//     let item_id = item.data('product-id');
+//     let qty = parseInt(item.val()) - 1;
+//     if (qty <= 0) qty = 1;
+//     let price = item.data('item-price');
+//     $('#cart-subtotal-products .js-subtotal').html(qty + ' Preces');
 
-    activeCart();
+//     ajaxChangeQty(item_id, qty, price);
+//     let __total = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
+//     if ($('.cart-delivery-option').is(':visible')) {
+//       checkShipping(__total);
+//     }
+//     if ($('.cart-montage-choice').is(':visible')) {
+//       checkFitting(__total);
+//     }
+//   });
+// });
+// //
+// Обработчик кнопки "Pirkt" перенесен в autoTiresAjax.js
 
-    $.ajax({
-      url: '/' + pathParts[1] + '/ajax',
-      method: 'POST',
-      data: { tire_id: tire_id, quantity: quantity },
-      success: function(data)
-      {
-        data = JSON.parse(data);
-        let $quantity = data.quantity;
-        $quantity = parseInt($quantity);
-        let total_sum = data.total_sum;
-        total_sum = parseInt(total_sum);
-        const image = data.cart.options.image;
-        if (typeof image !== "undefined") {
-          if (data.cart.options.tire.make_id){
-            fetch(public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg',
-              { method: 'GET' },)
-              .then(res => {
-                if (res.ok) {
-                  $('.modal-image-preview img').attr('src', public_url + data.cart.options.image + '/tread/' + data.cart.options.tire.make_id + '-o.jpg');
-                } else {
-                  $('.modal-image-preview img').attr('src', '/img/p/en-default-home_default.jpg');
-                }
-              });
-          }
-        }
-
-        if (data.cart.options.image == 'stud') {
-          // STUD IMAGE INSIDE MODAL
-          $('.modal-product-info .product-name').html(data.cart.name);
-          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
-          $('.modal-product-info .product-stud-length').html(data.cart.options.tire.stud_length);
-          $('.modal-product-info .product-stud-count').html(data.cart.options.tire.stud_count);
-          $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
-          $('.cart-content .cart-products-total').html(total_sum);
-          $('span.cart-products-count').html('(' + cart_quantity + ')');
-          $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
-          $('.blockcart.cart-preview .header').empty();
-          $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
-        } else if (data.cart.options.image == 'rims' || data.cart.options.image == 'quadrims') {
-          // STUD IMAGE INSIDE MODAL
-          $('.modal-product-info .product-name').html(data.cart.name);
-          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
-          $('.modal-product-info .product-rim-width').html(data.cart.options.tire.d1);
-          $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
-          $('.modal-product-info .product-lug-distance').html(data.cart.options.tire.skr + 'x' + data.cart.options.tire.pcd);
-          $('.modal-product-info .product-comment').html(data.cart.options.tire.comment);
-          $('.cart-content .cart-products-total').html(total_sum);
-          $('span.cart-products-count').html('(' + cart_quantity + ')');
-          $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
-          $('.blockcart.cart-preview .header').empty();
-          $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
-        } else {
-          // TIRE IMAGE INSIDE MODAL
-          $('.modal-product-info .product-name').html(data.cart.name);
-          $('.modal-product-info .product-price').html(parseInt(data.cart.options.tire.price2)).attr('data-price', parseInt(data.cart.options.tire.price2));
-          $('.modal-product-info .product-width').html(data.cart.options.tire.d1);
-          $('.modal-product-info .product-height').html(data.cart.options.tire.d2);
-          $('.modal-product-info .product-radius').html(data.cart.options.tire.d3);
-          $('.modal-product-info .product-type').html(data.cart.options.tire.d3);
-          $('.modal-product-info .product-li').html(data.cart.options.tire.li);
-          $('.modal-product-info .product-si').html(data.cart.options.tire.si);
-          $('.cart-content .cart-products-total').html(total_sum);
-          $('.modal-product-info .product-qty').html($('.modal-product-info .product-qty').attr('data-qty')).attr('data-qty', parseInt(data.quantity));
-          $('span.cart-products-count').html('(' + cart_quantity + ')');
-          $('.blockcart.cart-preview').removeClass('inactive').addClass('active');
-          $('.blockcart.cart-preview .header').empty();
-          $('<a rel="nofollow" href="' + grozs_url + '"><i class="material-icons shopping-cart">shopping_cart</i><span class="hidden-sm-down">Grozs: </span><span class="cart-products-count">(' + cart_quantity + ')</span></a>').appendTo('.blockcart.cart-preview .header');
-        }
-      }
-    });
-
-  });
-} else {
-  $('.add-to-cart').on('click', function() {
-    const tire_price = $('.product-prices').find('.has-discount span[itemprop=price]').attr('content');
-    const tire_title = $('.tire_title').val();
-    const tire_article = $('.tire_article').val();
-    $('.popup input[name=qty]').val($('.product-quantity .qty .input-group input[name=qty]').attr('value'));
-    $('.popup input[name=total]').val(parseInt(tire_price) * $('.popup input[name=qty]').val());
-    $('.popup input[name=prod]').val(tire_title);
-    $('.popup input[name=price]').val(parseInt($('.current-price').children().last().attr('content')));
-    $('.popup input[name=user]').val(user).attr('readonly', true).prop('readonly', true);
-    $('.popup input[name=article]').val(tire_article);
-
-    calcData = {
-          'article': tire_article,
-          'qty': $('.product-quantity .qty .input-group input[name=qty]').attr('value'),
-          'user': user,
-          'prod': tire_title,
-          'price': tire_price,
-      }
-
-      addEntry(calcData);
-
-      const urlData = new URLSearchParams(calcData).toString();
-
-      popCalc('/testing3',950,650);
-
-
-})
+function updateModalInfo(cart) {
+  const product = cart.products[Object.keys(cart.products)[0]];
+  
+  // Обновляем основную информацию
+  $('.modal-product-info .product-name').html(product.name);
+  $('.modal-product-info .product-price').html(product.price);
+  
+  // Обновляем изображение
+  if (product.image) {
+    $('.modal-image-preview img').attr('src', product.image);
+  } else {
+    $('.modal-image-preview img').attr('src', '/img/p/en-default-home_default.jpg');
+  }
+  
+  // Обновляем детали в зависимости от типа товара
+  if (product.type === 'tire') {
+    $('.modal-product-info .product-width').html(product.width);
+    $('.modal-product-info .product-height').html(product.height);
+    $('.modal-product-info .product-radius').html(product.radius);
+    $('.modal-product-info .product-type').html(product.type);
+    $('.modal-product-info .product-li').html(product.li);
+    $('.modal-product-info .product-si').html(product.si);
+  }
 }
 
 $('.ct_matrix_row').each(function(key, value) {
@@ -1289,7 +1200,7 @@ function sendData(data){
     type: 'POST',
     url: '/accrualOrder',
     data: {info: data},
-    timeout: 10000,
+    timeout: 20000,
     success: function(resp){
       $('#quick-buy-form').parent().find('.popup-close').click();
       $('.popup input[name=montage]').prop('checked', false);
@@ -1312,15 +1223,27 @@ function sendData(data){
       //})
     },
     error: function(jqXHR, textStatus){
+      let errorText = 'Pasūtījums nav pieņemts!';
       if (textStatus === 'timeout') {
-        Swal.fire({
-          title: 'Kļūda!',
-          text: 'Pasūtījums nav pieņemts!',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-        // toastr.error('Pastūtījums nav pieņemts!', 'Kļūda');
+        errorText = 'Servera atbilde kavējas. Mēģiniet vēlreiz.';
+      } else if (jqXHR && jqXHR.responseText) {
+        try {
+          const response = JSON.parse(jqXHR.responseText);
+          if (response && response.danger) {
+            errorText = response.danger;
+          }
+        } catch (e) {
+          // Keep default fallback text
+        }
       }
+
+      Swal.fire({
+        title: 'Kļūda!',
+        text: errorText,
+        icon: 'error',
+        confirmButtonText: 'OK'
+      });
+      // toastr.error('Pastūtījums nav pieņemts!', 'Kļūda');
     },
     complete: function(){
       $('#quick-buy-form').parent().removeClass('busy');
@@ -1458,22 +1381,33 @@ function showQuickBuyForm(id) {
 let previousUrl = document.referrer;
 
 function updateUrl(tires_array) {
+  const targetUrl = tires_array.length > 0
+    ? `${window.location.pathname}?selected=${tires_array.join(',')}`
+    : window.location.pathname;
+  const currentUrl = window.location.pathname + window.location.search;
+
+  if (targetUrl === currentUrl) {
+    return;
+  }
+
   if (tires_array.length > 0) {
-    history.pushState({ tires: tires_array, prevUrl: previousUrl }, '', '?selected=' + tires_array.join(','));
+    history.pushState({ tires: tires_array, prevUrl: previousUrl }, '', targetUrl);
   } else {
-    history.pushState({ prevUrl: previousUrl }, '', window.location.pathname);
+    history.pushState({ prevUrl: previousUrl }, '', targetUrl);
   }
 }
 
-$(document).find('th.tread-tire-table-checkbox').children().on('click', function() {
-  let tires_array = [];
-  $(this).parent().parent().toggleClass('selected');
-  $(document).find('th.tread-tire-table-checkbox').children(':checked').each(function() {
-    tires_array.push($(this).val());
-  });
+if (!$('#show-selected-tread-checkbox').length) {
+  $(document).find('th.tread-tire-table-checkbox').children().on('click', function() {
+    let tires_array = [];
+    $(this).parent().parent().toggleClass('selected');
+    $(document).find('th.tread-tire-table-checkbox').children(':checked').each(function() {
+      tires_array.push($(this).val());
+    });
 
-  updateUrl(tires_array);
-});
+    updateUrl(tires_array);
+  });
+}
 
 window.addEventListener('popstate', function(event) {
   if (event.state) {
@@ -1855,55 +1789,7 @@ if ($('.custom_atv_name').length === 1) {
   $('.custom_atv_name').hide();
 }
 
-// $('#search_filters .sidebar-top').find('section.facet[class*="facet--"]')
-//   .filter(function () {
-//     var cl_name = '';
-//     $.each(this.className.split(' '), function(i, cl){
-//       if(cl.indexOf('facet--') !== -1) {
-//         cl_name = cl;
-//       }
-//     });
-//     if (cl_name) {
-//       if (cl_name.indexOf('facet--28') != -1 || cl_name.indexOf('facet--29') != -1 || cl_name.indexOf('facet--30') != -1 || cl_name.indexOf('facet--32') != -1) {
-//         $('<a rel="nofollow" href="javascript:;" class="select-list" data-q="wheels_diameter-all">All</a>').prependTo($('#search_filters .'+cl_name+' .facet-dropdown .dropdown-menu'));
-//       }
-//       $('#search_filters .'+cl_name+' .facet-dropdown .dropdown-menu a').each(function(){
-//         var elem = $(this);
-//         elem.attr('href','javascript:;');
-//         var text = elem.text();
-//         elem.on('click', function(){
-//           selectElement(text, '#search_filters .'+cl_name);
-//           if (cl_name.indexOf('facet--28') != -1 || cl_name.indexOf('facet--29') != -1 || cl_name.indexOf('facet--30') != -1 || cl_name.indexOf('facet--32') != -1) {
-//             var filters = [];
-//             filters['dia'] = []; filters['dia'].push($('#search_filters .facet--32 .select-title > span').text().replace(/^\s+|\s+$/g,''));
-//             filters['lug'] = []; filters['lug'].push($('#search_filters .facet--29 .select-title > span').text().replace(/^\s+|\s+$/g,''));
-//             filters['stud'] = []; filters['stud'].push($('#search_filters .facet--30 .select-title > span').text().replace(/^\s+|\s+$/g,''));
-//             filters['offset'] = []; filters['offset'].push($('#search_filters .facet--28 .select-title > span').text().replace(/^\s+|\s+$/g,''));
-//             filterTableByCar(filters);
-//           }
-//         });
-//       })
-//     }
-// });
-//
-// $('#autofind_sub').on('click', function(e) {
-//   // e.preventDefault();
-//   // var q = 'q=';
-//   // $('#search_filters [data-q]').filter(function() {
-//   //     return $(this).data('selected') === true;
-//   // }).each(function() {
-//   //     q += $(this).data('q') + '/';
-//   // });
-//   // if(q === 'q=') return;
-//   // var query = q.slice(0, q.lastIndexOf('/'));
-//   // var href = window.location.href.split('?');
-//   // var hrefQ = (href[1]) ? href[1].split('&').filter(function(el) {
-//   //     return el.indexOf('q') !== 0;
-//   // }) : [];
-//   // hrefQ.push(query);
-//   // window.location.href = href[0] + '?' + hrefQ.join('&');
-//
-// });
+
 $.fn.reverse = [].reverse;
 $('.table-top .table-cell[data-filter]').on('click', function() {
   $('.table-top .table-cell[data-filter]').removeClass('sorted');
@@ -1934,35 +1820,8 @@ $('.table-top .table-cell[data-filter]').on('click', function() {
   })
 
 });
-//
-// /* Filter and code input */
-//
-// /*Product description table top fixed*/
-// if ($('.table-top').length > 0) {
-//     var hT = $('.table-top').offset().top;
-//     $(window).resize(function(){
-//         $('#products').removeClass('fixed');
-//         hT = $('.table-top').offset().top;
-//         $(window).trigger('scroll');
-//     });
-//     $(window).scroll(function() {
-//         if (document.cookie.indexOf('show_list=true') === -1) return;
-//         if (hT === 0 && !$('#products').hasClass('fixed')) {
-//             hT = $('.table-top').offset().top;
-//         }
-//         var wS = $(this).scrollTop();
-//         var $F = $('.products').first();
-//         var hF = $F.offset().top + $F.height();
-//         if (wS > hT - 44 && wS < hF - 50){
-//             $('#products').addClass('fixed');
-//         } else {
-//             $('#products').removeClass('fixed');
-//             hT = $('.table-top').offset().top;
-//         }
-//     });
-//     $(window).trigger('scroll');
-// }
-// //
+
+
 if ($('.ct_matrix_head').length > 0) {
   var hT2 = $('.ct_matrix_head').offset().top;
   var $F2 = $('#ct_matrix tbody tr:last-child');
@@ -1982,52 +1841,8 @@ if ($('.ct_matrix_head').length > 0) {
     }
   });
 }
-//
-$(window).trigger('scroll');
-// /*product description table top fixed*/
-//
-// /*Filter fixed*/
-// // if ($('#search_filters_wrapper').length > 0) {
-// //     var hT2 = $('#search_filters_wrapper').offset().top;
-// //     var $F2 = $('#category .main-content');
-// //     $(window).scroll(function() {
-// //         var hF2 = $F2.offset().top + $F2.height() - $('#search_filters_wrapper').height();
-// //         var wS = $(this).scrollTop();
-// //         //console.log('hF2', hF2, wS);
-// //         if (wS > hT2 && wS < hF2 - 50){
-// //             $('#search_filters_wrapper').addClass('fixed');
-// //         } else {
-// //             $('#search_filters_wrapper').removeClass('fixed');
-// //             hT2 = $('#search_filters_wrapper').offset().top;
-// //         }
-// //     });
-// // }
-// $(function() {
-//
-//     var $sidebar   = $("#search_filters_wrapper");
-//     if ($sidebar.length === 0) return;
-//     var $window    = $(window),
-//         offset     = $sidebar.offset(),
-//         topPadding = 0,
-//         $wrapper = $('#category .main-content'),
-//         wrapperOf = $wrapper.offset(),
-//         wrapperH = $wrapper.height(),
-//         sidebarH = $sidebar.height();
-//
-//     $window.scroll(function() {
-//         if ($window.scrollTop() > offset.top && $window.width() > 992) {
-//             $sidebar.css({
-//                 marginTop: Math.min($window.scrollTop() - offset.top + topPadding, wrapperH - sidebarH - 100)
-//             });
-//         } else {
-//             $sidebar.css({
-//                 marginTop: 0
-//             });
-//         }
-//     });
-//
-// });
-// /*filter fixed*/
+
+
 function sorting(a, b){
   const t1 = $(a).text().replace('€', '').trim();
   const t2 = $(b).text().replace('€', '').trim();
@@ -2258,9 +2073,12 @@ $('#f').on('change', function() {
   }
 });
 
-let $person = $('input[type=hidden][name=person]').val();
+let $company_reg_nr = $('#company_registration_number').val();
+let $company_pvn_nr = $('#company_pvn_number').val();
+let $company_name = $('#company_name').val();
+let $company_address = $('#company_address').val();
 
-if ($person == 1) {
+if (typeof $company_reg_nr != 'undefined' && $company_reg_nr.length <= 0) {
   $('.reveal-if-active').hide();
 } else {
   $('.reveal-if-active').show();
@@ -2281,48 +2099,48 @@ $('.person-status-container label').on('click', function() {
   }
 });
 
-$('#company_registration_number').on('keyup', function() {
+// $('#company_registration_number').on('keyup', function() {
 
-  if ($(this).val().length != 11) {
-    return false;
-  }
+//   if ($(this).val().length != 11) {
+//     return false;
+//   }
 
-  if ($('#company_pvn_number').val().lenght != 0 && $('#company_name').val().length != 0 && $('#company_address').val().length != 0) {
-    return false;
-  }
+//   if ($('#company_pvn_number').val().lenght != 0 && $('#company_name').val().length != 0 && $('#company_address').val().length != 0) {
+//     return false;
+//   }
 
-  $('#company_pvn_number').attr("disabled", true);
-  $('#company_name').attr("disabled", true);
-  $('#company_address').attr("disabled", true);
+//   $('#company_pvn_number').attr("disabled", true);
+//   $('#company_name').attr("disabled", true);
+//   $('#company_address').attr("disabled", true);
 
-  let $url = window.location.protocol + '//' + window.location.hostname + '/api/company/' + $('#company_registration_number').val();
+//   let $url = window.location.protocol + '//' + window.location.hostname + '/api/company/' + $('#company_registration_number').val();
 
-  $.ajax({
-    url: $url,
-    method: 'GET',
-    data: {
-      'csrf': $('meta[name="csrf-token"]').attr('content'),
-    },
-    dataType: 'JSON',
-    success: function(data) {
-      $('#company_registration_number').parent().removeClass('has-warning');
-      $('.registration_number_error').hide();
-      $('#company_pvn_number').val(data.pvn_code);
-      $('#company_name').val(data.name);
-      $('#company_address').val(data.address);
-    },
-    error: function () {
-      console.log("WRONG CODE");
-      $('#company_registration_number').parent().addClass('has-warning');
-      $('.registration_number_error').show();
-    },
-    complete: function() {
-      $('#company_pvn_number').removeAttr("disabled");
-      $('#company_name').removeAttr("disabled");
-      $('#company_address').removeAttr("disabled");
-    }
-  });
-});
+//   $.ajax({
+//     url: $url,
+//     method: 'GET',
+//     data: {
+//       'csrf': $('meta[name="csrf-token"]').attr('content'),
+//     },
+//     dataType: 'JSON',
+//     success: function(data) {
+//       $('#company_registration_number').parent().removeClass('has-warning');
+//       $('.registration_number_error').hide();
+//       $('#company_pvn_number').val(data.pvn_code);
+//       $('#company_name').val(data.name);
+//       $('#company_address').val(data.address);
+//     },
+//     error: function () {
+//       console.log("WRONG CODE");
+//       $('#company_registration_number').parent().addClass('has-warning');
+//       $('.registration_number_error').show();
+//     },
+//     complete: function() {
+//       $('#company_pvn_number').removeAttr("disabled");
+//       $('#company_name').removeAttr("disabled");
+//       $('#company_address').removeAttr("disabled");
+//     }
+//   });
+// });
 
 const deliveryOptionDisabledFields = $(".cart-delivery-option input");
 
@@ -2330,91 +2148,124 @@ deliveryOptionDisabledFields.each( function() {
   deliveryOptionDisabledFields.prop('disabled', true);
 });
 
-function checkShipping(qty = null) {
-  $('.cart-grid input[name=delivery]').val(true);
-  $('.cart-grid input[name=fitting]').val(false);
-  let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
-  let shippingCity = parseInt($('.cart-delivery-option .custom-select option:selected').val());
-  let discount_price = 0;
-  $.ajax({
-    url: '/checkShipping',
-    method: 'POST',
-    data: {city: shippingCity, qty: qty},
-    success: function(data) {
-      data = parseInt(data);
-      let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
-      if ($('#cart-subtotal-discount').is(':visible')) discount_price = parseInt($('#cart-subtotal-discount .value').html().trim().replace('€ ', ''));
-      if (shippingCity === 1 || shippingCity === 2) {
-        if (__total > 115) {
-          $('#cart-subtotal-shipping #shipping_price').html('Bezmaksas');
-          $('.cart-total .value').html('€ ' + formatNumber(__total + discount_price));
-          $('input[name=delivery_price]').removeAttr('value');
-        } else {
-          $('#cart-subtotal-shipping #shipping_price').html('€ ' + data);
-          $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data + discount_price)));
-          $('input[name=delivery_price]').val(data);
+// Эти функции перенесены в debounce-functions.js
+/*
+// Создаем защищенные версии функций
+const debouncedCheckShipping = debounce(function(qty = null) {
+    if (cartState.isUpdating) return;
+    
+    cartState.setLoading(true);
+    cartState.clearErrors();
+    
+    $('.cart-grid input[name=delivery]').val(true);
+    $('.cart-grid input[name=fitting]').val(false);
+    
+    let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+    let shippingCity = parseInt($('input[name="data[shipping_city]"]:checked').val());
+    let discount_price = 0;
+    
+    $.ajax({
+        url: '/shop/checkShipping',
+        method: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        data: {city: shippingCity, qty: qty, total_price: __total},
+        dataType: 'JSON',
+        success: function(data) {
+            try {
+                let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+                if ($('#cart-subtotal-discount').is(':visible')) discount_price = parseInt($('#cart-subtotal-discount .value').html().trim().replace('€ ', ''));
+                
+                if (shippingCity === 1) {
+                    if (__total > 115) {
+                        $('#cart-subtotal-shipping #shipping_price').html('Bezmaksas');
+                        $('.cart-total .value').html('€ ' + (__total + discount_price));
+                        $('input[name=delivery_price]').removeAttr('value');
+                    } else {
+                        $('#cart-subtotal-shipping #shipping_price').html('€ ' + data.cartOptions.shipping_price);
+                        $('.cart-total .value').html('€ ' + (__lastPrice + data.cartOptions.shipping_price + discount_price));
+                        $('input[name=delivery_price]').val(data.cartOptions.shipping_price);
+                    }
+                } else if (shippingCity === 2) {
+                    $('#cart-subtotal-shipping #shipping_price').html('€ ' + data.cartOptions.shipping_price);
+                    $('.cart-total .value').html('€ ' + (__lastPrice + data.cartOptions.shipping_price + discount_price));
+                    $('input[name=delivery_price]').val(data.cartOptions.shipping_price);
+                }
+                
+                $('input[name=fitting_price]').removeAttr('value');
+                cartState.lastUpdate = new Date();
+            } catch (error) {
+                cartState.addError('Ошибка при обновлении цены доставки: ' + error.message);
+                toastr.error('Kļūda, atjauninot piegādes cenu. Lūdzu, mēģiniet vēlreiz.');
+            }
+        },
+        error: function(xhr, status, error) {
+            cartState.addError('Ошибка при проверке доставки: ' + error);
+            toastr.error('Kļūda, aprēķinot piegādes cenu. Lūdzu, mēģiniet vēlreiz.');
+        },
+        complete: function() {
+            cartState.setLoading(false);
         }
-      } else {
-        $('#cart-subtotal-shipping #shipping_price').html('€ ' + data);
-        $('.cart-total .value').html('€ ' + (formatNumber(__lastPrice + data + discount_price)));
-        $('input[name=delivery_price]').val(data);
-      }
-      $('input[name=fitting_price]').removeAttr('value');
+    });
+}, 300);
+
+const debouncedCheckFitting = debounce(function(qty = null) {
+    if (cartState.isUpdating) return;
+    
+    cartState.setLoading(true);
+    cartState.clearErrors();
+    
+    let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+    let __items = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
+    let needsFit = $('.cart-montage-choice .cart-delivery-options .cart-delivery-label input:checked').val();
+    let discount_price = 0;
+    
+    if (qty === null) {
+        qty = __items;
     }
-  });
-}
-
-function checkFitting(qty = null) {
-  let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
-  let __items = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
-  let needsFit = $('.cart-montage-choice .cart-delivery-options .cart-delivery-label input:checked').val();
-
-  let discount_price = 0;
-
-  if (qty === null) {
-    qty = __items;
-  }
-
-  $.ajax({
-    url: '/checkFitting',
-    method: 'POST',
-    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-    data: {total_items: qty, fitting: needsFit},
-    dataType: 'JSON',
-    success: function(data) {
-      let fittingPrice = parseInt(data.cartOptions.fitting_price);
-      let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
-      if ($('#cart-subtotal-discount').is(':visible')) discount_price = parseInt($('#cart-subtotal-discount .value').html().trim().replace('€ ', ''));
-
-      $('.cart-grid input[name=delivery]').val(false);
-      $('.cart-grid input[name=fitting]').val(true);
-      $('#cart-subtotal-montage #shipping_price').html('€ ' + formatNumber(fittingPrice));
-      $('.cart-total .value').html('€ ' + formatNumber(__lastPrice + fittingPrice + discount_price));
-      $('input[name=fitting_price]').val(fittingPrice);
-      if (fittingPrice == 0) {
-        $('.cart-grid input[name=delivery]').val(false);
-        $('.cart-grid input[name=fitting]').val(false);
-        $('#cart-subtotal-montage #shipping_price').html('Nav');
-        $('.cart-total .value').html('€ ' + formatNumber(__lastPrice + discount_price));
-        $('input[name=fitting_price]').removeAttr('value');
-      }
-      $('input[name=delivery_price]').removeAttr('value');
-    }
-  });
-}
-
-$('.cart-summary .cart-delivery-option .custom-select').on('change', function() {
-  checkShipping();
-});
-
-$('.cart-montage-choice .cart-delivery-options .cart-delivery-label input[name=cart-montage-radio]').each(function() {
-  if ($(this).is(':checked') && $(this).val() == 1) {
-    checkFitting();
-  }
-  $(this).on('change', function() {
-    checkFitting();
-  });
-});
+    
+    $.ajax({
+        url: '/shop/checkFitting',
+        method: 'POST',
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        data: {total_items: qty, fitting: needsFit},
+        dataType: 'JSON',
+        success: function(data) {
+            try {
+                let fittingPrice = parseInt(data.cartOptions.fitting_price);
+                let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+                if ($('#cart-subtotal-discount').is(':visible')) discount_price = parseInt($('#cart-subtotal-discount .value').html().trim().replace('€ ', ''));
+                
+                $('.cart-grid input[name=delivery]').val(false);
+                $('.cart-grid input[name=fitting]').val(true);
+                $('#cart-subtotal-montage #shipping_price').html('€ ' + fittingPrice);
+                $('.cart-total .value').html('€ ' + (__lastPrice + fittingPrice + discount_price));
+                $('input[name=fitting_price]').val(fittingPrice);
+                
+                if (fittingPrice == 0) {
+                    $('.cart-grid input[name=delivery]').val(false);
+                    $('.cart-grid input[name=fitting]').val(false);
+                    $('#cart-subtotal-montage #shipping_price').html('Nav');
+                    $('.cart-total .value').html('€ ' + (__lastPrice + discount_price));
+                    $('input[name=fitting_price]').removeAttr('value');
+                }
+                
+                $('input[name=delivery_price]').removeAttr('value');
+                cartState.lastUpdate = new Date();
+            } catch (error) {
+                cartState.addError('Ошибка при обновлении цены монтажа: ' + error.message);
+                toastr.error('Kļūda, atjauninot montāžas cenu. Lūdzu, mēģiniet vēlreiz.');
+            }
+        },
+        error: function(xhr, status, error) {
+            cartState.addError('Ошибка при проверке монтажа: ' + error);
+            toastr.error('Kļūda, aprēķinot montāžas cenu. Lūdzu, mēģiniet vēlreiz.');
+        },
+        complete: function() {
+            cartState.setLoading(false);
+        }
+    });
+}, 300);
+*/
 
 $('#email_notifications').on('input', function() {
   if ($(this).prop('checked')) {
@@ -2459,7 +2310,7 @@ function checkCart() {
   });
 }
 
-$('.tire-table-checkbox').children().each(function(key, value){
+/*$('.tire-table-checkbox').children().each(function(key, value){
   // PARSE TO INT
   products.push(parseInt($(value).val()));
 
@@ -2596,7 +2447,7 @@ $('.tire-table-checkbox').children().each(function(key, value){
     }
 
   })
-});
+});*/
 
 let showTires = false;
 let showDisc = false;
@@ -2666,7 +2517,7 @@ let __count = $('.cart-item-table').each(function() {}).length;
 $('.cart-options label input').each(function() {
   let __total = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
   if (parseInt($(this).filter(':checked').val()) === 3) {
-    checkShipping(__total);
+    // checkShipping(__total);
     deliveryOptionDisabledFields.each( function() {
       deliveryOptionDisabledFields.prop('disabled', false);
     });
@@ -2679,14 +2530,16 @@ $('.cart-options label input').each(function() {
     deliveryOptionDisabledFields.each( function() {
       deliveryOptionDisabledFields.prop('disabled', true);
     });
-    $('.cart-montage-choice').show();
-    $('#cart-subtotal-montage').show();
+    if (__total == 1 || __total == 2 || __total == 4) {
+      $('.cart-montage-choice').show();
+      $('#cart-subtotal-montage').show();
+    }
     $('.cart-delivery-option').hide();
     $('#cart-subtotal-shipping').hide();
   }
   $(this).click(function() {
     if(parseInt($(this).val()) === 3){
-      checkShipping(__total);
+      // checkShipping(__total);
       deliveryOptionDisabledFields.each( function() {
         deliveryOptionDisabledFields.prop('disabled', false);
       });
@@ -2696,13 +2549,16 @@ $('.cart-options label input').each(function() {
       $('#cart-subtotal-montage').hide();
     } else {
 
-      checkFitting(__total);
+      // checkFitting(__total);
 
       deliveryOptionDisabledFields.each( function() {
         deliveryOptionDisabledFields.prop('disabled', true);
       });
-      $('.cart-montage-choice').show();
-      $('#cart-subtotal-montage').show();
+
+      if (__total == 1 || __total == 2 || __total == 4) {
+        $('.cart-montage-choice').show();
+        $('#cart-subtotal-montage').show();
+      }
       $('.cart-delivery-option').hide();
       $('#cart-subtotal-shipping').hide();
 
@@ -2941,7 +2797,6 @@ $('.dropdown-item.sizeCalc').on('click', function(e) {
 });
 
 function popCalc(url,popW,popH, data){
-
   w = screen.width;
   h = screen.height;
 
@@ -3160,7 +3015,11 @@ $(document).ready(function() {
       }
     });
   }).on('mouseenter', '.tippy.lisi-tooltip', function() {
+    if (this._tippy) {
+      return;
+    }
     tippy(this, {
+      allowHTML: true,
       touchHold: true,
       hideOnClick: false,
       placement: 'top',
@@ -3179,6 +3038,7 @@ if ($('body').hasClass('category-ziemas-riepas')) {
       $.each(data, function(index, item) {
         if (item.tire_size != null) {
           $('<option value="' + item.tire_size + '">' + item.tire_size + '</option>').appendTo('select.r1-select-input');
+          sizes.push({id: item.tire_size, text: item.tire_size});
         }
       });
     }
@@ -3193,6 +3053,7 @@ if ($('body').hasClass('category-vasaras-riepas')) {
       $.each(data, function(index, item) {
         if (item.tire_size != null) {
           $('<option value="' + item.tire_size + '">' + item.tire_size + '</option>').appendTo('select.r1-select-input');
+          sizes.push({id: item.tire_size, text: item.tire_size});
         }
       });
     }
@@ -3207,6 +3068,22 @@ if ($('body').hasClass('category-motociklu-riepas')) {
       $.each(data, function(index, item) {
         if (item.tire_size != null) {
           $('<option value="' + item.tire_size + '">' + item.tire_size + '</option>').appendTo('select.r1-select-input');
+          sizes.push({id: item.tire_size, text: item.tire_size});
+        }
+      });
+    }
+  });
+}
+
+if ($('body').hasClass('category-kvadru-riepas')) {
+
+  $.ajax({
+    url: '/kvadru-riepas/search/api/getSizes',
+    success: function(data) {
+      $.each(data, function(index, item) {
+        if (item.tire_size != null) {
+          $('<option value="' + item.tire_size + '">' + item.tire_size + '</option>').appendTo('select.r1-select-input');
+          sizes.push({id: item.tire_size, text: item.tire_size});
         }
       });
     }
@@ -3241,18 +3118,18 @@ if ($('body').hasClass('category-kvadraciklu-riepas')) {
 // });
 
 let loadingBlock = document.querySelector('.loading-block');
-let isPageLoadedFromCache = false;
 
 function fadeIn(element) {
+  if (!element) return; // Проверка на null
   let opacity = 0;
   element.style.opacity = opacity;
+  element.style.display = "block"; // Сначала делаем видимым
 
   function fadeInAnimation() {
     if (opacity < 1) {
       opacity += 0.1;
       element.style.opacity = opacity;
       requestAnimationFrame(fadeInAnimation);
-      element.style.display = "block";
     }
   }
 
@@ -3260,6 +3137,7 @@ function fadeIn(element) {
 }
 
 function fadeOut(element) {
+  if (!element) return; // Проверка на null
   let opacity = 1;
   element.style.opacity = opacity;
 
@@ -3268,34 +3146,43 @@ function fadeOut(element) {
       opacity -= 0.1;
       element.style.opacity = opacity;
       requestAnimationFrame(fadeOutAnimation);
-      element.style.display = "none";
+    } else {
+      element.style.display = "none"; // Прячем после анимации
     }
   }
 
   fadeOutAnimation();
 }
 
-window.addEventListener('load', function() {
+window.addEventListener('load', function () {
   fadeOut(loadingBlock);
 });
 
-window.addEventListener('pageshow', function(event) {
+window.addEventListener('pageshow', function () {
   fadeOut(loadingBlock);
 });
 
-window.addEventListener('beforeunload', function() {
+window.addEventListener('beforeunload', function () {
   fadeIn(loadingBlock);
 });
 
-function checkPromo(promo) {
+let isPromoChecked = $('#promoValidated').val() === 'true';
+let promoDiscount = 0;
 
+// Show "Remove Promo" button if promo was previously validated
+if (isPromoChecked) {
+  $('.remove_promo').show();
+  $('.check_promo').hide();
+}
+
+function checkPromo(promo, callback) {
   let url = '/checkPromo';
-  let success = false;
+  let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
 
   $.ajax({
     url: url,
     method: 'POST',
-    data: {promo: promo},
+    data: { promo: promo, totalSum: __total },
     beforeSend: function() {
       $('input[name="data[promo_code]"], .check_promo').attr('disabled', true).prop('disabled', true);
       $('.check_promo span').text('Lūdzu, uzgaidiet...');
@@ -3310,37 +3197,77 @@ function checkPromo(promo) {
         let __lastPrice = parseInt($('.cart-total .value').html().trim().replace('€ ', '').replace(/,/g, ''));
 
         $('.cart-total .value').html('€ ' + formatNumber(__lastPrice - data.discount_price));
-        success = true;
+        promoDiscount = data.discount_price;
+        isPromoChecked = true;
+        $('#promoValidated').val('true');
+        $('.remove_promo').show();
+        $('.check_promo').hide();
+        if (typeof callback === 'function') callback(true);
       } else {
         $('<span class="label promo_validation" style="color: red">Kods nav derīgs</span>').insertAfter($('input[name="data[promo_code]"]'));
         $('#cart-subtotal-discount').remove();
-        success = false;
+        isPromoChecked = false;
+        $('#promoValidated').val('false');
+        if (typeof callback === 'function') callback(false);
       }
     },
     complete: function() {
       $('input[name="data[promo_code]"], .check_promo').removeAttr('disabled').prop('disabled', false);
-      if (success === false) {
+      if (!isPromoChecked) {
         $('.check_promo span').text('Pārbaudīt');
       } else {
         $('input[name="data[promo_code]"]').attr('readonly', 'readonly').prop('readonly', 'readonly');
-        $('.check_promo').remove();
       }
     }
-  })
+  });
 }
 
-// $('input[name="data[promo_code]"]').on('keyup', function() {
-//   if ($(this).val().length > 0) {
-//     console.log($(this).val().length);
-//   }
-// })
+function removePromo() {
+  $('span.label.promo_validation').remove();
+  $('#cart-subtotal-discount').remove();
+  $('input[name="data[promo_code]"]').val('').removeAttr('readonly').prop('readonly', false);
+  let __lastPrice = parseInt($('.cart-total .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+  $('.cart-total .value').html('€ ' + formatNumber(__lastPrice + promoDiscount)); // Reset total price
+  promoDiscount = 0; // Reset promo discount
+  isPromoChecked = false;
+  $('#promoValidated').val('false');
+  $('.remove_promo').hide();
+  $('.check_promo').show().find('span').text('Pārbaudīt'); // Reset the button text
+}
 
-$('button.check_promo').on('click', function() {
+$('input[name="data[promo_code]"]').on('keypress', function(e) {
+  if (e.which === 13) {
+    e.preventDefault();
+    if ($(this).val().length > 0) {
+      checkPromo($(this).val());
+    }
+  }
+});
 
+$(document).on('click', '.check_promo', function() {
   let promo = $('input[name="data[promo_code]"]').val();
-
   checkPromo(promo);
-})
+});
+
+$(document).on('click', '.remove_promo', function() {
+  removePromo();
+});
+
+$('#promoForm').on('submit', function(e) {
+  if (!isPromoChecked) {
+    e.preventDefault(); // Prevent form submission if promo is not checked
+    let promo = $('input[name="data[promo_code]"]').val();
+    checkPromo(promo, function(isValid) {
+      if (isValid) {
+        $('#promoForm').off('submit').submit(); // Re-enable form submission and submit
+      } else {
+        alert('Please check the promo code before submitting the form.');
+      }
+    });
+  }
+});
+
+
 
 // (()=>{
 //   const ndt = () => +new Date(),
@@ -3399,3 +3326,230 @@ $('button.check_promo').on('click', function() {
 //   target.fadeIn(1000);
 //   document.querySelector('body').classList.add('wait-loading');
 // }
+
+// Обработчик изменения города доставки - закомментирован, так как дублируется в cart-functions.js
+// $('input[name="data[shipping_city]"]').on('change', function() {
+//     checkShipping();
+// });
+
+// Обработчик изменения способа получения - закомментирован, чтобы использовать улучшенную версию из debounce-functions.js
+// $('input[name="data[cart_delivery_radio]"]').on('change', function() {
+//     const deliveryFields = $('.cart-delivery-option input, .cart-delivery-option select');
+//     
+//     if ($(this).val() === '3') { // Если выбрана доставка
+//         deliveryFields.prop('disabled', false);
+//         $('.cart-delivery-option').show();
+//         // Используем дебаунсированную версию, чтобы избежать дублирования запросов
+//         debouncedCheckShipping();
+//     } else { // Если выбран самовывоз
+//         deliveryFields.prop('disabled', true);
+//         $('.cart-delivery-option').hide();
+//         // Сбрасываем цену доставки
+//         $('#cart-subtotal-shipping #shipping_price').html('Nav');
+//         let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+//         let discount_price = 0;
+//         if ($('#cart-subtotal-discount').is(':visible')) {
+//             discount_price = parseInt($('#cart-subtotal-discount .value').html().trim().replace('€ ', ''));
+//         }
+//         $('.cart-total .value').html('€ ' + (__total + discount_price));
+//         $('input[name=delivery_price]').removeAttr('value');
+//     }
+// });
+
+// Управление состоянием корзины перенесено в debounce-functions.js
+// const cartState = {
+//     isUpdating: false,
+//     lastUpdate: null,
+//     errors: [],
+//     updateTimeout: null,
+//     
+//     setLoading(isLoading) {
+//         this.isUpdating = isLoading;
+//         const buttons = $('.cart-delivery-option button, .cart-montage-choice button');
+//         if (isLoading) {
+//             buttons.prop('disabled', true);
+//             $('.loading-indicator').show();
+//         } else {
+//             buttons.prop('disabled', false);
+//             $('.loading-indicator').hide();
+//         }
+//     },
+//     
+//     addError(error) {
+//         this.errors.push({
+//             message: error,
+//             timestamp: new Date()
+//         });
+//         console.error('Cart error:', error);
+//     },
+//     
+//     clearErrors() {
+//         this.errors = [];
+//     }
+// };
+
+// Функция debounce перенесена в debounce-functions.js
+// function debounce(func, wait) {
+//     let timeout;
+//     return function executedFunction(...args) {
+//         const later = () => {
+//             clearTimeout(timeout);
+//             func(...args);
+//         };
+//         clearTimeout(timeout);
+//         timeout = setTimeout(later, wait);
+//     };
+// }
+
+// Функция checkShipping перенесена в debounce-functions.js
+// function checkShipping(qty = null) {
+//     if (cartState.isUpdating) return;
+//     
+//     cartState.setLoading(true);
+//     cartState.clearErrors();
+//     
+//     $('.cart-grid input[name=delivery]').val(true);
+//     $('.cart-grid input[name=fitting]').val(false);
+//     
+//     let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+//     let shippingCity = parseInt($('input[name="data[shipping_city]"]:checked').val());
+//     let discount_price = 0;
+//     
+//     $.ajax({
+//         url: '/shop/checkShipping',
+//         method: 'POST',
+//         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         data: {city: shippingCity, qty: qty, total_price: __total},
+//         dataType: 'JSON',
+//         success: function(data) {
+//             try {
+//                 let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+//                 if ($('#cart-subtotal-discount').is(':visible')) discount_price = parseInt($('#cart-subtotal-discount .value').html().trim().replace('€ ', ''));
+//                 
+//                 if (shippingCity === 1) {
+//                     if (__total > 115) {
+//                         $('#cart-subtotal-shipping #shipping_price').html('Bezmaksas');
+//                         $('.cart-total .value').html('€ ' + (__total + discount_price));
+//                         $('input[name=delivery_price]').removeAttr('value');
+//                     } else {
+//                         $('#cart-subtotal-shipping #shipping_price').html('€ ' + data.cartOptions.shipping_price);
+//                         $('.cart-total .value').html('€ ' + (__lastPrice + data.cartOptions.shipping_price + discount_price));
+//                         $('input[name=delivery_price]').val(data.cartOptions.shipping_price);
+//                     }
+//                 } else if (shippingCity === 2) {
+//                     $('#cart-subtotal-shipping #shipping_price').html('€ ' + data.cartOptions.shipping_price);
+//                     $('.cart-total .value').html('€ ' + (__lastPrice + data.cartOptions.shipping_price + discount_price));
+//                     $('input[name=delivery_price]').val(data.cartOptions.shipping_price);
+//                 }
+//                 
+//                 $('input[name=fitting_price]').removeAttr('value');
+//                 cartState.lastUpdate = new Date();
+//             } catch (error) {
+//                 cartState.addError('Ошибка при обновлении цены доставки: ' + error.message);
+//                 toastr.error('Kļūda, atjauninot piegādes cenu. Lūdzu, mēģiniet vēlreiz.');
+//             }
+//         },
+//         error: function(xhr, status, error) {
+//             cartState.addError('Ошибка при проверке доставки: ' + error);
+//             toastr.error('Kļūda, aprēķinot piegādes cenu. Lūdzu, mēģiniet vēlreiz.');
+//         },
+//         complete: function() {
+//             cartState.setLoading(false);
+//         }
+//     });
+// }
+
+// Функция checkFitting перенесена в debounce-functions.js
+// function checkFitting(qty = null) {
+//     if (cartState.isUpdating) return;
+//     
+//     cartState.setLoading(true);
+//     cartState.clearErrors();
+//     
+//     let __total = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+//     let __items = parseInt($('#cart-subtotal-products .js-subtotal').html().trim().replace(' Preces', ''));
+//     let needsFit = $('.cart-montage-choice .cart-delivery-options .cart-delivery-label input:checked').val();
+//     let discount_price = 0;
+//     
+//     if (qty === null) {
+//         qty = __items;
+//     }
+//     
+//     $.ajax({
+//         url: '/shop/checkFitting',
+//         method: 'POST',
+//         headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+//         data: {total_items: qty, fitting: needsFit},
+//         dataType: 'JSON',
+//         success: function(data) {
+//             try {
+//                 let fittingPrice = parseInt(data.cartOptions.fitting_price);
+//                 let __lastPrice = parseInt($('#cart-subtotal-products .value').html().trim().replace('€ ', '').replace(/,/g, ''));
+//                 if ($('#cart-subtotal-discount').is(':visible')) discount_price = parseInt($('#cart-subtotal-discount .value').html().trim().replace('€ ', ''));
+//                 
+//                 $('.cart-grid input[name=delivery]').val(false);
+//                 $('.cart-grid input[name=fitting]').val(true);
+//                 $('#cart-subtotal-montage #shipping_price').html('€ ' + fittingPrice);
+//                 $('.cart-total .value').html('€ ' + (__lastPrice + fittingPrice + discount_price));
+//                 $('input[name=fitting_price]').val(fittingPrice);
+//                 
+//                 if (fittingPrice == 0) {
+//                     $('.cart-grid input[name=delivery]').val(false);
+//                     $('.cart-grid input[name=fitting]').val(false);
+//                     $('#cart-subtotal-montage #shipping_price').html('Nav');
+//                     $('.cart-total .value').html('€ ' + (__lastPrice + discount_price));
+//                     $('input[name=fitting_price]').removeAttr('value');
+//                 }
+//                 
+//                 $('input[name=delivery_price]').removeAttr('value');
+//                 cartState.lastUpdate = new Date();
+//             } catch (error) {
+//                 cartState.addError('Ошибка при обновлении цены монтажа: ' + error.message);
+//                 toastr.error('Kļūda, atjauninot montāžas cenu. Lūdzu, mēģiniet vēlreiz.');
+//             }
+//         },
+//         error: function(xhr, status, error) {
+//             cartState.addError('Ошибка при проверке монтажа: ' + error);
+//             toastr.error('Kļūda, aprēķinot montāžas cenu. Lūdzu, mēģiniet vēlreiz.');
+//         },
+//         complete: function() {
+//             cartState.setLoading(false);
+//         }
+//     });
+// }
+
+// Эти функции определены в debounce-functions.js
+// const debouncedCheckShipping = debounce(checkShipping, 300);
+// const debouncedCheckFitting = debounce(checkFitting, 300);
+
+
+// Глобальный обработчик всех AJAX-запросов в jQuery
+$(document).ajaxSend(function(event, jqXHR, settings) {
+    // Предотвращаем дублирование запросов changeCity
+    if (settings.url && settings.url.includes('shop/ajax/changeCity')) {
+        const now = Date.now();
+        if (window.changeCityTimestamp && now - window.changeCityTimestamp < window.changeCityThreshold) {
+            console.log('Preventing duplicate changeCity request');
+            jqXHR.abort();
+            return false;
+        }
+        window.changeCityTimestamp = now;
+    }
+    
+    // Предотвращаем дублирование запросов changeQty
+    if (settings.url && (settings.url.includes('shop/ajax/changeQty') || settings.url.includes('shop/ajaxChangeQty'))) {
+        const now = Date.now();
+        if (window.changeQtyTimestamp && now - window.changeQtyTimestamp < window.changeQtyThreshold) {
+            console.log('Preventing duplicate changeQty request');
+            jqXHR.abort();
+            return false;
+        }
+        window.changeQtyTimestamp = now;
+    }
+});
+
+// Удаляем дублирующую IIFE с обработчиками событий, так как они уже определены выше
+
+
+
+

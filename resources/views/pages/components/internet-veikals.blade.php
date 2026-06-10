@@ -10,7 +10,7 @@
 <tbody>
 <tr>
 <td><strong>R1 filiālēs:</strong></td>
-<td>Skaidrā naudā vai ar karti - samaksa tiek veikta preces saņemšanas brīdī</td>
+<td>Skaidrā naudā vai ar bankas maksājuma karti - apmaksa tiek veikta preces saņemšanas brīdī</td>
 </tr>
 <tr>
 <td><strong>Piegāde Rīgā:</strong></td>
@@ -26,58 +26,62 @@
 </tr>
 </tbody>
 </table>
-<h4><strong>Piegāde:</strong></h4>
-<p>Rīgā preces vērtību virs 115.00 EUR piegāde bez maksas!</p>
-<p>Rīgā preces vērtību zem 115.00 EUR piegāde par 5.00 EUR.</p>
-<p>Preču piegāde Rīgā tiek veikta darba dienās no 09:00 līdz 18:00, sestdien no 10:00 līdz 15.00.</p>
+<h4><strong>Piegāde Rīgā:</strong></h4>
+<p>Precēm ar vērtību virs 115.00 EUR  - piegāde bez maksas!</p>
+<p>Precēm ar vērtību zem 115.00 EUR  - piegāde  5.00 EUR.</p>
+<p>Preču piegāde Rīgā tiek veikta darba dienās no 09:00 līdz 18:00, sestdienās no 10:00 līdz 15.00.</p>
 <h4><strong>Piegādes izmaksas ārpus Rīgas:</strong></h4>
 <ul>
-<li>1 motorollera riepa vai moto kamera – 14.00 EUR</li>
-<li>1 moto riepa – 14.00 EUR</li>
-<li>2 moto riepas - 17.00 EUR</li>
-<li>1 auto riepa – 17.00 EUR</li>
-<li>2 auto riepas (vieglajam auto; 4x4; C) – 22.00 EUR</li>
-<li>4 riepas (vieglajam auto; 4x4; C) – 27.00 EUR</li>
-<li>4 vieglmetāla diski – 27.00 EUR</li>
-<li>4 vieglmetā diski + 4 riepas – 30.00 EUR</li>
+<li>1 motorollera riepa vai moto kamera – 10.00 EUR</li>
+<li>1 moto riepa – 10.00 EUR</li>
+<li>2 moto riepas - 10.00 EUR</li>
+<li>1 auto riepa – 10.00 EUR</li>
+<li>2 auto riepas (vieglajam auto; 4x4; C) – 15.00 EUR</li>
+<li>4 riepas (vieglajam auto; 4x4; C) – 20.00 EUR</li>
+<li>4 vieglmetāla diski – 20.00 EUR</li>
+<li>4 vieglmetā diski + 4 riepas – 20.00 EUR</li>
 </ul>
+<p>Preču piegāde ārpus Rīgas parasti tiek nodrošināta 2-3 darba dienu laikā.</p>
 <h4><strong>Kā iepirkties?</strong></h4>
 <p>Iepirkties R1 i-veikalā ir droši, viegli un ērti.</p>
 <ol>
+<li style="list-style-type: none;">
 <ol>
-<li><strong>Atrodiet vajadzīgo preci.</strong>
+<li>Atrodiet vajadzīgo preci.
 <ul>
-<li>Jāieiet vajadzīgajā sadaļā (ziemas riepas, vasaras riepas vai jauni lietie diski) un jāatrod nepieciešama prece.</li>
+<li>Jāieiet vajadzīgajā sadaļā (ziemas riepas, vasaras riepas, jauni lietie diski utml) un jāatrod nepieciešamā prece.</li>
 </ul>
 <ul>
-<li>Lai pasūtītu izvēlēto preci nospiediet uz iepirkuma ratiņiem, kas atrodas pretī preces nosaukumam labajā pusē.</li>
+<li>Lai pasūtītu izvēlēto preci, nospiediet uz iepirkuma ratiņiem, kas atrodas pretī preces nosaukumam labajā pusē.</li>
 </ul>
-<ol>
-<li>Papildināt iepirkumu grozu ar jaunu preci nospiediet pogu „Turpināt iepirkties”</li>
+</li>
+<li>Papildināt iepirkumu grozu ar jaunu preci  - nospiediet pogu „Turpināt iepirkties”</li>
 <li>Izlabot izvēlētai precei nepieciešamo daudzumu – ierakstiet vēlamo daudzumu ailē „Daudzums” un nospiediet pogu „Pārrēķināt”.</li>
 <li>Lai izņemtu preci no iepirkuma groza nospiediet pogu „x”, kas atrodas pretī precei labajā pusē.</li>
-<li>Turpināt pasūtījumu ir jānospiež poga „Pasūtīt”.</li>
-</ol>
+<li>Lai turpināt pasūtījumu ir jānospiež poga „Pasūtīt”.Jāaizpilda pasūtījuma forma. Ailītes ar zvaigznīti „*” ir jāaizpilda obligāti.<br>(Jūsu sniegtā informācija ir konfidenciāla un netiks izpausta trešajām personām vai izmantota kādā citā veidā).I-veikala klientu menedžeri sazināsies ar Jums iespējami ātrākā laikā, lai apstiprinātu pasūtījumu un vienotos par Jums ērtāko piegādes/montāžas laiku un vietu.<br>(I-veikala klientu menedžeri strādā darba dienās no 9.00 līdz 18.00; sestdien no 10.00 līdz 15.00; svētdien – brīvs) <br>
 <ol>
-<li>Jāaizpilda pasūtījuma forma. Ailītes ar zvaigznīti „*” ir jāaizpilda obligāti.<br>(Jūsu sniegtā informācija ir konfidenciāla un netiks izpausta trešajām personām vai izmantota kādā citā veidā).</li>
-</ol>
+<li style="list-style-type: none;">
 <ol>
-<li>I-veikala klientu menedžeri sazināsies ar Jums iespējami ātrākā laikā, lai apstiprinātu pasūtījumu un vienotos par Jums ērtāko piegādes laiku un vietu.<br>(I-veikala klientu menedžeri strādā darba dienās no 9.00 līdz 18.00; sestdien no 10.00 līdz 15.00; svētdien – brīvs).</li>
-</ol>
-</li>
+<li style="list-style-type: none;">
 <ol>
 <li><strong>Atrodiet vajadzīgo preci.</strong></li>
 <li><strong>Pievienojiet preci iepirkumu grozam.</strong></li>
-<li><strong>Rediģēt pasūtījuma saturu.</strong></li>
+<li><strong>Rediģējiet pasūtījuma saturu.</strong></li>
 <li><strong>Pasūtījuma noformēšana.</strong></li>
 <li><strong>Pasūtījumu apstiprināšana.</strong></li>
 </ol>
+</li>
 </ol>
+</li>
+</ol>
+</li>
+</ol>
+</li>
 </ol>
 <p> </p>
-<p>Gadījumā, ja prece, ko pircējs vēlas iegādāties neatrodas noliktavā, to iespējams pasūtīt no ražotāja. Šajā gadījumā pircējam ir nepieciešams veikt priekšapmaksu 25% apmērā no preces kopējās vērtības.</p>
-<p>Atgādinām, ka priekšapmaksa tiek uzskatīta par garantijas summu un netiek atgriezta gadījumā, ja pircējs atsakās no pasūtītās preces.</p>
-<h4><strong>Visas Internet veikala cenas norādītas ar PVN 21%.</strong></h4>
+<p>Gadījumā, ja prece, ko pircējs vēlās iegādāties, neatrodas noliktavā, to ir iespējams pasūtīt no ražotāja. Šajā gadījumā pircējam ir nepieciešams veikt priekšapmaksu.</p>
+<p>! Atgādinām, ka priekšapmaksa tiek uzskatīta par garantijas summu un netiek atgriezta gadījumā, ja pircējs atsakās no pasūtītās preces.</p>
+<h4><strong>Visas Internet veikala cenas ir norādītas ar PVN 21%.</strong></h4>
 <p>Jautājumu vai neskaidrību gadījumā, lūdzam sazināties ar mums pa tālruni 67910555 vai rakstot e-pastu uz adresi<a href="mailto:info@r1riepas.lv"> info@r1riepas.lv</a></p>
 <h4 align="center">VEIKSMĪGUS PIRKUMUS! :)</h4>
 </section>

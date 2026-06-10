@@ -1,0 +1,39 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+
+# Node
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Laravel
+/vendor
+/storage/*.key
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*
+.env.backup
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Документация
+*.md
+!README.md
+
+# Тесты
+/tests
+phpunit.xml

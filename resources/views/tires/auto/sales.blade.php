@@ -1,4 +1,4 @@
-@if ((int) env('SEASON') === 1)
+@if (config('site.season') === 1)
   <!-- SUMMER TYRES -->
   @include('tires.auto.seasonsales.summer')
   <!-- END SUMMER TYRES -->

@@ -38,26 +38,34 @@
             <div class="card-header font-weight-bold">Sinhronizācijas - Auto riepas</div>
               <div class="card-body">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-3">
                     <div class="card bg-light">
                       <div class="card-header text-center font-weight-bold">Lattako</div>
                       <button class="card-body btn" id="i3-auto">Sinhronizēt</button>
                       <div class="card-footer text-center font-weight-bold">Pēdējo reizi sinhronizēts<br><span class="i3auto_last_time">{{ $i3_auto }}</span></div>
                     </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-3">
                     <div class="card bg-light">
                       <div class="card-header text-center font-weight-bold">GoodYear</div>
                       <button class="card-body btn" id="gy-auto">Sinhronizēt</button>
                       <div class="card-footer text-center font-weight-bold">Pēdējo reizi sinhronizēts<br><span class="gy_last_time">{{ $gy_auto }}</span></div>
                     </div>
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-3">
                     <div class="card bg-light">
                       <div class="card-header text-center font-weight-bold">Riepu Zona</div>
                       <button class="card-body btn" id="rz-auto">Sinhronizēt</button>
                       <div class="card-footer text-center font-weight-bold">Pēdējo reizi sinhronizēts<br><span class="rz_last_time">{{ $rz_auto }}</span></div>
                     </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="card bg-light">
+                      <div class="card-header text-center font-weight-bold">Riepu Garāža</div>
+                      <button class="card-body btn" id="rg-auto">Sinhronizēt</button>
+                      <div class="card-footer text-center font-weight-bold">Pēdējo reizi sinhronizēts<br><span class="rg_last_time">{{ $rg_auto }}</span></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

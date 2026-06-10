@@ -250,6 +250,7 @@ class RimsController extends Controller
       $rim->krs_quantity = ($request->krs_quantity === null) ? '' : $request->krs_quantity;
 
       $rim->save();
+      Rim::clearFilterCache();
 
       return redirect(route('admin.rims.search', $id))->with('success', 'Disks veiksmīgi pievienots');
 
@@ -284,6 +285,7 @@ class RimsController extends Controller
       $rim->krs_quantity = $request->krs_quantity;
 
       $rim->save();
+      Rim::clearFilterCache();
 
       return redirect(route('admin.rims.edit', $id))->with('success', 'Informācija veiksmīgi atjaunota');
     }
@@ -292,6 +294,7 @@ class RimsController extends Controller
     {
 
       Rim::where('rim_id', $id)->delete();
+      Rim::clearFilterCache();
 
       return redirect()->back()->with('success', 'Disks veiksmīgi dzēsts!');
 

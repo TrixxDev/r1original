@@ -97,8 +97,6 @@ class StudsController extends Controller
   }
 
   public function studs_search(Request $request) {
-    DB::enableQueryLog();
-
     $this->filterCount = 0;
 
     ($request->application == 'Visi') ? $this->currBrand = '' : $this->currBrand = $request->application;
@@ -130,8 +128,6 @@ class StudsController extends Controller
   }
 
   public function studs_tread($brand, $tread, $stud) {
-
-    DB::enableQueryLog();
 
     $brand = Studbrand::where('b_title', $brand)->first();
 

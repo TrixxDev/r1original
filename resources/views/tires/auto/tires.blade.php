@@ -1,7 +1,16 @@
 @extends('layouts.app')
 
 @section('body-title', 'category')
-@section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-14 category-' . $season_title . ' category-id-parent-12 category-depth-level-3')
+@section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-14 category-' . $season_title . ' category-id-parent-12 category-depth-level-3 dual-tire-catalog')
+@php
+  $categoryTitle = ucwords(str_replace('-', ' ', $season_title));
+  $catalogSearchPath = $season_title;
+  $seoKeywordsKey = $season_title === 'ziemas-riepas' ? 'ziemas' : 'vasaras';
+@endphp
+@section('meta_title', $categoryTitle . ' | R1 Riepu Serviss')
+@section('meta_description', 'Izvēlies ' . $categoryTitle . ' no R1 Riepu Serviss katalogiem. Filtri pēc izmēra un ražotāja. Riepas internetā — nopirkt un salīdzināt cenas.')
+@section('meta_keywords', config('seo.keywords.' . $seoKeywordsKey))
+@section('canonical_url', route($season_title === 'ziemas-riepas' ? 'ziemas-riepas' : 'vasaras-riepas'))
 
 @section('content')
   <div class="container">
@@ -10,12 +19,12 @@
         <div id="left-column" class="col-md-12 col-lg-3">
           <!-- begin D:\OpenServer\domains\r1old/themes/classic/modules/ps_facetedsearch/ps_facetedsearch.tpl -->
           <div id="search_filters_wrapper">
-            <form method="get" action="/{{ $season_title }}/search">
+            <form method="get" action="/{{ $catalogSearchPath }}/search">
               <div id="search_filters" class="params">
                 <input type="hidden" id="facet_all_val" value="Visi">
                 <div class="season-select">
-                  <button class="summer-tires-link season-select-link @if ($season_title === 'vasaras-riepas'){{'selected-link'}}@endif">Vasara</button>
-                  <button class="winter-tires-link season-select-link @if ($season_title === 'ziemas-riepas'){{'selected-link'}}@endif">Ziema</button>
+                  <button type="button" class="summer-tires-link season-select-link @if ($season_title === 'vasaras-riepas'){{'selected-link'}}@endif">Vasara</button>
+                  <button type="button" class="winter-tires-link season-select-link @if ($season_title === 'ziemas-riepas'){{'selected-link'}}@endif">Ziema</button>
                 </div>
                 <div class="wrap" style="border-top-left-radius: 0px;border-top-right-radius: 0px;border-top: none;">
 
@@ -29,7 +38,8 @@
                     <div class="sidebar-top">
                       <div style="width: 100%; margin-top: -.625rem;">
                         <div class="form-group facet mb-0">
-                          <select name="brand" class="r1-select select-title tire-brand">
+                          <label for="filter-brand" class="visually-hidden">Ražotājs</label>
+                          <select name="brand" id="filter-brand" class="r1-select select-title tire-brand" aria-label="Ražotājs">
                             <option class="select-list" id="Visi">Ražotājs</option>
                             @foreach ($brands as $brand_id => $brand_title)
                               <option class="select-list" id="{{ $brand_id }}" @if (ucwords(strtolower($brand_title)) == $currBrand) selected @endif>{{ ucwords(strtolower($brand_title)) }}</option>
@@ -38,11 +48,19 @@
                         </div>
                       </div>
 
-                      <div class="r1-select-params">
+                      @if (!empty($dualSizeMode))
+                      @php
+                        $dualSizeFilterEnabled = request()->boolean('dual')
+                          || (request()->filled('d1b') && request()->d1b !== 'Visi');
+                        $rearD1 = (!empty($d1b) && $d1b !== 'Visi') ? $d1b : null;
+                        $rearD2 = (!empty($d2b) && $d2b !== 'Visi') ? $d2b : null;
+                        $rearD3 = (!empty($d3b) && $d3b !== 'Visi') ? $d3b : null;
+                      @endphp
+                      <div class="r1-select-params tire-size-filter">
                         <div style="width: 100%">
                           <div class="form-group facet">
-                            <h1 class="h6 facet-title" style="margin-bottom: 0px;">Platums</h1>
-                            <select class="r1-select select-title tire-width" name="d1">
+                            <p class="h6 facet-title" style="margin-bottom: 0px;">Platums</p>
+                            <select class="r1-select select-title tire-width" name="d1" aria-label="Platums">
                               <option class="select-list" id="Visi">Visi</option>
                               @foreach ($autoTiresD1 as $tire)
                                 <option id="{{ $tire->d1 }}" @if ($tire->d1 == $d1) selected @endif>{{ $tire->d1 }}</option>
@@ -52,8 +70,8 @@
                         </div>
                         <div style="width: 100%">
                           <div class="form-group facet">
-                            <h1 class="h6 facet-title" style="margin-bottom: 0px;">Augstums</h1>
-                            <select name="d2" class="r1-select select-title tire-height">
+                            <p class="h6 facet-title" style="margin-bottom: 0px;">Augstums</p>
+                            <select name="d2" class="r1-select select-title tire-height" aria-label="Augstums">
                               <option class="select-list" id="Visi">Visi</option>
                               @foreach ($autoTiresD2 as $tire)
                                 <option class="select-list" id="{{ $tire->d2 }}" @if ($tire->d2 == $d2) selected @endif>{{ $tire->d2 }}</option>
@@ -63,8 +81,8 @@
                         </div>
                         <div style="width: 100%">
                           <div class="form-group facet">
-                            <h1 class="h6 facet-title facet-select" style="margin-bottom: 0px;">Diametrs</h1>
-                            <select name="d3" class="r1-select select-title tire-radius">
+                            <p class="h6 facet-title facet-select" style="margin-bottom: 0px;">Diametrs</p>
+                            <select name="d3" class="r1-select select-title tire-radius" aria-label="Diametrs">
                               <option class="select-list" id="Visi">Visi</option>
                               @foreach ($autoTiresD3 as $tire)
                                 <option class="select-list" id="{{ $tire->d3 }}" @if ($tire->d3 == $d3) selected @endif>{{ $tire->d3 }}</option>
@@ -74,7 +92,95 @@
                         </div>
                       </div>
 
-                      <div style="width: 100%; margin-top: -15px;">
+                      <div class="dual-size-panel">
+                      <div class="dual-size-toggle-row facet">
+                        <label class="facet-label dual-size-toggle-label" for="dual-size-toggle">
+                          <span class="custom-checkbox">
+                            <input type="checkbox" id="dual-size-toggle" class="dual-size-toggle" value="1" @if ($dualSizeFilterEnabled) checked @endif>
+                            <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
+                          </span>
+                          <span>Otrs izmērs (aizmugurējā ass)</span>
+                        </label>
+                      </div>
+
+                      <div class="dual-size-second-block dual-size-filter-wrapper" @if (!$dualSizeFilterEnabled) style="display: none;" @endif>
+                        <p class="h6 facet-title dual-size-label">2. izmērs — aizmugurējā ass</p>
+                        <div class="r1-select-params dual-size-second-row">
+                          <div style="width: 100%">
+                            <div class="form-group facet">
+                              <p class="h6 facet-title" style="margin-bottom: 0px;">Platums</p>
+                              <select class="r1-select select-title tire-width-b" name="d1b" aria-label="Aizmugures ass platums">
+                                <option class="select-list" id="Visi" @if ($rearD1 === null) selected @endif>Visi</option>
+                                @foreach ($autoTiresD1 as $tire)
+                                  <option id="{{ $tire->d1 }}" @if ($rearD1 !== null && $tire->d1 == $rearD1) selected @endif>{{ $tire->d1 }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                          </div>
+                          <div style="width: 100%">
+                            <div class="form-group facet">
+                              <p class="h6 facet-title" style="margin-bottom: 0px;">Augstums</p>
+                              <select name="d2b" class="r1-select select-title tire-height-b" aria-label="Aizmugures ass augstums">
+                                <option class="select-list" id="Visi" @if ($rearD2 === null) selected @endif>Visi</option>
+                                @foreach ($autoTiresD2 as $tire)
+                                  <option class="select-list" id="{{ $tire->d2 }}" @if ($rearD2 !== null && $tire->d2 == $rearD2) selected @endif>{{ $tire->d2 }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                          </div>
+                          <div style="width: 100%">
+                            <div class="form-group facet">
+                              <p class="h6 facet-title facet-select" style="margin-bottom: 0px;">Diametrs</p>
+                              <select name="d3b" class="r1-select select-title tire-radius-b" aria-label="Aizmugures ass diametrs">
+                                <option class="select-list" id="Visi" @if ($rearD3 === null) selected @endif>Visi</option>
+                                @foreach ($autoTiresD3 as $tire)
+                                  <option class="select-list" id="{{ $tire->d3 }}" @if ($rearD3 !== null && $tire->d3 == $rearD3) selected @endif>{{ $tire->d3 }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      </div>
+                      @else
+                      <div class="r1-select-params">
+                        <div style="width: 100%">
+                          <div class="form-group facet">
+                            <p class="h6 facet-title" style="margin-bottom: 0px;">Platums</p>
+                            <select class="r1-select select-title tire-width" name="d1" aria-label="Platums">
+                              <option class="select-list" id="Visi">Visi</option>
+                              @foreach ($autoTiresD1 as $tire)
+                                <option id="{{ $tire->d1 }}" @if ($tire->d1 == $d1) selected @endif>{{ $tire->d1 }}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                        </div>
+                        <div style="width: 100%">
+                          <div class="form-group facet">
+                            <p class="h6 facet-title" style="margin-bottom: 0px;">Augstums</p>
+                            <select name="d2" class="r1-select select-title tire-height" aria-label="Augstums">
+                              <option class="select-list" id="Visi">Visi</option>
+                              @foreach ($autoTiresD2 as $tire)
+                                <option class="select-list" id="{{ $tire->d2 }}" @if ($tire->d2 == $d2) selected @endif>{{ $tire->d2 }}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                        </div>
+                        <div style="width: 100%">
+                          <div class="form-group facet">
+                            <p class="h6 facet-title facet-select" style="margin-bottom: 0px;">Diametrs</p>
+                            <select name="d3" class="r1-select select-title tire-radius" aria-label="Diametrs">
+                              <option class="select-list" id="Visi">Visi</option>
+                              @foreach ($autoTiresD3 as $tire)
+                                <option class="select-list" id="{{ $tire->d3 }}" @if ($tire->d3 == $d3) selected @endif>{{ $tire->d3 }}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                      @endif
+
+                      <div class="tire-fastsearch-wrap @if (!empty($dualSizeMode)) dual-size-fastsearch-wrap @endif" style="width: 100%; margin-top: -15px;@if (!empty($dualSizeMode) && !empty($dualSizeFilterEnabled)) display: none;@endif">
                         <div class="form-group facet mb-0">
                           <select class="r1-select-input" multiple="multiple"></select>
                         </div>
@@ -97,7 +203,7 @@
                                 <label class="facet-label" for="show-top-checkbox"
                                        style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                               <span class="custom-checkbox">
-                                <input type="checkbox" value="top" class="tire-top-checkbox" id="show-top-checkbox" @if (request()->top) checked @endif title="" disabled>
+                                <input type="checkbox" value="top" class="tire-top-checkbox" id="show-top-checkbox" @if (request()->top || !request()->has('top')) checked @endif title="" disabled>
                               <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                             </span>
                                     <span>TOP 40</span>
@@ -107,14 +213,14 @@
                             <label class="facet-label" for="show-selected-checkbox"
                                    style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                               <span class="custom-checkbox">
-                                <input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" @if (request()->show_selected) checked @endif title="" disabled>
+                                <input type="checkbox" value="only_selected" class="show-selected-filter tire-table-checkbox" id="show-selected-checkbox" title="Rādīt tikai atzīmētās preces" @if (request()->show_selected) checked @endif disabled>
                               <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                             </span>
                               <span>Rādīt izvēlētos</span>
                             </label>
                           </li>
                         </ul>
-                        <h1 class="h6 facet-title"><b>Pieejamība</b></h1>
+                        <p class="h6 facet-title"><b>Pieejamība</b></p>
                         <ul id="facet_availability" class="collapse">
                           <li>
                             <label class="facet-label" for="facet_availability_0"
@@ -173,9 +279,9 @@
                       </section>
 
                       <section class="facet clearfix facet--4">
-                        <h1 class="h6 facet-title facet-hover code-dropdown-btn"><b>Kods</b></h1>
+                        <p class="h6 facet-title facet-hover code-dropdown-btn"><b>Kods</b></p>
                         <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
-                          <h1 class="h6 facet-title">Kods</h1>
+                          <p class="h6 facet-title">Kods</p>
                           <span class="float-xs-right">
                           <span class="navbar-toggler collapse-icons">
                             <i class="material-icons add"></i>
@@ -202,7 +308,7 @@
                                   </span>
                                 </span>
                                         <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>Run Flat (RSC)</b> - Šāda riepa ļauj pārvietoties arī tad, ja tā tikusi pārdurta</span></div>" tabindex="0">
-                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">RSC</a>
+                                            <span class="_gray-darker search-link js-search-link">RSC</span>
                                         </span>
                                     </label>
                                 </li>
@@ -217,7 +323,7 @@
                                   </span>
                                 </span>
                                       <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>Riepu blīvējums (SEAL)</b> ir gumijas slānis, kas tiek uzklāts uz riepas iekšpuses. Tas palīdz novērst gaisa noplūdi no riepas un aizsargā riepas karkasu no bojājumiem.</span></div>" tabindex="0">
-                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">SEAL</a>
+                                            <span class="_gray-darker search-link js-search-link">SEAL</span>
                                         </span>
                                     </label>
                                   </li>
@@ -232,7 +338,7 @@
                                   </span>
                                 </span>
                                         <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>SOUND</b> - Riepu tehnoloģija, kas samazina troksni automobiļa salonā līdz pat 50%</span></div>" tabindex="0">
-                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">SOUND</a>
+                                            <span class="_gray-darker search-link js-search-link">SOUND</span>
                                         </span>
                                     </label>
                                 </li>
@@ -247,7 +353,7 @@
                                   </span>
                                 </span>
                                     <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>EXTRA LOAD (XL)</b> - Riepa ar paaugstinātu kravnesību</span></div>" tabindex="0">
-                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">XL</a>
+                                        <span class="_gray-darker search-link js-search-link">XL</span>
                                     </span>
                                 </label>
                               </li>
@@ -264,7 +370,7 @@
                               </span>
                             </span>
                                     <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>ELECT</b> - Riepas paredzētas elektroauto</span></div>" tabindex="0">
-                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">ELECT</a>
+                                        <span class="_gray-darker search-link js-search-link">ELECT</span>
                                     </span>
                                         </label>
                                     </li>
@@ -279,7 +385,7 @@
                               </span>
                             </span>
                                       <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>Maximum Flange Shield (MFS)</b> - Riepa ar diska aizsargmalu</span></div>" tabindex="0">
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">MFS</a>
+                                    <span class="_gray-darker search-link js-search-link">MFS</span>
                                 </span>
                                     </label>
                                   </li>
@@ -294,7 +400,7 @@
                               </span>
                             </span>
                                     <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>N0</b> - Porsche ražotāja homologācija</span></div>" tabindex="0">
-                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">N0</a>
+                                        <span class="_gray-darker search-link js-search-link">N0</span>
                                     </span>
                                         </label>
                                     </li>
@@ -309,7 +415,7 @@
                               </span>
                             </span>
                                       <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>(*)</b> - BMW ražotāja homologācija</span></div>" tabindex="0">
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">(*)</a>
+                                    <span class="_gray-darker search-link js-search-link">(*)</span>
                                 </span>
                                     </label>
                                   </li>
@@ -336,9 +442,9 @@
                       @if ($season_title == 'ziemas-riepas')
 
                         <section class="facet clearfix facet--4">
-                          <h1 class="h6 facet-title facet-hover type-dropdown-btn"><b>Tips</b></h1>
+                          <p class="h6 facet-title facet-hover type-dropdown-btn"><b>Tips</b></p>
                           <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
-                            <h1 class="h6 facet-title">Tips</h1>
+                            <p class="h6 facet-title">Tips</p>
                             <span class="float-xs-right">
                           <span class="navbar-toggler collapse-icons">
                             <i class="material-icons add"></i>
@@ -359,7 +465,7 @@
                                       </span>
                                     </span>
                                     <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>{{ \App\Helper\Tires::codeExplain('ziemas tips') }}</span></div>" tabindex="0">
-                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ziemas <img src="/images/parsla.png"></a>
+                                        <span class="_gray-darker search-link js-search-link">Ziemas <img src="/images/parsla.png"></span>
                                     </span>
                                   </label>
                               </li>
@@ -374,7 +480,7 @@
                               </span>
                             </span>
                                   <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>{{ \App\Helper\Tires::codeExplain('ms tips') }}</span></div>" tabindex="0">
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">M+S <img src="/images/ms.png"></a>
+                                  <span class="_gray-darker search-link js-search-link">M+S <img src="/images/ms.png"></span>
 {{--                                      <div class="png-container">--}}
 {{--                                        <img src="https://hyacktire.com/_images/_icons/M+S-icon-blue_283x283.png">--}}
 {{--                                      </div>--}}
@@ -392,7 +498,7 @@
                                       </span>
                                     </span>
                                     <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>{{ \App\Helper\Tires::codeExplain('ar radzēm tips') }}</span></div>" tabindex="0">
-                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ar radzēm <img src="/images/radzea.png"></a>
+                                        <span class="_gray-darker search-link js-search-link">Ar radzēm <img src="/images/radzea.png"></span>
                                     </span>
                                   </label>
                               </li>
@@ -407,7 +513,7 @@
                                   </span>
                                 </span>
                                 <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'>{{ \App\Helper\Tires::codeExplain('radžojamu tips') }}</span></div>" tabindex="0">
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Radžojama <img src="/images/radzeb.png" alt="ms"></a>
+                                    <span class="_gray-darker search-link js-search-link">Radžojama <img src="/images/radzeb.png" alt="ms"></span>
                                 </span>
                               </label>
                             </li>
@@ -419,13 +525,13 @@
                       <div class="row">
                         <div class="col-md-4">
                           <section class="facet clearfix facet--8">
-                            <h1 class="h6 facet-title facet-hover fuel-eco-dropdown-btn">
+                            <p class="h6 facet-title facet-hover fuel-eco-dropdown-btn">
                               <div class="icon-tire-fuel">
-                                <img src="https://i.imgur.com/77wfTHY.png" style="width: 80px; position: relative; left: -15px; top: 3px;">
+                                <img src="https://i.imgur.com/77wfTHY.png" alt="Degvielas ekonomijas indekss" style="width: 80px; position: relative; left: -15px; top: 3px;">
                               </div>
-                            </h1>
+                            </p>
                             <div class="title hidden-md-up" data-target="#facet_70638">
-                              <h1 class="h6 facet-title">Degvielas ekonomija</h1>
+                              <p class="h6 facet-title">Degvielas ekonomija</p>
                               <span class="float-xs-right">
                                 <span class="navbar-toggler collapse-icons">
                                   <i class="material-icons add"></i>
@@ -444,7 +550,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
+                                  <span class="_gray-darker search-link js-search-link">A</span>
                                 </label>
                               </li>
                               <li data-label="B">
@@ -457,7 +563,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
+                                  <span class="_gray-darker search-link js-search-link">B</span>
                                 </label>
                               </li>
                               <li data-label="C">
@@ -470,7 +576,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
+                                  <span class="_gray-darker search-link js-search-link">C</span>
                                 </label>
                               </li>
                               <li data-label="D">
@@ -483,7 +589,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">D</a>
+                                  <span class="_gray-darker search-link js-search-link">D</span>
                                 </label>
                               </li>
                               <li data-label="E">
@@ -496,7 +602,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
+                                  <span class="_gray-darker search-link js-search-link">E</span>
                                 </label>
                               </li>
 
@@ -511,7 +617,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
+                                  <span class="_gray-darker search-link js-search-link">F</span>
                                 </label>
                               </li>
 
@@ -525,7 +631,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">G</a>
+                                  <span class="_gray-darker search-link js-search-link">G</span>
                                 </label>
                               </li>
                             </ul>
@@ -533,13 +639,13 @@
                         </div>
                         <div class="col-md-4">
                           <section class="facet clearfix facet--9">
-                            <h1 class="h6 facet-title facet-hover wet-surface-dropdown-btn">
+                            <p class="h6 facet-title facet-hover wet-surface-dropdown-btn">
                               <div class="icon-tire-rain">
-                                <img style="width: 80px;position: relative;left: -15px;top: 3px;" src="https://i.imgur.com/TVeVuMf.png">
+                                <img style="width: 80px;position: relative;left: -15px;top: 3px;" src="https://i.imgur.com/TVeVuMf.png" alt="Slapjā ceļa saķere">
                               </div>
-                            </h1>
+                            </p>
                             <div class="title hidden-md-up" data-target="#facet_8079">
-                              <h1 class="h6 facet-title">Slapjš segums</h1>
+                              <p class="h6 facet-title">Slapjš segums</p>
                               <span class="float-xs-right">
                                 <span class="navbar-toggler collapse-icons">
                                   <i class="material-icons add"></i>
@@ -559,7 +665,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
+                                  <span class="_gray-darker search-link js-search-link">A</span>
                                 </label>
                               </li>
                               <li data-label="B">
@@ -573,7 +679,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
+                                  <span class="_gray-darker search-link js-search-link">B</span>
                                 </label>
                               </li>
                               <li data-label="C">
@@ -587,7 +693,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
+                                  <span class="_gray-darker search-link js-search-link">C</span>
                                 </label>
                               </li>
                               <li data-label="D">
@@ -601,7 +707,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">D</a>
+                                  <span class="_gray-darker search-link js-search-link">D</span>
                                 </label>
                               </li>
                               <li data-label="E">
@@ -615,7 +721,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
+                                  <span class="_gray-darker search-link js-search-link">E</span>
                                 </label>
                               </li>
                               <li data-label="F">
@@ -629,7 +735,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
+                                  <span class="_gray-darker search-link js-search-link">F</span>
                                 </label>
                               </li>
                               <li data-label="G">
@@ -643,7 +749,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">G</a>
+                                  <span class="_gray-darker search-link js-search-link">G</span>
                                 </label>
                               </li>
                             </ul>
@@ -652,10 +758,10 @@
                         <div class="col-md-4">
                           <section class="facet clearfix facet--10">
                             <div class="icon-tire-sound" title="Troksnis">
-                              <img style="width: 75px;position: relative;left: -5px;margin-bottom: 4px;" src="https://i.imgur.com/fjyPUVN.png">
+                              <img style="width: 75px;position: relative;left: -5px;margin-bottom: 4px;" src="https://i.imgur.com/fjyPUVN.png" alt="Trokšņa līmenis">
                             </div>
                             <div class="title hidden-md-up" data-target="#facet_8079">
-                              <h1 class="h6 facet-title">Trokšņa līmenis</h1>
+                              <p class="h6 facet-title">Trokšņa līmenis</p>
                               <span class="float-xs-right">
                                 <span class="navbar-toggler collapse-icons">
                                   <i class="material-icons add"></i>
@@ -676,7 +782,7 @@
                                       <i class="material-icons checkbox-checked"></i>
                                     </span>
                                   </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
+                                  <span class="_gray-darker search-link js-search-link">A</span>
                                 </label>
                               </li>
                               <li data-label="B">
@@ -689,7 +795,7 @@
                                       <i class="material-icons checkbox-checked"></i>
                                     </span>
                                   </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
+                                  <span class="_gray-darker search-link js-search-link">B</span>
                                 </label>
                               </li>
                               <li data-label="C">
@@ -702,7 +808,7 @@
                                       <i class="material-icons checkbox-checked"></i>
                                     </span>
                                   </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
+                                  <span class="_gray-darker search-link js-search-link">C</span>
                                 </label>
                               </li>
                             </ul>
@@ -855,10 +961,14 @@
               <div id="">
                 <div id="js-product-list">
                   <div class="products row title-flip">
+                    @if (!empty($catalogListHtml ?? null))
+                      {!! $catalogListHtml !!}
+                    @endif
                   </div>
                 </div>
               </div>
             </section>
+            @include('components.autotires.catalog-seo', ['season_title' => $season_title])
           </section>
         </div>
       </div>
@@ -887,24 +997,24 @@
                                 <label class="facet-label" for="show-top-checkbox"
                                        style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                               <span class="custom-checkbox">
-                                <input type="checkbox" value="top" class="tire-top-checkbox" id="show-top-checkbox" @if (request()->top) checked @endif title="">
+                                <input type="checkbox" value="top" class="tire-top-checkbox" id="show-top-checkbox" @if (request()->top || !request()->has('top')) checked @endif title="">
                               <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                             </span>
                                     <span>TOP 40</span>
                                 </label>
                             </li>
                           <li class="show-selected-checkbox-li">
-                            <label class="facet-label" for="show-selected-checkbox"
+                            <label class="facet-label" for="show-selected-checkbox-mobile"
                                    style="width: 100%;text-align: left;cursor: pointer;margin-bottom: 5px">
                               <span class="custom-checkbox">
-                                <input type="checkbox" value="only_selected" class="tire-table-checkbox" id="show-selected-checkbox" @if (request()->show_selected) checked @endif title="" disabled>
+                                <input type="checkbox" value="only_selected" class="show-selected-filter tire-table-checkbox" id="show-selected-checkbox-mobile" title="Rādīt tikai atzīmētās preces" @if (request()->show_selected) checked @endif disabled>
                               <span class="ps-shown-by-js"><i class="material-icons checkbox-checked"></i></span>
                             </span>
                               <span>Rādīt izvēlētos</span>
                             </label>
                           </li>
                         </ul>
-                        <h1 class="h6 facet-title"><b>Pieejamība</b></h1>
+                        <p class="h6 facet-title"><b>Pieejamība</b></p>
                         <ul id="facet_availability" class="collapse">
                           <li>
                             <label class="facet-label" for="facet_availability_0"
@@ -951,9 +1061,9 @@
                       </section>
 
                       <section class="facet clearfix facet--4">
-                        <h1 class="h6 facet-title facet-hover code-dropdown-btn"><b>Kods</b></h1>
+                        <p class="h6 facet-title facet-hover code-dropdown-btn"><b>Kods</b></p>
                         <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
-                          <h1 class="h6 facet-title">Kods</h1>
+                          <p class="h6 facet-title">Kods</p>
                           <span class="float-xs-right">
                           <span class="navbar-toggler collapse-icons">
                             <i class="material-icons add"></i>
@@ -980,7 +1090,7 @@
                                   </span>
                                 </span>
                                   <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>Run Flat (RSC)</b> - Šāda riepa ļauj pārvietoties arī tad, ja tā tikusi pārdurta</span></div>" tabindex="0">
-                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">RSC</a>
+                                            <span class="_gray-darker search-link js-search-link">RSC</span>
                                         </span>
                                 </label>
                               </li>
@@ -995,7 +1105,7 @@
                                   </span>
                                 </span>
                                   <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>Riepu blīvējums (SEAL)</b> ir gumijas slānis, kas tiek uzklāts uz riepas iekšpuses. Tas palīdz novērst gaisa noplūdi no riepas un aizsargā riepas karkasu no bojājumiem.</span></div>" tabindex="0">
-                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">SEAL</a>
+                                            <span class="_gray-darker search-link js-search-link">SEAL</span>
                                         </span>
                                 </label>
                               </li>
@@ -1010,7 +1120,7 @@
                                   </span>
                                 </span>
                                   <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>SOUND</b> - Riepu tehnoloģija, kas samazina troksni automobiļa salonā līdz pat 50%</span></div>" tabindex="0">
-                                            <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">SOUND</a>
+                                            <span class="_gray-darker search-link js-search-link">SOUND</span>
                                         </span>
                                 </label>
                               </li>
@@ -1025,7 +1135,7 @@
                                   </span>
                                 </span>
                                   <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>EXTRA LOAD (XL)</b> - Riepa ar paaugstinātu kravnesību</span></div>" tabindex="0">
-                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">XL</a>
+                                        <span class="_gray-darker search-link js-search-link">XL</span>
                                     </span>
                                 </label>
                               </li>
@@ -1042,7 +1152,7 @@
                               </span>
                             </span>
                                   <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>ELECT</b> - Riepas paredzētas elektroauto</span></div>" tabindex="0">
-                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">ELECT</a>
+                                        <span class="_gray-darker search-link js-search-link">ELECT</span>
                                     </span>
                                 </label>
                               </li>
@@ -1057,7 +1167,7 @@
                               </span>
                             </span>
                                   <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>Maximum Flange Shield (MFS)</b> - Riepa ar diska aizsargmalu</span></div>" tabindex="0">
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">MFS</a>
+                                    <span class="_gray-darker search-link js-search-link">MFS</span>
                                 </span>
                                 </label>
                               </li>
@@ -1072,7 +1182,7 @@
                               </span>
                             </span>
                                   <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>N0</b> - Porsche ražotāja homologācija</span></div>" tabindex="0">
-                                        <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">N0</a>
+                                        <span class="_gray-darker search-link js-search-link">N0</span>
                                     </span>
                                 </label>
                               </li>
@@ -1087,7 +1197,7 @@
                               </span>
                             </span>
                                   <span class="tippy lisi-tooltip" data-tippy-content="<div style='padding: 5px; text-align: left;'><span style='color: black; font-size: 15px;'><b>(*)</b> - BMW ražotāja homologācija</span></div>" tabindex="0">
-                                    <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">(*)</a>
+                                    <span class="_gray-darker search-link js-search-link">(*)</span>
                                 </span>
                                 </label>
                               </li>
@@ -1114,9 +1224,9 @@
                       @if ($season_title == 'ziemas-riepas')
 
                         <section class="facet clearfix facet--4">
-                          <h1 class="h6 facet-title facet-hover type-dropdown-btn"><b>Tips</b></h1>
+                          <p class="h6 facet-title facet-hover type-dropdown-btn"><b>Tips</b></p>
                           <div class="title hidden-md-up" data-target="#facet_11641" data-toggle="collapse">
-                            <h1 class="h6 facet-title">Tips</h1>
+                            <p class="h6 facet-title">Tips</p>
                             <span class="float-xs-right">
                           <span class="navbar-toggler collapse-icons">
                             <i class="material-icons add"></i>
@@ -1136,7 +1246,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow" style="margin-top: 0px;">M+S</a>
+                                <span class="_gray-darker search-link js-search-link" style="margin-top: 0px;">M+S</span>
                               </label>
                             </li>
                             <li data-label="Studdable">
@@ -1149,7 +1259,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Radžojama</a>
+                                <span class="_gray-darker search-link js-search-link">Radžojama</span>
                               </label>
                             </li>
                             <li data-label="Studs">
@@ -1162,7 +1272,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ar radzēm</a>
+                                <span class="_gray-darker search-link js-search-link">Ar radzēm</span>
                               </label>
                             </li>
                             <li data-label="Winter">
@@ -1175,7 +1285,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">Ziemas</a>
+                                <span class="_gray-darker search-link js-search-link">Ziemas</span>
                               </label>
                             </li>
                           </ul>
@@ -1186,13 +1296,13 @@
                       <div class="row flex flex-params">
                         <div class="col-md-4">
                           <section class="facet clearfix facet--8">
-                            <h1 class="h6 facet-title facet-hover fuel-eco-dropdown-btn">
+                            <p class="h6 facet-title facet-hover fuel-eco-dropdown-btn">
                               <div class="icon-tire-fuel">
-                                <img src="https://i.imgur.com/77wfTHY.png" style="width: 80px; position: relative; left: -15px; top: 3px;">
+                                <img src="https://i.imgur.com/77wfTHY.png" alt="Degvielas ekonomijas indekss" style="width: 80px; position: relative; left: -15px; top: 3px;">
                               </div>
-                            </h1>
+                            </p>
                             <div class="title hidden-md-up" data-target="#facet_70638">
-                              <h1 class="h6 facet-title">Degvielas ekonomija</h1>
+                              <p class="h6 facet-title">Degvielas ekonomija</p>
                               <span class="float-xs-right">
                                 <span class="navbar-toggler collapse-icons">
                                   <i class="material-icons add"></i>
@@ -1211,7 +1321,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
+                                  <span class="_gray-darker search-link js-search-link">A</span>
                                 </label>
                               </li>
                               <li data-label="B">
@@ -1224,7 +1334,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
+                                  <span class="_gray-darker search-link js-search-link">B</span>
                                 </label>
                               </li>
                               <li data-label="C">
@@ -1237,7 +1347,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
+                                  <span class="_gray-darker search-link js-search-link">C</span>
                                 </label>
                               </li>
                               <li data-label="D">
@@ -1250,7 +1360,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">D</a>
+                                  <span class="_gray-darker search-link js-search-link">D</span>
                                 </label>
                               </li>
                               <li data-label="E">
@@ -1263,7 +1373,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
+                                  <span class="_gray-darker search-link js-search-link">E</span>
                                 </label>
                               </li>
 
@@ -1278,7 +1388,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
+                                  <span class="_gray-darker search-link js-search-link">F</span>
                                 </label>
                               </li>
 
@@ -1292,7 +1402,7 @@
                                 <i class="material-icons checkbox-checked"></i>
                               </span>
                             </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">G</a>
+                                  <span class="_gray-darker search-link js-search-link">G</span>
                                 </label>
                               </li>
                             </ul>
@@ -1300,13 +1410,13 @@
                         </div>
                         <div class="col-md-4">
                           <section class="facet clearfix facet--9">
-                            <h1 class="h6 facet-title facet-hover wet-surface-dropdown-btn">
+                            <p class="h6 facet-title facet-hover wet-surface-dropdown-btn">
                               <div class="icon-tire-rain">
-                                <img style="width: 80px;position: relative;left: -15px;top: 3px;" src="https://i.imgur.com/TVeVuMf.png">
+                                <img style="width: 80px;position: relative;left: -15px;top: 3px;" src="https://i.imgur.com/TVeVuMf.png" alt="Slapjā ceļa saķere">
                               </div>
-                            </h1>
+                            </p>
                             <div class="title hidden-md-up" data-target="#facet_8079">
-                              <h1 class="h6 facet-title">Slapjš segums</h1>
+                              <p class="h6 facet-title">Slapjš segums</p>
                               <span class="float-xs-right">
                                 <span class="navbar-toggler collapse-icons">
                                   <i class="material-icons add"></i>
@@ -1326,7 +1436,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
+                                  <span class="_gray-darker search-link js-search-link">A</span>
                                 </label>
                               </li>
                               <li data-label="B">
@@ -1340,7 +1450,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
+                                  <span class="_gray-darker search-link js-search-link">B</span>
                                 </label>
                               </li>
                               <li data-label="C">
@@ -1354,7 +1464,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
+                                  <span class="_gray-darker search-link js-search-link">C</span>
                                 </label>
                               </li>
                               <li data-label="D">
@@ -1368,7 +1478,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">D</a>
+                                  <span class="_gray-darker search-link js-search-link">D</span>
                                 </label>
                               </li>
                               <li data-label="E">
@@ -1382,7 +1492,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">E</a>
+                                  <span class="_gray-darker search-link js-search-link">E</span>
                                 </label>
                               </li>
                               <li data-label="F">
@@ -1396,7 +1506,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">F</a>
+                                  <span class="_gray-darker search-link js-search-link">F</span>
                                 </label>
                               </li>
                               <li data-label="G">
@@ -1410,7 +1520,7 @@
                               </span>
                             </span>
 
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">G</a>
+                                  <span class="_gray-darker search-link js-search-link">G</span>
                                 </label>
                               </li>
                             </ul>
@@ -1419,10 +1529,10 @@
                         <div class="col-md-4">
                           <section class="facet clearfix facet--10">
                             <div class="icon-tire-sound" title="Troksnis">
-                              <img style="width: 75px;position: relative;left: -5px;margin-bottom: 4px;" src="https://i.imgur.com/fjyPUVN.png">
+                              <img style="width: 75px;position: relative;left: -5px;margin-bottom: 4px;" src="https://i.imgur.com/fjyPUVN.png" alt="Trokšņa līmenis">
                             </div>
                             <div class="title hidden-md-up" data-target="#facet_8079">
-                              <h1 class="h6 facet-title">Trokšņa līmenis</h1>
+                              <p class="h6 facet-title">Trokšņa līmenis</p>
                               <span class="float-xs-right">
                                 <span class="navbar-toggler collapse-icons">
                                   <i class="material-icons add"></i>
@@ -1443,7 +1553,7 @@
                                       <i class="material-icons checkbox-checked"></i>
                                     </span>
                                   </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">A</a>
+                                  <span class="_gray-darker search-link js-search-link">A</span>
                                 </label>
                               </li>
                               <li data-label="B">
@@ -1456,7 +1566,7 @@
                                       <i class="material-icons checkbox-checked"></i>
                                     </span>
                                   </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">B</a>
+                                  <span class="_gray-darker search-link js-search-link">B</span>
                                 </label>
                               </li>
                               <li data-label="C">
@@ -1469,7 +1579,7 @@
                                       <i class="material-icons checkbox-checked"></i>
                                     </span>
                                   </span>
-                                  <a href="javascript:;" class="_gray-darker search-link js-search-link" rel="nofollow">C</a>
+                                  <span class="_gray-darker search-link js-search-link">C</span>
                                 </label>
                               </li>
                             </ul>
@@ -1485,5 +1595,13 @@
         </div>
       </div>
 
-<script src="{{ asset('js/autoTiresAjax.js?rev=' . time()) }}"></script>
+@push('scripts')
+<script src="{{ \App\Helper\AssetHelper::v('js/autoTiresAjax.js') }}" defer></script>
+@endpush
+<style>
+  .dual-size-tires-table .tire-table-link {
+    display: block;
+    white-space: normal;
+  }
+</style>
 @endsection

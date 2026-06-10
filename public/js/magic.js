@@ -3542,11 +3542,7 @@ window.MagicZoom = (function() {
     var f = y.browser.features.perspective ? "translate3d(" : "translate(";
     var A = y.browser.features.perspective ? ",0)" : ")";
     var l = null;
-    var p = (function() {
-        var I, L, K, J, H;
-        H = ["2o.f|kh3,fzz~4!!yyy coigmzaablav mac!coigmtaac~b{}!,.a`mbgme3,zfg} lb{|&'5,.zo|ikz3,Qlbo`e,.}zwbk3,maba|4.g`fk|gz5.zkvz#jkma|ozga`4.`a`k5,0Coigm.Taac.^b{}(z|ojk5.z|gob.xk|}ga`2!o0", "#ff0000", 11, "normal", "", "center", "100%"];
-        return H
-    })();
+    var p;
     var r = function() {
         return "mgctlbxN$MZ" + "p".toUpperCase() + " mgctlbxV$" + "v5.2.6".replace("v", "") + " mgctlbxL$" + "t".toUpperCase() + ((window.mgctlbx$Pltm && y.jTypeOf(window.mgctlbx$Pltm) === "string") ? " mgctlbxP$" + window.mgctlbx$Pltm.toLowerCase() : "")
     };

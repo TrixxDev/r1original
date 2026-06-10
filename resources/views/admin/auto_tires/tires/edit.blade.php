@@ -176,6 +176,20 @@
                             </div>
                         </div>
                         @endif
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="rgarticle">Riepu Garāžas artikuls</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="rgarticle" type="text" @if ($rgstock) value="{{ $rgstock->article }}" @endif name="rgarticle">
+                            </div>
+                        </div>
+                        @if ($rgstock)
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label" for="rgquantity">Riepu Garāžas atlikums</label>
+                            <div class="col-md-9">
+                                <input class="form-control" id="rgquantity" readonly style="cursor: default;" type="number" value="{{ $rgstock->quantity }}">
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     <div class="card-footer">
                         <button class="btn btn-md btn-primary" type="submit"> Saglabāt</button>

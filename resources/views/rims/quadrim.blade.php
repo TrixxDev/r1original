@@ -2,7 +2,10 @@
 
 @section('body-title', 'category')
 @section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-21 category-jauni-lietie-diski category-id-parent-20 category-depth-level-3')
-
+@section('meta_title', 'Lietie diski | R1 Riepu Serviss')
+@section('meta_description', 'Lietie diski ar filtriem pēc parametriem un ražotājiem. R1 Riepu Serviss katalogs.')
+@section('meta_keywords', config('seo.keywords.rims'))
+@section('canonical_url', route('kvadru-diski'))
 
 @section('content')
 
@@ -32,43 +35,6 @@
                     </template>
                     {{-- Change from top to auto --}}
                     <div class="sidebar-top">
-                      <section class="facet clearfix">
-                        <h1 class="h6 facet-title hidden-sm-down">Marka</h1>
-                        <div class="title hidden-md-up" data-target="#facet_auto-make" data-toggle="collapse" aria-expanded="true">
-                          <h1 class="h6 facet-title">Marka</h1>
-                          <span class="float-xs-right">j
-                            <span class="navbar-toggler collapse-icons">
-                              <i class="material-icons add"></i>
-                              <i class="material-icons remove"></i>
-                            </span>
-                          </span>
-                        </div>
-                        <select name="" id="" class="r1-select select-title">
-                          <option value="visi">Visi</option>
-                          @foreach($makes as $make)
-                            <option value="{{$make}}">{{$make}}</option>
-                          @endforeach
-                        </select>
-
-                      </section>
-                      <section class="facet clearfix">
-                        <h1 class="h6 facet-title hidden-sm-down">Modelis</h1>
-                        <div class="title hidden-md-up" data-target="#facet_auto-model" data-toggle="collapse" aria-expanded="true">
-                          <h1 class="h6 facet-title">Modelis</h1>
-                          <span class="float-xs-right">
-                            <span class="navbar-toggler collapse-icons">
-                              <i class="material-icons add"></i>
-                              <i class="material-icons remove"></i>
-                            </span>
-                          </span>
-                        </div>
-                        <select name="" id="" class="r1-select select-title">
-                          <option value="visi">Visi</option>
-                          @foreach($models as $model)
-                            <option value="{{$model}}">{{$model}}</option>
-                          @endforeach
-                        </select>
-                      </section>
                       <section class="facet clearfix">
                         <h1 class="h6 facet-title">Disku diametrs</h1>
                         <div class="title hidden-md-up" data-target="#facet_auto-dia" data-toggle="collapse" aria-expanded="true">
@@ -413,7 +379,7 @@
                               {{--                                      <i class="material-icons">add_shopping_cart</i>--}}
                               {{--                                    </button>--}}
                               <button class="cart-shopping-button" data-toggle="modal"
-                                      @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
+                                      @if (Auth::check() && Auth::user()->hasRole('administrators')) data-target="#" @else data-target="#blockcart-modal"
                                       @endif data-info="{{ $rim->rim_id }}"><i
                                   class="material-icons">add_shopping_cart</i>
                               </button>

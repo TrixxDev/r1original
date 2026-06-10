@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+@section('canonical_url', url('/privatuma-politika'))
+@section('meta_title', 'Privātuma politika | R1 Riepu Serviss')
+@section('meta_description', 'SIA R1 privātuma politika — kā apstrādājam personas datus interneta veikalā un e-pierakstā. R1 Riepu Serviss.')
+@section('meta_keywords', config('seo.keywords.privatuma_politika'))
+
 @section('content')
 <div class='container'>
     <div class='row'>

@@ -16,6 +16,11 @@ class Bigtread extends Model
   use HasFactory;
 
 
+    public function brand()
+    {
+        return $this->belongsTo(Bigbrand::class, 'brand_id', 'brand_id');
+    }
+
     public function tires() {
         return $this->hasMany(Bigtire::class, 'make_id', 'tread_id');
     }

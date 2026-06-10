@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helper\PartnerDelivery;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Auth;
@@ -15,11 +16,46 @@ class Quadr extends Model
 
     protected $primaryKey = 'tire_id';
 
+    /** @var array<int, int> */
+    protected static array $stockTotals = [];
+
+    /** @var array<int, \Illuminate\Support\Collection> */
+    protected static array $stockRows = [];
+
     public $_includeStock = true;
 
     public function setIncludeStockAttribute($value)
     {
         return $this->_includeStock = $value;
+    }
+
+    public static function preloadStockData(array $tireIds): void
+    {
+        self::$stockTotals = [];
+        self::$stockRows = [];
+
+        if ($tireIds === []) {
+            return;
+        }
+
+        self::$stockTotals = DB::table('quadr_stock')
+            ->whereIn('tire_id', $tireIds)
+            ->selectRaw('tire_id, SUM(CASE WHEN quantity >= 1 THEN quantity ELSE 0 END) as total')
+            ->groupBy('tire_id')
+            ->pluck('total', 'tire_id')
+            ->map(fn ($total) => (int) $total)
+            ->all();
+
+        self::$stockRows = Quadrstock::whereIn('tire_id', $tireIds)
+            ->get()
+            ->groupBy('tire_id')
+            ->all();
+    }
+
+    public static function clearStockCache(): void
+    {
+        self::$stockTotals = [];
+        self::$stockRows = [];
     }
 
     public function getImageAttribute()
@@ -64,9 +100,15 @@ class Quadr extends Model
 
     public function getStockCount()
     {
-        $stocks = Quadrstock::where('tire_id', $this->tire_id)->get();
+        if (array_key_exists($this->tire_id, self::$stockTotals)) {
+            return self::$stockTotals[$this->tire_id];
+        }
 
-        $count=0;
+        $stocks = array_key_exists($this->tire_id, self::$stockRows)
+            ? self::$stockRows[$this->tire_id]
+            : Quadrstock::where('tire_id', $this->tire_id)->get();
+
+        $count = 0;
 
         foreach ($stocks as $stock) {
           if ($stock !== NULL && $stock->quantity >= 1) {
@@ -331,50 +373,52 @@ class Quadr extends Model
 
     public function getStockAvailabilityAttribute()
     {
-
-      $tire = Quadr::where('tire_id', $this->tire_id)->first();
-      $stocks = Quadrstock::where('tire_id', $tire->tire_id)->get();
-
       $stock_names = [
         'i3' => 'I3',
         'duell' => 'Duell',
         'starco' => 'StarCo',
       ];
 
-      if ($tire->urs_quantity >= 2) {
+      if ($this->urs_quantity >= 2) {
         $availability = '<span>Ulbrokā: 2 un vairāk</span><br>';
       } else {
-        $availability = '<span>Ulbrokā: ' . $tire->urs_quantity . '</span><br>';
+        $availability = '<span>Ulbrokā: ' . $this->urs_quantity . '</span><br>';
       }
-      if ($tire->krs_quantity >= 2) {
+      if ($this->krs_quantity >= 2) {
         $availability .= '<span>Kalnciema ielā: 2 un vairāk</span>';
       } else {
-        $availability .= '<span>Kalnciema ielā: ' . $tire->krs_quantity . '</span>';
+        $availability .= '<span>Kalnciema ielā: ' . $this->krs_quantity . '</span>';
       }
 
       if (Auth::check()) {
-        $availability = '<span>Ulbrokā: ' . $tire->urs_quantity . '</span><br>';
-        $availability .= '<span>Kalnciema ielā: ' . $tire->krs_quantity . '</span>';
+        $availability = '<span>Ulbrokā: ' . $this->urs_quantity . '</span><br>';
+        $availability .= '<span>Kalnciema ielā: ' . $this->krs_quantity . '</span>';
+        $stocks = array_key_exists($this->tire_id, self::$stockRows)
+          ? self::$stockRows[$this->tire_id]
+          : Quadrstock::where('tire_id', $this->tire_id)->get();
+        $stocksByType = $stocks->keyBy('itype');
         foreach ($stock_names as $key => $stock_name) {
-          $stock = Quadrstock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
+          $stock = $stocksByType->get($key);
           if ($stock && $stock->quantity > 0) {
             $availability .= '<br><span>' . $stock_name . ': ' . $stock->quantity . '</span>';
           } else {
             $availability .= '<br><span>' . $stock_name . ': 0</span>';
           }
         }
-        if ($tire->acomment !== null || !empty($tire->acomment)) {
-          $availability .= '<br><hr class="admin-comments"><span><b>Piezīmes:</b> </span><br><span>' . $tire->acomment . '</span>';
+        if ($this->acomment !== null || !empty($this->acomment)) {
+          $availability .= '<br><hr class="admin-comments"><span><b>Piezīmes:</b> </span><br><span>' . $this->acomment . '</span>';
         }
       } else {
         $dot = $this->getDotAvailableAttribute();
         if ($dot === 'red') {
           $availability = '<span style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</span>';
         } else if ($dot === 'yellow' || $dot === 'half-yellow') {
-          $availability = '<span style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</span>';
+          $stocks = array_key_exists($this->tire_id, self::$stockRows)
+            ? self::$stockRows[$this->tire_id]
+            : Quadrstock::where('tire_id', $this->tire_id)->get();
+          $availability = PartnerDelivery::partnerAvailabilityHtml($stocks);
         }
       }
-      $availability .= '';
 
       return $availability;
     }

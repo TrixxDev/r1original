@@ -3,8 +3,8 @@
     <input type="hidden" id="facet_all_val" value="Visi">
     <div class="wrap">
 
-      <h4 class="text-uppercase h6 hidden-sm-down">
-        Parametri
+      <h4 class="text-uppercase h6">
+        <span id="search_filters_params" class="params params-solo" style="width: 100%!important;">Parametri</span>
       </h4>
 
       <div class="can-collapse">
@@ -80,8 +80,13 @@
                   <h1 class="h6 facet-title">Platums</h1>
                   <select name="d1" class="r1-select select-title tire-width">
                     <option class="select-list" id="Visi">Visi</option>
-                    @foreach ($bigTiresD1 as $tire)
-                      <option class="select-list" id="{{ $tire->d1 }}" @if ($tire->d1 == $d1) selected @endif>{{ $tire->d1 }}</option>
+                    @foreach ($bigTiresD1 as $tireD1)
+                      @php
+                        $value = data_get($tireD1, 'd1', $tireD1);
+                        $value = is_scalar($value) ? (string) $value : null;
+                      @endphp
+                      @continue($value === null || $value === '')
+                      <option class="select-list" id="{{ $value }}" @if ((string) $value === (string) $d1) selected @endif>{{ $value }}</option>
                     @endforeach
                   </select>
                 </div>
@@ -91,8 +96,13 @@
                   <h1 class="h6 facet-title">Augstums</h1>
                   <select name="d2" class="r1-select select-title tire-height">
                     <option class="select-list" id="Visi">Visi</option>
-                    @foreach ($bigTiresD2 as $tire)
-                      <option class="select-list" id="{{ $tire->d2 }}" @if ($tire->d2 == $d2) selected @endif>{{ $tire->d2 }}</option>
+                    @foreach ($bigTiresD2 as $tireD2)
+                      @php
+                        $value = data_get($tireD2, 'd2', $tireD2);
+                        $value = is_scalar($value) ? (string) $value : null;
+                      @endphp
+                      @continue($value === null || $value === '')
+                      <option class="select-list" id="{{ $value }}" @if ((string) $value === (string) $d2) selected @endif>{{ $value }}</option>
                     @endforeach
                   </select>
                 </div>
@@ -102,8 +112,13 @@
                   <h1 class="h6 facet-title facet-select">Diametrs</h1>
                   <select name="d3" class="r1-select select-title tire-radius">
                     <option class="select-list" id="Visi">Visi</option>
-                    @foreach ($bigTiresD3 as $tire)
-                      <option class="select-list" id="{{ $tire->d3 }}" @if ($tire->d3 == $d3) selected @endif>{{ $tire->d3 }}</option>
+                    @foreach ($bigTiresD3 as $tireD3)
+                      @php
+                        $value = data_get($tireD3, 'd3', $tireD3);
+                        $value = is_scalar($value) ? (string) $value : null;
+                      @endphp
+                      @continue($value === null || $value === '')
+                      <option class="select-list" id="{{ $value }}" @if ((string) $value === (string) $d3) selected @endif>{{ $value }}</option>
                     @endforeach
                   </select>
 
@@ -292,3 +307,4 @@
     </div>
   </div>
 </div>
+

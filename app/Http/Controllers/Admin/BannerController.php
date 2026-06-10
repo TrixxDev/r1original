@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Bannerimage;
+use Illuminate\Support\Facades\Cache;
 use Intervention\Image\ImageManagerStatic as Image;
 
 class BannerController extends Controller
@@ -66,6 +67,8 @@ class BannerController extends Controller
       $save->save();
     }
 
+    Cache::forget('r1_view_shared_banners');
+
     return redirect()->back()->with('status', 'Banneris pievienots veiksmīgi!');
   }
 
@@ -73,6 +76,8 @@ class BannerController extends Controller
     $banner = Bannerimage::findOrFail($id);
     $banner->url = $request->url;
     $banner->save();
+    Cache::forget('r1_view_shared_banners');
+
     return redirect()->back()->with('success', 'Bannerim veiksmīgi izmainīts links');
   }
 
@@ -87,11 +92,13 @@ class BannerController extends Controller
     $banner = Bannerimage::findOrFail($id);
     $banner->enabled = $request->enabled;
     $banner->save();
+    Cache::forget('r1_view_shared_banners');
   }
 
   public function delete($id) {
     $stock = Bannerimage::find($id);
     $stock->delete();
+    Cache::forget('r1_view_shared_banners');
 
     return redirect()->back()->with('success', 'Banneris dzēsts.');
   }

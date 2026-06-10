@@ -65,12 +65,12 @@
                                             <td style="width: 8.3%!important;">
                                                 <a class="btn btn-success" href="{{ route('admin.moto.treads.edit', $tread->tread_id) }}">
                                                     <svg class="c-icon">
-                                                        <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
+                                                        <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-description"></use>
                                                     </svg>
                                                 </a>
                                                 <a class="btn btn-danger brand_delete" id="{{ $tread->tread_id }}" href="{{ route('admin.moto.treads.delete', $tread->tread_id) }}">
                                                     <svg class="c-icon">
-                                                        <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
+                                                        <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-trash"></use>
                                                     </svg>
                                                 </a>
                                             </td>

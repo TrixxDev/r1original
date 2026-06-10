@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Helper\PartnerDelivery;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Auth;
-use DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class Moto extends Model
 {
@@ -16,6 +18,60 @@ class Moto extends Model
     protected $primaryKey = 'tire_id';
 
     public $_includeStock = true;
+
+    /** @var array<int, int> */
+    protected static array $stockTotals = [];
+
+    /** @var array<int, \Illuminate\Support\Collection> */
+    protected static array $stockRows = [];
+
+    /** @var array<string, string>|null */
+    protected static ?array $codeExplainMap = null;
+
+    /** @var \Illuminate\Support\Collection|null */
+    protected static $codeExplainCodesCache = null;
+
+    public static function clearFilterCache(): void
+    {
+        Cache::forget('moto_catalog_brands_v1');
+        Cache::forget('moto_tire_types_v1');
+        Cache::forget('moto_tire_sizes_v1');
+
+        if (Cache::has('moto_api_count_version')) {
+            Cache::increment('moto_api_count_version');
+        } else {
+            Cache::forever('moto_api_count_version', 2);
+        }
+    }
+
+    public static function preloadStockData(array $tireIds): void
+    {
+        self::$stockTotals = [];
+        self::$stockRows = [];
+
+        if ($tireIds === []) {
+            return;
+        }
+
+        self::$stockTotals = DB::table('moto_stock')
+            ->whereIn('tire_id', $tireIds)
+            ->selectRaw('tire_id, SUM(CASE WHEN quantity >= 1 THEN quantity ELSE 0 END) as total')
+            ->groupBy('tire_id')
+            ->pluck('total', 'tire_id')
+            ->map(fn ($total) => (int) $total)
+            ->all();
+
+        self::$stockRows = Motostock::whereIn('tire_id', $tireIds)
+            ->get()
+            ->groupBy('tire_id')
+            ->all();
+    }
+
+    public static function clearStockCache(): void
+    {
+        self::$stockTotals = [];
+        self::$stockRows = [];
+    }
 
     public function setIncludeStockAttribute($value)
     {
@@ -48,25 +104,25 @@ class Moto extends Model
 
     public function getCodeExplainAttribute()
     {
-      $code_array = [];
-
-      $return = '';
-
-      $codes = Code::all();
-
-      foreach ($codes as $code) {
-        $code_array[$code->name] = $code->explanation;
-      }
-
-      $codes = explode(' ', $this->code);
-      foreach ($codes as $code) {
-        if (isset($code_array[$code])) {
-          $return .= $code_array[$code] . '<br>';
+      if (self::$codeExplainMap === null) {
+        if (self::$codeExplainCodesCache === null) {
+          self::$codeExplainCodesCache = Code::all();
+        }
+        self::$codeExplainMap = [];
+        foreach (self::$codeExplainCodesCache as $code) {
+          self::$codeExplainMap[$code->name] = $code->explanation;
         }
       }
 
-      if (strpos($this->code, 'DOT') !== false) {
-        $return .= $code_array['DOT'];
+      $return = '';
+      foreach (explode(' ', (string) $this->code) as $code) {
+        if (isset(self::$codeExplainMap[$code])) {
+          $return .= self::$codeExplainMap[$code] . '<br>';
+        }
+      }
+
+      if (strpos((string) $this->code, 'DOT') !== false && isset(self::$codeExplainMap['DOT'])) {
+        $return .= self::$codeExplainMap['DOT'];
       }
 
       return $return;
@@ -83,23 +139,25 @@ class Moto extends Model
 
     public function getMotoCommentAttribute()
     {
-        $tire = Moto::where('tire_id', $this->tire_id)->first();
-        return $tire->comment;
+        return $this->comment;
     }
 
     public function getStockCount()
     {
-        $stocks = Motostock::where('tire_id', $this->tire_id)->orderBy('stock_id', 'DESC')->get();
-
-        $count=0;
-
-        foreach ($stocks as $stock) {
-          if ($stock !== NULL && $stock->quantity >= 1) {
-            $count += $stock->quantity;
-          }
+        if (array_key_exists('stock_quantity', $this->attributes)
+            && $this->attributes['stock_quantity'] !== null
+            && $this->attributes['stock_quantity'] !== '') {
+            return (int) $this->attributes['stock_quantity'];
         }
 
-        return $count;
+        if (array_key_exists($this->tire_id, self::$stockTotals)) {
+            return self::$stockTotals[$this->tire_id];
+        }
+
+        return (int) DB::table('moto_stock')
+            ->where('tire_id', $this->tire_id)
+            ->selectRaw('COALESCE(SUM(CASE WHEN quantity >= 1 THEN quantity ELSE 0 END), 0) as total')
+            ->value('total');
     }
 
     public static function DuellLink($article)
@@ -151,13 +209,14 @@ class Moto extends Model
 //      }
 //      //return json_decode($response)[0]->product_link;
 
+      return Cache::remember('moto_duell_link_' . md5((string) $article), 3600, function () use ($article) {
       $curl = curl_init();
       curl_setopt_array($curl, array(
         CURLOPT_URL => 'https://www.duell.fi/jm/en/search?q=' . $article . '&ajaxSearch=1',
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
+        CURLOPT_TIMEOUT => 3,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "GET",
         CURLOPT_HTTPHEADER => array(
@@ -170,13 +229,29 @@ class Moto extends Model
 
       curl_close($curl);
 
-      return json_decode($response)[0]->product_link;
+      if (!empty($err) || $response === false || $response === null || $response === '') {
+        return '#';
+      }
+
+      $decoded = json_decode($response);
+      if (json_last_error() !== JSON_ERROR_NONE) {
+        return '#';
+      }
+
+      if (is_array($decoded) && isset($decoded[0]) && isset($decoded[0]->product_link)) {
+        return $decoded[0]->product_link;
+      }
+
+      return '#';
+      });
     }
 
     public static function StockLink($tire)
     {
 
-      $stocks = Motostock::where('tire_id', $tire->tire_id)->get();
+      $stocks = array_key_exists($tire->tire_id, self::$stockRows)
+        ? self::$stockRows[$tire->tire_id]
+        : Motostock::where('tire_id', $tire->tire_id)->get();
 
       $urls = [];
 
@@ -296,6 +371,10 @@ class Moto extends Model
 
     public function getTitleAttribute()
     {
+        if (!empty($this->api_brand_title) && !empty($this->t_title)) {
+            return $this->api_brand_title . ' ' . $this->t_title;
+        }
+
         $sql = Mototread::selectRaw('moto_treads.*, moto_treads.title as tread_title')
             ->selectRaw('moto_brands.*, moto_brands.title as brand_title')
             ->leftJoin('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
@@ -329,6 +408,18 @@ class Moto extends Model
 
     public function getLinkAttribute()
     {
+        if ($this->getAttribute('hydrated_cart_link')) {
+            return $this->getAttribute('hydrated_cart_link');
+        }
+
+        if (!empty($this->api_brand_title) && !empty($this->t_title)) {
+            return route('motociklu-riepa', [
+                strtolower($this->api_brand_title),
+                str_replace('/', '_', $this->t_title),
+                $this->tire_id,
+            ]);
+        }
+
         $tire = Mototread::selectRaw('moto_treads.*, moto_treads.title as tread_title')
             ->selectRaw('moto_brands.*, moto_brands.title as brand_title')
             ->leftJoin('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
@@ -336,9 +427,13 @@ class Moto extends Model
             ->first();
         if (!isset($tire->brand_title) || !isset($tire->tread_title)) {
             return false;
-        } else {
-            return route('motociklu-riepa', [strtolower($tire->brand_title), str_replace('/', '_', $tire->tread_title), $this->tire_id]);
         }
+
+        return route('motociklu-riepa', [
+            strtolower($tire->brand_title),
+            str_replace('/', '_', $tire->tread_title),
+            $this->tire_id,
+        ]);
     }
 
     public function getStocksAttribute()
@@ -366,44 +461,54 @@ class Moto extends Model
 
     public function getStockAvailabilityAttribute()
     {
-        $tire = Moto::where('tire_id', $this->tire_id)->first();
+        return $this->resolveStockAvailability(null);
+    }
 
+    public function resolveStockAvailability(?string $dotAvailable = null): string
+    {
         $stock_names = [
             'i3' => 'I3',
             'duell' => 'Duell',
         ];
 
-        if ($tire->urs_quantity >= 4) {
+        if ($this->urs_quantity >= 4) {
           $availability = '<span>Ulbrokā: 4 un vairāk</span><br>';
         } else {
-          $availability = '<span>Ulbrokā: ' . $tire->urs_quantity . '</span><br>';
+          $availability = '<span>Ulbrokā: ' . $this->urs_quantity . '</span><br>';
         }
-        if ($tire->krs_quantity >= 4) {
+        if ($this->krs_quantity >= 4) {
           $availability .= '<span>Kalnciema ielā: 4 un vairāk</span>';
         } else {
-          $availability .= '<span>Kalnciema ielā: ' . $tire->krs_quantity . '</span>';
+          $availability .= '<span>Kalnciema ielā: ' . $this->krs_quantity . '</span>';
         }
 
         if (Auth::check() && Auth::user()->hasRole(['administrators', 'moderators'])) {
-          $availability = '<span>Ulbrokā: ' . $tire->urs_quantity . '</span><br>';
-          $availability .= '<span>Kalnciema ielā: ' . $tire->krs_quantity . '</span>';
+          $availability = '<span>Ulbrokā: ' . $this->urs_quantity . '</span><br>';
+          $availability .= '<span>Kalnciema ielā: ' . $this->krs_quantity . '</span>';
+          $stocks = array_key_exists($this->tire_id, self::$stockRows)
+            ? self::$stockRows[$this->tire_id]
+            : Motostock::where('tire_id', $this->tire_id)->get();
+          $stocksByType = $stocks->keyBy('itype');
           foreach ($stock_names as $key => $stock_name) {
-            $stock = Motostock::where('itype', $key)->where('tire_id', $tire->tire_id)->orderBy('stock_id', 'DESC')->first();
+            $stock = $stocksByType->get($key);
             if ($stock && $stock->quantity > 0) {
               $availability .= '<br><span>' . $stock_name . ': ' . $stock->quantity . '</span>';
             } else {
               $availability .= '<br><span>' . $stock_name . ': 0</span>';
             }
           }
-          if ($tire->acomment !== null) {
-            $availability .= '<br><hr class="admin-comments"><span><b>Piezīmes:</b> </span><br><span>' . $tire->acomment . '</span>';
+          if ($this->acomment !== null) {
+            $availability .= '<br><hr class="admin-comments"><span><b>Piezīmes:</b> </span><br><span>' . $this->acomment . '</span>';
           }
         } else {
-          $dot = $this->getDotAvailableAttribute();
+          $dot = $dotAvailable ?? $this->getDotAvailableAttribute();
           if ($dot === 'red') {
             $availability = '<span style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</span>';
           } else if ($dot === 'yellow' || $dot === 'half-yellow') {
-            $availability = '<span style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</span>';
+            $stocks = array_key_exists($this->tire_id, self::$stockRows)
+              ? self::$stockRows[$this->tire_id]
+              : Motostock::where('tire_id', $this->tire_id)->get();
+            $availability = PartnerDelivery::partnerAvailabilityHtml($stocks);
           }
         }
 
@@ -412,7 +517,7 @@ class Moto extends Model
 
     public function types(): array
     {
-
+      return Cache::remember('moto_tire_types_v1', 3600, function () {
       $tipi = [];
 
       $types = Self::select('type')->orderBy('type')->get();
@@ -464,6 +569,17 @@ class Moto extends Model
       sort($tipi);
 
       return array_unique($tipi);
+      });
+    }
+
+    /** @return string[] */
+    public static function parseTypeFilterParam(?string $type): array
+    {
+        if ($type === null || $type === '') {
+            return [];
+        }
+
+        return preg_split('/[\s+]+/', trim($type), -1, PREG_SPLIT_NO_EMPTY);
     }
 
     public function getMotoTypeAttribute()
@@ -484,7 +600,7 @@ class Moto extends Model
           'scooter' => 'Sc',
         ];
 
-        return $arr[$type];
+        return $arr[$type] ?? '';
       } else {
 
       }
@@ -511,7 +627,7 @@ class Moto extends Model
 
         if ($type == 1) return '';
 
-        return $arr[$type];
+        return $arr[$type] ?? ['', ''];
       } else {
         return ['', ''];
       }
@@ -524,9 +640,13 @@ class Moto extends Model
 
   public function lisiDesc($weight, $speed)
   {
+    static $carryCaps = null;
+    static $speedCaps = null;
 
     $carryCapacity = 'Kravnesības indekss: ';
+    $speedCapacity = 'Ātruma indekss: ';
 
+    if ($carryCaps === null) {
     $carryCaps = [
       0 => '45 kg',
       1 => '46.2 kg',
@@ -810,8 +930,6 @@ class Moto extends Model
       279 => '136000 kg',
     ];
 
-    $speedCapacity = 'Ātruma indekss: ';
-
     $speedCaps = [
       'A1' => 'A1 - 5 Km/h',
       'A2' => 'A2 - 10 Km/h',
@@ -846,6 +964,7 @@ class Moto extends Model
       'Y' => 'Y - 300 Km/h',
       'ZR' => 'ZR - Virs 240 Km/h',
     ];
+    }
 
     return @$carryCapacity . @$carryCaps[$weight] . '<br>' . @$speedCapacity . @$speedCaps[$speed];
 

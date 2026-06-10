@@ -2,6 +2,18 @@
 
 @section('body-title', 'category')
 {{--@section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-14 category-' . $season_title . ' category-id-parent-12 category-depth-level-3')--}}
+@php
+  $productTitle = $currRim->fullTitle ?? $currRim->fullName ?? 'Lietie diski';
+  $rimSizeSpec = trim(($currRim->skr && $currRim->pcd ? $currRim->skr . 'x' . $currRim->pcd : '') . ' ' . ($currRim->d3 ? 'R' . $currRim->d3 : '') . ' ' . ($currRim->d1 ? $currRim->d1 . 'J' : ''));
+  $productHeading = trim(($currRim->fullTitle ?? $productTitle) . ' ' . $rimSizeSpec);
+  $productDescriptionSource = $currRim->autocomment ?? '';
+  $productDescription = trim(\Illuminate\Support\Str::limit(strip_tags($productDescriptionSource), 160));
+  $isRimAdmin = Auth::check() && Auth::user()->hasRole('administrators');
+  $rimCartModalTarget = $isRimAdmin ? '#' : '#blockcart-modal';
+@endphp
+@section('meta_title', $productTitle . ' | R1 Riepu Serviss')
+@section('meta_description', $productDescription ?: 'Lietie diski — R1 Riepu Serviss katalogs.')
+@section('meta_keywords', config('seo.keywords.product_rim'))
 
 @section('content')
 
@@ -27,7 +39,7 @@
                 <div class="row">
                   <div class="col-sm-12 product-main-details">
 {{--                    {{ dd($tread, $brand) }}--}}
-                    <h1 class="h1 mt-1" itemprop="name">{{$currRim->fullTitle}}</h1>
+                    <h1 class="h1 mt-1" itemprop="name">{{ $productHeading }}</h1>
 {{--                    <h1 class="h1 mt-1" itemprop="name">{{ dd($rims[0]) }}</h1>--}}
                   </div>
                   <div class="col-sm-12 col-md-12 col-lg-6">
@@ -40,9 +52,12 @@
                         <link itemprop="availability" href="https://schema.org/InStock">
                         <meta itemprop="priceCurrency" content="EUR">
 
+                        @php
+                          $currentSalePrice = $currRim->price2;
+                        @endphp
                         <div class="current-price">
                           <span>Akcijas cena:</span>
-                          <span itemprop="price" content="{{ $currRim->price3 }}">€ {{ $currRim->price3 }}</span>
+                          <span itemprop="price" content="{{ $currentSalePrice }}">€ {{ $currentSalePrice }}</span>
                         </div>
                       </div>
                     </div>
@@ -69,7 +84,7 @@
                         </div>
                         <div class="add">
 {{--                          {{ dd($currRim) }}--}}
-                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
+                          <button class="btn btn-primary add-to-cart" data-toggle="modal" data-target="{{ $rimCartModalTarget }}" data-button-action="add-to-cart"
                                   data-info="{{ $currRim->rim_id }}"
                           >
                             <i class="material-icons shopping-cart"></i>
@@ -188,7 +203,11 @@
                   <tbody id="tires-table-body">
 
                   @foreach($rims as $rim)
-                    @if($rim->price3)
+                    @php
+                      $storePrice = $rim->price1 ?? 0;
+                      $salePrice = $rim->price2;
+                    @endphp
+                    @if($storePrice || $salePrice)
                       <tr @if($currRim->rim_id == $rim->rim_id) style="font-weight: bold; background-color: #e0e0e0;" @endif class="tire-table-row">
                         <th class="tire-info" style="display: none;" data-article="{{ $rim->article }}" data-content="{{ $rim->fullName }}" data-quantity="{{ $cartQty }}"></th>
                         <th scope="row" class="tire-table-checkbox">
@@ -196,8 +215,13 @@
                                  class="tire-table-checkbox">
                         </th>
 
-                        <td>
-                          <a data-toggle="tooltip" data-html="true" class="rim-table-link">
+                        <td class="table-tire-name-cell">
+                          <a data-toggle="tooltip"
+                             data-html="true"
+                             class="rim-table-link tire-table-link"
+                             data-content="{{ $rim->fullName }}"
+                             data-article="{{ $rim->article }}"
+                             data-quantity="{{ $cartQty }}">
                             {{ $rim->fullTitle }}
                           </a>
                         </td>
@@ -226,10 +250,14 @@
                         </td>
 
 
-                        <td id="store-price" class="text-center store-price">€ {{$rim->price1}}</td>
+                        <td id="store-price" class="text-center store-price">
+                          @if($storePrice)
+                            € {{$storePrice}}
+                          @endif
+                        </td>
                         <td id="sale-price" class="text-center tire-price-red sale-price">
-                          @if($rim->price3 != 0)
-                            € {{$rim->price3}}
+                          @if($salePrice)
+                            € {{$salePrice}}
                           @endif
                         </td>
                         <td class="hidden-sm-down text-center">{{$rim->comment}}</td>
@@ -238,11 +266,8 @@
                           <div class="clearfix atc_div text-right">
                             <button class="grid-cart-btn"
                                     data-toggle="modal"
-                                    @if (Auth::user())
-                                      data-target="#"
-                                    @else
-                                      data-target="#blockcart-modal"
-                                    @endif data-info="{{ $rim->rim_id }}"
+                                    data-target="{{ $rimCartModalTarget }}"
+                                    data-info="{{ $rim->rim_id }}"
                             >
                               <i class="material-icons">add_shopping_cart</i>
                             </button>
@@ -350,4 +375,9 @@
     </div>
   </div>
 
+@push('scripts')
+<script src="{{ \App\Helper\AssetHelper::v('js/rimProductPageCart.js') }}" defer></script>
+@endpush
+
 @endsection
+

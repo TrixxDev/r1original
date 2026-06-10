@@ -1,4 +1,8 @@
-<a href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}" class="grid-view-link">
+<a href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
+   class="grid-view-link"
+   data-content="{{ $tire->fullName }}"
+   data-article="{{ $tire->article }}"
+   data-quantity="4">
   <div class="tire-image-card sort-order">
     <div class="text-center image-grid-overflow">
       {!! App\Helper\Image::showGrid('moto', $tire->make_id) !!}
@@ -23,6 +27,9 @@
         <button style="margin-left: auto;" class="grid-buy-btn cart-shopping-button"
                 data-toggle="modal"
                 data-info="{{ $tire->tire_id }}"
+                data-content="{{ $tire->fullName }}"
+                data-article="{{ $tire->article }}"
+                data-quantity="4"
                 {{--                                      data-info="{{ $currTire->tire_id }}--}}
                 onclick="event.preventDefault()"
                 @hasrole('administrators')

@@ -2,6 +2,17 @@
 
 @section('body-title', 'category')
 {{--@section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-14 category-' . $season_title . ' category-id-parent-12 category-depth-level-3')--}}
+@php
+  $productTitle = $currRim->fullTitle ?? $currRim->fullName ?? 'Lietie diski';
+  $rimBaseTitle = $currRim->fullTitle ?? trim(($brand->title ?? '') . ' ' . ($tread->title ?? ''));
+  $rimSizeSpec = trim(($currRim->skr && $currRim->pcd ? $currRim->skr . 'x' . $currRim->pcd : '') . ' ' . ($currRim->d3 ? 'R' . $currRim->d3 : '') . ' ' . ($currRim->d1 ? $currRim->d1 . 'J' : ''));
+  $productHeading = trim($rimBaseTitle . ' ' . $rimSizeSpec);
+  $productDescriptionSource = $currRim->autocomment ?? '';
+  $productDescription = trim(\Illuminate\Support\Str::limit(strip_tags($productDescriptionSource), 160));
+@endphp
+@section('meta_title', $productTitle . ' | R1 Riepu Serviss')
+@section('meta_description', $productDescription ?: 'Lietie diski — R1 Riepu Serviss katalogs.')
+@section('meta_keywords', config('seo.keywords.product_rim'))
 
 @section('content')
 
@@ -26,7 +37,7 @@
               <div class="col-md-12 col-lg-8">
                 <div class="row">
                   <div class="col-sm-12 product-main-details">
-                    <h1 class="h1 mt-1" itemprop="name">{{$currRim->fullTitle}}</h1>
+                    <h1 class="h1 mt-1" itemprop="name">{{ $productHeading }}</h1>
                   </div>
                   <div class="col-sm-12 col-md-12 col-lg-6">
                     <div class="product-prices">
@@ -66,7 +77,7 @@
                           </div>
                         </div>
                         <div class="add">
-                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
+                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::check() && Auth::user()->hasRole('administrators')) data-target="#" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart"
                                   data-info="{{ $currRim->rim_id }}"
                           >
                             <i class="material-icons shopping-cart"></i>
@@ -232,7 +243,7 @@
                           <div class="clearfix atc_div text-right">
                             <button class="grid-cart-btn"
                                     data-toggle="modal"
-                                    @if (Auth::user())
+                                    @if (Auth::check() && Auth::user()->hasRole('administrators'))
                                     data-target="#"
                                     @else
                                     data-target="#blockcart-modal"

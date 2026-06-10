@@ -264,35 +264,13 @@ class AutoTireController extends Controller
 
         $tire->save();
 
-        if ($request->i3article !== null) {
-          $i3stock = new Autostock;
-          $i3stock->tire_id = $tire->tire_id;
-          $i3stock->article = $request->i3article;
-          $i3stock->quantity = 0;
-          $i3stock->itype = 'i3';
-          $i3stock->metadata = '';
-          $i3stock->save();
-        }
+        $tid = (int) $tire->tire_id;
+        $this->syncPartnerAutostock(null, $request->i3article, 'i3', $tid);
+        $this->syncPartnerAutostock(null, $request->gyarticle, 'gy', $tid);
+        $this->syncPartnerAutostock(null, $request->rzarticle, 'rz', $tid);
+        $this->syncPartnerAutostock(null, $request->rgarticle, 'rg', $tid);
 
-        if ($request->gyarticle !== null) {
-          $gystock = new Autostock;
-          $gystock->tire_id = $tire->tire_id;
-          $gystock->article = $request->gyarticle;
-          $gystock->quantity = 0;
-          $gystock->itype = 'gy';
-          $gystock->metadata = '';
-          $gystock->save();
-        }
-  
-        if ($request->rzarticle !== null) {
-          $rzstock = new Autostock;
-          $rzstock->tire_id = $tire->tire_id;
-          $rzstock->article = $request->rzarticle;
-          $rzstock->quantity = 0;
-          $rzstock->itype = 'rz';
-          $rzstock->metadata = '';
-          $rzstock->save();
-        }
+        Autotire::clearFilterCache();
 
         return redirect(route('admin.auto.tires.search', $id))->with('success', 'Riepa veiksmīgi pievienota');
 
@@ -305,8 +283,9 @@ class AutoTireController extends Controller
         $i3stock = Autostock::where('tire_id', $tire->tire_id)->where('itype', 'i3')->first();
         $gystock = Autostock::where('tire_id', $tire->tire_id)->where('itype', 'gy')->first();
         $rzstock = Autostock::where('tire_id', $tire->tire_id)->where('itype', 'rz')->first();
+        $rgstock = Autostock::where('tire_id', $tire->tire_id)->where('itype', 'rg')->first();
 
-        return view('admin.auto_tires.tires.edit', compact('tire', 'i3stock', 'gystock', 'rzstock'));
+        return view('admin.auto_tires.tires.edit', compact('tire', 'i3stock', 'gystock', 'rzstock', 'rgstock'));
     }
 
     public function tire_update(Request $request, $id)
@@ -338,71 +317,80 @@ class AutoTireController extends Controller
         $i3stock = Autostock::where('tire_id', $id)->where('itype', 'i3')->first();
         $gystock = Autostock::where('tire_id', $id)->where('itype', 'gy')->first();
         $rzstock = Autostock::where('tire_id', $id)->where('itype', 'rz')->first();
-  
-        if ($i3stock) {
-          if ($request->i3article) {
-            $i3stock->article = $request->i3article;
-            $i3stock->save();
-          } else {
-            $i3stock->delete();
-          }
-        } else {
-          if ($request->i3article) {
-            $i3stock = new Autostock;
-            $i3stock->tire_id = $tire->tire_id;
-            $i3stock->article = $request->i3article;
-            $i3stock->quantity = 0;
-            $i3stock->itype = 'i3';
-            $i3stock->metadata = '';
-            $i3stock->save();
-          }
-        }
+        $rgstock = Autostock::where('tire_id', $id)->where('itype', 'rg')->first();
 
-        if ($gystock) {
-          if ($request->gyarticle) {
-            $gystock->article = $request->gyarticle;
-            $gystock->save();
-          } else {
-            $gystock->delete();
-          }
-        } else {
-          if ($request->gyarticle) {
-            $gystock = new Autostock;
-            $gystock->tire_id = $tire->tire_id;
-            $gystock->article = $request->gyarticle;
-            $gystock->quantity = 0;
-            $gystock->itype = 'gy';
-            $gystock->metadata = '';
-            $gystock->save();
-          }
-        }
+        $tid = (int) $tire->tire_id;
+        $this->syncPartnerAutostock($i3stock, $request->i3article, 'i3', $tid);
+        $this->syncPartnerAutostock($gystock, $request->gyarticle, 'gy', $tid);
+        $this->syncPartnerAutostock($rzstock, $request->rzarticle, 'rz', $tid);
+        $this->syncPartnerAutostock($rgstock, $request->rgarticle, 'rg', $tid);
 
-        if ($rzstock) {
-          if ($request->rzarticle) {
-            $rzstock->article = $request->rzarticle;
-            $rzstock->save();
-          } else {
-            $rzstock->delete();
-          }
-        } else {
-          if ($request->rzarticle) {
-            $rzstock = new Autostock;
-            $rzstock->tire_id = $tire->tire_id;
-            $rzstock->article = $request->rzarticle;
-            $rzstock->quantity = 0;
-            $rzstock->itype = 'rz';
-            $rzstock->metadata = '';
-            $rzstock->save();
-          }
-        }
-        
+        Autotire::clearFilterCache();
+
         return redirect(route('admin.auto.tire.edit', $id))->with('success', 'Informācija veiksmīgi atjaunota');
+    }
+
+    /**
+     * Partner auto_stock: update article, unlink (tire_id null, keep row/qty), re-link orphan with same article+itype, or create new row.
+     */
+    protected function syncPartnerAutostock(?Autostock $stock, $articleRaw, string $itype, int $tireId): void
+    {
+        $article = $articleRaw === null ? '' : trim((string) $articleRaw);
+        $hasArticle = $article !== '';
+
+        if ($stock) {
+            if ($hasArticle) {
+                $stock->article = $article;
+                $stock->save();
+            } else {
+                $stock->tire_id = null;
+                $stock->save();
+            }
+
+            return;
+        }
+
+        if (!$hasArticle) {
+            return;
+        }
+
+        // Match orphan even if article is stored as INT vs string, with stray spaces, or tire_id is 0
+        $orphan = Autostock::query()
+            ->where('itype', $itype)
+            ->where(function ($q) {
+                $q->whereNull('tire_id')->orWhere('tire_id', 0);
+            })
+            ->whereRaw('TRIM(CAST(`article` AS CHAR)) = ?', [$article])
+            ->orderBy('stock_id')
+            ->first();
+
+        if ($orphan) {
+            $orphan->tire_id = $tireId;
+            $orphan->save();
+            // Drop stray duplicate row(s) created earlier when orphan was not matched (same tire + itype)
+            Autostock::query()
+                ->where('tire_id', $tireId)
+                ->where('itype', $itype)
+                ->where('stock_id', '!=', $orphan->stock_id)
+                ->delete();
+
+            return;
+        }
+
+        $row = new Autostock;
+        $row->tire_id = $tireId;
+        $row->article = $article;
+        $row->quantity = 0;
+        $row->itype = $itype;
+        $row->metadata = '';
+        $row->save();
     }
 
     public function tire_destroy($id)
     {
 
       Autotire::where('tire_id', $id)->delete();
+      Autotire::clearFilterCache();
 
       return redirect()->back()->with('success', 'Riepa veiksmīgi dzēsta!');
 
@@ -413,6 +401,7 @@ class AutoTireController extends Controller
 
       Autostock::whereIn('tire_id', $request->tire_id)->delete();
       Autotire::whereIn('tire_id', $request->tire_id)->delete();
+      Autotire::clearFilterCache();
 
       $response = (count($request->tire_id) > 1) ? 'Riepas veiksmīgi dzēstas!' : 'Riepa veiksmīgi dzēsta!';
 

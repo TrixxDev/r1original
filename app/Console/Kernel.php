@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Illuminate\Support\Facades\DB;
 
 class Kernel extends ConsoleKernel
 {
@@ -24,7 +25,24 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('slots:clear-expired-reservations')->everyMinute();
+
+        // Рабочие дни — включить после деплоя WorkingDaysProvisioner:
+        // $schedule->call(function () {
+        //     app(\App\Services\WorkingDaysProvisioner::class)->ensure();
+        // })->dailyAt('00:05');
+
+        // Сессии в MySQL: удаление просроченных строк (дополнительно к встроенной lottery-GC)
+        $schedule->call(function () {
+            if (config('session.driver') !== 'database') {
+                return;
+            }
+            $lifetimeSeconds = (int) config('session.lifetime', 120) * 60;
+            $cutoff = time() - $lifetimeSeconds;
+            DB::table(config('session.table', 'sessions'))->where('last_activity', '<', $cutoff)->delete();
+        })->hourly();
+
+        $schedule->command('sitemap:generate')->dailyAt('03:00');
     }
 
     /**

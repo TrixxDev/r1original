@@ -2,16 +2,11 @@
 
   namespace App\Http\Controllers\Admin;
 
-  use App\Helper\Image;
   use App\Http\Controllers\Controller;
-  use App\Models\Autotire;
-  use App\Models\Bigtire;
   use App\Models\Code;
-  use App\Models\Moto;
-  use App\Models\Quadr;
-  use App\Models\Rim;
   use App\Models\User;
-  use DOMDocument;
+  use App\Services\ComparisonFeedXmlService;
+  use App\Services\SiteSeasonService;
   use Illuminate\Http\Request;
   use App\Models\Service;
   use Illuminate\Support\Facades\DB;
@@ -383,257 +378,14 @@
 
     // Salidzini.lv / Kurpirkt.lv XML Ģenerācijas
 
-    public function salidzini()
+    public function salidzini(Request $request, ComparisonFeedXmlService $feeds)
     {
-      set_time_limit(0);
-      $tires = Autotire::with('tread')->where('visible_users', '<>', 0)->get();
-      $moto = Moto::with('tread')->where('visible_users', '<>', 0)->get();
-      $quadr = Quadr::with('tread')->where('visible_users', '<>', 0)->get();
-      $rims = Rim::with('tread')->where('visible_users', '<>', 0)->get();
-      $bigtires = Bigtire::with('tread')->where('visible_users', '<>', 0)->get();
-      $dom = new DOMDocument();
-      $dom->encoding = 'utf-8';
-      $dom->xmlVersion = '1.0';
-      $dom->formatOutput = true;
-      $xml_file_name = dirname(__DIR__, 4) . '/public/storage/xml/salidzini.xml';
-      $root = $dom->createElement('root');
-      $file = file_get_contents(dirname(__DIR__, 4) . '/public/storage/xml/salidzini.xml');
-      foreach ($tires as $tire) {
-        if (!isset($tire->tread->season)) {
-          continue;
-        }
-        $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', $tire->fullName);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('price', $tire->offerPrice);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('link', $tire->link);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', Image::showAd('auto', $tire->make_id));
-        $item->appendChild($child_node_title);
-        if ($tire->tread->season == 1) {
-          $child_node_title = $dom->createElement('category', 'Vasaras riepas >> R' . $tire->d3);
-          $item->appendChild($child_node_title);
-          $child_node_title = $dom->createElement('category_full', 'Auto preces >> Vasaras riepas >> R' . $tire->d3);
-          $item->appendChild($child_node_title);
-          $child_node_title = $dom->createElement('category_link', route('vasaras-riepas'));
-          $item->appendChild($child_node_title);
-        } else {
-          $child_node_title = $dom->createElement('category', 'Ziemas riepas >> R' . $tire->d3);
-          $item->appendChild($child_node_title);
-          $child_node_title = $dom->createElement('category_full', 'Auto preces >> Ziemas riepas >> R' . $tire->d3);
-          $item->appendChild($child_node_title);
-          $child_node_title = $dom->createElement('category_link', route('ziemas-riepas'));
-          $item->appendChild($child_node_title);
-        }
-        $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
-        $item->appendChild($child_node_title);
-        $root->appendChild($item);
-        $dom->appendChild($root);
-      }
-      foreach ($moto as $tire) {
-        $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', $tire->fullName);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('price', $tire->offerPrice);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('link', $tire->link);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', Image::showAd('moto', $tire->make_id));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category', 'Motociklu riepas');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_full', 'Auto preces >> Motociklu riepas');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_link', route('motociklu-riepas'));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
-        $item->appendChild($child_node_title);
-        $root->appendChild($item);
-        $dom->appendChild($root);
-      }
-      foreach ($quadr as $tire) {
-        $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', htmlspecialchars($tire->fullName));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('price', $tire->offerPrice);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('link', $tire->link);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', Image::showAd('quadr', $tire->make_id));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category', 'Kvadraciklu riepas');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_full', 'Auto preces >> Kvadraciklu riepas');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_link', route('kvadraciklu-riepas'));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
-        $item->appendChild($child_node_title);
-        $root->appendChild($item);
-        $dom->appendChild($root);
-      }
-      foreach ($bigtires as $tire) {
-        $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', htmlspecialchars($tire->fullName));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('price', $tire->offerPrice);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('link', $tire->link);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', Image::showAd('big', $tire->make_id));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category', 'Industriālās riepas');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_full', 'Auto preces >> Industriālās riepas');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_link', route('lielas-riepas'));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
-        $item->appendChild($child_node_title);
-        $root->appendChild($item);
-        $dom->appendChild($root);
-      }
-      foreach ($rims as $rim) {
-        $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', htmlspecialchars($rim->fullName));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('price', $rim->offerPrice);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('link', $rim->link);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', Image::showAd('auto-rim', $rim->make_id));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category', 'Lietie diski');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_full', ' &gt;&gt; '.$rim->d3.'&quot;');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_link', route('lietie-diski'));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('in_stock', ($rim->quantity + $rim->getStockCount()));
-        $item->appendChild($child_node_title);
-        $root->appendChild($item);
-        $dom->appendChild($root);
-      }
-      file_put_contents($xml_file_name, $dom->saveXML());
-      //$dom->save($xml_file_name);
-      return $dom->saveXML();
-
+      return $feeds->serveSalidzini($request);
     }
 
-    public function kurpirkt()
+    public function kurpirkt(Request $request, ComparisonFeedXmlService $feeds)
     {
-      set_time_limit(0);
-      $tires = Autotire::with('tread')->where('visible_users', '<>', 0)->get();
-      $moto = Moto::with('tread')->where('visible_users', '<>', 0)->get();
-      $quadr = Quadr::with('tread')->where('visible_users', '<>', 0)->get();
-      $rims = Rim::with('tread')->where('visible_users', '<>', 0)->get();
-      $dom = new DOMDocument();
-      $dom->encoding = 'utf-8';
-      $dom->xmlVersion = '1.0';
-      $dom->formatOutput = true;
-      $xml_file_name = dirname(__DIR__, 4) . '/public/storage/xml/kurpirkt.xml';
-//      $file = file_get_contents('xml/kurpirkt.xml');
-      $root = $dom->createElement('root');
-      foreach ($tires as $tire) {
-        if (!isset($tire->tread->season)) {
-          continue;
-        }
-        $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', $tire->fullName);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('price', $tire->offerPrice);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('link', $tire->link);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', Image::showAd('auto', $tire->make_id));
-        $item->appendChild($child_node_title);
-        if ($tire->tread->season == 1) {
-          $child_node_title = $dom->createElement('category', 'Vasaras riepas');
-          $item->appendChild($child_node_title);
-          $child_node_title = $dom->createElement('category_full', 'Auto piederumi > Vasaras riepas > R' . $tire->d3);
-          $item->appendChild($child_node_title);
-          $child_node_title = $dom->createElement('category_link', route('vasaras-riepas'));
-          $item->appendChild($child_node_title);
-        } else {
-          $child_node_title = $dom->createElement('category', 'Ziemas riepas');
-          $item->appendChild($child_node_title);
-          $child_node_title = $dom->createElement('category_full', 'Auto piederumi > Ziemas riepas > R' . $tire->d3);
-          $item->appendChild($child_node_title);
-          $child_node_title = $dom->createElement('category_link', route('ziemas-riepas'));
-          $item->appendChild($child_node_title);
-        }
-        $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
-        $item->appendChild($child_node_title);
-        $root->appendChild($item);
-        $dom->appendChild($root);
-      }
-      foreach ($moto as $tire) {
-        $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', $tire->fullName);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('price', $tire->offerPrice);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('link', $tire->link);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', Image::showAd('moto', $tire->make_id));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category', 'Motociklu riepas');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_full', 'Auto preces > Motociklu riepas');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_link', route('motociklu-riepas'));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
-        $item->appendChild($child_node_title);
-        $root->appendChild($item);
-        $dom->appendChild($root);
-      }
-      foreach ($quadr as $tire) {
-        $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', htmlspecialchars($tire->fullName));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('price', $tire->offerPrice);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('link', $tire->link);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', Image::showAd('quadr', $tire->make_id));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category', 'Kvadraciklu riepas');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_full', 'Auto piederumi > Kvadraciklu riepas');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_link', route('kvadraciklu-riepas'));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('in_stock', ($tire->quantity + $tire->getStockCount()));
-        $item->appendChild($child_node_title);
-        $root->appendChild($item);
-        $dom->appendChild($root);
-      }
-      foreach ($rims as $rim) {
-        $item = $dom->createElement('item');
-        $child_node_title = $dom->createElement('name', htmlspecialchars($rim->fullName));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('price', $rim->offerPrice);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('link', $rim->link);
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('image', Image::showAd('auto-rim', $rim->make_id));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category', 'Lietie diski');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_full', ' &gt;&gt; '.$rim->d3.'&quot;');
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('category_link', route('lietie-diski'));
-        $item->appendChild($child_node_title);
-        $child_node_title = $dom->createElement('in_stock', ($rim->quantity + $rim->getStockCount()));
-        $item->appendChild($child_node_title);
-        $root->appendChild($item);
-        $dom->appendChild($root);
-      }
-      file_put_contents($xml_file_name, $dom->saveXML());
-      //$dom->save($xml_file_name);
-      return $dom->saveXML();
+      return $feeds->serveKurpirkt($request);
     }
 
     // Sinhronizācijas
@@ -646,6 +398,7 @@
       $i3_alloy_rims = DB::table('sync_times')->where('name', 'i3-alloy-rims')->first()->updated_at;
       $gy_auto = DB::table('sync_times')->where('name', 'gy-auto')->first()->updated_at;
       $rz_auto = DB::table('sync_times')->where('name', 'rz-auto')->first()->updated_at;
+      $rg_auto = optional(DB::table('sync_times')->where('name', 'rg-auto')->first())->updated_at ?? '—';
       $i3_moto = DB::table('sync_times')->where('name', 'i3-moto')->first()->updated_at;
       $duell_moto = DB::table('sync_times')->where('name', 'duell-moto')->first()->updated_at;
       $i3_quadr = DB::table('sync_times')->where('name', 'i3-quadr')->first()->updated_at;
@@ -660,6 +413,7 @@
                 'i3_alloy_rims',
                 'gy_auto',
                 'rz_auto',
+                'rg_auto',
                 'i3_moto',
                 'duell_moto',
                 'i3_quadr',
@@ -766,6 +520,17 @@
 	return json_encode(['error' => 'Notika kļūda']);
       }
 
+    }
+
+    public function changeSeason(Request $request, SiteSeasonService $siteSeasonService)
+    {
+      $validated = $request->validate([
+        'season' => 'required|in:1,2',
+      ]);
+
+      $siteSeasonService->set((int) $validated['season']);
+
+      return response()->json(['success' => true]);
     }
 
 }

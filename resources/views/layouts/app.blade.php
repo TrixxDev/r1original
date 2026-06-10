@@ -3,89 +3,92 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>R1 Riepu Serviss</title>
+    @php
+      $metaTitle = trim($__env->yieldContent('meta_title', 'R1 Riepu Serviss | Riepas un diski'));
+      $metaDescription = trim($__env->yieldContent('meta_description', 'R1 Riepu Serviss — riepas, diski, montāža un balansēšana. Online katalogs un e-pieraksts Rīgā un Ulbrokā.'));
+      $metaKeywords = trim($__env->yieldContent('meta_keywords', config('seo.keywords.default')));
+      $metaUrl = trim($__env->yieldContent('canonical_url', url()->current()));
+      $metaImage = trim($__env->yieldContent('meta_image', asset('images/favicon.png')));
+      $metaType = trim($__env->yieldContent('meta_og_type', 'website'));
+
+      $computedRobots = 'index,follow';
+      if (request()->routeIs(
+        'vasaras-riepas-meklet',
+        'ziemas-riepas-meklet',
+        'motociklu-riepas-meklet',
+        'kvadraciklu-riepas-meklet',
+        'lietie-diski-meklet',
+        'kvadru-diski-meklet',
+        'kvadraciklu-diski-meklet',
+        'lielas-riepas-meklet',
+        'radzes-meklet',
+        'sale-tires-search'
+      )) {
+        $computedRobots = 'noindex,follow';
+      } elseif (request()->routeIs(
+        'vasaras-riepas',
+        'ziemas-riepas',
+        'motociklu-riepas',
+        'kvadraciklu-riepas',
+        'lietie-diski',
+        'kvadru-diski',
+        'kvadraciklu-diski',
+        'lielas-riepas',
+        'radzes'
+      ) && request()->query()) {
+        $computedRobots = 'noindex,follow';
+      }
+      $metaRobots = trim($__env->yieldContent('meta_robots', $computedRobots));
+    @endphp
+    <title>{{ $metaTitle }}</title>
     <link rel="SHORTCUT ICON" href="{{ asset('images/favicon.ico') }}">
     <link rel="icon" type="image/vnd.microsoft.icon" href="{{ asset('images/favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <meta name="csrf-token" content="{!! csrf_token() !!}">
     <meta name="verify-paysera" content="8efacf3cf88620d4c363c6eb973712bb">
-    <meta name="description" content="R1Riepas">
-    <meta name="keywords" content="riepas, diski, kondicionieris, montāža, balansēšana, riepu diski">
+    <meta name="description" content="{{ $metaDescription }}">
+    <meta name="robots" content="{{ $metaRobots }}">
+    <link rel="canonical" href="{{ $metaUrl }}">
+    <meta property="og:title" content="{{ $metaTitle }}">
+    <meta property="og:description" content="{{ $metaDescription }}">
+    <meta property="og:url" content="{{ $metaUrl }}">
+    <meta property="og:type" content="{{ $metaType }}">
+    <meta property="og:site_name" content="R1 Riepu Serviss">
+    <meta property="og:image" content="{{ $metaImage }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $metaTitle }}">
+    <meta name="twitter:description" content="{{ $metaDescription }}">
+    <meta name="twitter:image" content="{{ $metaImage }}">
+    <meta name="keywords" content="{{ $metaKeywords }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    @include('components.google-consent-mode-head')
     <link rel="icon" type="image/vnd.microsoft.icon" href="{{ asset('img/favicon.ico?1515662352') }}">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('img/favicon.ico?1515662352') }}">
-    <link rel="stylesheet" href="{{ asset('css/theme.css?rev=' . time()) }}" media="all">
-    <link rel="stylesheet" href="{{ asset('css/jquery-ui.min.css?rev=' . time()) }}" media="all">
-    <link rel="stylesheet" href="{{ asset('css/jquery.ui.theme.min.css?rev=' . time()) }}" media="all">
-    <link rel="stylesheet" href="{{ asset('css/custom.css?rev=' . time()) }}" media="all">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    @php
+      $lcpBannerUrl = !\Illuminate\Support\Facades\Auth::check() ? \App\Helper\Image::firstBannerPreloadUrl() : null;
+    @endphp
+    @if ($lcpBannerUrl)
+      <link rel="preload" as="image" href="{{ $lcpBannerUrl }}" fetchpriority="high">
+    @endif
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,700;1,400;1,700&display=swap">
+    <link rel="stylesheet" href="{{ \App\Helper\AssetHelper::v('css/theme.css') }}">
+    <link rel="stylesheet" href="{{ \App\Helper\AssetHelper::v('css/custom.css') }}">
+    <link rel="stylesheet" href="{{ \App\Helper\AssetHelper::v('css/jquery-ui.min.css') }}">
+    <link rel="stylesheet" href="{{ \App\Helper\AssetHelper::v('css/jquery.ui.theme.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <link href="https://unpkg.com/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="{{ asset('js/sweetalert2.min.js') }}"></script>
-    <link rel="stylesheet" href="{{ asset('css/sweetalert2.min.css') }}">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script>
-    <script src="{{ asset('js/loginToggle.js?rev=' . time()) }}"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    <link rel="stylesheet" href="{{asset('css/magiczoomplus.css?rev=' . time())}}"/>
-    <script src="{{asset('js/magic.js')}}"></script>
-    <script src="https://unpkg.com/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://unpkg.com/select2@4.0.13/dist/js/i18n/lv.js"></script>
-  <script>
-      toastr.options = {
-        "closeButton": true,
-        "debug": false,
-        "newestOnTop": true,
-        "progressBar": false,
-        "positionClass": "toast-top-right",
-        "preventDuplicates": true,
-        "onclick": null,
-        "showDuration": "0",
-        "hideDuration": "0",
-        "timeOut": "0",
-        "extendedTimeOut": "0",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-      }
-    </script>
-    <script>
-      (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "efaujuuqsx");
-    </script>
+    <link rel="stylesheet" href="https://unpkg.com/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <link rel="stylesheet" href="{{ \App\Helper\AssetHelper::v('css/sweetalert2.min.css') }}">
+    <link rel="stylesheet" href="{{ \App\Helper\AssetHelper::v('css/magiczoomplus.css') }}">
     @livewireStyles
+    @yield('json_ld')
+    @include('components.seo.json-ld-organization')
 </head>
 
-<body id="@yield('body-title')" class="@yield('title')" style="background-image: url(@if ((int) env('SEASON') === 1)'/images/cover.webp'@else'/images/cover2.webp'@endif)">
-{{--<div class="loading-block"><div class="loading-content"><svg class="machine"xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 645 526">--}}
-{{--      <defs/>--}}
-{{--      <g>--}}
-{{--        <path  x="-173,694" y="-173,694" class="large-shadow" d="M645 194v-21l-29-4c-1-10-3-19-6-28l25-14 -8-19 -28 7c-5-8-10-16-16-24L602 68l-15-15 -23 17c-7-6-15-11-24-16l7-28 -19-8 -14 25c-9-3-18-5-28-6L482 10h-21l-4 29c-10 1-19 3-28 6l-14-25 -19 8 7 28c-8 5-16 10-24 16l-23-17L341 68l17 23c-6 7-11 15-16 24l-28-7 -8 19 25 14c-3 9-5 18-6 28l-29 4v21l29 4c1 10 3 19 6 28l-25 14 8 19 28-7c5 8 10 16 16 24l-17 23 15 15 23-17c7 6 15 11 24 16l-7 28 19 8 14-25c9 3 18 5 28 6l4 29h21l4-29c10-1 19-3 28-6l14 25 19-8 -7-28c8-5 16-10 24-16l23 17 15-15 -17-23c6-7 11-15 16-24l28 7 8-19 -25-14c3-9 5-18 6-28L645 194zM471 294c-61 0-110-49-110-110S411 74 471 74s110 49 110 110S532 294 471 294z"/>--}}
-{{--      </g>--}}
-{{--      <g>--}}
-{{--        <path x="-136,996" y="-136,996" class="medium-shadow" d="M402 400v-21l-28-4c-1-10-4-19-7-28l23-17 -11-18L352 323c-6-8-13-14-20-20l11-26 -18-11 -17 23c-9-4-18-6-28-7l-4-28h-21l-4 28c-10 1-19 4-28 7l-17-23 -18 11 11 26c-8 6-14 13-20 20l-26-11 -11 18 23 17c-4 9-6 18-7 28l-28 4v21l28 4c1 10 4 19 7 28l-23 17 11 18 26-11c6 8 13 14 20 20l-11 26 18 11 17-23c9 4 18 6 28 7l4 28h21l4-28c10-1 19-4 28-7l17 23 18-11 -11-26c8-6 14-13 20-20l26 11 11-18 -23-17c4-9 6-18 7-28L402 400zM265 463c-41 0-74-33-74-74 0-41 33-74 74-74 41 0 74 33 74 74C338 430 305 463 265 463z"/>--}}
-{{--      </g>--}}
-{{--      <g >--}}
-{{--        <path x="-100,136" y="-100,136" class="small-shadow" d="M210 246v-21l-29-4c-2-10-6-18-11-26l18-23 -15-15 -23 18c-8-5-17-9-26-11l-4-29H100l-4 29c-10 2-18 6-26 11l-23-18 -15 15 18 23c-5 8-9 17-11 26L10 225v21l29 4c2 10 6 18 11 26l-18 23 15 15 23-18c8 5 17 9 26 11l4 29h21l4-29c10-2 18-6 26-11l23 18 15-15 -18-23c5-8 9-17 11-26L210 246zM110 272c-20 0-37-17-37-37s17-37 37-37c20 0 37 17 37 37S131 272 110 272z"/>--}}
-{{--      </g>--}}
-{{--      <g>--}}
-{{--        <path x="-100,136" y="-100,136" class="small" d="M200 236v-21l-29-4c-2-10-6-18-11-26l18-23 -15-15 -23 18c-8-5-17-9-26-11l-4-29H90l-4 29c-10 2-18 6-26 11l-23-18 -15 15 18 23c-5 8-9 17-11 26L0 215v21l29 4c2 10 6 18 11 26l-18 23 15 15 23-18c8 5 17 9 26 11l4 29h21l4-29c10-2 18-6 26-11l23 18 15-15 -18-23c5-8 9-17 11-26L200 236zM100 262c-20 0-37-17-37-37s17-37 37-37c20 0 37 17 37 37S121 262 100 262z"/>--}}
-{{--      </g>--}}
-{{--      <g>--}}
-{{--        <path x="-173,694" y="-173,694" class="large" d="M635 184v-21l-29-4c-1-10-3-19-6-28l25-14 -8-19 -28 7c-5-8-10-16-16-24L592 58l-15-15 -23 17c-7-6-15-11-24-16l7-28 -19-8 -14 25c-9-3-18-5-28-6L472 0h-21l-4 29c-10 1-19 3-28 6L405 9l-19 8 7 28c-8 5-16 10-24 16l-23-17L331 58l17 23c-6 7-11 15-16 24l-28-7 -8 19 25 14c-3 9-5 18-6 28l-29 4v21l29 4c1 10 3 19 6 28l-25 14 8 19 28-7c5 8 10 16 16 24l-17 23 15 15 23-17c7 6 15 11 24 16l-7 28 19 8 14-25c9 3 18 5 28 6l4 29h21l4-29c10-1 19-3 28-6l14 25 19-8 -7-28c8-5 16-10 24-16l23 17 15-15 -17-23c6-7 11-15 16-24l28 7 8-19 -25-14c3-9 5-18 6-28L635 184zM461 284c-61 0-110-49-110-110S401 64 461 64s110 49 110 110S522 284 461 284z"/>--}}
-{{--      </g>--}}
-{{--      <g>--}}
-{{--        <path x="-136,996" y="-136,996" class="medium" d="M392 390v-21l-28-4c-1-10-4-19-7-28l23-17 -11-18L342 313c-6-8-13-14-20-20l11-26 -18-11 -17 23c-9-4-18-6-28-7l-4-28h-21l-4 28c-10 1-19 4-28 7l-17-23 -18 11 11 26c-8 6-14 13-20 20l-26-11 -11 18 23 17c-4 9-6 18-7 28l-28 4v21l28 4c1 10 4 19 7 28l-23 17 11 18 26-11c6 8 13 14 20 20l-11 26 18 11 17-23c9 4 18 6 28 7l4 28h21l4-28c10-1 19-4 28-7l17 23 18-11 -11-26c8-6 14-13 20-20l26 11 11-18 -23-17c4-9 6-18 7-28L392 390zM255 453c-41 0-74-33-74-74 0-41 33-74 74-74 41 0 74 33 74 74C328 420 295 453 255 453z"/>--}}
-{{--      </g>--}}
-{{--    </svg></div></div>--}}
+<body id="@yield('body-title')" class="@yield('title')" style="background-image: url(@if (config('site.season') === 1)'/images/cover.webp'@else'/images/cover3.webp'@endif)">
 <div id="toasts"></div>
 <main>
     <header id="header">
@@ -102,7 +105,7 @@
                     <div class="col-md-3 hidden-sm-down" id="_desktop_logo">
                         <a href="/">
 
-                            <img loading="lazy" class="logo img-responsive" src="{{ asset('img/r1-riepas-logo-1515661637.jpg') }}" fetchpriority="high" alt="R1">
+                            <img class="logo img-responsive" src="{{ asset('img/r1-riepas-logo-1515661637.jpg') }}" fetchpriority="high" alt="R1 Riepu Serviss">
                         </a>
                     </div>
 
@@ -130,100 +133,94 @@
                                     </tbody>
                                 </table>
 
-                                <!-- Karte Popup -->
-                                <div class="modal fade" id="popup-1" tabindex="-1" aria-hidden="true">
-                                  <div class="modal-dialog">
-                                    <div class="modal-content">
-                                      <div class="modal-body">
-                                          <div id="map"></div>
-                                          <script>
-                                            function mapLoaded() {
-                                              setTimeout(function () {
-                                                document.dispatchEvent(new Event('mapLoaded'));
-                                              }, 200);
-                                            }
-                                            document.addEventListener('mapLoaded', initMap, false);
-                                            let map;
-                                            let bound;
-                                            function initMap() {
-                                              bound = new google.maps.LatLngBounds();
-                                              const letlongs = [
-                                                {
-                                                  coords: { lat: 56.94440000, lng: 24.28898000 },
-                                                  text: 'Acones iela 2A, Ulbroka, LV-2130<br> Tālr.: <a href="tel:+37167910555"><strong>+371 67910555</strong></a><br><br> <a style="text-transform: uppercase;" href="https://www.google.com/maps/search/?api=1&query=56.94440000,24.28898000" target="_blank"><strong>Atvert karte</strong></a>',
-                                                  icon: '{{ asset('images/kartei_u.png') }}'
-                                                },
-                                                {
-                                                  coords: { lat: 56.94318810, lng:24.06548220 },
-                                                  text: 'Kalnciema ielā 39, Rīga, LV-1046<br> Tālr.: <a href="tel:+37167615615"><strong>+371 67615615</strong></a><br><br> <a style="text-transform: uppercase;" href="https://www.google.com/maps/search/?api=1&query=56.94318810,24.06548220" target="_blank"><strong>Atvert karte</strong></a>',
-                                                  icon: '{{ asset('images/kartei_k.png') }}'
-                                                }
-                                              ];
-                                              if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
-                                                map = new google.maps.Map(document.getElementById('map'), {
-                                                  zoom: 10,
-                                                  center: centerMap(),
-                                                  gestureHandling: 'greedy',
-                                                  panControl: false,
-                                                  zoomControl: false,
-                                                  mapTypeControl: false,
-                                                  scaleControl: false,
-                                                  streetViewControl: false,
-                                                  overviewMapControl: false,
-                                                  rotateControl: false
-                                                });
-                                              } else {
-                                                map = new google.maps.Map(document.getElementById('map'), {
-                                                  zoom: 11,
-                                                  center: centerMap(),
-                                                  gestureHandling: 'greedy',
-                                                });
-                                              }
-                                              letlongs.forEach(function(item) {
-                                                const icon = new google.maps.MarkerImage(
-                                                  item.icon,
-                                                  new google.maps.Size(25, 34)
-                                                );
-                                                const marker = new google.maps.Marker({
-                                                  position: item.coords,
-                                                  map,
-                                                  icon
-                                                });
-                                                const infowindow = new google.maps.InfoWindow({
-                                                  content: item.text
-                                                });
-                                                marker.addListener('click', function() {
-                                                  infowindow.open(map, marker);
-                                                });
-                                                bound.extend(item.coords);
-                                              });
-                                              centerMap();
-                                              // Uztaisiju dinamisku servisu centrēšanu
-                                              function centerMap() {
-                                                let totalLat = 0;
-                                                let totalLng = 0;
-                                                letlongs.forEach(function(serviss) {
-                                                  totalLat += serviss.coords.lat;
-                                                  totalLng += serviss.coords.lng;
-                                                })
-                                                return { lat: totalLat / letlongs.length, lng: totalLng / letlongs.length };
-                                              }
-                                            }
+                              <!-- Karte Popup -->
+                              <div class="modal fade" id="popup-1" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-body">
+                                      <div id="map" style="width: 100%; height: 400px;"></div>
+                                      <script>
+                                        function mapLoaded() {
+                                          setTimeout(function () {
+                                            document.dispatchEvent(new Event('mapLoaded'));
+                                          }, 200);
+                                        }
 
-                                          </script>
-                                          <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-s4K1G5lDxiMdB7lLapvxcLCxhQ223oA&callback=mapLoaded"></script>
+                                        document.addEventListener('mapLoaded', initMap, false);
 
-                                          <a class="popup-close cls-btn" aria-label="close" data-dismiss="modal" href="#" data-target="#popup-1" data-dismiss="modal">x</a>
-                                      </div>
+                                        let map;
+                                        let bounds;
+
+                                        function initMap() {
+                                          bounds = new google.maps.LatLngBounds();
+
+                                          const locations = [
+                                            {
+                                              coords: { lat: 56.9444, lng: 24.28898 },
+                                              text: 'Acones iela 2A, Ulbroka, LV-2130<br> Tālr.: <a href="tel:+37167910555"><strong>+371 67910555</strong></a><br><br> <a style="text-transform: uppercase;" href="https://www.google.com/maps/search/?api=1&query=56.94440000,24.28898000" target="_blank"><strong>Atvert karte</strong></a>',
+                                              icon: '{{ asset('images/kartei_u.png') }}'
+                                            },
+                                            {
+                                              coords: { lat: 56.9431881, lng: 24.0654822 },
+                                              text: 'Kalnciema ielā 39, Rīga, LV-1046<br> Tālr.: <a href="tel:+37167615615"><strong>+371 67615615</strong></a><br><br> <a style="text-transform: uppercase;" href="https://www.google.com/maps/search/?api=1&query=56.94318810,24.06548220" target="_blank"><strong>Atvert karte</strong></a>',
+                                              icon: '{{ asset('images/kartei_k.png') }}'
+                                            }
+                                          ];
+
+                                          map = new google.maps.Map(document.getElementById('map'), {
+                                            zoom: 11,
+                                            center: getCenter(locations),
+                                            gestureHandling: 'greedy',
+                                            mapId: 'AIzaSyA-s4K1G5lDxiMdB7lLapvxcLCxhQ223oA',
+                                          });
+
+                                          locations.forEach(item => {
+                                            const marker = new google.maps.marker.AdvancedMarkerElement({
+                                              position: item.coords,
+                                              map: map,
+                                              title: item.text,
+                                              content: createMarkerContent(item.icon)
+                                            });
+
+                                            const infowindow = new google.maps.InfoWindow({
+                                              content: item.text
+                                            });
+
+                                            marker.addListener('click', () => {
+                                              infowindow.open(map, marker);
+                                            });
+
+                                            bounds.extend(item.coords);
+                                          });
+
+                                          map.fitBounds(bounds);
+                                        }
+
+                                        function getCenter(locations) {
+                                          let totalLat = 0, totalLng = 0;
+                                          locations.forEach(loc => {
+                                            totalLat += loc.coords.lat;
+                                            totalLng += loc.coords.lng;
+                                          });
+                                          return { lat: totalLat / locations.length, lng: totalLng / locations.length };
+                                        }
+
+                                        function createMarkerContent(iconUrl) {
+                                          const img = document.createElement('img');
+                                          img.src = iconUrl;
+                                          img.style.width = '25px';
+                                          img.style.height = '34px';
+                                          return img;
+                                        }
+                                      </script>
+
+                                      <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzeGgp92MG-sLGYy6P3WoTA-Het9m2W5c&callback=mapLoaded&loading=async&libraries=marker"></script>
+
+                                      <a class="popup-close cls-btn" aria-label="close" data-dismiss="modal" href="#" data-target="#popup-1">x</a>
                                     </div>
                                   </div>
                                 </div>
-
-{{--                                <div class="popup modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="popup-1">--}}
-{{--                                    <div class="popup-inner">--}}
-
-{{--                                        </div>--}}
-{{--                                </div>--}}
+                              </div>
 
                                 <div class="popup" id="quick-popup" data-popup="popup-2" style="display: none;">
                                     <div class="popup-inner">
@@ -258,8 +255,8 @@
                                                 <input type="text" name="user" placeholder="Lietotājs" value=" ">
                                                 <textarea type="textarea" name="comments" placeholder="Komentāri"></textarea>
                                             </div>
-                                            <a style="margin-left: 0;" class="button" onclick="return sendData(getFormData($('#quick-buy-form')));">Apstiprināt</a>
-                                            <a class="popup-close" data-dismiss="popup" aria-hidden="true" aria-label="Close" href="#"></a>
+                                            <button type="button" style="margin-left: 0;" class="button" onclick="return sendData(getFormData($('#quick-buy-form')));">Apstiprināt</button>
+                                            <button type="button" class="popup-close" data-dismiss="popup" aria-label="Aizvērt">×</button>
                                         </form>
 
                                         <style>
@@ -413,9 +410,9 @@
                                     Riepas
                                 </a>
                                 <div class="popover sub-menu js-sub-menu collapse" id="top_sub_menu_26942"
-                                     style="display: none; top: 130px;">
+                                     style="display: none;">
                                     <ul class="top-menu" data-depth="1">
-                                        @if ((int) env('SEASON') === 1)
+                                        @if (config('site.season') === 1)
                                         <li class="category" id="category-14">
                                             <a class="dropdown-item dropdown-submenu"
                                                href="{{ route('vasaras-riepas') }}"
@@ -446,7 +443,7 @@
                                                 Kvadraciklu riepas
                                             </a>
                                         </li>
-                                        @if ((int) env('SEASON') === 1)
+                                        @if (config('site.season') === 1)
                                         <li class="category" id="category-13">
                                             <a class="dropdown-item dropdown-submenu"
                                                href="{{ route('ziemas-riepas') }}"
@@ -493,13 +490,20 @@
                                     Diski
                                 </a>
                                 <div class="popover sub-menu js-sub-menu collapse" id="top_sub_menu_6650"
-                                     style="display: none; top: 130px;">
+                                     style="display: none;">
                                     <ul class="top-menu" data-depth="1">
                                         <li class="category" id="category-21">
                                             <a class="dropdown-item dropdown-submenu"
                                                href="{{ route('lietie-diski') }}"
                                                data-depth="1">
                                                 Lietie diski
+                                            </a>
+                                        </li>
+                                        <li class="category" id="category-atv-rims">
+                                            <a class="dropdown-item dropdown-submenu"
+                                               href="{{ route('kvadraciklu-diski') }}"
+                                               data-depth="1">
+                                                Kvadraciklu diski
                                             </a>
                                         </li>
 {{--                                        <li class="category" id="category-22">--}}
@@ -531,7 +535,7 @@
                                     Info
                                 </a>
                                 <div class="popover sub-menu js-sub-menu collapse" id="top_sub_menu_50733"
-                                     style="display: none; top: 130px;">
+                                     style="display: none;">
                                     <ul class="top-menu" data-depth="1">
                                         <li class="cms-page" id="cms-page-6">
                                             <a class="dropdown-item dropdown-submenu"
@@ -699,6 +703,11 @@
                                             E-pieraksts
                                         </a>
                                     </li>
+                                    <li>
+                                        <a class="cms-page-link" href="#" data-cookie-settings="open" title="">
+                                            Cookie iestatījumi
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                             <div class="col-md-6 wrapper">
@@ -777,29 +786,56 @@
     @endif
 
 </main>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-76Y13VND83"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-76Y13VND83');
-</script>
-<script src="https://unpkg.com/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
-<script src="{{ asset('js/scrollTo.js') }}"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" defer></script>
+<script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js" defer></script>
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js" defer></script>
+<script src="https://unpkg.com/popper.js@1.16.1/dist/umd/popper.min.js" defer></script>
+<script src="https://unpkg.com/tippy.js@4.3.5/umd/index.all.min.js" defer></script>
+<script src="https://unpkg.com/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous" defer></script>
+<script src="{{ \App\Helper\AssetHelper::v('js/sweetalert2.min.js') }}" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js" defer></script>
+<script src="https://unpkg.com/select2@4.1.0-rc.0/dist/js/select2.min.js" defer></script>
+<script src="https://unpkg.com/select2@4.0.13/dist/js/i18n/lv.js" defer></script>
+<script src="{{ \App\Helper\AssetHelper::v('js/loginToggle.js') }}" defer></script>
+<script src="{{ \App\Helper\AssetHelper::v('js/magic.js') }}" defer></script>
+<script src="{{ \App\Helper\AssetHelper::v('js/scrollTo.js') }}" defer></script>
 @if (\Route::currentRouteName() != 'pieraksts')
-  <script src="{{ asset('js/jquery.tablesorter.min.js?rev=' . time()) }}"></script>
-  <script src="{{ asset('js/atc.js?rev=' . time()) }}"></script>
+  <script src="{{ \App\Helper\AssetHelper::v('js/jquery.tablesorter.min.js') }}" defer></script>
+  <script src="{{ \App\Helper\AssetHelper::v('js/atc.js') }}" defer></script>
 @endif
-<script src="https://unpkg.com/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://unpkg.com/tippy.js@4.3.5/umd/index.all.min.js"></script>
-<script src="{{ asset('js/custom.js?rev=' . time()) }}"></script>
-<script src="{{ asset('js/banner_slider.min.js?rev=' . time()) }}"></script>
-<script src="{{ asset('js/cart.js?rev=' . time()) }}"></script>
-{{--<script src="https://unpkg.com/bootstrap@5.0.1/dist/js/bootstrap.min.js" integrity="sha384-+sLIOodYLS7CIrQpBjl+C7nPvqq+FbNUBDunl/OZv93DB7Ln/533i8e/mZXLi/P+" crossorigin="anonymous"></script>--}}
-<script src="https://unpkg.com/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="{{ \App\Helper\AssetHelper::v('js/cart-unified.js') }}" defer></script>
+<script src="{{ \App\Helper\AssetHelper::v('js/debounce-functions.js') }}" defer></script>
+<script src="{{ \App\Helper\AssetHelper::v('js/custom.js') }}" defer></script>
+<script src="{{ \App\Helper\AssetHelper::v('js/cart-car-info.js') }}" defer></script>
+<script src="{{ \App\Helper\AssetHelper::v('js/banner_slider.min.js') }}" defer></script>
+@stack('scripts')
+<script>
+  window.addEventListener('load', function () {
+    if (window.jQuery) {
+      window.$ = window.jQuery;
+    }
+    if (window.toastr) {
+      toastr.options = {
+        closeButton: true,
+        debug: false,
+        newestOnTop: true,
+        progressBar: false,
+        positionClass: 'toast-top-right',
+        preventDuplicates: true,
+        onclick: null,
+        showDuration: '0',
+        hideDuration: '0',
+        timeOut: '0',
+        extendedTimeOut: '0',
+        showEasing: 'swing',
+        hideEasing: 'linear',
+        showMethod: 'fadeIn',
+        hideMethod: 'fadeOut'
+      };
+    }
+  });
+</script>
+
 <div id="blockcart-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -875,37 +911,73 @@
         </div>
     </div>
 </div>
+@include('components.cookie-consent', [
+  'clarityProjectId' => env('CLARITY_PROJECT_ID'),
+  'gtmId' => env('GTM_ID'),
+  'ga4Id' => env('GA4_MEASUREMENT_ID'),
+  'facebookPixelId' => env('FACEBOOK_PIXEL_ID'),
+  'googleAdsConversionId' => config('marketing.google_ads.conversion_id'),
+  'googleAdsPurchaseLabel' => config('marketing.google_ads.conversion_label'),
+  'googleAdsBookingLabel' => config('marketing.google_ads.booking_conversion_label'),
+])
 <div id="recaptcha_k" data-value="{{ env('RECAPTCHAV3_SITEKEY') }}" style="display: none;"></div>
-<script src="https://www.google.com/recaptcha/api.js?render={{ env('RECAPTCHAV3_SITEKEY') }}&hl=lv"></script>
+<script>
+  (function () {
+    var recaptchaLoaded = false;
+    var siteKey = document.getElementById('recaptcha_k') && document.getElementById('recaptcha_k').getAttribute('data-value');
+    if (!siteKey) {
+      return;
+    }
 
-<script>
-  grecaptcha.ready(function() {
-    grecaptcha.execute($('#recaptcha_k').data('value'), {action: 'application_form'}).then(function(token) {
-      $('#reservation input[name=grecaptcha]').val(token);
-      $('#reservation input[name=grecaptcha_app]').val('application_form');
+    function applyRecaptchaToken() {
+      if (!window.grecaptcha) {
+        return;
+      }
+      grecaptcha.ready(function () {
+        grecaptcha.execute(siteKey, { action: 'application_form' }).then(function (token) {
+          var reservation = document.getElementById('reservation');
+          if (!reservation) {
+            return;
+          }
+          var tokenInput = reservation.querySelector('input[name=grecaptcha]');
+          var appInput = reservation.querySelector('input[name=grecaptcha_app]');
+          if (tokenInput) {
+            tokenInput.value = token;
+          }
+          if (appInput) {
+            appInput.value = 'application_form';
+          }
+        });
+      });
+    }
+
+    function loadRecaptcha() {
+      if (recaptchaLoaded) {
+        applyRecaptchaToken();
+        return;
+      }
+      recaptchaLoaded = true;
+      var script = document.createElement('script');
+      script.src = 'https://www.google.com/recaptcha/api.js?render=' + encodeURIComponent(siteKey) + '&hl=lv';
+      script.async = true;
+      script.onload = applyRecaptchaToken;
+      document.head.appendChild(script);
+    }
+
+    window.addEventListener('load', function () {
+      var reservation = document.getElementById('reservation');
+      if (reservation) {
+        reservation.addEventListener('focusin', loadRecaptcha, { once: true });
+      }
+      setTimeout(loadRecaptcha, 6000);
     });
-  });
+  })();
 </script>
-<!-- Meta Pixel Code -->
-<script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '847896900037592');
-  fbq('track', 'PageView');
-</script>
-<noscript>
-  <img height="1" width="1" loading="lazy" style="display:none" src="https://www.facebook.com/tr?id=847896900037592&ev=PageView&noscript=1"/>
-</noscript>
-<!-- End Meta Pixel Code -->
+<script src="{{ \App\Helper\AssetHelper::v('js/cookie-consent.js') }}" defer></script>
+<script src="{{ \App\Helper\AssetHelper::v('js/marketing-events.js') }}" defer></script>
 <script>
   var loggedIn = {{ auth()->check() ? 'true' : 'false' }};
 </script>
-<script src="{{ asset('js/toast.js') }}"></script>
+<script src="{{ \App\Helper\AssetHelper::v('js/toast.js') }}" defer></script>
 </body>
 </html>

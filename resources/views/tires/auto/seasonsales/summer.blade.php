@@ -6,67 +6,56 @@
 
                 @php
                     $cbrand = '';
-                    $index = 0;
                 @endphp
                 @foreach ($tires as $tire)
                     @if ($tire->season == 1)
-                    @php
-                        $brand = $tire->fullSize;
-                        $tire->includeStock = true;
-                        if ($cbrand!=$brand){
-
-                        if ($cbrand) {
-                           echo '<h4 class="tire-brand-name">' . $cbrand;
-                        }
-                        if ($index == 0){
-                          echo '</h4>';
-                        }
-                        echo '';
-
-                        $cbrand = $brand;
-                        $stripe = 1;
-                    @endphp
-                    <table id="tires-table"
-                           class="table table-striped summer-sorter tires-table table-hover tablesorter">
-                        <thead class="tires-thead sticky-table">
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
-                            <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
-                            <th scope="col" class="hidden-sm-down text-center">Kods</th>
-
-                            <th scope="col" class="hidden-sm-down">
-                                <div class="tire-table-icon icon-tire-fuel" title="Degvielas ekonomija"></div>
-                            </th>
-
-                            <th scope="col" class="hidden-sm-down">
-                                <div class="tire-table-icon icon-tire-rain" title="Slapjš segums"></div>
-                            </th>
-
-                            <th scope="col" class="hidden-sm-down">
-                                <div class="tire-table-icon icon-tire-sound" title="Troksnis"></div>
-                            </th>
-
-                            <th id="store-price-button" scope="col" class="text-center">
-                                Veikala cena
-                            </th>
-
-                            <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
-                            <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
-                            <th scope="col"></th>
-                            <th scope="col">
-                                <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
-                            </th>
-
-                        </tr>
-                        </thead>
-                        <tbody id="tires-table-body">
                         @php
-                            $cbrand = $brand;
-                            $stripe = 1;
-                        }
+                            $brand = $tire->fullSize;
+                            $tire->includeStock = true;
                         @endphp
-                        @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif
+                        @if ($cbrand != $brand)
+                            @if ($cbrand !== '')
+                                </tbody>
+                            </table>
+                            @endif
+                            @php $cbrand = $brand; @endphp
+                            <h4 class="tire-brand-name">{{ $brand }}</h4>
+                            <table id="tires-table"
+                                   class="table table-striped summer-sorter tires-table table-hover tablesorter">
+                                <thead class="tires-thead sticky-table">
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
+                                    <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
+                                    <th scope="col" class="hidden-sm-down text-center">Kods</th>
+
+                                    <th scope="col" class="hidden-sm-down">
+                                        <div class="tire-table-icon icon-tire-fuel" title="Degvielas ekonomija"></div>
+                                    </th>
+
+                                    <th scope="col" class="hidden-sm-down">
+                                        <div class="tire-table-icon icon-tire-rain" title="Slapjš segums"></div>
+                                    </th>
+
+                                    <th scope="col" class="hidden-sm-down">
+                                        <div class="tire-table-icon icon-tire-sound" title="Troksnis"></div>
+                                    </th>
+
+                                    <th id="store-price-button" scope="col" class="text-center">
+                                        Veikala cena
+                                    </th>
+
+                                    <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+                                    <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
+                                    <th scope="col"></th>
+                                    <th scope="col">
+                                        <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
+                                    </th>
+
+                                </tr>
+                                </thead>
+                                <tbody id="tires-table-body">
+                        @endif
                         <tr class="tire-table-row">
                             <th scope="row" class="tire-table-checkbox">
                                 <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
@@ -76,11 +65,11 @@
                             <td class="table-tire-name-cell" data-link="{{ route('vasaras-riepas') }}">
                                 <a class="tire-table-link tippy image"
                                    data-tippy-content="<div><img data-src='{{ App\Helper\Image::showAd('auto', $tire->make_id) }}'></div>"
-                                   href="{{ route($summerURL, [\Str::slug(\Tires::getAutoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]) }}"
-                                   data-content="{{ $tire->fullName }}"
+                                   href="{{ route($summerURL, [$tire->brand_slug, $tire->tread_slug, $tire->tire_id]) }}"
+                                   data-content="{{ $tire->sale_full_name }}"
                                    data-article="{{ $tire->article }}"
                                    data-quantity="4">
-                                  <div class="table-link-title">{{ $tire->title }}</div>
+                                  <div class="table-link-title">{{ $tire->sale_title }}</div>
                                 </a>
                             </td>
 
@@ -92,7 +81,7 @@
 
                             <td class="hidden-sm-down text-center">
                                 <span data-toggle="tooltip"
-                                      title="<span style='color: black'>{!! $tire->codeExplain !!}</span>"
+                                      title="<span style='color: black'>{!! $tire->code_explain !!}</span>"
                                       class="hidden-sm-down table-cell prod-code">
                                     {{ $tire->code }}
                                 </span>
@@ -127,21 +116,20 @@
                             </td>
 
                             <td class="dot-availability text-center">
-                            <span class="dot {{ $tire->dotAvailable }} {{ $tire->stockCount }}" data-toggle="tooltip"
+                            <span class="dot {{ $tire->sale_dot_available }} {{ $tire->sale_stock_count }}" data-toggle="tooltip"
                                   data-html="true"
-                                  title="{{ $tire->stockAvailability }}">
-                              <span class="sort-order">{{ $tire->dotAvailable }}</span>
+                                  title="{{ $tire->sale_stock_availability }}">
+                              <span class="sort-order">{{ $tire->sale_dot_available }}</span>
                             </span>
                             </td>
 
                         </tr>
-                        @php
-                            $index++;
-                        @endphp
-                        @endif
-                    @endforeach
+                    @endif
+                @endforeach
+                @if ($cbrand !== '')
                     </tbody>
                 </table>
+                @endif
             </div>
         </div>
     </div>

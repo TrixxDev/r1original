@@ -3,7 +3,7 @@
 <div class="main-content clearfix col-md-12 col-xl-10">
 <div id="content-wrapper" class="right-column col-lg-12">
 <section id="main"><header class="page-header">
-<h1>Kondicionieru uzpilde</h1>
+<h1>Kondicionieru uzpilde un apkope</h1>
 </header>
 <section id="content" class="page-content page-cms page-cms-9">
 <p class="overflow-image"><img src="{{ asset('img/cms/kond_liel.jpg') }}" alt="" width="707" height="215"></p>

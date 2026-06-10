@@ -9,6 +9,8 @@
     public static function image($type, $image) {
 
       $path = 'storage';
+      //$path = storage_path('');
+	//dd($path);
 
       switch ($type) {
         // AUTO TIRES
@@ -54,12 +56,14 @@
           break;
       }
 
+
       return $dir;
     }
 
     public static function exists($type, $image) {
 
       $image = Self::image($type, $image);
+	//dd($image);
 
       if (file_exists($image)) {
         return true;
@@ -82,7 +86,7 @@
         if (file_exists(str_replace('.jpg', '.png', Self::image($type, $image)))) {
           $img = str_replace('.jpg', '.png', $img);
         }
-        return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['APP_URL'] . '/' . $img;
+        return asset($img);
       } else {
         return asset('img/p/r1-logo.svg');
       }
@@ -111,6 +115,20 @@
       return $count;
     }
 
+    public static function firstBannerPreloadUrl(): ?string
+    {
+      if (Self::countBanners() === 0) {
+        return null;
+      }
+
+      $banner = Bannerimage::where('enabled', 1)->orderBy('id')->first();
+      if ($banner === null || empty($banner->name)) {
+        return null;
+      }
+
+      return '/storage/banners/' . $banner->name;
+    }
+
     public static function showBanners(){
 
       if (Self::countBanners() == 0) {
@@ -123,11 +141,19 @@
       $return .= '<div class="sliding-banner__content">';
 
       for ($i = 0; $i < count($banners); $i++) {
+        $isFirst = $i === 0;
+        $imgAttrs = 'class="banner-image" alt="Reklāmas baneris ' . htmlspecialchars($banners[$i]->name, ENT_QUOTES, 'UTF-8') . '" src="/storage/banners/' . $banners[$i]->name . '" decoding="async"';
+        if ($isFirst) {
+          $imgAttrs .= ' fetchpriority="high"';
+        } else {
+          $imgAttrs .= ' loading="lazy"';
+        }
+
         $return .= '<div class="sliding-banner__part1 sliding-banner__part1--image">';
         $return .= '<span class="sliding-banner__part1_bg" style="background-color:transparent"></span>';
-        $return .= '<img loading="lazy" class="banner-image" alt="r1_banner_' . $banners[$i]->name . '" src="/storage/banners/' . $banners[$i]->name . '">';
+        $return .= '<img ' . $imgAttrs . '>';
         if (!empty($banners[$i]->url)) {
-          $return .= '<a href="' . $banners[$i]->url . '" class="sliding-banner__link"></a>';
+          $return .= '<a href="' . htmlspecialchars($banners[$i]->url, ENT_QUOTES, 'UTF-8') . '" class="sliding-banner__link" aria-label="Skatīt piedāvājumu"></a>';
         }
         $return .= '</div>';
       }
@@ -147,13 +173,37 @@
         if (file_exists(str_replace('.jpg', '.png', Self::image('banners', $image)))) {
           $img = str_replace('.jpg', '.png', $img);
         }
-        return '<img loading="lazy" class="banner-image" src="' . asset($img) . '">';
+        return '<img loading="lazy" class="banner-image" alt="Baneris" src="' . asset($img) . '">';
       } else {
-        return '<img loading="lazy" src=' . asset('img/p/en-default-home_default.jpg') . '>';
+        return '<img loading="lazy" alt="Noklusējuma attēls" src="' . asset('img/p/en-default-home_default.jpg') . '">';
       }
     }
 
-    public static function showGrid($type, $image, $style = '') {
+    public static function treadPublicUrl(string $type, $image): ?string
+    {
+      if (!Self::exists($type, $image)) {
+        return null;
+      }
+
+      $img = str_replace(dirname(__DIR__, 2), '', Self::image($type, $image));
+
+      if (file_exists(str_replace('.jpg', '.png', Self::image($type, $image)))) {
+        $img = str_replace('.jpg', '.png', $img);
+      }
+
+      return asset($img);
+    }
+
+    protected static function altAttr(string $alt): string
+    {
+      if ($alt === '') {
+        return ' alt=""';
+      }
+
+      return ' alt="' . htmlspecialchars($alt, ENT_QUOTES, 'UTF-8') . '"';
+    }
+
+    public static function showGrid($type, $image, $style = '', $alt = '') {
 
       $img = str_replace(dirname(__DIR__, 2), '', Self::image($type, $image));
 
@@ -162,20 +212,20 @@
           $img = str_replace('.jpg', '.png', $img);
         }
         if (empty($style)) {
-          return '<img class="grid-tire-image" loading="lazy" src=' . asset($img) . '>';
-        } else {
-          return '<img class="grid-tire-image" loading="lazy" style="' . $style . '" src=' . asset($img) . '>';
+          return '<img class="grid-tire-image" loading="lazy" src=' . asset($img) . self::altAttr($alt) . '>';
         }
-      } else {
-        if (empty($style)) {
-          return '<img loading="lazy" class="grid-tire-image" src=' . asset('img/p/r1-logo.svg') . '>';
-        } else {
-          return '<img loading="lazy" class="grid-tire-image" style="' . $style . '" src=' . asset('img/p/r1-logo.svg') . '>';
-        }
+
+        return '<img class="grid-tire-image" loading="lazy" style="' . $style . '" src=' . asset($img) . self::altAttr($alt) . '>';
       }
 
+      if (empty($style)) {
+        return '<img loading="lazy" class="grid-tire-image" src=' . asset('img/p/r1-logo.svg') . self::altAttr($alt) . '>';
+      }
+
+      return '<img loading="lazy" class="grid-tire-image" style="' . $style . '" src=' . asset('img/p/r1-logo.svg') . self::altAttr($alt) . '>';
     }
-    public static function treadZoom($type, $image) {
+
+    public static function treadZoom($type, $image, $alt = '') {
 
       $img = str_replace(dirname(__DIR__, 2), '', Self::image($type, $image));
 
@@ -186,16 +236,15 @@
         $html = '<div class="zoom-section product-cover card text-center" style="padding: 10px">';
         $html .= '<div class="zoom-small-image">';
         $html .= '<a class="MagicZoom" data-options="expand: window;" href="/' . $img . '">';
-        $html .= '<img class="magic-image" src="/' . $img . '" alt=""/>';
+        $html .= '<img class="magic-image" src="/' . $img . '"' . self::altAttr($alt) . '>';
         $html .= '</a>';
         $html .= '</div>';
         $html .= '</div>';
 
         return $html;
-      } else {
-        return '<img style="width:100%; padding: 10px;" class="card product-cover" src=' . asset('img/p/r1-logo.svg') . '>';
       }
 
+      return '<img style="width:100%; padding: 10px;" class="card product-cover" src=' . asset('img/p/r1-logo.svg') . self::altAttr($alt) . '>';
     }
 
   }

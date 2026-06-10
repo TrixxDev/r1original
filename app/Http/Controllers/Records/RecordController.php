@@ -26,12 +26,16 @@
   use App\Models\Queue;
   use App\Models\Slot;
   use App\Models\User;
+  use App\Services\FillSlotBookingNotifications;
+  use App\Services\Marketing\GoogleAdsConversionService;
+  use App\Services\Marketing\MetaConversionsApiService;
+  use App\Services\SlotWallTimeReorderService;
   use Carbon\Carbon;
   use Auth;
+  use Illuminate\Support\Facades\DB;
 
   class RecordController extends Controller
   {
-
     public $timeToOpen;
     public $timeToClose;
     public $startSendWpp;
@@ -81,54 +85,8 @@
 
     public function loadWorkingDays()
     {
-      $visibleDays = 14;
-
-      $daysToShow = [];
-
-      $workingDayCount = Office::sum('queue_count');
-      for ($i = 0; $i <= $visibleDays; $i++) {
-        $date = Date('Y-m-d', strtotime('+' . $i . ' days'));
-        array_push($daysToShow, $date);
-
-        $workingDay = Workingday::where('date', $date)->get();
-        if (empty($workingDay->count()) || $workingDay->count() < $workingDayCount) {
-          $l = 1;
-          foreach (Office::all() as $office) {
-            for ($a = 1; $a <= $office->queue_count; $a++) {
-              $wdExist = Workingday::where('date', $date)->where('queue_id', $l)->first();
-              if ($wdExist) {
-                $l++;
-                continue;
-              }
-              $workingDay = new Workingday();
-              $workingDay->timestamps = false;
-              $workingDay->queue_id = $l;
-              $workingDay->office_id = $office->office_id;
-              $workingDay->date = $date;
-              $workingDay->weekday = Carbon::parse($date)->format('N');
-              $queue = Queue::where('queue_id', $l)->first();
-              $workingDay->timeopen = $queue->timeopen;
-              $workingDay->timeclose = $queue->timeclose;
-              $weekendDay = Carbon::parse($date)->isWeekend();
-              if ($weekendDay) {
-                $workingDay->timeopen = $queue->wtimeopen;
-                $workingDay->timeclose = $queue->wtimeclose;
-              }
-              $workingDay->is_opened = ($queue->is_visible == 1) ? 1 : 0;
-              if ($workingDay->weekday == 7) $workingDay->is_opened = 0;
-              $workingDay->save();
-              $newWorkingDay = $workingDay->replicate();
-              $newWorkingDay->setTable('new_workingdays');
-              $newWorkingDay->timestamps = false;
-              $newWorkingDay->save();
-              $l++;
-            }
-          }
-        }
-      }
-
-      return $daysToShow;
-
+      return app(\App\Services\WorkingDaysProvisioner::class)
+        ->ensure(\App\Services\WorkingDaysProvisioner::DEFAULT_HORIZON_DAYS);
     }
 
     /**
@@ -140,8 +98,6 @@
     {
 
       $this->loadWorkingDays();
-      $offices = Office::all();
-      $services = Service::where('enabled', 1)->get();
 
       $visibleDays = 7;
       $daysToShow = [];
@@ -150,12 +106,67 @@
         array_push($daysToShow, Date('Y-m-d', strtotime('+' . $i . ' days')));
       }
 
-      $workingDays = Workingday::whereIn('date', $daysToShow)->get();
+      $workingDays = Workingday::whereIn('date', $daysToShow)
+        ->orderBy('office_id')
+        ->orderBy('queue_id')
+        ->get();
+
+      $publicQueueQuery = function ($q) {
+        $q->where('is_public', 1)->orWhereNull('is_public');
+      };
+      $queueSum = max(1, Queue::query()->where($publicQueueQuery)->count());
+      $clientQueuesCountByOffice = Queue::query()
+        ->where($publicQueueQuery)
+        ->selectRaw('office_id, count(*) as c')
+        ->groupBy('office_id')
+        ->pluck('c', 'office_id')
+        ->all();
+
+      $queuesById = Queue::query()->orderBy('office_id')->orderBy('queue_id')->get()->keyBy('queue_id');
+
+      $queueIdsForSlots = $workingDays->pluck('queue_id')->unique()->values()->all();
+      if ($queueIdsForSlots === []) {
+        $queueIdsForSlots = Queue::query()->pluck('queue_id')->all();
+      }
+
+      $slots = Slot::query()
+        ->whereIn('date', $daysToShow)
+        ->whereIn('queue_id', $queueIdsForSlots)
+        ->get(['status', 'takenby', 'comment', 'edituser', 'queue_id', 'date', 'iorder']);
+
+      $slotsByKey = [];
+      foreach ($slots as $slot) {
+        $slotsByKey[Slot::reservationGridKey($slot->queue_id, $slot->date, $slot->iorder)] = $slot;
+      }
+
+      $minTimeopenByDate = Workingday::query()
+        ->whereIn('date', $daysToShow)
+        ->selectRaw('date, MIN(timeopen) as min_timeopen')
+        ->groupBy('date')
+        ->pluck('min_timeopen', 'date')
+        ->all();
+
+      $offices = Office::orderBy('office_id')->get();
+      $officesById = $offices->keyBy('office_id');
+      $services = Service::orderBy('service_id', 'ASC')->where('enabled', 1)->get();
 
       $dayTitles = $this->dayTitles;
       $timeStep = $this->timeStep;
 
-      return view('records.index', compact('workingDays', 'visibleDays', 'dayTitles', 'timeStep', 'offices', 'services'));
+      return view('records.index', compact(
+        'workingDays',
+        'visibleDays',
+        'dayTitles',
+        'timeStep',
+        'offices',
+        'services',
+        'queueSum',
+        'clientQueuesCountByOffice',
+        'queuesById',
+        'officesById',
+        'slotsByKey',
+        'minTimeopenByDate'
+      ));
     }
 
     public function fillFiliale()
@@ -169,12 +180,32 @@
       $queue_id = $request->input('queue_id');
       $slotNumber = $request->input('iorder');
 
+      $queueRow = Queue::where('queue_id', $queue_id)->first();
+      if (! $queueRow) {
+        return json_encode(['takenby' => 'false', 'office_id' => 0]);
+      }
+      // Pierakstu lapa /rezervacijas (auth): visas rindas. Publiskais pieraksts bez auth: tikai is_public.
+      if (! Auth::check() && ! $queueRow->isAvailableForPublicBooking()) {
+        return json_encode(['takenby' => 'false', 'office_id' => 0]);
+      }
+
       $workingDay = Workingday::where('date', $date)->where('queue_id', $queue_id)->first();
-      $office_id = Office::where('office_id', $workingDay->office_id)->first()->office_id;
+      if (! $workingDay) {
+        $workingDay = NewWorkingDay::where('date', $date)->where('queue_id', $queue_id)->first();
+      }
+
+      // Jaunas rindas: workingdays var vēl nebūt, bet office_id ir queues tabulā.
+      $office_id = (int) $queueRow->office_id;
+      if ($workingDay) {
+        $office_id = (int) $workingDay->office_id;
+      }
 
       $slot = Slot::where('date', $date)->where('queue_id', $queue_id)->where('iorder', $slotNumber)->first();
 
       if ($slot) {
+        if (!empty($slot->comment) && is_string($slot->comment)) {
+          $slot->comment = $this->maybeUrlDecode($slot->comment);
+        }
 
         $resultArray = (array) json_decode($slot->takenby);
 
@@ -201,6 +232,122 @@
       }
     }
 
+    /**
+     * Decode only when the string looks URL-encoded (contains %XX).
+     * This avoids turning literal '+' into spaces for normal text.
+     */
+    private function maybeUrlDecode(?string $value): ?string
+    {
+      if ($value === null) return null;
+      if (preg_match('/%[0-9A-Fa-f]{2}/', $value) !== 1) return $value;
+      return urldecode($value);
+    }
+
+    public static function isBothHalfServices($workingDay): bool
+    {
+      return (int) ($workingDay->is_half ?? 0) === 1
+        && $workingDay->ac_toggle !== null
+        && $workingDay->moto_toggle !== null;
+    }
+
+    /**
+     * Half-queue slot role by iorder (1-based slot index in grid).
+     *
+     * @return null|string blocked|ac|moto|legacy_even_free
+     */
+    public static function halfSlotDisplayRole(int $i, $workingDay): ?string
+    {
+      if ((int) ($workingDay->is_half ?? 0) !== 1) {
+        return null;
+      }
+
+      $hasAc = $workingDay->ac_toggle !== null;
+      $hasMoto = $workingDay->moto_toggle !== null;
+
+      if ($hasAc && $hasMoto) {
+        if ($i % 2 === 1) {
+          return 'blocked';
+        }
+        if ($i % 4 === 0) {
+          return 'ac';
+        }
+        if ($i % 4 === 2) {
+          return 'moto';
+        }
+
+        return 'blocked';
+      }
+
+      if ($i % 2 === 1) {
+        return $hasMoto ? 'moto' : 'blocked';
+      }
+
+      return $hasAc ? 'ac' : 'legacy_even_free';
+    }
+
+    /**
+     * @return null|string Error message when booking is not allowed for this half slot.
+     */
+    public static function validateHalfSlotBooking(int $iorder, $workingDay, $serviceId): ?string
+    {
+      $role = self::halfSlotDisplayRole($iorder, $workingDay);
+      if ($role === null || $role === 'legacy_even_free') {
+        return null;
+      }
+
+      if ($role === 'blocked') {
+        return 'Šis laiks nav pieejams pierakstam.';
+      }
+
+      $service = Service::find($serviceId);
+      if ($role === 'ac' && (! $service || (int) $service->f_ac !== 1)) {
+        return 'Izvēlētais pakalpojums neatbilst AC laikam.';
+      }
+      if ($role === 'moto' && (! $service || (int) $service->f_moto !== 1)) {
+        return 'Izvēlētais pakalpojums neatbilst moto laikam.';
+      }
+
+      return null;
+    }
+
+    private function mobileContentForHalfRole(
+      ?string $halfRole,
+      string $free_slot_content,
+      string $taken_slot_content,
+      string $ac_slot_content,
+      string $moto_slot_content
+    ): string {
+      if ($halfRole === 'blocked') {
+        return $taken_slot_content;
+      }
+      if ($halfRole === 'ac') {
+        return $ac_slot_content;
+      }
+      if ($halfRole === 'moto') {
+        return $moto_slot_content;
+      }
+
+      return $free_slot_content;
+    }
+
+    private function mobileTakenContentForHalfRole(
+      ?string $halfRole,
+      $workingDay,
+      int $i,
+      string $taken_slot_content,
+      string $taken_ac_slot_content,
+      string $taken_moto_slot_content
+    ): string {
+      if ($halfRole === 'moto' || ($halfRole === null && $i % 2 == 1 && $workingDay->moto_toggle)) {
+        return $taken_moto_slot_content;
+      }
+      if ($halfRole === 'ac' || ($halfRole === null && $i % 2 != 1 && $workingDay->ac_toggle)) {
+        return $taken_ac_slot_content;
+      }
+
+      return $taken_slot_content;
+    }
+
     public function fillSlot(Request $request)
     {
 
@@ -212,37 +359,101 @@
       $dopParams = $request->input('dopParams');
 
       $dayTitles = $this->dayTitles;
-      $today = date('Y-m-d');
 
       $dayOfWeek2 = $dayTitles[date('N', strtotime($dopParams['date'] . ' 00:00:00'))];
       $fmtDate = date('d.m.Y', strtotime($dopParams['date']));
 
       $office = Office::where('office_id', $dopParams['office'])->first();
-      $time = strip_tags($dopParams['time']);
+      if (! $office) {
+        return json_encode(['success' => false, 'alertMessage' => 'Nederīga filiāle.', 'finished' => false]);
+      }
 
-      $cancelId = $this->getRandomHash() . str_replace(':', '', $time);
+      $time = trim(strip_tags($dopParams['time'] ?? ''));
+
+      //$cancelId = $this->getRandomHash() . str_replace(':', '', $time);
+      $timeSuffix = preg_replace('/[^0-9]/', '', $time);
+      if (strlen($timeSuffix) !== 4) {
+        $timeSuffix = str_pad(substr($timeSuffix, -4), 4, '0', STR_PAD_LEFT);
+      }
+
+      $cancelId = $this->getRandomHash() . $timeSuffix;
+      while (Slot::where('cancel_id', $cancelId)->exists()) {
+        $cancelId = $this->getRandomHash() . $timeSuffix;
+      }
 
       $errors = [];
 
-      $datas = explode('&', $request->input('formData'));
+      //$datas = explode('&', $request->input('formData'));
 
-      $result = [];
+      //$result = [];
 
-      foreach ($datas as $data) {
-        $test = explode('=', $data);
-        $result[$test[0]] = $test[1];
-      }
+      //foreach ($datas as $data) {
+      //  $test = explode('=', $data);
+      //  $result[$test[0]] = $test[1];
+      //}
 
 
-      $result = (object) $result;
+      //$result = (object) $result;
+      $resultArray = [];
+      parse_str($request->input('formData', ''), $resultArray);
+      $result = json_decode(json_encode($resultArray, JSON_UNESCAPED_UNICODE), false);
       $result->cancelId = $cancelId;
+
+      // Car-info snapshot: store in dedicated Slot columns (not inside takenby).
+      $carInfoJson = null;
+      $carInfoVnr = null;
+      $carInfoFetchedAt = null;
+      $carInfoSource = null;
+      if (isset($result->car_info_json)) {
+        $maxLen = 50000; // safety limit
+        $json = $result->car_info_json;
+        if (is_string($json) && $json !== '' && strlen($json) <= $maxLen) {
+          json_decode($json, true);
+          if (json_last_error() === JSON_ERROR_NONE) {
+            $carInfoJson = $json;
+            $carInfoSource = (isset($result->car_info_source) && is_string($result->car_info_source))
+              ? substr(trim($result->car_info_source), 0, 32)
+              : 'api/car-info';
+
+            $rawVnr = (isset($result->car_info_vnr) && is_string($result->car_info_vnr)) ? $result->car_info_vnr : ($result->lic_plate ?? '');
+            $normalized = strtoupper(preg_replace('/[\s-]+/', '', trim((string) $rawVnr)));
+            if ($normalized !== '' && preg_match('/^[A-Z0-9]{2,16}$/', $normalized) === 1) {
+              $carInfoVnr = $normalized;
+            }
+
+            $rawFetched = (isset($result->car_info_fetched_at) && is_string($result->car_info_fetched_at)) ? trim($result->car_info_fetched_at) : '';
+            if ($rawFetched !== '') {
+              try {
+                $carInfoFetchedAt = Carbon::parse($rawFetched)->toDateTimeString();
+              } catch (\Exception $_e) {
+                $carInfoFetchedAt = null;
+              }
+            }
+          }
+        }
+
+        // Never store car-info inside takenby going forward.
+        unset($result->car_info_json, $result->car_info_fetched_at, $result->car_info_vnr, $result->car_info_source);
+      }
 
       if (empty($result->car_brand)) $errors['car_brand'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Ievadiet auto marku!</li>';
       if (empty($result->car_model)) $errors['car_model'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Ievadiet auto modeli!</li>';
       if (empty($result->lic_plate)) $errors['lic_plate'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Ievadiet auto reģistrācijas numuru!</li>';
-      if ($result->service === 'undefined') $errors['service'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Jāizvēlas viens no pakalpojumiem!</li>';
+      
+      // Service is REQUIRED.
+      // Note: frontend historically sent literal "undefined", but jQuery may also serialize missing values as an empty string.
+      $serviceRaw = isset($result->service) ? trim((string) $result->service) : '';
+      if ($serviceRaw === '' || $serviceRaw === 'undefined') {
+        $errors['service'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Jāizvēlas viens no pakalpojumiem!</li>';
+      }
 
-      if ($result->service == 1 && $result->rimsWith === 'undefined') $errors['rimsWith'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Jāizvēlas viena no opcijām!</li>';
+      // For service_id=1, rimsWith is REQUIRED and must be 1 or 2.
+      if ($serviceRaw === '1') {
+        $rimsRaw = isset($result->rimsWith) ? trim((string) $result->rimsWith) : '';
+        if ($rimsRaw === '' || $rimsRaw === 'undefined' || !in_array($rimsRaw, ['1', '2'], true)) {
+          $errors['rimsWith'] = '<li class="w-full text-red-700 px-4 py-2 border-b border-gray-200 rounded-t-lg dark:border-gray-600">Jāizvēlas viena no opcijām!</li>';
+        }
+      }
 
       if (!empty($result->email)) {
         if (!filter_var($result->email, FILTER_VALIDATE_EMAIL)) {
@@ -260,132 +471,174 @@
 
       if (!empty($errors)) return json_encode(['success' => false, 'errors' => $errors]);
 
-      $slot = Slot::where('date', $dopParams['date'])->where('queue_id', $dopParams['queue_id'])->where('iorder', $dopParams['iorder'])->first();
+      $workingDay = Workingday::query()
+        ->where('date', $dopParams['date'])
+        ->where('queue_id', $dopParams['queue_id'])
+        ->first();
 
-      if (!$slot) {
-        $slot = new Slot;
-        $slot->status = 1;
-      } else if ($slot && !empty($slot->comment) && !empty($slot->takenby)) {
-        Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id,0, 'Neizdevās izveidot pierakstu', $slot);
-        return json_encode(['success' => false, 'alertMessage' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!', 'finished' => false]);
-      } else if ($slot && !empty($slot->takenby)) {
-        Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id,0, 'Neizdevās izveidot pierakstu', $slot);
-        return json_encode(['success' => false, 'alertMessage' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!', 'finished' => false]);
-      } else if ($slot && !empty($slot->comment)) {
-        $slot->status = 1;
-      } else {
-        $slot->status = 1;
-      }
-
-      $slot->timestamps = false;
-      $slot->queue_id = $dopParams['queue_id'];
-      $slot->date = $dopParams['date'];
-      $slot->iorder = $dopParams['iorder'];
-      $slot->takenby = json_encode($result);
-      if (Auth::check()) $slot->comment = NULL;
-      $slot->createtime = date('Y-m-d H:i:s');
-      $slot->createuser = $userID;
-      if ($request->input('from_mobile')) {
-        $slot->is_mobile = $request->input('from_mobile');
-      }
-
-      if ($slot->save()) {
-        $returnMessage = 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama īsziņā.';
-        Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Izveidots jauns pieraksts', $slot);
-      }
-
-      $queue = Queue::where('queue_id', $slot->queue_id)->first();
-
-      $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleSMS'], $slot->date, $slot->iorder, $result, $time);
-
-      if ($result->email) {
-        $mailText = $queue->parseNotification($queue->getOriginal()['notificationEmail'], $slot->date, $slot->iorder, $result, $time);
-        //        Mail::to($form->ownerEmail)->send(new \App\Mail\Mail($mailText));
-        $mailer = new Mailer();
-        $mailer->addRecipient($result->email);
-        $bcc = 'karlis@r1riepas.lv';
-        if ($bcc) $mailer->addBCC($bcc);
-        $mailer->subject = $queue->parseNotification($queue->getOriginal()['notificationSubject'], $slot->date, $slot->iorder, $result, $time);
-        $mailer->message = $mailText;
-        $mailer->send();
-      }
-
-      (new SmsSender)->sendSchedule((array) $result, $smsText, $slot);
-
-      //The URLs that we want to send cURL requests to.
-      $urls = [];
-
-      if ($today == $slot->date) {
-        if ($this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
-          $service = Service::where('service_id', $result->service)->first();
-          $vehicle = str_replace(' ', '%20', $result->car_brand);
-          $userComment = (!empty($result->user_comment)) ? '%20|%20Piezīmes%20-%20' . str_replace([' ', "\n", "\r"], '%20', $result->user_comment) : '';
-          $model = str_replace(' ', '%20', $result->car_model);
-          $service = str_replace(' ', '%20', $service->pdf_title);
-          $vehiclePlate = str_replace(' ', '%20', $result->lic_plate);
-          $discount = str_replace(' ', '%20', $slot->comment);
-          $discount = (!empty($slot->comment)) ? '%20|%20(' . $discount . ')' : '';
-
-          if (!empty($rimsWith)) {
-            if ($rimsWith == 1) {
-              $append = '%20-%20Riepas%20bez%20diskiem';
-            } else {
-              $append = '%20-%20Riepas%20ar%20diskiem';
-            }
-          } else {
-            $append = '';
-          }
-
-
-          if ($office->office_id == 1) {
-            $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
-          } else {
-            $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Jauns%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate . '%20|%20Pakalpojums%20-%20' . $service . $append . $userComment . $discount;
-          }
+      if ($workingDay) {
+        $halfSlotError = self::validateHalfSlotBooking((int) $dopParams['iorder'], $workingDay, (int) $serviceRaw);
+        if ($halfSlotError !== null) {
+          return json_encode([
+            'success' => false,
+            'alertMessage' => $halfSlotError,
+            'finished' => false,
+          ]);
         }
       }
 
-      if ($result->service == 3 || $result->service == 9) {
-        $userComment = (!empty($result->user_comment)) ? ',%20' . str_replace(' ', '%20', $result->user_comment) : '';
-        $urls[] = 'http://api.textmebot.com/send.php?recipient=' . $this->orderWpp . '&apikey=d6nsRWNp1xpc&text=' . $fmtDate . '%20' . $time . ',%20' . $result->phone_number . $userComment;
+      $sessionId = session()->getId();
+
+      try {
+        $slot = DB::transaction(function () use ($request, $dopParams, $result, $cancelId, $carInfoJson, $carInfoVnr, $carInfoFetchedAt, $carInfoSource, $userID, $sessionId) {
+          $slot = Slot::query()
+            ->where('date', $dopParams['date'])
+            ->where('queue_id', $dopParams['queue_id'])
+            ->where('iorder', $dopParams['iorder'])
+            ->lockForUpdate()
+            ->first();
+
+          if (! $slot) {
+            $slot = new Slot;
+            $slot->status = 1;
+          } else {
+            if (! empty($slot->comment) && ! empty($slot->takenby)) {
+              Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Neizdevās izveidot pierakstu', $slot);
+
+              return ['error' => ['success' => false, 'alertMessage' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!', 'finished' => false]];
+            }
+            if (! empty($slot->takenby)) {
+              Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Neizdevās izveidot pierakstu', $slot);
+
+              return ['error' => ['success' => false, 'alertMessage' => 'Atvainojiet, jūsu izvēlētais laiks vairs nav pieejams!', 'finished' => false]];
+            }
+
+            // Active soft-lock: only the same session may complete booking (matches reserve-slot).
+            if ($slot->reserved_until && Carbon::parse($slot->reserved_until)->isFuture()) {
+              if ($slot->reserved_by !== $sessionId) {
+                Audit::audit(AUDIT_SEVERITY_WARNING, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Pieraksts: neatbilst rezervācijai (cita sesija)', $slot);
+
+                return ['error' => ['success' => false, 'alertMessage' => 'Laiks ir rezervēts citam lietotājam. Lūdzu, izvēlieties citu laiku vai atsvaidziniet lapu.', 'finished' => false]];
+              }
+            }
+
+            $slot->status = 1;
+          }
+
+          $slot->timestamps = false;
+          $slot->queue_id = $dopParams['queue_id'];
+          $slot->date = $dopParams['date'];
+          $slot->iorder = $dopParams['iorder'];
+          $slot->takenby = json_encode($result);
+          $slot->cancel_id = $cancelId;
+
+          $slot->reserved_until = null;
+          $slot->reserved_by = null;
+          $slot->extension_count = 0;
+          $slot->version = (int) ($slot->version ?? 0) + 1;
+
+          if ($carInfoJson !== null) {
+            $slot->car_info_json = $carInfoJson;
+            $slot->car_info_vnr = $carInfoVnr;
+            $slot->car_info_fetched_at = $carInfoFetchedAt;
+            $slot->car_info_source = $carInfoSource;
+          }
+
+          if (Auth::check()) {
+            $slot->comment = null;
+          }
+          $slot->createtime = date('Y-m-d H:i:s');
+          $slot->createuser = $userID;
+          if ($request->input('from_mobile')) {
+            $slot->is_mobile = $request->input('from_mobile');
+          }
+
+          if (! $slot->save()) {
+            return ['error' => ['success' => false, 'alertMessage' => 'Neizdevās saglabāt pierakstu.', 'finished' => false]];
+          }
+
+          return ['slot' => $slot];
+        });
+      } catch (\Throwable $e) {
+        Audit::audit(AUDIT_SEVERITY_ERROR, AUDIT_FACILITY_MESSAGE, 0, 0, 'fillSlot: izņēmums', $e);
+
+        return json_encode(['success' => false, 'alertMessage' => 'Neizdevās saglabāt pierakstu.', 'finished' => false]);
       }
 
-      //An array that will contain all of the information
-      //relating to each request.
-      $requests = [];
-
-      //Initiate a multiple cURL handle
-      $mh = curl_multi_init();
-
-      //Loop through each URL.
-      foreach($urls as $k => $url){
-        $requests[$k] = array();
-        $requests[$k]['url'] = $url;
-        //Create a normal cURL handle for this particular request.
-        $requests[$k]['curl_handle'] = curl_init($url);
-        //Configure the options for this request.
-        curl_setopt($requests[$k]['curl_handle'], CURLOPT_RETURNTRANSFER, true);
-        //Add our normal / single cURL handle to the cURL multi handle.
-        curl_multi_add_handle($mh, $requests[$k]['curl_handle']);
+      if (isset($slot['error'])) {
+        return json_encode($slot['error']);
       }
 
-      //Execute our requests using curl_multi_exec.
-      $stillRunning = false;
-      do {
-        curl_multi_exec($mh, $stillRunning);
-      } while ($stillRunning);
+      $slot = $slot['slot'];
 
-      //Loop through the requests that we executed.
-      foreach($requests as $k => $reqs){
-        //Remove the handle from the multi handle.
-        curl_multi_remove_handle($mh, $reqs['curl_handle']);
-        //Close the handle.
-        curl_close($requests[$k]['curl_handle']);
-      }
-      //Close the multi handle.
-      curl_multi_close($mh);
+      $returnMessage = 'Paldies par pierakstu<br>Jūsu pieraksts ir piereģistrēts. Gaidīsim jūs <b>'.$dayOfWeek2.', '.$fmtDate.' '.$time.' riepu servisā '.$office->title.'!</b><br><br>Pieraksta atcelšanas saite ir pieejama īsziņā.';
+      Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'Izveidots jauns pieraksts', $slot);
 
-      return json_encode(['success' => true, 'message' => $returnMessage, 'new_slot_client' => true]);
+      $bookingEventId = 'booking_'.$slot->slot_id.'_'.time();
+
+      $capiData = [
+          'event_id'   => $bookingEventId,
+          'event_time' => time(),
+          'email'      => $result->email ?? null,
+          'phone'      => isset($result->phone_country_code, $result->phone_number)
+              ? $result->phone_country_code.$result->phone_number
+              : ($result->phone_number ?? null),
+          'client_ip'  => $request->ip(),
+          'user_agent' => $request->userAgent(),
+          'fbp'        => $request->cookie('_fbp'),
+          'fbc'        => $request->cookie('_fbc'),
+      ];
+      app()->terminating(static function () use ($capiData): void {
+          try {
+              app(MetaConversionsApiService::class)->sendScheduleEvent($capiData);
+          } catch (\Throwable $e) {
+              \Illuminate\Support\Facades\Log::warning('Meta CAPI Schedule terminating callback error', ['message' => $e->getMessage()]);
+          }
+      });
+
+      $googleAdsData = [
+          'transaction_id'  => $bookingEventId,
+          'email'           => $result->email ?? null,
+          'phone'           => isset($result->phone_country_code, $result->phone_number)
+              ? $result->phone_country_code.$result->phone_number
+              : ($result->phone_number ?? null),
+          'conversion_time' => now()->format('Y-m-d H:i:sP'),
+      ];
+      app()->terminating(static function () use ($googleAdsData): void {
+          try {
+              app(GoogleAdsConversionService::class)->sendBookingConversion($googleAdsData);
+          } catch (\Throwable $e) {
+              \Illuminate\Support\Facades\Log::warning('Google Ads booking conversion terminating callback error', ['message' => $e->getMessage()]);
+          }
+      });
+
+      $resultArray = json_decode(json_encode($result, JSON_UNESCAPED_UNICODE), true);
+      $appTz = config('app.timezone', 'Europe/Riga');
+      $slotDay = Carbon::parse($slot->date)->toDateString();
+      $todayApp = Carbon::now($appTz)->toDateString();
+      // Office WhatsApp (Urs/Krs): šodienas pieraksts; optionally tikai darba logā (skat. WPP_OFFICE_RESTRICT_BUSINESS_HOURS).
+      $restrictOfficeHours = (bool) config('services.whatsapp_parallel.restrict_office_hours', true);
+      $withinOfficeHours = ($this->now >= $this->startSendWpp && $this->now < $this->endSendWpp);
+      $shouldSendWppToday = ($slotDay === $todayApp)
+        && ($withinOfficeHours || ! $restrictOfficeHours);
+      $slotId = (int) $slot->slot_id;
+      $officeId = (int) $office->office_id;
+      app()->terminating(static function () use ($slotId, $resultArray, $officeId, $time, $shouldSendWppToday): void {
+          FillSlotBookingNotifications::send(
+              $slotId,
+              $resultArray,
+              $officeId,
+              $time,
+              $shouldSendWppToday
+          );
+      });
+
+      return response()->json([
+          'success' => true,
+          'message' => $returnMessage,
+          'new_slot_client' => true,
+          'booking_event_id' => $bookingEventId,
+      ]);
     }
 
     public function showMobileQueues(Request $request)
@@ -393,6 +646,9 @@
 
       $this->loadWorkingDays();
       $office = Office::where('office_id', $request->office_id)->first();
+      if (! $office) {
+        return '';
+      }
 
       $visibleDays = 7;
       $daysToShow = [];
@@ -401,7 +657,34 @@
         array_push($daysToShow, Date('Y-m-d', strtotime('+' . $i . ' days')));
       }
 
-      $workingDays = Workingday::whereIn('date', $daysToShow)->where('office_id', $office->office_id)->get();
+      $workingDays = Workingday::whereIn('date', $daysToShow)
+        ->where('office_id', $office->office_id)
+        ->orderBy('queue_id')
+        ->get();
+
+      $queueIds = $workingDays->pluck('queue_id')->unique()->values()->all();
+      if ($queueIds === []) {
+        $queueIds = Queue::where('office_id', $office->office_id)->pluck('queue_id')->all();
+      }
+
+      $queuesById = Queue::query()->whereIn('queue_id', $queueIds)->get()->keyBy('queue_id');
+
+      $minTimeopenByDate = Workingday::query()
+        ->whereIn('date', $daysToShow)
+        ->selectRaw('date, MIN(timeopen) as min_timeopen')
+        ->groupBy('date')
+        ->pluck('min_timeopen', 'date')
+        ->all();
+
+      $loadedSlots = Slot::query()
+        ->whereIn('date', $daysToShow)
+        ->whereIn('queue_id', $queueIds)
+        ->get(['status', 'takenby', 'comment', 'queue_id', 'date', 'iorder']);
+
+      $slotsByKey = [];
+      foreach ($loadedSlots as $slotRow) {
+        $slotsByKey[Slot::reservationGridKey($slotRow->queue_id, $slotRow->date, $slotRow->iorder)] = $slotRow;
+      }
 
       $dayTitles = $this->dayTitles;
       $timeStep = $this->timeStep;
@@ -419,23 +702,24 @@
         $html .= '<div class="time-list"  data-date="' . date('Y-m-d', strtotime($date)) . '" style="margin-left: 8px;">';
         foreach ($workingDays as $workingDay) {
           if ($workingDay->date == Date('Y-m-d', strtotime('+' . $day . ' days'))) {
-            $openTime1 = Workingday::select('timeopen')->where('date', $workingDay->date)->orderBy('timeopen', 'ASC')->first();
+            $queueForMobile = $queuesById[$workingDay->queue_id] ?? null;
+            if (! $queueForMobile || ! $queueForMobile->isAvailableForPublicBooking()) {
+              continue;
+            }
+            $openTime1Str = $minTimeopenByDate[$workingDay->date] ?? $workingDay->timeopen;
             $opentime = Carbon::parse($workingDay->timeopen);
-            $openTime1 = Carbon::parse($openTime1->timeopen);
+            $openTime1 = Carbon::parse($openTime1Str);
             $closetime = Carbon::parse($workingDay->timeclose)->subMinutes($timeStep);
 
             $numberOfSteps = ceil($opentime->diffInMinutes($closetime) / $timeStep);
 
-            $workingOffice = Office::where('office_id', $workingDay->office_id)->first();
-
-            if ($workingOffice->office_id == $office->office_id) {
+            if ($workingDay->office_id == $office->office_id) {
               if ($workingDay->weekday != 7) {
                 if ($workingDay->is_opened == 1) {
                   foreach (range(($opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep), $numberOfSteps) as $i) {
                     $currentTime = $opentime->copy()->addMinutes($timeStep * $i)->format('H:i');
-                    $oddMinutes = (Carbon::parse($currentTime)->format('i') % 2) === 0;
-                    $slot = Slot::where('queue_id', $workingDay->queue_id)->where('date', $workingDay->date)->where('iorder', $i)->first();
-                    $service = null;
+                    $halfRole = self::halfSlotDisplayRole($i, $workingDay);
+                    $slot = $slotsByKey[Slot::reservationGridKey($workingDay->queue_id, $workingDay->date, $i)] ?? null;
                     $content = '';
 
                     $free_slot_content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
@@ -469,15 +753,14 @@
                     if ($slot) {
                       switch ($slot->status) {
                         case SLOT_STATUS_FREE:
-                          if ($workingDay->is_half) {
-                            $service = $oddMinutes ? Service::where('f_ac', 1)->first() : Service::where('f_moto', 1)->first();
-                          }
-
                           // Modify content for AC and moto slots if today and currently free
                           if ($workingDay->date == $today) {
                             if (Carbon::parse($currentTime)->subMinutes(10) >= Carbon::now()) {
-                              $content = $free_slot_content;
-                              if ($workingDay->ac_toggle || $workingDay->moto_toggle) {
+                              $content = $halfRole !== null
+                                ? $this->mobileContentForHalfRole($halfRole, $free_slot_content, $taken_slot_content, $ac_slot_content, $moto_slot_content)
+                                : $free_slot_content;
+                              if ($halfRole === null && ($workingDay->ac_toggle || $workingDay->moto_toggle)) {
+                                $oddMinutes = (Carbon::parse($currentTime)->format('i') % 2) === 0;
                                 $content = $oddMinutes ? $ac_slot_content : $moto_slot_content;
                                 if (!is_null($slot->comment) && is_null($slot->takenby)) {
                                   $content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
@@ -491,7 +774,9 @@
                               }
                             }
                           } else {
-                            $content = $free_slot_content;
+                            $content = $halfRole !== null
+                              ? $this->mobileContentForHalfRole($halfRole, $free_slot_content, $taken_slot_content, $ac_slot_content, $moto_slot_content)
+                              : $free_slot_content;
                             if (!is_null($slot->comment) && is_null($slot->takenby)) {
                               $content = '<div data-queue-id="' . $workingDay->queue_id . '" data-iorder="' . $i . '" class="time-slot">'
                                 . '<div class="available discount active slot"><span class="time-span">' . $currentTime . '</span><br><span class="slot-text">' . $slot->comment . '</span></div>'
@@ -505,12 +790,14 @@
                             . '</div>';
                           break;
                         case SLOT_STATUS_TAKEN:
-                          $content = $taken_slot_content;
-                          if ($i % 2 == 1 && $workingDay->moto_toggle) {
-                            $content = $taken_moto_slot_content;
-                          } else if ($i % 2 != 1 && $workingDay->ac_toggle) {
-                            $content = $taken_ac_slot_content;
-                          }
+                          $content = $this->mobileTakenContentForHalfRole(
+                            $halfRole,
+                            $workingDay,
+                            $i,
+                            $taken_slot_content,
+                            $taken_ac_slot_content,
+                            $taken_moto_slot_content
+                          );
                           break;
                         case SLOT_STATUS_CLOSED:
                           $content = $closed_slot_content;
@@ -518,24 +805,19 @@
                       }
                     } else {
                       if ($workingDay->date == $today) {
-                        if (Carbon::parse($currentTime)->subMinutes(10) >= Carbon::now()) {
-                          // Modify content for AC and moto slots if today and within the hour
-                          if ($workingDay->is_half) {
-                            $service = $oddMinutes ? $workingDay->ac_toggle : $workingDay->moto_toggle;
-                            if (!$service && ($i % 2 == 1)) $free_slot_content = $taken_slot_content;
+                        if (Carbon::parse($currentTime)->subMinutes(30) >= Carbon::now()) {
+                          if ($halfRole !== null) {
+                            $content = $this->mobileContentForHalfRole($halfRole, $free_slot_content, $taken_slot_content, $ac_slot_content, $moto_slot_content);
+                          } else {
+                            $content = $free_slot_content;
                           }
-
-                          $content = $service && ($workingDay->ac_toggle || $workingDay->moto_toggle) ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
                         } else {
                           $content = $taken_slot_content;
                         }
                       } else {
-                        if ($workingDay->is_half) {
-                          $service = $oddMinutes ? $workingDay->ac_toggle : $workingDay->moto_toggle;
-                          if (!$service && ($i % 2 == 1)) $free_slot_content = $taken_slot_content;
-                        }
-
-                        $content = $service && ($workingDay->ac_toggle || $workingDay->moto_toggle) ? ($oddMinutes ? $ac_slot_content : $moto_slot_content) : $free_slot_content;
+                        $content = $halfRole !== null
+                          ? $this->mobileContentForHalfRole($halfRole, $free_slot_content, $taken_slot_content, $ac_slot_content, $moto_slot_content)
+                          : $free_slot_content;
                       }
                     }
                     $slots[$workingDay->date][] = ['content' => $content, 'queue_id' => $workingDay->queue_id, 'iorder' => $i, 'time' => $currentTime];
@@ -620,9 +902,7 @@
       }
       $currentDate = strtotime($date);
 
-      $isEqual = NewWorkingDay::where('date', '>=', date('Y-m-d'))->get()->diffAssoc(WorkingDay::where('date', '>=', date('Y-m-d'))->get())->isEmpty();
-
-      //        dd(NewWorkingDay::all()->diffAssoc(WorkingDay::all()), WorkingDay::all()->diffAssoc(NewWorkingDay::all()));
+      $isEqual = $this->newWorkingDaysMatchPublished();
 
       $this->loadWorkingDays();
 
@@ -632,10 +912,19 @@
         array_push($daysToShow, Date('Y-m-d', strtotime('+' . $i . ' days')));
       }
 
-      $workingDays = NewWorkingday::whereIn('date', $daysToShow)->get();
+      // Admin grid: order queues by queue_id (Kalnciema 4 → 5 → 7), not by queues.iorder / new_workingdays.iorder.
+      $workingDays = NewWorkingDay::query()
+        ->whereIn('date', $daysToShow)
+        ->orderBy('office_id')
+        ->orderBy('queue_id')
+        ->get();
 
       if (isset($request->date)) {
-        $workingDays = NewWorkingday::where('date', $date)->get();
+        $workingDays = NewWorkingDay::query()
+          ->where('date', $date)
+          ->orderBy('office_id')
+          ->orderBy('queue_id')
+          ->get();
         $daysToShow[] = $date;
         $visibleDays = 0;
         array_pop($daysToShow);
@@ -656,7 +945,62 @@
       $dayTitles = $this->dayTitles;
       $timeStep = $this->timeStep;
 
-      return view('records.reservation', compact('workingDays', 'visibleDays', 'dayTitles', 'dateRanges', 'timeRanges', 'isEqual', 'currentDate', 'timeStep'));
+      $slotDates = array_values(array_unique(array_merge($daysToShow, $workingDays->pluck('date')->all())));
+      $queueIdsForSlots = $workingDays->pluck('queue_id')->unique()->values()->all();
+      if ($queueIdsForSlots === []) {
+        $queueIdsForSlots = Queue::query()->pluck('queue_id')->all();
+      }
+
+      $slots = Slot::query()
+        ->whereIn('date', $slotDates)
+        ->whereIn('queue_id', $queueIdsForSlots)
+        ->get(['status', 'takenby', 'comment', 'edituser', 'queue_id', 'date', 'iorder']);
+
+      $slotsByKey = [];
+      foreach ($slots as $slot) {
+        $slotsByKey[Slot::reservationGridKey($slot->queue_id, $slot->date, $slot->iorder)] = $slot;
+      }
+
+      $minTimeopenByDate = NewWorkingDay::query()
+        ->whereIn('date', $slotDates)
+        ->selectRaw('date, MIN(timeopen) as min_timeopen')
+        ->groupBy('date')
+        ->pluck('min_timeopen', 'date')
+        ->all();
+
+      $offices = Office::orderBy('office_id')->get();
+      $queueSum = max(1, Queue::count());
+      $queuesCountByOffice = Queue::query()
+        ->selectRaw('office_id, count(*) as c')
+        ->groupBy('office_id')
+        ->pluck('c', 'office_id')
+        ->all();
+      $queuesById = Queue::query()->orderBy('office_id')->orderBy('queue_id')->get()->keyBy('queue_id');
+      $officesById = Office::query()->orderBy('office_id')->get()->keyBy('office_id');
+      $reservationModalQueues = Queue::query()->orderBy('office_id')->orderBy('queue_id')->get();
+      $reservationModalServices = Service::orderBy('service_id', 'ASC')->get();
+      $servicesById = $reservationModalServices->keyBy('service_id');
+
+      return view('records.reservation', compact(
+        'workingDays',
+        'visibleDays',
+        'dayTitles',
+        'dateRanges',
+        'timeRanges',
+        'isEqual',
+        'currentDate',
+        'timeStep',
+        'slotsByKey',
+        'minTimeopenByDate',
+        'offices',
+        'queueSum',
+        'queuesCountByOffice',
+        'queuesById',
+        'officesById',
+        'reservationModalQueues',
+        'reservationModalServices',
+        'servicesById'
+      ));
     }
 
     public function reservations_print($office_id, $date)
@@ -825,16 +1169,16 @@
       $writer = new Xlsx($spreadsheet);
       $filename = 'pieraksts.xlsx';
 
-      $writer->save($filename);
+      $tempFile = storage_path('app/' . $filename);
 
-      // Set the content-type:
+      $writer->save($tempFile);
+
       header('Content-Type: application/vnd.ms-excel');
       header('Content-Disposition: attachment; filename="' . $filename . '"');
-      header('Content-Length: ' . filesize($filename));
-      readfile($filename); // send file
-      unlink($filename); // delete file
+      header('Content-Length: ' . filesize($tempFile));
+      readfile($tempFile);
+      unlink($tempFile);
       exit;
-
     }
 
     public function getTimes(Request $request)
@@ -855,135 +1199,108 @@
 
     public function cancelTimeChanges()
     {
-      $equals = WorkingDay::where('date', '>=', date('Y-m-d'))->get()->diffAssoc(NewWorkingDay::where('date', '>=', date('Y-m-d'))->get());
+      return DB::transaction(function () {
+        $today = date('Y-m-d');
+        $drafts = NewWorkingDay::where('date', '>=', $today)->get();
+        $reorder = app(SlotWallTimeReorderService::class);
 
-      foreach ($equals as $equal) {
-        $workingDay = NewWorkingDay::where('workingday_id', $equal->workingday_id)->first();
-        $workingDay->queue_id = $equal->queue_id;
-        $workingDay->office_id = $equal->office_id;
-        $workingDay->date = $equal->date;
-        $workingDay->weekday = $equal->weekday;
-        $workingDay->timeopen = $equal->timeopen;
-        $workingDay->timeclose = $equal->timeclose;
-        $workingDay->is_half = $equal->is_half;
-        $workingDay->ac_toggle = $equal->ac_toggle;
-        $workingDay->moto_toggle = $equal->moto_toggle;
-        $workingDay->is_opened = $equal->is_opened;
-        $workingDay->save();
-      }
+        foreach ($drafts as $draft) {
+          $pub = Workingday::where('date', $draft->date)->where('queue_id', $draft->queue_id)->first();
+          if (! $pub) {
+            continue;
+          }
+          if ($this->workingDayRowsEqual($draft, $pub)) {
+            continue;
+          }
 
-      return json_encode(['success' => true]);
+          $oldOpen = $draft->timeopen;
+          $oldStep = (int) ($draft->timeStep ?? 15);
+          $newOpen = $pub->timeopen;
+          $newStep = (int) ($pub->timeStep ?? 15);
+
+          $reorder->recomputeSlotsForScheduleChange(
+            $draft->date,
+            (int) $draft->queue_id,
+            (string) $oldOpen,
+            $oldStep,
+            (string) $newOpen,
+            $newStep
+          );
+
+          foreach ($pub->getAttributes() as $key => $value) {
+            if ($key === 'workingday_id') {
+              continue;
+            }
+            $draft->{$key} = $value;
+          }
+          $draft->save();
+        }
+
+        return json_encode(['success' => true]);
+      });
     }
 
     public function changeTime(Request $request)
     {
-      $item = (object) $request->input('times');
+      return DB::transaction(function () use ($request) {
+        $item = (object) $request->input('times');
+        $reorder = app(SlotWallTimeReorderService::class);
 
-      if ($item->newOpenTime > $item->newCloseTime) {
-        return json_encode(['message' => 'Atvēršanas laiks nevar būt lielāks par aizvēršanas laiku']);
-      }
-
-      if ($item->newOpenTime == '00:00' && $item->newCloseTime == '00:00') {
-        $is_opened = 0;
-      } else {
-        $is_opened = 1;
-        if ($item->newOpenTime == $item->newCloseTime) {
-          return json_encode(['message' => 'Atvēršanas un aizvēršanas laiki nevar būt vienādi']);
-        }
-      }
-
-      $start = Carbon::createFromTimeString($item->newOpenTime);
-      $end = Carbon::createFromTimeString($item->oldCloseTime)->subMinutes($item->timeStep);
-
-
-      if ($item->changeVal == 1) {
-
-        $current = $start;
-        $iorder = 0;
-
-        while ($current <= $end) {
-          if ($current >= Carbon::createFromTimeString($item->newCloseTime) && $current <= Carbon::createFromTimeString($item->oldCloseTime)) {
-            $slot = Slot::where('date', $item->date)->where('queue_id', $item->queue_id)->where('iorder', $iorder)->first();
-            if ($slot) {
-              return json_encode(['message' => $item->date . ' Laikā no ' . $item->newCloseTime . ' līdz ' . $item->oldCloseTime . ' ir pieraksti']);
-            }
-          }
-          $current->addMinutes(15);
-          $iorder++;
+        if ($item->newOpenTime > $item->newCloseTime) {
+          return json_encode(['message' => 'Atvēršanas laiks nevar būt lielāks par aizvēršanas laiku']);
         }
 
-        $workingDay = NewWorkingDay::where('date', $item->date)->where('queue_id', $item->queue_id)->first();
-
-        if ($item->newOpenTime !== $item->oldOpenTime) {
-          $newOpenTime = Carbon::createFromTimeString($item->newOpenTime);
-          $oldOpenTime = Carbon::createFromTimeString($workingDay->timeopen);
-          
-          // Сохраняем абсолютное время каждого слота
-          $slots = Slot::where('date', $item->date)
-                       ->where('queue_id', $item->queue_id)
-                       ->get();
-                       
-          foreach ($slots as $slot) {
-              // Получаем текущее время слота
-              $slotTime = $oldOpenTime->copy()->addMinutes($slot->iorder * $this->timeStep);
-              // Вычисляем новый iorder на основе абсолютного времени
-              $slot->iorder = $slotTime->diffInMinutes($newOpenTime) / $this->timeStep;
-              $slot->save();
-          }
-        }
-
-        $workingDay->ac_toggle = $item->ac_toggle;
-        $workingDay->moto_toggle = $item->moto_toggle;
-
-        if ($is_opened !== 0) {
-          $workingDay->timeopen = $item->newOpenTime;
-          $workingDay->timeclose = $item->newCloseTime;
-          $workingDay->timeStep = $item->timeStep;
-          $workingDay->is_half = $item->is_half;
-          $workingDay->is_opened = $is_opened;
+        if ($item->newOpenTime == '00:00' && $item->newCloseTime == '00:00') {
+          $is_opened = 0;
         } else {
-          $workingDay->is_opened = $is_opened;
+          $is_opened = 1;
+          if ($item->newOpenTime == $item->newCloseTime) {
+            return json_encode(['message' => 'Atvēršanas un aizvēršanas laiki nevar būt vienādi']);
+          }
         }
-        $workingDay->save();
 
-        return json_encode(['status' => 'success']);
+        $step = max(1, (int) ($item->timeStep ?? $this->timeStep));
 
-      } else if ($item->changeVal == 2) {
+        $start = Carbon::createFromTimeString($item->newOpenTime);
+        $end = Carbon::createFromTimeString($item->oldCloseTime)->subMinutes($step);
 
-        $_weekDay = (int) date('N', strtotime($item->date));
+        if ($item->changeVal == 1) {
 
-        $workingDays = NewWorkingDay::where('date', '>=', $item->date)->where('weekday', $_weekDay)->where('queue_id', $item->queue_id)->get();
-
-        foreach ($workingDays as $workingDay) {
-          $start = Carbon::createFromTimeString($item->newOpenTime);
+          $current = $start->copy();
           $iorder = 0;
-          $end = Carbon::createFromTimeString($workingDay->timeclose)->subMinutes($this->timeStep);
-          for ($current = $start; $current <= $end; $current->addMinutes(15)) {
-            if ($current >= Carbon::createFromTimeString($item->newCloseTime) && $current <= $end) {
-              $slot = Slot::where('date', $workingDay->date)->where('queue_id', $item->queue_id)->where('iorder', $iorder)->first();
+
+          while ($current <= $end) {
+            if ($current >= Carbon::createFromTimeString($item->newCloseTime) && $current <= Carbon::createFromTimeString($item->oldCloseTime)) {
+              $slot = Slot::where('date', $item->date)->where('queue_id', $item->queue_id)->where('iorder', $iorder)->first();
               if ($slot) {
-                return json_encode(['message' => $workingDay->date . ' Laikā no ' . $item->newCloseTime . ' līdz ' . Carbon::createFromTimeString($workingDay->timeclose)->format('H:i') . ' ir pieraksti']);
+                return json_encode(['message' => $item->date . ' Laikā no ' . $item->newCloseTime . ' līdz ' . $item->oldCloseTime . ' ir pieraksti']);
               }
             }
+            $current->addMinutes($step);
             $iorder++;
           }
 
-          if ($item->newOpenTime !== $item->oldOpenTime) {
-            $newOpenTime = Carbon::createFromTimeString($item->newOpenTime);
-            $oldOpenTime = Carbon::createFromTimeString($workingDay->timeopen);
-            
-            // Сохраняем абсолютное время каждого слота
-            $slots = Slot::where('date', $item->date)
-                         ->where('queue_id', $item->queue_id)
-                         ->get();
-                         
-            foreach ($slots as $slot) {
-                // Получаем текущее время слота
-                $slotTime = $oldOpenTime->copy()->addMinutes($slot->iorder * $this->timeStep);
-                // Вычисляем новый iorder на основе абсолютного времени
-                $slot->iorder = $slotTime->diffInMinutes($newOpenTime) / $this->timeStep;
-                $slot->save();
-            }
+          $workingDay = NewWorkingDay::where('date', $item->date)->where('queue_id', $item->queue_id)->first();
+          if (! $workingDay) {
+            return json_encode(['message' => 'Darba diena nav atrasta']);
+          }
+
+          $oldOpenStr = (string) $workingDay->timeopen;
+          $oldStep = (int) ($workingDay->timeStep ?? $this->timeStep);
+          $newStep = (int) ($item->timeStep ?? $this->timeStep);
+          $needRecompute = ($is_opened !== 0) && (
+            ($item->newOpenTime !== $item->oldOpenTime) || ($newStep !== $oldStep)
+          );
+
+          if ($needRecompute) {
+            $reorder->recomputeSlotsForScheduleChange(
+              $item->date,
+              (int) $item->queue_id,
+              $oldOpenStr,
+              $oldStep,
+              (string) $item->newOpenTime,
+              max(1, $newStep)
+            );
           }
 
           $workingDay->ac_toggle = $item->ac_toggle;
@@ -999,127 +1316,175 @@
             $workingDay->is_opened = $is_opened;
           }
           $workingDay->save();
-        }
 
-        return json_encode(['status' => 'success']);
+          return json_encode(['status' => 'success']);
 
-      } else if ($item->changeVal == 3) {
+        } elseif ($item->changeVal == 2) {
 
-        $workingDays = NewWorkingDay::where('date', '>=', $item->date)->where('weekday', '!=', 6)->where('weekday', '!=', 7)->where('queue_id', $item->queue_id)->get();
+          $_weekDay = (int) date('N', strtotime($item->date));
 
-        foreach ($workingDays as $workingDay) {
-          $start = Carbon::createFromTimeString($item->newOpenTime);
-          $iorder = 0;
-          $end = Carbon::createFromTimeString($workingDay->timeclose)->subMinutes($this->timeStep);
-          for ($current = $start; $current <= $end; $current->addMinutes(15)) {
-            if ($current >= Carbon::createFromTimeString($item->newCloseTime) && $current <= $end) {
-              $slot = Slot::where('date', $workingDay->date)->where('queue_id', $item->queue_id)->where('iorder', $iorder)->first();
-              if ($slot) {
-                return json_encode(['message' => $workingDay->date . ' Laikā no ' . $item->newCloseTime . ' līdz ' . Carbon::createFromTimeString($workingDay->timeclose)->format('H:i') . ' ir pieraksti']);
+          $workingDays = NewWorkingDay::where('date', '>=', $item->date)->where('weekday', $_weekDay)->where('queue_id', $item->queue_id)->get();
+
+          foreach ($workingDays as $workingDay) {
+            $oldOpenStr = (string) $workingDay->timeopen;
+            $oldStep = (int) ($workingDay->timeStep ?? $this->timeStep);
+            $newStep = (int) ($item->timeStep ?? $this->timeStep);
+            $needRecompute = ($is_opened !== 0) && (
+              ($item->newOpenTime !== $item->oldOpenTime) || ($newStep !== $oldStep)
+            );
+
+            $loopStart = Carbon::createFromTimeString($item->newOpenTime);
+            $iorder = 0;
+            $dayEnd = Carbon::createFromTimeString($workingDay->timeclose)->subMinutes($step);
+            for ($current = $loopStart->copy(); $current <= $dayEnd; $current->addMinutes($step)) {
+              if ($current >= Carbon::createFromTimeString($item->newCloseTime) && $current <= $dayEnd) {
+                $slot = Slot::where('date', $workingDay->date)->where('queue_id', $item->queue_id)->where('iorder', $iorder)->first();
+                if ($slot) {
+                  return json_encode(['message' => $workingDay->date . ' Laikā no ' . $item->newCloseTime . ' līdz ' . Carbon::createFromTimeString($workingDay->timeclose)->format('H:i') . ' ir pieraksti']);
+                }
               }
+              $iorder++;
             }
-            $iorder++;
+
+            if ($needRecompute) {
+              $reorder->recomputeSlotsForScheduleChange(
+                $workingDay->date,
+                (int) $item->queue_id,
+                $oldOpenStr,
+                $oldStep,
+                (string) $item->newOpenTime,
+                max(1, $newStep)
+              );
+            }
+
+            $workingDay->ac_toggle = $item->ac_toggle;
+            $workingDay->moto_toggle = $item->moto_toggle;
+
+            if ($is_opened !== 0) {
+              $workingDay->timeopen = $item->newOpenTime;
+              $workingDay->timeclose = $item->newCloseTime;
+              $workingDay->timeStep = $item->timeStep;
+              $workingDay->is_half = $item->is_half;
+              $workingDay->is_opened = $is_opened;
+            } else {
+              $workingDay->is_opened = $is_opened;
+            }
+            $workingDay->save();
           }
 
-          if ($item->newOpenTime !== $item->oldOpenTime) {
-            $newOpenTime = Carbon::createFromTimeString($item->newOpenTime);
-            $oldOpenTime = Carbon::createFromTimeString($workingDay->timeopen);
-            
-            // Сохраняем абсолютное время каждого слота
-            $slots = Slot::where('date', $item->date)
-                         ->where('queue_id', $item->queue_id)
-                         ->get();
-                         
-            foreach ($slots as $slot) {
-                // Получаем текущее время слота
-                $slotTime = $oldOpenTime->copy()->addMinutes($slot->iorder * $this->timeStep);
-                // Вычисляем новый iorder на основе абсолютного времени
-                $slot->iorder = $slotTime->diffInMinutes($newOpenTime) / $this->timeStep;
-                $slot->save();
+          return json_encode(['status' => 'success']);
+
+        } elseif ($item->changeVal == 3) {
+
+          $workingDays = NewWorkingDay::where('date', '>=', $item->date)->where('weekday', '!=', 6)->where('weekday', '!=', 7)->where('queue_id', $item->queue_id)->get();
+
+          foreach ($workingDays as $workingDay) {
+            $oldOpenStr = (string) $workingDay->timeopen;
+            $oldStep = (int) ($workingDay->timeStep ?? $this->timeStep);
+            $newStep = (int) ($item->timeStep ?? $this->timeStep);
+            $needRecompute = ($is_opened !== 0) && (
+              ($item->newOpenTime !== $item->oldOpenTime) || ($newStep !== $oldStep)
+            );
+
+            $loopStart = Carbon::createFromTimeString($item->newOpenTime);
+            $iorder = 0;
+            $dayEnd = Carbon::createFromTimeString($workingDay->timeclose)->subMinutes($step);
+            for ($current = $loopStart->copy(); $current <= $dayEnd; $current->addMinutes($step)) {
+              if ($current >= Carbon::createFromTimeString($item->newCloseTime) && $current <= $dayEnd) {
+                $slot = Slot::where('date', $workingDay->date)->where('queue_id', $item->queue_id)->where('iorder', $iorder)->first();
+                if ($slot) {
+                  return json_encode(['message' => $workingDay->date . ' Laikā no ' . $item->newCloseTime . ' līdz ' . Carbon::createFromTimeString($workingDay->timeclose)->format('H:i') . ' ir pieraksti']);
+                }
+              }
+              $iorder++;
             }
+
+            if ($needRecompute) {
+              $reorder->recomputeSlotsForScheduleChange(
+                $workingDay->date,
+                (int) $item->queue_id,
+                $oldOpenStr,
+                $oldStep,
+                (string) $item->newOpenTime,
+                max(1, $newStep)
+              );
+            }
+
+            $workingDay->ac_toggle = $item->ac_toggle;
+            $workingDay->moto_toggle = $item->moto_toggle;
+            if ($is_opened !== 0) {
+              $workingDay->timeopen = $item->newOpenTime;
+              $workingDay->timeclose = $item->newCloseTime;
+              $workingDay->timeStep = $item->timeStep;
+              $workingDay->is_half = $item->is_half;
+              $workingDay->is_opened = $is_opened;
+            } else {
+              $workingDay->is_opened = $is_opened;
+            }
+            $workingDay->save();
           }
 
-          $workingDay->ac_toggle = $item->ac_toggle;
-          $workingDay->moto_toggle = $item->moto_toggle;
-          if ($is_opened !== 0) {
-            $workingDay->timeopen = $item->newOpenTime;
-            $workingDay->timeclose = $item->newCloseTime;
-            $workingDay->timeStep = $item->timeStep;
-            $workingDay->is_half = $item->is_half;
-            $workingDay->is_opened = $is_opened;
-          } else {
-            $workingDay->is_opened = $is_opened;
-          }
-          $workingDay->save();
+          return json_encode(['status' => 'success']);
+
         }
 
-        return json_encode(['status' => 'success']);
-
-      }
+        return json_encode(['message' => 'Nepazīstams changeVal']);
+      });
     }
 
     public function saveTimeChanges()
     {
-      $equals = NewWorkingDay::where('date', '>=', date('Y-m-d'))->get()->diffAssoc(WorkingDay::where('date', '>=', date('Y-m-d'))->get());
+      return DB::transaction(function () {
+        $today = date('Y-m-d');
+        $drafts = NewWorkingDay::where('date', '>=', $today)->get();
 
-      foreach ($equals as $equal) {
-        $workingDay = WorkingDay::where('workingday_id', $equal->workingday_id)->first();
+        foreach ($drafts as $draft) {
+          $pub = Workingday::where('date', $draft->date)->where('queue_id', $draft->queue_id)->first();
+          if (! $pub) {
+            continue;
+          }
+          if ($this->workingDayRowsEqual($draft, $pub)) {
+            continue;
+          }
 
-        if ($workingDay->timeopen !== $equal->timeopen) {
-          $newOpenTime = Carbon::createFromTimeString($equal->timeopen);
-          $oldOpenTime = Carbon::createFromTimeString($workingDay->timeopen);
+          $workingDay = Workingday::where('workingday_id', $draft->workingday_id)->first();
+          if (! $workingDay) {
+            continue;
+          }
 
-          $end = Carbon::createFromTimeString($equal->timeclose)->subMinutes($this->timeStep);
+          foreach ($draft->getAttributes() as $key => $value) {
+            if ($key === 'workingday_id') {
+              continue;
+            }
+            $workingDay->{$key} = $value;
+          }
+          $workingDay->save();
 
-          $newIorder = $newOpenTime->diffInMinutes($end) / $this->timeStep - $oldOpenTime->diffInMinutes($end) / $this->timeStep;
-
-          $slots = Slot::where('date', $workingDay->date)->where('queue_id', $workingDay->queue_id)->get();
-
-          //          if ($newOpenTime > $oldOpenTime) {
-          //            foreach ($slots as $slot) {
-          //              $slot->iorder = $slot->iorder + ($newIorder);
-          //              $slot->save();
-          //            }
-          //          } else {
-          //            foreach ($slots as $slot) {
-          //              $slot->iorder = $slot->iorder - ($newIorder);
-          //              $slot->save();
-          //            }
-          //          }
+          $queue = Queue::where('queue_id', $workingDay->queue_id)->first();
+          if ($queue) {
+            $queue->timestamps = false;
+            if ((int) $workingDay->weekday === 6) {
+              $queue->wtimeopen = $workingDay->timeopen;
+              $queue->wtimeclose = $workingDay->timeclose;
+            } else {
+              $queue->timeopen = $workingDay->timeopen;
+              $queue->timeclose = $workingDay->timeclose;
+            }
+            $queue->is_visible = $workingDay->is_opened;
+            $queue->save();
+          }
         }
 
-        $workingDay->queue_id = $equal->queue_id;
-        $workingDay->office_id = $equal->office_id;
-        $workingDay->date = $equal->date;
-        $workingDay->weekday = $equal->weekday;
-        $workingDay->timeopen = $equal->timeopen;
-        $workingDay->timeclose = $equal->timeclose;
-        $workingDay->timeStep = $equal->timeStep;
-        $workingDay->ac_toggle = $equal->ac_toggle;
-        $workingDay->moto_toggle = $equal->moto_toggle;
-        $workingDay->is_half = $equal->is_half;
-        $workingDay->is_opened = $equal->is_opened;
-        $workingDay->save();
-
-        $queue = Queue::where('queue_id', $workingDay->queue_id)->first();
-        $queue->timestamps = false;
-        if ($workingDay->weekday === 6) {
-          $queue->wtimeopen = $workingDay->timeopen;
-          $queue->wtimeclose = $workingDay->timeclose;
-        } else {
-          $queue->timeopen = $workingDay->timeopen;
-          $queue->timeclose = $workingDay->timeclose;
-        }
-        $queue->is_visible = $workingDay->is_opened;
-        $queue->save();
-      }
-
-      return json_encode(['success' => true]);
+        return json_encode(['success' => true]);
+      });
     }
 
     public function cancelSlot(Request $request, $id)
     {
-      $slot = Slot::where('takenby', 'like', '%"cancelId":"' . $id . '"%')->first();
+      $slot = Slot::where('cancel_id', $id)->first();
+      if (!$slot) {
+        $slot = Slot::where('takenby', 'like', '%"cancelId":"' . $id . '"%')->first();
+      }
 
       $date = date('Y-m-d');
       if (!$slot) return redirect(route('pieraksts'));
@@ -1163,6 +1528,7 @@
           $deletedSlot = $slot;
           $slot->status = 0;
           $slot->takenby = NULL;
+          $slot->cancel_id = null;
           if ($slot->save()) {
 
             if ($takenBy->email) {
@@ -1180,33 +1546,27 @@
             $smsText = $queue->parseNotification($queue->getOriginal()['notificationScheduleCancelSMS'], $deletedSlot->date, $deletedSlot->iorder, $takenBy, $time);
 
             (new SmsSender)->sendSchedule((array) $takenBy, $smsText, $deletedSlot);
-            if ($date == $slot->date) {
-              if ($this->now >= $this->startSendWpp && $this->now < $this->endSendWpp) {
-
+            if ($date == $deletedSlot->date) {
+              $restrictOfficeHours = (bool) config('services.whatsapp_parallel.restrict_office_hours', true);
+              $withinOfficeHours = ($this->now >= $this->startSendWpp && $this->now < $this->endSendWpp);
+              if ($withinOfficeHours || ! $restrictOfficeHours) {
                 $vehicle = str_replace(' ', '%20', $takenBy->car_brand);
                 $model = str_replace(' ', '%20', $takenBy->car_model);
                 $vehiclePlate = str_replace(' ', '%20', $takenBy->lic_plate);
-
-                if ($office->office_id == 1) {
-
-                  $cURLConnection = curl_init();
-
-                  curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=' . $this->ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate);
-                  curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-
-                  curl_exec($cURLConnection);
-
-                  curl_close($cURLConnection);
-                } else {
-                  $cURLConnection = curl_init();
-
-                  curl_setopt($cURLConnection, CURLOPT_URL, 'http://api.textmebot.com/send.php?recipient=' . $this->krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $time . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate);
-                  curl_setopt($cURLConnection, CURLOPT_RETURNTRANSFER, true);
-
-                  curl_exec($cURLConnection);
-
-                  curl_close($cURLConnection);
-                }
+                $ursWpp = $this->ursWpp;
+                $krsWpp = $this->krsWpp;
+                $officeId = (int) $office->office_id;
+                $timeWpp = $time;
+                app()->terminating(static function () use ($timeWpp, $vehicle, $model, $vehiclePlate, $ursWpp, $krsWpp, $officeId): void {
+                  $url = $officeId === 1
+                    ? 'http://api.textmebot.com/send.php?recipient=' . $ursWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $timeWpp . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate
+                    : 'http://api.textmebot.com/send.php?recipient=' . $krsWpp . '&apikey=d6nsRWNp1xpc&text=Atcelts%20pieraksts%20-%20' . $timeWpp . '%20|%20' . $vehicle . '%20' . $model . '%20|%20' . $vehiclePlate;
+                  $ch = curl_init();
+                  curl_setopt($ch, CURLOPT_URL, $url);
+                  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                  curl_exec($ch);
+                  curl_close($ch);
+                });
               }
             }
 
@@ -1231,40 +1591,7 @@
       $value = Str::random(32);
       $hash = hash('sha256', $value);
 
-      // check if hash is already taken
-      $isTaken = $this->isHashTaken($hash);
-      if ($isTaken) {
-        // if hash is taken, hash the value again
-        $hash = hash('sha256', $hash . $value);
-
-        // keep hashing until a unique hash is found
-        while ($this->isHashTaken($hash)) {
-          $hash = hash('sha256', $hash . $value);
-        }
-      }
-
       return substr($hash, 0, 20);
-    }
-
-    public function isHashTaken($value): bool
-    {
-      static $takenHashes = []; // static variable to store taken numbers
-
-      $slots = Slot::select('takenby')->where('takenby', 'like', '%"cancelId":%')->get();
-      foreach ($slots as $slot) {
-        $takenBy = json_decode($slot->takenby);
-        if (!empty($takenBy)) {
-          if (property_exists($takenBy, 'cancelId')) {
-            $takenHashes[] = $takenBy->cancelId;
-          }
-        }
-      }
-
-      if (in_array($value, $takenHashes)) {
-        return true;
-      }
-
-      return false;
     }
 
     /**
@@ -1292,6 +1619,45 @@
         // Insert a colon at the second character of the string.
         return substr($number, 0, 2) . ":" . substr($number, 2);
       }
+    }
+
+    /**
+     * Whether published working days (workingdays) match draft rows (new_workingdays).
+     * Replaces the old diffAssoc comparison; compares by (date, queue_id) instead of row order.
+     */
+    private function newWorkingDaysMatchPublished(): bool
+    {
+      $today = date('Y-m-d');
+      $new = NewWorkingDay::where('date', '>=', $today)->get();
+      $pub = Workingday::where('date', '>=', $today)->get();
+      if ($new->count() !== $pub->count()) {
+        return false;
+      }
+      $pubByKey = $pub->keyBy(function ($w) {
+        return $w->date . '|' . $w->queue_id;
+      });
+      foreach ($new as $n) {
+        $k = $n->date . '|' . $n->queue_id;
+        if (! $pubByKey->has($k)) {
+          return false;
+        }
+        if (! $this->workingDayRowsEqual($n, $pubByKey[$k])) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    private function workingDayRowsEqual($a, $b): bool
+    {
+      $ka = $a->getAttributes();
+      $kb = $b->getAttributes();
+      unset($ka['workingday_id'], $kb['workingday_id']);
+      ksort($ka);
+      ksort($kb);
+
+      return $ka == $kb;
     }
 
   }

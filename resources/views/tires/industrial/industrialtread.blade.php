@@ -2,6 +2,15 @@
 
 @section('body-title', 'product')
 @section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-right-column page-product tax-display-enabled product-id-351 product-antares-ingens-a1- product-id-category-14 product-id-manufacturer-59 product-id-supplier-0 product-available-for-order')
+@php
+  $productTitle = $currTire->fullName ?? $pageHeading ?? 'Riepas';
+  $productHeading = trim(($currTire->title ?: $pageHeading ?? '') . ' ' . $currTire->fullSize);
+  $productDescriptionSource = $currTire->t_comment ?: ($currBrand->b_comment ?? '');
+  $productDescription = trim(\Illuminate\Support\Str::limit(strip_tags($productDescriptionSource), 160));
+@endphp
+@section('meta_title', $productTitle . ' | R1 Riepu Serviss')
+@section('meta_description', $productDescription ?: 'Lielas riepas — R1 Riepu Serviss katalogs.')
+@section('meta_keywords', config('seo.keywords.lielas'))
 
 @section('content')
 
@@ -30,7 +39,7 @@
               <div class="col-md-12 col-lg-8">
                 <div class="row">
                   <div class="col-sm-12 product-main-details">
-                    <h1 class="h1 mt-1" itemprop="name">{{ $tires[0]->brands_title.' '.$tires[0]->treads_title }}</h1>
+                    <h1 class="h1 mt-1" itemprop="name">{{ $productHeading }}</h1>
                   </div>
                   <div class="col-sm-12 col-md-12 col-lg-6">
                     <div class="product-prices">
@@ -56,7 +65,7 @@
                           <div class="input-group bootstrap-touchspin" style="transform: none;">
                             <span class="input-group-addon bootstrap-touchspin-prefix" style="display: none;"></span>
                             <input type="hidden" name="article" class="tire_article" value="{{ $currTire->article }}">
-                            <input type="hidden" name="title" class="tire_title" value="{{ $currTire->title }}">
+                            <input type="hidden" name="title" class="tire_title" value="{{ $pageHeading }}">
                             <input type="text" name="qty" id="quantity_wanted" value="{{ $cartQty }}" class="input-group form-control" min="1" aria-label="Daudzums" style="display: block;">
                             <span class="input-group-addon bootstrap-touchspin-postfix" style="display: none;"></span>
                             <span class="input-group-btn-vertical">
@@ -70,7 +79,7 @@
                           </div>
                         </div>
                         <div class="add">
-                          <button class="btn btn-primary add-to-cart" data-toggle="modal" @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal" @endif data-button-action="add-to-cart" data-info="{{ $currTire->tire_id }}">
+			  <button type="button" class="btn btn-primary add-to-cart" data-button-action="add-to-cart" data-info="{{ $currTire->tire_id }}" data-link="/lielas-riepas" data-url="{{ url()->current() }}">
                             <i class="material-icons shopping-cart"></i>
                             Pirkt
                           </button>
@@ -215,10 +224,9 @@
                       <td class="hidden-sm-down text-center tread-comment-cell-size">{{$tire->comment}}</td>
                       <td class="shopping-cart-col">
                         <div class="clearfix atc_div text-right">
-                          <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
-                                  @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
-                                  @endif data-info="{{ $tire->tire_id }}"><i
-                              class="material-icons">add_shopping_cart</i>
+                          <button type="button" class="cart-shopping-button grid-cart-btn"
+                                  data-info="{{ $tire->tire_id }}" data-url="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}" data-link="/lielas-riepas"><i
+			      class="material-icons">add_shopping_cart</i>
                           </button>
                         </div>
                       </td>
@@ -330,4 +338,7 @@
     </div>
   </div>
 
+@push('scripts')
+<script src="{{ \App\Helper\AssetHelper::v('js/bigTiresAjax.js') }}" defer></script>
+@endpush
 @endsection

@@ -246,6 +246,7 @@
       $tire->type = ($request->tire_type === null) ? 'trail' : $request->tire_type;
       $tire->li = ($request->li === null) ? '' : $request->li;
       $tire->si = ($request->si === null) ? '' : $request->si;
+      $tire->is_camera = $request->has('is_camera') ? 1 : 0;
       $tire->price1 = ($request->price1 === null) ? '' : $request->price1;
       $tire->price2 = ($request->price2 === null) ? '' : $request->price2;
       $tire->comment = ($request->comment === null) ? '' : $request->comment;
@@ -259,6 +260,7 @@
       $tire->krs_quantity = ($request->krs_quantity === null) ? '' : $request->krs_quantity;
 
       $tire->save();
+      Moto::clearFilterCache();
 
       if ($request->i3article !== null) {
         $i3stock = new Motostock;
@@ -306,6 +308,7 @@
       $tire->type = ($request->tire_type) ? $request->tire_type : '';
       $tire->li = $request->li;
       $tire->si = $request->si;
+      $tire->is_camera = $request->has('is_camera') ? 1 : 0;
       $tire->price1 = $request->price1;
       $tire->price2 = $request->price2;
       $tire->comment = $request->comment;
@@ -357,6 +360,8 @@
         }
       }
 
+      Moto::clearFilterCache();
+
       return redirect(route('admin.moto.tire.edit', $id))->with('success', 'Informācija veiksmīgi atjaunota');
     }
 
@@ -364,6 +369,7 @@
     {
 
       Moto::where('tire_id', $id)->delete();
+      Moto::clearFilterCache();
 
       return redirect()->back()->with('success', 'Riepa veiksmīgi dzēsta!');
 
@@ -374,6 +380,7 @@
 
       Moto::whereIn('tire_id', $request->tire_id)->delete();
       Motostock::whereIn('tire_id', $request->tire_id)->delete();
+      Moto::clearFilterCache();
 
       $response = (count($request->tire_id) > 1) ? 'Riepas veiksmīgi dzēstas!' : 'Riepa veiksmīgi dzēsta!';
 

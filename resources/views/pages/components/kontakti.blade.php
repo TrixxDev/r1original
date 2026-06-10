@@ -4,12 +4,12 @@
 <table class="contacts table" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" border="0">
 <thead>
 <tr>
-<th>Kalnciema</th>
+<th><a href="{{ route('filiale-riga') }}">Kalnciema</a></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Rīga, Kalnciema ielā 39</td>
+<td><a href="{{ route('filiale-riga') }}">Rīga, Kalnciema ielā 39</a></td>
 </tr>
 <tr>
 <td><a href="tel:+37167615615"><strong>+371 67615615</strong></a></td>
@@ -30,10 +30,10 @@
 <td>Pirm. - Piekt. <strong>9:00 - 18:00</strong></td>
 </tr>
 <tr>
-<td>Svētdiena - <strong>9:00 - 15:00</strong></td>
+<td>Sestdiena  -<strong> Slēgts</strong></td>
 </tr>
 <tr>
-<td>Svētdiena - <strong>Slēgts</strong></td>
+<td>Svētdiena  -<strong> Slēgts</strong></td>
 </tr>
 </tbody>
 </table>
@@ -42,12 +42,12 @@
 <table class="contacts table" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" border="0">
 <thead>
 <tr>
-<th>Ulbroka</th>
+<th><a href="{{ route('filiale-ulbroka') }}">Ulbroka</a></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Ulbroka, Acones iela 2a</td>
+<td><a href="{{ route('filiale-ulbroka') }}">Ulbroka, Acones iela 2A</a></td>
 </tr>
 <tr>
 <td><a href="tel:+37167910555"><strong>+371 67910555</strong></a></td>
@@ -65,10 +65,10 @@
 </thead>
 <tbody>
 <tr>
-<td>Pirm. - Piekt. <strong>9:00 - 19:00</strong></td>
+<td>Pirm. - Piekt. <strong>9:00 - 18:00</strong></td>
 </tr>
 <tr>
-<td>Sestdiena - <strong>9:00 - 15:00</strong></td>
+<td>Sestdiena - <strong>Slēgts</strong></td>
 </tr>
 <tr>
 <td>Svētdiena - <strong>Slēgts</strong></td>

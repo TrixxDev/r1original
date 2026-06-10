@@ -20,6 +20,7 @@ use App\Models\Bigtread;
 use App\Models\Bigbrand;
 use App\Models\Studbrand;
 use App\Models\Studtread;
+use Illuminate\Support\Facades\Cache;
 
 class Tires
 {
@@ -60,19 +61,21 @@ class Tires
 //    }
 
     public static function getAllBigBrands() {
-      $tires = Bigtire::with('tread')->where('visible_users', 1)->where('visible_list', 1)->get();
-      $brands = [];
-      foreach ($tires as $tire) {
-        if (Bigbrand::where('brand_id', $tire->tread->brand_id)->exists()) {
-          $brand = Bigbrand::select('brand_id as id', 'title')->where('brand_id', $tire->tread->brand_id)->first();
-          array_push($brands, $brand);
-        } else {
-          continue;
-        }
+      $brands = Bigbrand::query()
+        ->whereHas('treads.tires', function ($query) {
+          $query->where('visible_users', 1)->where('visible_list', 1);
+        })
+        ->orderBy('title')
+        ->get(['brand_id', 'title']);
+
+      $brandList = [];
+      foreach ($brands as $brand) {
+        $brandList[$brand->brand_id] = ucwords(strtolower($brand->title));
       }
-      sort($brands);
-      $brands = array_values(array_unique($brands));
-      return $brands;
+
+      asort($brandList, SORT_NATURAL | SORT_FLAG_CASE);
+
+      return $brandList;
     }
 
     public static function getAllQuadrBrands() {
@@ -119,12 +122,18 @@ class Tires
     }
 
     public static function getAutoTiresSize($column, $season = 1) {
+      if ($column === 'd2') {
+        $orderBy = "CASE WHEN CAST({$column} AS DECIMAL(7,2)) > 15 THEN 0 ELSE 1 END, CAST({$column} AS DECIMAL(7,2))";
+      } else {
+        $orderBy = "CASE WHEN {$column} >= 100 THEN 0 ELSE 1 END, {$column}";
+      }
+
       return Autotire::join('auto_treads', 'auto_tires.make_id', '=', 'auto_treads.tread_id')
         ->select($column)
         ->where($column, '<>', '""')
         ->where('auto_tires.visible_users', '<>', 0)
         ->where('auto_treads.season', $season)
-        ->orderByRaw("CASE WHEN {$column} >= 100 THEN 0 ELSE 1 END, {$column}")
+        ->orderByRaw($orderBy)
         ->groupBy($column)
         ->get();
     }
@@ -153,43 +162,45 @@ class Tires
         return Moto::select('d3')->whereRaw('d3 <> ""')->orderByRaw('cast(d3 as decimal(7,2)) ASC')->groupBy('d3')->get();
     }
 
-    public static function getBigTiresD1() {
-      $tires = Bigtire::select('d1')->where('visible_users', 1)->where('visible_list', 1)->get();
-      $sizes = [];
-      foreach ($tires as $tire) {
-        if ($tire->d1 !== null) {
-          array_push($sizes, $tire);
-        }
+    public static function getBigTiresSize($column) {
+      $allowed = ['d1', 'd2', 'd3'];
+      if (!in_array($column, $allowed, true)) {
+        return [];
       }
-      sort($sizes);
-      $sizes = array_values(array_unique($sizes));
-      return $sizes;
+
+      return Cache::remember('big_tires_sizes_' . $column, 3600, function () use ($column) {
+        return Bigtire::query()
+          ->where('visible_users', 1)
+          ->where('visible_list', 1)
+          ->whereNotNull($column)
+          ->where($column, '<>', '')
+          ->orderByRaw('CAST(' . $column . ' AS DECIMAL(10,2)) ASC')
+          ->distinct()
+          ->pluck($column)
+          ->map(function ($value) {
+            return (string) $value;
+          })
+          ->values()
+          ->all();
+      });
+    }
+
+    public static function getBigTiresD1() {
+      return array_map(function ($value) {
+        return (object) ['d1' => $value];
+      }, self::getBigTiresSize('d1'));
     }
 
     public static function getBigTiresD2() {
-      $tires = Bigtire::select('d2')->where('visible_users', 1)->where('visible_list', 1)->get();
-      $sizes = [];
-      foreach ($tires as $tire) {
-        if ($tire->d2 !== null) {
-          array_push($sizes, $tire);
-        }
-      }
-      sort($sizes);
-      $sizes = array_values(array_unique($sizes));
-      return $sizes;
+      return array_map(function ($value) {
+        return (object) ['d2' => $value];
+      }, self::getBigTiresSize('d2'));
     }
 
     public static function getBigTiresD3() {
-      $tires = Bigtire::select('d3')->where('visible_users', 1)->where('visible_list', 1)->get();
-      $sizes = [];
-      foreach ($tires as $tire) {
-        if ($tire->d3 !== null) {
-          array_push($sizes, $tire);
-        }
-      }
-      sort($sizes);
-      $sizes = array_values(array_unique($sizes));
-      return $sizes;
+      return array_map(function ($value) {
+        return (object) ['d3' => $value];
+      }, self::getBigTiresSize('d3'));
     }
 
     public static function getStudTread($tread_id) {

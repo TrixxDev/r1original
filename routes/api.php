@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\MobileSlotsController;
+use App\Http\Controllers\Api\OfficeMobilePrefsController;
 use App\Models\FilterCars;
 use App\Models\FilterSizes;
+use App\Models\FilterModels;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
-use App\Models\FilterModels;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +22,67 @@ use App\Models\FilterModels;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::prefix('v1/mobile')->middleware(['api', 'mobile.token'])->group(function () {
+    Route::get('/lift-spots', [MobileSlotsController::class, 'liftSpots']);
+    Route::get('/slots', [MobileSlotsController::class, 'slots']);
+    Route::post('/slots/{id}/update', [MobileSlotsController::class, 'update']);
+    Route::post('/slots/{id}/ic-status', [MobileSlotsController::class, 'updateIcStatus']);
+    Route::post('/slots/{id}/planned-tasks', [MobileSlotsController::class, 'updatePlannedTasks']);
+    Route::post('/slots/{id}/client-data', [MobileSlotsController::class, 'updateClientData']);
+    Route::get('/services', [MobileSlotsController::class, 'services']);
+    Route::get('/office-prefs', [OfficeMobilePrefsController::class, 'show']);
+    Route::put('/office-prefs', [OfficeMobilePrefsController::class, 'update']);
+});
+
+Route::middleware('api')->group(function () {
+    Route::post('/slots/{id}/update', function(\Illuminate\Http\Request $request, $id) {
+	$liftSpot = ($request->lift_spot) ? $request->lift_spot : null;
+	$slot = DB::table('slots')->where('slot_id', $id)->update(['mobile_status' => $request->mobile_status, 'lift_spot' => $liftSpot]);
+
+        return response()->json(['success' => true]);
+    });
+
+    Route::get('lift-spots', function() {
+	// Получаем все записи, где lift_spot не null
+        $slots = DB::table('slots')
+            ->select('lift_spot', 'slot_id', 'mobile_status')
+            ->whereNotNull('lift_spot')
+            ->get();
+
+        // Формируем массив для 10 мест
+        $liftSpots = [];
+        for ($i = 1; $i <= 10; $i++) {
+            // Ищем запись, которая заняла это место
+            $occupied = $slots->firstWhere('lift_spot', $i);
+
+            $liftSpots[] = [
+                'id' => $i,
+                'isOccupied' => $occupied && $occupied->mobile_status == 2, // только статус 2 блокирует место
+                'occupiedBySlotId' => $occupied ? $occupied->slot_id : null,
+                'occupiedByStatus' => $occupied ? $occupied->mobile_status : null,
+            ];
+        }
+
+        return response()->json(['lift_spots' => $liftSpots]);
+
+    });
+
+    Route::get('search/slot', function() {
+       $search = request('search');
+
+       $slots = DB::table('slots')->where('takenby', 'like', "%$search%")->orderBy('date', 'desc')->get();
+
+       return response()->json([
+           'slots' => $slots
+       ]);
+    });
+
+    Route::get('services-list', function() {
+	return DB::table('services')->get();
+    });
+
 });
 
 Route::middleware('api')->get('/company/{code}', function(Request $request, $code) {
@@ -46,7 +109,7 @@ Route::middleware('api')->get('/company/{code}', function(Request $request, $cod
       'username' => 'r1sia_xml',
       'password' => 'ds8hlAza',
       'client_id' => 'fe4f5380',
-      'client_secret' => '1feda647'
+      'client_secret' => '1feda647',
     )
   );
 
@@ -65,7 +128,6 @@ Route::middleware('api')->get('/company/{code}', function(Request $request, $cod
   $token = $response['access_token'];
 
   unset($context);
-
 
   $opts = array('http' =>
     array(
@@ -93,7 +155,6 @@ Route::middleware('api')->get('/company/{code}', function(Request $request, $cod
   return json_encode($encode);
 
 });
-
 Route::middleware('api')->get('/wheels/{car}/{model}', function($car, $model) {
 
   function decode($encoded) {

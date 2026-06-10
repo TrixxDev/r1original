@@ -1,8 +1,10 @@
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">RIEPU NOMAIŅAS CENAS</span></strong></p>
 <div>
-<table dir="ltr" style="width: 95.3518%; height: 297.984px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 29.2876%;" width="222"><col style="width: 8.83905%;" width="67"><col style="width: 8.83905%;" width="67"><col style="width: 8.83905%;" width="67"><col style="width: 8.83905%;" width="67"><col style="width: 8.83905%;" width="67"><col style="width: 8.83905%;" width="67"><col style="width: 8.83905%;" width="67"><col style="width: 8.83905%;" width="67"></colgroup>
+<table dir="ltr" style="width: 95.3518%; height: 297.984px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 29.2876%;" width="222"><col style="width: 8.83905%;" width="67"><col style="width: 8.83905%;" width="67$
 <tbody>
-<tr style="height: 49.2969px;">
+<tr style="> </colgroup>
+<tbody>
+<tr>
 <td style="text-align: center; height: 74px;" colspan="1" rowspan="2">
 <div><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../img/michelin_certificate.jpg" width="195" height="75"></strong></div>
 </td>
@@ -81,61 +83,69 @@
 </table>
 </div>
 <div class="pak-table"><sub><span style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;">* - riepas ar "C" indeksu un riepas ar sekojošiem izmēriem vai lielākas (diametrā) 225/70R16, 225/65R17, 225/60R18, 225/55R19</span></sub></div>
-<div class="pak-table"> </div>
-<p style="text-align: center;"><strong><span style="font-size: 18pt;">RITEŅU MONTĀŽA</span></strong></p>
+<div class="pak-table">                           </div>
+<div class="pak-table" style="text-align: center;"> </div>
+<div class="pak-table" style="text-align: center;"><strong><span style="font-size: 18.0pt; line-height: 107%; font-family: 'Calibri',sans-serif; mso-fareast-font-family: 'Times New Roman'; color: black; mso-font-kerning: 0pt; mso-ligatures: none; mso-ansi-language: LV; mso-fareast-language: LV; mso-bidi-language: AR-SA;">RITEŅU MONTĀŽA</span></strong></div>
+<div class="pak-table" style="text-align: center;"> </div>
 <div class="pak-table">
-<table dir="ltr" style="width: 100%; height: 185.953px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.217105263157894%;" width="222"><col style="width: 19.490131578947366%;" width="57"><col style="width: 14.638157894736842%;" width="61"><col style="width: 16.447368421052634%;" width="57"><col style="width: 17.105263157894736%;" width="57"><col style="width: 11.019736842105262%;" width="57"></colgroup>
+<table dir="ltr" style="width: 100%; height: 185.953px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.217105263157894%;" width="222"><col style="width: 13.490131578947366%;" width="57"><col style="width: 14$<tbody><tr style=;"> </colgroup>
 <tbody>
-<tr style="height: 24.7031px;">
+<tr>
 <td style="height: 74px;" colspan="1" rowspan="2">
 <div style="text-align: center;"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../img/michelin_certificate.jpg" width="195" height="75"></strong></div>
 </td>
-<td style="height: 24.7031px; text-align: center;" colspan="5" rowspan="1" data-sheets-value="{"><strong>RITEŅU NOMAIŅA VIEGLIEM AUTO</strong></td>
+<td style="height: 24.7031px; text-align: center;" colspan="6" rowspan="1" data-sheets-value="{"><strong>RITEŅU NOMAIŅA VIEGLIEM AUTO</strong></td>
 </tr>
 <tr style="height: 49.2969px;">
-<td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>Tērauda diski</strong></td>
+<td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>Tērauda diski l dz 15</strong></td>
+<td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>Tērauda diski 16"-17"</strong></td>
 <td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 12"-16"</strong></td>
 <td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 17"-18"</strong></td>
 <td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 19"-20"</strong></td>
-<td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>R21<</strong></td>
+<td style="height: 49.2969px; text-align: center;" data-sheets-value="{"><strong>Lietie diski R21<</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
-<td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riepas montāža</strong></td>
+<td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riepas montāža</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 2.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 2.50</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 2.50</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.00</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
-<td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riepas demontāža</strong></td>
+<td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riepas demontāža</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 2.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 2.50</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 2.50</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.00</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
-<td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņa balansēšana</strong></td>
+<td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņfa balansēšana</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.00</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 5.00</strong></td>
-</tr>
-<tr style="height: 22.3906px;">
-<td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņa noskrūv/uzskrūv</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 5.00</strong></td>
 </tr>
 <tr style="height: 22.3906px;">
-<td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņa pilns darbs</strong></td>
+<td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņa noskrūv/uzskrūv</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 5.00</strong></td>
+</tr>
+<tr style="height: 22.3906px;">
+<td style="height: 22.3906px;" data-sheets-value="{"><strong> 1 riteņa pilns darbs</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 9.00</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 10.00</strong></td>
-<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 12.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 11.00</strong></td>
+<td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 13.00</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 14.00</strong></td>
 <td style="height: 22.3906px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 16.00</strong></td>
 </tr>
@@ -144,96 +154,133 @@
 </div>
 <p> </p>
 <div class="pak-table">
-<table dir="ltr" style="width: 100%; height: 186px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.668%;" width="222"><col style="width: 21.7609%;" width="57"><col style="width: 17.3171%;" width="61"><col style="width: 18.4051%;" width="57"><col style="width: 20.7624%;" width="57"></colgroup>
+<table dir="ltr" style="width: 100%; height: 186px;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 21.217105263157894%;" width="222"><col style="width: 13.490131578947366%;" width="57"><col style="width: 14.638$<tbody><tr style=;"> </colgroup>
 <tbody>
-<tr style="height: 37px;">
+<tr>
 <td style="height: 74px;" colspan="1" rowspan="2"><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../img/michelin_certificate.jpg" width="195" height="75"></strong></td>
-<td style="height: 37px; text-align: center;" colspan="4" rowspan="1" data-sheets-value="{"><strong>RITEŅU NOMAIŅA KROSOVERIEM/SUV/CARGO*</strong></td>
+<td style="height: 37px; text-align: center;" colspan="6" rowspan="1" data-sheets-value="{"><strong>RITEŅU NOMAIŅA KROSOVERIEM/SUV/CARGO*</strong></td>
 </tr>
 <tr style="height: 37px;">
-<td style="height: 37px; text-align: center;" data-sheets-value="{"><strong>Tērauda diski</strong></td>
+<td style="height: 37px; text-align: center;" data-sheets-value="{"><strong>Tērauda diski līdz 15</strong></td>
+<td style="height: 37px; text-align: center;" data-sheets-value="{"><strong>Tērauda diski 16"-17"</strong></td>
 <td style="height: 37px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 12"-16"</strong></td>
 <td style="height: 37px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 17"-18"</strong></td>
-<td style="height: 37px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 19"<</strong></td>
+<td style="height: 37px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 19"-20"<</strong></td>
+<td style="height: 37px; text-align: center;" data-sheets-value="{"><strong>Lietie diski 21<</strong></td>
 </tr>
 <tr style="height: 22.4px;">
-<td style="height: 22.4px;" data-sheets-value="{"><strong> 1 riepas montāža</strong></td>
+<td style="height: 22.4px;" data-sheets-value="{"><strong> 1 riepas montāža</strong></td>
+<td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 </tr>
 <tr style="height: 22.4px;">
-<td style="height: 22.4px;" data-sheets-value="{"><strong> 1 riepas demontāža</strong></td>
+<td style="height: 22.4px;" data-sheets-value="{"><strong> 1 riepas demontāža</strong></td>
+<td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 3.50</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
+<td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 </tr>
 <tr style="height: 22.4px;">
-<td style="height: 22.4px;" data-sheets-value="{"><strong> 1 riteņa balansēšana</strong></td>
+<td style="height: 22.4px;" data-sheets-value="{"><strong> 1 riteņa balansēšana</strong></td>
+<td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 5.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 5.50</strong></td>
+<td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
 </tr>
 <tr style="height: 22.4px;">
-<td style="height: 22.4px;" data-sheets-value="{"><strong> 1 riteņa noskrūv/uzskrūv</strong></td>
+<td style="height: 22.4px;" data-sheets-value="{"><strong> 1 riteņa noskrūv/uzskrūv</strong></td>
+<td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 4.50</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 5.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 5.50</strong></td>
+<td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 6.00</strong></td>
 </tr>
 <tr style="height: 22.4px;">
-<td style="height: 22.4px;" data-sheets-value="{"><strong> 1 riteņa pilns darbs</strong></td>
+<td style="height: 22.4px;" data-sheets-value="{"><strong> 1 riteņa pilns darbs</strong></td>
+<td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 12.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 14.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 14.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 16.00</strong></td>
 <td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 18.00</strong></td>
+<td style="height: 22.4px; text-align: center;" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 20.00</strong></td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><sub>* - riepas ar "C" indeksu un riepas ar sekojošiem izmēriem vai lielākas (diametrā) 225/70R16, 225/65R17, 225/60R18, 225/55R19</sub></p>
+<ul>
+<li><sub>- riepas ar "C" indeksu un riepas ar sekojošiem izmēriem vai lielākas (diametrā) 225/70R16, 225/65R17, 225/60R18, 225/55R19</sub></li>
+</ul>
+<p> </p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;">RITEŅU BALANSĒŠANA</span></strong></p>
 <p style="text-align: center;"><strong><span style="font-size: 18pt;"><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:none;font-family:'Times New Roman';font-style:normal;text-decoration-skip-ink:none;">RITEŅU BALANSĒŠANA </span><span data-sheets-formula-bar-text-style="font-size:16px;color:#000000;font-weight:bold;text-decoration:underline;font-family:''Times New Roman'';font-style:normal;text-decoration-skip-ink:none;">AR NOMAIŅU UZ AUTO</span></span></strong></p>
 <div style="text-align: center;">
-<table dir="ltr" style="height: 189.625px; width: 100.126%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 7.90464%;" width="63"><col style="width: 7.90464%;" width="63"><col style="width: 17.8168%;" width="142"><col style="width: 12.5471%;" width="100"><col style="width: 12.5471%;" width="100"><col style="width: 12.5471%;" width="100"><col style="width: 12.5471%;" width="100"></colgroup>
+<table dir="ltr" style="height: 189.625px; width: 100.126%;" border="1" cellspacing="0" cellpadding="0"><colgroup><col style="width: 7.90464%;" width="63"><col style="width: 7.90464%;" width="63"><col style="width: 17.8168%;" width="142$
 <tbody>
-<tr style="height: 37px;">
+<tr style="> </colgroup>
+<tbody>
+<tr>
 <td style="height: 74px;" colspan="3" rowspan="2">
 <div><strong><img style="display: block; margin-left: auto; margin-right: auto;" src="../../../../img/michelin_certificate.jpg" width="164" height="63"></strong></div>
 </td>
-<td style="height: 37px;" colspan="4" rowspan="1" data-sheets-value="{" data-sheets-textstyleruns="{"><strong>4 RITEŅU BALANSĒŠANA AR NOMAIŅU UZ AUTO</strong></td>
+<td style="height: 37px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-textstyleruns="{"><strong>Riteņu balansēšana vieglie auto</strong></td>
+<td style="height: 37px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-textstyleruns="{"><strong>Riteņu balansēšana KROSOVERI/SUV/CARGO*</strong></td>
 </tr>
 <tr style="height: 37px;">
-<td style="height: 37px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>VIEGLIE AUTO</strong></td>
-<td style="height: 37px;" colspan="2" rowspan="1" data-sheets-value="{"><strong>KROSOVERI/SUV/CARGO*</strong></td>
+<td style="height: 37px;" rowspan="1" data-sheets-value="{"><strong>4 riepu balansēšana</strong></td>
+<td style="height: 37px;" rowspan="1" data-sheets-value="{"><strong>2 riepu balansēšana</strong></td>
+<td style="height: 37px;" rowspan="1" data-sheets-value="{"><strong>4 riepu balansēšana</strong></td>
+<td style="height: 37px;" rowspan="1" data-sheets-value="{"><strong>2 riepu balansēšana</strong></td>
 </tr>
 <tr style="height: 23.125px;">
 <td style="height: 23.125px;" colspan="3" rowspan="1" data-sheets-value="{"><strong>TĒRAUDA DISKI līdz 15</strong></td>
-<td style="height: 23.125px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>22.00</strong></td>
-<td style="height: 23.125px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>28.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 22.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 12.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 28.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 16.00</strong></td>
 </tr>
 <tr style="height: 23.125px;">
 <td style="height: 23.125px;" colspan="3" rowspan="1" data-sheets-value="{"><strong>TĒRAUDA DISKI 16-17</strong></td>
-<td style="height: 23.125px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>25.00</strong></td>
-<td style="height: 23.125px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>30.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 25.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 14.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 32.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 18.00</strong></td>
 </tr>
 <tr style="height: 23.125px;">
 <td style="height: 23.125px;" colspan="3" rowspan="1" data-sheets-value="{"><strong>LIETIE DISKI 12-16</strong></td>
-<td style="height: 23.125px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>27.00</strong></td>
-<td style="height: 23.125px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>30.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 28.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 16.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 32.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 18.00</strong></td>
 </tr>
 <tr style="height: 23.125px;">
 <td style="height: 23.125px;" colspan="3" rowspan="1" data-sheets-value="{"><strong>LIETIE DISKI 17-18</strong></td>
-<td style="height: 23.125px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>30.00</strong></td>
-<td style="height: 23.125px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>35.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 32.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 18.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 36.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 20.00</strong></td>
 </tr>
 <tr style="height: 23.125px;">
-<td style="height: 23.125px;" colspan="3" rowspan="1" data-sheets-value="{"><strong>LIETIE DISKI 19 <</strong></td>
-<td style="height: 23.125px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>35.00</strong></td>
-<td style="height: 23.125px;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>40.00</strong></td>
+<td style="height: 23.125px;" colspan="3" rowspan="1" data-sheets-value="{"><strong>LIETIE DISKI 19-20</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 35.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 19.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 40.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 22.00</strong></td>
+</tr>
+<tr style="height: 23.125px;">
+<td style="height: 23.125px;" colspan="3" rowspan="1" data-sheets-value="{"><strong>LIETIE DISKI 21 <</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 38.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 20.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 44.00</strong></td>
+<td style="height: 23.125px;" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>€ 24.00</strong></td>
 </tr>
 </tbody>
 </table>
@@ -350,7 +397,7 @@
 <td style="height: 22px; text-align: center;" colspan="2" rowspan="1" data-sheets-value="{" data-sheets-numberformat="{"><strong>no €45.00 *</strong></td>
 </tr>
 <tr style="height: 22px;">
-<td style="height: 22px; text-align: center;" colspan="3" rowspan="1" data-sheets-value="{"><strong>DISKU METINĀŠANA NO €25 PAR DISKU</strong></td>
+<td style="height: 22px; text-align: center;" colspan="3" rowspan="1" data-sheets-value="{"><strong>DISKU METINĀŠANA NO €50 PAR DISKU</strong></td>
 </tr>
 <tr style="height: 22px;">
 <td style="height: 22px; text-align: center;" colspan="3" rowspan="1" data-sheets-value="{"><strong>DISKU PULVERKRĀSOŠANA - €240 PAR KOMPLEKTU (VIENA DISKA KRĀSOŠANA - €100)</strong></td>
@@ -359,7 +406,7 @@
 <td style="height: 22px; text-align: center;" colspan="3" rowspan="1" data-sheets-value="{"><strong>DISKU LĀZERVIRPOŠANA NO €180 PAR DISKU</strong></td>
 </tr>
 <tr style="height: 22px;">
-<td style="height: 22px; text-align: center;" colspan="3" rowspan="1" data-sheets-value="{"><strong>DISKU CENTRU VIRPOŠANA - €15 PAR DISKU</strong></td>
+<td style="height: 22px; text-align: center;" colspan="3" rowspan="1" data-sheets-value="{"><strong>DISKU CENTRU VIRPOŠANA NO €15 PAR DISKU</strong></td>
 </tr>
 </tbody>
 </table>

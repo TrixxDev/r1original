@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App\Helper\Image;
+use App\Helper\PartnerDelivery;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Auth;
-use DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class Autotire extends Model
 {
@@ -18,6 +20,53 @@ class Autotire extends Model
 
     public $_includeStock = true;
     public $cbrand;
+
+    /** @var array<int, int> */
+    protected static array $stockTotals = [];
+
+    /** @var array<int, \Illuminate\Support\Collection> */
+    protected static array $stockRows = [];
+
+    /** @var array<string, string>|null */
+    protected static ?array $codeExplainMap = null;
+
+    public static function clearFilterCache(): void
+    {
+        if (Cache::has('autotire_api_count_version')) {
+            Cache::increment('autotire_api_count_version');
+        } else {
+            Cache::forever('autotire_api_count_version', 2);
+        }
+    }
+
+    public static function preloadStockData(array $tireIds): void
+    {
+        self::$stockTotals = [];
+        self::$stockRows = [];
+
+        if ($tireIds === []) {
+            return;
+        }
+
+        self::$stockTotals = DB::table('auto_stock')
+            ->whereIn('tire_id', $tireIds)
+            ->selectRaw('tire_id, SUM(CASE WHEN quantity >= 1 THEN quantity ELSE 0 END) as total')
+            ->groupBy('tire_id')
+            ->pluck('total', 'tire_id')
+            ->map(fn ($total) => (int) $total)
+            ->all();
+
+        self::$stockRows = Autostock::whereIn('tire_id', $tireIds)
+            ->get()
+            ->groupBy('tire_id')
+            ->all();
+    }
+
+    public static function clearStockCache(): void
+    {
+        self::$stockTotals = [];
+        self::$stockRows = [];
+    }
 
     public function setIncludeStockAttribute($value)
     {
@@ -42,27 +91,30 @@ class Autotire extends Model
       return '<h4 class="tire-brand-name">' . $brand . '</h4>';
     }
 
+    /** @var \Illuminate\Support\Collection|null */
+    protected static $codeExplainCodesCache = null;
+
     public function getCodeExplainAttribute()
     {
-      $code_array = [];
-
-      $return = '';
-
-      $codes = Code::all();
-
-      foreach ($codes as $code) {
-        $code_array[$code->name] = $code->explanation;
-      }
-
-      $codes = explode(' ', $this->code);
-      foreach ($codes as $code) {
-        if (isset($code_array[$code])) {
-          $return .= $code_array[$code] . '<br>';
+      if (self::$codeExplainMap === null) {
+        if (self::$codeExplainCodesCache === null) {
+          self::$codeExplainCodesCache = Code::all();
+        }
+        self::$codeExplainMap = [];
+        foreach (self::$codeExplainCodesCache as $code) {
+          self::$codeExplainMap[$code->name] = $code->explanation;
         }
       }
 
-      if (strpos($this->code, 'DOT') !== false) {
-        $return .= $code_array['DOT'];
+      $return = '';
+      foreach (explode(' ', (string) $this->code) as $code) {
+        if (isset(self::$codeExplainMap[$code])) {
+          $return .= self::$codeExplainMap[$code] . '<br>';
+        }
+      }
+
+      if (strpos((string) $this->code, 'DOT') !== false && isset(self::$codeExplainMap['DOT'])) {
+        $return .= self::$codeExplainMap['DOT'];
       }
 
       return $return;
@@ -79,24 +131,69 @@ class Autotire extends Model
 
     public function getAutoCommentAttribute()
     {
-        $tire = Autotire::where('tire_id', $this->tire_id)->first();
-        return $tire->comment;
+        return $this->comment;
     }
 
     public function getStockCount()
     {
-
-        $stocks = Autostock::where('tire_id', $this->tire_id)->get();
-
-        $count=0;
-
-        foreach ($stocks as $stock) {
-          if ($stock !== NULL && $stock->quantity >= 1) {
-            $count += $stock->quantity;
-          }
+        if (array_key_exists('stock_quantity', $this->attributes)
+            && $this->attributes['stock_quantity'] !== null
+            && $this->attributes['stock_quantity'] !== '') {
+            return (int) $this->attributes['stock_quantity'];
         }
 
-        return $count;
+        if (array_key_exists($this->tire_id, self::$stockTotals)) {
+            return self::$stockTotals[$this->tire_id];
+        }
+
+        return (int) DB::table('auto_stock')
+            ->where('tire_id', $this->tire_id)
+            ->selectRaw('COALESCE(SUM(CASE WHEN quantity >= 1 THEN quantity ELSE 0 END), 0) as total')
+            ->value('total');
+    }
+
+    /**
+     * Effective own-store stock (Ulbroka + Kalnciema), same rules as getDotAvailableAttribute().
+     */
+    public static function ownStockQuantitySql(string $table = 'auto_tires'): string
+    {
+        return '(CASE '
+            . "WHEN {$table}.urs_quantity > 0 AND {$table}.krs_quantity <= 0 THEN {$table}.urs_quantity "
+            . "WHEN {$table}.urs_quantity <= 0 AND {$table}.krs_quantity > 0 THEN {$table}.krs_quantity "
+            . "WHEN {$table}.urs_quantity <= 0 AND {$table}.krs_quantity <= 0 THEN 0 "
+            . "ELSE {$table}.urs_quantity + {$table}.krs_quantity END)";
+    }
+
+    /** Dot on own stock: 1–3 → half-green, 4+ → green. */
+    public static function dotColorForOwnStock(int $qty): string
+    {
+        if ($qty >= 1 && $qty <= 3) {
+            return 'half-green';
+        }
+        if ($qty >= 4) {
+            return 'green';
+        }
+
+        return 'red';
+    }
+
+    /** SUM of partner auto_stock rows (0 when no rows). */
+    public static function partnerStockSumSql(string $tireIdColumn = 'auto_tires.tire_id'): string
+    {
+        return "(SELECT COALESCE(SUM(quantity), 0) FROM auto_stock WHERE auto_stock.tire_id = {$tireIdColumn})";
+    }
+
+    /** Dot on partner stock: 1–3 → half-yellow, 4+ → yellow. */
+    public static function dotColorForPartnerStock(int $qty): string
+    {
+        if ($qty >= 1 && $qty <= 3) {
+            return 'half-yellow';
+        }
+        if ($qty >= 4) {
+            return 'yellow';
+        }
+
+        return 'red';
     }
 
 //    public static function RZLink($article)
@@ -127,7 +224,9 @@ class Autotire extends Model
 
     public static function StockLink($tire)
     {
-      $stocks = Autostock::where('tire_id', $tire->tire_id)->get();
+      $stocks = array_key_exists($tire->tire_id, self::$stockRows)
+        ? self::$stockRows[$tire->tire_id]
+        : Autostock::where('tire_id', $tire->tire_id)->get();
 
       $urls = [];
 
@@ -212,39 +311,15 @@ class Autotire extends Model
 
 //        dump($this->quantity);
 
-        switch ($this->tire_quantity) {
-            case 1:
-            case 2:
-            case 3: {
-                return 'half-green';
-            }
-            case -1:
-            case 0: {
-                if ($this->_includeStock) {
-                    $count = $this->getStockCount();
-                    switch ($count){
-                        case -1:
-                        case 0: {
-                            return 'red';
-                        }
-                        case 1:
-                        case 2:
-                        case 3: {
-                            return 'half-yellow';
-                        }
-                        default:{
-                            return 'yellow';
-                        }
-                    }
-                } else {
-                    return 'red';
-                }
-            }
-            default: {
-              return 'green';
-            }
+        if ($this->tire_quantity > 0) {
+            return self::dotColorForOwnStock((int) $this->tire_quantity);
         }
 
+        if ($this->_includeStock) {
+            return self::dotColorForPartnerStock($this->getStockCount());
+        }
+
+        return 'red';
     }
 
     public function getTitleAttribute()
@@ -305,58 +380,70 @@ class Autotire extends Model
 
     public function getStockAvailabilityAttribute()
     {
-        $tire = Autotire::where('tire_id', $this->tire_id)->first();
-        $stocks = Autostock::where('tire_id', $tire->tire_id)->get();
+        return $this->resolveStockAvailability(null);
+    }
 
+    public function resolveStockAvailability(?string $dotAvailable = null): string
+    {
         $stock_names = [
             'i3' => 'I3',
             'gy' => 'GoodYear',
             'rz' => 'RiepuZona',
+            'rg' => 'Riepu Garāža',
         ];
 
-	      if ($tire->urs_quantity >= 4) {
+        if ($this->urs_quantity >= 4) {
             $availability = '<span>Ulbrokā: 4 un vairāk</span><br>';
-	      } else {
-            $availability = '<span>Ulbrokā: ' . $tire->urs_quantity . '</span><br>';
-	      }
-	      if ($tire->krs_quantity >= 4) {
+        } else {
+            $availability = '<span>Ulbrokā: ' . $this->urs_quantity . '</span><br>';
+        }
+        if ($this->krs_quantity >= 4) {
             $availability .= '<span>Kalnciema ielā: 4 un vairāk</span>';
-	      } else {
-            $availability .= '<span>Kalnciema ielā: ' . $tire->krs_quantity . '</span>';
+        } else {
+            $availability .= '<span>Kalnciema ielā: ' . $this->krs_quantity . '</span>';
         }
 
         if (Auth::check()) {
-            $availability = '<span>Ulbrokā: ' . $tire->urs_quantity . '</span><br>';
-            $availability .= '<span>Kalnciema ielā: ' . $tire->krs_quantity . '</span>';
+            $availability = '<span>Ulbrokā: ' . $this->urs_quantity . '</span><br>';
+            $availability .= '<span>Kalnciema ielā: ' . $this->krs_quantity . '</span>';
+            $stocks = array_key_exists($this->tire_id, self::$stockRows)
+                ? self::$stockRows[$this->tire_id]
+                : Autostock::where('tire_id', $this->tire_id)->get();
+            $stocksByType = $stocks->keyBy('itype');
             foreach ($stock_names as $key => $stock_name) {
-                $stock = Autostock::where('itype', $key)->where('tire_id', $tire->tire_id)->first();
+                $stock = $stocksByType->get($key);
                 if ($stock && $stock->quantity > 0) {
                     $availability .= '<br><span>' . $stock_name . ': ' . $stock->quantity . '</span>';
                 } else {
                     $availability .= '<br><span>' . $stock_name . ': 0</span>';
                 }
             }
-            if ($tire->acomment !== null) {
-              $availability .= '<br><hr class="admin-comments"><span><b>Piezīmes:</b> </span><br><span>' . $tire->acomment . '</span>';
+            if ($this->acomment !== null) {
+                $availability .= '<br><hr class="admin-comments"><span><b>Piezīmes:</b> </span><br><span>' . $this->acomment . '</span>';
             }
         } else {
-          $dot = $this->getDotAvailableAttribute();
-          if ($dot === 'red') {
-            $availability = '<span style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</span>';
-          } else if ($dot === 'yellow' || $dot === 'half-yellow') {
-            $availability = '<span style="text-align: center;">Riepas pieejamas partneru noliktavās<br>Piegāde 1 darbadienas laikā.</span>';
-          }
+            $dot = $dotAvailable ?? $this->getDotAvailableAttribute();
+            if ($dot === 'red') {
+                $availability = '<span style="text-align: center;">Nepieciešams<br>pārbaudīt pieejamību.</span>';
+            } else if ($dot === 'yellow' || $dot === 'half-yellow') {
+                $stocks = array_key_exists($this->tire_id, self::$stockRows)
+                    ? self::$stockRows[$this->tire_id]
+                    : Autostock::where('tire_id', $this->tire_id)->get();
+                $availability = PartnerDelivery::partnerAvailabilityHtml($stocks);
+            }
         }
-        $availability .= '';
 
         return $availability;
     }
 
     public function lisiDesc($weight, $speed)
     {
+      static $carryCaps = null;
+      static $speedCaps = null;
 
       $carryCapacity = 'Kravnesības indekss: ';
 
+      if ($carryCaps === null) {
       $carryCaps = [
         0 => '45 kg',
         1 => '46.2 kg',
@@ -640,8 +727,6 @@ class Autotire extends Model
         279 => '136000 kg',
       ];
 
-      $speedCapacity = 'Ātruma indekss: ';
-
       $speedCaps = [
         'A1' => 'A1 - 5 Km/h',
         'A2' => 'A2 - 10 Km/h',
@@ -676,9 +761,11 @@ class Autotire extends Model
         'Y' => 'Y - 300 Km/h',
         'ZR' => 'ZR - Virs 240 Km/h',
       ];
+      }
 
-      return @$carryCapacity . @$carryCaps[$weight] . '<br>' . @$speedCapacity . @$speedCaps[$speed];
+      $speedCapacity = 'Ātruma indekss: ';
 
+      return $carryCapacity . ($carryCaps[$weight] ?? '') . '<br>' . $speedCapacity . ($speedCaps[$speed] ?? '');
     }
 
     public function addSecondaryArticle($article, $type, $quantity = 0)

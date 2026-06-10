@@ -22,7 +22,7 @@ class Office extends Model
     }
 
     public function loadMobileQueues() {
-      $list = Queue::where('office_id', $this->office_id)->orderBy('queue_id', 'DESC')->orderBy('iorder', 'ASC')->get();
+      $list = Queue::where('office_id', $this->office_id)->orderBy('queue_id', 'ASC')->get();
       $this->_queues = $list;
     }
 
@@ -86,6 +86,29 @@ class Office extends Model
         }
       }
       return $maxTime;
+    }
+
+    /**
+     * Rindu skaits, ko rāda klientiem (publiskā pieraksta lapa).
+     */
+    public function clientVisibleQueueCount(): int
+    {
+        return Queue::where('office_id', $this->office_id)
+            ->where(function ($q) {
+                $q->where('is_public', 1)->orWhereNull('is_public');
+            })
+            ->count();
+    }
+
+    /**
+     * Kopējais klientiem redzamo rindu skaits visos birojos (Bootstrap kolonnu platumam).
+     */
+    public static function clientVisibleQueueCountSum(): int
+    {
+        $n = Queue::where(function ($q) {
+            $q->where('is_public', 1)->orWhereNull('is_public');
+        })->count();
+        return max(1, $n);
     }
 
 }

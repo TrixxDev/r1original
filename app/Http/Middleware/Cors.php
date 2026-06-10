@@ -16,7 +16,7 @@ class Cors
   public function handle($request, Closure $next)
   {
     return $next($request)
-      ->header('Access-Control-Allow-Origin', $_SERVER['APP_URL']);
+      ->header('Access-Control-Allow-Origin', config('app.url'));
 
     }
 }

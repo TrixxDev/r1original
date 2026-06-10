@@ -165,12 +165,12 @@
                                                 <td>
                                                     <a class="btn btn-success" href="{{ route('admin.big.tire.edit', $tire->tire_id) }}">
                                                         <svg class="c-icon">
-                                                            <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
+                                                            <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-description"></use>
                                                         </svg>
                                                     </a>
                                                     <a onclick="if (confirm('Tiešām vēlies dzēst?') === true) { document.location.href = '{{ route('admin.big.tire.destroy', $tire->tire_id) }}' }" class="btn btn-danger">
                                                         <svg class="c-icon">
-                                                            <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
+                                                            <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-trash"></use>
                                                         </svg>
                                                     </a>
                                                 </td>

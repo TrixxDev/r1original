@@ -11,6 +11,7 @@ use App\Models\Moto;
 use App\Models\Motostock;
 use App\Models\Office;
 use App\Models\Quickorder;
+use App\Services\AccrualOrderVerificationService;
 use App\Models\Service;
 use App\Models\Slot;
 use App\Models\User;
@@ -210,17 +211,38 @@ class HomeController extends Controller
     public function accrualOrder(Request $request)
     {
 
-      Self::$connection = ftp_connect(env('ACCRUAL_IP'));
+      Self::$connection = @ftp_connect(env('ACCRUAL_IP'), 21, 5);
+      if (!Self::$connection) {
+        return json_encode(['danger' => 'Nesanāk savienoties ar Accrual serveri (FTP connect).']);
+      }
+
+      @ftp_set_option(Self::$connection, FTP_TIMEOUT_SEC, 10);
 
       if (!@ftp_login(Self::$connection, 'r1_web', 'RA5bgdGc')){
-        return 'Nesanāk savienoties ar Accrual serveri';
+        @ftp_close(Self::$connection);
+        Self::$connection = null;
+        return json_encode(['danger' => 'Nesanāk autorizēties Accrual serverī (FTP login).']);
+      }
+
+      if (!@ftp_pasv(Self::$connection, true)) {
+        @ftp_close(Self::$connection);
+        Self::$connection = null;
+        return json_encode(['danger' => 'Nesanāk ieslēgt FTP pasīvo režīmu (PASV).']);
       }
 
       function uploadFTP($local_file, $remote_file){
+        if (!is_file($local_file)) {
+          return ['ok' => false, 'reason' => 'missing_local_file'];
+        }
 
-        ftp_put(HomeController::$connection, $remote_file, $local_file, FTP_BINARY);
-        ftp_close(HomeController::$connection);
-        return true;
+        $uploaded = @ftp_put(HomeController::$connection, $remote_file, $local_file, FTP_BINARY);
+        @ftp_close(HomeController::$connection);
+        HomeController::$connection = null;
+        if (!$uploaded) {
+          return ['ok' => false, 'reason' => 'ftp_put_failed'];
+        }
+
+        return ['ok' => true];
       }
 
       $location = $request->info['location'];
@@ -237,6 +259,7 @@ class HomeController extends Controller
           break;
       }
       $summa = $request->info['total'];
+      $summa = round((float)$summa, 0);
       $summa_pvn = $summa - ($summa / 1.21);
       $summa_pvn = number_format((float)$summa_pvn, 2, '.', '');
 
@@ -269,6 +292,32 @@ class HomeController extends Controller
 //      $price_pvn = number_format((float)$price_pvn, 2, '.', '');
       $comment = $request->info['comments'];
       $user = $request->info['user'];
+      $documentType = $request->info['document_type'] ?? 'order';
+      $isPrepayment = $documentType === 'prepayment';
+      $pzType = $isPrepayment ? 8 : 6;
+      $partnerId = (int) ($request->info['partner_id'] ?? 0);
+
+      if ($isPrepayment && $partnerId === 0) {
+        return json_encode(['danger' => 'Rēķinam priekšapmaksai jānorāda klients.']);
+      }
+
+      $partnerName = '';
+      $partnerRegNr = '';
+      $partnerAddress = '';
+      if ($partnerId > 0) {
+        $partnerService = app(\App\Services\AccrualPartnerService::class);
+        $partner = $partnerService->findById($partnerId);
+        if ($partner) {
+          $partnerName = $partner['name'] ?? '';
+          $partnerRegNr = $partner['regnr'] ?? '';
+          $partnerAddress = $partner['address'] ?? '';
+        }
+      }
+
+      $xmlEscape = static function ($value) {
+        return htmlspecialchars((string) $value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
+      };
+
       $mobile = 0;
       $mobile_number = '';
       if (isset($request->info['mobile'])) {
@@ -310,24 +359,38 @@ class HomeController extends Controller
       $xml_string = '<?xml version="1.0" encoding="UTF-8"?>';
       $xml_string .= '<AccrualPZ>';
       $xml_string .= '<PZHeader>';
-      $xml_string .= '<Struktura>' . $location . '</Struktura>';
-      $xml_string .= '<Type>6</Type>';
+      $xml_string .= '<Struktura>' . $xmlEscape($location) . '</Struktura>';
+      $xml_string .= '<Type>' . $pzType . '</Type>';
       $xml_string .= '<WEB>' . $xml_order . '</WEB>';
       $xml_string .= '<Datums>' . date('d.m.Y') . '</Datums>';
-      //  $xml_string .= '<PartnNosaukums>Klients pasūtītājs</PartnNosaukums>';
+      if ($isPrepayment) {
+        if ($partnerId > 0) {
+          $xml_string .= '<PartnerId>' . $partnerId . '</PartnerId>';
+        }
+        $xml_string .= '<PartnNosaukums>' . $xmlEscape($partnerName) . '</PartnNosaukums>';
+        if ($partnerRegNr !== '') {
+          $xml_string .= '<RegNr>' . $xmlEscape($partnerRegNr) . '</RegNr>';
+        }
+        if ($partnerAddress !== '') {
+          $xml_string .= '<JurAdrese>' . $xmlEscape($partnerAddress) . '</JurAdrese>';
+        }
+        $xml_string .= '<ApmVeidsId>2</ApmVeidsId>';
+      }
       $xml_string .= '<PVNSumma>' . $summa_pvn . '</PVNSumma>';
+      $xml_string .= '<Summa>' . round($summa - $summa_pvn, 2) . '</Summa>';
+      $xml_string .= '<GalaSumma>' . round($summa, 0) . '</GalaSumma>';
       $xml_string .= '<Valuta>EUR</Valuta>';
       if ($comment != '') {
-        $xml_string .= '<Piezimes>' . $number . ' ' . $comment . ' T.' . $mobile_number . '</Piezimes>';
+        $xml_string .= '<Piezimes>' . $xmlEscape($number . ' ' . $comment . ' T.' . $mobile_number) . '</Piezimes>';
       } else {
-        $xml_string .= '<Piezimes>' . $number . ' ' . $mobile_number . '</Piezimes>';
+        $xml_string .= '<Piezimes>' . $xmlEscape($number . ' ' . $mobile_number) . '</Piezimes>';
       }
-      $xml_string .= '<SasPerson>' . $user . '</SasPerson>';
+      $xml_string .= '<SasPerson>' . $xmlEscape($user) . '</SasPerson>';
       $xml_string .= '</PZHeader>';
       $xml_string .= '<Ieraksti>';
       foreach ($ieraksti as $ieraksts) {
         $xml_string .= '<Ieraksts>';
-        $xml_string .= '<Artikuls>' . $ieraksts[0] . '</Artikuls>';
+        $xml_string .= '<Artikuls>' . $xmlEscape($ieraksts[0]) . '</Artikuls>';
 //      $xml_string .= '<Nosaukums>' . $prod . '</Nosaukums>';
         $xml_string .= '<Mervieniba>gab</Mervieniba>';
         $price_pvn = ($ieraksts[2] / 1.21);
@@ -365,13 +428,6 @@ class HomeController extends Controller
       $xml_string .= '</AccrualPZ>';
 
 
-      $sync = new SyncController();
-      $request = request()->merge(['articles' => $articles]);
-      $old_stocks = $sync->accrual($request);
-      foreach ($old_stocks as $old_stock) {
-        $old_stock_array[] = (array) json_decode($old_stock);
-      }
-
       $dom = new DOMDocument();
       $dom->preserveWhiteSpace = FALSE;
       $dom->loadXML($xml_string);
@@ -379,74 +435,79 @@ class HomeController extends Controller
 
       $xml_string = $dom->saveXML();
 
-      $xml_file = fopen(dirname(__DIR__, 3) . '/public/storage/xml/pasutijums' . $xml_order . '.xml', 'wb');
-      fwrite($xml_file, $xml_string);
-      fclose($xml_file);
+      $xmlDir = public_path('storage/xml');
+      if (!is_dir($xmlDir)) {
+        @mkdir($xmlDir, 0755, true);
+      }
 
-      $file = dirname(__DIR__, 3) . '/public/storage/xml/pasutijums' . $xml_order . '.xml';
+      $filePrefix = $isPrepayment ? 'prieksrekins' : 'pasutijums';
+      $localFileName = $filePrefix . $xml_order . '.xml';
+      $remoteFileName = $filePrefix . $xml_order . '.xml';
+      $file = $xmlDir . '/' . $localFileName;
 
-      //$dom->save(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml');
+      file_put_contents($file, $xml_string);
 
-//      dd(is_file(dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml'));
-//      $ftp = uploadFTP("212.3.218.22", "r1_web", "RA5bgdGc", dirname(__DIR__, 3) . '/xml/pasutijums' . $xml_order . '.xml', "pasutijums$xml_order.xml");
-      uploadFTP($file, "pasutijums$xml_order.xml");
+      $uploadResult = uploadFTP($file, $remoteFileName);
 
       if (file_exists($file)) {
         unlink($file);
       }
 
-      sleep(4);
-
-      $request = request()->merge(['articles' => $articles]);
-      $new_stocks = $sync->accrual($request);
-      foreach ($new_stocks as $new_stock) {
-        $new_stock_array[] = (array) json_decode($new_stock);
+      if (!($uploadResult['ok'] ?? false)) {
+        $uploadReason = $uploadResult['reason'] ?? 'unknown';
+        $docLabel = $isPrepayment ? 'Rēķina priekšapmaksai' : 'Pasūtījuma';
+        if ($uploadReason === 'missing_local_file') {
+          return json_encode(['danger' => $docLabel . ' XML fails nav atrasts pirms FTP sūtīšanas.']);
+        }
+        return json_encode(['danger' => $docLabel . ' XML nav nosūtīts uz Accrual (FTP upload, reason: ' . $uploadReason . ').']);
       }
 
-      $articleCount = count($articles);
-
-      switch ($location_prefix) {
-        case 'U': {
-          $compare = [];
-
-          for ($i = 0; $i < $articleCount; $i++) {
-            if (($old_stock_array[$i]['urs_quantity'] == $new_stock_array[$i]['urs_quantity']) == 1) {
-              array_push($compare, 'false'); // Ir vienāds
-            } else {
-              array_push($compare, 'true'); // Nav vienāds
-            }
-          }
-
-          if (!in_array('false', $compare)) {
-//          if ($new_stocks->urs_quantity != $old_stocks->urs_quantity) {
-            Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $order->order_id,0, 'Izveidots jauns ātrais pasūtījums', $order);
-            return json_encode(['success' => 'Pasūtījums ir pieņemts!<br><b>' . $number . '</b>', 'orderId' => $number]);
-          } else {
-            return json_encode(['danger' => 'Pasūtījums netika izveidots!']);
-          }
+      $verifier = app(AccrualOrderVerificationService::class);
+      $verifyResult = $verifier->waitForCreation((int) $order->order_id, $pzType, (float) $summa);
+      if (!($verifyResult['confirmed'] ?? false)) {
+        $docLabel = $isPrepayment ? 'Rēķina priekšapmaksai' : 'Pasūtījuma';
+        $verifyError = $verifyResult['error'] ?? 'timeout';
+        if ($verifyError === 'db_connection') {
+          return json_encode(['danger' => $docLabel . ' nav apstiprināts: neizdevās savienoties ar Accrual datubāzi.']);
         }
-        case 'K': {
-          $compare = [];
 
-          for ($i = 0; $i < $articleCount; $i++) {
-            if (($old_stock_array[$i]['krs_quantity'] == $new_stock_array[$i]['krs_quantity']) == 1) {
-              array_push($compare, 'false'); // Ir vienāds
-            } else {
-              array_push($compare, 'true'); // Nav vienāds
-            }
-          }
-
-          if (!in_array('false', $compare)) {
-//            broadcast(new UpdateStockChannel($article, $new_stocks, 123));
-            Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $order->order_id,0, 'Izveidots jauns ātrais pasūtījums', $order);
-            return json_encode(['success' => 'Pasūtījums ir pieņemts!<br><b>' . $number . '</b>', 'orderId' => $number]);
-          } else {
-            return json_encode(['danger' => 'Pasūtījums netika izveidots!']);
-          }
-        }
+        return json_encode([
+          'danger' => $docLabel . ' XML ir nosūtīts, bet Accrual datubāzē ieraksts vēl nav apstiprināts (WEB='
+            . (int) $order->order_id . '). Mēģiniet vēlreiz pēc brīža.',
+        ]);
       }
 
-      return true;
+      $accrualHeader = $verifyResult['header'] ?? [];
+      $accrualPzLabel = is_array($accrualHeader) && $accrualHeader !== []
+        ? $verifier->accrualDocumentLabel($accrualHeader)
+        : '';
+
+      $auditMessage = $isPrepayment
+        ? 'Izveidots jauns rēķins priekšapmaksai'
+        : 'Izveidots jauns ātrais pasūtījums';
+      Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $order->order_id, 0, $auditMessage, $order);
+
+      if ($isPrepayment) {
+        $successExtra = $accrualPzLabel !== '' ? '<br>Accrual: <b>' . htmlspecialchars($accrualPzLabel, ENT_QUOTES, 'UTF-8') . '</b>' : '';
+
+        return json_encode([
+          'success' => 'Rēķins priekšapmaksai ir apstiprināts Accrual!<br><b>' . htmlspecialchars($partnerName, ENT_QUOTES, 'UTF-8') . '</b><br><b>' . $number . '</b>' . $successExtra,
+          'orderId' => $number,
+          'documentType' => 'prepayment',
+          'previewUrl' => url('/prepayment-invoice/' . rawurlencode($number) . '?' . http_build_query(array_filter([
+            'partner' => $partnerName,
+            'total' => $summa,
+          ]))),
+        ]);
+      }
+
+      $successExtra = $accrualPzLabel !== '' ? '<br>Accrual: <b>' . htmlspecialchars($accrualPzLabel, ENT_QUOTES, 'UTF-8') . '</b>' : '';
+
+      return json_encode([
+        'success' => 'Pasūtījums ir pieņemts Accrual!<br><b>' . $number . '</b>' . $successExtra,
+        'orderId' => $number,
+        'documentType' => 'order',
+      ]);
 
     }
 

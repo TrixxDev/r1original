@@ -14,4 +14,9 @@ class Bigbrand extends Model
     public $timestamps = false;
 
     use HasFactory;
+
+    public function treads()
+    {
+        return $this->hasMany(Bigtread::class, 'brand_id', 'brand_id');
+    }
 }

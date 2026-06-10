@@ -2,6 +2,15 @@
 
 @section('body-title', 'product')
 @section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-right-column page-product tax-display-enabled product-id-351 product-antares-ingens-a1- product-id-category-14 product-id-manufacturer-59 product-id-supplier-0 product-available-for-order')
+@php
+  $productTitle = $currTire->fullName ?? $currTire->title ?? 'Riepas';
+  $productHeading = trim(($currTire->title ?: '') . ' ' . $currTire->fullSize);
+  $productDescriptionSource = $currTire->t_comment ?: ($currBrand->b_comment ?? '');
+  $productDescription = trim(\Illuminate\Support\Str::limit(strip_tags($productDescriptionSource), 160));
+@endphp
+@section('meta_title', $productTitle . ' | R1 Riepu Serviss')
+@section('meta_description', $productDescription ?: 'Motociklu riepas — R1 Riepu Serviss katalogs.')
+@section('meta_keywords', config('seo.keywords.moto'))
 
 @section('content')
 
@@ -30,7 +39,7 @@
                             <div class="col-md-12 col-lg-8">
                               <div class="row">
                                 <div class="col-sm-12 product-main-details">
-                                  <h1 class="h1 mt-1" itemprop="name">{{ $tires[0]->brands_title.' '.$tires[0]->treads_title }}</h1>
+                                  <h1 class="h1 mt-1" itemprop="name">{{ $productHeading }}</h1>
                                 </div>
                                 <div class="col-sm-12 col-md-12 col-lg-6">
                                   <div class="product-prices">
@@ -167,7 +176,9 @@
                               <table id="tires-table" class="table table-striped moto-tread-sorter tires-table table-hover tablesorter">
                                 <thead class="tires-thead" style="position:sticky; top: -1px;">
                                 <tr>
-                                  <th scope="col"></th>
+                                  <th scope="col" class="text-center tread-tire-table-checkbox">
+                                    <input type="checkbox" value="only_selected" id="show-selected-tread-checkbox" class="tire-table-checkbox" title="Rādīt tikai atzīmētās preces" @if (request()->show_selected) checked @endif disabled>
+                                  </th>
                                   <th scope="col" class="">Izmērs</th>
                                   <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
                                   <th scope="col" class="hidden-sm-down text-center">Kods</th>
@@ -237,7 +248,7 @@
                                       <div class="clearfix atc_div text-right">
                                         <button class="cart-shopping-button grid-cart-btn" data-toggle="modal"
                                                 @if (Auth::user()) data-target="#" @else data-target="#blockcart-modal"
-                                                @endif data-info="{{ $tire->tire_id }}"><i
+                                                @endif data-info="{{ $tire->tire_id }}" data-url="{{ $tire->link }}"><i
                                             class="material-icons">add_shopping_cart</i>
                                         </button>
                                       </div>
@@ -354,4 +365,8 @@
         </div>
     </div>
 
+@push('scripts')
+<script src="{{ \App\Helper\AssetHelper::v('js/motoProductPageCart.js') }}" defer></script>
+@endpush
 @endsection
+

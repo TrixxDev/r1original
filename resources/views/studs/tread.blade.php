@@ -2,6 +2,16 @@
 
 @section('body-title', 'category')
 {{--@section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-14 category-' . $season_title . ' category-id-parent-12 category-depth-level-3')--}}
+@php
+  $productTitle = $currStud->fullName ?? 'Radzes';
+  $studSizeSpec = trim(($currStud->stud_length ? $currStud->stud_length . ' mm' : '') . ' ' . ($currStud->stud_count ? $currStud->stud_count . ' gab.' : ''));
+  $productHeading = trim($productTitle . ' ' . $studSizeSpec);
+  $productDescriptionSource = $currStud->t_comment ?: ($currStud->b_comment ?? '');
+  $productDescription = trim(\Illuminate\Support\Str::limit(strip_tags($productDescriptionSource), 160));
+@endphp
+@section('meta_title', $productTitle . ' | R1 Riepu Serviss')
+@section('meta_description', $productDescription ?: 'Skrūvējamas radzes — R1 Riepu Serviss katalogs.')
+@section('meta_keywords', config('seo.keywords.studs'))
 
 @section('content')
 
@@ -27,7 +37,7 @@
                 <div class="row">
                   <div class="col-sm-12 product-main-details">
                     {{--                    {{ dd($tread, $brand) }}--}}
-                    <h1 class="h1 mt-1" itemprop="name">{{ $currStud->fullName }}</h1>
+                    <h1 class="h1 mt-1" itemprop="name">{{ $productHeading }}</h1>
                     {{--                    <h1 class="h1 mt-1" itemprop="name">{{ dd($rims[0]) }}</h1>--}}
                   </div>
                   <div class="col-sm-12 col-md-12 col-lg-6">

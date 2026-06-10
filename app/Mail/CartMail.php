@@ -30,7 +30,7 @@ class CartMail extends Mailable
      */
     public function build()
     {
-        return $this->from(env('MAIL_USERNAME'))
+        return $this->from(config('mail.from.address') ?: env('MAIL_USERNAME'))
                     ->subject(env('MAIL_CART_SUBJECT'))
                     ->view('emails.cartemail');
     }

@@ -13,6 +13,19 @@
 
               $yesterday = date('Y-m-d', strtotime("-1 days",$currentDate));
               $tomorrow = date('Y-m-d', strtotime("+1 days",$currentDate));
+              $buildTakenByMeta = function ($takenByRaw) {
+                $takenBy = json_decode($takenByRaw, true);
+                if (!is_array($takenBy)) {
+                  return [null, 'xxxxx'];
+                }
+
+                $carBrand = trim((string)($takenBy['car_brand'] ?? ''));
+                $carModel = trim((string)($takenBy['car_model'] ?? ''));
+                $phoneNumber = trim((string)($takenBy['phone_number'] ?? ''));
+                $label = trim(preg_replace('/\s+/', ' ', $carBrand . ' ' . $carModel . ' ' . $phoneNumber));
+
+                return [$takenBy, $label !== '' ? $label : 'xxxxx'];
+              };
             @endphp
             <div class="col-12 day-select">
               <div class="row">
@@ -27,9 +40,6 @@
                 </a>
               </div>
             </div>
-            @php
-              $queue_sum = \App\Models\Office::sum('queue_count');
-            @endphp
             @for ($day = 0; $day <= $visibleDays; $day++)
               @php
                 $strtotime = $currentDate;
@@ -38,16 +48,22 @@
                 $dayOfWeek = $dayTitles[date('N', strtotime($date.' 00:00:00'))];
               @endphp
               <h1 style="font-size: 1.7em; margin-top: 20px;">{{ $dayOfWeek }}, {{ $date }}</h1>
-              <div class="row">
-                @foreach (\App\Models\Office::all() as $office)
-                  <div class="col-md-{{ round(12 / $queue_sum * $office->queue_count) }} grid grid-cols-{{ $office->queue_count }}" style="@if ($office->office_id == 1){{'border-right: 2px solid black;'}}@endif" data-date="{{ date('Y-m-d', strtotime($date.' 00:00:00')) }}">
+              <div class="row no-gutters reservations-office-row">
+                @foreach ($offices as $office)
+                  <div class="col-md-{{ round(12 / $queueSum * max(1, (int)($queuesCountByOffice[$office->office_id] ?? 0))) }} grid grid-cols-{{ max(1, (int)($queuesCountByOffice[$office->office_id] ?? 0)) }}" style="@if ($office->office_id == 1){{'border-right: 2px solid black;'}}@endif" data-date="{{ date('Y-m-d', strtotime($date.' 00:00:00')) }}">
                     @foreach ($workingDays as $workingDay)
                       @if ($workingDay->date == Date('Y-m-d', $strtotime))
                         @php
-                          $openTime1 = \App\Models\NewWorkingDay::select('timeopen')->where('date', $workingDay->date)->orderBy('timeopen', 'ASC')->first();
+                          $_queueRow = $queuesById[$workingDay->queue_id] ?? null;
+                        @endphp
+                        @if (!$_queueRow)
+                          @continue
+                        @endif
+                        @php
+                          $openTime1Str = $minTimeopenByDate[$workingDay->date] ?? $workingDay->timeopen;
                           $timeStep = $workingDay->timeStep;
                           $opentime = \Carbon\Carbon::parse($workingDay->timeopen);
-                          $openTime1 = \Carbon\Carbon::parse($openTime1->timeopen);
+                          $openTime1 = \Carbon\Carbon::parse($openTime1Str);
                           $closetime = \Carbon\Carbon::parse($workingDay->timeclose)->subMinutes($timeStep);
 
                           $halfAcService = $workingDay->ac_toggle;
@@ -57,16 +73,16 @@
 
                           $startSlot = $opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep;
 
-                          $workingOffice = \App\Models\Office::where('office_id', $workingDay->office_id)->first();
+                          $workingOffice = $officesById[$workingDay->office_id] ?? null;
                         @endphp
-                        @if ($workingOffice->office_id == $office->office_id)
+                        @if ($workingOffice && $workingOffice->office_id == $office->office_id)
                           @if ($workingDay->weekday != 7)
                             @if ($workingDay->is_opened == 1)
                               <div class="table office_{{ $workingOffice->office_id }}" @if ($workingDay->is_half) data-half="1" @endif data-queue-id="{{ $workingDay->queue_id }}">
                                 <div class="title text-sm">{{ $workingOffice->title }}</div>
                                 @for ($i = $startSlot; $i <= $numberOfSteps; $i++)
                                   @php
-                                    $slot = \App\Models\Slot::select('status', 'takenby', 'comment')->where('queue_id', $workingDay->queue_id)->where('date', $workingDay->date)->where('iorder', $i)->groupBy('iorder')->first();
+                                    $slot = $slotsByKey[\App\Models\Slot::reservationGridKey($workingDay->queue_id, $workingDay->date, $i)] ?? null;
                                     $currentTime = $opentime->copy()->addMinutes($timeStep * $i)->format('H:i');
 
                                   @endphp
@@ -89,22 +105,22 @@
                                         $slotClass = 'time-taken';
                                         $serviceSlotClass = '';
                                         if ($slot->takenby !== null) {
-                                            $takenBy = json_decode($slot->takenby);
-                                            $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
+                                            [$takenBy, $takenByLabel] = $buildTakenByMeta($slot->takenby);
+                                            $service = null;
+                                            if (is_array($takenBy) && isset($takenBy['service'])) {
+                                              $service = $servicesById[$takenBy['service']] ?? null;
+                                            }
                                             $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
-                                            if ($service->service_id == 6) {
+                                            if ($service && $service->service_id == 6) {
                                                 $serviceSlotClass = 'time-taken-ac';
-                                            } elseif ($service->service_id == 8 || $service->service_id == 9) {
+                                            } elseif ($service && ($service->service_id == 8 || $service->service_id == 9)) {
                                                 $serviceSlotClass = 'time-taken-moto';
                                             }
 
-                                            $content = '<button class="slot status taken-slot ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
-                                            if ($slot->edituser > -1) {
-                                                $content = '<button class="slot status taken-slot-admin ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
-                                            }
+                                            $content = '<button class="slot status taken-slot ' . $serviceSlotClass . '">'. $takenByLabel . '</button>';
                                             //$content = '<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;">'. \App\Http\Controllers\MainController::truncateCharacters(trim($takenBy->car_brand),6,'&mldr;',1) . ' xxxxx'.$plate.'</span>';
                                         } else {
-                                            $content = '<button class="slot status taken-slot-admin ' . $serviceSlotClass . '">xxxxx</button>';
+                                            $content = '<button class="slot status taken-slot ' . $serviceSlotClass . '">xxxxx</button>';
                                         }
 
                                       @endphp
@@ -114,19 +130,19 @@
                                         if ($slot->takenby !== null) {
                                           $slotClass = 'time-taken';
                                           $serviceSlotClass = '';
-                                          $takenBy = json_decode($slot->takenby);
-                                          $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
+                                          [$takenBy, $takenByLabel] = $buildTakenByMeta($slot->takenby);
+                                          $service = null;
+                                          if (is_array($takenBy) && isset($takenBy['service'])) {
+                                            $service = $servicesById[$takenBy['service']] ?? null;
+                                          }
                                           $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
-                                          if ($service->service_id == 6) {
+                                          if ($service && $service->service_id == 6) {
                                               $serviceSlotClass = 'time-taken-ac';
-                                          } elseif ($service->service_id == 8 || $service->service_id == 9) {
+                                          } elseif ($service && ($service->service_id == 8 || $service->service_id == 9)) {
                                               $serviceSlotClass = 'time-taken-moto';
                                           }
 
-                                          $content = '<button class="slot status taken-slot ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
-                                          if ($slot->edituser > -1) {
-                                            $content = '<button class="slot status taken-slot-admin ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
-                                          }
+                                          $content = '<button class="slot status taken-slot ' . $serviceSlotClass . '">'. $takenByLabel . '</button>';
                                           //$content = '<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;"></span>';
                                         } else {
                                           $slotClass = 'time-offer';
@@ -171,22 +187,22 @@
                                           $serviceSlotClass = '';
                                           $className = ($i % 2 == 1) ? 'text-red' : '';
                                           if ($slot->takenby !== null) {
-                                              $takenBy = json_decode($slot->takenby);
-                                              $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
+                                              [$takenBy, $takenByLabel] = $buildTakenByMeta($slot->takenby);
+                                              $service = null;
+                                              if (is_array($takenBy) && isset($takenBy['service'])) {
+                                                $service = $servicesById[$takenBy['service']] ?? null;
+                                              }
                                               $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
-                                              if ($service->service_id == 6) {
+                                              if ($service && $service->service_id == 6) {
                                                   $serviceSlotClass = 'time-taken-ac';
-                                              } elseif ($service->service_id == 8 || $service->service_id == 9) {
+                                              } elseif ($service && ($service->service_id == 8 || $service->service_id == 9)) {
                                                   $serviceSlotClass = 'time-taken-moto';
                                               }
 
-                                              $content = '<button class="slot status ' . $className .  ' taken-slot ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
-                                              if ($slot->edituser > -1) {
-                                                  $content = '<button class="slot status ' . $className . ' taken-slot-admin ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
-                                              }
+                                              $content = '<button class="slot status ' . $className .  ' taken-slot ' . $serviceSlotClass . '">'. $takenByLabel . '</button>';
                                               //$content = '<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;">'. \App\Http\Controllers\MainController::truncateCharacters(trim($takenBy->car_brand),6,'&mldr;',1) . ' xxxxx'.$plate.'</span>';
                                           } else {
-                                              $content = '<button class="slot status ' . $className . ' taken-slot-admin ' . $serviceSlotClass . '">xxxxx</button>';
+                                              $content = '<button class="slot status ' . $className . ' taken-slot ' . $serviceSlotClass . '">xxxxx</button>';
                                           }
 
                                         @endphp
@@ -196,19 +212,19 @@
                                           if ($slot->takenby !== null) {
                                             $slotClass = 'time-taken';
                                             $serviceSlotClass = '';
-                                            $takenBy = json_decode($slot->takenby);
-                                            $service = \App\Models\Service::where('service_id', $takenBy->service)->first();
+                                            [$takenBy, $takenByLabel] = $buildTakenByMeta($slot->takenby);
+                                            $service = null;
+                                            if (is_array($takenBy) && isset($takenBy['service'])) {
+                                              $service = $servicesById[$takenBy['service']] ?? null;
+                                            }
                                             $ac = (isset($halfAcService) && !is_null($halfAcService)) ? '*' : '';
-                                            if ($service->service_id == 6) {
+                                            if ($service && $service->service_id == 6) {
                                                 $serviceSlotClass = 'time-taken-ac';
-                                            } elseif ($service->service_id == 8 || $service->service_id == 9) {
+                                            } elseif ($service && ($service->service_id == 8 || $service->service_id == 9)) {
                                                 $serviceSlotClass = 'time-taken-moto';
                                             }
                                             $className = ($i % 2 == 1) ? 'text-red' : '';
-                                            $content = '<button class="slot status ' . $className . ' taken-slot ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
-                                            if ($slot->edituser > -1) {
-                                              $content = '<button class="slot status ' . $className . ' taken-slot-admin ' . $serviceSlotClass . '">'. $takenBy->car_brand . ' ' . $takenBy->car_model . ' ' . $takenBy->phone_number . '</button>';
-                                            }
+                                            $content = '<button class="slot status ' . $className . ' taken-slot ' . $serviceSlotClass . '">'. $takenByLabel . '</button>';
                                             //$content = '<span class="bg-gray-300 text-sm text-gray py-2 px-4 status" style="cursor: default;"></span>';
                                           } else {
                                             $slotClass = 'time-offer';
@@ -303,7 +319,10 @@
         {{--    </div>--}}
 
         <!-- Main modal -->
-          <div class="reservation_edit modal fade" id="slotModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="slotModalLabel" aria-hidden="true">
+          @php
+            $carInfoToken = app(\App\Services\CarInfoTokenService::class)->issue(request());
+          @endphp
+          <div class="reservation_edit modal fade" id="slotModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="slotModalLabel" aria-hidden="true" data-car-info-url="{{ url('/api/car-info') }}">
             <div class="modal-dialog modal-lg">
               <div class="modal-content">
                 <div class="loader-block">
@@ -319,6 +338,7 @@
                 </div>
                 <div class="modal-body" style="padding-top: 0px;">
                   <form method="post">
+                    <input type="hidden" name="car_info_token" value="{{ $carInfoToken }}">
                     <input type="hidden" name="queue_id">
                     <input type="hidden" name="date">
                     <input type="hidden" name="slot">
@@ -347,12 +367,11 @@
                       <label for="title" class="col-sm-3 col-form-label text-right">Filiāle/rinda:</label>
                       <div class="col-8">
                         <select class="form-control" id="f_office">
-                          @php $l = 1; @endphp
-                          @foreach (\App\Models\Office::all() as $office)
-                            @for ($i = 1; $i <= $office->queue_count; $i++)
-                              <option value="{{ $l }}">{{ $office->title }} | {{ $i }}. Rinda</option>
-                              @php $l++ @endphp
-                            @endfor
+                          @foreach ($reservationModalQueues as $pubQueue)
+                            @php $pubOffice = $officesById[$pubQueue->office_id] ?? null; @endphp
+                            @if ($pubOffice)
+                              <option value="{{ $pubQueue->queue_id }}">{{ $pubOffice->title }} | {{ $pubQueue->title }}</option>
+                            @endif
                           @endforeach
                         </select>
                       </div>
@@ -375,8 +394,10 @@
                       <div class="col-md-8" id="service">
                         <label>
                           <select class="custom-select select-service-option">
-                            @foreach (\App\Models\Service::all() as $service)
-                              <option name="serviceOption" id="serviceOption{{ $service->service_id }}" class="form-check-input" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif value="{{ $service->service_id }}">{{ $service->title }}</option>
+                            @foreach ($reservationModalServices as $service)
+                              @if (is_object($service) && isset($service->service_id))
+                                <option name="serviceOption" id="serviceOption{{ $service->service_id }}" class="form-check-input" @if ($service->f_save == 1) data-save="1"@endif @if ($service->f_save == 2) data-save="2"@endif value="{{ $service->service_id }}">{{ $service->title }}</option>
+                              @endif
                             @endforeach
                           </select>
                         </label>
@@ -460,6 +481,13 @@
                           <option name="discountOption" id="discountOption4" class="form-check-input" value="other">Cits</option>
                         </select>
                         <textarea id="f_slotcomment" style="display: none" class="form-control" cols="30" rows="2"></textarea>
+                      </div>
+                    </div>
+                    <div class="form-group row bg-light">
+                      <label class="col-sm-3 col-form-label text-right">Auto dati</label>
+                      <div class="col-9">
+                        <button type="button" class="btn btn-primary btn-sm" id="car-info-toggle" disabled>Apskatīt datus</button>
+                        <pre id="car-info-json" style="display:none; max-height: 260px; overflow:auto; background:#f8f9fa; padding:10px; border-radius:6px; margin-top: 8px;"></pre>
                       </div>
                     </div>
                   </form>
@@ -587,5 +615,6 @@
       </div>
     </div>
   </div>
+  <script src="{{ asset('js/simple-slot-lock.js?rev=' . time()) }}"></script>
   <script src="{{ asset('js/reservations.js?rev=' . time()) }}"></script>
 @endsection

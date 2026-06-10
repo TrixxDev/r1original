@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+@section('canonical_url', url('/internet-veikals'))
+@section('meta_title', 'Par interneta veikalu | R1 Riepu Serviss')
+@section('meta_description', 'Par R1 interneta veikalu — garantija, apmaksa, piegāde visā Latvijā un Baltijā. Ērta riepu un disku pirkšana internetā ar montāžu servisā.')
+@section('meta_keywords', config('seo.keywords.internet_veikals'))
+
 @section('content')
 <div class='container'>
     <div class='row'>

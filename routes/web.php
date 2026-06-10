@@ -1,6 +1,5 @@
 <?php
 
-  use Gloudemans\Shoppingcart\Facades\Cart;
   use Illuminate\Support\Facades\DB;
   use Illuminate\Support\Facades\Route;
   use Illuminate\Support\Facades\Session;
@@ -22,7 +21,7 @@
   //return view('maintenance');
 //}
 
-Auth::routes(['verify' => false]);
+Auth::routes(['verify' => false, 'register' => false]);
 //Route::get('verify-sms', [App\Http\Controllers\Auth\VerificationController::class, 'showSmsVerificationForm'])->name('verification.notice');
 //Route::post('verify-sms', [App\Http\Controllers\Auth\VerificationController::class, 'verifySmsCode'])->name('verification.verify');
 //Route::post('resend-sms', [App\Http\Controllers\Auth\VerificationController::class, 'resendVerificationCode'])->name('verification.resend');
@@ -42,6 +41,8 @@ Route::prefix('api')->name('admin.')->group(function() {
 
 Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])->group(function() {
   Route::get('/', [App\Http\Controllers\Admin\MainController::class, 'home'])->name('home');
+  Route::get('/dashboard/data', [App\Http\Controllers\Admin\MainController::class, 'dashboardData'])->name('dashboard.data');
+  Route::post('/changeSeason', [App\Http\Controllers\Admin\SettingsController::class, 'changeSeason'])->name('changeSeason');
 
   // Auto riepas
   Route::match(['GET', 'POST'], '/auto', [App\Http\Controllers\Admin\AutoTireController::class, 'index'])->name('auto.tires');
@@ -58,6 +59,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   Route::post('/auto/tread/{tread_id}/image', [App\Http\Controllers\Admin\AutoTireController::class, 'tire_image'])->name('auto.tires.image');
   Route::post('/auto/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTreads'])->name('auto.tires.ajaxUpdateTreads');
   Route::post('/auto/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\AutoTireController::class, 'ajaxUpdateTires'])->name('auto.tires.ajaxUpdateTires');
+
+  // Partner stock: Riepu Garāža tyres.xml (same handler as public /sync/rg-auto; requires login)
+  Route::get('/sync/rg-auto', [App\Http\Controllers\SyncController::class, 'rgauto'])->name('sync.rg-auto');
 
   // Auto riepu imports
   Route::get('/import/auto', [App\Http\Controllers\Admin\Import\AutoTireImportController::class, 'index'])->name('auto.import');
@@ -99,6 +103,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
 
   // Moto riepas
   Route::match(['GET', 'POST'], '/moto', [App\Http\Controllers\Admin\MotoTireController::class, 'index'])->name('moto.tires');
+  Route::post('/moto/toggleTop', [App\Http\Controllers\Admin\MotoTireController::class, 'toggletop'])->name('moto.tires.toggletop');
   Route::get('/moto/edit/{id}', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_edit'])->name('moto.tire.edit');
   Route::post('/moto/edit/{id}', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_update'])->name('moto.tire.update');
   Route::get('/moto/delete/{id}', [App\Http\Controllers\Admin\MotoTireController::class, 'tire_destroy'])->name('moto.tire.destroy');
@@ -151,6 +156,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
 
   // Kvadraciklu riepas
   Route::match(['GET', 'POST'], '/quadr', [App\Http\Controllers\Admin\QuadrTireController::class, 'index'])->name('quadr.tires');
+  Route::post('/quadr/toggleTop', [App\Http\Controllers\Admin\QuadrTireController::class, 'toggletop'])->name('quadr.tires.toggletop');
   Route::get('/quadr/edit/{id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_edit'])->name('quadr.tire.edit');
   Route::post('/quadr/edit/{id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_update'])->name('quadr.tire.update');
   Route::get('/quadr/delete/{id}', [App\Http\Controllers\Admin\QuadrTireController::class, 'tire_destroy'])->name('quadr.tire.destroy');
@@ -215,6 +221,7 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   Route::post('/quadrims/tread/{tread_id}/image', [App\Http\Controllers\Admin\QuadrRimController::class, 'quadrims_image'])->name('quadrims.image');
   Route::post('/quadrims/tread/{tread_id}/ajaxUpdateTreads', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTreads'])->name('quadrims.ajaxUpdateTreads');
   Route::post('/quadrims/tread/{tread_id}/ajaxUpdateTires', [App\Http\Controllers\Admin\QuadrRimController::class, 'ajaxUpdateTires'])->name('quadrims.ajaxUpdateTires');
+  Route::post('/quadrims/import/duell', [App\Http\Controllers\Admin\Import\AtvRimImportController::class, 'import'])->name('quadrims.import.duell');
 
   // Radzes
   Route::match(['GET', 'POST'], '/studs', [App\Http\Controllers\Admin\StudsController::class, 'index'])->name('studs.index');
@@ -232,6 +239,9 @@ Route::namespace('Admin')->prefix('admin')->name('admin.')->middleware(['auth'])
   // Interneta-veikals
   Route::match(['GET', 'POST'], '/orders', [App\Http\Controllers\Admin\ShopController::class, 'orders'])->name('orders');
   Route::match(['GET', 'POST'], '/orders/print', [App\Http\Controllers\Admin\ShopController::class, 'orders_print'])->name('orders_print');
+  Route::post('/orders/search', [App\Http\Controllers\Admin\ShopController::class, 'searchOrders'])->name('orders.search');
+  Route::get('/orders/test', function() { return response()->json(['test' => 'ok']); })->name('orders.test');
+  Route::get('/orders/logs', [App\Http\Controllers\Admin\ShopController::class, 'orderLogs'])->name('orders.logs');
   Route::match(['GET', 'POST'], '/order/{id}/update', [App\Http\Controllers\Admin\ShopController::class, 'order_update'])->name('order.update');
   Route::match(['GET', 'POST'], '/order/{id}/delete', [App\Http\Controllers\Admin\ShopController::class, 'delete'])->name('order.delete');
   Route::get('/order/{id}', [App\Http\Controllers\Admin\ShopController::class, 'order'])->name('order');
@@ -322,7 +332,18 @@ Route::get('/sendSMS', function() {
   (new \App\Helper\SmsSender())->send();
 });
 
+Route::get('/sendTestSMS', function() {
+  
+});
+
 Route::post('/orderSMS', [App\Http\Controllers\HomeController::class, 'sendOrderSMS']);
+
+Route::post('/api/car-info', [App\Http\Controllers\Api\CarInfoController::class, 'show'])
+  ->middleware(['restrict.domain', 'require.car.info.token']);
+
+Route::get('/robots.txt', [App\Http\Controllers\SitemapController::class, 'robots']);
+Route::get('/sitemap.xml', [App\Http\Controllers\SitemapController::class, 'index']);
+Route::get('/sitemap-{page}.xml', [App\Http\Controllers\SitemapController::class, 'chunk'])->where('page', '[0-9]+');
 
 Route::middleware('checksession')->group(function() {
 
@@ -332,25 +353,26 @@ Route::middleware('checksession')->group(function() {
   Route::get('/', function() {
    return redirect('/pieraksts');
   })->name('home');
-  Route::get('/callback', function() {
-   require_once(dirname(__DIR__) . '/app/Paysera/callback.php');
-  });
+  Route::any('/callback', [App\Http\Controllers\PayseraCallbackController::class, 'callback'])->name('paysera.callback');
   Route::get('/logout', function() {
-    $user_email = Auth::user()->email;
-    Cart::store($user_email);
     Auth::logout();
     Session::flush();
-    DB::table('orders_history')->where('identifier', $user_email)->update(['instance' => Session::getId()]);
-    Cart::instance(Session::getId())->restore($user_email);
-    unset($user_email);
     return redirect()->back();
   })->name('logout');
+  Route::get('/flush_session', function() {
+    Session::flush();
+    return redirect()->back();
+  });
 
 //Valodas maiņa
 
   Route::get('/lang/{lang}', [App\Http\Controllers\LocalizationController::class, 'index'])->name('lang');
 
 //Riepas
+
+  Route::get('/riepu-razotaji', [App\Http\Controllers\AutoBrandHubController::class, 'index'])->name('riepu-razotaji');
+  Route::get('/riepu-razotaji/{brand}', [App\Http\Controllers\AutoBrandHubController::class, 'show'])->name('riepu-razotaji-brand');
+  Route::get('/riepu-razotaji/{brand}/{tread}', [App\Http\Controllers\AutoBrandHubController::class, 'tread'])->name('riepu-razotaji-tread');
 
   Route::post('/auto/tires_filter/', [App\Http\Controllers\AutoTireController::class, 'tires_filter'])->name('tires_filter');
 
@@ -360,6 +382,7 @@ Route::middleware('checksession')->group(function() {
   Route::get('/ziemas-riepas/search/api/getSizes/{season}', [App\Http\Controllers\AutoTireController::class, 'get_sizes']);
   Route::get('/ziemas-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\AutoTireController::class, 'tires_tread'])->name('ziemas-riepa');
   Route::post('/ziemas-riepas/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('ziemas-riepas-ajax');
+  Route::post('/ziemas-riepas/ajax/dual-kit', [App\Http\Controllers\AutoTireController::class, 'tires_ajax_dual_kit'])->name('ziemas-riepas-ajax-dual-kit');
   Route::post('/ziemas-riepas/search/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('ziemas-riepas-ajax');
   Route::get('/ziemas-riepas/search', [App\Http\Controllers\AutoTireController::class, 'tires_find'])->name('ziemas-riepas-meklet');
   Route::get('/ziemas-riepas/getBrandList', [App\Http\Controllers\AutoTireController::class, 'tires_getBrands']);
@@ -370,6 +393,7 @@ Route::middleware('checksession')->group(function() {
   Route::get('/vasaras-riepas/search/api/getSizes/{season}', [App\Http\Controllers\AutoTireController::class, 'get_sizes']);
   Route::get('/vasaras-riepas/{brand}/{tread}/{tire}', [App\Http\Controllers\AutoTireController::class, 'tires_tread'])->name('vasaras-riepa');
   Route::post('/vasaras-riepas/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('vasaras-riepas-ajax');
+  Route::post('/vasaras-riepas/ajax/dual-kit', [App\Http\Controllers\AutoTireController::class, 'tires_ajax_dual_kit'])->name('vasaras-riepas-ajax-dual-kit');
   Route::post('/vasaras-riepas/search/ajax', [App\Http\Controllers\AutoTireController::class, 'tires_ajax'])->name('vasaras-riepas-ajax');
   Route::get('/vasaras-riepas/search', [App\Http\Controllers\AutoTireController::class, 'tires_find'])->name('vasaras-riepas-meklet');
   Route::get('/vasaras-riepas/getBrandList', [App\Http\Controllers\AutoTireController::class, 'tires_getBrands']);
@@ -421,6 +445,14 @@ Route::middleware('checksession')->group(function() {
   Route::get('/kvadru-diski/search', [App\Http\Controllers\QuadrRimsController::class, 'rims_search'])->name('kvadru-diski-meklet');
   Route::get('/kvadru-diski/getBrandList', [App\Http\Controllers\QuadrRimsController::class, 'rims_getBrands']);
 
+  // ATV / Kvadraciklu diski (public URL — Latvian slug; controllers use Atv* prefix)
+  Route::get('/kvadraciklu-diski', [App\Http\Controllers\AtvRimController::class, 'index'])->name('kvadraciklu-diski');
+  Route::post('/kvadraciklu-diski', [App\Http\Controllers\AtvRimController::class, 'search'])->name('kvadraciklu-diski-post');
+  Route::get('/kvadraciklu-diski/search', [App\Http\Controllers\AtvRimController::class, 'search'])->name('kvadraciklu-diski-meklet');
+  Route::get('/kvadraciklu-diski/getBrandList', [App\Http\Controllers\AtvRimController::class, 'getBrands']);
+  Route::post('/kvadraciklu-diski/ajax', [App\Http\Controllers\AtvRimController::class, 'ajax'])->name('kvadraciklu-diski-ajax');
+  Route::get('/kvadraciklu-diski/{brand}/{tread}/{rim}', [App\Http\Controllers\AtvRimController::class, 'show'])->name('kvadracikla-disks');
+
 
   //Radzes
   Route::get('/radzes', [App\Http\Controllers\StudsController::class, 'studs'])->name('radzes');
@@ -435,8 +467,6 @@ Route::middleware('checksession')->group(function() {
   Route::get('/akcijas', [App\Http\Controllers\TopTireController::class, 'index'])->name('sale-tires');
   Route::get('/akcijas/category/{ct}', [App\Http\Controllers\TopTireController::class, 'filter'])->name('sale-tires-search');
 
-  Route::post('/changeSeason', [App\Http\Controllers\TopTireController::class, 'changeSeason']);
-
 // Noklusējuma lapas
 
 // Pieraksts
@@ -445,12 +475,27 @@ Route::middleware('checksession')->group(function() {
     $dat = strtotime("2023-10-30 46");
     return date('d.m.Y', $dat);
   });
+  
+  Route::get('/slot-lock-demo', function() {
+    return view('tests.slot-lock-demo');
+  });
 
-  Route::get('/pieraksts', [App\Http\Controllers\Records\RecordController::class, 'index'])->name('pieraksts');
+  Route::get('/marketing/feed/google.xml', [App\Http\Controllers\Marketing\ProductFeedController::class, 'googleXml'])
+    ->name('marketing.feed.google');
+
+  Route::get('/pieraksts', [App\Http\Controllers\Records\RecordController::class, 'index'])
+    ->middleware('no.cache')
+    ->name('pieraksts');
   Route::match(['GET', 'POST'], '/pieraksts/cancel={id}', [App\Http\Controllers\Records\RecordController::class, 'cancelSlot'])->name('cancelSlot');
   Route::post('/pieraksts/getSlotInfo', [App\Http\Controllers\Records\RecordController::class, 'getSlotInfo']);
   Route::post('/pieraksts/fillSlot', [App\Http\Controllers\Records\RecordController::class, 'fillSlot']);
   Route::post('/pieraksts/showMobileQueues', [App\Http\Controllers\Records\RecordController::class, 'showMobileQueues']);
+  
+  // Блокировка слотов
+  Route::post('/pieraksts/reserve-slot', [App\Http\Controllers\Records\SlotLockingController::class, 'reserve']);
+  Route::post('/pieraksts/extend-reservation', [App\Http\Controllers\Records\SlotLockingController::class, 'extend']);
+  Route::post('/pieraksts/cancel-reservation', [App\Http\Controllers\Records\SlotLockingController::class, 'cancel']);
+  Route::post('/pieraksts/check-slot-availability', [App\Http\Controllers\Records\SlotLockingController::class, 'checkAvailability']);
 
   Route::middleware('auth')->group(function() {
     Route::get('/pieraksts/print/{office}/{date}', [App\Http\Controllers\Records\RecordController::class, 'reservations_print'])->name('pieraksts.print');
@@ -507,6 +552,7 @@ Route::middleware('checksession')->group(function() {
   Route::get('/sync/i3-agro', [App\Http\Controllers\SyncController::class, 'i3agro'])->name('i3-agro');
   Route::get('/sync/starco', [App\Http\Controllers\SyncController::class, 'starco'])->name('starco');
   Route::get('/sync/rz-auto', [App\Http\Controllers\SyncController::class, 'rzauto'])->name('rz-auto');
+  Route::get('/sync/rg-auto', [App\Http\Controllers\SyncController::class, 'rgauto'])->name('rg-auto');
   Route::get('/sync/duell-moto', [App\Http\Controllers\SyncController::class, 'duellmoto'])->name('duellmoto');
   Route::get('/sync/duell-quadr', [App\Http\Controllers\SyncController::class, 'duellquadr'])->name('duellquadr');
   Route::get('/sync/rz-auto/show', [App\Http\Controllers\SyncController::class, 'rzautoshow']);
@@ -520,25 +566,31 @@ Route::middleware('checksession')->group(function() {
 
 // Grozs
 
-  Route::middleware('checkcart')->group(function() {
-    Route::match(['GET', 'POST'],'/grozs', [App\Http\Controllers\CartController::class, 'index'])->name('cart');
-    Route::match(['GET', 'POST'], '/pasutijums', [App\Http\Controllers\CartController::class, 'order'])->name('order');
-    Route::get('/pasutijums/success/{id}', [App\Http\Controllers\CartController::class, 'order_success'])->name('order.success');
-  });
-  Route::get('/pasutijums/done', [App\Http\Controllers\CartController::class, 'order_done'])->name('order.done');
-  Route::get('/grozs/remove/{id}', [App\Http\Controllers\CartController::class, 'remove'])->name('cart.remove');
-  Route::get('/pasutijums/print/{id}', [App\Http\Controllers\CartController::class, 'printCart'])->name('order.printCart');
-  Route::post('/checkShipping', [App\Http\Controllers\CartController::class, 'checkShipping']);
-  Route::post('/checkFitting', [App\Http\Controllers\CartController::class, 'checkFitting']);
-  Route::get('/cart/empty', function() {
-    \Cart::destroy();
+  Route::match(['GET', 'POST'], '/shop', [App\Http\Controllers\ShopController::class, 'index'])->name('cart');
+  Route::post('/shop/ajaxChangeQty', [App\Http\Controllers\ShopController::class, 'ajaxChangeQty'])->name('shop.ajaxChangeQty');
+  Route::get('/shop/remove/{id}', [App\Http\Controllers\ShopController::class, 'removeItem'])->name('shop.removeItem');
+  Route::post('/shop/remove/{id}', [App\Http\Controllers\ShopController::class, 'removeItem'])->name('shop.removeItem.ajax');
+  Route::get('/shop/empty', [App\Http\Controllers\ShopController::class, 'clearCartRedirect'])->name('shop.empty');
+  Route::post('/shop/checkShipping', [App\Http\Controllers\ShopController::class, 'checkShipping'])->name('shop.checkShipping');
+  Route::post('/shop/checkFitting', [App\Http\Controllers\ShopController::class, 'checkFitting'])->name('shop.checkFitting');
 
-    return redirect()->back();
-  })->name('cart.empty');
-  Route::get('/cart/ajaxRefresh', [App\Http\Controllers\CartController::class, 'ajaxRefresh'])->name('cart.ajaxRefresh');
-  Route::post('/cart/ajaxChangeQty', [App\Http\Controllers\CartController::class, 'ajaxChangeQty'])->name('cart.ajaxChangeQty');
-  Route::post('/cart/ajaxQtyUp', [App\Http\Controllers\CartController::class, 'ajaxQtyUp'])->name('cart.ajaxQtyUp');
-  Route::post('/cart/ajaxQtyDown', [App\Http\Controllers\CartController::class, 'ajaxQtyDown'])->name('cart.ajaxQtyDown');
+  Route::match(['GET', 'POST'], '/credentials', [App\Http\Controllers\ShopController::class, 'credentials'])->name('shop.credentials');
+  Route::match(['GET', 'POST'], '/checkout', [App\Http\Controllers\ShopController::class, 'checkout'])->name('shop.checkout');
+
+  Route::get('/shop/success/{id}', [App\Http\Controllers\ShopController::class, 'shop_success'])->name('shop.success');
+  Route::get('/shop/done/{order_number}', [App\Http\Controllers\ShopController::class, 'shop_done'])->name('shop.done');
+
+  Route::middleware('checkcart')->group(function() {
+    Route::match(['GET', 'POST'],'/grozs', [App\Http\Controllers\ShopController::class, 'index'])->name('cart.index');
+    Route::match(['GET', 'POST'], '/pasutijums', [App\Http\Controllers\ShopController::class, 'checkout'])->name('order');
+    Route::get('/pasutijums/success/{id}', [App\Http\Controllers\ShopController::class, 'shop_success'])->name('order.success');
+  });
+  Route::get('/pasutijums/done/{order_number}', [App\Http\Controllers\ShopController::class, 'shop_done'])->name('order.done');
+  Route::get('/grozs/remove/{id}', [App\Http\Controllers\ShopController::class, 'removeItem'])->name('cart.remove');
+  Route::post('/grozs/remove/{id}', [App\Http\Controllers\ShopController::class, 'removeItem'])->name('cart.remove.ajax');
+  Route::get('/pasutijums/print/{id}', [App\Http\Controllers\ShopController::class, 'printCart'])->name('order.printCart');
+  Route::post('/checkShipping', [App\Http\Controllers\ShopController::class, 'checkShipping']);
+  Route::post('/checkFitting', [App\Http\Controllers\ShopController::class, 'checkFitting']);
 
   Route::post('/accrualOrder', [App\Http\Controllers\HomeController::class, 'accrualOrder'])->name('accrualOrder');
 
@@ -587,6 +639,111 @@ Route::middleware('checksession')->group(function() {
   Route::post('queuetest', [App\Http\Controllers\HomeController::class, 'queuetest']);
 
   // END ROUTES FOR TESTING PURPOSES
+
+  Route::get('/riepu-serviss-ulbroka', [App\Http\Controllers\BranchController::class, 'ulbroka'])->name('filiale-ulbroka');
+  Route::get('/riepu-serviss-riga', [App\Http\Controllers\BranchController::class, 'riga'])->name('filiale-riga');
+
   Route::get('/{page}', [App\Http\Controllers\HomeController::class, 'pages']);
 
 });
+
+// Quick Order Routes
+Route::middleware('auth')->group(function() {
+  // Primary routes with meaningful names
+  Route::get('/quick-order', [App\Http\Controllers\HomeController::class, 'fastOrder'])->name('quick-order');
+  Route::post('/quick-order/links', [App\Http\Controllers\HomeController::class, 'getLinks'])->name('quick-order.links');
+  Route::post('/quick-order/submit', [App\Http\Controllers\HomeController::class, 'accrualOrder'])->name('quick-order.submit');
+  Route::post('/quick-order/sms', [App\Http\Controllers\HomeController::class, 'sendOrderSMS'])->name('quick-order.sms');
+  
+  // Legacy routes for backward compatibility - to be removed after full migration
+  Route::get('/testing3', [App\Http\Controllers\HomeController::class, 'fastOrder']);
+  Route::post('/getLinks', [App\Http\Controllers\HomeController::class, 'getLinks']);
+  Route::post('/accrualOrder', [App\Http\Controllers\HomeController::class, 'accrualOrder']);
+
+  Route::get('/prepayment-invoice/{year}-{pznr}', [App\Http\Controllers\PrepaymentInvoiceController::class, 'showByYearAndPznr'])
+    ->whereNumber('year')
+    ->whereNumber('pznr');
+  Route::get('/prepayment-invoice/nr/{pznr}', [App\Http\Controllers\PrepaymentInvoiceController::class, 'showByPznr'])
+    ->whereNumber('pznr');
+  Route::get('/prepayment-invoice/{orderReference}/status', [App\Http\Controllers\PrepaymentInvoiceController::class, 'statusByOrderReference'])
+    ->where('orderReference', '[UKuk]-[0-9]+');
+  Route::get('/prepayment-invoice/{orderReference}', [App\Http\Controllers\PrepaymentInvoiceController::class, 'showByOrderReference'])
+    ->where('orderReference', '[UKuk]-[0-9]+');
+
+  Route::get('/accrual-partners/search', [App\Http\Controllers\AccrualPartnerController::class, 'search']);
+  Route::post('/accrual-partners', [App\Http\Controllers\AccrualPartnerController::class, 'store']);
+});
+
+Route::get('/shop/count', function () {
+    // Get cart from session
+    $cart = session()->get('cart', ['products' => []]);
+    
+    // Calculate total quantity
+    $count = 0;
+    if (isset($cart['products']) && is_array($cart['products'])) {
+        foreach ($cart['products'] as $product) {
+            if (isset($product['quantity'])) {
+                $count += $product['quantity'];
+            }
+        }
+    }
+    
+    return response()->json(['count' => $count]);
+});
+
+// Обработчики для корзины
+Route::post('/shop/add', [App\Http\Controllers\ShopController::class, 'addToCart'])->name('shop.add');
+Route::post('/shop/ajax/changeQty', [App\Http\Controllers\ShopController::class, 'ajaxChangeQty'])->name('shop.ajax.changeQty');
+
+Route::get('/api/{branch}/slots/', function($branch) {
+  $date = request('date', date('Y-m-d'));
+
+  $queues = DB::table('queues')
+      ->where('office_id', $branch)
+      ->pluck('queue_id')
+      ->toArray();
+
+  $slots = DB::table('slots')
+     ->where('date', $date)
+     ->where('status', 1)
+     ->whereIn('queue_id', $queues)
+     ->orderBy('iorder', 'asc')
+     ->get();
+
+  $workingDay = DB::table('workingdays')
+     ->where('date', $date)
+     ->first();
+
+  $timeopen = $workingDay ? $workingDay->timeopen : null;
+  $timestep = $workingDay ? $workingDay->timeStep : null;
+  $queue_id = $workingDay ? $workingDay->queue_id : null;
+
+  return response()->json([
+     'timeopen' => $timeopen,
+     'timestep' => $timestep,
+     'slots' => $slots
+  ]);
+});
+
+Route::get('/api/slots/{id}', function($id) {
+
+  $slot = DB::table('slots')
+     ->where('slot_id', $id)
+     ->first();
+
+  $slot_details = json_decode($slot->takenby);
+  $service_id = $slot_details->service;
+
+  $service = DB::table('services')->where('service_id', $service_id)->first();
+
+  $slot->service = $service;
+
+  return response()->json($slot);
+});
+
+Route::get('/api/mssql-test', [App\Http\Controllers\Api\SalaryController::class, 'mssqlTest']);
+Route::get('/api/find-person', [App\Http\Controllers\Api\SalaryController::class, 'findPerson']);
+Route::get('/api/get-salaries', [App\Http\Controllers\Api\SalaryController::class, 'getSalaries']);
+Route::get('/api/get-sick-leaves', [App\Http\Controllers\Api\SalaryController::class, 'getSickLeaves']);
+Route::get('/api/get-salary-status', [App\Http\Controllers\Api\SalaryController::class, 'getSalaryStatus']);
+Route::get('/api/get-complete-report', [App\Http\Controllers\Api\SalaryController::class, 'getCompleteReport']);

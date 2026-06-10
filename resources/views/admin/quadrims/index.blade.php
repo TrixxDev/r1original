@@ -153,12 +153,12 @@
                         <td>
                           <a class="btn btn-success" href="{{ route('admin.quadrims.edit', $rim->rim_id) }}">
                             <svg class="c-icon">
-                              <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
+                              <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-description"></use>
                             </svg>
                           </a>
                           <a onclick="if (confirm('Tiešām vēlies dzēst?') === true) { window.location.href = '{{ route('admin.quadrims.destroy', $rim->rim_id) }}' }" class="btn btn-danger">
                             <svg class="c-icon">
-                              <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
+                              <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-trash"></use>
                             </svg>
                           </a>
                         </td>
@@ -170,6 +170,7 @@
               </div>
             </div>
           </div>
+          @include('admin.quadrims._import-duell')
         </div>
       </div>
     </div>

@@ -2,6 +2,10 @@
 
 @section('body-title', 'category')
 @section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-2 category-lielas-riepas category-id-parent-12 category-depth-level-3')
+@section('meta_title', 'Lielas riepas | R1 Riepu Serviss')
+@section('meta_description', 'Lielas un lauksaimniecības riepas ar filtriem pēc izmēra un ražotāja. Katalogs ar cenām — R1 Riepu Serviss.')
+@section('meta_keywords', config('seo.keywords.lielas'))
+@section('canonical_url', route('lielas-riepas'))
 
 @section('content')
 
@@ -16,14 +20,14 @@
                 <input type="hidden" id="facet_all_val" value="Visi">
                 <div class="wrap">
 
-                  <h4 class="text-uppercase h6 hidden-sm-down">
-                    Parametri
+                  <h4 class="text-uppercase h6">
+                    <span id="search_filters_params" class="params params-solo" style="width: 100%!important;">Parametri</span>
                   </h4>
 
                   <div class="can-collapse">
 
                     <span class="show_list active" data-dismiss="modal"><i class="material-icons "></i>Saraksts</span>
-{{--                    <span class="show_grid" data-dismiss="modal"><i class="material-icons "></i>Bildes</span>--}}
+                    <span class="show_grid" data-dismiss="modal"><i class="material-icons "></i>Bildes</span>
 
                     <template id="facet-template">
                       <section class="facet clearfix">
@@ -56,8 +60,13 @@
                               <h1 class="h6 facet-title">Platums</h1>
                               <select name="d1" class="r1-select select-title tire-width">
                                 <option class="select-list" id="Visi">Visi</option>
-                                @foreach ($bigTiresD1 as $tire)
-                                  <option class="select-list" id="{{ $tire->d1 }}" @if ($tire->d1 == $d1) selected @endif>{{ $tire->d1 }}</option>
+                                @foreach ($bigTiresD1 as $tireD1)
+                                  @php
+                                    $value = data_get($tireD1, 'd1', $tireD1);
+                                    $value = is_scalar($value) ? (string) $value : null;
+                                  @endphp
+                                  @continue($value === null || $value === '')
+                                  <option class="select-list" id="{{ $value }}" @if ((string) $value === (string) $d1) selected @endif>{{ $value }}</option>
                                 @endforeach
                               </select>
                             </div>
@@ -67,8 +76,13 @@
                               <h1 class="h6 facet-title">Augstums</h1>
                               <select name="d2" class="r1-select select-title tire-height">
                                 <option class="select-list" id="Visi">Visi</option>
-                                @foreach ($bigTiresD2 as $tire)
-                                  <option class="select-list" id="{{ $tire->d2 }}" @if ($tire->d2 == $d2) selected @endif>{{ $tire->d2 }}</option>
+                                @foreach ($bigTiresD2 as $tireD2)
+                                  @php
+                                    $value = data_get($tireD2, 'd2', $tireD2);
+                                    $value = is_scalar($value) ? (string) $value : null;
+                                  @endphp
+                                  @continue($value === null || $value === '')
+                                  <option class="select-list" id="{{ $value }}" @if ((string) $value === (string) $d2) selected @endif>{{ $value }}</option>
                                 @endforeach
                               </select>
                             </div>
@@ -78,8 +92,13 @@
                               <h1 class="h6 facet-title facet-select">Diametrs</h1>
                               <select name="d3" class="r1-select select-title tire-radius">
                                 <option class="select-list" id="Visi">Visi</option>
-                                @foreach ($bigTiresD3 as $tire)
-                                  <option class="select-list" id="{{ $tire->d3 }}" @if ($tire->d3 == $d3) selected @endif>{{ $tire->d3 }}</option>
+                                @foreach ($bigTiresD3 as $tireD3)
+                                  @php
+                                    $value = data_get($tireD3, 'd3', $tireD3);
+                                    $value = is_scalar($value) ? (string) $value : null;
+                                  @endphp
+                                  @continue($value === null || $value === '')
+                                  <option class="select-list" id="{{ $value }}" @if ((string) $value === (string) $d3) selected @endif>{{ $value }}</option>
                                 @endforeach
                               </select>
 
@@ -276,7 +295,6 @@
 {{--                        @endforeach--}}
 {{--                      </ul>--}}
 {{--                    </section>--}}
-                    <button class="filter-button" type="submit">Filtrēt <i class="material-icons search"></i></button>
                   </div>
                 </div>
               </div>
@@ -298,6 +316,9 @@
                     @php
                       $brand = $tire->fullSize;
                       $tire->includeStock = true;
+                      $brandSlug = strtolower(optional(optional($tire->tread)->brand)->title ?? '');
+                      $treadSlug = strtolower(str_replace('/', '_', optional($tire->tread)->title ?? ''));
+                      $tireUrl = route('lielas-riepa', [$brandSlug, $treadSlug, $tire->tire_id]);
                       if ($cbrand!=$brand){
                         if ($index == 0) {
                           echo '</div><h4 class="tire-brand-name grid-t">' . $brand;
@@ -316,7 +337,7 @@
                     @endphp
                     @if($tire->price1)
                       <a
-                        href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
+                        href="{{ $tireUrl }}"
                         class="grid-view-link"
                         data-article="{{ $tire->article }}">
                         <div class="tire-image-card sort-order">
@@ -343,6 +364,8 @@
                                       class="grid-buy-btn cart-shopping-button"
                                       data-toggle="modal"
                                       data-info="{{ $tire->tire_id }}"
+                                      data-url="{{ $tireUrl }}"
+                                      data-link="/lielas-riepas"
                                       onclick="event.preventDefault()"
                                       @hasrole('administrators')
                               data-target="#"
@@ -373,62 +396,53 @@
                 <div id="js-product-list">
                   <div class="products row hide-price title-flip">
                     {{-- LIST VIEW --}}
-                    @php
-                      $cbrand = '';
-                      $index = 0;
-                    @endphp
+                    @if ($tires->count() > 0)
+                      <button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
+                        Filtrs ({{ $filterCount }})
+                      </button>
+                      <span class="text-uppercase flipped-title tire-brand-name" style="color: black">Lielās riepas</span>
+                    @endif
+                    @php $cSize = ''; @endphp
                     @foreach ($tires as $tire)
                       @php
-                        $brand = $tire->fullSize;
                         $tire->includeStock = true;
-                        if ($cbrand!=$brand){
-
-                        if ($cbrand) {
-                           echo '<h4 class="tire-brand-name">' . $cbrand;
-                        }
-                        if ($index == 0){
-                          //<h4 style="display: inline-block;">Izvēlētie filtri: </h4>
-                          echo '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-                                    Filtrs ()
-                                  </button><div class="filters" style="margin: 0 auto;"></div>';
-                          echo '<span class="text-uppercase flipped-title tire-brand-name" style="color:black;">Lielās riepas</span>';
-                          echo '</h4>';
-                        }
-                        echo '';
-
+                        $brandSlug = strtolower(optional(optional($tire->tread)->brand)->title ?? '');
+                        $treadSlug = strtolower(str_replace('/', '_', optional($tire->tread)->title ?? ''));
+                        $tireUrl = route('lielas-riepa', [$brandSlug, $treadSlug, $tire->tire_id]);
                       @endphp
+                      @if ($cSize !== $tire->fullSize)
+                        @if ($cSize !== '')
+                          </tbody>
+                        </table>
+                        @endif
+                        @php $cSize = $tire->fullSize; @endphp
+                        <table id="tires-table" class="table table-striped industrial-sorter tires-table table-hover tablesorter">
+                          <thead class="tires-thead sticky-table">
+                          <tr>
+                            <th scope="col"></th>
+                            <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
+                            <th scope="col" style="text-align: center;">Ass</th>
+                            <th scope="col" class="text-center">LI/SI</th>
+                            <th scope="col" class="hidden-sm-down text-center">
+                              Kods
+                            </th>
 
-                      <table id="tires-table" class="table table-striped industrial-sorter tires-table table-hover tablesorter">
-                        <thead class="tires-thead sticky-table">
-                        <tr>
-                          <th scope="col"></th>
-                          <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
-                          <th scope="col" style="text-align: center;">Ass</th>
-                          <th scope="col" class="text-center">LI/SI</th>
-                          <th scope="col" class="hidden-sm-down text-center">
-                            Kods
-                          </th>
+                            <th id="store-price-button" scope="col" class="text-center">
+                              Veikala cena
+                            </th>
 
-                          <th id="store-price-button" scope="col" class="text-center">
-                            Veikala cena
-                          </th>
+                            <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+                            <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
+                            <th scope="col"></th>
+                            <th scope="col">
+                              <div class="tire-table-icon icon-question"></div>
+                            </th>
 
-                          <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
-                          <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
-                          <th scope="col"></th>
-                          <th scope="col">
-                            <div class="tire-table-icon icon-question"></div>
-                          </th>
-
-                        </tr>
-                        </thead>
-                        <tbody id="tires-table-body">
-                        @php
-                          $cbrand = $brand;
-                          $stripe = 1;
-                        }
-                        @endphp
-                        @if ($loop->last) <h4 class="tire-brand-name">{{ $brand }}</h4> @endif
+                          </tr>
+                          </thead>
+                          <tbody id="tires-table-body">
+                          <h4 class="tire-brand-name">{{ $tire->fullSize }}</h4>
+                      @endif
                       <tr class="tire-table-row">
                         <th scope="row" class="tire-table-checkbox">
                           <input type="checkbox" value="{{ $tire->tire_id }}" name="product_ids[]"
@@ -438,7 +452,7 @@
                           <td class="table-tire-name-cell">
                               <a class="tire-table-link tippy image"
                                  data-tippy-content="<div><img data-src='{{ App\Helper\Image::showAd('big', $tire->make_id) }}'></div>"
-                                 href="{{ route('lielas-riepa', [strtolower(\Tires::getBigTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
+                                 href="{{ $tireUrl }}"
                                  data-content="{{ $tire->fullName }}"
                                  data-article="{{ $tire->article }}"
                                  data-quantity="{{ $cartQty }}">
@@ -482,7 +496,7 @@
                         <td class="shopping-cart-col">
                           <div class="clearfix atc_div text-right">
                             <button class="cart-shopping-button" data-toggle="modal"
-                              @hasrole('administrators') data-target="#" @else data-target="#blockcart-modal" @endhasrole data-info="{{ $tire->tire_id }}"><i
+                              @hasrole('administrators') data-target="#" @else data-target="#blockcart-modal" @endhasrole data-info="{{ $tire->tire_id }}" data-url="{{ $tireUrl }}" data-link="/lielas-riepas"><i
                               class="material-icons">add_shopping_cart</i>
                             </button>
                           </div>
@@ -497,12 +511,11 @@
                         </td>
 
                       </tr>
-                      @php
-                        $index++;
-                      @endphp
                     @endforeach
-                        </tbody>
-                      </table>
+                    @if ($cSize !== '')
+                      </tbody>
+                    </table>
+                    @endif
                   </div>
                   <nav class="pagination">
                     <div class="col-md-12">
@@ -542,4 +555,9 @@
     </div>
   </div>
 
+@push('scripts')
+  <script src="{{ \App\Helper\AssetHelper::v('js/bigTiresAjax.js') }}" defer></script>
+@endpush
 @endsection
+
+

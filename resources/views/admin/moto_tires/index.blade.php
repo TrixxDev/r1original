@@ -151,6 +151,7 @@
                                                   {{--                                        <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 67.547px;">Degvielas ekonomija</th>--}}
                                                   {{--                                        <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 67.547px;">Slapjšs segums</th>--}}
                                                   {{--                                        <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 67.547px;">Skaļums</th>--}}
+                                                  <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 67.547px;">Kamera</th>
                                                   <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Actions: activate to sort column ascending" style="width: 67.547px;">Piezīmes</th>
                                                   <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Username: activate to sort column ascending" style="width: 372.5px;">Artikuls</th>
                                                   <th tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" style="width: 322.391px;"></th>
@@ -175,17 +176,18 @@
 {{--                                                <td>{{ $tire->eco }}</td>--}}
 {{--                                                <td>{{ $tire->wet }}</td>--}}
                                                 <td>{{ $tire->code }}</td>
+                                                <td><input type="checkbox" disabled @if ($tire->is_camera) checked @endif</td>
                                                 <td>{{ $tire->comment }}</td>
                                                 <td>{{ $tire->article }}</td>
                                                 <td>
                                                     <a class="btn btn-success" href="{{ route('admin.moto.tire.edit', $tire->tire_id) }}">
                                                         <svg class="c-icon">
-                                                            <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
+                                                            <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-description"></use>
                                                         </svg>
                                                     </a>
                                                     <a onclick="if (confirm('Tiešām vēlies dzēst?') === true) { window.location.href = '{{ route('admin.moto.tire.destroy', $tire->tire_id) }}' }" class="btn btn-danger">
                                                         <svg class="c-icon">
-                                                            <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-trash"></use>
+                                                            <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-trash"></use>
                                                         </svg>
                                                     </a>
                                                 </td>

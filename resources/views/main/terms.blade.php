@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+@section('canonical_url', route('terms'))
+@section('meta_title', 'Riepu kodi un paskaidrojumi | R1 Riepu Serviss')
+@section('meta_description', 'Riepu marķējumu paskaidrojumi — LI/SI indeksi, EU marķējums, ātruma un slodzes kodi u.c. Noderīga informācija, izvēloties auto riepas R1 Riepu Serviss.')
+@section('meta_keywords', config('seo.keywords.paskaidrojumi'))
+
 @section('content')
 <div class="container">
     <div class="row">

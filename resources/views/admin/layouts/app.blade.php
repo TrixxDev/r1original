@@ -19,6 +19,7 @@
     <link href="{{ asset('admins/css/dataTable.bootstrap4.css?rev=' . time()) }}" rel="stylesheet">
     <link href="{{ asset('admins/css/coreui-chartjs.css?rev=' . time()) }}" rel="stylesheet">
     <link href="{{ asset('admins/css/bootstrap-multiselect.css?rev=' . time()) }}" rel="stylesheet">
+    <link href="{{ asset('admins/assets/coreui-icons/css/free.min.css?rev=' . time()) }}" rel="stylesheet">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
@@ -31,85 +32,85 @@
         <li class="c-sidebar-nav-title">Kopīgais</li>
         <li class="c-sidebar-nav-item c-sidebar-nav-dropdown"><a class="c-sidebar-nav-link" href="{{ route('admin.home') }}">
             <svg class="c-sidebar-nav-icon">
-              <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-star"></use>
+              <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-star"></use>
             </svg> Sākums</a>
         </li>
         <li class="c-sidebar-nav-divider"></li>
         <li class="c-sidebar-nav-title">Riepas</li>
         <li class="c-sidebar-nav-item c-sidebar-nav-dropdown"><a class="c-sidebar-nav-link c-sidebar-nav-dropdown-toggle" href="#">
             <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-car-alt"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-car-alt"></use>
                 </svg> Auto riepas</a>
             <ul class="c-sidebar-nav-dropdown-items">
                 <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.auto.tires') }}" target="_top">
                     <svg class="c-sidebar-nav-icon">
-                        <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                        <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-account-logout"></use>
                     </svg> Visas riepas</a>
                 </li>
 {{--                <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.auto.brands') }}" target="_top">--}}
 {{--                    <svg class="c-sidebar-nav-icon">--}}
-{{--                        <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>--}}
+{{--                        <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-account-logout"></use>--}}
 {{--                    </svg> Riepu brendi</a>--}}
 {{--                </li>--}}
 {{--                <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.auto.treads') }}" target="_top">--}}
 {{--                    <svg class="c-sidebar-nav-icon">--}}
-{{--                        <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>--}}
+{{--                        <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-account-logout"></use>--}}
 {{--                    </svg> Riepu modeļi</a>--}}
 {{--                </li>--}}
                 <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.auto.import') }}" target="_top">
                     <svg class="c-sidebar-nav-icon">
-                        <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                        <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-account-logout"></use>
                     </svg> Riepu imports</a>
                 </li>
             </ul>
         </li>
           <li class="c-sidebar-nav-item c-sidebar-nav-dropdown"><a class="c-sidebar-nav-link c-sidebar-nav-dropdown-toggle" href="#">
                   <svg class="c-sidebar-nav-icon">
-                      <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-life-ring"></use>
+                      <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-life-ring"></use>
                   </svg> Kvadru riepas</a>
               <ul class="c-sidebar-nav-dropdown-items">
                   <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.quadr.tires') }}" target="_top">
                           <svg class="c-sidebar-nav-icon">
-                              <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                              <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-account-logout"></use>
                           </svg> Visas riepas</a>
                   </li>
                   <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.quadr.import') }}" target="_top">
                           <svg class="c-sidebar-nav-icon">
-                              <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                              <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-account-logout"></use>
                           </svg> Riepu imports</a>
                   </li>
               </ul>
           </li>
           <li class="c-sidebar-nav-item c-sidebar-nav-dropdown"><a class="c-sidebar-nav-link c-sidebar-nav-dropdown-toggle" href="#">
                   <svg class="c-sidebar-nav-icon">
-                      <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-bike"></use>
+                      <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-bike"></use>
                   </svg> Moto riepas</a>
               <ul class="c-sidebar-nav-dropdown-items">
                   <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.moto.tires') }}" target="_top">
                           <svg class="c-sidebar-nav-icon">
-                              <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                              <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-account-logout"></use>
                           </svg> Visas riepas</a>
                   </li>
                   <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.moto.import') }}" target="_top">
                           <svg class="c-sidebar-nav-icon">
-                              <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                              <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-account-logout"></use>
                           </svg> Riepu imports</a>
                   </li>
               </ul>
           </li>
           <li class="c-sidebar-nav-item c-sidebar-nav-dropdown"><a class="c-sidebar-nav-link c-sidebar-nav-dropdown-toggle" href="#">
                   <svg class="c-sidebar-nav-icon">
-                      <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-bike"></use>
+                      <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-bike"></use>
                   </svg> Lielās riepas</a>
               <ul class="c-sidebar-nav-dropdown-items">
                   <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.big.tires') }}" target="_top">
                           <svg class="c-sidebar-nav-icon">
-                              <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                              <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-account-logout"></use>
                           </svg> Visas riepas</a>
                   </li>
                   <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.big.import') }}" target="_top">
                           <svg class="c-sidebar-nav-icon">
-                              <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                              <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-account-logout"></use>
                           </svg> Riepu imports</a>
                   </li>
               </ul>
@@ -117,82 +118,82 @@
           <li class="c-sidebar-nav-title">Radzes</li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.studs.index') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-cog"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-cog"></use>
               </svg> Radzes</a>
           </li>
           <li class="c-sidebar-nav-title">Diski</li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.rims') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-soccer"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-soccer"></use>
               </svg> Jauni lietie diski</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.quadrims') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-soccer"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-soccer"></use>
               </svg> Kvadru diski</a>
           </li>
 
           <li class="c-sidebar-nav-title">Rezervācijas</li>
 {{--          <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.reservations') }}" target="_top">--}}
 {{--              <svg class="c-sidebar-nav-icon">--}}
-{{--                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list-numbered"></use>--}}
+{{--                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-list-numbered"></use>--}}
 {{--              </svg> Rezervācijas</a>--}}
 {{--          </li>--}}
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.records') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-clock"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-clock"></use>
               </svg> Darba laiki</a>
           </li>
           <li class="c-sidebar-nav-title">Veikals</li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.orders') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-boat-alt"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-boat-alt"></use>
               </svg> Pasūtījumi</a>
           </li>
           <li class="c-sidebar-nav-title">Iestatījumi</li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.audits') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-list"></use>
               </svg> Notikumu žurnāls</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.promo.index') }}" target="_top">
                   <svg class="c-sidebar-nav-icon">
-                      <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list"></use>
+                      <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-list"></use>
                   </svg> Promo kodi</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.services') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-list"></use>
               </svg> Pakalpojumi</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.users') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-lock-locked"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-lock-locked"></use>
               </svg> Lietotāji</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.syncs') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-sync"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-sync"></use>
               </svg> Sinhronizācijas</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.pages') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-browser"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-browser"></use>
               </svg> Lapas</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.banners') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-bullhorn"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-bullhorn"></use>
               </svg> Skrienošā josla</a>
           </li>
           <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.codes') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-description"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-description"></use>
               </svg> Paskaidrojumi</a>
           </li>
 	  <li class="c-sidebar-nav-item"><a class="c-sidebar-nav-link" href="{{ route('admin.settings.prices') }}" target="_top">
               <svg class="c-sidebar-nav-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-dollar"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-dollar"></use>
               </svg> Cenas</a>
           </li>
 
@@ -203,7 +204,7 @@
       <header class="c-header c-header-light c-header-fixed c-header-with-subheader">
         <button class="c-header-toggler c-class-toggler d-lg-none mfe-auto" type="button" data-target="#sidebar" data-class="c-sidebar-show">
           <svg class="c-icon c-icon-lg">
-            <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-menu"></use>
+            <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-menu"></use>
           </svg>
         </button><a class="c-header-brand d-lg-none" href="#">
           <svg width="118" height="46" alt="CoreUI Logo">
@@ -211,23 +212,23 @@
           </svg></a>
         <button class="c-header-toggler c-class-toggler mfs-3 d-md-down-none" type="button" data-target="#sidebar" data-class="c-sidebar-lg-show" responsive="true">
           <svg class="c-icon c-icon-lg">
-            <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-menu"></use>
+            <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-menu"></use>
           </svg>
         </button>
         <ul class="c-header-nav ml-auto mr-4">
           <li class="c-header-nav-item d-md-down-none mx-2">
               <select class="form-control" id="seasonChange">
-                  <option value="1" @if ((int) env('SEASON') === 1){{'selected'}}@endif>Vasara</option>
-                  <option value="2" @if ((int) env('SEASON') === 2){{'selected'}}@endif>Ziema</option>
+                  <option value="1" @if (config('site.season') === 1){{'selected'}}@endif>Vasara</option>
+                  <option value="2" @if (config('site.season') === 2){{'selected'}}@endif>Ziema</option>
               </select>
           </li>
           <li class="c-header-nav-item d-md-down-none mx-2"><a class="c-header-nav-link" href="#">
               <svg class="c-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-bell"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-bell"></use>
               </svg></a></li>
           <li class="c-header-nav-item d-md-down-none mx-2"><a class="c-header-nav-link" href="#">
               <svg class="c-icon">
-                <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-list-rich"></use>
+                <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-list-rich"></use>
               </svg></a></li>
           <li class="c-header-nav-item d-md-down-none mx-2"><a class="c-header-nav-link" href="#">
               <svg class="c-icon">
@@ -242,7 +243,7 @@
               </div>
               <a class="dropdown-item" href="#">
                 <svg class="c-icon mr-2">
-                  <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-bell"></use>
+                  <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-bell"></use>
                 </svg> Jauni pasūtījumi<span class="badge badge-info ml-auto">0</span>
               </a>
               <div class="dropdown-header bg-light py-2">
@@ -250,13 +251,13 @@
               </div>
               <a class="dropdown-item" href="{{ route('admin.settings.user.pwdChange', Auth::user()->id) }}">
                 <svg class="c-icon mr-2">
-                  <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-user"></use>
+                  <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-user"></use>
                 </svg> Parole maiņa
               </a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="/logout">
                 <svg class="c-icon mr-2">
-                  <use xlink:href="/node_modules/@coreui/icons/sprites/free.svg#cil-account-logout"></use>
+                  <use xlink:href="{{ asset('admins/assets/coreui-icons/sprites/free.svg') }}#cil-account-logout"></use>
                 </svg> Iziet
               </a>
             </div>
@@ -347,5 +348,7 @@
     <script src="{{ asset('admins/js/coreui-chartjs.bundle.js?rev=' . time()) }}"></script>
     <script src="{{ asset('admins/js/coreui-utils.js?rev=' . time()) }}"></script>
     <script src="{{ asset('admins/js/main.js?rev=' . time()) }}"></script>
+
+    @yield('scripts')
   </body>
 </html>

@@ -2,6 +2,9 @@
 
 @section('body-title', 'category')
 @section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-21 category-jauni-lietie-diski category-id-parent-20 category-depth-level-3')
+@section('meta_title', 'Radzes | R1 Riepu Serviss')
+@section('meta_description', 'Skrūvējamas radzes ar filtriem pēc parametriem. R1 Riepu Serviss katalogs.')
+@section('meta_keywords', config('seo.keywords.studs'))
 
 @section('content')
 

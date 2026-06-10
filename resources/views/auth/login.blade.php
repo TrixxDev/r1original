@@ -153,12 +153,14 @@
                                 </form>
                             </section>
                             <hr>
+                            @if (Route::has('register'))
                             <div class="no-account" style="text-align: center;">
                                 <a href="{{ route('register') }}"
                                    data-link-action="display-register-form">
                                     Jums nav konts? Izveidojiet to
                                 </a>
                             </div>
+			    @endif
                         </section>
                         <footer class="page-footer">
 

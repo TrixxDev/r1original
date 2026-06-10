@@ -19,6 +19,7 @@
   use Illuminate\Support\Facades\DB;
   use Illuminate\Http\Request;
   use App\Models\Autostock;
+  use App\Services\AccrualDatabaseService;
   use Illuminate\Support\Facades\Session;
   use mysql_xdevapi\Exception;
   use PDO;
@@ -36,6 +37,10 @@
     public $krs = 0;
     private $treadId;
     private $brandId;
+    private $accrualStoresCache = null;
+    private $accrualInventoryCache = null;
+    private $accrualArticleIdMap = null;
+    private $accrualKatalogsMap = null;
 
     public function __construct()
     {
@@ -80,80 +85,59 @@
       set_time_limit(0);
 
       try {
-        $this->accrual = new PDO("sqlsrv:Server=" . env('ACCRUAL_IP') . ",1444;Database=accrual", "sa", "cenzors");
+        $this->accrual = app(AccrualDatabaseService::class)->connection();
       } catch (\PDOException $e) {
-        return json_encode(['urs_quantity' => '-100', 'krs_quantity' => '-100']);
-//          die("Database connection failed: " . $e->getMessage());
-//          exit;
+        return $this->accrualErrorResponse('Accrual connection failed: ' . $e->getMessage(), [
+          'server' => config('accrual.host') . ',' . config('accrual.port'),
+          'database' => config('accrual.database'),
+          'driver' => config('accrual.driver'),
+          'available_drivers' => PDO::getAvailableDrivers(),
+        ]);
       }
 
       (isset($request->articles)) ? $this->articles = $request->articles : $this->articles = '';
 
-      if (!$this->articles) {
-        $this->updateArticles();
-        DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
-        echo 'Done';
-      } else {
+      try {
+        if (!$this->articles) {
+          $this->updateArticles();
+          DB::table('sync_times')->where('name', 'accrual')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+          return response()->json(['status' => 'ok', 'message' => 'Done']);
+        }
 
         if (is_array($this->articles)) {
+          $this->loadAccrualSyncCaches($this->articles);
           $return = [];
           foreach ($this->articles as $article) {
-            $productInfo = $this->getAccrualInventory($article);
-            if (isset($productInfo[$article])) {
-              $stores = $productInfo['_stores'][$article];
-
-              if (isset($stores[1])) {
-                $this->urs = $stores[1];
-                $this->urs = str_replace('Noliktava: ', '', $this->urs);
-                $this->urs = intval($this->urs);
-              } else {
-                $this->urs = 0;
-              }
-              if (isset($stores[2])) {
-                $this->krs = $stores[2];
-                $this->krs = str_replace('Veikals: ', '', $this->krs);
-                $this->krs = intval($this->krs);
-              } else {
-                $this->krs = 0;
-              }
-            } else {
-              $this->urs = 0;
-              $this->krs = 0;
-            }
-
-            $this->updateArticle($article);
-            array_push($return, json_encode(['article' => $article, 'urs_quantity' => intval($this->urs), 'krs_quantity' => intval($this->krs)]));
+            $this->updateArticle($article, true);
+            $qty = $this->getStoreQuantities($article);
+            array_push($return, json_encode([
+              'article' => $article,
+              'urs_quantity' => $qty['urs'],
+              'krs_quantity' => $qty['krs'],
+            ]));
           }
+          $this->resetAccrualSyncCaches();
           return $return;
-        } else {
-
-          $productInfo = $this->getAccrualInventory($this->articles);
-          if (isset($productInfo[$this->articles])) {
-            $stores = $productInfo['_stores'][$this->articles];
-
-            if (isset($stores[1])) {
-              $this->urs = $stores[1];
-              $this->urs = str_replace('Noliktava: ', '', $this->urs);
-              $this->urs = intval($this->urs);
-            } else {
-              $this->urs = 0;
-            }
-            if (isset($stores[2])) {
-              $this->krs = $stores[2];
-              $this->krs = str_replace('Veikals: ', '', $this->krs);
-              $this->krs = intval($this->krs);
-            } else {
-              $this->krs = 0;
-            }
-          } else {
-            $this->urs = 0;
-            $this->krs = 0;
-          }
-
-          $this->updateArticle($this->articles);
-          return json_encode(['urs_quantity' => intval($this->urs), 'krs_quantity' => intval($this->krs)]);
         }
+
+        $this->loadAccrualSyncCaches([$this->articles]);
+        $this->updateArticle($this->articles, true);
+        $qty = $this->getStoreQuantities($this->articles);
+        $this->resetAccrualSyncCaches();
+        return response()->json(['urs_quantity' => $qty['urs'], 'krs_quantity' => $qty['krs']]);
+      } catch (\Throwable $e) {
+        $this->resetAccrualSyncCaches();
+        return $this->accrualErrorResponse('Accrual sync failed: ' . $e->getMessage(), [
+          'articles' => $this->articles,
+        ]);
       }
+    }
+
+    private function accrualErrorResponse(string $message, array $context = [], int $status = 503)
+    {
+      \Log::error('Accrual sync error', array_merge(['message' => $message], $context));
+
+      return response()->json(['error' => $message], $status);
     }
 
     public function getStocks($article)
@@ -188,225 +172,55 @@
       }
     }
 
-    public function updateArticle($article)
+    public function updateArticle($article, $cachesLoaded = false)
     {
+      if (!$cachesLoaded) {
+        $this->loadAccrualSyncCaches([$article]);
+      }
 
       foreach ($this->tire_tables as $tire_table => $tire_options) {
-
         $model = "App\\Models\\" . $tire_options[0];
-
         $product = $model::where('article', $article)->first();
         if (!$product) {
           continue;
         }
 
-        $sql = "SELECT ArticleId as ArtikulaId, Deleted FROM katdetal WHERE Deleted = 0 AND Artikuls = '$article'";
-        $result = $this->accrual->query($sql);
+        $this->syncAccrualProductModel($product, $article);
+      }
 
-        foreach ($result as $row) {
-          $article = $row['ArtikulaId'];
-        }
-
-        $productInfo = $this->getAccrualInventory($product->article);
-        if (isset($productInfo[$product->article])) {
-          $total = intval($productInfo[$product->article]);
-          $product->quantity = $total;
-
-          $stores = $productInfo['_stores'][$product->article];
-
-          if (isset($stores[1])) {
-            $this->urs = $stores[1];
-            $this->urs = str_replace('Noliktava: ', '', $this->urs);
-            if ($this->urs > 0) {
-              $product->urs_quantity = intval($this->urs);
-            } else {
-              $product->urs_quantity = 0;
-            }
-          } else {
-            $product->urs_quantity = 0;
-          }
-          if (isset($stores[2])) {
-            $this->krs = $stores[2];
-            $this->krs = str_replace('Veikals: ', '', $this->krs);
-            if ($this->krs > 0) {
-              $product->krs_quantity = intval($this->krs);
-            } else {
-              $product->krs_quantity = 0;
-            }
-          } else {
-            $product->krs_quantity = 0;
-          }
-
-          $product->updated_at = date('Y-m-d H:i:s');
-          $product->save();
-        } else {
-          $product->quantity = 0;
-          $product->urs_quantity = 0;
-          $product->krs_quantity = 0;
-          $product->updated_at = date('Y-m-d H:i:s');
-          $product->save();
-        }
-
-        $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
-        $result = $this->accrual->query($sql);
-        if ($result->rowCount()) {
-          $rows = $result->fetch();
-          set_time_limit(0);
-          $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-          if ($rows['Deleted'] == 1) {
-            $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-            $product->priceoffer = 0;
-            if ($product->comment == env('SALE_TEXT')) {
-              $product->comment = '';
-            }
-          } else {
-            $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
-            $product->priceoffer = 1;
-            if (empty($product->comment)) {
-              $product->comment = env('SALE_TEXT');
-            }
-          }
-          $product->price1 = $veikala_cena;
-          $product->price2 = $akcijas_cena;
-          $product->updated_at = date('Y-m-d H:i:s');
-          $product->save();
-        } else {
-          $sql = "SELECT * FROM katalogs k WHERE k.Deleted = 0 AND k.ArticleId = '" . $article . "'";
-          $result = $this->accrual->query($sql);
-          $rows = $result->fetch();
-          set_time_limit(0);
-          $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-          $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-          $product->priceoffer = 0;
-          if ($product->comment == env('SALE_TEXT')) {
-            $product->comment = '';
-          }
-          $product->price1 = $veikala_cena;
-          $product->price2 = $akcijas_cena;
-          $product->updated_at = date('Y-m-d H:i:s');
-          $product->save();
-        }
+      if (!$cachesLoaded) {
+        $this->resetAccrualSyncCaches();
       }
     }
 
     public function updateArticles()
     {
+      $this->loadAccrualSyncCaches();
 
       foreach ($this->tire_tables as $tire_table => $tire_options) {
-        $primary_key = app("App\\Models\\$tire_options[0]")->getKeyName();
+        $modelClass = "App\\Models\\{$tire_options[0]}";
+        $primary_key = app($modelClass)->getKeyName();
 
-        DB::table($tire_table)->orderBy($primary_key)->chunk(1000, function($products) use (&$tire_options, &$primary_key) {
-          foreach ($products as $product) {
-
-            $this->urs = 0;
-            $this->krs = 0;
-
-            //          if ($product->$primary_key != '155300') continue;
-            $product = app("App\\Models\\$tire_options[0]")->where($primary_key, $product->$primary_key)->first();
-            $article = '';
-
-            $sql = "SELECT ArticleId as ArtikulaId, Deleted FROM katdetal WHERE Deleted = 0 AND Artikuls = '" . $product->article . "'";
-            $result = $this->accrual->query($sql);
-
-            foreach ($result as $row) {
-              $article = $row['ArtikulaId'];
+        DB::table($tire_table)->orderBy($primary_key)->chunk(1000, function ($products) use ($modelClass, $primary_key) {
+          foreach ($products as $row) {
+            if (empty($row->article)) {
+              continue;
             }
 
-            $productInfo = $this->getAccrualInventory($product->article);
-            if (isset($productInfo[$product->article])) {
-              $total = intval($productInfo[$product->article]);
-              $product->quantity = $total;
-
-              $stores = $productInfo['_stores'][$product->article];
-
-              if (isset($stores[1])) {
-                $this->urs = $stores[1];
-                $this->urs = str_replace('Noliktava: ', '', $this->urs);
-                if ($this->urs > 0) {
-                  $product->urs_quantity = intval($this->urs);
-                } else {
-                  $product->urs_quantity = 0;
-                }
-              } else {
-                $product->urs_quantity = 0;
-              }
-              if (isset($stores[2])) {
-                $this->krs = $stores[2];
-                $this->krs = str_replace('Veikals: ', '', $this->krs);
-                if ($this->krs > 0) {
-                  $product->krs_quantity = intval($this->krs);
-                } else {
-                  $product->krs_quantity = 0;
-                }
-              } else {
-                $product->krs_quantity = 0;
-              }
-
-              $product->updated_at = date('Y-m-d H:i:s');
-              $product->save();
-            } else {
-              $product->quantity = 0;
-              $product->urs_quantity = 0;
-              $product->krs_quantity = 0;
-              $product->updated_at = date('Y-m-d H:i:s');
-              $product->save();
-            }
-
-            $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
-            //$sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.ArticleId = '141309'";
-            $result = $this->accrual->query($sql);
-            if ($result->rowCount()) {
-              foreach ($result as $rows) {
-                set_time_limit(0);
-                $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-                if ($rows['Deleted'] == 1) {
-                  $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-                  $product->priceoffer = 0;
-                  if ($product->comment == env('SALE_TEXT')) {
-                    $product->comment = '';
-                  }
-                } else {
-                  $akcijas_cena = (int)   round(round($rows['Cena'], 5) * 1.21);
-                  $product->priceoffer = 1;
-                  if (empty($product->comment)) {
-                    $product->comment = env('SALE_TEXT');
-                  }
-                }
-              }
-              $product->price1 = $veikala_cena;
-              $product->price2 = $akcijas_cena;
-              $product->updated_at = date('Y-m-d H:i:s');
-              $product->save();
-            } else {
-              $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
-              $result = $this->accrual->query($sql);
-              if ($result->rowCount()) {
-                foreach ($result as $rows) {
-                  set_time_limit(0);
-                  $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
-                  $akcijas_cena = (int) round(round($rows['Cena3'], 5) * 1.21);
-                  $product->priceoffer = 0;
-                  if ($product->comment == env('SALE_TEXT')) {
-                    $product->comment = '';
-                  }
-                }
-                $product->price1 = $veikala_cena;
-                $product->price2 = $akcijas_cena;
-                $product->updated_at = date('Y-m-d H:i:s');
-                $product->save();
-              }
-            }
+            $product = (new $modelClass)->newFromBuilder((array) $row);
+            $product->exists = true;
+            $this->syncAccrualProductModel($product, $row->article);
           }
         });
 
         DB::table($tire_table)->whereNull('article')->orWhere('article', '=', "''")->update(['quantity' => 0, 'urs_quantity' => 0, 'krs_quantity' => 0]);
       }
+
+      $this->resetAccrualSyncCaches();
     }
 
     public function updateStock($stock)
     {
-      $stockCount = [];
-
       foreach ($stock as $id => $value) {
 
         $noliktavas = explode(';', $value);
@@ -432,77 +246,292 @@
           $product = DB::table($tire_table)->where($primary_key, $id)->first();
 
           if ($product) {
-
-            $article = '';
-
-            $sql = "SELECT ArticleId as ArtikulaId, Deleted FROM katdetal WHERE Deleted = 0 AND Artikuls = '" . $product->article . "'";
-            //$sql = "SELECT ArticleId as ArtikulaId FROM katdetal WHERE Artikuls = '16205/55NHKPL1094TXL'";
-            $result = $this->accrual->query($sql);
-
-            foreach ($result as $row) {
-              $article = $row['ArtikulaId'];
-            }
-
-            $sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.Deleted = 0 AND u.Deleted = 0 AND k.ArticleId = '" . $article . "'";
-            //$sql = "SELECT * FROM katalogs k INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId) WHERE k.ArticleId = '141309'";
-            $result = $this->accrual->query($sql);
-            if ($result->rowCount()) {
-              //var_dump(count($stockCount));
-              DB::table($tire_table)->where($primary_key, $id)->update([
-                'quantity' => $total,
-                'urs_quantity' => @$urs_quantity,
-                'krs_quantity' => @$krs_quantity,
-                'updated_at' => date('Y-m-d H:i:s')
-              ]);
-            } else {
-              $sql = "SELECT * FROM katalogs k WHERE Deleted = 0 AND k.ArticleId = '" . $article . "'";
-              //$sql = "SELECT * FROM katalogs k WHERE k.ArticleId = '141309'";
-              $result = $this->accrual->query($sql);
-              //dd($result->rowCount());
-              if ($result->rowCount()) {
-                DB::table($tire_table)->where($primary_key, $id)->update([
-                  'quantity' => $total,
-                  'urs_quantity' => @$urs_quantity,
-                  'krs_quantity' => @$krs_quantity,
-                  'updated_at' => date('Y-m-d H:i:s')
-                ]);
-              } else {
-                DB::table($tire_table)->where($primary_key, $id)->update([
-                  'quantity' => $total,
-                  'urs_quantity' => @$urs_quantity,
-                  'krs_quantity' => @$krs_quantity,
-                  'updated_at' => date('Y-m-d H:i:s')
-                ]);
-              }
-            }
-
+            DB::table($tire_table)->where($primary_key, $id)->update([
+              'quantity' => $total,
+              'urs_quantity' => @$urs_quantity,
+              'krs_quantity' => @$krs_quantity,
+              'updated_at' => date('Y-m-d H:i:s')
+            ]);
           }
         }
       }
     }
 
-    //    public function updateStock($stock)
-    //    {
-    //        foreach ($stock as $id => $value) {
-    //
-    //            $noliktavas = explode(';', $value);
-    //            $urs = @$noliktavas[0];
-    //            $krs = @$noliktavas[1];
-    //
-    //            $urs = explode(': ', $urs);
-    //            @$urs_quantity = (int) $urs[1];
-    //
-    //            $krs = explode(': ', $krs);
-    //            @$krs_quantity = (int) $krs[1];
-    //
-    //            $product = Autotire::findOrFail($id);
-    //            if ($product) {
-    //                $product->timestamps = false;
-    //                $product->quantity = $urs_quantity + $krs_quantity;
-    //                $product->save();
-    //            }
-    //        }
-    //    }
+    private function resetAccrualSyncCaches(): void
+    {
+      $this->accrualStoresCache = null;
+      $this->accrualInventoryCache = null;
+      $this->accrualArticleIdMap = null;
+      $this->accrualKatalogsMap = null;
+    }
+
+    private function loadAccrualSyncCaches(?array $artikulsFilter = null): void
+    {
+      if ($this->accrualStoresCache === null) {
+        $this->accrualStoresCache = $this->fetchAccrualStores();
+      }
+
+      if ($this->accrualInventoryCache === null) {
+        $this->accrualInventoryCache = $this->fetchAccrualInventoryBulk($artikulsFilter);
+      }
+
+      if ($this->accrualArticleIdMap === null) {
+        $this->accrualArticleIdMap = $this->fetchAccrualArticleIdMap($artikulsFilter);
+      }
+
+      if ($this->accrualKatalogsMap === null) {
+        $articleIds = array_values($this->accrualArticleIdMap);
+        $this->accrualKatalogsMap = $this->fetchAccrualKatalogsMap($articleIds);
+      }
+    }
+
+    private function sqlInList(array $values): string
+    {
+      $values = array_values(array_unique(array_filter($values, function ($value) {
+        return $value !== null && $value !== '';
+      })));
+
+      if ($values === []) {
+        return "''";
+      }
+
+      $escaped = array_map(function ($value) {
+        return "'" . str_replace("'", "''", (string) $value) . "'";
+      }, $values);
+
+      return implode(',', $escaped);
+    }
+
+    private function accrualFetchAll(string $sql): array
+    {
+      $result = $this->accrual->query($sql);
+      if ($result === false) {
+        $error = $this->accrual->errorInfo();
+        $message = 'Accrual query failed: ' . ($error[2] ?? 'unknown error');
+        throw new \RuntimeException($message . ' | SQL: ' . $sql);
+      }
+
+      $rows = $result->fetchAll(\PDO::FETCH_ASSOC);
+
+      return $rows === false ? [] : $rows;
+    }
+
+    private function syncAccrualProductModel($product, string $artikuls): void
+    {
+      if ($artikuls === '') {
+        return;
+      }
+
+      $this->applyQuantitiesToProduct($product, $artikuls);
+
+      $articleId = $this->accrualArticleIdMap[$artikuls] ?? null;
+      if ($articleId) {
+        $this->applyKatalogPricesToProduct($product, $articleId);
+      }
+
+      $product->updated_at = date('Y-m-d H:i:s');
+      $product->save();
+    }
+
+    private function applyQuantitiesToProduct($product, string $artikuls): void
+    {
+      $productInfo = $this->getAccrualInventory($artikuls);
+
+      if (isset($productInfo[$artikuls])) {
+        $product->quantity = intval($productInfo[$artikuls]);
+        $stores = $productInfo['_stores'][$artikuls] ?? [];
+
+        $urs = isset($stores[1]) ? $this->parseStoreQuantity($stores[1]) : 0;
+        $krs = isset($stores[2]) ? $this->parseStoreQuantity($stores[2]) : 0;
+
+        $product->urs_quantity = $urs > 0 ? $urs : 0;
+        $product->krs_quantity = $krs > 0 ? $krs : 0;
+        return;
+      }
+
+      $product->quantity = 0;
+      $product->urs_quantity = 0;
+      $product->krs_quantity = 0;
+    }
+
+    private function getStoreQuantities(string $artikuls): array
+    {
+      $productInfo = $this->getAccrualInventory($artikuls);
+      $urs = 0;
+      $krs = 0;
+
+      if (isset($productInfo['_stores'][$artikuls])) {
+        $stores = $productInfo['_stores'][$artikuls];
+        if (isset($stores[1])) {
+          $urs = $this->parseStoreQuantity($stores[1]);
+        }
+        if (isset($stores[2])) {
+          $krs = $this->parseStoreQuantity($stores[2]);
+        }
+      }
+
+      return ['urs' => $urs, 'krs' => $krs];
+    }
+
+    private function parseStoreQuantity($storeValue): int
+    {
+      $value = str_replace('Noliktava: ', '', (string) $storeValue);
+      $value = str_replace('Veikals: ', '', $value);
+
+      return intval($value);
+    }
+
+    private function applyKatalogPricesToProduct($product, string $articleId): void
+    {
+      if (!isset($this->accrualKatalogsMap[$articleId])) {
+        return;
+      }
+
+      $priceData = $this->accrualKatalogsMap[$articleId];
+      $product->price1 = $priceData['price1'];
+      $product->price2 = $priceData['price2'];
+      $product->priceoffer = $priceData['priceoffer'];
+
+      if ($priceData['clear_sale_comment'] && $product->comment == env('SALE_TEXT')) {
+        $product->comment = '';
+      }
+
+      if ($priceData['set_sale_comment'] && empty($product->comment)) {
+        $product->comment = env('SALE_TEXT');
+      }
+    }
+
+    private function buildPromoPriceData(array $rows): array
+    {
+      $veikala_cena = (int) round(round($rows['Cena1'], 5) * 1.21);
+
+      if ($rows['Deleted'] == 1) {
+        return [
+          'price1' => $veikala_cena,
+          'price2' => (int) round(round($rows['Cena3'], 5) * 1.21),
+          'priceoffer' => 0,
+          'clear_sale_comment' => true,
+          'set_sale_comment' => false,
+        ];
+      }
+
+      return [
+        'price1' => $veikala_cena,
+        'price2' => (int) round(round($rows['Cena'], 5) * 1.21),
+        'priceoffer' => 1,
+        'clear_sale_comment' => false,
+        'set_sale_comment' => true,
+      ];
+    }
+
+    private function buildFallbackPriceData(array $rows): array
+    {
+      return [
+        'price1' => (int) round(round($rows['Cena1'], 5) * 1.21),
+        'price2' => (int) round(round($rows['Cena3'], 5) * 1.21),
+        'priceoffer' => 0,
+        'clear_sale_comment' => true,
+        'set_sale_comment' => false,
+      ];
+    }
+
+    private function fetchAccrualArticleIdMap(?array $artikulsFilter = null): array
+    {
+      $sql = "SELECT ArticleId, Artikuls FROM katdetal WHERE Deleted = 0";
+
+      if ($artikulsFilter) {
+        $sql .= " AND Artikuls IN (" . $this->sqlInList($artikulsFilter) . ")";
+      }
+
+      $map = [];
+
+      foreach ($this->accrualFetchAll($sql) as $row) {
+        $map[$row['Artikuls']] = $row['ArticleId'];
+      }
+
+      return $map;
+    }
+
+    private function fetchAccrualKatalogsMap(?array $articleIds = null): array
+    {
+      $map = [];
+      $useFilter = is_array($articleIds) && count($articleIds) > 0 && count($articleIds) <= 2000;
+
+      $sql = "SELECT k.ArticleId, k.Cena1, k.Cena3, u.Cena, u.Deleted AS Deleted
+        FROM katalogs k
+        INNER JOIN unatlgrupas u ON (k.ArticleId = u.ArticleId)
+        WHERE k.Deleted = 0 AND u.Deleted = 0";
+
+      if ($useFilter) {
+        $sql .= " AND k.ArticleId IN (" . $this->sqlInList($articleIds) . ")";
+      }
+
+      foreach ($this->accrualFetchAll($sql) as $rows) {
+        $map[$rows['ArticleId']] = $this->buildPromoPriceData($rows);
+      }
+
+      $sql = "SELECT ArticleId, Cena1, Cena3 FROM katalogs WHERE Deleted = 0";
+
+      if ($useFilter) {
+        $sql .= " AND ArticleId IN (" . $this->sqlInList($articleIds) . ")";
+      }
+
+      foreach ($this->accrualFetchAll($sql) as $rows) {
+        if (!isset($map[$rows['ArticleId']])) {
+          $map[$rows['ArticleId']] = $this->buildFallbackPriceData($rows);
+        }
+      }
+
+      return $map;
+    }
+
+    private function fetchAccrualInventoryBulk(?array $artikulsFilter = null): array
+    {
+      $stores = $this->accrualStoresCache ?? $this->fetchAccrualStores();
+      $this->accrualStoresCache = $stores;
+
+      $sql = "SELECT k.Artikuls, a.Atlikums, a.Rezervets, (a.Atlikums - a.Rezervets) AS atl_min_rez, a.StorId
+        FROM atlikumi a INNER JOIN katdetal k ON (k.ArticleId = a.ArticleId) WHERE a.FrFirmId = 1 AND k.Deleted = 0";
+
+      if ($artikulsFilter) {
+        $sql .= " AND k.Artikuls IN (" . $this->sqlInList($artikulsFilter) . ")";
+      }
+
+      $inventory = ['_stores' => []];
+
+      foreach ($this->accrualFetchAll($sql) as $row) {
+        if ($row['StorId'] == 0) {
+          $inventory[$row['Artikuls']] = $row['atl_min_rez'];
+          continue;
+        }
+
+        $storId = $row['StorId'];
+
+        if (!isset($inventory['_stores'][$row['Artikuls']])) {
+          $inventory['_stores'][$row['Artikuls']] = [];
+        }
+
+        if (isset($stores[$storId])) {
+          $inventory['_stores'][$row['Artikuls']][(int) $storId] = $stores[$storId] . ': ' . $row['atl_min_rez'];
+        }
+      }
+
+      return $inventory;
+    }
+
+    private function fetchAccrualStores(): array
+    {
+      $sql = "SELECT StorId, Nosaukums FROM unobjekti WHERE Deleted = 0 AND Veids = 1;";
+      $stores = [];
+
+      foreach ($this->accrualFetchAll($sql) as $row) {
+        if (strpos($row['Nosaukums'], 'Noliktava') !== false || strpos($row['Nosaukums'], 'Veikals') !== false) {
+          $stores[$row['StorId']] = $row['Nosaukums'];
+        }
+      }
+
+      return $stores;
+    }
 
     public function getInventory($tire_tables, $article = null)
     {
@@ -574,51 +603,38 @@
 
     public function getAccrualInventory($article = null) {
 
-      $stores = $this->getAccrualStores();
-
-      //        $article = '15215/70DECONODRIVE109SC';
-      $sql = "SELECT k.Artikuls, a.Atlikums, a.Rezervets, (a.Atlikums - a.Rezervets) AS atl_min_rez, a.StorId
-        FROM atlikumi a INNER JOIN katdetal k ON (k.ArticleId = a.ArticleId) WHERE a.FrFirmId = 1 AND k.Deleted = 0";
-
-      if($article) $sql .= " AND k.Artikuls = '$article'";
-
-      $result = $this->accrual->query($sql);
-
-      $inventory = ['_stores'=>[]];
-
-      foreach ($result as $row) {
-
-        if($row['StorId'] == 0) {
-          $inventory[$row['Artikuls']] = $row['atl_min_rez'];
+      if ($this->accrualInventoryCache !== null) {
+        if ($article === null) {
+          return $this->accrualInventoryCache;
         }
-        else {
-          $storId = $row['StorId'];
 
-          if(!isset($inventory['_stores'][$row['Artikuls']])) $inventory['_stores'][$row['Artikuls']] = array();
-
-          if(isset($stores[$storId])) $inventory['_stores'][$row['Artikuls']][(int)$storId] = $stores[$storId] . ': '. $row['atl_min_rez'];
+        $result = ['_stores' => []];
+        if (isset($this->accrualInventoryCache[$article])) {
+          $result[$article] = $this->accrualInventoryCache[$article];
         }
+        if (isset($this->accrualInventoryCache['_stores'][$article])) {
+          $result['_stores'][$article] = $this->accrualInventoryCache['_stores'][$article];
+        }
+
+        return $result;
       }
 
-      //    dd($inventory);
+      if ($this->accrualStoresCache === null) {
+        $this->accrualStoresCache = $this->fetchAccrualStores();
+      }
 
-      return $inventory;
+      return $this->fetchAccrualInventoryBulk($article ? [$article] : null);
     }
 
     public function getAccrualStores() {
 
-      $sql = "SELECT StorId, Nosaukums FROM unobjekti WHERE Deleted = 0 AND Veids = 1;";
-
-      $result = $this->accrual->query($sql);
-      $stores = [];
-
-      foreach ($result as $row) {
-        if (strpos($row['Nosaukums'], 'Noliktava') !== false || strpos($row['Nosaukums'], 'Veikals') !== false) {
-          $stores[$row['StorId']] = $row['Nosaukums'];
-        }
+      if ($this->accrualStoresCache !== null) {
+        return $this->accrualStoresCache;
       }
 
-      return $stores;
+      $this->accrualStoresCache = $this->fetchAccrualStores();
+
+      return $this->accrualStoresCache;
     }
 
     // Lattako token generation
@@ -910,8 +926,8 @@
                     $rim->dc = $item->CenterBore;
                     $rim->used = 0;
                     $rim->price1 = ceil((round(($item->NetPrice * 1.21), 2) + 15) / 0.7);
-                    $rim->price2 = $item->Price;
-                    $rim->price3 = floor(round($item->RetailPrice * 1.21, 2)) - 2;
+                    $rim->price3 = $item->Price;
+                    $rim->price2 = floor(round($item->RetailPrice * 1.21, 2)) - 2;
                     $rim->offer = 0;
                     $rim->priceOffer = 0;
                     if ($newRim == true) {
@@ -2136,6 +2152,7 @@
       }
 
       DB::table('sync_times')->where('name', 'i3-big')->update(['updated_at' => Carbon::now()->format('Y-m-d H:i:s')]);
+      Bigtire::clearCatalogCache();
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
@@ -2146,13 +2163,19 @@
       $server = 'ftp.goodyear.eu';
       $acc = 'p22989';
       $passw = 'm4kXUrRWkx8aHDCU';
-      $path = 'GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv';
+      $remotePath = 'GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv';
+
+      $localDir = storage_path('app/tmp');
+      if (!is_dir($localDir) && !mkdir($localDir, 0775, true) && !is_dir($localDir)) {
+        throw new Exception('Unable to create temporary directory for Goodyear sync');
+      }
+      $localPath = $localDir . DIRECTORY_SEPARATOR . $file;
 
       $ftp = ftp_connect($server) or die ();
       ftp_login($ftp, $acc, $passw);
       ftp_pasv($ftp, true);
-      if(!ftp_get($ftp, $path, $file, FTP_ASCII)) {
 
+      if(!ftp_get($ftp, $localPath, $remotePath, FTP_ASCII)) {
         $error = error_get_last();
         ftp_close($ftp);
         throw new Exception('Could not read remote file: '. print_r($error, true));
@@ -2162,7 +2185,7 @@
 
       $stock = [];
 
-      if (($handle = fopen($path, "r")) !== FALSE)
+      if (($handle = fopen($localPath, "r")) !== FALSE)
       {
         $i = 0;
         while (($data = fgetcsv($handle, 0, ";")) !== FALSE)
@@ -2172,7 +2195,7 @@
         }
         fclose($handle);
       }
-      unlink($path);
+      unlink($localPath);
 
       file_put_contents(dirname(__DIR__, 3) . '/public/storage/xml/GDYR_EE_CONFIDENTIAL_STOCKREPORT_CONSUMER.csv', $stock);
 
@@ -2257,6 +2280,94 @@
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)\n";
     }
 
+    /**
+     * Riepu Garāža (ecom) tyres.xml — same pattern as rzauto(): reset rg quantities, then apply stock per article.
+     * URL: env RIEPU_GARAZA_TYRES_XML_URL or default hash URL. Feed may return <error code="E0408"> (30 min rate limit).
+     */
+    public function rgauto()
+    {
+      $url = env('RIEPU_GARAZA_TYRES_XML_URL', 'https://ecom.riepugaraza.lv/xml/306c1eae0c022c10c5cf96063f24cb47/tyres.xml');
+
+      $opts = [
+        'http' => [
+          'method' => 'GET',
+          'timeout' => 120,
+        ],
+      ];
+
+      $context = stream_context_create($opts);
+      $xmlString = @file_get_contents($url, false, $context);
+      unset($context);
+
+      $storageDir = dirname(__DIR__, 3) . '/public/storage/xml';
+      if (!is_dir($storageDir)) {
+        @mkdir($storageDir, 0775, true);
+      }
+      if ($xmlString !== false && $xmlString !== '') {
+        file_put_contents($storageDir . '/rg.auto.xml', $xmlString);
+      }
+
+      if ($xmlString === false || $xmlString === '') {
+        echo "RG: failed to download XML\n";
+        return;
+      }
+
+      $xml = @simplexml_load_string($xmlString);
+      if ($xml === false) {
+        echo "RG: invalid XML\n";
+        return;
+      }
+
+      if (isset($xml->error)) {
+        $code = isset($xml->error['code']) ? (string) $xml->error['code'] : '';
+        $msg = trim((string) $xml->error);
+        echo "RG XML error {$code}: {$msg}\n";
+        return;
+      }
+
+      if (!isset($xml->tyres) || !isset($xml->tyres->tyre)) {
+        echo "RG: no tyres in XML\n";
+        return;
+      }
+
+      Autostock::where('itype', 'rg')->update(['quantity' => 0]);
+
+      $updated = 0;
+      $counted = 0;
+
+      foreach ($xml->tyres->tyre as $tyre) {
+        $article = trim((string) $tyre->id);
+        if ($article === '') {
+          continue;
+        }
+
+        $quantity = 0;
+        if (isset($tyre->qty->stock)) {
+          $raw = str_replace(',', '.', trim((string) $tyre->qty->stock));
+          $quantity = (int) round((float) $raw);
+        }
+
+        $list = Autostock::where('article', $article)->where('itype', 'rg')->get();
+
+        $metadata = '';
+
+        foreach ($list as $row) {
+          $row->quantity = $quantity;
+          $row->metadata = $metadata;
+          $row->save();
+          $updated++;
+        }
+        $counted++;
+      }
+
+      DB::table('sync_times')->updateOrInsert(
+        ['name' => 'rg-auto'],
+        ['updated_at' => Carbon::now()->format('Y-m-d H:i:s')]
+      );
+
+      echo "Mainīti {$updated} ieraksti (sarakstā {$counted} riepas)\n";
+    }
+
     public function rzautoshow()
     {
       echo 'Auto riepas:<br>';
@@ -2303,6 +2414,49 @@
       } else {
         return false;
       }
+    }
+
+    /**
+     * Starco catalog: resolve tread_id with in-memory caches (cuts repeated brand/tread queries).
+     *
+     * @param array<string,int|false> $brandTitleCache title => brand_id or false if missing pre-insert
+     * @param array<string,int>       $treadPairCache  "brand\0tread" => tread_id
+     */
+    private static function starcoResolveTreadId(
+      string $tread,
+      string $brand,
+      array &$brandTitleCache,
+      array &$treadPairCache
+    ) {
+      $pairKey = $brand . "\0" . $tread;
+      if (array_key_exists($pairKey, $treadPairCache)) {
+        return $treadPairCache[$pairKey];
+      }
+
+      if (!array_key_exists($brand, $brandTitleCache)) {
+        $b = Bigbrand::where('title', $brand)->first();
+        $brandTitleCache[$brand] = $b !== null ? $b->brand_id : false;
+      }
+      $brandID = $brandTitleCache[$brand];
+      if ($brandID === false) {
+        $brandID = Bigbrand::insertGetId([
+          'title' => $brand,
+          'slug' => Str::slug($brand),
+        ]);
+        $brandTitleCache[$brand] = $brandID;
+      }
+
+      $list = Bigtread::where('title', $tread)->where('brand_id', $brandID)->first();
+      if (!empty($list)) {
+        return $treadPairCache[$pairKey] = $list->tread_id;
+      }
+
+      $treadId = Bigtread::insertGetId([
+        'brand_id' => $brandID,
+        'title' => $tread,
+        'slug' => Str::slug($tread),
+      ]);
+      return $treadPairCache[$pairKey] = $treadId;
     }
 
     private function grab_image($url,$saveto){
@@ -2355,76 +2509,174 @@
       }
     }
 
-    public function starco()
+    /**
+     * GET JSON resource from Starco API; returns decoded ["value"] array.
+     *
+     * @throws \RuntimeException on network/auth/parse errors
+     */
+    private function fetchStarcoValue(string $relativePath): array
     {
-
-//      $image = file_get_contents('http://194.19.236.7/Pictures/034788.jpg');
-
-//      $curl = curl_init();
-//      curl_setopt_array($curl, array(
-//        CURLOPT_URL => 'http://194.19.236.7/Pictures/15721140.jpg',
-//        CURLOPT_RETURNTRANSFER => true,
-//        CURLOPT_ENCODING => "",
-//        CURLOPT_MAXREDIRS => 10,
-//        CURLOPT_TIMEOUT => 30,
-//        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-//        CURLOPT_CUSTOMREQUEST => "GET",
-//        CURLOPT_HTTPHEADER => array(
-//          "cache-control: no-cache",
-//        ),
-//      ));
-//      $response = curl_exec($curl);
-//      $err = curl_error($curl);
-//
-//      if (!$err) {
-//        $info = curl_getinfo($curl);
-//        if ($info['http_code'] == '404') {
-//          dd('Nav tādas bildes');
-//        } else {
-//          dd($response);
-//        }
-//      } else {
-//        throw new \Exception($err);
-//      }
-
-//      curl_close($curl);
-
-
-
-      $creditals = [
-        'login' => '202562',
-        'password' => '3R64p1EJuOaYnwct0FQQ'
-      ];
-
-      $url = 'http://remote.starco.lv:8153/api.rsc/';
-      $tires = $url . 'lva_product_catalog_tyres';
-      $stocks = $url . 'current_stock_full';
-      $prices = $url . '202562_pl';
-      $usernamepw = $creditals['login'] . ':' . $creditals['password'];
-
+      $base = rtrim((string) config('services.starco.api_base', 'http://remote.starco.lv:8153/api.rsc/'), '/') . '/';
+      $login = (string) config('services.starco.login', '');
+      $password = (string) config('services.starco.password', '');
+      if ($login === '' || $password === '') {
+        throw new \RuntimeException('Starco: set STARCO_LOGIN and STARCO_PASSWORD (config services.starco).');
+      }
+      $url = $base . ltrim($relativePath, '/');
       $headers = [
-        'Authorization: Basic ' . base64_encode($usernamepw),
+        'Authorization: Basic ' . base64_encode($login . ':' . $password),
       ];
-
-      $opts = ['http' =>
-        [
+      $context = stream_context_create([
+        'http' => [
           'header' => $headers,
           'method' => 'GET',
-        ]
+          'timeout' => 300,
+          'ignore_errors' => true,
+        ],
+      ]);
+      $string = @file_get_contents($url, false, $context);
+      if ($string === false) {
+        throw new \RuntimeException('Starco: request failed for ' . $relativePath);
+      }
+      $decoded = json_decode($string, true);
+      if (!is_array($decoded) || !isset($decoded['value']) || !is_array($decoded['value'])) {
+        throw new \RuntimeException('Starco: invalid or empty JSON value for ' . $relativePath);
+      }
+      return $decoded['value'];
+    }
+
+    /**
+     * Cache catalog JSON for Bigtire::StockLink (reads public/starco.sync.xml).
+     * Atomic write via temp file + rename to avoid half-written reads.
+     *
+     * @throws \RuntimeException if the directory is not writable
+     */
+    private function writeStarcoSyncCache(string $jsonBody): void
+    {
+      $path = public_path('starco.sync.xml');
+      $dir = dirname($path);
+      if (!is_dir($dir)) {
+        if (!@mkdir($dir, 0755, true) && !is_dir($dir)) {
+          throw new \RuntimeException('Starco: cannot create directory ' . $dir);
+        }
+      }
+      if (is_file($path) && !is_writable($path)) {
+        throw new \RuntimeException('Starco: not writable ' . $path . ' — chown/chmod for PHP user (www-data).');
+      }
+      if (!is_writable($dir)) {
+        throw new \RuntimeException('Starco: directory not writable ' . $dir . ' — fix permissions for web server user.');
+      }
+      $tmp = $path . '.' . uniqid('tmp', true);
+      if (file_put_contents($tmp, $jsonBody, LOCK_EX) === false) {
+        throw new \RuntimeException('Starco: cannot write temp file in ' . $dir);
+      }
+      if (!@rename($tmp, $path)) {
+        @unlink($tmp);
+        throw new \RuntimeException('Starco: cannot rename cache to ' . $path);
+      }
+    }
+
+    /**
+     * Batch UPDATE bigstock rows (itype starco) with per-article quantities — avoids N single-row updates.
+     *
+     * @param array<string,int> $articleToQty
+     */
+    private function starcoBulkUpdateBigstockQuantities(array $articleToQty, string $updatedAt): void
+    {
+      if ($articleToQty === []) {
+        return;
+      }
+      $table = (new Bigstock())->getTable();
+      $safeTable = str_replace('`', '``', $table);
+      $caseParts = [];
+      $bindings = [];
+      $articles = [];
+      foreach ($articleToQty as $article => $qty) {
+        $caseParts[] = 'WHEN ? THEN ?';
+        $bindings[] = $article;
+        $bindings[] = (int) $qty;
+        $articles[] = $article;
+      }
+      $inPlaceholders = implode(',', array_fill(0, count($articles), '?'));
+      $bindings[] = $updatedAt;
+      $bindings[] = 'starco';
+      foreach ($articles as $a) {
+        $bindings[] = $a;
+      }
+      $sql = 'UPDATE `' . $safeTable . '` SET `quantity` = CASE `article` '
+        . implode(' ', $caseParts)
+        . ' END, `updated_at` = ? WHERE `itype` = ? AND `article` IN (' . $inPlaceholders . ')';
+      DB::update($sql, $bindings);
+    }
+
+    /**
+     * Debug perf: NDJSON line to workspace debug-070f40.log (session 070f40).
+     */
+    private function starcoDebugLog(string $hypothesisId, string $message, array $data = []): void
+    {
+      // #region agent log
+      $path = dirname(base_path()) . DIRECTORY_SEPARATOR . 'debug-070f40.log';
+      $payload = [
+        'sessionId' => '070f40',
+        'hypothesisId' => $hypothesisId,
+        'location' => 'SyncController::starco',
+        'message' => $message,
+        'data' => $data,
+        'timestamp' => (int) round(microtime(true) * 1000),
       ];
+      @file_put_contents($path, json_encode($payload, JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX);
+      // #endregion
+    }
 
-      $context = stream_context_create($opts);
+    public function starco()
+    {
+      // #region agent log
+      $starcoT0 = microtime(true);
+      $starcoImgMs = 0.0;
+      $starcoImgCalls = 0;
+      $starcoImgSkipped = 0;
+      $starcoTBeforeStockLoop = null;
+      $starcoTBeforePriceLoop = null;
+      // #endregion
 
-      $string = file_get_contents($tires, false, $context);
-      $tires = json_decode($string, true)['value'];
+      $tires = $this->fetchStarcoValue('lva_product_catalog_tyres');
+      $this->writeStarcoSyncCache(json_encode($tires));
 
-      $tiresFile = json_encode($tires);
-
-      file_put_contents('starco.sync.xml', $tiresFile);
+      // #region agent log
+      $this->starcoDebugLog('H3', 'phase_fetch_catalog_and_cache', [
+        'ms' => round((microtime(true) - $starcoT0) * 1000, 2),
+        'tires_count' => is_array($tires) ? count($tires) : 0,
+      ]);
+      $starcoTAfterCache = microtime(true);
+      // #endregion
 
       $initial = ["/[0-9.]+/", "/L/", "/S/", "/VF/", "/FI/", "/P/", "/SL/", "/DW/", "/IF/", "/CFO/"];
 
       Bigtire::query()->update(['visible_users' => 0, 'visible_list' => 0]);
+
+      // #region agent log
+      $this->starcoDebugLog('H5', 'phase_reset_all_visibility', [
+        'ms' => round((microtime(true) - $starcoTAfterCache) * 1000, 2),
+      ]);
+      $starcoTBeforeCatalogLoop = microtime(true);
+      // #endregion
+
+      $bigtireArticleSet = array_fill_keys(array_filter(array_map(
+        'strval',
+        Bigtire::query()->whereNotNull('article')->pluck('article')->all()
+      )), true);
+
+      $starcoBtByArticle = [];
+      $starcoBrandTitleCache = [];
+      $starcoTreadPairCache = [];
+      $starcoEarlySizeSkip = 0;
+      $starcoLoadBigtire = function ($article) use (&$starcoBtByArticle) {
+        if (!array_key_exists($article, $starcoBtByArticle)) {
+          $row = Bigtire::where('article', $article)->first();
+          $starcoBtByArticle[$article] = $row !== null ? $row : false;
+        }
+        return $starcoBtByArticle[$article];
+      };
 
       $counted = 0;
       $updated = 0;
@@ -2432,15 +2684,17 @@
 
         $article = $item['product_no'];
 
-        if (Bigtire::where('article', $item['product_no'])->exists()) {
+        if (isset($bigtireArticleSet[$article])) {
           if (strpos($item['Specification'], 'VISUAL DEFECT') !== false) {
-            $position = SyncController::getByArticle($article);
-            $position->visible_users = 0;
-            $position->visible_list = 0;
-            $position->save();
+            $position = $starcoLoadBigtire($article);
+            if ($position !== false) {
+              $position->visible_users = 0;
+              $position->visible_list = 0;
+              $position->save();
+              $starcoBtByArticle[$article] = $position;
+            }
           }
 
-//          continue;
         }
 
         $type = $item['segment_description'];
@@ -2462,6 +2716,19 @@
 
             $exploded = SyncController::multiexplode(["/", "-", "R", "x", "D"], $size);
 
+            $ex0 = floatval(strtr(strtr((string)($exploded[0] ?? ''), ['(' => '']), [')' => '']));
+            $ex1 = floatval(strtr(strtr((string)($exploded[1] ?? ''), ['(' => '']), [')' => '']));
+            $ex2 = isset($exploded[2])
+              ? floatval(strtr(strtr((string) $exploded[2], ['(' => '']), [')' => '']))
+              : 0.0;
+
+            if ($ex0 === floatval(0)) {
+              // #region agent log
+              $starcoEarlySizeSkip++;
+              // #endregion
+              continue;
+            }
+
             $size = preg_replace($initial, "", $size);
             $size = strtr($size, ['(-)' => '']);
 
@@ -2475,67 +2742,55 @@
             $li = $item['LI_1'];
             $si = $item['SI_1'];
 
-            $position = SyncController::getByArticle($article);
+            $position = $starcoLoadBigtire($article);
             if ($position === false) {
               $position = new Bigtire();
             }
 
-            $returnText = '';
+            $treadId = null;
 
             if (!empty($brand) && !empty($tread)) {
-              $treadId = SyncController::getTreadId($tread, $brand);
-              // Jauns breands - Bigtire_brands
-              $returnText .= 'Jauns brends - ' . $brand . '<br>';
-              if ($treadId === false) {
-                $brandId = SyncController::getBrandId($brand);
-                if ($brandId === false) {
-                  $brandId = Bigbrand::insertGetId([
-                    'title' => $brand,
-                    'slug' => Str::slug($brand),
-                  ]);
-                }
-                // Jauns protektors - Bigtire_treads
-                $returnText .= 'Jauns protektors - ' . $tread . '<br>';
-                $treadId = Bigtread::insertGetId([
-                  'brand_id' => $brandId,
-                  'title' => $tread,
-                  'slug' => Str::slug($tread),
-                ]);
-              }
+              $treadId = SyncController::starcoResolveTreadId(
+                $tread,
+                $brand,
+                $starcoBrandTitleCache,
+                $starcoTreadPairCache
+              );
             }
 
             $position->make_id = $treadId;
 
-            $outPath = dirname(__DIR__, 3) . '/public/storage/industrial/tread/' . $treadId . '-o.jpg';
+            if ($treadId !== null) {
+              $outPath = dirname(__DIR__, 3) . '/public/storage/industrial/tread/' . (int) $treadId . '-o.jpg';
 
-            Self::starco_image('http://194.19.236.7/Pictures/' . $article . '.jpg', $outPath);
-
-            $exploded[0] = strtr($exploded[0], ['(' => '']);
-            $exploded[0] = strtr($exploded[0], [')' => '']);
-            $exploded[0] = floatval($exploded[0]);
-
-            $exploded[1] = strtr($exploded[1], ['(' => '']);
-            $exploded[1] = strtr($exploded[1], [')' => '']);
-            $exploded[1] = floatval($exploded[1]);
-
-            @$exploded[2] = strtr($exploded[2], ['(' => '']);
-            @$exploded[2] = strtr($exploded[2], [')' => '']);
-            @$exploded[2] = floatval($exploded[2]);
-
-            if ($exploded[0] === floatval(0)) {
-              continue;
+              // Skip HTTP if image already cached (dramatically cuts catalog-loop time).
+              $forceImg = (bool) env('STARCO_FORCE_IMAGE_REFRESH', false);
+              if (!$forceImg && is_file($outPath) && filesize($outPath) > 512) {
+                // #region agent log
+                $starcoImgSkipped++;
+                // #endregion
+              } else {
+                // #region agent log
+                $imgT0 = microtime(true);
+                // #endregion
+                Self::starco_image('http://194.19.236.7/Pictures/' . $article . '.jpg', $outPath);
+                // #region agent log
+                $starcoImgMs += (microtime(true) - $imgT0) * 1000;
+                $starcoImgCalls++;
+                // #endregion
+              }
             }
 
-            $position->d1 = sprintf('%g', $exploded[0]);
+            $position->d1 = sprintf('%g', $ex0);
             $position->sep = $sep1;
-            if (!$exploded[2]) {
+            if (!$ex2) {
               $position->d2 = NULL;
               $position->sep2 = NULL;
-              $position->d3 = $exploded[1];
+              $position->d3 = $ex1;
             } else {
-              $position->d2 = sprintf('%g', $exploded[1]);
+              $position->d2 = sprintf('%g', $ex1);
               $position->sep2 = $sep2;
-              $position->d3 = $exploded[2];
+              $position->d3 = $ex2;
             }
 
             $position->type = $type;
@@ -2562,6 +2817,8 @@
             $position->quantity = 0;
 
             $position->save();
+            $starcoBtByArticle[$article] = $position;
+            $bigtireArticleSet[$article] = true;
 
             if ($article !== '') {
               $position->addSecondaryArticle($article, 'starco');
@@ -2574,87 +2831,214 @@
         $counted++;
       }
 
+      // #region agent log
+      $catalogLoopMs = (microtime(true) - $starcoTBeforeCatalogLoop) * 1000;
+      $this->starcoDebugLog('H1', 'phase_catalog_loop_done', [
+        'loop_ms' => round($catalogLoopMs, 2),
+        'img_total_ms' => round($starcoImgMs, 2),
+        'img_calls' => $starcoImgCalls,
+        'img_skipped_cached' => $starcoImgSkipped,
+        'early_zero_size_skips' => $starcoEarlySizeSkip,
+        'catalog_non_img_ms' => round(max(0, $catalogLoopMs - $starcoImgMs), 2),
+        'counted' => $counted,
+        'updated' => $updated,
+      ]);
+      $starcoTBeforeStockFetch = microtime(true);
+      // #endregion
+
       echo "Mainīti {$updated} ieraksti (sarakstā {$counted} ieraksti)<br>";
 
-      $string = file_get_contents($stocks, false, $context);
-      $stocks = json_decode($string, true)['value'];
+      $stockItems = $this->fetchStarcoValue('current_stock_full');
+      $starcoTAfterStockFetch = microtime(true);
 
-      foreach ($stocks as $item) {
+      // #region agent log
+      $this->starcoDebugLog('H3', 'phase_fetch_stocks', [
+        'ms' => round(($starcoTAfterStockFetch - $starcoTBeforeStockFetch) * 1000, 2),
+        'stock_rows' => is_array($stockItems) ? count($stockItems) : 0,
+      ]);
+      // #endregion
 
-        if ($item['RIG_STOCK'] == 0) {
+      // #region agent log
+      $starcoTBeforeStockLoop = microtime(true);
+      // #endregion
 
-          if (Bigtire::where('article', $item['product_no'])->exists()) {
-            Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0, 'updated_at' => date('Y-m-d H:i:s')]);
-          } else {
-            continue;
+      $bigtireArticleSet = array_fill_keys(array_filter(array_map(
+        'strval',
+        Bigtire::query()->whereNotNull('article')->pluck('article')->all()
+      )), true);
+      $starcoStockArticleSet = array_fill_keys(array_filter(array_map(
+        'strval',
+        Bigstock::query()->where('itype', 'starco')->pluck('article')->all()
+      )), true);
+
+      $stockHideArticles = [];
+      $stockQtyByArticle = [];
+      foreach ($stockItems as $item) {
+        $pno = (string) $item['product_no'];
+        if ($pno === '') {
+          continue;
+        }
+
+        if ((int) $item['RIG_STOCK'] === 0) {
+          if (!empty($bigtireArticleSet[$pno])) {
+            $stockHideArticles[$pno] = true;
           }
-
         } else {
-
-          if (Bigstock::where('article', $item['product_no'])->exists()) {
-            Bigstock::where('article', $item['product_no'])->where('itype', 'starco')->update(['quantity' => $item['RIG_STOCK'], 'updated_at' => date('Y-m-d H:i:s')]);;
-          } else {
-            continue;
+          if (!empty($starcoStockArticleSet[$pno])) {
+            $stockQtyByArticle[$pno] = (int) $item['RIG_STOCK'];
           }
-
         }
       }
+
+      $updatedAtStock = date('Y-m-d H:i:s');
+
+      foreach (array_chunk(array_keys($stockHideArticles), 500) as $chunk) {
+        if ($chunk !== []) {
+          Bigtire::whereIn('article', $chunk)->update([
+            'visible_users' => 0,
+            'visible_list' => 0,
+            'updated_at' => $updatedAtStock,
+          ]);
+        }
+      }
+
+      foreach (array_chunk($stockQtyByArticle, 450, true) as $slice) {
+        $this->starcoBulkUpdateBigstockQuantities($slice, $updatedAtStock);
+      }
+
+      // #region agent log
+      $this->starcoDebugLog('H4', 'phase_stock_loop_done', [
+        'ms' => ($starcoTBeforeStockLoop !== null)
+          ? round((microtime(true) - $starcoTBeforeStockLoop) * 1000, 2)
+          : null,
+      ]);
+      $starcoTBeforePriceFetch = microtime(true);
+      // #endregion
 
       echo "Preču daudzumi atjaunoti!<br>";
 
-      $string = file_get_contents($prices, false, $context);
-      $prices = json_decode($string, true)['value'];
+      $starcoLogin = (string) config('services.starco.login', '202562');
+      $priceItems = $this->fetchStarcoValue($starcoLogin . '_pl');
+      $starcoTAfterPriceFetch = microtime(true);
 
-      foreach ($prices as $item) {
+      // #region agent log
+      $this->starcoDebugLog('H3', 'phase_fetch_prices', [
+        'ms' => round(($starcoTAfterPriceFetch - $starcoTBeforePriceFetch) * 1000, 2),
+        'price_rows' => is_array($priceItems) ? count($priceItems) : 0,
+      ]);
+      // #endregion
 
-        if (Bigtire::where('article', $item['product_no'])->exists()) {
-          $itam = Bigtire::where('article', $item['product_no'])->first();
+      $starcoTBeforePriceLoop = microtime(true);
+
+      $priceProductNos = [];
+      foreach ($priceItems as $row) {
+        $a = isset($row['product_no']) ? (string) $row['product_no'] : '';
+        if ($a !== '') {
+          $priceProductNos[$a] = true;
         }
+      }
+      $priceArticleKeys = array_keys($priceProductNos);
 
-        if ($itam->article == $item['product_no']) {
-
-          if ($item['price'] == 0) {
-            $price1 = 0;
-            $price2 = 0;
-            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'visible_users' => 0, 'visible_list' => 0,  'updated_at' => date('Y-m-d H:i:s')]);
-          }
-          if ($item['price'] < 100) {
-            $price1 = ($item['price'] + 8) / 70 * 100;
-            $price2 = $item['price'] + 10;
-            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
-          }
-          if ($item['price'] >= 100 && $item['price'] < 200) {
-            $price1 = ($item['price'] + 12) / 70 * 100;
-            $price2 = $item['price'] + 15;
-            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
-          }
-          if ($item['price'] >= 200 && $item['price'] < 500) {
-            $price1 = ($item['price'] + 15) / 70 * 100;
-            $price2 = $item['price'] + 20;
-            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
-          }
-          if ($item['price'] >= 500 && $item['price'] < 1000) {
-            $price1 = ($item['price'] + 30) / 70 * 100;
-            $price2 = $item['price'] + 50;
-            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
-          }
-          if ($item['price'] > 1000) {
-            $price1 = ($item['price'] + 50) / 70 * 100;
-            $price2 = ($item['price'] * 1.07);
-            Bigtire::where('article', $item['product_no'])->update(['price1' => (int)$price1, 'price3' => (int)$price2, 'updated_at' => date('Y-m-d H:i:s')]);
+      $bigtiresByArticle = [];
+      if ($priceArticleKeys !== []) {
+        foreach (array_chunk($priceArticleKeys, 900) as $chunk) {
+          foreach (Bigtire::whereIn('article', $chunk)->get(['article']) as $t) {
+            if ($t->article !== null && $t->article !== '') {
+              $bigtiresByArticle[(string) $t->article] = true;
+            }
           }
         }
-
-        if (Bigstock::where('article', $item['product_no'])->exists()) {
-          $stock = Bigstock::where('article', $item['product_no'])->first();
-          if (Bigtire::where('article', $item['product_no'])->exists()) {
-            if ($stock->quantity == 0) Bigtire::where('article', $item['product_no'])->update(['visible_users' => 0, 'visible_list' => 0]);
-          }
-        }
-
       }
 
+      $starcoStockQtyForPrice = [];
+      if ($priceArticleKeys !== []) {
+        foreach (array_chunk($priceArticleKeys, 900) as $chunk) {
+          foreach (Bigstock::where('itype', 'starco')->whereIn('article', $chunk)->get(['article', 'quantity']) as $s) {
+            if ($s->article !== null && $s->article !== '') {
+              $starcoStockQtyForPrice[(string) $s->article] = (int) $s->quantity;
+            }
+          }
+        }
+      }
+
+      $updatedAtPrices = date('Y-m-d H:i:s');
+
+      foreach ($priceItems as $item) {
+        $pno = isset($item['product_no']) ? (string) $item['product_no'] : '';
+        if ($pno === '' || empty($bigtiresByArticle[$pno])) {
+          continue;
+        }
+
+        $p = $item['price'];
+        $price1 = null;
+        $price2 = null;
+        $visibilityOff = false;
+
+        if ($p == 0) {
+          $price1 = 0;
+          $price2 = 0;
+          $visibilityOff = true;
+        } elseif ($p < 100) {
+          $price1 = ($p + 8) / 70 * 100;
+          $price2 = $p + 10;
+        } elseif ($p >= 100 && $p < 200) {
+          $price1 = ($p + 12) / 70 * 100;
+          $price2 = $p + 15;
+        } elseif ($p >= 200 && $p < 500) {
+          $price1 = ($p + 15) / 70 * 100;
+          $price2 = $p + 20;
+        } elseif ($p >= 500 && $p < 1000) {
+          $price1 = ($p + 30) / 70 * 100;
+          $price2 = $p + 50;
+        } elseif ($p > 1000) {
+          $price1 = ($p + 50) / 70 * 100;
+          $price2 = $p * 1.07;
+        }
+
+        if ($price1 !== null && $price2 !== null) {
+          if (
+            !$visibilityOff
+            && array_key_exists($pno, $starcoStockQtyForPrice)
+            && $starcoStockQtyForPrice[$pno] === 0
+          ) {
+            $visibilityOff = true;
+          }
+
+          $payload = [
+            'price1' => (int) $price1,
+            'price3' => (int) $price2,
+            'updated_at' => $updatedAtPrices,
+          ];
+          if ($visibilityOff) {
+            $payload['visible_users'] = 0;
+            $payload['visible_list'] = 0;
+          }
+          Bigtire::where('article', $pno)->update($payload);
+        } elseif (!$visibilityOff
+          && array_key_exists($pno, $starcoStockQtyForPrice)
+          && $starcoStockQtyForPrice[$pno] === 0
+        ) {
+          Bigtire::where('article', $pno)->update([
+            'visible_users' => 0,
+            'visible_list' => 0,
+            'updated_at' => $updatedAtPrices,
+          ]);
+        }
+      }
+
+      // #region agent log
+      $this->starcoDebugLog('H4', 'phase_price_loop_done', [
+        'ms' => ($starcoTBeforePriceLoop !== null)
+          ? round((microtime(true) - $starcoTBeforePriceLoop) * 1000, 2)
+          : null,
+      ]);
+      $this->starcoDebugLog('H2', 'starco_total', [
+        'total_ms' => round((microtime(true) - $starcoT0) * 1000, 2),
+      ]);
+      // #endregion
+
       DB::table('sync_times')->where('name', 'starco-big')->update(['updated_at' => \Carbon\Carbon::now()->format('Y-m-d H:i:s')]);
+      Bigtire::clearCatalogCache();
       echo 'Preču cenas atjaunotas!';
 
     }
@@ -2664,6 +3048,7 @@
       $this->i3auto();
       $this->gy();
       $this->rzauto();
+      $this->rgauto();
       $this->i3moto();
       $this->duellmoto();
       $this->i3quadr();

@@ -80,6 +80,12 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                          <label class="col-md-3 col-form-label" for="is_camera">Kamera</label>
+                          <div class="col-md-9">
+                            <input style="width: 2%;" class="form-control" id="is_camera" @if ($tire->is_camera) checked @endif type="checkbox" name="is_camera" value="1">
+                          </div>
+                        </div>
+                        <div class="form-group row">
                             <label class="col-md-3 col-form-label" for="code">Kods</label>
                             <div class="col-md-9">
                                 <input class="form-control" id="code" type="text" @if ($tire->code) value="{{ $tire->code }}" @endif name="code" placeholder="Kods">

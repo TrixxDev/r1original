@@ -178,7 +178,6 @@ return [
         /*
          * Package Service Providers...
          */
-        Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -249,7 +248,6 @@ return [
         'Tires' => App\Helper\Tires::class,
         'Image' => App\Helper\Image::class,
         'Env' => App\Helper\Env::class,
-        'Cart' => Gloudemans\Shoppingcart\Facades\Cart::class,
         'Images' => Intervention\Image\Facades\Image::class
 
     ],

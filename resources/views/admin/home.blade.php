@@ -6,379 +6,566 @@
         <div class="fade-in">
             <div class="row">
                 <div class="col-sm-6 col-lg-3">
-                    <div class="card text-white bg-primary">
-                        <div class="card-body card-body pb-0 d-flex justify-content-between align-items-start">
+                    <div class="card text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                        <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
-                                <div class="text-value-lg">9.823</div>
-                                <div>Members online</div>
+                                <div class="text-value-lg font-weight-bold">{{ $todayOrders }}</div>
+                                <div class="text-white-50">Pasūtījumi šodien</div>
                             </div>
-                            <div class="btn-group">
-                                <button class="btn btn-transparent dropdown-toggle p-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <svg class="c-icon">
-                                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-settings"></use>
-                                    </svg>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a></div>
+                            <div class="text-white-50">
+                                <i class="cil-cart" style="font-size: 2.5rem;"></i>
                             </div>
-                        </div>
-                        <div class="c-chart-wrapper mt-3 mx-3" style="height:70px;">
-                            <canvas class="chart" id="card-chart1" height="70"></canvas>
                         </div>
                     </div>
                 </div>
-                <!-- /.col-->
+                
                 <div class="col-sm-6 col-lg-3">
-                    <div class="card text-white bg-info">
-                        <div class="card-body card-body pb-0 d-flex justify-content-between align-items-start">
+                    <div class="card text-white" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border: none; box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);">
+                        <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
-                                <div class="text-value-lg">9.823</div>
-                                <div>Members online</div>
+                                <div class="text-value-lg font-weight-bold">{{ number_format($monthlyRevenue, 0, ',', ' ') }}€</div>
+                                <div class="text-white-50">Ieņēmumi mēnesī</div>
                             </div>
-                            <div class="btn-group">
-                                <button class="btn btn-transparent dropdown-toggle p-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <svg class="c-icon">
-                                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-settings"></use>
-                                    </svg>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a></div>
+                            <div class="text-white-50">
+                                <i class="cil-euro" style="font-size: 2.5rem;"></i>
                             </div>
-                        </div>
-                        <div class="c-chart-wrapper mt-3 mx-3" style="height:70px;">
-                            <canvas class="chart" id="card-chart2" height="70"></canvas>
                         </div>
                     </div>
                 </div>
-                <!-- /.col-->
+                
                 <div class="col-sm-6 col-lg-3">
-                    <div class="card text-white bg-warning">
-                        <div class="card-body card-body pb-0 d-flex justify-content-between align-items-start">
+                    <div class="card text-white" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border: none; box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);">
+                        <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
-                                <div class="text-value-lg">9.823</div>
-                                <div>Members online</div>
+                                <div class="text-value-lg font-weight-bold">{{ $lowStockTires }}</div>
+                                <div class="text-white-50">Maz krājumu</div>
                             </div>
-                            <div class="btn-group">
-                                <button class="btn btn-transparent dropdown-toggle p-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <svg class="c-icon">
-                                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-settings"></use>
-                                    </svg>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a></div>
+                            <div class="text-white-50">
+                                <i class="cil-warning" style="font-size: 2.5rem;"></i>
                             </div>
-                        </div>
-                        <div class="c-chart-wrapper mt-3" style="height:70px;">
-                            <canvas class="chart" id="card-chart3" height="70"></canvas>
                         </div>
                     </div>
                 </div>
-                <!-- /.col-->
+                
                 <div class="col-sm-6 col-lg-3">
-                    <div class="card text-white bg-danger">
-                        <div class="card-body card-body pb-0 d-flex justify-content-between align-items-start">
+                    <div class="card text-white" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border: none; box-shadow: 0 4px 15px rgba(250, 112, 154, 0.3);">
+                        <div class="card-body d-flex justify-content-between align-items-center">
                             <div>
-                                <div class="text-value-lg">9.823</div>
-                                <div>Members online</div>
+                                <div class="text-value-lg font-weight-bold">{{ $activeUsersToday }}</div>
+                                <div class="text-white-50">Aktīvi lietotāji</div>
                             </div>
-                            <div class="btn-group">
-                                <button class="btn btn-transparent dropdown-toggle p-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <svg class="c-icon">
-                                        <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-settings"></use>
-                                    </svg>
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right"><a class="dropdown-item" href="#">Action</a><a class="dropdown-item" href="#">Another action</a><a class="dropdown-item" href="#">Something else here</a></div>
+                            <div class="text-white-50">
+                                <i class="cil-people" style="font-size: 2.5rem;"></i>
                             </div>
-                        </div>
-                        <div class="c-chart-wrapper mt-3 mx-3" style="height:70px;">
-                            <canvas class="chart" id="card-chart4" height="70"></canvas>
                         </div>
                     </div>
                 </div>
-                <!-- /.col-->
             </div>
             <!-- /.row-->
-            <div class="row">
-                <div class="col-sm-6 col-lg-4">
-                    <div class="card">
-                        <div class="card-header bg-facebook content-center">
-                            <svg class="c-icon c-icon-3xl text-white my-4">
-                                <use xlink:href="node_modules/@coreui/icons/sprites/brand.svg#cib-facebook-f"></use>
-                            </svg>
-                        </div>
-                        <div class="card-body row text-center">
-                            <div class="col">
-                                <div class="text-value-xl">89k</div>
-                                <div class="text-uppercase text-muted small">friends</div>
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="cil-cart text-primary" style="font-size: 3rem;"></i>
                             </div>
-                            <div class="c-vr"></div>
-                            <div class="col">
-                                <div class="text-value-xl">459</div>
-                                <div class="text-uppercase text-muted small">feeds</div>
+                            <h3 class="text-primary font-weight-bold">{{ $totalOrders }}</h3>
+                            <p class="text-muted mb-2">Kopā pasūtījumi</p>
+                            <div class="progress" style="height: 4px;">
+                                <div class="progress-bar bg-success" style="width: {{ $totalOrders > 0 ? ($completedOrders / $totalOrders) * 100 : 0 }}%"></div>
                             </div>
+                            <small class="text-muted">{{ $completedOrders }} pabeigti</small>
                         </div>
                     </div>
                 </div>
-                <!-- /.col-->
-                <div class="col-sm-6 col-lg-4">
-                    <div class="card">
-                        <div class="card-header bg-twitter content-center">
-                            <svg class="c-icon c-icon-3xl text-white my-4">
-                                <use xlink:href="node_modules/@coreui/icons/sprites/brand.svg#cib-twitter"></use>
-                            </svg>
-                        </div>
-                        <div class="card-body row text-center">
-                            <div class="col">
-                                <div class="text-value-xl">973k</div>
-                                <div class="text-uppercase text-muted small">followers</div>
+                
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="cil-tire text-info" style="font-size: 3rem;"></i>
                             </div>
-                            <div class="c-vr"></div>
-                            <div class="col">
-                                <div class="text-value-xl">1.792</div>
-                                <div class="text-uppercase text-muted small">tweets</div>
+                            <h3 class="text-info font-weight-bold">{{ $totalTires }}</h3>
+                            <p class="text-muted mb-2">Produkti katalogā</p>
+                            <div class="progress" style="height: 4px;">
+                                <div class="progress-bar bg-warning" style="width: {{ $totalTires > 0 ? ($outOfStockTires / $totalTires) * 100 : 0 }}%"></div>
                             </div>
+                            <small class="text-muted">{{ $outOfStockTires }} nav krājumā</small>
                         </div>
                     </div>
                 </div>
-                <!-- /.col-->
-                <div class="col-sm-6 col-lg-4">
-                    <div class="card">
-                        <div class="card-header bg-linkedin content-center">
-                            <svg class="c-icon c-icon-3xl text-white my-4">
-                                <use xlink:href="node_modules/@coreui/icons/sprites/brand.svg#cib-linkedin"></use>
-                            </svg>
-                        </div>
-                        <div class="card-body row text-center">
-                            <div class="col">
-                                <div class="text-value-xl">500+</div>
-                                <div class="text-uppercase text-muted small">contacts</div>
+                
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="cil-clock text-warning" style="font-size: 3rem;"></i>
                             </div>
-                            <div class="c-vr"></div>
-                            <div class="col">
-                                <div class="text-value-xl">292</div>
-                                <div class="text-uppercase text-muted small">feeds</div>
+                            <h3 class="text-warning font-weight-bold">{{ $todaySlots }}</h3>
+                            <p class="text-muted mb-2">Laiki šodien</p>
+                            <div class="progress" style="height: 4px;">
+                                <div class="progress-bar bg-danger" style="width: {{ $todaySlots > 0 ? ($takenSlotsToday / $todaySlots) * 100 : 0 }}%"></div>
                             </div>
+                            <small class="text-muted">{{ $takenSlotsToday }} aizņemti</small>
                         </div>
                     </div>
                 </div>
-                <!-- /.col-->
             </div>
             <!-- /.row-->
-            <div class="row">
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-2">
+                            <div>
+                                <h6 class="mb-1 text-dark">Riepu Garāža — partneru noliktava (rg)</h6>
+                                <small class="text-muted d-block">Sinhronizē <code>auto_stock</code> (<code>itype = rg</code>) no ecom <code>tyres.xml</code>.</small>
+                                <small id="admin-rg-sync-last" class="text-muted d-block mt-1">
+                                    @if (!empty($rgSyncLast))
+                                        Pēdējoreiz: {{ $rgSyncLast }}
+                                    @else
+                                        Vēl nav veikta sinhronizācija.
+                                    @endif
+                                </small>
+                            </div>
+                            <div class="text-end">
+                                <button type="button" id="admin-rg-sync-btn" class="btn btn-primary">Palaist rg sinhronizāciju</button>
+                                <div id="admin-rg-sync-err" class="text-danger small mt-2 d-none" role="alert"></div>
+                            </div>
+                        </div>
+                        <pre id="admin-rg-sync-out" class="d-none small mt-2 mb-0 mx-3 mx-md-4 p-2 bg-light border rounded" style="max-height: 240px; overflow: auto; white-space: pre-wrap; word-break: break-word;"></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-0">
+                            <h5 class="mb-0 text-primary">
+                                <i class="cil-cart mr-2"></i>Pēdējie pasūtījumi
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            @if($recentOrders->count() > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th class="border-0">Nr.</th>
+                                                <th class="border-0">Klients</th>
+                                                <th class="border-0">Summa</th>
+                                                <th class="border-0">Statuss</th>
+                                                <th class="border-0">Laiks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($recentOrders as $order)
+                                                <tr>
+                                                    <td class="font-weight-bold">{{ $order->order_number ?: $order->id }}</td>
+                                                    <td>
+                                                        <small>{{ $order->email ?: $order->phone_number ?: 'Bez kontaktiem' }}</small>
+                                                    </td>
+                                                    <td class="text-success font-weight-bold">{{ number_format($order->total_price, 0, ',', ' ') }}€</td>
+                                                    <td>
+                                                        <span class="badge badge-{{ $order->order_status == 5 ? 'success' : 'warning' }} badge-pill">
+                                                            {{ $order->order_status == 5 ? 'Pabeigts' : 'Apstrādā' }}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <small class="text-muted">{{ $order->created_at->format('d.m H:i') }}</small>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="text-center py-4">
+                                    <i class="cil-cart text-muted" style="font-size: 3rem;"></i>
+                                    <p class="text-muted mt-2">Nav pasūtījumu</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-0">
+                            <h5 class="mb-0 text-info">
+                                <i class="cil-list mr-2"></i>Pēdējā aktivitāte
+                            </h5>
+                        </div>
+                        <div class="card-body p-0">
+                            @if($recentActivity->count() > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th class="border-0">Lietotājs</th>
+                                                <th class="border-0">Darbība</th>
+                                                <th class="border-0">Laiks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($recentActivity as $activity)
+                                                <tr>
+                                                    <td>
+                                                        @if($activity->user)
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center mr-2" style="width: 30px; height: 30px;">
+                                                                    <span class="text-white small font-weight-bold">{{ substr($activity->user->name, 0, 1) }}</span>
+                                                                </div>
+                                                                <small class="font-weight-bold">{{ $activity->user->fullName }}</small>
+                                                            </div>
+                                                        @else
+                                                            <div class="d-flex align-items-center">
+                                                                <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mr-2" style="width: 30px; height: 30px;">
+                                                                    <i class="cil-user text-white small"></i>
+                                                                </div>
+                                                                <small class="text-muted">Viesis</small>
+                                                            </div>
+                                                        @endif
+                                                    </td>
+                                                    <td>
+                                                        <small class="text-dark">{{ Str::limit($activity->audit_event, 25) }}</small>
+                                                    </td>
+                                                    <td>
+                                                        <small class="text-muted">{{ \Carbon\Carbon::parse($activity->audit_time)->format('H:i') }}</small>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="text-center py-4">
+                                    <i class="cil-list text-muted" style="font-size: 3rem;"></i>
+                                    <p class="text-muted mt-2">Nav aktivitātes</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row-->
+            
+            <div class="row mt-4">
                 <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header">Traffic & Sales</div>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white border-0">
+                            <h5 class="mb-0 text-success">
+                                <i class="cil-chart-line mr-2"></i>Pārdošana pēdējās 7 dienās
+                            </h5>
+                        </div>
                         <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="c-callout c-callout-info"><small class="text-muted">New Clients</small>
-                                                <div class="text-value-lg">9,123</div>
-                                            </div>
-                                        </div>
-                                        <!-- /.col-->
-                                        <div class="col-6">
-                                            <div class="c-callout c-callout-danger"><small class="text-muted">Recuring Clients</small>
-                                                <div class="text-value-lg">22,643</div>
-                                            </div>
-                                        </div>
-                                        <!-- /.col-->
-                                    </div>
-                                    <!-- /.row-->
-                                    <hr class="mt-0">
-                                    <div class="progress-group mb-4">
-                                        <div class="progress-group-prepend"><span class="progress-group-text">Monday</span></div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-info" role="progressbar" style="width: 34%" aria-valuenow="34" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-danger" role="progressbar" style="width: 78%" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="progress-group mb-4">
-                                        <div class="progress-group-prepend"><span class="progress-group-text">Tuesday</span></div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-info" role="progressbar" style="width: 56%" aria-valuenow="56" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-danger" role="progressbar" style="width: 94%" aria-valuenow="94" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="progress-group mb-4">
-                                        <div class="progress-group-prepend"><span class="progress-group-text">Wednesday</span></div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-info" role="progressbar" style="width: 12%" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-danger" role="progressbar" style="width: 67%" aria-valuenow="67" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="progress-group mb-4">
-                                        <div class="progress-group-prepend"><span class="progress-group-text">Thursday</span></div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-info" role="progressbar" style="width: 43%" aria-valuenow="43" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-danger" role="progressbar" style="width: 91%" aria-valuenow="91" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="progress-group mb-4">
-                                        <div class="progress-group-prepend"><span class="progress-group-text">Friday</span></div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-info" role="progressbar" style="width: 22%" aria-valuenow="22" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-danger" role="progressbar" style="width: 73%" aria-valuenow="73" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="progress-group mb-4">
-                                        <div class="progress-group-prepend"><span class="progress-group-text">Saturday</span></div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-info" role="progressbar" style="width: 53%" aria-valuenow="53" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-danger" role="progressbar" style="width: 82%" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="progress-group mb-4">
-                                        <div class="progress-group-prepend"><span class="progress-group-text">Sunday</span></div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-info" role="progressbar" style="width: 9%" aria-valuenow="9" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-danger" role="progressbar" style="width: 69%" aria-valuenow="69" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /.col-->
-                                <div class="col-sm-6">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <div class="c-callout c-callout-warning"><small class="text-muted">Pageviews</small>
-                                                <div class="text-value-lg">78,623</div>
-                                            </div>
-                                        </div>
-                                        <!-- /.col-->
-                                        <div class="col-6">
-                                            <div class="c-callout c-callout-success"><small class="text-muted">Organic</small>
-                                                <div class="text-value-lg">49,123</div>
-                                            </div>
-                                        </div>
-                                        <!-- /.col-->
-                                    </div>
-                                    <!-- /.row-->
-                                    <hr class="mt-0">
-                                    <div class="progress-group">
-                                        <div class="progress-group-header">
-                                            <svg class="c-icon progress-group-icon">
-                                                <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user"></use>
-                                            </svg>
-                                            <div>Male</div>
-                                            <div class="mfs-auto font-weight-bold">43%</div>
-                                        </div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-warning" role="progressbar" style="width: 43%" aria-valuenow="43" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="progress-group mb-5">
-                                        <div class="progress-group-header">
-                                            <svg class="c-icon progress-group-icon">
-                                                <use xlink:href="node_modules/@coreui/icons/sprites/free.svg#cil-user-female"></use>
-                                            </svg>
-                                            <div>Female</div>
-                                            <div class="mfs-auto font-weight-bold">37%</div>
-                                        </div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-warning" role="progressbar" style="width: 43%" aria-valuenow="43" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="progress-group">
-                                        <div class="progress-group-header align-items-end">
-                                            <svg class="c-icon progress-group-icon">
-                                                <use xlink:href="node_modules/@coreui/icons/sprites/brand.svg#cib-google"></use>
-                                            </svg>
-                                            <div>Organic Search</div>
-                                            <div class="mfs-auto font-weight-bold mfe-2">191.235</div>
-                                            <div class="text-muted small">(56%)</div>
-                                        </div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-success" role="progressbar" style="width: 56%" aria-valuenow="56" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="progress-group">
-                                        <div class="progress-group-header align-items-end">
-                                            <svg class="c-icon progress-group-icon">
-                                                <use xlink:href="node_modules/@coreui/icons/sprites/brand.svg#cib-facebook-f"></use>
-                                            </svg>
-                                            <div>Facebook</div>
-                                            <div class="mfs-auto font-weight-bold mfe-2">51.223</div>
-                                            <div class="text-muted small">(15%)</div>
-                                        </div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-success" role="progressbar" style="width: 15%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="progress-group">
-                                        <div class="progress-group-header align-items-end">
-                                            <svg class="c-icon progress-group-icon">
-                                                <use xlink:href="node_modules/@coreui/icons/sprites/brand.svg#cib-twitter"></use>
-                                            </svg>
-                                            <div>Twitter</div>
-                                            <div class="mfs-auto font-weight-bold mfe-2">37.564</div>
-                                            <div class="text-muted small">(11%)</div>
-                                        </div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-success" role="progressbar" style="width: 11%" aria-valuenow="11" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="progress-group">
-                                        <div class="progress-group-header align-items-end">
-                                            <svg class="c-icon progress-group-icon">
-                                                <use xlink:href="node_modules/@coreui/icons/sprites/brand.svg#cib-linkedin"></use>
-                                            </svg>
-                                            <div>LinkedIn</div>
-                                            <div class="mfs-auto font-weight-bold mfe-2">27.319</div>
-                                            <div class="text-muted small">(8%)</div>
-                                        </div>
-                                        <div class="progress-group-bars">
-                                            <div class="progress progress-xs">
-                                                <div class="progress-bar bg-success" role="progressbar" style="width: 8%" aria-valuenow="8" aria-valuemin="0" aria-valuemax="100"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /.col-->
-                            </div>
-                            <!-- /.row--><br>
+                            <canvas id="salesChart" height="80"></canvas>
                         </div>
                     </div>
                 </div>
-                <!-- /.col-->
             </div>
             <!-- /.row-->
         </div>
     </div>
 
 @endsection
+
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const salesData = @json($salesChart);
+    
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: salesData.map(item => item.date),
+            datasets: [{
+                label: 'Pasūtījumi',
+                data: salesData.map(item => item.orders),
+                borderColor: '#667eea',
+                backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#667eea',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5
+            }, {
+                label: 'Ieņēmumi (€)',
+                data: salesData.map(item => item.revenue),
+                borderColor: '#f093fb',
+                backgroundColor: 'rgba(240, 147, 251, 0.1)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#f093fb',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                yAxisID: 'y1'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    grid: {
+                        color: 'rgba(0,0,0,0.1)'
+                    },
+                    ticks: {
+                        color: '#667eea'
+                    }
+                },
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                    ticks: {
+                        color: '#f093fb'
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0,0,0,0.1)'
+                    },
+                    ticks: {
+                        color: '#666'
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+});
+</script>
+
+<script>
+// Автообновление dashboard
+class DashboardUpdater {
+    constructor() {
+        this.interval = 30000; // 30 секунд
+        this.isActive = true;
+        this.lastUpdate = null;
+        this.start();
+        this.setupVisibilityListener();
+    }
+    
+    start() {
+        // Обновляем сразу при загрузке
+        setTimeout(() => this.update(), 1000);
+        
+        // Затем каждые 30 секунд
+        setInterval(() => {
+            if (this.isActive && !document.hidden) {
+                this.update();
+            }
+        }, this.interval);
+    }
+    
+    setupVisibilityListener() {
+        document.addEventListener('visibilitychange', () => {
+            this.isActive = !document.hidden;
+            if (this.isActive) {
+                // Обновляем сразу при возвращении на вкладку
+                this.update();
+            }
+        });
+    }
+    
+    async update() {
+        try {
+            const response = await fetch('/admin/dashboard/data');
+            const data = await response.json();
+            
+            if (data.error) {
+                console.log('Ошибка получения данных:', data.error);
+                return;
+            }
+            
+            // Обновляем карточки с анимацией
+            this.updateCard('.text-value-lg', data.todayOrders, 0);
+            this.updateCard('.text-value-lg', data.monthlyRevenue + '€', 1);
+            this.updateCard('.text-value-lg', data.lowStockTires, 2);
+            this.updateCard('.text-value-lg', data.activeUsersToday, 3);
+            
+            // Обновляем средние карточки
+            this.updateCard('h3.text-primary', data.totalOrders);
+            this.updateCard('h3.text-info', data.totalTires);
+            this.updateCard('h3.text-warning', data.todaySlots);
+            
+            // Обновляем прогресс-бары
+            this.updateProgressBar(data.totalOrders, data.completedOrders, 0);
+            this.updateProgressBar(data.totalTires, data.outOfStockTires, 1);
+            this.updateProgressBar(data.todaySlots, data.takenSlotsToday, 2);
+            
+            this.showUpdateIndicator();
+            this.lastUpdate = new Date();
+            
+        } catch (error) {
+            console.log('Ошибка обновления:', error);
+        }
+    }
+    
+    updateCard(selector, value, index = null) {
+        const elements = document.querySelectorAll(selector);
+        const element = index !== null ? elements[index] : elements[0];
+        
+        if (element && element.textContent !== value.toString()) {
+            // Анимация обновления
+            element.style.transition = 'all 0.3s ease';
+            element.style.transform = 'scale(1.1)';
+            element.style.color = '#28a745';
+            
+            setTimeout(() => {
+                element.textContent = value;
+                element.style.transform = 'scale(1)';
+                element.style.color = '';
+            }, 150);
+        }
+    }
+    
+    updateProgressBar(total, completed, index) {
+        const progressBars = document.querySelectorAll('.progress-bar');
+        if (progressBars[index] && total > 0) {
+            const percentage = (completed / total) * 100;
+            progressBars[index].style.width = percentage + '%';
+        }
+    }
+    
+    showUpdateIndicator() {
+        // Удаляем предыдущий индикатор
+        const existing = document.querySelector('.update-indicator');
+        if (existing) existing.remove();
+        
+        const indicator = document.createElement('div');
+        indicator.className = 'update-indicator';
+        indicator.innerHTML = `
+            <i class="cil-check"></i> 
+            Atjaunots ${new Date().toLocaleTimeString('lv-LV')}
+        `;
+        indicator.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 9999;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            animation: slideIn 0.3s ease;
+        `;
+        
+        document.body.appendChild(indicator);
+        
+        setTimeout(() => {
+            indicator.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => indicator.remove(), 300);
+        }, 2000);
+    }
+}
+
+// CSS для анимаций
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+    }
+    .card {
+        transition: all 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+`;
+document.head.appendChild(style);
+
+// Запускаем автообновление
+document.addEventListener('DOMContentLoaded', () => {
+    new DashboardUpdater();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('admin-rg-sync-btn');
+    const errEl = document.getElementById('admin-rg-sync-err');
+    const outEl = document.getElementById('admin-rg-sync-out');
+    const lastEl = document.getElementById('admin-rg-sync-last');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+        if (errEl) {
+            errEl.classList.add('d-none');
+            errEl.textContent = '';
+        }
+        if (outEl) {
+            outEl.classList.add('d-none');
+            outEl.textContent = '';
+        }
+        btn.disabled = true;
+        const label = btn.textContent;
+        btn.textContent = 'Sinhronizējas…';
+        fetch(@json(route('admin.sync.rg-auto')), {
+            method: 'GET',
+            credentials: 'same-origin',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'text/plain, text/html, */*'
+            }
+        })
+            .then((r) => {
+                if (!r.ok) {
+                    return r.text().then((t) => {
+                        throw new Error(t || ('HTTP ' + r.status));
+                    });
+                }
+                return r.text();
+            })
+            .then((text) => {
+                btn.disabled = false;
+                btn.textContent = label;
+                if (outEl) {
+                    outEl.textContent = text.trim() || '(tukša atbilde)';
+                    outEl.classList.remove('d-none');
+                }
+                if (lastEl) {
+                    lastEl.textContent = 'Pēdējoreiz: ' + new Date().toLocaleString('lv-LV', { dateStyle: 'short', timeStyle: 'medium' });
+                }
+            })
+            .catch((e) => {
+                btn.disabled = false;
+                btn.textContent = label;
+                if (errEl) {
+                    errEl.textContent = (e && e.message) ? String(e.message).slice(0, 800) : 'Nezināma kļūda';
+                    errEl.classList.remove('d-none');
+                }
+            });
+    });
+});
+</script>
+@endsection
+

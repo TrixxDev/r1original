@@ -2,6 +2,13 @@
 
 @section('body-title', 'category')
 @section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-14 category-id-parent-12 category-depth-level-3')
+@php
+  $akcijasCategoryName = $categories[$categoryId]['name'] ?? 'Akcijas';
+@endphp
+@section('meta_title', $akcijasCategoryName . ' — Akcijas | R1 Riepu Serviss')
+@section('meta_description', 'Akcijas: ' . $akcijasCategoryName . '. R1 Riepu Serviss — riepas un diski ar atlaidi. Skatiet aktuālo izpārdošanu un salīdziniet cenas internetā.')
+@section('meta_keywords', config('seo.keywords.akcijas'))
+@section('canonical_url', route('sale-tires'))
 
 @section('content')
     <div class="container">
@@ -53,5 +60,10 @@
                     </section>
                 </div>
             </div>
+        </div>
+    </div>
 
+@push('scripts')
+<script src="{{ \App\Helper\AssetHelper::v('js/sales-cart.js') }}" defer></script>
+@endpush
 @endsection

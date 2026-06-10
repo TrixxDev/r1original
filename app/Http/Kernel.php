@@ -30,9 +30,11 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            \App\Http\Middleware\RequestTimingDebug::class,
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
+            \App\Http\Middleware\SessionTimingDebug::class,
             \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
@@ -68,5 +70,10 @@ class Kernel extends HttpKernel
         'admin' => \App\Http\Middleware\RedirectIfNotAdmin::class,
         'checkcart' => \App\Http\Middleware\CheckCart::class,
         'checksession' => \App\Http\Middleware\CheckSession::class,
+        'restrict.domain' => \App\Http\Middleware\RestrictToDomain::class,
+        'require.car.info.token' => \App\Http\Middleware\RequireCarInfoToken::class,
+        'require.api.key' => \App\Http\Middleware\RequireApiKey::class,
+        'mobile.token' => \App\Http\Middleware\RequireMobileApiToken::class,
+        'no.cache' => \App\Http\Middleware\NoCache::class,
     ];
 }

@@ -2,6 +2,9 @@
 
 @section('body-title', 'index')
 @section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-right-column page-index tax-display-enabled')
+@section('meta_title', 'R1 Riepu Serviss | Riepas un diski')
+@section('meta_description', 'R1 Riepu Serviss — riepas, diski un serviss. Online katalogs, riepu montāža un e-pieraksts Rīgā un Ulbrokā.')
+@section('meta_keywords', config('seo.keywords.home'))
 
 @section('content')
     <div class="container">

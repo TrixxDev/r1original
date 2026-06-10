@@ -11,6 +11,29 @@ use Exception;
 
 class SmsSender {
 
+  private const SMS_API_KEY = '867459d28d672949f49d8f6df81a67d286ea96f9';
+  private const SMS_API_URL = 'https://traffic.sales.lv/API:0.14/';
+
+  private function makeApiRequest($params) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, self::SMS_API_URL);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+    
+    $result = curl_exec($ch);
+    $error = curl_error($ch);
+    curl_close($ch);
+    
+    if ($error) {
+      throw new \Exception("CURL Error: " . $error);
+    }
+    
+    return $result;
+  }
+
   public function isValidPhoneNumber($phone, $normalLength = 8) {
     //izvācam atstarpes
     $phone = str_replace(' ','',$phone);
@@ -140,12 +163,17 @@ class SmsSender {
     }
   }
 
-  public function sendSchedule($data, $smsText, $slot)
+  /**
+   * @param  bool  $outputHttpHeaders  false when running after HTTP response (e.g. fillSlot afterResponse)
+   */
+  public function sendSchedule($data, $smsText, $slot, bool $outputHttpHeaders = true)
   {
-    header("Content-type: text/html; charset=UTF-8");
-    header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-    header("Cache-Control: no-cache");
-    header("Pragma: no-cache");
+    if ($outputHttpHeaders) {
+      header("Content-type: text/html; charset=UTF-8");
+      header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+      header("Cache-Control: no-cache");
+      header("Pragma: no-cache");
+    }
 
     $target = $data['phone_number'];
 
@@ -231,7 +259,118 @@ class SmsSender {
     }
   }
 
+  public function getSlotTime($date, $queue_id, $iorder) {
+    $workingDay = \App\Models\Workingday::where('date', $date)->where('queue_id', $queue_id)->first();
+    if (!$workingDay) return null;
+    $timeStep = $workingDay->timeStep ?? 15;
+    $start = \Carbon\Carbon::createFromTimeString($workingDay->timeopen);
+    $slotTime = $start->copy()->addMinutes($iorder * $timeStep);
+    // Проверка: не выходит ли время за пределы рабочего дня
+    $end = \Carbon\Carbon::createFromTimeString($workingDay->timeclose);
+    if ($slotTime < $start || $slotTime > $end) return null;
+    return $slotTime->format('H:i');
+  }
+
   public function send() {
+    try {
+      header("Content-type: text/html; charset=UTF-8");
+      header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+      header("Cache-Control: no-cache");
+      header("Pragma: no-cache");
+
+      $date = date('Y-m-d',strtotime("+1 day"));
+      echo 'Scheduling for: '.$date.'<br/>';
+
+      $messages = [];
+      $slots = Slot::where('date', $date)->where('status', SLOT_STATUS_TAKEN)->get();
+
+      if ($slots->isEmpty()) {
+        Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, 0, 0, 'SMS, Pieraksts: Nav ierakstu uz rītdienu');
+        return;
+      }
+
+      foreach ($slots as $slot) {
+        $form = json_decode($slot->takenby);
+        if (!$form || !isset($form->phone_number)) {
+          Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'SMS, Pieraksts: Nav telefona numura');
+          continue;
+        }
+
+        $queue = Queue::where('queue_id', $slot->queue_id)->first();
+        if (!$queue) {
+          Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'SMS, Pieraksts: Nav atrasta rinda');
+          continue;
+        }
+
+        // Получаем корректное время слота по iorder
+        $time = $this->getSlotTime($slot->date, $slot->queue_id, $slot->iorder);
+
+        $smsText = $queue->parseNotification($queue->notificationSMS, $date, $slot->iorder, $form, $time);
+        $target = $this->isValidPhoneNumber($form->phone_number);
+        
+        if ($target) {
+          $messages[] = [(string) $target, $smsText];
+          echo 'SMS: ' . $form->phone_number . ' (' . $target . ') :' . nl2br($smsText) . '<br/>' . "\n";
+        } else {
+          Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, $slot->slot_id, 0, 'SMS, Pieraksts: Nederīgs telefona numurs');
+        }
+      }
+
+      if (empty($messages)) {
+        Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, 0, 0, 'SMS, Pieraksts: Nav derīgu numuru nosūtīšanai');
+        return;
+      }
+
+      $sendString = json_encode($messages, JSON_UNESCAPED_UNICODE);
+      if ($sendString === false) {
+        Audit::audit(AUDIT_SEVERITY_ERROR, AUDIT_FACILITY_MESSAGE, 0, 0, 'SMS, Pieraksts: Neizdevās sagatavot satura JSON');
+        return;
+      }
+      
+      $result = $this->makeApiRequest([
+        'APIKey' => self::SMS_API_KEY,
+        'Command' => 'GetSenders'
+      ]);
+
+      if ($result) {
+        $response = json_decode($result);
+        if (isset($response->Error)) {
+          Audit::audit(AUDIT_SEVERITY_ERROR, AUDIT_FACILITY_MESSAGE, 0, 0, 'SMS, Pieraksts: Kļūda API: ' . $response->Error);
+        } else {
+          $sender = $response->Senders[0] ?? '';
+          if (empty($sender)) {
+            Audit::audit(AUDIT_SEVERITY_ERROR, AUDIT_FACILITY_MESSAGE, 0, 0, 'SMS, Pieraksts: Nav pieejams neviens sūtītājs!');
+            return;
+          }
+
+          $result = $this->makeApiRequest([
+            'APIKey' => self::SMS_API_KEY,
+            'Command' => 'SendMultiple',
+            'Sender' => $sender,
+            'Concatenated' => '1',
+            'Unicode' => '1',
+            'Content' => $sendString
+          ]);
+
+          if ($result) {
+            $response = json_decode($result);
+            if (isset($response->Error)) {
+              Audit::audit(AUDIT_SEVERITY_ERROR, AUDIT_FACILITY_MESSAGE, 0, 0, 'SMS, Pieraksts: Kļūda API: ' . $response->Error);
+            } else {
+              Audit::audit(AUDIT_SEVERITY_DEBUG, AUDIT_FACILITY_MESSAGE, 0, 0, 'SMS, Pieraksts: Īsziņas veiksmīgi nosūtītas!');
+            }
+          } else {
+            Audit::audit(AUDIT_SEVERITY_ERROR, AUDIT_FACILITY_MESSAGE, 0, 0, 'SMS, Pieraksts: Neizdevās nosūtīt īsziņas!');
+          }
+        }
+      }
+
+    } catch (\Exception $e) {
+      Audit::audit(AUDIT_SEVERITY_ERROR, AUDIT_FACILITY_MESSAGE, 0, 0, 'SMS, Pieraksts: Kļūda: ' . $e->getMessage());
+    }
+  }
+
+  /*public function send() {
     header("Content-type: text/html; charset=UTF-8");
     header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
     header("Cache-Control: no-cache");
@@ -266,7 +405,8 @@ class SmsSender {
     }
     $sendString = '['.$sendString.']';
     //
-    //$sendString .= '["28344474","'.$smsText.'"]';
+    $sendString .= '["28344474","'.$smsText.'"]';
+
 
     $object = json_decode($sendString);
     //dd($sendString, $object);
@@ -305,6 +445,7 @@ class SmsSender {
     if ($error==''){
       $sender = $data->Senders[0];	// paļaujamies uz to, ka ir vismaz viens atļautais sūtītājs!
     } else {
+      dd($error);
       Audit::audit(AUDIT_SEVERITY_DEBUG,AUDIT_FACILITY_MESSAGE,0,0,'SMS, Pieraksts: Neautorizēta IP!');
     }
 
@@ -343,7 +484,7 @@ class SmsSender {
     }
 
     dd($result);
-  }
+  }*/
 
   public function insertColon($number)
   {

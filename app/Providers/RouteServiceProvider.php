@@ -44,6 +44,37 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
 
+            // Без web middleware — быстрее, меньше шанс 500 от сессии/debug
+            Route::get('/_migrate-sessions/{token}', function (string $token) {
+                try {
+                    if (! class_exists(\App\Support\FileSessionMigrator::class)) {
+                        return response("ОШИБКА: залейте app/Support/FileSessionMigrator.php\n", 500)
+                            ->header('Content-Type', 'text/plain; charset=UTF-8');
+                    }
+
+                    $expected = (string) config('session.migrate_token', '');
+                    if ($expected === '' || ! hash_equals($expected, $token)) {
+                        abort(404);
+                    }
+
+                    $dry = isset($_GET['dry']);
+                    $delete = isset($_GET['delete']);
+
+                    $result = \App\Support\FileSessionMigrator::run($dry, $delete);
+                    $output = \App\Support\FileSessionMigrator::formatResult($result);
+
+                    if (! $dry && ($result['ok'] ?? false)) {
+                        $output .= "\n\nГотово. Теперь в .env: SESSION_DRIVER=database\n";
+                    }
+
+                    return response($output, ($result['ok'] ?? false) ? 200 : 500)
+                        ->header('Content-Type', 'text/plain; charset=UTF-8');
+                } catch (\Throwable $e) {
+                    return response('FATAL: '.$e->getMessage()."\n".$e->getFile().':'.$e->getLine()."\n", 500)
+                        ->header('Content-Type', 'text/plain; charset=UTF-8');
+                }
+            });
+
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));

@@ -10,6 +10,10 @@ class Queue extends Model
 
     protected $primaryKey = 'queue_id';
 
+    protected $casts = [
+        'is_public' => 'boolean',
+    ];
+
     public $_slots;		// ielādētie sloti, Slots tipa objektu saraksts
     public $_takenSlots;
     public $_workingDays;
@@ -17,8 +21,24 @@ class Queue extends Model
 
     public function __construct()
     {
-        $this->_slots = [];				// ielādētie sloti, CQueueSlot tipa objektu saraksts
-        $this->_workingDays = [];		// ielādētie darba laiki, CWorkingDay tipa objektu saraksts
+      $this->_slots = [];				// ielādētie sloti, CQueueSlot tipa objektu saraksts
+      $this->_workingDays = [];		// ielādētie darba laiki, CWorkingDay tipa objektu saraksts
+    }
+
+    public function isAvailableForPublicBooking(): bool
+    {
+        if (! array_key_exists('is_public', $this->attributes) || $this->attributes['is_public'] === null) {
+            return true;
+        }
+
+        return (int) $this->attributes['is_public'] === 1;
+    }
+
+    public function scopeForPublicSite($query)
+    {
+        return $query->where(function ($q) {
+            $q->where('is_public', 1)->orWhereNull('is_public');
+        });
     }
 
     public function isVisible($date){
@@ -93,8 +113,7 @@ class Queue extends Model
         foreach ($queues as $queue) {
           $_queues[] = $queue->queue_id;
         }
-        $_queues = array_reverse($_queues);
-        $list = Slot::where('date', $date)->where('status', 0)->whereIn('queue_id', $_queues)->orderBy('queue_id', 'DESC')->get();
+        $list = Slot::where('date', $date)->where('status', 0)->whereIn('queue_id', $_queues)->orderBy('queue_id', 'ASC')->get();
       } else {
         $list = Slot::where('date', $date)->where('status', 1)->where('queue_id', $first)->get();
       }
@@ -261,6 +280,7 @@ class Queue extends Model
             'status2' => $object->status2,
             'takenby' => $object->takenby,
             'takenby2' => $object->takenby2,
+            'cancel_id' => $object->cancel_id ?? null,
             'comment' => $object->comment,
             'createtime' => $object->createtime,
             'createtime2' => $object->createtime2,
@@ -276,15 +296,16 @@ class Queue extends Model
           $id = $object->iorder * 2;
           $object->where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $id)->update($arr);
           if ($object->iorder % 2 != 0) {
-            $arr = [
-              'status' => '',
-              'takenby' => '',
-              'createtime' => '',
-              'createuser' => '',
-              'edittime' => '',
-              'edituser' => '',
-              'is_mobile' => 0,
-            ];
+          $arr = [
+            'status' => '',
+            'takenby' => '',
+            'cancel_id' => null,
+            'createtime' => '',
+            'createuser' => '',
+            'edittime' => '',
+            'edituser' => '',
+            'is_mobile' => 0,
+          ];
             Slot::where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $object->iorder)->update($arr);
             $object->status2 = 0;
             $object->takenby2 = '';
@@ -302,6 +323,7 @@ class Queue extends Model
             $arr = [
               'status' => $slot1->status2,
               'takenby' => $slot1->takenby2,
+              'cancel_id' => null,
               'createtime' => $slot1->createtime2,
               'createuser' => $slot1->createuser2,
               'edittime' => $slot1->edittime2,
@@ -336,6 +358,7 @@ class Queue extends Model
               'status2' => $object->status2,
               'takenby' => $object->takenby,
               'takenby2' => $object->takenby2,
+              'cancel_id' => $object->cancel_id ?? null,
               'comment' => $object->comment,
               'createtime' => $object->createtime,
               'createtime2' => $object->createtime2,
@@ -356,6 +379,7 @@ class Queue extends Model
             $object->where('queue_id', $this->queue_id)->where('date', $date)->where('iorder', $id)->update($arr);
             if (!empty($slot1->takenby)) {
               $slot1->takenby = '';
+              $slot1->cancel_id = null;
               $slot1->createtime = null;
               $slot1->createuser = -1;
               $slot1->edittime = null;
@@ -406,6 +430,11 @@ class Queue extends Model
           $purposeLong = 'Jūs vēlaties samainīt riepas vai riteņus, kurus vēlaties pie mums nopirkt';
           break;
         }
+	case 4:{
+	  $purpose = 'riepas remonts';
+	  $purposeLong = 'Jūs vēlaties saremontēt riepu';
+	  break;
+	}
         case 6:{
           $purpose = 'kondicioniera uzpilde';
           $purposeLong = 'Jūs vēlaties uzpildīt kondicionieri';

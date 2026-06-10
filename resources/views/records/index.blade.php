@@ -1,7 +1,11 @@
 @extends('layouts.app')
 
 @section('body-title', 'main-schedule')
-@section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale())
+@section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-pieraksts tax-display-enabled')
+@section('meta_title', 'E-pieraksts | R1 Riepu Serviss')
+@section('meta_description', 'Online pieraksts uz riepu montāžu, balansēšanu un auto apkalpošanu Rīgā un Ulbrokā. Izvēlies datumu un brīvu laiku — R1 Riepu Serviss.')
+@section('meta_keywords', config('seo.keywords.pieraksts'))
+@section('canonical_url', route('pieraksts'))
 
 @section('content')
     <link rel="stylesheet" href="{{asset('css/schedule.css?rev=' . time())}}">
@@ -12,9 +16,7 @@
                 <div id="content-wrapper" class="right-column col-lg-12">
                 <div class="schedule-table dashboard">
                     @include('components.calendar')
-                    @php
-                      $queue_sum = \App\Models\Office::sum('queue_count');
-                    @endphp
+                    @include('records._traffic-notice')
                     @for ($day = 0; $day <= $visibleDays; $day++)
                     @php
                       $date = Date('d.m.Y', strtotime('+' . $day . ' days'));
@@ -22,15 +24,21 @@
                     @endphp
                     <h1 style="font-size: 1.7em; margin-top: 20px;">{{ $dayOfWeek }}, {{ Date('d.m.Y', strtotime('+' . $day . ' days')) }}</h1>
                     <div class="row">
-                      @foreach (\App\Models\Office::all() as $office)
-                        <div class="col-md-{{ round(12 / $queue_sum * $office->queue_count) }} grid grid-cols-{{ $office->queue_count }}" style="@if ($office->office_id == 1){{'border-right: 2px solid black;'}}@endif" data-date="{{ date('Y-m-d', strtotime($date.' 00:00:00')) }}">
+                      @foreach ($offices as $office)
+                        <div class="col-md-{{ round(12 / $queueSum * max(1, (int)($clientQueuesCountByOffice[$office->office_id] ?? 0))) }} grid grid-cols-{{ max(1, (int)($clientQueuesCountByOffice[$office->office_id] ?? 0)) }}" style="@if ($office->office_id == 1){{'border-right: 2px solid black;'}}@endif" data-date="{{ date('Y-m-d', strtotime($date.' 00:00:00')) }}">
                           @foreach ($workingDays as $workingDay)
                             @if ($workingDay->date == Date('Y-m-d', strtotime('+' . $day . ' days')))
                               @php
-                                $openTime1 = \App\Models\Workingday::select('timeopen')->where('date', $workingDay->date)->orderBy('timeopen', 'ASC')->first();
+                                $_queueRow = $queuesById[$workingDay->queue_id] ?? null;
+                              @endphp
+                              @if (!$_queueRow || !$_queueRow->isAvailableForPublicBooking())
+                                @continue
+                              @endif
+                              @php
+                                $openTime1Str = $minTimeopenByDate[$workingDay->date] ?? $workingDay->timeopen;
                                 $timeStep = $workingDay->timeStep;
                                 $opentime = \Carbon\Carbon::parse($workingDay->timeopen);
-                                $openTime1 = \Carbon\Carbon::parse($openTime1->timeopen);
+                                $openTime1 = \Carbon\Carbon::parse($openTime1Str);
                                 $closetime = \Carbon\Carbon::parse($workingDay->timeclose)->subMinutes($timeStep);
 
                                 $halfAcService = $workingDay->ac_toggle;
@@ -40,16 +48,16 @@
 
                                 $numberOfSteps = ceil($opentime->diffInMinutes($closetime) / $timeStep);
 
-                                $workingOffice = \App\Models\Office::select('office_id', 'title')->where('office_id', $workingDay->office_id)->first();
+                                $workingOffice = $officesById[$workingDay->office_id] ?? null;
                               @endphp
-                              @if ($workingOffice->office_id == $office->office_id)
+                              @if ($workingOffice && $workingOffice->office_id == $office->office_id)
                                 @if ($workingDay->weekday != 7)
                                   @if ($workingDay->is_opened == 1)
                                     <div class="table office_{{ $workingOffice->office_id }}" data-queue-id="{{ $workingDay->queue_id }}" data-allow-all="@if (is_null($halfAcService) && is_null($halfMotoService)){{'true'}}@else{{'false'}}@endif">
                                       <div class="title text-sm">{{ $workingOffice->title }}</div>
                                       @for ($i = $opentime->diffInMinutes($closetime) / $timeStep - $openTime1->diffInMinutes($closetime) / $timeStep; $i <= $numberOfSteps; $i++)
                                         @php
-                                          $slot = \App\Models\Slot::select('status', 'takenby', 'comment')->where('queue_id', $workingDay->queue_id)->where('date', $workingDay->date)->where('iorder', $i)->groupBy('iorder')->first();
+                                          $slot = $slotsByKey[\App\Models\Slot::reservationGridKey($workingDay->queue_id, $workingDay->date, $i)] ?? null;
                                           $currentTime = $opentime->copy()->addMinutes($timeStep * $i)->format('H:i');
                                         @endphp
 
@@ -122,10 +130,41 @@
                                           }
 
                                           if ($workingDay->is_half) {
-                                              if ($i % 2 == 1) {
+                                              $bothHalfServices = \App\Http\Controllers\Records\RecordController::isBothHalfServices($workingDay);
+                                              $halfRole = \App\Http\Controllers\Records\RecordController::halfSlotDisplayRole($i, $workingDay);
+                                              $halfMotoServiceSlot = $halfMotoService;
+                                              $halfAcServiceSlot = $halfAcService;
+                                              if ($bothHalfServices) {
+                                                  if ($halfRole === 'blocked') {
+                                                      $halfMotoServiceSlot = null;
+                                                  } elseif ($halfRole === 'ac') {
+                                                      $halfMotoServiceSlot = null;
+                                                  } elseif ($halfRole === 'moto') {
+                                                      $halfAcServiceSlot = null;
+                                                  }
+                                              }
+                                              $useOddHalfBranch = $bothHalfServices
+                                                  ? ($halfRole === 'blocked' || $halfRole === 'moto')
+                                                  : ($i % 2 == 1);
+                                              if ($useOddHalfBranch) {
                                                   if ($slot) {
+                                                      $halfIntervalOverride = false;
+                                                      // For half-slot schedules, odd intervals are normally not bookable.
+                                                      // If slots are pre-created in DB with status=0, ensure UI still shows them as unavailable (Aizņemts),
+                                                      // unless the "half moto" mode is enabled (then show Moto montāža).
+                                                      if ($slot->status == 0 && $slot->comment === null) {
+                                                          if (!is_null($halfMotoServiceSlot)) {
+                                                              $slotClass = 'time-free';
+                                                              $content = '<button class="status free-slot-link available-slot">Moto montāža</button>';
+                                                              $halfIntervalOverride = true;
+                                                          } else {
+                                                              $slotClass = 'time-taken-half';
+                                                              $content = '<div class="slot unavailable taken-slot disabled-slot">Aizņemts</div>';
+                                                              $halfIntervalOverride = true;
+                                                          }
+                                                      }
                                                       if (date('Y-m-d') == $workingDay->date) {
-                                                        if (\Carbon\Carbon::parse($currentTime)->subMinutes(30) >= \Carbon\Carbon::now()) {
+                                                        if (!$halfIntervalOverride && \Carbon\Carbon::parse($currentTime)->subMinutes(30) >= \Carbon\Carbon::now()) {
                                                           $slotClass = ($slot->edituser !== 0 && is_null($slot->takenby)) ? 'time-free' : 'taken-slot';
                                                           if ($slot->comment !== null && is_null($slot->takenby)) {
                                                             $slotClass = 'time-free';
@@ -139,10 +178,10 @@
                                                       if (date('Y-m-d') == $workingDay->date) {
                                                         if (\Carbon\Carbon::parse($currentTime)->subMinutes(30) >= \Carbon\Carbon::now()) {
                                                           if ($i >= 0) {
-                                                            if (!is_null($halfMotoService)) {
+                                                            if (!is_null($halfMotoServiceSlot)) {
                                                               $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
                                                             } else {
-                                                              $content = '<div class="time-status flex time-taken-half" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><div class="slot taken-slot">Aizņemts</div></div>';
+                                                              $content = '<div class="time-status flex time-taken-half" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot disabled-slot">Aizņemts</div></div>';
                                                             }
                                                           } else {
                                                             $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
@@ -155,7 +194,7 @@
                                                           }
                                                         }
                                                       } else {
-                                                          if (!is_null($halfMotoService)) {
+                                                          if (!is_null($halfMotoServiceSlot)) {
                                                               if ($i >= 0) {
                                                                 $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Moto montāža</button></div>';
                                                               } else {
@@ -163,7 +202,7 @@
                                                               }
                                                           } else {
                                                               if ($i >= 0) {
-                                                                $content = '<div class="time-status flex time-taken-half" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><div class="slot taken-slot">Aizņemts</div></div>';
+                                                                $content = '<div class="time-status flex time-taken-half" data-iorder="' . $i . '" data-moto="true"><div class="time-slot">' . $currentTime . '</div><div class="slot unavailable taken-slot disabled-slot">Aizņemts</div></div>';
                                                               } else {
                                                                 $content = '<div class="time-status flex time-closed" data-iorder="' . $i . '"></div>';
                                                               }
@@ -187,7 +226,7 @@
                                                       if (date('Y-m-d') == $workingDay->date) {
                                                         if (\Carbon\Carbon::parse($currentTime)->subMinutes(30) >= \Carbon\Carbon::now()) {
                                                           if ($i >= 0) {
-                                                            if (!is_null($halfAcService)) {
+                                                            if (!is_null($halfAcServiceSlot)) {
                                                                 $content = '<div class="time-status flex time-free" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
                                                             } else {
                                                               $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Brīvs</button></div>';
@@ -203,7 +242,7 @@
                                                           }
                                                         }
                                                       } else {
-                                                          if (!is_null($halfAcService)) {
+                                                          if (!is_null($halfAcServiceSlot)) {
                                                               if ($i >= 0) {
                                                                 $content = '<div class="time-status flex ' . $slotClass . '" data-iorder="' . $i . '" data-ac="true"><div class="time-slot">' . $currentTime . '</div><button class="status free-slot-link available-slot">Kondicioniera apkope</button></div>';
                                                               } else {
@@ -250,6 +289,7 @@
                   @endfor
                 </div>
                 <section id="mobile-main">
+                    @include('records._traffic-notice')
                     <form method="POST">
                         <input type="hidden" name="date" title="">
                         <input type="hidden" name="slotNumber" title="">
@@ -343,6 +383,10 @@
                                                     <span style="font-size: 11px;line-height: 10px;">Ja Jums pašlaik nav zināms glabāšanas talona numurs, tas nekas, atradīsim Jūsu riepas vai riteņus pēc automašīnas numura</span>
                                                 </div>
                                                 <div class="form-group">
+                                                    <label for="mobile-reg_nr"><span class="validate">*</span>Reģistrācijas numurs:</label>
+                                                    <input type="text" class="form-control" id="mobile-reg_nr" title="">
+                                                </div>
+                                                <div class="form-group">
                                                     <label for="mobile-brand"><span class="validate">*</span>Auto marka:</label>
                                                     <input id="mobile-brand" type="text" class="form-control" title="">
                                                 </div>
@@ -350,11 +394,6 @@
                                                 <div class="form-group">
                                                     <label for="mobile-model"><span class="validate">*</span>Auto modelis:</label>
                                                     <input id="mobile-model" type="text" class="form-control" title="">
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="mobile-reg_nr"><span class="validate">*</span>Reģistrācijas numurs:</label>
-                                                    <input type="text" class="form-control" id="mobile-reg_nr" title="">
                                                 </div>
 
                                                 <div class="form-group">
@@ -490,10 +529,16 @@
     {{--        </div>--}}
     {{--    </div>--}}
 
-    <div class="modal fade" id="reservation" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    @include('records._traffic-notice-modal')
+
+    @php
+      $carInfoToken = app(\App\Services\CarInfoTokenService::class)->issue(request());
+    @endphp
+    <div class="modal fade" id="reservation" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true" data-car-info-url="{{ url('/api/car-info') }}">
         <div class="modal-background" data-dissmiss="modal"></div>
         <form method="POST">
             <input type="hidden" name="_token" value="{{ csrf_token() }}" title="">
+            <input type="hidden" name="car_info_token" value="{{ $carInfoToken }}" title="">
             <input type="hidden" name="date" title="">
             <input type="hidden" name="queue_id" title="">
             <input type="hidden" name="slotNumber" title="">
@@ -512,6 +557,12 @@
                         <div class="container-fluid">
                             <div class="row">
                                 <div class="col-md-12">
+                                    <div class="form-group row">
+                                        <label for="reg_nr" class="col-sm-12 col-md-3" style="text-align: left;"><span class="validate">*</span>Reģistrācijas numurs:</label>
+                                        <div class="col-sm-12 col-md-9">
+                                            <input type="text" class="form-control" id="reg_nr" title="">
+                                        </div>
+                                    </div>
                                     <div class="form-row row">
                                         <div class="form-group col-md-3 col-sm-12 hidden-sm-down">
                                             <label for="brand"><span class="validate" style="color: red;">*</span>Auto marka un modelis:</label>
@@ -527,12 +578,6 @@
                                         </div>
                                         <div class="form-group col-md-4 col-sm-12">
                                             <input type="text" class="form-control" id="model" title="">
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="reg_nr" class="col-sm-12 col-md-3" style="text-align: left;"><span class="validate">*</span>Reģistrācijas numurs:</label>
-                                        <div class="col-sm-12 col-md-9">
-                                            <input type="text" class="form-control" id="reg_nr" title="">
                                         </div>
                                     </div>
                                     <div class="form-group services">
@@ -622,5 +667,6 @@
         </form>
     </div>
 
+<script src="{{ asset('js/simple-slot-lock.js?rev=' . time()) }}"></script>
 <script src="{{ asset('js/client.js?rev=' . time()) }}"></script>
 @endsection

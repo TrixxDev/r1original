@@ -11,9 +11,12 @@ use App\Models\Mototread;
 use App\Models\Code;
 use Cart;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use View;
+use App\Http\Controllers\ShopController;
+use Illuminate\Support\Facades\Cookie;
 
 class MotoTireController extends Controller
 {
@@ -30,12 +33,24 @@ class MotoTireController extends Controller
     public $type;
     public $availability = [];
     public $code_array = [];
+    public $code = [];
+    public $motoFilterCodes = ['F', 'R', 'TL', 'WW'];
     public $filterCount = 0;
 
     public $cartQty = 1;
 
+    private const CATALOG_PER_PAGE = 80;
+
     public function __construct(Request $request)
     {
+        if ($request->is('api/moto/*')
+            || $request->is('motociklu-riepas/search/api/*')
+            || $this->shouldSkipHeavyViewShare($request)) {
+            $this->shareCodeArray();
+            View::share('cartQty', $this->cartQty);
+            return;
+        }
+
         $this->brands = $this->tires_getBrands();
 
         $this->motoTiresD1 = Tires::getMotoTiresD1();
@@ -50,6 +65,7 @@ class MotoTireController extends Controller
         ($request->d3 == NULL) ? $this->d3 = 17 : $this->d3 = $request->d3;
 
         ($request->type) ? $this->type = $request->type : $this->type = [];
+        $this->code = self::parseCodeFilterParam($request->code ?? null);
 
         if ($request->d1 == NULL && $this->d1 == NULL) {
           $this->d1 = 120;
@@ -63,11 +79,7 @@ class MotoTireController extends Controller
           $this->d3 = 17;
         }
 
-	      $codes = Code::all();
-
-        foreach ($codes as $code) {
-            $this->code_array[$code->name] = $code->explanation;
-        }
+        $this->shareCodeArray();
 
         View::share('brands', $this->brands);
         View::share('motoTiresD1', $this->motoTiresD1);
@@ -79,7 +91,9 @@ class MotoTireController extends Controller
         View::share('d3', $this->d3);
         View::share('type', $this->type);
         View::share('types', (new Moto)->types());
-	      View::share('code_array', $this->code_array);
+        View::share('code', $this->code);
+        View::share('motoFilterCodes', $this->motoFilterCodes);
+        View::share('motoFilterCodeAliases', self::motoFilterCodeAliases());
         View::share('filterCount', $this->filterCount);
         View::share('availability', $this->availability);
         View::share('cartQty', $this->cartQty);
@@ -87,8 +101,12 @@ class MotoTireController extends Controller
 
     public function index()
     {
+        return $this->renderCatalogView(request());
+    }
 
-        return view('tires.moto.index');
+    public function tires_search(Request $request)
+    {
+        return $this->renderCatalogView($request);
     }
 
     public function tires_tread(Request $request, $brand, $tread, $tire)
@@ -117,21 +135,19 @@ class MotoTireController extends Controller
                                   ->orderBy('d4', 'ASC')
                                   ->get();
 
-        $currTire = Moto::selectRaw('moto_tires.*, moto_treads.*, moto_brands.*,
-                                 moto_brands.title as brands_title, moto_treads.title as treads_title')
-                                 ->join('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
-                                 ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
-                                 ->where('moto_tires.visible_users', '<>', 0)
-                                 ->where('moto_brands.title', $brand->title)
-                                 ->where('moto_treads.title', $tread->title)
-                                 ->where('moto_tires.tire_id', $tire)
-                                 ->first();
+        $currTire = $tires->firstWhere('tire_id', (int) $tire);
+
+        if (!$currTire) {
+            abort(404);
+        }
 
         $currBrand = Motobrand::where('brand_id', $currTire->brand_id)->first();
 
 	//dd($tire);
 	//$stock = DB::table('moto_stock')->where('tire_id', $currTire->tire_id)->first();
         $currTire->includeStock = true;
+
+        Moto::preloadStockData($tires->pluck('tire_id')->all());
 
         return view('tires.moto.mototread',
             compact('tires', 'currTire', 'currBrand', 'selectedTires')
@@ -140,310 +156,58 @@ class MotoTireController extends Controller
 
   public function api_tires(Request $request) {
     try {
-
       $html = '';
-
-      $page = ($request->page) ? (int) $request->page : 1; // Get the current page from the request, default to 1
-      $perPage = 80; // Number of items per page
-
+      $page = max(1, (int) $request->input('page', 1));
+      $perPage = self::CATALOG_PER_PAGE;
       $offset = ($page - 1) * $perPage;
+      $filterContext = $this->buildApiFilterContextFromRequest($request);
+      $selectedTires = $filterContext['selectedTires'] ?? [];
 
-      $d1 = ($request->d1 == 'Visi') ? '' : $request->d1;
-      $d2 = ($request->d2 == 'Visi') ? '' : $request->d2;
-      $d3 = ($request->d3 == 'Visi') ? '' : $request->d3;
+      $countQuery = $this->buildApiMotoBaseQuery();
+      $this->applyApiMotoCatalogFilters($countQuery, $filterContext);
 
-      $this->availability = $availability = '';
-      if (isset($request->availability)) {
-        $availability = explode(' ', $request->availability);
-        $this->availability = $availability = implode('+', $availability);
-      }
+      $countCacheKey = $this->motoApiCountCacheKey($filterContext);
+      $totalItems = Cache::remember($countCacheKey, 120, function () use ($countQuery) {
+        return (int) $countQuery->distinct()->count('moto_tires.article');
+      });
+      $totalPages = (int) ceil($totalItems / $perPage);
 
-      $currBrand = ($request->brand == 'Ražotājs') ? '' : $request->brand;
-
-      $selectedTires = explode(',', $request->selected);
-      $show_selected = $request->show_selected;
-
-      $fastsearch = $request->fastsearch;
-
-      if ($fastsearch) {
-        $splited = $this->splitInput($fastsearch);
-        $this->d1 = $d1 = $splited['d1'];
-        $this->d2 = $d2 = $splited['d2'];
-        $this->d3 = $d3 = $splited['d3'];
-      }
-
-      $selectedTypes = '';
-      if (isset($request->type)) {
-        $selectedTypes = explode(' ', $request->type);
-      }
-
-      $typeConditions = [
-        'custom' => ['moto_tires.type', '=', 'custom'],
-        'harleydavidson' => ['moto_tires.type', '=', 'harley davidson'],
-        'motocross' => ['moto_tires.type', '=', 'moto cross'],
-        'racing' => ['moto_tires.type', '=', 'racing'],
-        'scooter' => ['moto_tires.type', '=', 'scooter'],
-        'sport' => ['moto_tires.type', '=', 'sport'],
-        'sporttouring' => ['moto_tires.type', '=', 'sport touring'],
-        'trail' => ['moto_tires.type', '=', 'trail'],
-      ];
-
-      $tires = Moto::selectRaw('moto_tires.*, moto_treads.title as t_title, moto_tires.quantity as tire_quantity, moto_treads.*, (SELECT SUM(quantity) FROM moto_stock WHERE moto_stock.tire_id = moto_tires.tire_id) as stock_quantity')
-        ->join('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
-        ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
-        ->when($currBrand, function ($query) use ($currBrand) {
-          $query->where('moto_brands.slug', Str::slug($currBrand));
-        })->when($d1, function ($query) use ($d1) {
-          $query->where('d1', $d1);
-        })->when($d2, function ($query) use ($d2) {
-          $query->where('d2', $d2);
-        })->when($d3, function ($query) use ($d3) {
-          $query->where('d3', $d3);
-        })->when($availability, function ($query) use ($availability) {
-          switch ($availability) {
-            case 'green':
-              {
-                $query->where('moto_tires.quantity', '>', 0);
-                break;
-              }
-            case 'green+yellow':
-              {
-                $query->where(function ($query) {
-                  $query->where('moto_tires.quantity', '>', 0)
-                    ->orWhere(function ($query) {
-                      $query->whereRaw('moto_tires.tire_id IN (SELECT tire_id FROM moto_stock WHERE quantity > 0)')
-                            ->where('moto_tires.quantity', '=', 0);
-                    });
-                });
-                break;
-              }
-            case 'green+red':
-              {
-                $query->where(function ($query) {
-                  $query->where('moto_tires.quantity', '>', 0); // Green dot filter
-                  $query->orWhere(function ($query) {
-                    $query->where('moto_tires.quantity', '=', 0); // Red dot filter
-                    $query->whereRaw('moto_tires.tire_id NOT IN (SELECT tire_id FROM moto_stock WHERE quantity > 0)');
-                  });
-                });
-                break;
-              }
-            case 'yellow':
-              {
-                $query->where('moto_tires.quantity', '<=', 0)->having('stock_quantity', '>', 0);
-                break;
-              }
-            case 'yellow+red':
-              {
-                $query->where('moto_tires.quantity', '<=', 0)->having('stock_quantity', '>=', 0);
-                break;
-              }
-            case 'red':
-              {
-                $query->where('moto_tires.quantity', '<=', 0)->having('stock_quantity', '<=', 0);
-                break;
-              }
-          }
-        })->when($this->type, function ($query) use ($typeConditions, $selectedTypes) {
-          $query->where(function ($query) use ($selectedTypes, $typeConditions) {
-            $firstCondition = true;
-
-            foreach ($selectedTypes as $type) {
-              if (isset($typeConditions[$type])) {
-                $condition = $typeConditions[$type];
-                if ($firstCondition) {
-                  $query->where(function ($query) use ($condition) {
-                    call_user_func_array([$query, 'where'], $condition);
-                  });
-                  $firstCondition = false;
-                } else {
-                  $query->orWhere(function ($query) use ($condition) {
-                    call_user_func_array([$query, 'where'], $condition);
-                  });
-                }
-              }
-            }
-          });
-        })->when($show_selected, function ($query) use ($selectedTires) {
-          $query->whereIn('tire_id', $selectedTires);
-        })->where('moto_tires.visible_users', '<>', 0)
-        ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+      $listQuery = $this->buildApiMotoBaseQuery()
+        ->selectRaw('moto_tires.*, moto_tires.quantity as tire_quantity, moto_treads.title as t_title, moto_treads.*, '
+          . $this->partnerStockColumnSql() . ' as stock_quantity, moto_brands.title as api_brand_title, moto_brands.slug as api_brand_slug');
+      $this->applyApiMotoCatalogFilters($listQuery, $filterContext);
+      $listQuery->orderByRaw('cast(d3 as decimal(7,2)) ASC')
         ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
         ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
         ->orderBy('d4', 'ASC')
         ->orderBy('price2', 'DESC')
         ->groupBy('moto_tires.article');
 
-      $totalItems = count($tires->get());
-      $totalPages = ceil($totalItems / $perPage);
-
-      $tires = $tires->skip($offset)
-        ->take($perPage)
-        ->get();
-
-      $fullSize = '';
-      $loopIndex = 0;
+      $tires = $listQuery->skip($offset)->take($perPage)->get();
+      $this->prepareMotosForApiList($tires);
 
       if ($request->table_type === 'list') {
-        if ($tires->count() > 0) {
-
-          foreach ($tires as $index => $tire) {
-
-            $tire->includeStock = true;
-            $tire->fullName = $tire->getFullNameAttribute();
-            $tire->fullSize = $tire->getFullSizeAttribute();
-            $current_url = 'motociklu-riepa';
-            $tire->getUrl = route($current_url, [Tires::getMotoTireBrand($tire->brand_id)->title, strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]);
-            $tire->fullTitle = $tire->getTitleAttribute();
-            $tire->lisiDesc = $tire->lisiDesc($tire->li, $tire->si);
-            $tire->codeExplain = $tire->getCodeExplainAttribute();
-            $tire->dotAvailable = $tire->getDotAvailableAttribute();
-            $tire->stockAvailability = $tire->getStockAvailabilityAttribute();
-            $tire->stockCount = $tire->getStockCount();
-
-            if ($index === 0) {
-              $html .= '<span class="text-uppercase flipped-title tire-brand-name" style="color: black">Motociklu riepas</span>';
-            }
-            $index++;
-            if ($fullSize !== $tire->fullSize) {
-              $loopIndex = 0;
-              $html .= '<table id="tires-table" class="table table-striped moto-sorter tires-table table-hover tablesorter">';
-              $html .= '<thead class="tires-thead sticky-table">
-                        <tr>
-                          <th scope="col"></th>
-                          <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
-                          <th scope="col" class="hidden-sm-down text-center">Tips</th>
-                          <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
-                          <th scope="col" class="hidden-sm-down text-center">Kods</th>
-
-                          <th id="store-price-button" scope="col" class="text-center">
-                            Veikala cena
-                          </th>
-
-                          <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
-                          <th scope="col" class="hidden-sm-down text-center">Piezīmes</th>
-                          <th scope="col"></th>
-                          <th scope="col">
-                            <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
-                          </th>
-
-                        </tr>
-                        </thead>';
-              $html .= '<tbody id="tires-table-body">';
-              $html .= '<h4 class="tire-brand-name">' . $tire->fullSize . '</h4>';
-            }
-            $html .= '<tr class="tire-table-row" role="row">';
-            $html .= '<th scope="row" class="tire-table-checkbox"><input type="checkbox" value="' . $tire->tire_id . '" name="product_ids[]" class="tire-table-checkbox" title=""></th>';
-            $html .= '<td class="table-tire-name-cell"><a class="tire-table-link tippy image" data-tippy-content="<div><img data-src=\'https://r1riepas.lv/storage/moto/tread/' . $tire->tread_id . '-o.jpg\'></div>" href="' . $tire->getUrl . '" data-content="' . $tire->fullName . '" data-article="' . $tire->article . '" data-quantity="4"><div class="table-link-title">' . $tire->fullTitle . '</div></a></td>';
-
-            $html .= '<td scope="col" class="hidden-sm-down text-center">';
-            $html .= '<span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->typeDesc[1] . '</span></div>">' . $tire->motoType . '</span>';
-            $html .= '</td>';
-
-            $html .= '<td class="hidden-sm-down text-center"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px; text-align: left;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->lisiDesc . '</span></div>">' . $tire->li . $tire->si . '</span></td>';
-
-            $html .= '<td class="hidden-sm-down text-center"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px; text-align: left;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->codeExplain . '</span></div>">' . $tire->code . '</span></td>';
-            $html .= '<td id="store-price" class="text-center store-price">€ ' . $tire->price1 . '</td>';
-            $html .= '<td id="sale-price" class="text-center tire-price-red sale-price">€ ' . $tire->price2 . '</td>';
-            if ($tire->comment == 'Izpārdošana!' || $tire->priceoffer == 1) {
-              $html .= '<td class="hidden-sm-down text-center sellout">' . $tire->comment . '</td>';
-            } else {
-              $html .= '<td class="hidden-sm-down text-center">' . $tire->comment . '</td>';
-            }
-            $html .= '<td class="shopping-cart-col"><div class="clearfix atc_div text-right">';
-            if (Auth::check()) {
-              if (Auth::user()->hasRole('administrators')) {
-                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
-              } else {
-                $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
-              }
-            } else {
-              $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '"><i class="material-icons">add_shopping_cart</i></button>';
-            }
-            $html .= '</div></td>';
-            $html .= '<td class="dot-availability text-center"><span class="tippy lisi-tooltip dot ' . $tire->dotAvailable . '" data-tippy-content=\'<div style="padding: 5px; text-align: left;"><span style="color: black; font-size: 15px; line-height: 28px;">' . $tire->stockAvailability . '</span></div>\'></span></td>';
-            $html .= '</tr>';
-            $fullSize = $tire->fullSize;
-            if ($fullSize !== $tire->fullSize) {
-              $html .= '</tbody>';
-              $html .= '</table>';
-            }
-          }
+        if ($tires->isNotEmpty()) {
+          $html .= $this->renderCatalogListHtml(
+            $tires,
+            $selectedTires,
+            $page,
+            $totalPages,
+            $offset,
+            $perPage,
+            $totalItems
+          );
+        } else {
+          $html .= '<div class="container"><div class="col-md-12 mt-1 alert alert-danger">Ar šādiem parametriem nav atrasta neviena pozīcija.</div></div>';
+          $html .= $this->generatePagination($page, $totalPages, $offset, $perPage, $totalItems);
         }
-      } else if ($request->table_type === 'grid') {
-        $html .= '<div class="tire-image-container">';
-        $cbrand = '';
-        $index = 0;
-        foreach ($tires as $tire) {
-
-          $tire->fullSize = $tire->getFullSizeAttribute();
-          $current_url = 'motociklu-riepa';
-          $tire->getUrl = route($current_url, [Str::slug(Tires::getMotoTireBrand($tire->brand_id)->title), strtolower(str_replace('/', '_', $tire->t_title)), $tire->tire_id]);
-
-          $brand = $tire->fullSize;
-          $tire->includeStock = true;
-          if ($cbrand != $brand) {
-            $html .= '</div><h4 class="tire-brand-name grid-t" style="margin-left: 5px;">' . $brand;
-            if ($index == 0) {
-              $html .= ' <span class="tire-type-title">Motociklu riepas</span>';
-            }
-            $html .= '<span style="margin: 0 auto;"></span>';
-            $html .= '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">
-                                      Filtrs ()
-                                    </button></h4>
-                          <div class="row grid-ex pr-1 mobile-tire-container" style="padding-left: 5px;">';
-            $cbrand = $brand;
-          }
-          $html .= '<a href="' . $tire->getUrl . '" class="grid-view-link" data-article="' . $tire->article . '">';
-          $html .= '<div class="tire-image-card sort-order">';
-          $html .= '<div class="text-center image-grid-overflow">';
-          $html .= Image::showGrid('moto', $tire->make_id);
-          $html .= '</div>';
-
-          $html .= '<div class="tire-list-caption">';
-
-          $html .= '<div class="card-title-text"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->title . '</span></div>">' . $tire->title . '</span></div>';
-
-          $html .= '<div class="tire-tread">';
-          $html .= '<b>' . $tire->fullSize . ' </b>';
-          $html .= '<span data-toggle="tooltip" title="<span style=\'color: black\'>' . $tire->lisiDesc($tire->li, $tire->si) . '</span>">' . $tire->li . $tire->si . ' </span>';
-          $html .= '<span class="tire-image-code">' . $tire->code . '</span>';
-          $html .= '</div>';
-          $html .= '<div style="display: flex;">';
-          $html .= '<input type="checkbox" name="product_ids[]" value="' . $tire->tire_id . '" style="margin-right: 5px;">';
-          $html .= '<div class="rim-price-old" style="align-self: center;">€' . $tire->price1 . '</div>';
-          $html .= '<div class="rim-price-red" style="align-self: center;">€' . $tire->price2 . '</div>';
-          $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>">';
-          if (Auth::check()) {
-            if (\Illuminate\Support\Facades\Auth::user()->hasRole('administrators')) {
-              $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#">';
-            } else {
-              $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#blockcart-modal">';
-            }
-          } else {
-            $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal" data-info="' . $tire->tire_id . '" onclick="event.preventDefault()" data-target="#blockcart-modal">';
-          }
-          $html .= '<i class="material-icons">add_shopping_cart</i>';
-          $html .= '</button>';
-          $html .= '</span>';
-
-          $html .= '<span class="tippy lisi-tooltip grid-dot ' . $tire->dotAvailable . $tire->stockCount . '" data-tippy-content=\'<div style="padding: 5px;"><span style="color: black; font-size: 15px;">' . $tire->stockAvailability . '</span></div>\'></span>';
-          $html .= '<span class="sort-order" style="display: none;">' . $tire->dotAvailable . '</span>';
-          $html .= '</span>';
-          $html .= '</div>';
-          $html .= '</div>';
-          $html .= '</div>';
-          $html .= '</a>';
+      } elseif ($request->table_type === 'grid') {
+        $html .= $this->renderMotoGridHtml($tires, $selectedTires);
+        if ($tires->isEmpty()) {
+          $html .= '<div class="container"><div class="col-md-12 mt-1 alert alert-danger">Ar šādiem parametriem nav atrasta neviena pozīcija.</div></div>';
         }
-        $index++;
-        $html .= '</div>';
+        $html .= $this->generatePagination($page, $totalPages, $offset, $perPage, $totalItems);
       }
-
-      if ($tires->count() <= 0) {
-        $html .= '<div class="container"><div class="col-md-12 mt-1 alert alert-danger">Ar šādiem parametriem nav atrasta neviena pozīcija.</div></div>';
-      }
-
-      $html .= $this->generatePagination($page, $totalPages, $offset, $perPage, $totalItems);
 
       return response()->json($html, 200);
     } catch (\Exception $e) {
@@ -451,25 +215,87 @@ class MotoTireController extends Controller
     }
   }
 
-  public function tires_ajax(Request $request) {
+  public function tires_ajax(Request $request): \Illuminate\Http\JsonResponse
+  {
+    $tire = Moto::query()
+      ->selectRaw('moto_tires.*, moto_treads.title as t_title, moto_brands.title as api_brand_title')
+      ->join('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
+      ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
+      ->where('moto_tires.tire_id', $request->tire_id)
+      ->first();
 
-        $tire = Moto::query()->with('tread')->selectRaw('moto_tires.*, moto_tires.comment as tire_comment, moto_treads.*')
-                      ->rightJoin('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
-                      ->where('moto_tires.tire_id', $request->tire_id)
-                      ->first();
-
-        if ($request->quantity) {
-          $cart = CartController::addProduct($this->model, $tire->tire_id, $request->quantity);
-        } else {
-          $cart = CartController::addProduct($this->model, $tire->tire_id, $this->cartQty);
-        }
-
-        $quantity = Cart::count();
-        $total_sum = str_replace([',', '.00'], '', Cart::subTotal());
-        $bought = ($request->quantity) ? $request->quantity : $this->cartQty;
-
-        echo json_encode(['cart' => $cart, 'total_sum' => $total_sum, 'quantity' => $quantity, 'bought' => $bought]);
+    if (!$tire) {
+      return response()->json(['error' => 'Tire not found'], 404);
     }
+
+    Moto::preloadStockData([(int) $tire->tire_id]);
+    $dotAvailable = $tire->getDotAvailableAttribute();
+
+    // Determine the quantity to add
+    $quantity = $request->quantity ? $request->quantity : $this->cartQty;
+
+    // Retrieve the current cart from the session or cookies
+    $cart = session()->get('cart', ['products' => []]);
+
+    // Check if the tire is already in the cart
+    if (isset($cart['products'][$tire->tire_id])) {
+      // If it exists, update the quantity
+      $cart['products'][$tire->tire_id]['quantity'] += $quantity;
+    } else {
+      // If it doesn't exist, add it to the cart
+      $cart['products'][$tire->tire_id] = [
+        'id' => $tire->tire_id,
+        'name' => $tire->getFullNameAttribute(),
+        'make_id' => $tire->make_id,
+        'd1' => $tire->d1,
+        'd2' => $tire->d2,
+        'd3' => $tire->d3,
+        'type' => 'Motociklu riepa',
+        'li' => $tire->li,
+        'si' => $tire->si,
+        'url' => $request->tire_url,
+        'image' => Image::image('moto', $tire->make_id),
+        'price' => $tire->price2,
+        'quantity' => $quantity,
+        'availability' => $dotAvailable,
+        'category' => $this->model,
+      ];
+    }
+
+    // Calculate the total price
+    $totalSum = 0;
+    foreach ($cart['products'] as $product) {
+      $totalSum += $product['quantity'] * $product['price'];
+    }
+
+    $cart['total_sum'] = $totalSum;
+
+    // Save the updated cart back to the session
+    session()->put('cart', $cart);
+
+    // Optionally save to cookies
+    Cookie::queue('cart', json_encode($cart), 43200); // 30 days
+
+    // Save the cart to the database
+    ShopController::updateCartInDatabase($totalSum);
+    
+    event(new \App\Events\CartUpdated());
+
+    // Calculate the total quantity of items in the cart
+    $totalQuantity = array_sum(array_column($cart['products'], 'quantity'));
+
+    // Return the response
+    try {
+      return response()->json([
+        'cart' => $cart,
+        'total_sum' => $totalSum,
+        'quantity' => $totalQuantity,
+        'bought' => $quantity
+      ]);
+    } catch (\Exception $e) {
+      dd('Error in JSON response: ' . $e->getMessage());
+    }
+  }
 
   public function splitInput($input) {
     $input = str_replace(',', '.', $input);
@@ -521,21 +347,72 @@ class MotoTireController extends Controller
       } else {
         $this->type = '';
       }
-      return view('tires.moto.index');
+      if (in_array((string) $request->camera, ['1', 'true'], true)) {
+        $this->filterCount += 1;
+      }
+      if ($this->code) {
+        $this->filterCount += 1;
+      }
+      View::share('filterCount', $this->filterCount);
+
+      return $this->renderCatalogView($request);
+  }
+
+  /** @return string[] */
+  public static function parseCodeFilterParam(?string $code): array
+  {
+    if ($code === null || $code === '') {
+      return [];
+    }
+
+    $allowed = ['F', 'R', 'TL', 'WW'];
+    $selected = preg_split('/[\s+]+/', trim($code), -1, PREG_SPLIT_NO_EMPTY);
+
+    return array_values(array_intersect($selected, $allowed));
+  }
+
+  /** @return array<string, string[]> */
+  public static function motoFilterCodeAliases(): array
+  {
+    return [
+      'F' => ['F', 'F/R'],
+      'R' => ['R', 'F/R'],
+      'WW' => ['WW', 'SW', 'MW'],
+      'TL' => ['TL'],
+    ];
+  }
+
+  /** @return string|string[] */
+  public static function categorizeMotoFilterCode(string $code)
+  {
+    return self::motoFilterCodeAliases()[$code] ?? $code;
+  }
+
+  /** @return array<int, string[]> */
+  public static function buildCodeFilterGroups(array $selectedCodes): array
+  {
+    $groups = [];
+
+    foreach ($selectedCodes as $code) {
+      $aliases = self::categorizeMotoFilterCode($code);
+      $groups[] = is_array($aliases) ? $aliases : [$aliases];
+    }
+
+    return $groups;
   }
 
   public function get_sizes()
   {
     try {
-      $tireSizes = Moto::select(DB::raw('CONCAT(D1, D2, D3) as tire_size'))
-        ->where('moto_tires.visible_users', '<>', 0)
-        ->groupBy('moto_tires.article')
-        ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
-        ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
-        ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
-        ->distinct()
-        ->get();
-
+      $tireSizes = Cache::remember('moto_tire_sizes_v1', 300, function () {
+        return Moto::select(DB::raw('CONCAT(d1, d2, d3) as tire_size'))
+          ->where('moto_tires.visible_users', '<>', 0)
+          ->distinct()
+          ->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+          ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+          ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
+          ->get();
+      });
 
       return response()->json($tireSizes, 200);
     } catch (\Exception $e) {
@@ -545,30 +422,16 @@ class MotoTireController extends Controller
 
   public function tires_getBrands()
   {
-    $brands = [];
-
-    foreach (Motobrand::all() as $brand) {
-      $treads = Mototread::where('brand_id', $brand->brand_id)->get();
-      foreach ($treads as $tread) {
-        $tire = Moto::where('make_id', $tread->tread_id)->where('visible_users', '<>', 0)->first();
-        if (!$tire) continue;
-        $brand_id = $tread->brand_id;
-        array_push($brands, $brand_id);
-      }
-    }
-
-    $brands = array_unique($brands);
-    $brands = array_values($brands);
-    $brand_list = [];
-    foreach ($brands as $brand) {
-      $brand = Motobrand::where('brand_id', $brand)->first();
-      $brand_list[$brand->brand_id] = ucwords(strtolower($brand->title));
-    }
-
-    //      asort($brand_list);
-    asort($brand_list, SORT_NATURAL | SORT_FLAG_CASE);
-
-    return $brand_list;
+    return Cache::remember('moto_catalog_brands_v1', 300, function () {
+      return Motobrand::join('moto_treads', 'moto_brands.brand_id', '=', 'moto_treads.brand_id')
+        ->join('moto_tires', 'moto_treads.tread_id', '=', 'moto_tires.make_id')
+        ->where('moto_tires.visible_users', '<>', 0)
+        ->distinct()
+        ->pluck('moto_brands.title', 'moto_brands.brand_id')
+        ->sort(SORT_NATURAL | SORT_FLAG_CASE)
+        ->map(fn ($title) => ucwords(strtolower($title)))
+        ->all();
+    });
   }
 
   public function generatePagination($page, $totalPages, $offset, $perPage, $totalItems)
@@ -660,4 +523,503 @@ class MotoTireController extends Controller
     return $html;
   }
 
+  protected function renderCatalogView(Request $request)
+  {
+    $catalogData = $this->resolveCatalogPageData($request);
+    $code_array = $this->code_array;
+
+    return view('tires.moto.index', array_merge(compact('code_array'), $catalogData));
+  }
+
+  protected function resolveCatalogPageData(Request $request): array
+  {
+    $filterContext = $this->buildApiFilterContextFromRequest($request);
+    $page = max(1, (int) $request->input('page', 1));
+    $perPage = self::CATALOG_PER_PAGE;
+    $offset = ($page - 1) * $perPage;
+    $selectedTires = $filterContext['selectedTires'] ?? [];
+    $catalogListHtml = '';
+    $tires = collect();
+
+    $countQuery = $this->buildApiMotoBaseQuery();
+    $this->applyApiMotoCatalogFilters($countQuery, $filterContext);
+
+    $countCacheKey = $this->motoApiCountCacheKey($filterContext);
+    $totalItems = Cache::remember($countCacheKey, 120, function () use ($countQuery) {
+      return (int) $countQuery->distinct()->count('moto_tires.article');
+    });
+    $totalPages = (int) ceil($totalItems / $perPage);
+
+    $listQuery = $this->buildApiMotoBaseQuery()
+      ->selectRaw('moto_tires.*, moto_tires.quantity as tire_quantity, moto_treads.title as t_title, moto_treads.*, '
+        . $this->partnerStockColumnSql() . ' as stock_quantity, moto_brands.title as api_brand_title, moto_brands.slug as api_brand_slug');
+    $this->applyApiMotoCatalogFilters($listQuery, $filterContext);
+    $listQuery->orderByRaw('cast(d3 as decimal(7,2)) ASC')
+      ->orderByRaw('cast(d1 as decimal(7,2)) ASC')
+      ->orderByRaw('cast(d2 as decimal(7,2)) ASC')
+      ->orderBy('d4', 'ASC')
+      ->orderBy('price2', 'DESC')
+      ->groupBy('moto_tires.article');
+
+    $tires = $listQuery->skip($offset)->take($perPage)->get();
+    $this->prepareMotosForApiList($tires);
+
+    if ($tires->isNotEmpty()) {
+      $catalogListHtml = $this->renderCatalogListHtml(
+        $tires,
+        $selectedTires,
+        $page,
+        $totalPages,
+        $offset,
+        $perPage,
+        $totalItems
+      );
+    }
+
+    return compact('tires', 'catalogListHtml');
+  }
+
+  protected function buildApiFilterContextFromRequest(Request $request): array
+  {
+    $d1 = $request->input('d1', $this->d1 ?? '');
+    $d1 = ($d1 == 'Visi' || $d1 === null) ? '' : $d1;
+    $d2 = $request->input('d2', $this->d2 ?? '');
+    $d2 = ($d2 == 'Visi' || $d2 === null) ? '' : $d2;
+    $d3 = $request->input('d3', $this->d3 ?? '');
+    $d3 = ($d3 == 'Visi' || $d3 === null) ? '' : $d3;
+
+    $this->availability = $availability = '';
+    if ($request->filled('availability')) {
+      $availabilityParts = explode(' ', (string) $request->availability);
+      $this->availability = $availability = implode('+', $availabilityParts);
+    }
+
+    $brandInput = $request->input('brand', $this->currBrand ?? '');
+    $currBrand = (in_array($brandInput, ['Ražotājs', 'Visi', null, ''], true)) ? '' : $brandInput;
+
+    $selectedTires = array_values(array_filter(explode(',', (string) ($request->selected ?? ''))));
+    $topTires = $request->top;
+    $show_selected = $request->show_selected;
+    $fastsearch = $request->fastsearch;
+
+    if ($fastsearch) {
+      $splited = $this->splitInput($fastsearch);
+      $this->d1 = $d1 = $splited['d1'];
+      $this->d2 = $d2 = $splited['d2'];
+      $this->d3 = $d3 = $splited['d3'];
+    }
+
+    $selectedTypes = array_values(array_filter(
+      Moto::parseTypeFilterParam($request->type ?? null),
+      static fn ($type) => str_replace(' ', '', strtolower($type)) !== 'kamera'
+    ));
+
+    $filterCamera = in_array((string) $request->camera, ['1', 'true'], true);
+
+    $selectedCodes = self::parseCodeFilterParam($request->code ?? null);
+    $codeFilterGroups = self::buildCodeFilterGroups($selectedCodes);
+
+    $typeConditions = [
+      'custom' => ['moto_tires.type', '=', 'custom'],
+      'harleydavidson' => ['moto_tires.type', '=', 'harley davidson'],
+      'motocross' => ['moto_tires.type', '=', 'moto cross'],
+      'racing' => ['moto_tires.type', '=', 'racing'],
+      'scooter' => ['moto_tires.type', '=', 'scooter'],
+      'sport' => ['moto_tires.type', '=', 'sport'],
+      'sporttouring' => ['moto_tires.type', '=', 'sport touring'],
+      'trail' => ['moto_tires.type', '=', 'trail'],
+    ];
+
+    return [
+      'currBrand' => $currBrand,
+      'd1' => $d1,
+      'd2' => $d2,
+      'd3' => $d3,
+      'availability' => $availability,
+      'codeFilterGroups' => $codeFilterGroups,
+      'selectedTypes' => $selectedTypes,
+      'typeConditions' => $typeConditions,
+      'filterCamera' => $filterCamera,
+      'selectedTires' => $selectedTires,
+      'show_selected' => $show_selected,
+      'topTires' => $topTires,
+    ];
+  }
+
+  protected function renderCatalogListHtml(
+    $tires,
+    array $selectedTires,
+    int $page,
+    int $totalPages,
+    int $offset,
+    int $perPage,
+    int $totalItems
+  ): string {
+    $html = '<span class="text-uppercase flipped-title tire-brand-name" style="color: black">Motociklu riepas</span>';
+
+    $fullSize = '';
+    $tableOpen = false;
+
+    foreach ($tires as $index => $tire) {
+      if ($fullSize !== $tire->fullSize) {
+        if ($tableOpen) {
+          $html .= '</tbody></table>';
+        }
+
+        $tableId = $index === 0 ? ' id="tires-table"' : '';
+        $tbodyId = $index === 0 ? ' id="tires-table-body"' : '';
+        $html .= '<table' . $tableId . ' class="table table-striped moto-sorter tires-table table-hover tablesorter">';
+        $html .= '<thead class="tires-thead sticky-table">
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col" class="table-tire-name-cell">Brends / modelis</th>
+                    <th scope="col" class="hidden-sm-down text-center">Tips</th>
+                    <th scope="col" class="hidden-sm-down text-center">LI/SI</th>
+                    <th scope="col" class="hidden-sm-down text-center">Kods</th>
+                    <th id="store-price-button" scope="col" class="text-center">Veikala cena</th>
+                    <th id="store-sale-button" scope="col" class="text-center">Akcijas cena</th>
+                    <th scope="col" class="table-tire-desc-cell hidden-sm-down text-center">Piezīmes</th>
+                    <th scope="col"></th>
+                    <th scope="col">
+                      <div class="tire-table-icon icon-question" title="Pieejamība" data-toggle="tooltip"></div>
+                    </th>
+                  </tr>
+                  </thead>';
+        $html .= '<tbody' . $tbodyId . '>';
+        $html .= '<h4 class="tire-brand-name">' . e($tire->fullSize) . '</h4>';
+        $tableOpen = true;
+        $fullSize = $tire->fullSize;
+      }
+
+      $html .= $this->renderMotoListRow($tire, $selectedTires);
+    }
+
+    if ($tableOpen) {
+      $html .= '</tbody></table>';
+    }
+
+    $html .= $this->generatePagination($page, $totalPages, $offset, $perPage, $totalItems);
+
+    return $html;
+  }
+
+  protected function renderMotoListRow($tire, array $selectedTires): string
+  {
+    $isSelected = in_array((string) $tire->tire_id, $selectedTires, true);
+    $typeValue = str_replace(' ', '', strtolower($tire->type));
+
+    $html = '<tr class="tire-table-row' . ($isSelected ? ' selected' : '') . '" role="row">';
+    $html .= '<th scope="row" class="tire-table-checkbox"><input type="checkbox" value="' . $tire->tire_id . '" name="product_ids[]" class="tire-table-checkbox" title=""' . ($isSelected ? ' checked' : '')
+      . ' data-availability="' . htmlspecialchars($tire->dotAvailable) . '"'
+      . ' data-type="' . htmlspecialchars($typeValue) . '"'
+      . ' data-is-camera="' . ((int) $tire->is_camera) . '"'
+      . ' data-code="' . htmlspecialchars($tire->code) . '"'
+      . '></th>';
+    $html .= '<td class="table-tire-name-cell"><a class="tire-table-link tippy image" data-tippy-content="<div><img data-src=\'https://r1riepas.lv/storage/moto/tread/' . $tire->tread_id . '-o.jpg\'></div>" href="' . $tire->getUrl . '" data-content="' . $tire->fullName . '" data-article="' . $tire->article . '" data-quantity="1"><div class="table-link-title">' . $tire->fullTitle . '</div></a></td>';
+    $html .= '<td scope="col" class="hidden-sm-down text-center">';
+    $html .= '<span class="tippy lisi-tooltip type-explain" data-type="' . htmlspecialchars($typeValue) . '" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->typeDesc[1] . '</span></div>">' . $tire->motoType . '</span>';
+    $html .= '</td>';
+    $html .= '<td class="hidden-sm-down text-center"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px; text-align: left;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->lisiDesc . '</span></div>">' . $tire->li . $tire->si . '</span></td>';
+    $html .= '<td class="hidden-sm-down text-center"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px; text-align: left;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->codeExplain . '</span></div>">' . $tire->code . '</span></td>';
+    $html .= '<td id="store-price" class="text-center store-price">€ ' . $tire->price1 . '</td>';
+    $html .= '<td id="sale-price" class="text-center tire-price-red sale-price">€ ' . $tire->price2 . '</td>';
+
+    if ($tire->comment == 'Izpārdošana!' || $tire->priceoffer == 1) {
+      $html .= '<td class="hidden-sm-down text-center sellout">' . $tire->comment . '</td>';
+    } else {
+      $html .= '<td class="hidden-sm-down text-center">' . $tire->comment . '</td>';
+    }
+
+    $html .= '<td class="shopping-cart-col"><div class="clearfix atc_div text-right">';
+    if (Auth::check()) {
+      if (Auth::user()->hasRole('administrators')) {
+        $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#" data-info="' . $tire->tire_id . '" data-url="' . $tire->getUrl . '"><i class="material-icons">add_shopping_cart</i></button>';
+      } else {
+        $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '" data-url="' . $tire->getUrl . '"><i class="material-icons">add_shopping_cart</i></button>';
+      }
+    } else {
+      $html .= '<button class="cart-shopping-button" data-toggle="modal" data-target="#blockcart-modal" data-info="' . $tire->tire_id . '" data-url="' . $tire->getUrl . '"><i class="material-icons">add_shopping_cart</i></button>';
+    }
+    $html .= '</div></td>';
+    $html .= '<td class="dot-availability text-center"><span class="tippy lisi-tooltip dot ' . $tire->dotAvailable . '" data-tippy-content=\'<div style="padding: 5px; text-align: left;"><span style="color: black; font-size: 15px; line-height: 28px;">' . $tire->stockAvailability . '</span></div>\'></span></td>';
+    $html .= '</tr>';
+
+    return $html;
+  }
+
+  protected function renderMotoGridHtml($tires, array $selectedTires): string
+  {
+    $html = '';
+    $tiresGrouped = $tires->groupBy(function ($tire) {
+      return $tire->getFullSizeAttribute();
+    });
+
+    $html .= '<div class="tire-image-container">';
+    $index = 0;
+
+    foreach ($tiresGrouped as $fullSize => $group) {
+      $group = $group->sortBy('price2', SORT_REGULAR, true);
+      $html .= '</div><h4 class="tire-brand-name grid-t" style="margin-left: 5px;">' . $fullSize;
+      if ($index == 0) {
+        $html .= ' <span class="tire-type-title">Motociklu riepas</span>';
+      }
+      $html .= '<span style="margin: 0 auto;"></span>';
+      $html .= '<button type="button" class="btn-sm btn-outline-danger hidden-md-up sm-filter-btn" data-toggle="modal" data-target="#mobileFilterModal">Filtrs ()</button></h4><div class="row grid-ex pr-1 mobile-tire-container" style="padding-left: 5px;">';
+
+      foreach ($group as $tire) {
+        $isSelected = in_array((string) $tire->tire_id, $selectedTires, true);
+        $typeValue = str_replace(' ', '', strtolower($tire->type));
+        $cartQty = $this->cartQty;
+
+        $html .= '<a href="' . $tire->getUrl . '" class="grid-view-link"'
+          . ' data-article="' . htmlspecialchars($tire->article) . '"'
+          . ' data-content="' . htmlspecialchars($tire->fullName) . '"'
+          . ' data-quantity="' . $cartQty . '"'
+          . ' data-url="' . htmlspecialchars($tire->getUrl) . '">';
+        $html .= '<div class="tire-image-card sort-order' . ($isSelected ? ' selected' : '') . '">';
+        $html .= '<div class="text-center image-grid-overflow">';
+        $html .= Image::showGrid('moto', $tire->make_id);
+        $html .= '</div>';
+        $html .= '<div class="tire-list-caption">';
+        $html .= '<div class="card-title-text"><span class="tippy lisi-tooltip" data-tippy-content="<div style=\'padding: 5px;\'><span style=\'color: black; font-size: 15px;\'>' . $tire->title . '</span></div>">' . $tire->title . '</span></div>';
+        $html .= '<div class="tire-tread">';
+        $html .= '<b>' . $tire->fullSize . ' </b>';
+        $html .= '<span data-toggle="tooltip" title="<span style=\'color: black\'>' . $tire->lisiDesc . '</span>">' . $tire->li . $tire->si . ' </span>';
+        $html .= '<span class="tire-image-code">' . $tire->code . '</span>';
+        $html .= '</div>';
+        $html .= '<div style="display: flex;">';
+        $html .= '<input type="checkbox" name="product_ids[]" value="' . $tire->tire_id . '" class="tire-table-checkbox" style="margin-right: 5px;"'
+          . ($isSelected ? ' checked' : '')
+          . ' data-availability="' . htmlspecialchars($tire->dotAvailable) . '"'
+          . ' data-type="' . htmlspecialchars($typeValue) . '"'
+          . ' data-is-camera="' . ((int) $tire->is_camera) . '"'
+          . ' data-code="' . htmlspecialchars($tire->code) . '"'
+          . '>';
+        $html .= '<div class="rim-price-old" style="align-self: center;">€' . $tire->price1 . '</div>';
+        $html .= '<div class="rim-price-red" style="align-self: center;">€' . $tire->price2 . '</div>';
+        $html .= '<span style="margin-left: auto;" data-toggle="tooltip" title="<span style=\'color: black\'>Pievienot grozam</span>">';
+
+        if (Auth::check()) {
+          if (Auth::user()->hasRole('administrators')) {
+            $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal"'
+              . ' data-info="' . $tire->tire_id . '"'
+              . ' data-url="' . htmlspecialchars($tire->getUrl) . '"'
+              . ' data-article="' . htmlspecialchars($tire->article) . '"'
+              . ' data-content="' . htmlspecialchars($tire->fullName) . '"'
+              . ' data-quantity="' . $cartQty . '"'
+              . ' onclick="event.preventDefault()" data-target="#">';
+          } else {
+            $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal"'
+              . ' data-info="' . $tire->tire_id . '"'
+              . ' data-url="' . htmlspecialchars($tire->getUrl) . '"'
+              . ' data-article="' . htmlspecialchars($tire->article) . '"'
+              . ' data-content="' . htmlspecialchars($tire->fullName) . '"'
+              . ' data-quantity="' . $cartQty . '"'
+              . ' onclick="event.preventDefault()" data-target="#blockcart-modal">';
+          }
+        } else {
+          $html .= '<button class="grid-buy-btn cart-shopping-button" data-toggle="modal"'
+            . ' data-info="' . $tire->tire_id . '"'
+            . ' data-url="' . htmlspecialchars($tire->getUrl) . '"'
+            . ' data-article="' . htmlspecialchars($tire->article) . '"'
+            . ' data-content="' . htmlspecialchars($tire->fullName) . '"'
+            . ' data-quantity="' . $cartQty . '"'
+            . ' onclick="event.preventDefault()" data-target="#blockcart-modal">';
+        }
+
+        $html .= '<i class="material-icons">add_shopping_cart</i>';
+        $html .= '</button>';
+        $html .= '</span>';
+        $html .= '<span class="tippy lisi-tooltip grid-dot ' . $tire->dotAvailable . '" data-color="' . htmlspecialchars($tire->dotAvailable) . '" data-tippy-content=\'<div style="padding: 5px;"><span style="color: black; font-size: 15px;">' . $tire->stockAvailability . '</span></div>\'></span>';
+        $html .= '<span class="sort-order" style="display: none;">' . $tire->dotAvailable . '</span>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '</a>';
+      }
+
+      $index++;
+    }
+
+    $html .= '</div>';
+
+    return $html;
+  }
+
+  protected function shouldSkipHeavyViewShare(Request $request): bool
+  {
+    return $request->routeIs('motociklu-riepa')
+      || $request->routeIs('motociklu-riepas-ajax');
+  }
+
+  protected function shareCodeArray(): void
+  {
+    if (!empty($this->code_array)) {
+      View::share('code_array', $this->code_array);
+      return;
+    }
+
+    foreach (Code::all() as $code) {
+      $this->code_array[$code->name] = $code->explanation;
+    }
+
+    View::share('code_array', $this->code_array);
+  }
+
+  protected function applyPartnerStockJoin($query)
+  {
+    return $query->leftJoinSub(
+      DB::table('moto_stock')
+        ->selectRaw('tire_id, SUM(CASE WHEN quantity >= 1 THEN quantity ELSE 0 END) as partner_stock')
+        ->groupBy('tire_id'),
+      'moto_stock_totals',
+      'moto_tires.tire_id',
+      '=',
+      'moto_stock_totals.tire_id'
+    );
+  }
+
+  protected function partnerStockColumnSql(): string
+  {
+    return 'COALESCE(moto_stock_totals.partner_stock, 0)';
+  }
+
+  protected function buildApiMotoBaseQuery()
+  {
+    return $this->applyPartnerStockJoin(
+      Moto::query()->from('moto_tires')
+        ->join('moto_treads', 'moto_tires.make_id', '=', 'moto_treads.tread_id')
+        ->join('moto_brands', 'moto_treads.brand_id', '=', 'moto_brands.brand_id')
+        ->where('moto_tires.visible_users', '<>', 0)
+    );
+  }
+
+  protected function applyApiMotoCatalogFilters($query, array $filters): void
+  {
+    $partnerStock = $this->partnerStockColumnSql();
+
+    $query->when($filters['currBrand'] ?? '', function ($query) use ($filters) {
+      $query->where('moto_brands.slug', Str::slug($filters['currBrand']));
+    })->when($filters['d1'] ?? '', function ($query) use ($filters) {
+      $query->where('moto_tires.d1', $filters['d1']);
+    })->when($filters['d2'] ?? '', function ($query) use ($filters) {
+      $query->where('moto_tires.d2', $filters['d2']);
+    })->when($filters['d3'] ?? '', function ($query) use ($filters) {
+      $query->where('moto_tires.d3', $filters['d3']);
+    })->when($filters['filterCamera'] ?? false, function ($query) {
+      $query->where('moto_tires.is_camera', 1);
+    })->when($filters['codeFilterGroups'] ?? [], function ($query) use ($filters) {
+      foreach ($filters['codeFilterGroups'] as $aliasGroup) {
+        $query->where(function ($query) use ($aliasGroup) {
+          foreach ($aliasGroup as $alias) {
+            $query->orWhere('moto_tires.code', 'like', '%' . $alias . '%');
+          }
+        });
+      }
+    })->when($filters['availability'] ?? '', function ($query) use ($filters, $partnerStock) {
+      switch ($filters['availability']) {
+        case 'green':
+          $query->where('moto_tires.quantity', '>', 0);
+          break;
+        case 'green+yellow':
+          $query->where(function ($query) use ($partnerStock) {
+            $query->where('moto_tires.quantity', '>', 0)
+              ->orWhere(function ($query) use ($partnerStock) {
+                $query->where('moto_tires.quantity', '<=', 0)
+                  ->whereRaw("{$partnerStock} > 0");
+              });
+          });
+          break;
+        case 'green+red':
+          $query->where(function ($query) use ($partnerStock) {
+            $query->where('moto_tires.quantity', '>', 0)
+              ->orWhere(function ($query) use ($partnerStock) {
+                $query->where('moto_tires.quantity', '<=', 0)
+                  ->whereRaw("{$partnerStock} <= 0");
+              });
+          });
+          break;
+        case 'yellow':
+          $query->where('moto_tires.quantity', '<=', 0)->whereRaw("{$partnerStock} > 0");
+          break;
+        case 'yellow+red':
+          $query->where('moto_tires.quantity', '<=', 0);
+          break;
+        case 'red':
+          $query->where('moto_tires.quantity', '<=', 0)->whereRaw("{$partnerStock} <= 0");
+          break;
+      }
+    });
+
+    $selectedTypes = $filters['selectedTypes'] ?? [];
+    $typeConditions = $filters['typeConditions'] ?? [];
+    if ($selectedTypes !== []) {
+      $query->where(function ($query) use ($selectedTypes, $typeConditions) {
+        $firstCondition = true;
+        foreach ($selectedTypes as $type) {
+          $typeKey = str_replace(' ', '', strtolower($type));
+          if (!isset($typeConditions[$typeKey])) {
+            continue;
+          }
+          $condition = $typeConditions[$typeKey];
+          if ($firstCondition) {
+            $query->where(function ($query) use ($condition) {
+              call_user_func_array([$query, 'where'], $condition);
+            });
+            $firstCondition = false;
+          } else {
+            $query->orWhere(function ($query) use ($condition) {
+              call_user_func_array([$query, 'where'], $condition);
+            });
+          }
+        }
+      });
+    }
+
+    $query->when($filters['show_selected'] ?? null, function ($query) use ($filters) {
+      $query->whereIn('moto_tires.tire_id', $filters['selectedTires'] ?? []);
+    })->when($filters['topTires'] ?? null, function ($query) {
+      $query->where('moto_tires.top', 1);
+    });
+  }
+
+  protected function motoApiCountCacheKey(array $filters): string
+  {
+    return 'moto_api_total_v1_' . Cache::get('moto_api_count_version', 1) . '_' . md5(json_encode($filters));
+  }
+
+  protected function buildMotoUrl(string $brandTitle, string $treadTitle, int $tireId): string
+  {
+    return '/motociklu-riepas/'
+      . strtolower($brandTitle) . '/'
+      . str_replace('/', '_', $treadTitle) . '/'
+      . $tireId;
+  }
+
+  protected function prepareMotosForApiList($tires): void
+  {
+    Moto::preloadStockData($tires->pluck('tire_id')->all());
+
+    foreach ($tires as $tire) {
+      $this->hydrateMotoForApiResponse($tire);
+    }
+  }
+
+  private function hydrateMotoForApiResponse(Moto $tire): void
+  {
+    $tire->includeStock = true;
+    $tire->fullTitle = $tire->getTitleAttribute();
+    $tire->fullSize = $tire->getFullSizeAttribute();
+    $tire->fullName = $tire->fullTitle . ' ' . $tire->fullSize . ' ' . $tire->code . ' ' . $tire->li . $tire->si;
+    $tire->getUrl = $this->buildMotoUrl($tire->api_brand_title, $tire->t_title, (int) $tire->tire_id);
+    $tire->setAttribute('hydrated_cart_link', $tire->getUrl);
+    $tire->lisiDesc = $tire->lisiDesc($tire->li, $tire->si);
+    $tire->codeExplain = $tire->getCodeExplainAttribute();
+    $dotAvailable = $tire->getDotAvailableAttribute();
+    $tire->dotAvailable = $dotAvailable;
+    $tire->stockAvailability = $tire->resolveStockAvailability($dotAvailable);
+    $tire->stockCount = $tire->getStockCount();
+  }
+
 }
+

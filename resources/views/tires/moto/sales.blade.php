@@ -6,18 +6,21 @@
 
         @php
           $cbrand = '';
-          $index = 0;
         @endphp
         @foreach ($tires as $tire)
+          @if (empty($tire->sale_title))
+            @continue
+          @endif
           @php
-            if (!$tire->tread) continue;
             $brand = $tire->fullSize;
-            $tire->includeStock = true;
-            if ($cbrand!=$brand){
-            echo '<h4 class="tire-brand-name">' . $cbrand . '</h4>';
           @endphp
-
-          {{--LIST VIEW--}}
+          @if ($cbrand != $brand)
+            @if ($cbrand !== '')
+              </tbody>
+            </table>
+            @endif
+            @php $cbrand = $brand; @endphp
+            <h4 class="tire-brand-name">{{ $brand }}</h4>
           <table id="tires-table" class="table table-striped moto-sorter tires-table table-hover tablesorter">
             <thead class="tires-thead sticky-table">
             <tr>
@@ -38,12 +41,7 @@
             </tr>
             </thead>
             <tbody id="tires-table-body">
-            @php
-              $cbrand = $brand;
-              $stripe = 1;
-            }
-            @endphp
-            @if ($loop->last) <h4 class="tire-brand-name">{!! $brand !!}</h4> @endif
+          @endif
 
             <tr class="tire-table-row">
               <th scope="row" class="tire-table-checkbox">
@@ -54,26 +52,26 @@
               <td class="table-tire-name-cell" data-link="{{ route('motociklu-riepas') }}">
                 <a class="tire-table-link tippy image"
                    data-tippy-content="<div><img data-src='{{ App\Helper\Image::showAd('moto', $tire->make_id) }}'></div>"
-                   href="{{ route('motociklu-riepa', [strtolower(\Tires::getMotoTireBrand($tire->tread->brand_id)->title), strtolower(str_replace('/', '_', $tire->tread->title)), $tire->tire_id]) }}"
-                   data-content="{{ $tire->fullName }}" data-article="{{ $tire->article }}" data-quantity="{{ $cartQty }}">
-                  <div class="table-link-title">{{ $tire->title }}</div>
+                   href="{{ route('motociklu-riepa', [$tire->brand_slug, $tire->tread_slug, $tire->tire_id]) }}"
+                   data-content="{{ $tire->sale_full_name }}" data-article="{{ $tire->article }}" data-quantity="{{ $cartQty }}">
+                  <div class="table-link-title">{{ $tire->sale_title }}</div>
                 </a>
               </td>
 
               <td class="hidden-sm-down text-center">
                           <span data-toggle="tooltip"
-                                title="<span style='color: black'>@if (isset($tire->typeDesc[1])) {{ $tire->typeDesc[1] }} @endif</span>">{{ $tire->motoType }}
+                                title="<span style='color: black'>{{ $tire->sale_type_desc }}</span>">{{ $tire->sale_moto_type }}
                               </span>
               </td>
 
               <td class="hidden-sm-down text-center">
                           <span data-toggle="tooltip"
-                                title="<span style='color: black'>{{ $tire->lisiDesc($tire->li, $tire->si) }}</span>">{{ $tire->li . $tire->si }}
+                                title="<span style='color: black'>{{ $tire->sale_lisi_desc }}</span>">{{ $tire->li . $tire->si }}
                           </span>
               </td>
 
               <td class="hidden-sm-down text-center">
-                            <span data-toggle="tooltip" title="{!! $tire->codeExplain !!}" class="hidden-sm-down table-cell prod-code">{{ $tire->code }}
+                            <span data-toggle="tooltip" title="{!! $tire->code_explain !!}" class="hidden-sm-down table-cell prod-code">{{ $tire->code }}
                                     </span>
 
               </td>
@@ -94,20 +92,19 @@
 
               <td class="dot-availability text-center">
 
-                            <span class="dot {{ $tire->dotAvailable }}" data-toggle="tooltip"
+                            <span class="dot {{ $tire->sale_dot_available }}" data-toggle="tooltip"
                                   data-html="true"
-                                  title="{{ $tire->stockAvailability }}">
-                              <span class="sort-order">{{ $tire->dotAvailable }}</span>
+                                  title="{{ $tire->sale_stock_availability }}">
+                              <span class="sort-order">{{ $tire->sale_dot_available }}</span>
                             </span>
               </td>
 
             </tr>
-            @php
-              $index++;
-            @endphp
             @endforeach
+            @if ($cbrand !== '')
             </tbody>
           </table>
+            @endif
       </div>
     </div>
 </section>

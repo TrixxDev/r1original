@@ -2,217 +2,457 @@
 
 @section('content')
 
-{{--  <pre>{{ json_encode($order, JSON_PRETTY_PRINT) }}</pre>--}}
+  @include('admin.components.tippy-styles')
 
-{{--  <div class="container">--}}
-{{--    <div class="row">--}}
-{{--      <div class="col-4 float-right">Nosaukums</div>--}}
-{{--      <div class="col-6">Labs nosaukums</div>--}}
-{{--    </div>--}}
-{{--  </div>--}}
-{{--  <pre>--}}
-{{--    {{ json_encode(unserialize($order->info), JSON_PRETTY_PRINT) }}--}}
-{{--  </pre>--}}
+  <style>
+    .order-container {
+      background: #f8f9fa;
+      min-height: 100vh;
+      padding: 24px 0;
+    }
 
+    .order-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      border: 2px solid #e9ecef;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .order-header {
+      background: white;
+      color: #212529;
+      padding: 32px;
+      border-bottom: 1px solid #e9ecef;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .order-header h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      color: #212529;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .order-header .order-id {
+      background: #007bff;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      font-size: 12px;
+      display: inline-block;
+    }
+
+    .order-content {
+      padding: 32px;
+    }
+
+    .form-section {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid #e9ecef;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .form-section h3,
+    .form-section h4 {
+      margin: 0 0 20px 0;
+      color: #212529;
+      font-weight: 600;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #007bff;
+    }
+
+    .form-section h4 {
+      font-size: 18px;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: #495057;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .form-control,
+    .custom-select {
+      border: 2px solid #dee2e6;
+      border-radius: 4px;
+      padding: 10px 12px;
+      transition: border-color 0.15s ease-in-out;
+      background: white;
+      font-size: 14px;
+      color: #495057;
+      min-height: 42px;
+      line-height: 1.5;
+    }
+
+    .form-control:focus,
+    .custom-select:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+      outline: none;
+    }
+
+    .form-control:disabled {
+      background: #f8f9fa;
+      color: #6c757d;
+    }
+    
+    .custom-select option {
+      color: #495057;
+      background-color: white;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+    
+    .custom-select option:checked {
+      background-color: #007bff;
+      color: white;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 32px;
+      padding: 24px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .btn-group-compact {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+
+    .btn {
+      border-radius: 4px;
+      padding: 10px 20px;
+      font-weight: 500;
+      font-size: 14px;
+      transition: all 0.15s ease-in-out;
+      border: 1px solid transparent;
+    }
+
+    .btn-compact {
+      border-radius: 4px;
+      padding: 6px 12px;
+      font-weight: 500;
+      font-size: 12px;
+      transition: all 0.15s ease-in-out;
+      border: 1px solid transparent;
+    }
+
+    .btn-primary {
+      background: #007bff;
+      color: white;
+      border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+      background: #0069d9;
+      border-color: #0062cc;
+    }
+
+    .btn-secondary {
+      background: #6c757d;
+      color: white;
+      border-color: #6c757d;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268;
+      border-color: #545b62;
+    }
+
+    .alert {
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .alert-success {
+      background: #d4edda;
+      color: #155724;
+      border-color: #c3e6cb;
+    }
+
+    .alert-danger {
+      background: #f8d7da;
+      color: #721c24;
+      border-color: #f5c6cb;
+    }
+
+    .contact-link {
+      color: #007bff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .contact-link:hover {
+      color: #0056b3;
+      text-decoration: underline;
+    }
+
+    .order-details {
+      background: #f8f9fa;
+      border-radius: 4px;
+      padding: 16px;
+      margin-top: 8px;
+    }
+
+    .order-details h5 {
+      margin: 0 0 12px 0;
+      color: #495057;
+      font-weight: 600;
+    }
+
+    .order-details p {
+      margin: 4px 0;
+      color: #6c757d;
+      font-size: 14px;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid transparent;
+    }
+
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+      border-color: #ffeaa7;
+    }
+
+    .status-processing {
+      background: #cce5ff;
+      color: #004085;
+      border-color: #99d6ff;
+    }
+
+    .status-completed {
+      background: #d4edda;
+      color: #155724;
+      border-color: #c3e6cb;
+    }
+
+    .status-cancelled {
+      background: #f8d7da;
+      color: #721c24;
+      border-color: #f5c6cb;
+    }
+
+    .gap-3 {
+      gap: 1rem;
+    }
+
+    @media (max-width: 768px) {
+      .order-content {
+        padding: 20px;
+      }
+      
+      .order-header {
+        padding: 24px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      
+      .order-header h1 {
+        font-size: 20px;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+      
+      .btn-group-compact {
+        align-self: flex-end;
+      }
+    }
+  </style>
+
+  <div class="order-container">
     <div class="container">
       @if (session('success'))
         <div class="alert alert-success">
-          {{ session('success') }}
+          <i class="fa-solid fa-check-circle"></i> {{ session('success') }}
         </div>
       @endif
       @if (session('danger'))
         <div class="alert alert-danger">
-          {{ session('danger') }}
+          <i class="fa-solid fa-exclamation-circle"></i> {{ session('danger') }}
         </div>
       @endif
-      <div class="form-group row">
-          <div class="col-sm-3"></div>
-          <div class="col-sm-6">
-              <button type="submit" form="orderUpdate" class="btn btn-primary ml-1 float-right">Saglabāt</button>
-              <a href="{{ route('admin.orders') }}" class="btn btn-secondary float-right">Atgriezties</a>
+
+      <div class="order-card">
+        <div class="order-header">
+          <h1>
+            <i class="fa-solid fa-shopping-cart"></i>
+            Pasūtījuma informācija
+            <span class="order-id">#{{ $order->order_number }}</span>
+          </h1>
+          <div class="btn-group-compact">
+            <button type="submit" form="orderUpdate" class="btn btn-primary btn-compact">
+              <i class="fa-solid fa-save"></i> Saglabāt
+            </button>
+            <a href="{{ route('admin.orders') }}" class="btn btn-secondary btn-compact">
+              <i class="fa-solid fa-arrow-left"></i> Atgriezties
+            </a>
           </div>
-          <div class="col-sm-3"></div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label text-left text-md-right">
-          <h3>Pasūtījuma informācija</h3>
-        </label>
-        <div class="col-md-6">
-
-        </div>
-        <div class="col-md-3 form-control-comment">
-        </div>
-      </div>
-      <form id="orderUpdate" method="POST" action="{{ route('admin.order.update', $order->id) }}">
-      @csrf
-      <div class="form-group row">
-          <label class="col-md-3 form-control-label text-left text-md-right">
-              Komentāri
-          </label>
-          <div class="col-md-6 col-sm">
-              <textarea name="admin_info" class="form-control" cols="30" rows="5">@if (!empty($order->admin_info)){{ $order->admin_info }}@endif</textarea>
-          </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label text-left text-md-right">
-          Rēķina numurs
-        </label>
-        <div class="col-md-6">
-          <input class="form-control" disabled="" name="bill_number" type="text" value="{{$order->id}}">
-        </div>
-        <div class="col-md-3 form-control-comment">
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label text-left text-md-right">
-          Pasūtīšanas datums
-        </label>
-        <div class="col-md-6">
-          <input class="form-control" name="order_date" type="text" disabled value="{{$order->created_at}}">
-        </div>
-        <div class="col-md-3 form-control-comment">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label text-left text-md-right">
-          Statuss
-        </label>
-        <div class="col-md-6">
-{{--          <input class="form-control" name="status" type="text" value="{{$order->status}}" required="">--}}
-          <select id="select" name="order_status" class="custom-select">
-            @foreach ($status_enum as $status_id => $status_name)
-              @if ($loop->first) @continue @endif
-              <option value="{{ $status_id }}" @if ($order->status == $status_id) selected="" @endif>{{ $status_name }}</option>
-            @endforeach
-          </select>
-        </div>
-        <div class="col-md-3 form-control-comment">
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label text-left text-md-right">
-          Kopsumma
-        </label>
-        <div class="col-md-6">
-          <input class="form-control" name="total" type="text" disabled value="{{ $item_sum }} &euro; - {{ $pay_enum[$order->payment] }}">
-        </div>
-        <div class="col-md-3 form-control-comment">
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label text-left text-md-right">
-          <h4>Pamatinformācija</h4>
-        </label>
-        <div class="col-md-6">
-
-        </div>
-        <div class="col-md-3 form-control-comment">
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label text-left text-md-right">
-          Vārds, uzvārds
-        </label>
-        <div class="col-md-6">
-          <input class="form-control" name="name_suraname" type="text" value="{{$userData->name . " " . $userData->surname}}">
-        </div>
-        <div class="col-md-3 form-control-comment">
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label text-left text-md-right">
-          E-pasts
-        </label>
-        <div class="col-md-6">
-          <a href="mailto:{{$userData->email}}" class="form-control" style="color: #321fdb">{{$userData->email}}</a>
-        </div>
-        <div class="col-md-3 form-control-comment">
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label text-left text-md-right">
-          Tālrunis
-        </label>
-        <div class="col-md-6">
-          <input class="form-control" name="phone_number" type="text" value="{{$userData->phone_number}}">
-        </div>
-        <div class="col-md-3 form-control-comment">
-        </div>
-      </div>
-
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label text-left text-md-right">
-          Saņemšanas vieta
-        </label>
-	<div class="col-md-6 col-sm">
-	  <select id="select" name="delivery_address" class="custom-select">
-	    @foreach ($offices as $office)
-            <option value="{{ $office->office_id }}" @if (isset($userData->fitting_address) && $userData->fitting_address == $office->office_id) selected="" @endif>{{ $office->shipping }}</option>
-	    @endforeach
-	    @if (isset($userData->shipping_city))
-        @switch($userData->shipping_city)
-          @case(1)
-          @case(2)
-          @case(3)
-            <option value="3" selected="">Piegāde</option>
-          @break
-          @default
-            <option value="3">Piegāde</option>
-        @endswitch
-	    @else
-	    	<option value="3">Piegāde</option>
-	    @endif
-	  </select>
-<!--          <input class="form-control" name="delivery_adress" type="text" value="">-->
         </div>
 
-        <div class="col-md-3 form-control-comment">
-        </div>
+        <div class="order-content">
+          <form id="orderUpdate" method="POST" action="{{ route('admin.order.update', $order->id) }}">
+            @csrf
+            
+            <div class="form-section">
+              <h3><i class="fa-solid fa-edit"></i> Admin piezīmes</h3>
+              <div class="form-group">
+                <label class="form-label">Admin piezīmes</label>
+                <textarea name="admin_info" class="form-control" cols="30" rows="5" placeholder="Ievadiet admin piezīmes...">{{ $order->admin_info }}</textarea>
+              </div>
+            </div>
 
-      </div>
-      <div class="form-group row" style="display: none;">
-       <label class="col-md-3 form-control-label text-left text-md-right">
-            Piegādes adrese
-       </label>
-       <div class="col-md-2 col-sm">
-        <select id="select" class="custom-select" name="shipping_city">
-          <option value="1" @if (isset($userData->shipping_city) && $userData->shipping_city == 1) selected="" @endif>Rīga</option>
-          <option value="3" @if (isset($userData->shipping_city) && $userData->shipping_city == 3) selected="" @endif>Cits</option>
-        </select>
-       </div>
-       <div class="col-md-4">
-        <input class="form-control" name="shipping_address" type="text" @if (isset($userData->shipping_address)) value="{{ $userData->shipping_address }}" @endif>
-       </div>
-      </div>
+            <div class="form-section">
+              <h3><i class="fa-solid fa-info-circle"></i> Pasūtījuma informācija</h3>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Rēķina numurs</label>
+                    <input class="form-control" disabled type="text" value="{{ $order->order_number }}">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Pasūtīšanas datums</label>
+                    <input class="form-control" type="text" disabled value="{{ $order->created_at }}">
+                  </div>
+                </div>
+              </div>
 
-      <div class="form-group row">
-        <label class="col-md-3 form-control-label text-left text-md-right">
-          Piezīmes
-        </label>
-        <div class="col-md-6 col-sm">
-          <textarea name="notes" class="form-control" cols="30" rows="5">@if (!empty($userData->notes)){{ $userData->notes }}@endif</textarea>
-        </div>
-      </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Statuss</label>
+                    <select name="order_status" class="custom-select">
+                      @foreach ($status_enum as $status_id => $status_name)
+                        <option value="{{ $status_id }}" @if ($order->order_status == $status_id) selected @endif>{{ $status_name }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Kopsumma</label>
+                    <input class="form-control" type="text" disabled value="{{ $item_sum }} € @if(isset($display_payment)) - {{ $display_payment }} @elseif(isset($order->payment_method) && isset($pay_enum[$order->payment_method])) - {{ $pay_enum[$order->payment_method] }} @endif">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4><i class="fa-solid fa-user"></i> Pamatinformācija</h4>
+              
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">Vārds, uzvārds</label>
+                    <input class="form-control" name="customer_name" type="text" value="{{ trim($order->customer_name . ' ' . $order->customer_surname) }}" placeholder="Ievadiet vārdu un uzvārdu...">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="form-label">E-pasts</label>
+                    <div class="form-control" style="background: #f8f9fa; border: 1px solid #e9ecef; display: flex; align-items: center; min-height: 42px;">
+                      <a href="mailto:{{ $order->email }}" class="contact-link" style="display: flex; align-items: center; gap: 8px; text-decoration: none;">
+                        <i class="fa-solid fa-envelope"></i> {{ $order->email }}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Tālrunis</label>
+                <input class="form-control" name="phone_number" type="text" value="{{ $order->phone_country_code }} {{ $order->phone_number }}" placeholder="+371 XXXXXXXX">
+              </div>
+            </div>
+
+            <div class="form-section">
+              <h4><i class="fa-solid fa-truck"></i> Piegāde un saņemšana</h4>
+              
+              <div class="form-group">
+                <label class="form-label">Saņemšanas vieta</label>
+                <select name="delivery_method" class="custom-select" style="color: black; padding: 0 10px!important;" disabled>
+                  @foreach ($offices as $office)
+                    <option value="{{ $office->office_id }}" @if ($order->mounting_office == $office->office_id) selected @endif>{{ $office->shipping }}</option>
+                  @endforeach
+                  <option value="3" @if ($order->delivery_method == 2) selected @endif>Piegāde</option>
+                </select>
+              </div>
+
+	      @php
+                $isDeliverySelected = (int) ($order->delivery_method ?? 0) === 2;
+              @endphp
+              <div class="row" data-delivery-fields @if(!$isDeliverySelected) style="display: none;" @endif>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label class="form-label">Pilsēta</label>
+                    <select name="delivery_city" class="custom-select" style="color: black; padding: 0 10px!important;" disabled>
+                      <option value="1" @if ($order->delivery_city == 1) selected @endif>Rīga</option>
+                      <option value="3" @if ($order->delivery_city == 3) selected @endif>Cits</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label class="form-label">Piegādes adrese</label>
+                    <input class="form-control" name="delivery_address" type="text" value="{{ $order->delivery_address }}" placeholder="Ievadiet pilnu adresi..." style="background-color: #d8dbe0; color: black; padding: 0 10px!important; cursor: text;" disabled>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Piezīmes</label>
+                <textarea name="notes" class="form-control" cols="30" rows="3" placeholder="Papildu piezīmes par pasūtījumu...">@if (!empty($userData->notes)){{ $userData->notes }}@endif</textarea>
+              </div>
+            </div>
 
 
-{{--      @php var_dump($userData); @endphp--}}
 
       @php
-        if (property_exists($userData,'company_registration_number')){
-          $hasCompanyData = true;
-        } else {
-          $hasCompanyData = false;
-        }
+        $hasCompanyData = property_exists($userData, 'company_registration_number');
       @endphp
-
-{{--      @if ($hasCompanyData)--}}
 
         <div>
 
@@ -232,11 +472,7 @@
             Reģistrācijas Nr.
           </label>
           <div class="col-md-6">
-            <input class="form-control"
-                   name="company_registration_number"
-                   type="text"
-                   value="@if($hasCompanyData){{$userData->company_registration_number}}@endif"
-            >
+            <input class="form-control" name="company_reg_nr" type="text" value="{{ $order->company_reg_nr }}">
           </div>
           <div class="col-md-3 form-control-comment">
           </div>
@@ -247,11 +483,7 @@
             PVN numurs
           </label>
           <div class="col-md-6">
-            <input class="form-control"
-                   name="company_pvn_number"
-                   type="text"
-                   value="@if($hasCompanyData){{$userData->company_pvn_number}}@endif"
-            >
+            <input class="form-control" name="company_pvn_nr" type="text" value="{{ $order->company_pvn_nr }}">
           </div>
           <div class="col-md-3 form-control-comment">
           </div>
@@ -262,11 +494,7 @@
             Uzņēmuma nosaukums
           </label>
           <div class="col-md-6">
-            <input class="form-control"
-                   name="company_name"
-                   type="text"
-                   value="@if($hasCompanyData){{$userData->company_name}}@endif"
-            >
+            <input class="form-control" name="company_name" type="text" value="{{ $order->company_name }}">
           </div>
           <div class="col-md-3 form-control-comment">
           </div>
@@ -277,11 +505,7 @@
             Juridiskā adrese
           </label>
           <div class="col-md-6">
-            <input class="form-control"
-                   name="company_address"
-                   type="text"
-                   value="@if($hasCompanyData){{$userData->company_address}}@endif"
-            >
+            <input class="form-control" name="company_address" type="text" value="{{ $order->company_address }}">
           </div>
           <div class="col-md-3 form-control-comment">
           </div>
@@ -290,13 +514,26 @@
         </div>
 
       <div class="form-group row">
-        <label class="col-md-3 col-sm-12 form-control-label text-left text-md-right">
+        <label class="col-md-3 form-control-label text-left text-md-right">
           <h4>Auto dati</h4>
         </label>
         <div class="col-md-6">
 
         </div>
-        <div class="col-md-3 col-sm form-control-comment">
+        <div class="col-md-3 form-control-comment">
+        </div>
+      </div>
+
+      @php
+        $carDetails = $order->car_details ? json_decode($order->car_details, true) : [];
+      @endphp
+
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label text-left text-md-right">
+          Reģistrācijas numurs
+        </label>
+        <div class="col-md-6">
+          <input type="text" class="form-control" name="car_plate" value="{{ $carDetails['car_plate'] ?? '' }}">
         </div>
       </div>
 
@@ -305,44 +542,37 @@
           Auto brends
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="car_brand" type="text" value="{{$userData->car_brand}}">
-        </div>
-        <div class="col-md-3 form-control-comment">
+          <input type="text" class="form-control" name="car_brand" value="{{ $carDetails['car_brand'] ?? '' }}">
         </div>
       </div>
 
-      <div class="form-group row ">
+      <div class="form-group row">
         <label class="col-md-3 form-control-label text-left text-md-right">
           Auto modelis
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="car_model" type="text" value="{{$userData->car_model}}">
-        </div>
-        <div class="col-md-3 form-control-comment">
+          <input type="text" class="form-control" name="car_model" value="{{ $carDetails['car_model'] ?? '' }}">
         </div>
       </div>
 
-      <div class="form-group row ">
+      <div class="form-group row">
         <label class="col-md-3 form-control-label text-left text-md-right">
           Auto izlaiduma gads
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="car_release_year" type="text" value="{{$userData->car_release_year}}">
-        </div>
-        <div class="col-md-3 form-control-comment">
+          <input type="text" class="form-control" name="car_release_year" value="{{ $carDetails['car_release_year'] ?? '' }}">
         </div>
       </div>
 
-      <div class="form-group row ">
+      <div class="form-group row">
         <label class="col-md-3 form-control-label text-left text-md-right">
           Auto dzinēja izmērs
         </label>
         <div class="col-md-6">
-          <input class="form-control" name="car_engine_size" type="text" value="{{$userData->car_engine_size}}">
-        </div>
-        <div class="col-md-3 form-control-comment">
+          <input type="text" class="form-control" name="car_engine_size" value="{{ $carDetails['car_engine_size'] ?? '' }}">
         </div>
       </div>
+
       </form>
 
       <div class="form-group row">
@@ -355,89 +585,130 @@
         <div class="col-md-3 form-control-comment">
         </div>
       </div>
-      <div class="form-group col-10" style="margin: auto;">
-        <table class="table admin-order-confirm-table table-light" >
-          <thead class="table-dark">
-          <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Nosaukums</th>
-            <th scope="col">Skaits</th>
-            <th scope="col">Cena</th>
-            <th scope="col">Kopā</th>
-          </tr>
-          </thead>
-          <tbody>
-          {{--@php dd($tires) @endphp--}}
-
-            @foreach ($tires as $tire)
-              @php
-              if (isset($tire->article)) {
-                $tireObj = App\Models\Autotire::where('article', $tire->article)->first();
-                if (!$tireObj) $tireObj = App\Models\Moto::where('article', $tire->article)->first();
-                if (!$tireObj) $tireObj = App\Models\Quadr::where('article', $tire->article)->first();
-              }
-              @endphp
-              <tr id="confirm-table">
-                <th style="border-color: #c6c6c6;" scope="row">{{$tire->tire_id}}</th>
-                @if (isset($tireObj))
-                  <td style="border-color: #c6c6c6;"><a target="_blank" href="{{ $tireObj->link }}">{!! $tireObj->fullName!!}</a></td>
-                @else
-                  <td style="border-color: #c6c6c6;">{!! $tire->title!!}</td>
-                @endif
-                <td style="border-color: #c6c6c6;">{{$tire->quantity}}</td>
-                <td style="border-color: #c6c6c6;">{{$tire->quantity}} x {{$tire->price}} &euro;</td>
-                <td style="border-color: #c6c6c6;">@php echo ($tire->quantity * $tire->price) @endphp &euro;</td>
-              </tr>
-            @endforeach
-	          @if ($order->fit_price != 0 || $order->delivery_price != 0)
-            <tr id="confirm-table">
-              <th style="border-color: #c6c6c6;" scope="row"></th>
-              @if ($order->fit_price != 0) <td style="border-color: #c6c6c6;" scope="row">Montāža</td> @endif
-              @if ($order->delivery_price != 0) <td style="border-color: #c6c6c6;" scope="row">Piegāde</td> @endif
-              <td style="border-color: #c6c6c6;" scope="row"></td>
-              <td style="border-color: #c6c6c6;" scope="row"></td>
-              <td style="border-color: #c6c6c6;">{{ ($order->fit_price) ? substr($order->fit_price, 0, -2) : substr($order->delivery_price, 0, -2) }} &euro;</td>
-            </tr>
-	          @endif
-            @if ($order->used_promo != 0)
-            <tr>
-                <th style="border-color: #c6c6c6;" scope="row"></th>
-                <td style="border-color: #c6c6c6;" scope="row">
-                    @if ($promo->status === '1')
-                        Atlaižu kods (-{{ $promo->value }}%) (Kods - {{ $promo->code }})
-                    @else
-                        Atlaižu kods (-{{ $promo->value }} €) (Kods - {{ $promo->code }})
+            <div class="form-section">
+              <h4><i class="fa-solid fa-box"></i> Pasūtījuma saturs</h4>
+              
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Nosaukums</th>
+                      <th scope="col">Skaits</th>
+                      <th scope="col">Cena</th>
+                      <th scope="col">Kopā</th>
+                      <th scope="col" class="text-center">Pieejamība</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($tires as $tire)
+                      <tr>
+                        <td><span class="badge bg-secondary">{{ $tire->tire_id }}</span></td>
+                        <td>
+                          @if (isset($tire->url))
+                            <a target="_blank" href="{{ $tire->url }}" class="text-decoration-none">{!! $tire->title !!}</a>
+                          @else
+                            {!! $tire->title !!}
+                          @endif
+                        </td>
+                        <td>{{ $tire->quantity }}</td>
+                        <td>{{ $tire->price }} €</td>
+                        <td><strong>{{ $tire->quantity * $tire->price }} €</strong></td>
+                        <td class="text-center">
+                          <span class="tippy lisi-tooltip dot {{ $tire->dotAvailable }}" 
+                                data-color="{{ $tire->dotAvailable }}" 
+                                data-tippy-content='<div style="padding: 5px; text-align: left;"><span style="color: white; font-size: 15px; line-height: 28px;">{{ $tire->stockAvailability }}</span></div>'>
+                          </span>
+                        </td>
+                      </tr>
+                    @endforeach
+                    
+                    @if ($order->delivery_price > 0 || $order->mounting_price > 0)
+                      <tr class="table-info">
+                        <td></td>
+                        <td>
+                          @if ($order->mounting_price > 0)
+                            <i class="fa-solid fa-wrench"></i> Montāža
+                          @endif
+                          @if ($order->delivery_price > 0)
+                            <i class="fa-solid fa-truck"></i> Piegāde
+                          @endif
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td><strong>{{ $order->mounting_price > 0 ? $order->mounting_price : $order->delivery_price }} €</strong></td>
+                        <td></td>
+                      </tr>
                     @endif
-                </td>
-                <td style="border-color: #c6c6c6;" scope="row"></td>
-                <td style="border-color: #c6c6c6;" scope="row"></td>
-                <td style="border-color: #c6c6c6;" scope="row">
-                    @if ($promo->status === '1')
-                        -{{ $order->price - $item_sum }} €
-                    @else
-                        @if (!is_null($promo))
-                            -{{ $promo->value }} €
-                        @endif
+                    
+                    @if ($promo)
+                      <tr class="table-warning">
+                        <td></td>
+                        <td>
+                          @if ($promo->discount_type === 'percentage')
+                            <i class="fa-solid fa-percent"></i> Atlaižu kods (-{{ $promo->discount_value }}%) (Kods - {{ $promo->promo_code }})
+                          @else
+                            <i class="fa-solid fa-percent"></i> Atlaižu kods (-{{ $promo->discount_value }} €) (Kods - {{ $promo->promo_code }})
+                          @endif
+                        </td>
+                        <td></td>
+                        <td></td>
+                        <td><strong>
+                          @if ($promo->discount_type === 'percentage')
+                            -{{ round($order->total_price * ($promo->discount_value / 100)) }} €
+                          @else
+                            -{{ $promo->discount_value }} €
+                          @endif
+                        </strong></td>
+                        <td></td>
+                      </tr>
                     @endif
-                </td>
-            </tr>
-            @endif
-            <tr class="table-dark">
-              <th style="border-color: #c6c6c6; text-align: right" colspan="4"></th>
-              <th style="border-color: #c6c6c6;">{{ $item_sum }} &euro;</th>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                    
+                    <tr class="table-success">
+                      <td colspan="4" class="text-end"><strong>Kopsumma:</strong></td>
+                      <td colspan="2"><strong>{{ $item_sum }} €</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-      <div class="form-group row">
-        <div class="col-sm-3"></div>
-        <div class="col-sm-6">
-          <button type="submit" form="orderUpdate" class="btn btn-primary ml-1 float-right">Saglabāt</button>
-          <a href="{{ route('admin.orders') }}" class="btn btn-secondary float-right">Atgriezties</a>
+            <div class="btn-group">
+              <button type="submit" form="orderUpdate" class="btn btn-primary">
+                <i class="fa-solid fa-save"></i> Saglabāt
+              </button>
+              <a href="{{ route('admin.orders') }}" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Atgriezties
+              </a>
+            </div>
+          </form>
         </div>
-        <div class="col-sm-3"></div>
       </div>
     </div>
-  @endsection
+  </div>
 
+@endsection
+
+@section('scripts')
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const deliveryMethodSelect = document.querySelector('select[name="delivery_method"]');
+      const deliveryFieldsContainer = document.querySelector('[data-delivery-fields]');
+
+      if (!deliveryMethodSelect || !deliveryFieldsContainer) {
+        return;
+      }
+
+      const toggleDeliveryFields = () => {
+        if (deliveryMethodSelect.value === '3') {
+          deliveryFieldsContainer.style.display = '';
+        } else {
+          deliveryFieldsContainer.style.display = 'none';
+        }
+      };
+
+      toggleDeliveryFields();
+      deliveryMethodSelect.addEventListener('change', toggleDeliveryFields);
+    });
+  </script>
+@endsection

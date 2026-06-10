@@ -2,6 +2,10 @@
 
 @section('body-title', 'category')
 @section('title', 'lang-' . app()->getLocale() . ' country-' . app()->getLocale() . ' layout-both-columns page-category tax-display-enabled category-id-14 category-id-parent-12 category-depth-level-3')
+@section('meta_title', 'Akcijas | R1 Riepu Serviss')
+@section('meta_description', 'Akcijas riepas un diski R1 Riepu Serviss — vasaras un ziemas auto riepas, moto, kvadraciklu un lielās riepas par zemākām cenām. Aktuālā izpārdošana internetā.')
+@section('meta_keywords', config('seo.keywords.akcijas'))
+@section('canonical_url', route('sale-tires'))
 
 @section('content')
     <div class="container">
@@ -49,20 +53,16 @@
                 </div>
                 <div id="content-wrapper" class="col-md-12 col-lg-9">
                     <section id="main" class="sale-positions">
-                        @if ((int) env('SEASON') === 1)
-                          {{ (new \App\Http\Controllers\TopTireController)->autoTiresSummer() }}
-                          {{ (new \App\Http\Controllers\TopTireController)->autoTiresWinter() }}
-                        @else
-                          {{ (new \App\Http\Controllers\TopTireController)->autoTiresWinter() }}
-                          {{ (new \App\Http\Controllers\TopTireController)->autoTiresSummer() }}
-                        @endif
-                        {{ (new \App\Http\Controllers\TopTireController)->alloyRims() }}
-                        {{ (new \App\Http\Controllers\TopTireController)->motoTires() }}
-                        {{ (new \App\Http\Controllers\TopTireController)->quadrTires() }}
-                        {{ (new \App\Http\Controllers\TopTireController)->bigTires() }}
-                        {{ (new \App\Http\Controllers\TopTireController)->studs() }}
+                        @foreach ($sections as $section)
+                            @if ($section)
+                                {!! $section !!}
+                            @endif
+                        @endforeach
                     </section>
                 </div>
             </div>
 
+@push('scripts')
+<script src="{{ \App\Helper\AssetHelper::v('js/sales-cart.js') }}" defer></script>
+@endpush
 @endsection
