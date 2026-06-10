@@ -38,6 +38,7 @@ class SlotReservationService
                     'queue_id' => $queueId,
                     'date' => $date,
                     'position' => $position,
+                    'status' => Slot::STATUS_FREE,
                 ]);
             }
 

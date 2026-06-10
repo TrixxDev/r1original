@@ -40,12 +40,32 @@
   (`auto|moto|quadr|big|rim|quadrim|stud`); специфика категории — в JSON `products.attrs`.
 - Всё InnoDB + utf8mb4; FK везде.
 
+- **Модуль записи `/pieraksts`** (публичная часть):
+  - `PierakstsController` — календарь (HTML + `/pieraksts/calendar` JSON),
+    создание брони, страница отмены по `cancel_code` (проверка — последние
+    2 символа номера авто).
+  - `SlotReservationController` — reserve/extend/cancel/check-availability (JSON).
+  - `app/Services/BookingService.php` — создание/отмена брони в транзакции
+    с lockForUpdate; `app/Services/BookingNotifier.php` — email по шаблонам
+    очереди (`queues.notification_*`, плейсхолдеры %TIME% %DATE% … как в старом
+    `Queue::parseNotification`), SMS/WhatsApp пока заглушки в лог.
+  - `app/Services/WorkingDaysProvisioner.php` — автосоздание working_days
+    на 8 дней вперёд (published + draft, воскресенье закрыто).
+  - `app/Support/HalfSlotRules.php` — «половинные» дни AC/moto (роль слота
+    по позиции + валидация услуги).
+  - `app/Http/Requests/StoreBookingRequest.php` — валидация формы
+    (rims_with обязателен только для service_id=1).
+  - Вьюхи `resources/views/pieraksts/{index,cancel}.blade.php` — минимальный
+    рабочий фронт (резервация, таймер, форма, отмена); дизайн — позже.
+  - ВАЖНО: `Slot`/`WorkingDay` хранят `date` строго `Y-m-d` (мутатор),
+    иначе сравнения дат ломаются на SQLite.
+
 ## План дальнейшей работы (по модулям)
 
-1. **Запись на услуги** (приоритет): контроллеры/маршруты `/pieraksts`
-   (reserve/extend/cancel + форма брони + отмена по cancel_code), фронт календаря,
-   уведомления (email/SMS/WhatsApp — см. БИЗНЕС_ЛОГИКА.md §1), API мастеров
-   (`/api/v1/mobile/*`, Bearer-токен), роли (spatie/laravel-permission ещё не установлен).
+1. **Запись на услуги** (остатки): уведомления по-настоящему (SMS-драйвер,
+   WhatsApp textmebot — см. БИЗНЕС_ЛОГИКА.md §1), Meta CAPI / Google Ads
+   конверсии, API мастеров (`/api/v1/mobile/*`, Bearer-токен), роли
+   (spatie/laravel-permission ещё не установлен), нормальный фронт календаря.
 2. Каталог + корзина + заказы + Paysera (callback идемпотентен через payments).
 3. Синхронизации поставщиков (единый пайплайн вместо 7 контроллеров; см. supplier_stock).
 4. Админка.

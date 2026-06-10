@@ -24,4 +24,39 @@ class WorkingDay extends Model
     {
         return $this->belongsTo(Queue::class);
     }
+
+    /**
+     * Храним дату строго как Y-m-d: иначе cast `date` пишет «Y-m-d 00:00:00»
+     * и строковое сравнение where('date', ...) ломается на SQLite.
+     */
+    public function setDateAttribute($value): void
+    {
+        $this->attributes['date'] = \Carbon\Carbon::parse($value)->format('Y-m-d');
+    }
+
+    /** Время слота по позиции (1-based): time_open + (position-1) * time_step. */
+    public function timeForPosition(int $position): ?string
+    {
+        if (! $this->time_open) {
+            return null;
+        }
+
+        return \Carbon\Carbon::parse($this->time_open)
+            ->addMinutes(($position - 1) * ($this->time_step ?: 15))
+            ->format('H:i');
+    }
+
+    /** Количество слотов в сетке дня. */
+    public function slotCount(): int
+    {
+        if (! $this->time_open || ! $this->time_close) {
+            return 0;
+        }
+
+        $open = \Carbon\Carbon::parse($this->time_open);
+        $close = \Carbon\Carbon::parse($this->time_close);
+        $step = $this->time_step ?: 15;
+
+        return max(0, (int) floor($open->diffInMinutes($close) / $step));
+    }
 }

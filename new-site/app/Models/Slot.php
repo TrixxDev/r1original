@@ -23,6 +23,15 @@ class Slot extends Model
         'reserved_until' => 'datetime',
     ];
 
+    /**
+     * Храним дату строго как Y-m-d: иначе cast `date` пишет «Y-m-d 00:00:00»
+     * и строковое сравнение where('date', ...) ломается на SQLite.
+     */
+    public function setDateAttribute($value): void
+    {
+        $this->attributes['date'] = \Carbon\Carbon::parse($value)->format('Y-m-d');
+    }
+
     public function queue(): BelongsTo
     {
         return $this->belongsTo(Queue::class);
