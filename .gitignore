@@ -107,3 +107,6 @@ config/logging.php.save
 /СПИСОК_*.md
 /ФАЙЛЫ_*.md
 /ФИНАЛЬНЫЕ_*.md
+
+_git_*.ps1
+_server_snapshot*.py
