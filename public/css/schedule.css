@@ -1,0 +1,287 @@
+.records-traffic-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin: 16px 0 8px;
+    padding: 14px 16px;
+    border: 2px solid #e6a800;
+    border-radius: 8px;
+    background: #fff8e1;
+    color: #5c4a00;
+    cursor: pointer;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.records-traffic-notice:hover,
+.records-traffic-notice:focus {
+    background: #fff3c4;
+    box-shadow: 0 2px 8px rgba(230, 168, 0, 0.25);
+    outline: none;
+}
+
+.records-traffic-notice__icon { 
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #e6a800;
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 28px;
+    text-align: center;
+}
+
+.records-traffic-notice__text {
+    font-size: 15px;
+    line-height: 1.45;
+}
+
+.records-traffic-notice__text strong {
+    color: #b45309;
+}
+
+.records-traffic-notice__hint {
+    display: block;
+    margin-top: 4px;
+}
+
+.records-traffic-notice__tap {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #8a6d00;
+    text-decoration: underline;
+}
+
+.records-traffic-notice__tap--mobile {
+    display: none;
+}
+
+.records-traffic-notice__map {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+#mobile-main .records-traffic-notice {
+    margin: 12px 14px 16px;
+}
+
+#traffic-notice-modal.records-traffic-notice-modal-wrap {
+    background: rgba(0, 0, 0, 0.65);
+    z-index: 1060;
+}
+
+#traffic-notice-modal.records-traffic-notice-modal-wrap .modal-dialog {
+    padding-right: 0;
+}
+
+@media (max-width: 1024px) {
+    .records-traffic-notice__tap--desktop {
+        display: none;
+    }
+
+    .records-traffic-notice__tap--mobile {
+        display: block;
+    }
+
+    #mobile-main {
+        padding-top: 16px;
+    }
+
+    #mobile-main .records-traffic-notice {
+        margin: 0 max(14px, env(safe-area-inset-right, 0px)) 16px max(14px, env(safe-area-inset-left, 0px));
+        font-size: 14px;
+    }
+
+    #traffic-notice-modal.records-traffic-notice-modal-wrap {
+        padding: max(16px, env(safe-area-inset-top, 0px)) 12px 12px !important;
+    }
+
+    #traffic-notice-modal.records-traffic-notice-modal-wrap .modal-dialog {
+        margin: 0 auto;
+        padding-right: 0;
+    }
+
+    #traffic-notice-modal .records-traffic-notice-modal {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+    }
+
+    #traffic-notice-modal .records-traffic-notice-modal .modal-content {
+        height: auto;
+        border: 0;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+    }
+
+    #traffic-notice-modal .records-traffic-notice-modal .modal-body {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        padding: 0;
+        max-height: calc(100vh - max(16px, env(safe-area-inset-top, 0px)) - 72px);
+    }
+}
+
+.table {
+    display: block!important;
+    margin-bottom: 0 !important;
+}
+
+div.w {
+  position: relative;
+  max-width: 670px;
+  margin: 0 auto;
+}
+
+div.reservation {
+  margin: 16px 0;
+}
+
+div.reservation div.time-list {
+  display: grid;
+  grid-gap: 5px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+div.reservation div.time-list .time-slot {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+  font-size: 15px;
+  color: #fff;
+  font-weight: 600;
+  /*background-color: #d8d8d8;*/
+  border-radius: 4px;
+  text-align: center;
+  text-decoration: none!important;
+    line-height: 21px!important;
+  /*margin: 15px 6px;*/
+}
+
+div.reservation div.time-list .time-slot .selected {
+  background-color: #c50909!important;
+}
+
+div.reservation div.time-list .available {
+  background-color: #49c200;
+}
+
+.discount.available.slot.active {
+  background: orange;
+}
+
+.available.slot.active {
+  font-size: 17px;
+}
+
+.slot.unavailable {
+  background: #d8d8d8;
+}
+
+.today .time-slot .slot {
+  color: gray;
+}
+
+.schedule-table .time-slot .slot {
+  user-select: none!important;
+}
+
+.today .time-slot .slot .slot-gray-free {
+  color: #232323;
+}
+
+.today .time-slot .dots .dot-availability .red-taken {
+  background-color: #232323;
+}
+
+.available.moto.active.slot {
+  background: #317b04!important;
+}
+
+.slot span {
+  font-size: 13px;
+}
+
+.slot .time-span {
+  font-size: 16px;
+}
+
+.dot-availability {
+  width: 15px;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.dot.red {
+  background-color: lightgrey;
+  color: lightgrey;
+}
+
+.dot.green {
+  background-color: #4cbb6c;
+  color: #4cbb6c;
+}
+
+.dot.orange {
+  background-color: orange;
+  border-color: #a16800;
+}
+
+.dot.transparent {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.dot {
+  height: 11px;
+  width: 11px;
+  /* background-color: #4cbb6c; */
+  border-radius: 50%;
+  display: inline-block;
+  /*margin-left: 7px;*/
+  margin-bottom: 8px;
+  /*margin-right: 6px;*/
+  border: 1px solid #00000045;
+}
+
+.dots {
+  margin-top: 4px;
+  cursor: default;
+  user-select: none;
+}
+
+.dot .sort-order {
+  display: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.time-slot .conditioner {
+  background: #37b2ff!important;
+}
+
+.time-slot .unavailable.conditioner, .time-slot .unavailable.moto {
+    background: #d8d8d8!important;
+}
+
+@media only screen and (max-width: 600px) {
+  div.reservation div.time-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  div.reservation div.time-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
