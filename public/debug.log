@@ -1,0 +1,16 @@
+{"sessionId":"070f40","hypothesisId":"H3","location":"SyncController::starco","message":"phase_fetch_catalog_and_cache","data":{"ms":4735.48,"tires_count":14921},"timestamp":1779107259692}
+{"sessionId":"070f40","hypothesisId":"H5","location":"SyncController::starco","message":"phase_reset_all_visibility","data":{"ms":66.88},"timestamp":1779107259759}
+{"sessionId":"070f40","hypothesisId":"H1","location":"SyncController::starco","message":"phase_catalog_loop_done","data":{"loop_ms":101160.83,"img_total_ms":49122,"img_calls":1772,"catalog_non_img_ms":52038.82,"counted":14792,"updated":1643},"timestamp":1779107360920}
+{"sessionId":"070f40","hypothesisId":"H3","location":"SyncController::starco","message":"phase_fetch_stocks","data":{"ms":5818.34,"stock_rows":28241},"timestamp":1779107366738}
+{"sessionId":"070f40","hypothesisId":"H4","location":"SyncController::starco","message":"phase_stock_loop_done","data":{"ms":61557.18},"timestamp":1779107428295}
+{"sessionId":"070f40","hypothesisId":"H3","location":"SyncController::starco","message":"phase_fetch_prices","data":{"ms":467.11,"price_rows":4279},"timestamp":1779107428763}
+{"sessionId":"070f40","hypothesisId":"H4","location":"SyncController::starco","message":"phase_price_loop_done","data":{"ms":40051.65},"timestamp":1779107468814}
+{"sessionId":"070f40","hypothesisId":"H2","location":"SyncController::starco","message":"starco_total","data":{"total_ms":213858.54},"timestamp":1779107468815}
+{"sessionId":"070f40","hypothesisId":"H3","location":"SyncController::starco","message":"phase_fetch_catalog_and_cache","data":{"ms":4701.5,"tires_count":14921},"timestamp":1779107913263}
+{"sessionId":"070f40","hypothesisId":"H5","location":"SyncController::starco","message":"phase_reset_all_visibility","data":{"ms":69.49},"timestamp":1779107913332}
+{"sessionId":"070f40","hypothesisId":"H1","location":"SyncController::starco","message":"phase_catalog_loop_done","data":{"loop_ms":39815.87,"img_total_ms":487.41,"img_calls":128,"img_skipped_cached":1644,"catalog_non_img_ms":39328.46,"counted":14792,"updated":1643},"timestamp":1779107953148}
+{"sessionId":"070f40","hypothesisId":"H3","location":"SyncController::starco","message":"phase_fetch_stocks","data":{"ms":6364.08,"stock_rows":28241},"timestamp":1779107959513}
+{"sessionId":"070f40","hypothesisId":"H4","location":"SyncController::starco","message":"phase_stock_loop_done","data":{"ms":544.88},"timestamp":1779107960058}
+{"sessionId":"070f40","hypothesisId":"H3","location":"SyncController::starco","message":"phase_fetch_prices","data":{"ms":507.07,"price_rows":4279},"timestamp":1779107960565}
+{"sessionId":"070f40","hypothesisId":"H4","location":"SyncController::starco","message":"phase_price_loop_done","data":{"ms":9204.43},"timestamp":1779107969769}
+{"sessionId":"070f40","hypothesisId":"H2","location":"SyncController::starco","message":"starco_total","data":{"total_ms":61208.53},"timestamp":1779107969770}
