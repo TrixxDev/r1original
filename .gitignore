@@ -28,7 +28,10 @@ yarn-error.log
 /resources/views/pages/
 
 # Secrets and local credentials
+,
 .ftpquota
+htaccess.txt
+/bigtires/
 /db_access.txt
 
 # XML feeds, sync dumps, generated exports
