@@ -95,6 +95,7 @@ class BookingService
                 'car_model' => $data['car_model'],
                 'license_plate' => mb_strtoupper(trim($data['license_plate'])),
                 'rims_with' => $data['rims_with'] ?? null,
+                'customer_name' => $data['customer_name'] ?? null,
                 'phone_number' => $data['phone_number'],
                 'email' => $data['email'] ?? null,
                 'customer_comment' => $data['customer_comment'] ?? null,

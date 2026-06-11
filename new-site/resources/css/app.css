@@ -1,3 +1,18 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/*
+ * Наши доработки поверх перенесённого дизайна (theme.css + custom.css).
+ * ВАЖНО: Tailwind здесь сознательно не подключён — его preflight-reset
+ * ломает легаси-вёрстку старого сайта.
+ */
+
+/*
+ * Временно: на мобильном показываем ту же сетку расписания, что и на десктопе.
+ * Старый сайт здесь скрывал таблицу и показывал отдельный мобильный сценарий
+ * (выбор филиала → список времён, showMobileQueues) — перенесём его отдельно,
+ * тогда этот блок убрать.
+ */
+@media (max-width: 1023px) {
+    .schedule-table.dashboard {
+        display: block !important;
+        overflow-x: auto;
+    }
+}

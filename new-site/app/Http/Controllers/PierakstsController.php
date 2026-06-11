@@ -118,7 +118,7 @@ class PierakstsController extends Controller
         $slots = Slot::query()
             ->whereIn('date', $dates)
             ->whereIn('queue_id', $queues->keys())
-            ->with('booking:id,slot_id')
+            ->with('booking:id,slot_id,car_brand,phone_number')
             ->get()
             ->keyBy(fn (Slot $s) => $s->queue_id.'|'.$s->date->toDateString().'|'.$s->position);
 
@@ -137,23 +137,7 @@ class PierakstsController extends Controller
                 $grid = [];
                 for ($position = 1; $position <= $workingDay->slotCount(); $position++) {
                     $slot = $slots->get($queue->id.'|'.$date.'|'.$position);
-                    $role = HalfSlotRules::role($position, $workingDay);
-
-                    $taken = $slot && ($slot->status !== Slot::STATUS_FREE || $slot->booking);
-                    $reserved = $slot && $slot->isReserved();
-                    $time = $workingDay->timeForPosition($position);
-                    $isPast = $date === $now->toDateString() && $time !== null && $time <= $now->format('H:i');
-
-                    $grid[] = [
-                        'position' => $position,
-                        'time' => $time,
-                        'status' => match (true) {
-                            $taken || $role === HalfSlotRules::ROLE_BLOCKED || $isPast => 'taken',
-                            $reserved => 'reserved',
-                            default => 'free',
-                        },
-                        'role' => $role,
-                    ];
+                    $grid[] = $this->describeSlot($slot, $position, $workingDay, $date, $now);
                 }
 
                 $dayQueues[] = [
@@ -168,5 +152,56 @@ class PierakstsController extends Controller
         }
 
         return $days;
+    }
+
+    /**
+     * Состояние ячейки в терминах старой вёрстки (schedule.css):
+     * kind: free | discount | moto | ac | taken | unavailable | reserved.
+     * Правило старой системы: сегодня слот доступен только если до него
+     * осталось не меньше 30 минут.
+     *
+     * @return array{position: int, time: string|null, kind: string, label: string}
+     */
+    private function describeSlot(?Slot $slot, int $position, WorkingDay $workingDay, string $date, \Carbon\Carbon $now): array
+    {
+        $time = $workingDay->timeForPosition($position);
+        $role = HalfSlotRules::role($position, $workingDay);
+
+        $bookable = ! ($date === $now->toDateString()
+            && $time !== null
+            && \Carbon\Carbon::parse($date.' '.$time)->subMinutes(30)->lt($now));
+
+        $taken = $slot && ($slot->status !== Slot::STATUS_FREE || $slot->booking);
+
+        if ($taken) {
+            $booking = $slot->booking;
+            $label = $booking
+                ? mb_substr(trim((string) $booking->car_brand), 0, 6).' xxxxx'.substr((string) $booking->phone_number, -3)
+                : 'Aizņemts';
+
+            return ['position' => $position, 'time' => $time, 'kind' => 'taken', 'label' => $label];
+        }
+
+        if ($role === HalfSlotRules::ROLE_BLOCKED || ! $bookable) {
+            return ['position' => $position, 'time' => $time, 'kind' => 'unavailable', 'label' => 'Aizņemts'];
+        }
+
+        if ($slot && $slot->isReserved()) {
+            return ['position' => $position, 'time' => $time, 'kind' => 'reserved', 'label' => 'Rezervēts'];
+        }
+
+        if ($slot && $slot->comment !== null && $slot->comment !== '') {
+            return ['position' => $position, 'time' => $time, 'kind' => 'discount', 'label' => $slot->comment];
+        }
+
+        if ($role === HalfSlotRules::ROLE_MOTO) {
+            return ['position' => $position, 'time' => $time, 'kind' => 'moto', 'label' => 'Moto montāža'];
+        }
+
+        if ($role === HalfSlotRules::ROLE_AC) {
+            return ['position' => $position, 'time' => $time, 'kind' => 'ac', 'label' => 'Kondicioniera apkope'];
+        }
+
+        return ['position' => $position, 'time' => $time, 'kind' => 'free', 'label' => 'Brīvs'];
     }
 }

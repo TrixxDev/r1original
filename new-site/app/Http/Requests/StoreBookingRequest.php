@@ -28,6 +28,7 @@ class StoreBookingRequest extends FormRequest
             'car_model' => ['required', 'string', 'max:100'],
             'license_plate' => ['required', 'string', 'max:20'],
             'rims_with' => ['required_if:service_id,1', 'nullable', Rule::in([1, 2])],
+            'customer_name' => ['nullable', 'string', 'max:100'],
             'phone_number' => ['required', 'string', 'max:30', 'regex:/^[0-9]+$/'],
             'phone_country_code' => ['nullable', 'string', 'max:6'],
             'email' => ['nullable', 'email', 'max:255'],

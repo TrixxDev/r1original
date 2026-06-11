@@ -55,17 +55,42 @@
     по позиции + валидация услуги).
   - `app/Http/Requests/StoreBookingRequest.php` — валидация формы
     (rims_with обязателен только для service_id=1).
-  - Вьюхи `resources/views/pieraksts/{index,cancel}.blade.php` — минимальный
-    рабочий фронт (резервация, таймер, форма, отмена); дизайн — позже.
+  - Вьюхи `resources/views/pieraksts/{index,cancel}.blade.php` — в дизайне
+    старого сайта (см. ниже «Перенос дизайна»).
   - ВАЖНО: `Slot`/`WorkingDay` хранят `date` строго `Y-m-d` (мутатор),
     иначе сравнения дат ломаются на SQLite.
 
+- **Перенос дизайна старого сайта** (выполнено для layout + /pieraksts):
+  - Статика в `public/`: `css/theme.css`, `css/custom.css`, `css/schedule.css`,
+    `css/fonts/`, `images/` — скопированы из старого репо КАК ЕСТЬ, руками
+    не править (это «дизайн»). custom2/custom3.css — мусор, не переносить.
+  - ⚠ В старом гите НЕТ части картинок (`public/img/` с логотипом,
+    `images/cover*.webp`, иконки телефонов/спрайты) — они только на проде.
+    Пути сохранены 1:1: достаточно скопировать с прода `public/img` и
+    недостающее из `public/images` — всё встанет само.
+  - `layouts/app.blade.php` + `components/navbar.blade.php` — разметка шапки,
+    меню (десктоп + мобильный drawer) и футера 1:1 со старого; маркетинг,
+    recaptcha, pusher вырезаны. Ссылки на ещё не перенесённые разделы —
+    литеральные `url('/...')` со старыми адресами.
+  - Сборка — **Vite** (`npm run build`): `resources/js/{app,layout,pieraksts}.js`,
+    `resources/css/app.css`. Tailwind отключён сознательно (preflight ломает
+    легаси-вёрстку) — удалён из postcss.config.js. jQuery не используется:
+    поведение шапки и календаря переписано на vanilla JS с теми же
+    CSS-классами состояний (is-open, mobile-nav-open, is-visible).
+  - `#mobile-reservation-form` по умолчанию скрыт в custom.css — JS открывает
+    его инлайн-стилем (как старый client.js).
+  - Временно: на <1024px показывается та же сетка расписания
+    (override в resources/css/app.css); отдельный мобильный сценарий
+    старого сайта (выбор филиала → времена, showMobileQueues) ещё не перенесён.
+  - `config/site.php` — season (фон body, порядок riepu-меню), телефоны.
+
 ## План дальнейшей работы (по модулям)
 
-1. **Запись на услуги** (остатки): уведомления по-настоящему (SMS-драйвер,
-   WhatsApp textmebot — см. БИЗНЕС_ЛОГИКА.md §1), Meta CAPI / Google Ads
-   конверсии, API мастеров (`/api/v1/mobile/*`, Bearer-токен), роли
-   (spatie/laravel-permission ещё не установлен), нормальный фронт календаря.
+1. **Запись на услуги** (остатки): мобильный сценарий /pieraksts (филиал →
+   времена), уведомления по-настоящему (SMS-драйвер, WhatsApp textmebot —
+   см. БИЗНЕС_ЛОГИКА.md §1), Meta CAPI / Google Ads конверсии, API мастеров
+   (`/api/v1/mobile/*`, Bearer-токен), роли (spatie/laravel-permission ещё
+   не установлен).
 2. Каталог + корзина + заказы + Paysera (callback идемпотентен через payments).
 3. Синхронизации поставщиков (единый пайплайн вместо 7 контроллеров; см. supplier_stock).
 4. Админка.
@@ -74,6 +99,7 @@
 
 ```bash
 composer install
+npm install && npm run build              # фронт (Vite)
 cp .env.example .env && php artisan key:generate
 # .env: DB_* — новая БД, LEGACY_DB_* — старая r1 (read-only)
 php artisan migrate

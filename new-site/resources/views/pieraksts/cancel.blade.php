@@ -3,35 +3,59 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Pieraksta atcelšana — R1 Riepas</title>
+    <title>R1 Riepu Serviss - Pieraksta atcelšana</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <style>
-        body { font-family: system-ui, sans-serif; max-width: 480px; margin: 2rem auto; padding: 0 1rem; }
-        .card { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; }
-        .flash-danger { background: #fee2e2; color: #991b1b; padding: .75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
-        input { width: 100%; padding: .5rem; box-sizing: border-box; margin: .5rem 0 1rem; }
-        button { padding: .5rem 1.25rem; }
+        .confirm-delete-body {
+            text-align: center;
+            margin-bottom: 45px;
+            font-size: calc(1.5rem + 1vw);
+        }
+        .cancelQ { color: #e30000; font-size: 3.5rem; position: relative; top: 15px; }
+        input[name="plate_suffix"] { height: 86px; width: 100%; }
+        button[name="delete"] { width: 75%; font-size: 3rem; }
+        @media (max-width: 768px) {
+            .confirm-delete-body { font-size: 2.8rem; }
+            .confirm-delete-col { margin-top: 100px; }
+        }
     </style>
 </head>
 <body>
-<div class="card">
-    <h1>Pieraksta atcelšana</h1>
 
-    @if (session('danger'))
-        <div class="flash-danger">{!! session('danger') !!}</div>
-    @endif
-
-    <p>
-        <b>{{ $booking->slot->date->format('d.m.Y') }}@if ($time) plkst. {{ $time }}@endif</b><br>
-        {{ $office->title }}<br>
-        {{ $booking->car_brand }} {{ $booking->car_model }}
-    </p>
-
-    <form method="post" action="{{ route('pieraksts.cancel.confirm', $booking->cancel_code) }}">
-        @csrf
-        <label for="plate_suffix">Drošībai ievadiet auto numura pēdējos 2 simbolus:</label>
-        <input id="plate_suffix" name="plate_suffix" maxlength="20" required>
-        <button type="submit">Atcelt pierakstu</button>
-    </form>
+<div class="container mt-5">
+    <div class="row">
+        <form method="post" action="{{ route('pieraksts.cancel.confirm', $booking->cancel_code) }}">
+            @csrf
+            <div class="col confirm-delete-col">
+                <div class="confirm-delete-body">
+                    <div>
+                        Jūsu pieraksts:
+                        {{ $office->title }}, {{ ['', 'pirmdien', 'otrdien', 'trešdien', 'ceturtdien', 'piektdien', 'sestdien', 'svētdien'][(int) $booking->slot->date->format('N')] }},
+                        {{ $booking->slot->date->format('d.m.Y') }}@if ($time), pl. {{ $time }}@endif <br>
+                        Automašīnai: {{ $booking->car_brand }} {{ $booking->car_model }} <br>
+                        <span class="cancelQ">Vai vēlaties atcelt pierakstu?</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col" style="text-align: center; width: 100%;">
+                        @if (session('danger'))
+                            <span style="font-size: 2.8rem; color: red;">{!! session('danger') !!}</span><br><br>
+                        @endif
+                    </div>
+                </div>
+                <div class="row" style="text-align: center;">
+                    <div class="col">
+                        <input class="form-control" type="text" name="plate_suffix" required
+                               placeholder="Lai apstiprinātu atcelšanu, ievadiet auto numura zīmi">
+                    </div>
+                    <div class="col">
+                        <button class="btn btn-primary" type="submit" name="delete">Apstiprināt</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
+
 </body>
 </html>

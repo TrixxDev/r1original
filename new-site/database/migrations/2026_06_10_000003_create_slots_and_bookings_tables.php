@@ -46,6 +46,7 @@ return new class extends Migration
             $table->string('car_model', 100)->nullable();
             $table->string('license_plate', 20)->nullable();
             $table->unsignedTinyInteger('rims_with')->nullable(); // 1 без дисков, 2 с дисками
+            $table->string('customer_name', 100)->nullable();
             $table->string('phone_number', 30)->nullable();
             $table->string('email')->nullable();
             $table->text('customer_comment')->nullable();
