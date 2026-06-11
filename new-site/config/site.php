@@ -12,4 +12,10 @@ return [
     ],
 
     'whatsapp' => '37128336677',
+
+    // Доступ к админке (HTTP Basic), пока нет полноценных ролей
+    'admin' => [
+        'user' => env('ADMIN_USER', 'admin'),
+        'password' => env('ADMIN_PASSWORD'),
+    ],
 ];

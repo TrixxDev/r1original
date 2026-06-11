@@ -83,6 +83,22 @@
     (override в resources/css/app.css); отдельный мобильный сценарий
     старого сайта (выбор филиала → времена, showMobileQueues) ещё не перенесён.
   - `config/site.php` — season (фон body, порядок riepu-меню), телефоны.
+  - Недостающие в старом гите картинки докачаны с прода (r1riepas.lv):
+    `public/img/` (логотип), `images/cover*.webp`, иконки/спрайты. Битых
+    ссылок в CSS не осталось (кроме мёртвых и на проде mmk-sliding-banner
+    и assets/order-status — игнорировать).
+
+- **Админка записи `/admin/pieraksts`** (бывш. Admin\Records\RecordController):
+  - `Admin\PierakstsAdminController` — сетка дня по всем очередям обоих
+    филиалов (включая непубличные), навигация по дням + date picker.
+  - Действия: панель деталей брони, отмена брони админом (клиент получает
+    уведомление, `BookingService::adminCancel`), блокировка/разблокировка
+    слота (status=2), скидка-комментарий на свободном слоте.
+  - Защита — `admin.basic` (HTTP Basic, ADMIN_USER/ADMIN_PASSWORD в .env;
+    без пароля работает только в APP_ENV=local). Заменить на роли
+    spatie/laravel-permission, когда перенесём пользователей.
+  - Дизайн админки свой лёгкий (resources/css/admin.css) — CoreUI старой
+    админки сознательно не тащим.
 
 ## План дальнейшей работы (по модулям)
 

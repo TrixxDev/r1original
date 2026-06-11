@@ -153,6 +153,24 @@ class BookingService
             return ['success' => false, 'message' => 'Numurs ievadīts nepareizi. Mēģiniet vēlreiz vai sazinieties ar mums telefoniski.'];
         }
 
+        return $this->performCancel($booking);
+    }
+
+    /** Отмена брони администратором — без проверки номера и даты, клиент уведомляется. */
+    public function adminCancel(Booking $booking): array
+    {
+        $booking->loadMissing('slot.queue.office');
+
+        if (! $booking->slot) {
+            return ['success' => false, 'message' => 'Pieraksts nav atrasts.'];
+        }
+
+        return $this->performCancel($booking);
+    }
+
+    /** @return array{success: bool, message: string} */
+    private function performCancel(Booking $booking): array
+    {
         $queue = $booking->slot->queue;
         $workingDay = WorkingDay::query()
             ->where('queue_id', $booking->slot->queue_id)

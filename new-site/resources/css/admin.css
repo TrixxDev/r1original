@@ -1,0 +1,110 @@
+/* Админка R1 — самостоятельный лёгкий стиль (CoreUI старой админки не тащим). */
+
+:root {
+    --r1-red: #e30613;
+    --border: #d9dde3;
+    --bg: #f3f5f7;
+}
+
+* { box-sizing: border-box; }
+
+body.admin {
+    margin: 0;
+    font-family: Arimo, system-ui, sans-serif;
+    background: var(--bg);
+    color: #1c1e21;
+}
+
+.admin-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: #fff;
+    border-bottom: 2px solid var(--r1-red);
+    padding: .4rem 1rem;
+}
+
+.admin-header__brand {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    text-decoration: none;
+    color: inherit;
+    font-weight: 700;
+}
+
+.admin-header__brand img { height: 34px; }
+
+.admin-header__nav a {
+    margin-right: 1rem;
+    text-decoration: none;
+    color: #444;
+    padding: .35rem .6rem;
+    border-radius: 4px;
+}
+
+.admin-header__nav a.active,
+.admin-header__nav a:hover { background: var(--r1-red); color: #fff; }
+
+.admin-main { padding: 1rem; }
+
+/* Навигация по дням */
+.day-nav { display: flex; align-items: center; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.day-nav h1 { font-size: 1.25rem; margin: 0 .75rem; }
+.day-nav input[type="date"] { padding: .35rem; border: 1px solid var(--border); border-radius: 4px; }
+
+.btn {
+    display: inline-block;
+    border: 1px solid var(--border);
+    background: #fff;
+    padding: .4rem .8rem;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    font-size: .9rem;
+}
+
+.btn:hover { border-color: var(--r1-red); }
+.btn--danger { background: var(--r1-red); border-color: var(--r1-red); color: #fff; }
+
+/* Сетка дня */
+.day-grid { display: flex; gap: 1rem; align-items: flex-start; overflow-x: auto; }
+
+.queue-table { border-collapse: collapse; background: #fff; min-width: 320px; flex: 1; }
+.queue-table th, .queue-table td { border: 1px solid var(--border); padding: .3rem .5rem; font-size: .85rem; }
+.queue-table .office-name { background: var(--r1-red); color: #fff; font-size: 1rem; }
+.queue-table thead th { background: #eef0f3; }
+.time-col { width: 52px; text-align: right; font-weight: 700; background: #fafbfc; }
+
+.cell { min-width: 150px; cursor: pointer; }
+.cell--free { background: #e8f8ec; }
+.cell--free:hover { background: #d4f2dc; }
+.cell--booked { background: #dbeeff; }
+.cell--booked:hover { background: #c8e4fb; }
+.cell--blocked { background: #f1f1f1; color: #888; }
+.cell--reserved { background: #fff3cd; color: #856404; }
+.cell--discount { background: #d1f7d1; font-weight: 700; }
+.cell--closed { background: repeating-linear-gradient(45deg, #f5f5f5, #f5f5f5 6px, #ececec 6px, #ececec 12px); cursor: default; }
+
+/* Панель деталей */
+#slot-panel {
+    position: fixed;
+    top: 0; right: 0; bottom: 0;
+    width: 340px;
+    background: #fff;
+    border-left: 2px solid var(--r1-red);
+    box-shadow: -4px 0 14px rgba(0, 0, 0, .12);
+    z-index: 50;
+    overflow-y: auto;
+}
+
+.slot-panel__inner { padding: 1rem; }
+.slot-panel__close { float: right; border: 0; background: none; font-size: 1.6rem; cursor: pointer; }
+#slot-panel h2 { margin: 0 0 1rem; font-size: 1.1rem; }
+#slot-panel dl { display: grid; grid-template-columns: 100px 1fr; gap: .25rem .5rem; font-size: .9rem; }
+#slot-panel dt { color: #777; }
+#slot-panel dd { margin: 0; word-break: break-word; }
+#slot-panel label { display: block; font-size: .9rem; margin-bottom: .5rem; }
+#slot-panel input[type="text"] { width: 100%; padding: .4rem; border: 1px solid var(--border); border-radius: 4px; margin-top: .25rem; }
+#slot-panel .btn { margin-top: .5rem; }

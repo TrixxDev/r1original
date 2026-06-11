@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\PierakstsAdminController;
 use App\Http\Controllers\PierakstsController;
 use App\Http\Controllers\SlotReservationController;
 use Illuminate\Support\Facades\Route;
@@ -23,4 +24,14 @@ Route::prefix('pieraksts')->group(function () {
     Route::post('/extend-reservation', [SlotReservationController::class, 'extend'])->name('pieraksts.extend');
     Route::post('/cancel-reservation', [SlotReservationController::class, 'cancel'])->name('pieraksts.release');
     Route::post('/check-slot-availability', [SlotReservationController::class, 'checkAvailability'])->name('pieraksts.check');
+});
+
+// Админка (HTTP Basic через ADMIN_USER/ADMIN_PASSWORD, см. AdminBasicAuth)
+Route::prefix('admin')->middleware('admin.basic')->group(function () {
+    Route::get('/pieraksts', [PierakstsAdminController::class, 'index'])->name('admin.pieraksts');
+    Route::get('/pieraksts/date={date}', [PierakstsAdminController::class, 'index'])->name('admin.pieraksts.date');
+    Route::post('/pieraksts/block', [PierakstsAdminController::class, 'block'])->name('admin.pieraksts.block');
+    Route::post('/pieraksts/unblock', [PierakstsAdminController::class, 'unblock'])->name('admin.pieraksts.unblock');
+    Route::post('/pieraksts/comment', [PierakstsAdminController::class, 'comment'])->name('admin.pieraksts.comment');
+    Route::post('/pieraksts/cancel-booking', [PierakstsAdminController::class, 'cancelBooking'])->name('admin.pieraksts.cancel');
 });
